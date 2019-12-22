@@ -21,4 +21,3 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 # Импорт основных классов
 
 from ruts.basic_stats import BasicStats
-from ruts.readability_stats import ReadabilityStats

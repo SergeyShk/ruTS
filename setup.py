@@ -22,15 +22,26 @@ EXTRAS_REQUIRES = {
 setup(
     name='ruts',
     version=VERSION,
-    descripion='Russian Texts Statistics',
+    description='Russian Texts Statistics',
     long_description=README,
-    long_description_content_type='text/markdown'    
+    long_description_content_type='text/markdown',
+    license='MIT License',
+    keywords=[
+        'NLP', 
+        'natural language processing',
+        'CL',
+        'computational linguistics',
+        'text analytics'
+    ],
+    maintainer='Шкарин Сергей',
+    maintainer_email='kouki.sergey@gmail.com',
     author='Шкарин Сергей, Смирнова Екатерина',
     author_email='kouki.sergey@gmail.com, ekanerina@yandex.ru',
     url='https://github.com/SergeyShk/ruTS',
     download_url='https://github.com/SergeyShk/ruTS/archive/0.1.0.tar.gz',
     packages=find_packages(),
     python_requires='>=3.6',
+    package_data={'ruts': ['VERSION']},
     install_requires=INSTALL_REQUIRES,
     extras_requires=EXTRAS_REQUIRES
 )
