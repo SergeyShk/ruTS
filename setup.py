@@ -5,6 +5,10 @@ version_file = os.path.join(os.path.dirname(__file__), 'ruts', 'VERSION')
 with open(version_file, 'r') as f:
     VERSION = f.read().strip()
 
+readme_file = os.path.join(os.path.dirname(__file__), 'README.md')
+with open(readme_file, 'r') as f:
+    README = f.read()
+
 INSTALL_REQUIRES = [
     'nltk',
     'pymorphy2',
@@ -19,8 +23,12 @@ setup(
     name='ruts',
     version=VERSION,
     descripion='Russian Texts Statistics',
+    long_description=README,
+    long_description_content_type='text/markdown'    
     author='Шкарин Сергей, Смирнова Екатерина',
     author_email='kouki.sergey@gmail.com, ekanerina@yandex.ru',
+    url='https://github.com/SergeyShk/ruTS',
+    download_url='https://github.com/SergeyShk/ruTS/archive/0.1.0.tar.gz',
     packages=find_packages(),
     python_requires='>=3.6',
     install_requires=INSTALL_REQUIRES,
