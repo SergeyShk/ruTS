@@ -9,6 +9,8 @@ class BasicStats():
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
+        sents_tokenizer (func|Pattern): Токенизатор для предложений (функция или регулярное выражение)
+        words_tokenizer (func|Pattern): Токенизатор для слов (функция или регулярное выражение)
 
     Атрибуты:
         c_chars (dict[int, int]): Распределение слов по количеству символов
@@ -31,15 +33,15 @@ class BasicStats():
         ValueError: Если анализируемый текст является пустой строкой
     """
 
-    def __init__(self, source):
-        if isinstance(source, Doc):           
+    def __init__(self, source, sents_tokenizer=None, words_tokenizer=None):
+        if isinstance(source, Doc):
             text = source.text
             sents = source.sents
             words = tuple(word.text for word in source)
         elif isinstance(source, str):
             text = source
-            sents = extract_sents(text)
-            words = tuple(extract_words(text, use_lexemes=False))
+            sents = extract_sents(text, tokenizer=sents_tokenizer)
+            words = tuple(extract_words(text, tokenizer=words_tokenizer, use_lexemes=False))
         else:
             raise TypeError("Некорректный источник данных")
         if not text:
@@ -96,7 +98,8 @@ class BasicStats():
 
 if __name__ == "__main__":
     from pprint import pprint
+    import re
     text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
-    bs = BasicStats(text)
+    bs = BasicStats(text, words_tokenizer=re.compile(r'[^\w]+'))
     pprint(bs.get_stats())
     bs.print_stats()
