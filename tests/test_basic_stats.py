@@ -20,7 +20,7 @@ def test_c_syllables(bs):
     assert bs.c_syllables == {0: 2, 1: 8, 2: 13, 3: 14, 4: 8, 5: 10, 6: 3, 7: 3}
 
 def test_n_chars(bs):
-    assert bs.n_chars == 547
+    assert bs.n_chars == 542
 
 def test_n_complex_words(bs):
     assert bs.n_complex_words == 24
@@ -54,3 +54,6 @@ def test_n_unique_words(bs):
 
 def test_n_words(bs):
     assert bs.n_words == 61
+
+def test_n_punctuations(bs):
+    assert bs.n_punctuations == 12

@@ -39,7 +39,7 @@ setup(
     author_email='kouki.sergey@gmail.com, ekanerina@yandex.ru',
     url='https://github.com/SergeyShk/ruTS',
     download_url='https://github.com/SergeyShk/ruTS/archive/0.1.0.tar.gz',
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests.*', 'tests')),
     python_requires='>=3.6',
     package_data={'ruts': ['VERSION']},
     install_requires=INSTALL_REQUIRES,
