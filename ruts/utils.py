@@ -1,7 +1,7 @@
 import pymorphy2
 import re
 from nltk.tokenize import sent_tokenize, word_tokenize
-from ruts.constants import PUNCTUATION, RU_VOWELS
+from ruts.constants import PUNCTUATIONS, RU_VOWELS
 from typing import Pattern
 
 def extract_sents(text, tokenizer=None):
@@ -30,7 +30,8 @@ def extract_words(
     tokenizer=None,
     filter_punct=True,
     filter_nums=False,
-    use_lexemes=False
+    use_lexemes=False,
+    stopwords=[]
 ):
     """
     Извлечение слов из текста
@@ -41,9 +42,14 @@ def extract_words(
         filter_punct (bool): Фильтрация знаков препинания
         filter_nums (bool): Фильтрация чисел
         use_lexemes (bool): Использовать леммы слов
+        stopwords (list[str]): Использовать список стоп-слов
 
     Вывод:
         words (gen[str]): Генератор извлеченных слов
+
+    Исключения:
+        TypeError: Если список стоп-слов не является итерируемым типом
+        TypeError: Если список стоп-слов содержит не строковые значения
     """
     if not tokenizer:
         words = (word for word in word_tokenize(text))
@@ -52,12 +58,20 @@ def extract_words(
     else:
         words = (word for word in tokenizer(text))
     if filter_punct:
-        words = (word for word in words if word not in PUNCTUATION)
+        words = (word for word in words if word not in PUNCTUATIONS)
     if filter_nums:
         words = (word for word in words if not word.isnumeric())
     if use_lexemes:
         morph = pymorphy2.MorphAnalyzer()
         words = (morph.parse(word)[0].normal_form for word in words)
+    if stopwords:
+        try:
+            iter(stopwords)
+        except:
+            raise TypeError("Список стоп-слов не является итерируемым типом")
+        if not all(isinstance(stopword, str) for stopword in stopwords):
+                raise TypeError("Список стоп-слов содержит не строковые значения")
+        words = (word for word in words if word not in stopwords)
     
     for word in words:
         yield word
@@ -84,7 +98,8 @@ if __name__ == "__main__":
     """
     import re
     from nltk.tokenize import wordpunct_tokenize
+    from nltk.corpus import stopwords
     pattern = re.compile(r'[^\w]+')
     print(list(extract_words(text, tokenizer=pattern)))
-    print(list(extract_words(text)))
+    print(list(extract_words(text, stopwords=tuple(stopwords.words('russian')))))
     print(list(extract_words(text, tokenizer=wordpunct_tokenize)))

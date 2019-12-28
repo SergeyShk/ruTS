@@ -1,5 +1,5 @@
 from collections import Counter
-from ruts.constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC
+from ruts.constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC, PUNCTUATIONS
 from ruts.utils import count_syllables, extract_sents, extract_words
 from spacy.tokens import Doc
 
@@ -27,6 +27,11 @@ class BasicStats():
         n_letters (int): Количество букв
         n_spaces (int): Количество пробелов
         n_syllables (int): Количество слогов
+        n_punctuations (int): Количество знаков препинания
+
+    Методы:
+        get_stats: Получение вычисленных статистик текста
+        print_stats: Отображение вычисленных статистик текста с описанием на экран
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
@@ -63,6 +68,7 @@ class BasicStats():
         self.n_letters = sum((1 for char in text if char in RU_LETTERS))
         self.n_spaces = sum((1 for char in text if char in SPACES))
         self.n_syllables = sum(syllables_per_word)
+        self.n_punctuations = sum((1 for char in text if char in PUNCTUATIONS))
         
     def get_stats(self):
         """
@@ -85,7 +91,8 @@ class BasicStats():
             'n_chars': self.n_chars,
             'n_letters': self.n_letters,
             'n_spaces': self.n_spaces,
-            'n_syllables': self.n_syllables
+            'n_syllables': self.n_syllables,
+            'n_punctuations': self.n_punctuations
         }
 
     def print_stats(self):

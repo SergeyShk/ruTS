@@ -8,7 +8,7 @@ RU_CONSONANTS_YET = ['й']
 RU_CONSONANTS = RU_CONSONANTS_HIGH + RU_CONSONANTS_LOW + RU_CONSONANTS_SONOR + RU_CONSONANTS_YET
 RU_MARKS = ['ь', 'ъ']
 RU_LETTERS = RU_CONSONANTS + RU_MARKS + RU_VOWELS
-PUNCTUATION = string.punctuation + '—«»“”'
+PUNCTUATIONS = string.punctuation + '—«»“”'
 SPACES = [' ', '\t']
 COMPLEX_SYL_FACTOR = 4
 BASIC_STATS_DESC = {
@@ -23,5 +23,6 @@ BASIC_STATS_DESC = {
     'n_chars': 'Символы',
     'n_letters': 'Буквы',
     'n_spaces': 'Пробелы',
-    'n_syllables': 'Слоги'    
+    'n_syllables': 'Слоги',
+    'n_punctuations': 'Знаки препинания'
 }
