@@ -1,12 +1,16 @@
 import string
 
-RU_VOWELS = ['а', 'е', 'и', 'у', 'о', 'я', 'ё', 'э', 'ю', 'я', 'ы']
+RU_VOWELS = ['а', 'е', 'и', 'у', 'о', 'я', 'ё', 'э', 'ю', 'ы']
+RU_VOWELS += list(map(str.upper, RU_VOWELS))
 RU_CONSONANTS_LOW = ['к', 'п', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ']
+RU_CONSONANTS_LOW += list(map(str.upper, RU_CONSONANTS_LOW))
 RU_CONSONANTS_HIGH = ['б', 'в', 'г', 'д', 'ж', 'з']
+RU_CONSONANTS_HIGH += list(map(str.upper, RU_CONSONANTS_HIGH))
 RU_CONSONANTS_SONOR = ['л', 'м', 'н', 'р']
-RU_CONSONANTS_YET = ['й']
+RU_CONSONANTS_SONOR += list(map(str.upper, RU_CONSONANTS_SONOR))
+RU_CONSONANTS_YET = ['й', 'Й']
 RU_CONSONANTS = RU_CONSONANTS_HIGH + RU_CONSONANTS_LOW + RU_CONSONANTS_SONOR + RU_CONSONANTS_YET
-RU_MARKS = ['ь', 'ъ']
+RU_MARKS = ['ь', 'ъ', 'Ь', 'Ъ']
 RU_LETTERS = RU_CONSONANTS + RU_MARKS + RU_VOWELS
 PUNCTUATIONS = string.punctuation + '—«»“”'
 SPACES = [' ', '\t']

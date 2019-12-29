@@ -51,7 +51,7 @@ bs.get_stats()
     'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
     'n_chars': 55,
     'n_complex_words': 2,
-    'n_letters': 44,
+    'n_letters': 45,
     'n_long_words': 3,
     'n_monosyllable_words': 5,
     'n_polysyllable_words': 4,
@@ -76,7 +76,7 @@ bs.print_stats()
     Односложные слова   |    5     
     Многосложные слова  |    4     
     Символы             |    55    
-    Буквы               |    44    
+    Буквы               |    45    
     Пробелы             |    8     
     Слоги               |    18
     Знаки препинания    |    2
