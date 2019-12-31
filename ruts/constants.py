@@ -30,3 +30,11 @@ BASIC_STATS_DESC = {
     'n_syllables': 'Слоги',
     'n_punctuations': 'Знаки препинания'
 }
+READABILITY_STATS_DESC = {
+    'flesch_kincaid_grade': 'Тест Флеша-Кинкайда',
+    'flesch_reading_easy': 'Индекс удобочитаемости Флеша',
+    'coleman_liau_index': 'Индекс Колман-Лиау',
+    'smog_index': 'Индекс SMOG',
+    'automated_readability_index': 'Автоматический индекс удобочитаемости',
+    'lix': 'Индекс удобочитаемости LIX'
+}
