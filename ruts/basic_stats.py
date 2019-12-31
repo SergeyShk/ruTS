@@ -1,19 +1,20 @@
 from collections import Counter
 from ruts.constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC, PUNCTUATIONS
-from ruts.utils import count_syllables, extract_sents, extract_words
+from ruts.extractors import SentsExtractor, WordsExtractor
+from ruts.utils import count_syllables
 from spacy.tokens import Doc
 
-class BasicStats():
+class BasicStats(object):
     """
-    Вычисление основных статистик текста
+    Класс для вычисления основных статистик текста
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        sents_tokenizer (func|Pattern): Токенизатор для предложений (функция или регулярное выражение)
-        words_tokenizer (func|Pattern): Токенизатор для слов (функция или регулярное выражение)
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
+        words_extractor (WordsExtractor): Инструмент для извлечения слов
 
     Атрибуты:
-        c_chars (dict[int, int]): Распределение слов по количеству символов
+        c_letters (dict[int, int]): Распределение слов по количеству букв
         c_syllables (dict[int, int]): Распределение слов по количеству слогов
         n_sents (int): Количество предложений
         n_words (int): Количество слов
@@ -35,31 +36,41 @@ class BasicStats():
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
+        TypeError: Если инструмент извлечения предложений не является объектом класса SentsExtractor
+        TypeError: Если инструмент извлечения слов не является объектом класса WordsExtractor
         ValueError: Если анализируемый текст является пустой строкой
     """
 
-    def __init__(self, source, sents_tokenizer=None, words_tokenizer=None):
+    def __init__(self, source, sents_extractor=None, words_extractor=None):
         if isinstance(source, Doc):
             text = source.text
             sents = source.sents
             words = tuple(word.text for word in source)
         elif isinstance(source, str):
             text = source
-            sents = extract_sents(text, tokenizer=sents_tokenizer)
-            words = tuple(extract_words(text, tokenizer=words_tokenizer, use_lexemes=False))
+            if not sents_extractor:
+                sents_extractor = SentsExtractor(text)
+            elif not isinstance(sents_extractor, SentsExtractor):
+                raise TypeError("Некорректный класс для инструмента извлечения предложений")
+            sents = sents_extractor.extract()
+            if not words_extractor:
+                words_extractor = WordsExtractor(text)
+            elif not isinstance(words_extractor, WordsExtractor):
+                raise TypeError("Некорректный класс для инструмента извлечения слов")                
+            words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")
         if not text:
             raise ValueError("Анализируемый текст пуст")
         
-        chars_per_word = tuple(len(word) for word in words)
+        letters_per_word = tuple(len(word) for word in words)
         syllables_per_word = tuple(count_syllables(word) for word in words)
-        self.c_chars = dict(sorted(Counter(chars_per_word).items()))
+        self.c_letters = dict(sorted(Counter(letters_per_word).items()))
         self.c_syllables = dict(sorted(Counter(syllables_per_word).items()))
         self.n_sents = sum(1 for sent in sents)
         self.n_words = len(words)
         self.n_unique_words = len({word.lower() for word in words})
-        self.n_long_words = sum(1 for cpw in chars_per_word if cpw >= 6)
+        self.n_long_words = sum(1 for cpw in letters_per_word if cpw >= 6)
         self.n_complex_words = sum(1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR)
         self.n_simple_words = sum(1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0)
         self.n_monosyllable_words = self.c_syllables.get(1, 0)
@@ -77,23 +88,7 @@ class BasicStats():
         Вывод:
             dict[str, int]: Справочник вычисленных статистик текста
         """
-        return {
-            'n_sents': self.n_sents,
-            'n_words': self.n_words,
-            'c_chars': self.c_chars,
-            'c_syllables': self.c_syllables,
-            'n_unique_words': self.n_unique_words,
-            'n_long_words': self.n_long_words,
-            'n_complex_words': self.n_complex_words,
-            'n_simple_words': self.n_simple_words,
-            'n_monosyllable_words': self.n_monosyllable_words,
-            'n_polysyllable_words': self.n_polysyllable_words,
-            'n_chars': self.n_chars,
-            'n_letters': self.n_letters,
-            'n_spaces': self.n_spaces,
-            'n_syllables': self.n_syllables,
-            'n_punctuations': self.n_punctuations
-        }
+        return vars(self)
 
     def print_stats(self):
         """Отображение вычисленных статистик текста с описанием на экран"""        
@@ -107,6 +102,9 @@ if __name__ == "__main__":
     from pprint import pprint
     import re
     text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
-    bs = BasicStats(text, words_tokenizer=re.compile(r'[^\w]+'))
+    se = SentsExtractor(text, tokenizer=re.compile(r': |, '))
+    we = WordsExtractor(text, stopwords=['и'], lowercase=True, min_len=4, use_lexemes=True)
+    bs = BasicStats(text, sents_extractor=se, words_extractor=we)
     pprint(bs.get_stats())
     bs.print_stats()
+    print(we.words)

@@ -1,5 +1,6 @@
 import pytest
 from ruts import BasicStats
+from ruts.constants import BASIC_STATS_DESC
 
 @pytest.fixture(scope='module')
 def bs():
@@ -12,8 +13,8 @@ def bs():
     bs_ = BasicStats(text)
     return bs_
 
-def test_c_chars(bs):
-    assert bs.c_chars == {1: 4, 2: 3, 3: 4, 4: 1, 5: 8, 6: 6, 7: 5, 8: 6, 9: 5, 
+def test_c_letters(bs):
+    assert bs.c_letters == {1: 4, 2: 3, 3: 4, 4: 1, 5: 8, 6: 6, 7: 5, 8: 6, 9: 5, 
                             10: 5, 11: 6, 12: 4, 13: 2, 15: 1, 18: 1}
 
 def test_c_syllables(bs):
@@ -57,3 +58,9 @@ def test_n_words(bs):
 
 def test_n_punctuations(bs):
     assert bs.n_punctuations == 12
+
+def test_basic_counts(bs):
+    stats = bs.get_stats()
+    assert isinstance(stats, dict)
+    for key in BASIC_STATS_DESC.keys():
+        assert stats[key] == getattr(bs, key)
