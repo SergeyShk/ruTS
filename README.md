@@ -44,8 +44,6 @@ print(tuple(se.extract()))
 
     ('Не имей 100 рублей', 'а имей 100 друзей')
 
-bs.print_stats()
-
 we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
 print(we.extract())
 
