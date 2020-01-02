@@ -31,7 +31,8 @@ setup(
         'natural language processing',
         'CL',
         'computational linguistics',
-        'text analytics'
+        'text analytics',
+        'russian'
     ],
     maintainer='Шкарин Сергей',
     maintainer_email='kouki.sergey@gmail.com',
@@ -41,6 +42,21 @@ setup(
     download_url='https://github.com/SergeyShk/ruTS/archive/0.1.0.tar.gz',
     packages=find_packages(exclude=('tests.*', 'tests')),
     python_requires='>=3.6',
+    classifiers=(
+        'Development Status :: 3 - Alpha',
+        'Operating System :: OS Independent',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Education',
+        'Intended Audience :: Information Technology',        
+        'Intended Audience :: Science/Research',
+        'Topic :: Text Processing',
+        'Topic :: Text Processing :: Linguistic',
+        'Natural Language :: Russian',
+    ),    
     package_data={'ruts': ['VERSION']},
     install_requires=INSTALL_REQUIRES,
     extras_requires=EXTRAS_REQUIRES
