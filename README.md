@@ -1,5 +1,11 @@
 # Russian Texts Statistics (ruTS)
 
+[![Version](https://img.shields.io/pypi/v/ruTS.svg?logo=pypi&logoColor=FFE873)](https://pypi.python.org/pypi/ruTS) 
+[![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg?logo=python&logoColor=FFE873)](https://www.python.org/downloads/release/python-360/)
+![Downloads](https://img.shields.io/pypi/dm/ruTS)
+[![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
+![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
+
 Библиотека для извлечения статистик из текстов на русском языке.
 
 ## Установка
@@ -48,6 +54,10 @@ we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian')
 print(we.extract())
 
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
+   
+print(we.get_most_common(3))
+
+    [('иметь', 2), ('рубль', 1), ('друг', 1)]
 ```
 
 ### Базовые статистики
