@@ -22,4 +22,5 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 
 from ruts.extractors import SentsExtractor, WordsExtractor
 from ruts.basic_stats import BasicStats
+from ruts.morph_stats import MorphStats
 from ruts.readability_stats import ReadabilityStats

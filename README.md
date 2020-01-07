@@ -163,12 +163,112 @@ rs.print_stats()
     Индекс удобочитаемости LIX              |  48.33  
 ```
 
+### Морфологические статистики
+
+Библиотека позволяет извлекать из текста следующие морфологические признаки:
+
+* часть речи
+* одушевленность
+* вид
+* падеж
+* род
+* совместность
+* наклонение
+* число
+* лицо
+* время
+* переходность
+* залог
+
+Для морфологического разбора текста используется библиотека [pymorphy2](https://github.com/kmike/pymorphy2). Описание статистик взяты из корпуса [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
+
+Пример:
+
+```python
+from ruts import MorphStats
+text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
+ms = MorphStats(text)
+ms.pos
+
+    ('VERB', 'INFN', 'CONJ', 'CONJ', 'VERB', 'ADVB', 'VERB', 'INFN', 'CONJ', 'CONJ', 'VERB')
+
+ms.get_stats()
+
+    {'animacy': {None: 11},
+    'aspect': {None: 5, 'impf': 1, 'perf': 5},
+    'case': {None: 11},
+    'gender': {None: 11},
+    'involvement': {None: 10, 'excl': 1},
+    'mood': {None: 7, 'impr': 1, 'indc': 3},
+    'number': {None: 7, 'plur': 3, 'sing': 1},
+    'person': {None: 9, '2per': 1, '3per': 1},
+    'pos': {'ADVB': 1, 'CONJ': 4, 'INFN': 2, 'VERB': 4},
+    'tense': {None: 8, 'futr': 1, 'past': 1, 'pres': 1},
+    'transitivity': {None: 5, 'intr': 2, 'tran': 4},
+    'voice': {None: 11}}
+
+ms.explain_text(filter_none=True)
+
+    (('Постарайтесь',
+        {'aspect': 'perf',
+        'involvement': 'excl',
+        'mood': 'impr',
+        'number': 'plur',
+        'pos': 'VERB',
+        'transitivity': 'intr'}),
+    ('получить', {'aspect': 'perf', 'pos': 'INFN', 'transitivity': 'tran'}),
+    ('то', {'pos': 'CONJ'}),
+    ('что', {'pos': 'CONJ'}),
+    ('любите',
+        {'aspect': 'impf',
+        'mood': 'indc',
+        'number': 'plur',
+        'person': '2per',
+        'pos': 'VERB',
+        'tense': 'pres',
+        'transitivity': 'tran'}),
+    ('иначе', {'pos': 'ADVB'}),
+    ('придется',
+        {'aspect': 'perf',
+        'mood': 'indc',
+        'number': 'sing',
+        'person': '3per',
+        'pos': 'VERB',
+        'tense': 'futr',
+        'transitivity': 'intr'}),
+    ('полюбить', {'aspect': 'perf', 'pos': 'INFN', 'transitivity': 'tran'}),
+    ('то', {'pos': 'CONJ'}),
+    ('что', {'pos': 'CONJ'}),
+    ('получили',
+        {'aspect': 'perf',
+        'mood': 'indc',
+        'number': 'plur',
+        'pos': 'VERB',
+        'tense': 'past',
+        'transitivity': 'tran'}))
+
+ms.print_stats('pos', 'tense')
+
+    ---------------Часть речи---------------
+    Глагол (личная форма)         |    4     
+    Союз                          |    4     
+    Глагол (инфинитив)            |    2     
+    Наречие                       |    1     
+
+    -----------------Время------------------
+    Неизвестно                    |    8     
+    Настоящее                     |    1     
+    Будущее                       |    1     
+    Прошедшее                     |    1 
+```
+
 ## Структура проекта
 
 * ruts:
     * basic_stats.py - базовые текстовые статистики
     * constants.py - основные используемые константы
     * extractors.py - инструменты для извлечения объектов из текста
+    * morph_stats.py - морфологические статистики
     * readability_stats.py - метрики удобочитаемости текста
     * utils.py - вспомогательные инструменты
 * tests:
