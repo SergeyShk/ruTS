@@ -1,5 +1,4 @@
 from ruts.constants import RU_VOWELS
-from typing import Pattern
 
 def count_syllables(word):
     """

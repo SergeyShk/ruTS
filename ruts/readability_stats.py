@@ -68,11 +68,11 @@ class ReadabilityStats(object):
         }
 
     def print_stats(self):
-        """Отображение вычисленных метрик удобочитаемости текста с описанием на экран"""        
+        """Отображение вычисленных метрик удобочитаемости текста с описанием на экран"""
         print(f"{'Метрика':^40}|{'Значение':^10}")
         print("-" * 50)
         for stat, value in READABILITY_STATS_DESC.items():
-            print(f"{value:40}|{self.get_stats().get(stat):^10.2f}")        
+            print(f"{value:40}|{self.get_stats().get(stat):^10.2f}")
 
 
 def calc_flesch_kincaid_grade(n_syllables, n_words, n_sents, A=0.49, B=7.3, C=16.59):
@@ -102,7 +102,7 @@ def calc_flesch_kincaid_grade(n_syllables, n_words, n_sents, A=0.49, B=7.3, C=16
 def calc_flesch_reading_easy(n_syllables, n_words, n_sents, A=1.3, B=60.1, C=206.835):
     """
     Вычисление индекса удобочитаемости Флеша
-    
+
     Описание:
         Чем выше показатель, тем легче текст для чтения
         Значения индекса лежат в пределах от 0 до 100 и могут интерпретироваться следующим образом:
@@ -242,7 +242,7 @@ def calc_lix(n_long_words, n_words, n_sents):
         n_sents (int): Количество предложений
 
     Вывод:
-        float: Значение индекса        
+        float: Значение индекса
     """
     return (n_words / n_sents) + (100 * n_long_words / n_words)
 

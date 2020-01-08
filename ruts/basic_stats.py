@@ -91,7 +91,7 @@ class BasicStats(object):
         return vars(self)
 
     def print_stats(self):
-        """Отображение вычисленных статистик текста с описанием на экран"""        
+        """Отображение вычисленных статистик текста с описанием на экран"""
         print(f"{'Статистика':^20}|{'Значение':^10}")
         print("-" * 30)
         for stat, value in BASIC_STATS_DESC.items():

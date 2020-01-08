@@ -101,24 +101,24 @@ class WordsExtractor(Extractor):
 
     Исключения:
         TypeError: Если список стоп-слов не является итерируемым типом
-        TypeError: Если список стоп-слов содержит не строковые значения    
+        TypeError: Если список стоп-слов содержит не строковые значения
         TypeError: Если значение границ N-грамм не является кортежем
         TypeError: Если список стоп-слов не является итерируемым типом
-        ValueError: Если нижняя граница N-грамм большей верхней    
+        ValueError: Если нижняя граница N-грамм большей верхней
         ValueError: Если минимальная длина слова больше максимальной
     """
 
     def __init__(
-        self, 
+        self,
         text, 
         tokenizer=None,
         filter_punct=True,
         filter_nums=False,
         use_lexemes=False,
-        stopwords=[],
+        stopwords=None,
         lowercase=False,
         ngram_range=(1, 1),
-        min_len=0, 
+        min_len=0,
         max_len=0
     ):
         super().__init__(text, tokenizer)
@@ -164,7 +164,7 @@ class WordsExtractor(Extractor):
             try:
                 self.words = (word for word in self.tokenizer(self.text))
             except:
-                raise TypeError("Токенизатор задан некорректно")            
+                raise TypeError("Токенизатор задан некорректно")
         if self.filter_punct:
             self.words = (word for word in self.words if word not in PUNCTUATIONS)
         if self.filter_nums:

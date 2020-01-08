@@ -27,7 +27,7 @@ setup(
     long_description_content_type='text/markdown',
     license='MIT License',
     keywords=[
-        'NLP', 
+        'NLP',
         'natural language processing',
         'CL',
         'computational linguistics',
@@ -51,7 +51,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
-        'Intended Audience :: Information Technology',        
+        'Intended Audience :: Information Technology',
         'Intended Audience :: Science/Research',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Linguistic',

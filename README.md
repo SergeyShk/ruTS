@@ -5,6 +5,7 @@
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
 [![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
+![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
 
 Библиотека для извлечения статистик из текстов на русском языке.
 
@@ -23,7 +24,7 @@ $ pip install ruts
 * pymorphy2
 * spacy
 
-Библиотека по умолчанию использует токенизатор от nltk, которые необходимо предварительно скачать:
+Библиотека по умолчанию использует токенизатор от nltk, который необходимо предварительно скачать:
 
 ```python
 import nltk
@@ -46,16 +47,16 @@ from nltk.corpus import stopwords
 from ruts import SentsExtractor, WordsExtractor
 text = "Не имей 100 рублей, а имей 100 друзей"
 se = SentsExtractor(text, tokenizer=re.compile(r', '))
-print(tuple(se.extract()))
+tuple(se.extract())
 
     ('Не имей 100 рублей', 'а имей 100 друзей')
 
 we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
-print(we.extract())
+we.extract()
 
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
    
-print(we.get_most_common(3))
+we.get_most_common(3)
 
     [('иметь', 2), ('рубль', 1), ('друг', 1)]
 ```

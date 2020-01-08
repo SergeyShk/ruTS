@@ -14,7 +14,7 @@ def bs():
     return bs_
 
 def test_c_letters(bs):
-    assert bs.c_letters == {1: 4, 2: 3, 3: 4, 4: 1, 5: 8, 6: 6, 7: 5, 8: 6, 9: 5, 
+    assert bs.c_letters == {1: 4, 2: 3, 3: 4, 4: 1, 5: 8, 6: 6, 7: 5, 8: 6, 9: 5,
                             10: 5, 11: 6, 12: 4, 13: 2, 15: 1, 18: 1}
 
 def test_c_syllables(bs):
