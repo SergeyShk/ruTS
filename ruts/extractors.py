@@ -126,11 +126,12 @@ class WordsExtractor(Extractor):
         self.filter_nums = filter_nums
         self.use_lexemes = use_lexemes
         self.stopwords = stopwords
-        if isinstance(self.stopwords, Iterable):
-            if not all(isinstance(stopword, str) for stopword in self.stopwords):
-                raise TypeError("Список стоп-слов содержит не строковые значения")
-        else:
-            raise TypeError("Список стоп-слов не является итерируемым типом")
+        if self.stopwords:
+            if isinstance(self.stopwords, Iterable):
+                if not all(isinstance(stopword, str) for stopword in self.stopwords):
+                    raise TypeError("Список стоп-слов содержит не строковые значения")
+            else:
+                raise TypeError("Список стоп-слов не является итерируемым типом")
         self.lowercase = lowercase
         self.ngram_range = ngram_range
         if isinstance(self.ngram_range, Tuple):
