@@ -110,7 +110,7 @@ class WordsExtractor(Extractor):
 
     def __init__(
         self,
-        text, 
+        text,
         tokenizer=None,
         filter_punct=True,
         filter_nums=False,
@@ -156,7 +156,7 @@ class WordsExtractor(Extractor):
 
         Исключения:
             TypeError: Если некорректно задан токенизатор
-        """        
+        """
         if not self.tokenizer:
             self.words = (word for word in word_tokenize(self.text))
         elif isinstance(self.tokenizer, Pattern):
@@ -210,7 +210,7 @@ class WordsExtractor(Extractor):
     def __make_ngrams(self):
         """
         Формирование N-грамм
-            
+
         Вывод:
             ngrams (tuple[str]): Кортеж извлеченных N-грамм
         """
