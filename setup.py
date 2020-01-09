@@ -56,7 +56,7 @@ setup(
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Linguistic',
         'Natural Language :: Russian',
-    ),    
+    ),
     package_data={'ruts': ['VERSION']},
     install_requires=INSTALL_REQUIRES,
     extras_requires=EXTRAS_REQUIRES
