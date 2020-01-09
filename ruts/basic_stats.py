@@ -56,7 +56,7 @@ class BasicStats(object):
             if not words_extractor:
                 words_extractor = WordsExtractor(text)
             elif not isinstance(words_extractor, WordsExtractor):
-                raise TypeError("Некорректный класс для инструмента извлечения слов")                
+                raise TypeError("Некорректный класс для инструмента извлечения слов")
             words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")
@@ -80,7 +80,7 @@ class BasicStats(object):
         self.n_spaces = sum((1 for char in text if char in SPACES))
         self.n_syllables = sum(syllables_per_word)
         self.n_punctuations = sum((1 for char in text if char in PUNCTUATIONS))
-        
+
     def get_stats(self):
         """
         Получение вычисленных статистик текста
