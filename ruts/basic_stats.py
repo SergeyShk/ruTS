@@ -62,7 +62,7 @@ class BasicStats(object):
             raise TypeError("Некорректный источник данных")
         if not text:
             raise ValueError("Анализируемый текст пуст")
-        
+
         letters_per_word = tuple(len(word) for word in words)
         syllables_per_word = tuple(count_syllables(word) for word in words)
         self.c_letters = dict(sorted(Counter(letters_per_word).items()))
