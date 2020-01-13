@@ -19,7 +19,7 @@ def test_c_syllables(bs):
     assert bs.c_syllables == {0: 2, 1: 8, 2: 13, 3: 14, 4: 7, 5: 11, 6: 3, 7: 3}
 
 def test_n_chars(bs):
-    assert bs.n_chars == 542
+    assert bs.n_chars == 546
 
 def test_n_complex_words(bs):
     assert bs.n_complex_words == 24
@@ -43,7 +43,7 @@ def test_n_simple_words(bs):
     assert bs.n_simple_words == 35
 
 def test_n_spaces(bs):
-    assert bs.n_spaces == 78
+    assert bs.n_spaces == 82
 
 def test_n_syllables(bs):
     assert bs.n_syllables == 198
