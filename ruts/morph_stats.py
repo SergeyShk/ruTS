@@ -140,9 +140,9 @@ class MorphStats(object):
                     continue
                 print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}")
             print()
-
-    # pylint: disable=R0201
-    def __check_stat(self, *args):
+    
+    @staticmethod
+    def __check_stat(*args):
         """
         Проверка выбранных морфологических статистик
 
