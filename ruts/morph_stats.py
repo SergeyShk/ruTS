@@ -1,6 +1,5 @@
 import pymorphy2
 from collections import Counter, OrderedDict
-from itertools import compress
 from ruts.constants import MORPHOLOGY_STATS_DESC
 from ruts.extractors import WordsExtractor
 
@@ -52,7 +51,7 @@ class MorphStats(object):
             if not words_extractor:
                 words_extractor = WordsExtractor(text)
             elif not isinstance(words_extractor, WordsExtractor):
-                raise TypeError("Некорректный класс для инструмента извлечения слов")                
+                raise TypeError("Некорректный класс для инструмента извлечения слов")
         else:
             raise TypeError("Текст не является строкой")
         if not text:
@@ -126,7 +125,7 @@ class MorphStats(object):
         Аргументы:
             args (tuple[str]): Кортеж выбранных статистик
             filter_none (bool): Фильтровать пустые значения
-        """        
+        """
         if not args:
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
         else:

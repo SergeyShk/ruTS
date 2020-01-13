@@ -9,7 +9,7 @@ def count_syllables(word):
 
     Вывод:
         int: Количество слогов
-    """    
+    """
     return sum((1 for char in word if char in RU_VOWELS))
 
 

@@ -95,7 +95,7 @@ def calc_flesch_kincaid_grade(n_syllables, n_words, n_sents, A=0.49, B=7.3, C=16
         C (float): Коэффициент C
 
     Вывод:
-        float: Значение теста        
+        float: Значение теста
     """
     return (A * n_words / n_sents) + (B * n_syllables / n_words) - C
 
@@ -178,7 +178,7 @@ def calc_smog_index(n_complex, n_sents, A=1.1, B=64.6, C=0.05):
 
     Вывод:
         float: Значение индекса        
-    """    
+    """
     return (A * sqrt(B * n_complex / n_sents)) + C
 
 def calc_automated_readability_index(n_letters, n_words, n_sents, A=6.26, B=0.2805, C=31.04):
@@ -215,7 +215,7 @@ def calc_automated_readability_index(n_letters, n_words, n_sents, A=6.26, B=0.28
         C (float): Коэффициент C
 
     Вывод:
-        float: Значение индекса        
+        float: Значение индекса
     """
     return (A * n_letters / n_words) + (B * n_words / n_sents) - C
 
