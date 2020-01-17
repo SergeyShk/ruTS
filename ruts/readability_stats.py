@@ -177,7 +177,7 @@ def calc_smog_index(n_complex, n_sents, A=1.1, B=64.6, C=0.05):
         C (float): Коэффициент C
 
     Вывод:
-        float: Значение индекса        
+        float: Значение индекса
     """
     return (A * sqrt(B * n_complex / n_sents)) + C
 

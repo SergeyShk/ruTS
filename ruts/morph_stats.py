@@ -106,7 +106,7 @@ class MorphStats(object):
 
         Вывод:
             dict[str, dict[str, str]]: Справочник слов текста с морфологическими статистиками
-        """        
+        """
         if not args:
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
         else:
@@ -140,7 +140,7 @@ class MorphStats(object):
                     continue
                 print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}")
             print()
-    
+
     @staticmethod
     def __check_stat(*args):
         """
@@ -169,4 +169,4 @@ if __name__ == "__main__":
     print(ms.pos)
     pprint(ms.get_stats())
     ms.print_stats('pos', 'tense')
-    ms.explain_text(filter_none=True)    
+    ms.explain_text(filter_none=True)
