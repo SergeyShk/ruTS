@@ -72,7 +72,7 @@ class MorphStats(object):
         self.tense = tuple(tag.tense for tag in self.tags)
         self.transitivity = tuple(tag.transitivity for tag in self.tags)
         self.voice = tuple(tag.voice for tag in self.tags)
-        
+
     def get_stats(self, *args, filter_none=False):
         """
         Получение вычисленных морфологических статистик текста

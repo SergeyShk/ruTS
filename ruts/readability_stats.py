@@ -152,7 +152,7 @@ def calc_coleman_liau_index(n_letters, n_words, n_sents, A=6.26, B=0.2805, C=31.
         C (float): Коэффициент C
 
     Вывод:
-        float: Значение индекса        
+        float: Значение индекса
     """
     return (A * n_letters / n_words) + (B * n_words / n_sents) - C
 
