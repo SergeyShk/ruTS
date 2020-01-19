@@ -56,7 +56,7 @@ class MorphStats(object):
             raise TypeError("Текст не является строкой")
         if not text:
             raise ValueError("Анализируемый текст пуст")
-        
+
         morph = pymorphy2.MorphAnalyzer()
         self.words = words_extractor.extract()
         self.tags = tuple(morph.parse(word)[0].tag for word in self.words)
