@@ -1,8 +1,9 @@
 # Russian Texts Statistics (ruTS)
 
-[![Version](https://img.shields.io/pypi/v/ruTS.svg?logo=pypi&logoColor=FFE873)](https://pypi.python.org/pypi/ruTS) 
-[![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg?logo=python&logoColor=FFE873)](https://www.python.org/downloads/release/python-360/)
+![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/pypistats.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/pypistats/)
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
+![Status](https://img.shields.io/pypi/status/ruts)
 [![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
 ![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
