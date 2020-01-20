@@ -275,6 +275,7 @@ ms.print_stats('pos', 'tense')
 * tests:
     * test_basic_stats.py - тесты базовых текстовых статистик
     * test_extractors.py - тесты инструментов для извлечения объектов из текста
+    * test_morph_stats - тесты морфологических статистик
     * test_readability_stats.py - тесты метрик удобочитаемости текста
 
 ## Авторы
