@@ -116,7 +116,7 @@ class MorphStats(object):
             explains = tuple(dict((k, v) for (k, v) in dict(zip(args, value)).items() if v) for value in values)
         else:
             explains = tuple(dict(zip(args, value)) for value in values)
-        pprint(tuple(zip(self.words, explains)))
+        print(tuple(zip(self.words, explains)))
 
     def print_stats(self, *args, filter_none=False):
         """
