@@ -1,10 +1,10 @@
 import pymorphy2
 import re
+from .constants import PUNCTUATIONS
 from abc import ABCMeta, abstractmethod
 from collections import Counter
 from collections.abc import Iterable
 from nltk.tokenize import sent_tokenize, word_tokenize
-from ruts.constants import PUNCTUATIONS
 from typing import Pattern, Tuple
 
 class Extractor(object, metaclass=ABCMeta):

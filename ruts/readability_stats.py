@@ -1,6 +1,6 @@
 from math import sqrt
-from ruts import BasicStats
-from ruts.constants import READABILITY_STATS_DESC
+from .basic_stats import BasicStats
+from .constants import READABILITY_STATS_DESC
 
 class ReadabilityStats(object):
     """

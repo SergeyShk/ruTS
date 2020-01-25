@@ -1,7 +1,7 @@
 import pymorphy2
+from .constants import MORPHOLOGY_STATS_DESC
+from .extractors import WordsExtractor
 from collections import Counter, OrderedDict
-from ruts.constants import MORPHOLOGY_STATS_DESC
-from ruts.extractors import WordsExtractor
 
 class MorphStats(object):
     """

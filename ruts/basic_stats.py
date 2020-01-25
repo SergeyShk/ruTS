@@ -1,7 +1,7 @@
+from .constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC, PUNCTUATIONS
+from .extractors import SentsExtractor, WordsExtractor
+from .utils import count_syllables
 from collections import Counter
-from ruts.constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC, PUNCTUATIONS
-from ruts.extractors import SentsExtractor, WordsExtractor
-from ruts.utils import count_syllables
 from spacy.tokens import Doc
 
 class BasicStats(object):
