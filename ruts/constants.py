@@ -1,5 +1,7 @@
 import string
+from pathlib import Path
 
+DEFAULT_DATA_DIR = Path(__file__).parent.parent.resolve() / "ruts_data"
 RU_VOWELS = ['а', 'е', 'и', 'у', 'о', 'я', 'ё', 'э', 'ю', 'ы']
 RU_VOWELS += list(map(str.upper, RU_VOWELS))
 RU_CONSONANTS_LOW = ['к', 'п', 'с', 'т', 'ф', 'х', 'ц', 'ч', 'ш', 'щ']

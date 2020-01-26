@@ -2,3 +2,4 @@ __pycache__/
 .vscode
 *.egg-info/
 dist/
+ruts_data
