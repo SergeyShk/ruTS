@@ -5,7 +5,7 @@ from abc import ABCMeta, abstractmethod
 from collections import Counter
 from collections.abc import Iterable
 from nltk.tokenize import sent_tokenize, word_tokenize
-from typing import Pattern, Tuple
+from typing import Callable, List, Pattern, Tuple, Union
 
 class Extractor(object, metaclass=ABCMeta):
     """
@@ -13,19 +13,19 @@ class Extractor(object, metaclass=ABCMeta):
 
     Аргументы:
         text (str): Строка текста
-        tokenizer (func|Pattern): Токенизатор или регулярное выражение
+        tokenizer (pattern|callable): Токенизатор или регулярное выражение
 
     Методы:
         extract: Извлечение объектов из текста
     """
 
     @abstractmethod
-    def __init__(self, text, tokenizer=None):
+    def __init__(self, text: str, tokenizer: Union[Pattern, Callable] = None):
         self.text = text
         self.tokenizer = tokenizer
 
     @abstractmethod
-    def extract(self):
+    def extract(self) -> Tuple[str, ...]:
         pass
 
 class SentsExtractor(Extractor):
@@ -34,7 +34,7 @@ class SentsExtractor(Extractor):
 
     Аргументы:
         text (str): Строка текста
-        tokenizer (func|Pattern): Токенизатор или регулярное выражение
+        tokenizer (pattern|callable): Токенизатор или регулярное выражение
         min_len (int): Минимальная длина извлекаемого предложения
         max_len (int): Максимальная длина извлекаемого предложения
 
@@ -45,19 +45,25 @@ class SentsExtractor(Extractor):
         ValueError: Если минимальная длина предложения больше максимальной
     """
 
-    def __init__(self, text, tokenizer=None, min_len=0, max_len=0):
+    def __init__(
+        self, 
+        text: str,
+        tokenizer: Union[Pattern, Callable] = None,
+        min_len: int = 0,
+        max_len: int = 0
+    ):
         super().__init__(text, tokenizer)
         self.min_len = min_len
         self.max_len = max_len
         if self.min_len > self.max_len:
             raise ValueError("Минимальная длина предложения больше максимальной")
 
-    def extract(self):
+    def extract(self) -> Tuple[str, ...]:
         """
         Извлечение предложений из текста
 
         Вывод:
-            sents (gen[str]): Генератор извлеченных предложений
+            sents (tuple[str]): Кортеж извлеченных предложений
 
         Исключения:
             TypeError: Если некорректно задан токенизатор
@@ -75,9 +81,7 @@ class SentsExtractor(Extractor):
             self.sents = (sent for sent in self.sents if len(sent) >= self.min_len)
         if self.max_len > 0:
             self.sents = (sent for sent in self.sents if len(sent) <= self.max_len)
-
-        for sent in self.sents:
-            yield sent
+        return tuple(self.sents)
 
 class WordsExtractor(Extractor):
     """
@@ -85,7 +89,7 @@ class WordsExtractor(Extractor):
 
     Аргументы:
         text (str): Строка текста
-        tokenizer (func|Pattern): Токенизатор или регулярное выражение
+        tokenizer (pattern|callable): Токенизатор или регулярное выражение
         filter_punct (bool): Фильтровать знаки препинания
         filter_nums (bool): Фильтровать числа
         use_lexemes (bool): Использовать леммы слов
@@ -100,54 +104,39 @@ class WordsExtractor(Extractor):
         get_most_common: Получение счетчика топ-слов
 
     Исключения:
-        TypeError: Если список стоп-слов не является итерируемым типом
-        TypeError: Если список стоп-слов содержит не строковые значения
-        TypeError: Если значение границ N-грамм не является кортежем
-        TypeError: Если список стоп-слов не является итерируемым типом
         ValueError: Если нижняя граница N-грамм большей верхней
         ValueError: Если минимальная длина слова больше максимальной
     """
 
     def __init__(
         self,
-        text,
-        tokenizer=None,
-        filter_punct=True,
-        filter_nums=False,
-        use_lexemes=False,
-        stopwords=None,
-        lowercase=False,
-        ngram_range=(1, 1),
-        min_len=0,
-        max_len=0
+        text: str,
+        tokenizer: Union[Pattern, Callable] = None,
+        filter_punct: bool = True,
+        filter_nums: bool = False,
+        use_lexemes: bool = False,
+        stopwords: List[str] = None,
+        lowercase: bool = False,
+        ngram_range: Tuple[int, int] = (1, 1),
+        min_len: int = 0,
+        max_len: int = 0
     ):
         super().__init__(text, tokenizer)
         self.filter_punct = filter_punct
         self.filter_nums = filter_nums
         self.use_lexemes = use_lexemes
         self.stopwords = stopwords
-        if self.stopwords:
-            if isinstance(self.stopwords, Iterable):
-                if not all(isinstance(stopword, str) for stopword in self.stopwords):
-                    raise TypeError("Список стоп-слов содержит не строковые значения")
-            else:
-                raise TypeError("Список стоп-слов не является итерируемым типом")
         self.lowercase = lowercase
         self.ngram_range = ngram_range
-        if isinstance(self.ngram_range, Tuple):
-            if len(self.ngram_range) != 2 or not all(isinstance(n, int) for n in self.ngram_range):
-                raise TypeError("Кортеж границ N-грамм задан некорректно")
-            if self.ngram_range[0] > self.ngram_range[1]:
-                raise ValueError("Нижняя граница N-грамм большей верхней")
-        else:
-            raise TypeError("Значение границ N-грамм не является кортежем")
+        if self.ngram_range[0] > self.ngram_range[1]:
+            raise ValueError("Нижняя граница N-грамм большей верхней")
         self.min_len = min_len
         self.max_len = max_len
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина слова больше максимальной")
         self.words = ()
 
-    def extract(self):
+    def extract(self) -> Tuple[str, ...]:
         """
         Извлечение слов из текста
 
@@ -186,7 +175,7 @@ class WordsExtractor(Extractor):
             self.words = self.__make_ngrams()
         return tuple(self.words)
 
-    def get_most_common(self, n=10):
+    def get_most_common(self, n: int = 10) -> Counter:
         """
         Получение счетчика топ-слов
 
@@ -197,17 +186,13 @@ class WordsExtractor(Extractor):
             Counter: Счетчик топ-слов
 
         Исключения:
-            TypeError: Если значение количества слов не является числом
             ValueError: Если указанное количество слов меньше 0
         """
-        if isinstance(n, int):
-            if n < 1:
-                raise ValueError("Количество слов должно быть большь 0")
-        else:
-            raise TypeError("Количество слов должно быть числом")
+        if n < 1:
+            raise ValueError("Количество слов должно быть больше 0")
         return Counter(self.words).most_common(n)
 
-    def __make_ngrams(self):
+    def __make_ngrams(self) -> Tuple[str, ...]:
         """
         Формирование N-грамм
 
@@ -227,4 +212,4 @@ if __name__ == "__main__":
     use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
     print(we.extract())
     se = SentsExtractor(text, tokenizer=re.compile(r', '))
-    print(tuple(se.extract()))
+    print(se.extract())

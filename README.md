@@ -48,7 +48,7 @@ from nltk.corpus import stopwords
 from ruts import SentsExtractor, WordsExtractor
 text = "Не имей 100 рублей, а имей 100 друзей"
 se = SentsExtractor(text, tokenizer=re.compile(r', '))
-tuple(se.extract())
+se.extract()
 
     ('Не имей 100 рублей', 'а имей 100 друзей')
 
