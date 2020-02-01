@@ -3,7 +3,6 @@ import re
 from .constants import PUNCTUATIONS
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from collections.abc import Iterable
 from nltk.tokenize import sent_tokenize, word_tokenize
 from typing import Callable, List, Pattern, Tuple, Union
 
@@ -46,7 +45,7 @@ class SentsExtractor(Extractor):
     """
 
     def __init__(
-        self, 
+        self,
         text: str,
         tokenizer: Union[Pattern, Callable] = None,
         min_len: int = 0,

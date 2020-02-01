@@ -65,7 +65,8 @@ def download_file(url, filename=None, dirpath=DEFAULT_DATA_DIR, force=False):
     else:
         try:
             print(f"Загрузка файла {url}...")
-            with urllib.request.urlopen(url) as response, open(filepath, 'wb') as out_file:
+            req = urllib.request.Request(url)
+            with urllib.request.urlopen(req) as response, open(filepath, 'wb') as out_file:
                 shutil.copyfileobj(response, out_file)
         except:
             raise RuntimeError("Не удалось загрузить файл")
