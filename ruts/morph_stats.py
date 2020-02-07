@@ -47,7 +47,11 @@ class MorphStats(object):
         ValueError: Если анализируемый текст является пустой строкой
     """
 
-    def __init__(self, text: str, words_extractor: WordsExtractor = None):
+    def __init__(
+            self,
+            text: str,
+            words_extractor: WordsExtractor = None
+        ):
         if isinstance(text, str):
             if not words_extractor:
                 words_extractor = WordsExtractor(text)
@@ -74,7 +78,11 @@ class MorphStats(object):
         self.transitivity = tuple(tag.transitivity for tag in self.tags)
         self.voice = tuple(tag.voice for tag in self.tags)
 
-    def get_stats(self, *args: Tuple[str, ...], filter_none: bool = False) -> Dict[str, Dict[str, int]]:
+    def get_stats(
+            self,
+            *args: Tuple[str, ...],
+            filter_none: bool = False
+        ) -> Dict[str, Dict[str, int]]:
         """
         Получение вычисленных морфологических статистик текста
 
@@ -97,7 +105,11 @@ class MorphStats(object):
                 stats[arg] = dict(Counter(vars(self).get(arg)))
         return stats
 
-    def explain_text(self, *args: Tuple[str, ...], filter_none: bool = False) -> Dict[str, Dict[str, str]]:
+    def explain_text(
+            self,
+            *args: Tuple[str, ...],
+            filter_none: bool = False
+        ) -> Dict[str, Dict[str, str]]:
         """
         Разбор текста по морфологическим статистикам
 
