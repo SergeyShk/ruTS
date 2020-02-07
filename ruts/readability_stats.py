@@ -258,7 +258,11 @@ def calc_automated_readability_index(
     """
     return (A * n_letters / n_words) + (B * n_words / n_sents) - C
 
-def calc_lix(n_long_words: int, n_words: int, n_sents: int) -> float:
+def calc_lix(
+        n_long_words: int,
+        n_words: int,
+        n_sents: int
+    ) -> float:
     """
     Вычисление индекса удобочитаемости LIX
 
