@@ -3,6 +3,7 @@ from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
 from collections import Counter
 from spacy.tokens import Doc
+from typing import Dict, Union
 
 class BasicStats(object):
     """
@@ -41,7 +42,12 @@ class BasicStats(object):
         ValueError: Если анализируемый текст является пустой строкой
     """
 
-    def __init__(self, source, sents_extractor=None, words_extractor=None):
+    def __init__(
+        self,
+        source: Union[str, Doc],
+        sents_extractor: SentsExtractor = None,
+        words_extractor: WordsExtractor = None
+    ):
         if isinstance(source, Doc):
             text = source.text
             sents = source.sents
@@ -81,7 +87,7 @@ class BasicStats(object):
         self.n_syllables = sum(syllables_per_word)
         self.n_punctuations = sum((1 for char in text if char in PUNCTUATIONS))
 
-    def get_stats(self):
+    def get_stats(self) -> Dict[str, int]:
         """
         Получение вычисленных статистик текста
 
