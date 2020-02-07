@@ -131,7 +131,11 @@ class MorphStats(object):
             explains = tuple(dict(zip(args, value)) for value in values)
         print(tuple(zip(self.words, explains)))
 
-    def print_stats(self, *args: Tuple[str, ...], filter_none: bool = False):
+    def print_stats(
+            self,
+            *args: Tuple[str, ...],
+            filter_none: bool = False
+        ):
         """
         Отображение вычисленных морфологических статистик текста с описанием на экран
 
