@@ -5,8 +5,9 @@ import urllib
 import zipfile
 from .constants import RU_VOWELS, DEFAULT_DATA_DIR
 from pathlib import Path
+from typing import Union
 
-def count_syllables(word):
+def count_syllables(word: str) -> int:
     """
     Вычисление количества слогов в слове
 
@@ -18,7 +19,7 @@ def count_syllables(word):
     """
     return sum((1 for char in word if char in RU_VOWELS))
 
-def to_path(path):
+def to_path(path: str) -> Path:
     """
     Перевод строкового представления пути в объект Path
 
@@ -38,7 +39,12 @@ def to_path(path):
     else:
         raise TypeError("Некорректно указан путь")
 
-def download_file(url, filename=None, dirpath=DEFAULT_DATA_DIR, force=False):
+def download_file(
+        url: str,
+        filename: str = None, 
+        dirpath: Union [str, Path] = DEFAULT_DATA_DIR, 
+        force: bool = False
+    ) -> str:
     """
     Загрузка файла из сети
 
@@ -74,7 +80,10 @@ def download_file(url, filename=None, dirpath=DEFAULT_DATA_DIR, force=False):
             print(f"Файл успешно загружен: {filepath}")
     return str(filepath)
 
-def extract_archive(archive_file, extract_dir=None):
+def extract_archive(
+        archive_file: Union[str, Path], 
+        extract_dir: Union[str, Path] = None
+    ) -> str:
     """
     Извлечение файлов из архива в формате ZIP или TAR
 
