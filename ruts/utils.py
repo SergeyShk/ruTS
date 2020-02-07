@@ -42,7 +42,7 @@ def to_path(path: str) -> Path:
 def download_file(
         url: str,
         filename: str = None, 
-        dirpath: Union [str, Path] = DEFAULT_DATA_DIR, 
+        dirpath: Union[str, Path] = DEFAULT_DATA_DIR, 
         force: bool = False
     ) -> str:
     """
