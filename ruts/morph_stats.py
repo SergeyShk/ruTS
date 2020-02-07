@@ -2,6 +2,7 @@ import pymorphy2
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
 from collections import Counter, OrderedDict
+from typing import Tuple, Dict
 
 class MorphStats(object):
     """
@@ -46,7 +47,7 @@ class MorphStats(object):
         ValueError: Если анализируемый текст является пустой строкой
     """
 
-    def __init__(self, text, words_extractor=None):
+    def __init__(self, text: str, words_extractor: WordsExtractor = None):
         if isinstance(text, str):
             if not words_extractor:
                 words_extractor = WordsExtractor(text)
@@ -73,7 +74,7 @@ class MorphStats(object):
         self.transitivity = tuple(tag.transitivity for tag in self.tags)
         self.voice = tuple(tag.voice for tag in self.tags)
 
-    def get_stats(self, *args, filter_none=False):
+    def get_stats(self, *args: Tuple[str, ...], filter_none: bool = False) -> Dict[str, Dict[str, int]]:
         """
         Получение вычисленных морфологических статистик текста
 
@@ -96,7 +97,7 @@ class MorphStats(object):
                 stats[arg] = dict(Counter(vars(self).get(arg)))
         return stats
 
-    def explain_text(self, *args, filter_none=False):
+    def explain_text(self, *args: Tuple[str, ...], filter_none: bool = False) -> Dict[str, Dict[str, str]]:
         """
         Разбор текста по морфологическим статистикам
 
@@ -118,7 +119,7 @@ class MorphStats(object):
             explains = tuple(dict(zip(args, value)) for value in values)
         print(tuple(zip(self.words, explains)))
 
-    def print_stats(self, *args, filter_none=False):
+    def print_stats(self, *args: Tuple[str, ...], filter_none: bool = False):
         """
         Отображение вычисленных морфологических статистик текста с описанием на экран
 
@@ -142,7 +143,7 @@ class MorphStats(object):
             print()
 
     @staticmethod
-    def __check_stat(*args):
+    def __check_stat(*args: Tuple[str, ...]) -> bool:
         """
         Проверка выбранных морфологических статистик
 
