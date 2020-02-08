@@ -1,4 +1,4 @@
-from .constants import COMPLEX_SYL_FACTOR, RU_LETTERS, SPACES, BASIC_STATS_DESC, PUNCTUATIONS
+from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, PUNCTUATIONS, RU_LETTERS, SPACES
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
 from collections import Counter
@@ -37,8 +37,6 @@ class BasicStats(object):
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
-        TypeError: Если инструмент извлечения предложений не является объектом класса SentsExtractor
-        TypeError: Если инструмент извлечения слов не является объектом класса WordsExtractor
         ValueError: Если анализируемый текст является пустой строкой
     """
 
@@ -56,13 +54,9 @@ class BasicStats(object):
             text = source
             if not sents_extractor:
                 sents_extractor = SentsExtractor(text)
-            elif not isinstance(sents_extractor, SentsExtractor):
-                raise TypeError("Некорректный класс для инструмента извлечения предложений")
             sents = sents_extractor.extract()
             if not words_extractor:
                 words_extractor = WordsExtractor(text)
-            elif not isinstance(words_extractor, WordsExtractor):
-                raise TypeError("Некорректный класс для инструмента извлечения слов")
             words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")

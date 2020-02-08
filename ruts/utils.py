@@ -40,11 +40,11 @@ def to_path(path: str) -> Path:
         raise TypeError("Некорректно указан путь")
 
 def download_file(
-        url: str,
-        filename: str = None, 
-        dirpath: Union[str, Path] = DEFAULT_DATA_DIR, 
-        force: bool = False
-    ) -> str:
+    url: str,
+    filename: str = None,
+    dirpath: Union[str, Path] = DEFAULT_DATA_DIR,
+    force: bool = False
+) -> str:
     """
     Загрузка файла из сети
 
@@ -81,9 +81,9 @@ def download_file(
     return str(filepath)
 
 def extract_archive(
-        archive_file: Union[str, Path], 
-        extract_dir: Union[str, Path] = None
-    ) -> str:
+    archive_file: Union[str, Path],
+    extract_dir: Union[str, Path] = None
+) -> str:
     """
     Извлечение файлов из архива в формате ZIP или TAR
 

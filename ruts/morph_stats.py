@@ -2,7 +2,7 @@ import pymorphy2
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
 from collections import Counter, OrderedDict
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
 class MorphStats(object):
     """
@@ -42,23 +42,15 @@ class MorphStats(object):
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой
-        TypeError: Если инструмент извлечения слов не является объектом класса WordsExtractor
         ValueError: Если анализируемый текст является пустой строкой
     """
 
     def __init__(
-            self,
-            text: str,
-            words_extractor: WordsExtractor = None
-        ):
-        if isinstance(text, str):
-            if not words_extractor:
-                words_extractor = WordsExtractor(text)
-            elif not isinstance(words_extractor, WordsExtractor):
-                raise TypeError("Некорректный класс для инструмента извлечения слов")
-        else:
-            raise TypeError("Текст не является строкой")
+        self,
+        text: str,
+        words_extractor: WordsExtractor = None
+    ):
+        words_extractor = WordsExtractor(text)
         if not text:
             raise ValueError("Анализируемый текст пуст")
 
@@ -79,10 +71,10 @@ class MorphStats(object):
         self.voice = tuple(tag.voice for tag in self.tags)
 
     def get_stats(
-            self,
-            *args: Tuple[str, ...],
-            filter_none: bool = False
-        ) -> Dict[str, Dict[str, int]]:
+        self,
+        *args: Tuple[str, ...],
+        filter_none: bool = False
+    ) -> Dict[str, Dict[str, int]]:
         """
         Получение вычисленных морфологических статистик текста
 
@@ -106,10 +98,10 @@ class MorphStats(object):
         return stats
 
     def explain_text(
-            self,
-            *args: Tuple[str, ...],
-            filter_none: bool = False
-        ) -> Dict[str, Dict[str, str]]:
+        self,
+        *args: Tuple[str, ...],
+        filter_none: bool = False
+    ) -> Dict[str, Dict[str, str]]:
         """
         Разбор текста по морфологическим статистикам
 
@@ -132,10 +124,10 @@ class MorphStats(object):
         print(tuple(zip(self.words, explains)))
 
     def print_stats(
-            self,
-            *args: Tuple[str, ...],
-            filter_none: bool = False
-        ):
+        self,
+        *args: Tuple[str, ...],
+        filter_none: bool = False
+    ):
         """
         Отображение вычисленных морфологических статистик текста с описанием на экран
 

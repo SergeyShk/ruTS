@@ -19,7 +19,11 @@ class Extractor(object, metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __init__(self, text: str, tokenizer: Union[Pattern, Callable] = None):
+    def __init__(
+        self,
+        text: str,
+        tokenizer: Union[Pattern, Callable] = None
+    ):
         self.text = text
         self.tokenizer = tokenizer
 
