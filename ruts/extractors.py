@@ -96,7 +96,7 @@ class WordsExtractor(Extractor):
         filter_punct (bool): Фильтровать знаки препинания
         filter_nums (bool): Фильтровать числа
         use_lexemes (bool): Использовать леммы слов
-        stopwords (list[str]): Использовать список стоп-слов
+        stopwords (list[str]): Список стоп-слов
         lowercase (bool): Конвертировать слова в нижний регистр
         ngram_range (tuple[int, int]): Нижняя и верхняя граница размера N-грамм
         min_len (int): Минимальная длина извлекаемого слова
