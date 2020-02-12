@@ -1,4 +1,5 @@
 
+import io
 import os
 import re
 from ..constants import DEFAULT_DATA_DIR
@@ -109,7 +110,7 @@ class SovChLit(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with open(filepath, 'r') as f:
+            with io.open(filepath, mode='r', encoding='utf-8') as f:
                 headers, text = f.read().strip().split('\n\n')
                 headers = tuple(header.split(':')[1][1:] for header in headers.split('\n'))
             return {

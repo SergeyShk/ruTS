@@ -1,12 +1,13 @@
+import io
 import os
 from setuptools import setup, find_packages
 
 version_file = os.path.join(os.path.dirname(__file__), 'ruts', 'VERSION')
-with open(version_file, 'r') as f:
+with io.open(version_file, mode='r', encoding='utf-8') as f:
     VERSION = f.read().strip()
 
 readme_file = os.path.join(os.path.dirname(__file__), 'README.md')
-with open(readme_file, 'r') as f:
+with io.open(readme_file, mode='r', encoding='utf-8') as f:
     README = f.read()
 
 INSTALL_REQUIRES = [
