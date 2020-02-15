@@ -24,7 +24,7 @@ class SovChLit(Dataset):
         self.labels = ("grade_1",)
         self.subset = None
 
-    def download(self, force=False):
+    def download(self, force: bool = False):
         """
         Загрузка набора данных из сети и извлечение файлов
 
@@ -32,7 +32,7 @@ class SovChLit(Dataset):
             force (bool): Загрузить набор данных, даже если он уже загружен
         """
         filepath = download_file(
-            url=DOWNLOAD_URL, 
+            url=DOWNLOAD_URL,
             filename='sov_chrest_lit.tar.xz',
             dirpath=self.data_dir,
             force=force
@@ -41,8 +41,22 @@ class SovChLit(Dataset):
             extract_archive(filepath)
         self.__check_data()
 
-    def get_texts(self, limit: int = None):
-        pass
+    def get_texts(
+        self,
+        grade: int = None,
+        book: str = None,
+        year: str = None,
+        category: str = None,
+        text_type: str = None,
+        subject: str = None,
+        author: str = None,
+        min_len: int = None,
+        max_len: int = None,
+        limit: int = None
+    ):
+        filters = self.__get_filters(grade, book, year, category, text_type, subject, author, min_len, max_len)
+        for record in islice(self.__filtered_iter(filters), limit):
+            yield record['text']
 
     def get_records(
         self,
@@ -96,7 +110,8 @@ class SovChLit(Dataset):
             for record in self:
                 yield record
 
-    def __load_record(self, filepath: Union[str, Path]) -> Dict[str, Any]:
+    @staticmethod
+    def __load_record(filepath: Union[str, Path]) -> Dict[str, Any]:
         """
         Загрузка записи из файла набора данных
 
@@ -151,9 +166,9 @@ class SovChLit(Dataset):
                 )
                 raise OSError(msg)
         return True
-    
+
+    @staticmethod
     def __get_filters(
-        self, 
         grade: int,
         book: str,
         year: str,

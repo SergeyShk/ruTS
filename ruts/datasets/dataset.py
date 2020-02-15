@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Any
 
 class Dataset(object, metaclass=ABCMeta):
     """
@@ -33,13 +34,17 @@ class Dataset(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_texts(self):
+    def __check_data(self) -> bool:
         pass
 
     @abstractmethod
-    def get_records(self):
+    def get_texts(self, *args: Any):
         pass
 
     @abstractmethod
-    def download(self):
+    def get_records(self, *args: Any):
+        pass
+
+    @abstractmethod
+    def download(self, force: bool = False):
         pass
