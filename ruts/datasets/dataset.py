@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any
+from typing import Any, Dict, Generator
 
 class Dataset(object, metaclass=ABCMeta):
     """
@@ -10,6 +10,7 @@ class Dataset(object, metaclass=ABCMeta):
         meta (dict): Справочная информация о наборе данных
 
     Методы:
+        check_data: Проверка наличия всех необходимых директорий и файлов в наборе данных
         get_texts: Получение текстов (без заголовков) из набора данных
         get_records: Получение записей (с заголовками) из набора данных
         download: Загрузка набора данных из сети
@@ -34,15 +35,15 @@ class Dataset(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def __check_data(self) -> bool:
+    def check_data(self) -> bool:
         pass
 
     @abstractmethod
-    def get_texts(self, *args: Any):
+    def get_texts(self, *args: Any) -> Generator[str, None, None]:
         pass
 
     @abstractmethod
-    def get_records(self, *args: Any):
+    def get_records(self, *args: Any) -> Generator[Dict[str, Any], None, None]:
         pass
 
     @abstractmethod
