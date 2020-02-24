@@ -7,7 +7,7 @@ from ..utils import to_path, download_file, extract_archive
 from .dataset import Dataset
 from itertools import islice
 from pathlib import Path
-from typing import Any, Dict, Generator, Union
+from typing import Any, Dict, Generator, List, Union
 
 NAME = "sov_chrest_lit"
 META = {
@@ -18,11 +18,59 @@ DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/:persistentId?
 TEXT_TYPES = ['Рассказ', 'Стихотворение', 'Сказка', 'Пословица', 'Загадка', 'Песня', 'Басня']
 
 class SovChLit(Dataset):
-    def __init__(self, data_dir=DEFAULT_DATA_DIR.joinpath("texts")):
+    """
+    Класс для работы с набором данных советских хрестоматий по литературе
+
+    Описание:
+        Для формирования набора данных используются оцифрованные издания проекта "Школьные учебники СССР":
+            1. Родная речь. Книга для чтения в I классе начальной школы. Е.Е. Соловьева, Л.А. Карпинская, Н.Н. Щепетова
+
+    Ссылки:
+        https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT
+        https://sheba.spb.ru/shkola/lit.htm
+
+    Аргументы:
+        data_dir (str): Путь к директории с набором данных
+
+    Атрибуты:
+        labels (tuple[str]): Кортеж уровней сложности текстов
+
+    Методы:
+        check_data: Проверка наличия всех необходимых директорий и файлов в наборе данных
+        download: Загрузка набора данных из сети
+        get_texts: Получение текстов (без заголовков) из набора данных
+        get_records: Получение записей (с заголовками) из набора данных
+    """
+
+    def __init__(self, data_dir: str = DEFAULT_DATA_DIR.joinpath("texts")):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = ("grade_1",)
-        self.subset = None
+
+    def check_data(self) -> bool:
+        """
+        Проверка наличия всех необходимых директорий и файлов в наборе данных
+
+        Вывод:
+            bool: Результат проверки
+
+        Исключения:
+            OSError: Если набор данных не обнаружен
+        """
+        dirpaths = (
+            self.data_dir.joinpath(NAME, label)
+            for label in self.labels
+        )
+        for dirpath in dirpaths:
+            if not dirpath.is_dir():
+                msg = (
+                    f"Набор данных {NAME} не обнаружен\n"
+                    "Загрузите его, выполнив команды:\n"
+                    ">>> svc = SovChLit()\n"
+                    ">>> svc.download()"
+                )
+                raise OSError(msg)
+        return True
 
     def download(self, force: bool = False):
         """
@@ -39,13 +87,13 @@ class SovChLit(Dataset):
         )
         if filepath:
             extract_archive(filepath)
-        self.__check_data()
+        self.check_data()
 
     def get_texts(
         self,
         grade: int = None,
         book: str = None,
-        year: str = None,
+        year: int = None,
         category: str = None,
         text_type: str = None,
         subject: str = None,
@@ -53,7 +101,25 @@ class SovChLit(Dataset):
         min_len: int = None,
         max_len: int = None,
         limit: int = None
-    ):
+    ) -> Generator[str, None, None]:
+        """
+        Получение текстов (без заголовков) из набора данных
+
+        Аргументы:
+            grade (int): Уровень сложности текстов
+            book (str): Наименование книги
+            year (int): Год издания книги
+            category (str): Категория текстов
+            text_type (str): Тип текстов
+            subject (str): Наименование текста
+            author (str): Автор текста
+            min_len (int): Минимальная длина текста (в символах)
+            max_len (int): Максимальная длина текста (в символах)
+            limit (int): Количество текстов
+
+        Вывод:
+            generator[str]: Генератор текстов
+        """
         filters = self.__get_filters(grade, book, year, category, text_type, subject, author, min_len, max_len)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record['text']
@@ -62,7 +128,7 @@ class SovChLit(Dataset):
         self,
         grade: int = None,
         book: str = None,
-        year: str = None,
+        year: int = None,
         category: str = None,
         text_type: str = None,
         subject: str = None,
@@ -70,7 +136,25 @@ class SovChLit(Dataset):
         min_len: int = None,
         max_len: int = None,
         limit: int = None
-    ):
+    ) -> Generator[Dict[str, Any], None, None]:
+        """
+        Получение записей (с заголовками) из набора данных
+
+        Аргументы:
+            grade (int): Уровень сложности текстов
+            book (str): Наименование книги
+            year (int): Год издания книги
+            category (str): Категория текстов
+            text_type (str): Тип текстов
+            subject (str): Наименование текста
+            author (str): Автор текста
+            min_len (int): Минимальная длина текста (в символах)
+            max_len (int): Максимальная длина текста (в символах)
+            limit (int): Количество текстов
+
+        Вывод:
+            generator[dict[str, object]]: Генератор записей
+        """
         filters = self.__get_filters(grade, book, year, category, text_type, subject, author, min_len, max_len)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record
@@ -82,7 +166,7 @@ class SovChLit(Dataset):
         Вывод:
             generator[dict[str, object]]: Генератор записей
         """
-        self.__check_data()
+        self.check_data()
         dirpaths = (
             self.data_dir.joinpath(NAME, label)
             for label in self.labels
@@ -142,31 +226,6 @@ class SovChLit(Dataset):
         except:
             raise ValueError("Не удалось извлечь записи из файла")
 
-    def __check_data(self) -> bool:
-        """
-        Проверка наличия всех необходимых директорий и файлов в наборе данных
-
-        Вывод:
-            bool: Результат проверки
-
-        Исключения:
-            OSError: Если набор данных не обнаружен
-        """
-        dirpaths = (
-            self.data_dir.joinpath(NAME, label)
-            for label in self.labels
-        )
-        for dirpath in dirpaths:
-            if not dirpath.is_dir():
-                msg = (
-                    f"Набор данных {NAME} не обнаружен\n"
-                    "Загрузите его, выполнив команды:\n"
-                    ">>> svc = SovChLit()\n"
-                    ">>> svc.download()"
-                )
-                raise OSError(msg)
-        return True
-
     @staticmethod
     def __get_filters(
         grade: int,
@@ -178,7 +237,31 @@ class SovChLit(Dataset):
         author: str,
         min_len: int,
         max_len: int
-    ):
+    ) -> List[str]:
+        """
+        Получение списка фильтров
+
+        Аргументы:
+            grade (int): Уровень сложности текстов
+            book (str): Наименование книги
+            year (int): Год издания книги
+            category (str): Категория текстов
+            text_type (str): Тип текстов
+            subject (str): Наименование текста
+            author (str): Автор текста
+            min_len (int): Минимальная длина текста (в символах)
+            max_len (int): Максимальная длина текста (в символах)
+
+        Вывод:
+            filters (list[str]): Список фильтров
+
+        Исключения:
+            ValueError: Если некорректно выбран уровень текста
+            ValueError: Если некорректно выбран тип текста
+            ValueError: Если минимальная длина текста не больше 0
+            ValueError: Если максимальная длина текста не больше 0
+            ValueError: Если минимальная длина текста больше максимальной
+        """
         filters = []
         if grade:
             if grade not in range(1, 12):
@@ -191,6 +274,14 @@ class SovChLit(Dataset):
             filters.append(
                 lambda record: len(re.findall(pattern, record.get('book', ''))) > 0
             )
+        if year:
+            filters.append(
+                lambda record: record.get('year', '') == grade
+            )
+        if category:
+            filters.append(
+                lambda record: record.get('category', '') == category
+            )
         if text_type:
             if text_type not in TEXT_TYPES:
                 raise ValueError(f"Некорректно выбран тип текста - {text_type}")
@@ -199,13 +290,13 @@ class SovChLit(Dataset):
             )
         if min_len:
             if min_len < 1:
-                raise ValueError(f"Минимальный размер текста должен быть больше 0")
+                raise ValueError(f"Минимальная длина текста должна быть больше 0")
             filters.append(
                 lambda record: len(record.get('text', '')) >= min_len
             )
         if max_len:
             if max_len < 1:
-                raise ValueError(f"Максимальный размер текста должен быть больше 0")
+                raise ValueError(f"Максимальная длина текста должна быть больше 0")
             filters.append(
                 lambda record: len(record.get('text', '')) <= max_len
             )
@@ -215,7 +306,10 @@ class SovChLit(Dataset):
 
 
 if __name__ == "__main__":
+    from pprint import pprint
     sc = SovChLit()
-    print(sc.info)
-    for i in sc.get_records(min_len=1000, limit=2):
-        print(i)
+    pprint(sc.info)
+    for i in sc.get_records(max_len=100, category='Весна', limit=2):
+        pprint(i)
+    for i in sc.get_texts(text_type='Басня', limit=1):
+        pprint(i)
