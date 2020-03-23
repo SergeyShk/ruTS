@@ -21,7 +21,8 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 
 # Импорт основных классов
 
-from .extractors import SentsExtractor, WordsExtractor
 from .basic_stats import BasicStats
+from .components import BasicStatsComponent, MorphStatsComponent, ReadabilityStatsComponent
+from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import MorphStats
 from .readability_stats import ReadabilityStats

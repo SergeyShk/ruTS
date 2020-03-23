@@ -2,7 +2,8 @@ import pymorphy2
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
 from collections import Counter, OrderedDict
-from typing import Dict, Tuple
+from spacy.tokens import Doc
+from typing import Dict, Tuple, Union
 
 class MorphStats(object):
     """
@@ -17,7 +18,7 @@ class MorphStats(object):
         http://opencorpora.org/dict.php?act=gram
 
     Аргументы:
-        text (str): Строка текста
+        source (str|Doc): Источник данных (строка или объект Doc)
         words_extractor (WordsExtractor): Инструмент для извлечения слов
 
     Атрибуты:
@@ -42,20 +43,29 @@ class MorphStats(object):
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
 
     Исключения:
+        TypeError: Если передаваемое значение не является строкой или объектом Doc
         ValueError: Если анализируемый текст является пустой строкой
     """
 
     def __init__(
         self,
-        text: str,
+        source: Union[str, Doc],
         words_extractor: WordsExtractor = None
     ):
-        words_extractor = WordsExtractor(text)
+        if isinstance(source, Doc):
+            text = source.text
+            self.words = tuple(word.text for word in source)
+        elif isinstance(source, str):
+            text = source
+            if not words_extractor:
+                words_extractor = WordsExtractor(text)
+            self.words = words_extractor.extract()
+        else:
+            raise TypeError("Некорректный источник данных")
         if not text:
             raise ValueError("Анализируемый текст пуст")
 
         morph = pymorphy2.MorphAnalyzer()
-        self.words = words_extractor.extract()
         self.tags = tuple(morph.parse(word)[0].tag for word in self.words)
         self.pos = tuple(tag.POS for tag in self.tags)
         self.animacy = tuple(tag.animacy for tag in self.tags)
