@@ -309,10 +309,50 @@ for i in sc.get_texts(text_type='Басня', limit=1):
     'зверя нет.')
 ```
 
+### Компоненты
+
+Библиотека позволяет создавать компоненты spaCy для следующих классов:
+
+* BasicStats
+* MorphStats
+* ReadabilityStats
+
+Пример:
+
+```python
+from ruts import BasicStatsComponent
+nlp = spacy.load('ru')
+bsc = BasicStatsComponent()
+nlp.add_pipe(bsc, 'basic', last=True)
+doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
+doc._.bs.c_letters
+
+    {1: 1, 3: 2, 4: 3, 6: 1, 10: 2}
+
+doc._.bs.get_stats()
+
+    {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+    'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
+    'n_chars': 55,
+    'n_complex_words': 2,
+    'n_letters': 45,
+    'n_long_words': 3,
+    'n_monosyllable_words': 5,
+    'n_polysyllable_words': 4,
+    'n_punctuations': 2,
+    'n_sents': 1,
+    'n_simple_words': 7,
+    'n_spaces': 8,
+    'n_syllables': 18,
+    'n_unique_words': 8,
+    'n_words': 9}
+```
+
 ## Структура проекта
 
 * **ruts**:
     * basic_stats.py - базовые текстовые статистики
+    * components.py - компоненты spaCy
     * constants.py - основные используемые константы
     * extractors.py - инструменты для извлечения объектов из текста
     * morph_stats.py - морфологические статистики
@@ -323,6 +363,7 @@ for i in sc.get_texts(text_type='Басня', limit=1):
         * sov_chrest_lit.py - советские хрестоматии по литературе
 * **tests**:
     * test_basic_stats.py - тесты базовых текстовых статистик
+    * test_components.py - тесты компонентов spaCy
     * test_extractors.py - тесты инструментов для извлечения объектов из текста
     * test_morph_stats - тесты морфологических статистик
     * test_readability_stats.py - тесты метрик удобочитаемости текста
