@@ -309,6 +309,28 @@ for i in sc.get_texts(text_type='Басня', limit=1):
     'зверя нет.')
 ```
 
+### Визуализация
+
+Библиотека позволяет визуализировать тексты с помощью следующих видов графиков:
+
+* Закон Ципфа (Zipf's law)
+
+Пример:
+
+```python
+from collections import Counter
+from nltk.corpus import stopwords
+from ruts import WordsExtractor
+from ruts.datasets import SovChLit
+from ruts.visualizers import zipf
+
+sc = SovChLit()
+text = '\n'.join([text for text in sc.get_texts(limit=100)])
+we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True)
+tokens_with_count = Counter(we.extract())
+zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
+```
+
 ### Компоненты
 
 Библиотека позволяет создавать компоненты spaCy для следующих классов:
@@ -358,6 +380,7 @@ doc._.bs.get_stats()
     * morph_stats.py - морфологические статистики
     * readability_stats.py - метрики удобочитаемости текста
     * utils.py - вспомогательные инструменты
+    * visualizers.py - инструменты для визуализации текстов
     * **datasets** - наборы данных
         * dataset.py - базовый класс для работы с наборами данных
         * sov_chrest_lit.py - советские хрестоматии по литературе
