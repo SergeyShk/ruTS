@@ -131,8 +131,3 @@ def extract_archive(
                 return os.path.join(extract_dir, src_basename)
         else:
             return extract_dir
-
-if __name__ == "__main__":
-    text = "самооборона"
-    print(count_syllables(text))
-    print(extract_archive('test.tar.xz'))

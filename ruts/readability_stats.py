@@ -9,6 +9,18 @@ class ReadabilityStats(object):
     """
     Класс для вычисления основных метрик удобочитаемости текста
 
+    Пример использования:
+        >>> from ruts import ReadabilityStats
+        >>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+        >>> rs = ReadabilityStats(text)
+        >>> rs.get_stats()
+        {'automated_readability_index': 0.2941666666666656,
+        'coleman_liau_index': 0.2941666666666656,
+        'flesch_kincaid_grade': 3.4133333333333304,
+        'flesch_reading_easy': 83.16166666666666,
+        'lix': 48.333333333333336,
+        'smog_index': 0.05}
+
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
@@ -291,13 +303,3 @@ def calc_lix(
         float: Значение индекса
     """
     return (n_words / n_sents) + (100 * n_long_words / n_words)
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    from ruts.extractors import WordsExtractor
-    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
-    we = WordsExtractor(text, use_lexemes=True)
-    rs = ReadabilityStats(text, words_extractor=we)
-    pprint(rs.get_stats())
-    rs.print_stats()

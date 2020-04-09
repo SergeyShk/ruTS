@@ -18,7 +18,7 @@ def spacy_nlp():
     spacy_nlp.add_pipe(msc, 'morph', last=True)
     rsc = ReadabilityStatsComponent()
     spacy_nlp.add_pipe(rsc, 'readability', last=True)
-    
+
     yield spacy_nlp
 
     spacy_nlp.remove_pipe('basic')

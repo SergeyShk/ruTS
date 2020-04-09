@@ -9,6 +9,27 @@ class BasicStats(object):
     """
     Класс для вычисления основных статистик текста
 
+    Пример использования:
+        >>> from ruts import BasicStats
+        >>> text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
+        >>> bs = BasicStats(text)
+        >>> bs.get_stats()
+        {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+        'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
+        'n_chars': 55,
+        'n_complex_words': 2,
+        'n_letters': 45,
+        'n_long_words': 3,
+        'n_monosyllable_words': 5,
+        'n_polysyllable_words': 4,
+        'n_punctuations': 2,
+        'n_sents': 1,
+        'n_simple_words': 7,
+        'n_spaces': 8,
+        'n_syllables': 18,
+        'n_unique_words': 8,
+        'n_words': 9}
+
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
@@ -96,15 +117,3 @@ class BasicStats(object):
         print("-" * 30)
         for stat, value in BASIC_STATS_DESC.items():
             print(f"{value:20}|{self.get_stats().get(stat):^10}")
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    import re
-    text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
-    se = SentsExtractor(text, tokenizer=re.compile(r': |, '))
-    we = WordsExtractor(text, stopwords=['и'], lowercase=True, min_len=4, use_lexemes=True)
-    bs = BasicStats(text, sents_extractor=se, words_extractor=we)
-    pprint(bs.get_stats())
-    bs.print_stats()
-    print(we.words)

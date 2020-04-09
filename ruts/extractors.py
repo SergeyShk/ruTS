@@ -35,6 +35,14 @@ class SentsExtractor(Extractor):
     """
     Класс для извлечения предложений из текста
 
+    Пример использования:
+        >>> import re
+        >>> from ruts import SentsExtractor
+        >>> text = "Не имей 100 рублей, а имей 100 друзей"
+        >>> se = SentsExtractor(text, tokenizer=re.compile(r', '))
+        >>> se.extract()
+        ('Не имей 100 рублей', 'а имей 100 друзей')
+
     Аргументы:
         text (str): Строка текста
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
@@ -89,6 +97,13 @@ class SentsExtractor(Extractor):
 class WordsExtractor(Extractor):
     """
     Класс для извлечения слов из текста
+
+    Пример использования:
+        >>> from ruts import WordsExtractor
+        >>> text = "Не имей 100 рублей, а имей 100 друзей"
+        >>> we = WordsExtractor(text, use_lexemes=True, filter_nums=True, ngram_range=(1, 2))
+        >>> we.extract()
+        ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
     Аргументы:
         text (str): Строка текста
@@ -206,13 +221,3 @@ class WordsExtractor(Extractor):
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
             ngrams += tuple('_'.join(self.words[i: i + n]) for i in range(len(self.words) - n + 1))
         return ngrams
-
-
-if __name__ == "__main__":
-    from nltk.corpus import stopwords
-    text = 'Не имей 100 рублей, а имей 100 друзей'
-    we = WordsExtractor(text,
-    use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
-    print(we.extract())
-    se = SentsExtractor(text, tokenizer=re.compile(r', '))
-    print(se.extract())

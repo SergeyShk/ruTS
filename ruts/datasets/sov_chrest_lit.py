@@ -29,6 +29,29 @@ class SovChLit(Dataset):
         https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT
         https://sheba.spb.ru/shkola/lit.htm
 
+    Примеры использования:
+    Информация о наборе данных:
+        >>> from ruts.datasets import SovChLit
+        >>> sc = SovChLit()
+        >>> sc.info
+        {'description': 'Корпус советских хрестоматий по литературе',
+        'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
+        'Наименование': 'sov_chrest_lit'}
+
+    Итерация по набору данных:
+        >>> for i in sc.get_records(max_len=100, category='Весна', limit=1):
+        >>>     print(i)
+        {'author': 'Е. Трутнева',
+        'book': 'Родная речь. Книга для чтения в I классе начальной школы',
+        'category': 'Весна',
+        'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/155'),
+        'grade': 1,
+        'subject': 'Дождик',
+        'text': 'Дождик, дождик, поливай, будет хлеба каравай!\n'
+                'Дождик, дождик, припусти, дай гороху подрасти!',
+        'type': 'Стихотворение',
+        'year': 1963}
+
     Аргументы:
         data_dir (str): Путь к директории с набором данных
 
@@ -303,13 +326,3 @@ class SovChLit(Dataset):
         if min_len and max_len and min_len > max_len:
             raise ValueError("Минимальная длина текста больше максимальной")
         return filters
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    sc = SovChLit()
-    pprint(sc.info)
-    for i in sc.get_records(max_len=100, category='Весна', limit=2):
-        pprint(i)
-    for i in sc.get_texts(text_type='Басня', limit=1):
-        pprint(i)

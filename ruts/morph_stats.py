@@ -17,6 +17,24 @@ class MorphStats(object):
         https://pymorphy2.readthedocs.io/en/0.2/user/index.html
         http://opencorpora.org/dict.php?act=gram
 
+    Пример использования:
+        >>> from ruts import MorphStats
+        >>> text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
+        >>> ms = MorphStats(text)
+        >>> ms.get_stats()
+        {'animacy': {None: 11},
+        'aspect': {None: 5, 'impf': 1, 'perf': 5},
+        'case': {None: 11},
+        'gender': {None: 11},
+        'involvement': {None: 10, 'excl': 1},
+        'mood': {None: 7, 'impr': 1, 'indc': 3},
+        'number': {None: 7, 'plur': 3, 'sing': 1},
+        'person': {None: 9, '2per': 1, '3per': 1},
+        'pos': {'ADVB': 1, 'CONJ': 4, 'INFN': 2, 'VERB': 4},
+        'tense': {None: 8, 'futr': 1, 'past': 1, 'pres': 1},
+        'transitivity': {None: 5, 'intr': 2, 'tran': 4},
+        'voice': {None: 11}}
+
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
         words_extractor (WordsExtractor): Инструмент для извлечения слов
@@ -179,13 +197,3 @@ class MorphStats(object):
                 print(f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}")
                 raise KeyError(arg + " отсутствует в справочнике морфологических статистик")
         return True
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
-    ms = MorphStats(text)
-    print(ms.pos)
-    pprint(ms.get_stats())
-    ms.print_stats('pos', 'tense')
-    ms.explain_text(filter_none=True)

@@ -7,6 +7,7 @@ class BasicStatsComponent:
     """
     Класс для компонента основных статистик текста
 
+    Примеры использования:
     Добавление компонента в пайплайн:
         >>> from ruts import BasicStatsComponent
         >>> nlp = spacy.load('ru')
@@ -102,7 +103,7 @@ class ReadabilityStatsComponent:
     def __init__(self, name: str = "rs"):
         self.name = name
         Doc.set_extension(self.name, default=None, force=True)
-    
+
     def __call__(self, doc: Doc) -> Doc:
         """
         Добавление извлеченных метрик в компонент
