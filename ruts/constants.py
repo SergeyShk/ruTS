@@ -155,3 +155,13 @@ MORPHOLOGY_STATS_DESC = {
         }
     }
 }
+DIVERSITY_STATS_DESC = {
+    'ttr': 'Метрика Type-Token Ratio',
+    'rttr': 'Метрика Root Type-Token Ratio',
+    'cttr': 'Метрика Corrected Type-Token Ratio',
+    'httr': 'Метрика Herdan Type-Token Ratio',
+    'sttr': 'Метрика Summer Type-Token Ratio',
+    'mttr': 'Метрика Mass Type-Token Ratio',
+    'dttr': 'Метрика Dugast Type-Token Ratio',
+    'mattr': 'Метрика Moving Average Type-Token Ratio'
+}
