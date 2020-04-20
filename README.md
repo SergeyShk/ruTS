@@ -165,6 +165,27 @@ rs.print_stats()
     Индекс удобочитаемости LIX              |  48.33  
 ```
 
+### Метрики лексического разнообразия
+
+Библиотека позволяет вычислять для текста следующие метрики лексического разнообразия:
+
+* Type-Token Ratio (TTR)
+* Root Type-Token Ratio (RTTR)
+* Corrected Type-Token Ratio (CTTR)
+* Herdan Type-Token Ratio (HTTR)
+* Summer Type-Token Ratio (STTR)
+* Mass Type-Token Ratio (MTTR)
+* Dugast Type-Token Ratio (DTTR)
+* Moving Average Type-Token Ratio (MATTR)
+* Mean Segmental Type-Token Ratio (MSTTR)
+* Measure of Textual Lexical Diversity (MTLD)
+* Moving Average Measure of Textual Lexical Diversity (MTLD)
+* Hypergeometric Distribution D (HD-D)
+* Индекс Симпсона
+* Гапакс-индекс
+
+Часть реализаций метрик взята из проекта [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity).
+
 ### Морфологические статистики
 
 Библиотека позволяет извлекать из текста следующие морфологические признаки:
@@ -376,6 +397,7 @@ doc._.bs.get_stats()
     * basic_stats.py - базовые текстовые статистики
     * components.py - компоненты spaCy
     * constants.py - основные используемые константы
+    * diversity_stats.py - метрики лексического разнообразия текста
     * extractors.py - инструменты для извлечения объектов из текста
     * morph_stats.py - морфологические статистики
     * readability_stats.py - метрики удобочитаемости текста

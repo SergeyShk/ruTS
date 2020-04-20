@@ -1,7 +1,9 @@
 from .constants import DIVERSITY_STATS_DESC
 from .extractors import WordsExtractor
 from collections import Counter
+from itertools import permutations
 from math import sqrt, log10
+from nltk import FreqDist
 from scipy.special import comb
 from spacy.tokens import Doc
 from typing import Dict, List, Union
@@ -17,6 +19,8 @@ class DiversityStats(object):
     Ссылки:
         https://ru.wikipedia.org/wiki/Коэффициент_лексического_разнообразия
         https://en.wikipedia.org/wiki/Lexical_diversity
+        https://ru.wikipedia.org/wiki/Мера_разнообразия
+        https://en.wikipedia.org/wiki/Diversity_index
         https://core.ac.uk/download/pdf/82620241.pdf
 
     Пример использования:
@@ -48,6 +52,8 @@ class DiversityStats(object):
         mtld (float): Метрика Measure of Textual Lexical Diversity (MTLD)
         mamtld (float): Метрика Moving Average Measure of Textual Lexical Diversity (MTLD)
         hdd (float): Метрика Hypergeometric Distribution D (HD-D)
+        simpson_index (float): Индекс Симпсона
+        hapax_index (float): Гапакс-индекс
 
     Методы:
         get_stats: Получение вычисленных метрик лексического разнообразия текста
@@ -124,6 +130,14 @@ class DiversityStats(object):
     def hdd(self):
         return calc_hdd(self.words, 42)
 
+    @property
+    def simpson_index(self):
+        return calc_simpson_index(self.words)
+
+    @property
+    def hapax_index(self):
+        return calc_hapax_index(self.words)
+
     def get_stats(self) -> Dict[str, float]:
         """
         Получение вычисленных метрик лексического разнообразия текста
@@ -143,7 +157,9 @@ class DiversityStats(object):
             'msttr': self.msttr,
             'mtld': self.mtld,
             'mamtld': self.mamtld,
-            'hdd': self.hdd
+            'hdd': self.hdd,
+            'simpson_index': self.simpson_index,
+            'hapax_index': self.hapax_index
         }
 
     def print_stats(self):
@@ -411,7 +427,7 @@ def calc_mamtld(
             breaker = False
             for m in range(len(sub_text)):
                 if not breaker:
-                    factor_text = sub_text[: m + 1]	
+                    factor_text = sub_text[: m + 1]
                     if calc_ttr(factor_text) < 0.72 and len(factor_text) >= min_len:
                         factor += 1
                         factor_len += len(factor_text)
@@ -420,7 +436,7 @@ def calc_mamtld(
                         continue
         mamtld_base = factor_len / factor if factor else 1
         return mamtld_base
-    
+
     mamtld_forward = calc_mamtld_base(text)
     mamtld_backward = calc_mamtld_base(list(reversed(text)))
     mamtld = (mamtld_forward + mamtld_backward) / 2
@@ -435,7 +451,7 @@ def calc_hdd(
 
     Описание:
         Наиболее достоверная реализация алгоритма VocD (2010, McCarthy & Jarvis)
-        В основе алгоритм лежит метод случайного отбора из текста сегментов длиной от 32 до 50 слов и 
+        В основе алгоритм лежит метод случайного отбора из текста сегментов длиной от 32 до 50 слов и
         вычисления для них TTR с последующим усреднением
 
     Аргументы:
@@ -468,3 +484,57 @@ def calc_hdd(
         prob = hyper(0, sample_size, n_words, freqs[lexeme])
         hdd += prob
     return hdd
+
+def calc_simpson_index(text: List[str]) -> float:
+    """
+    Вычисление индекса Симпсона
+
+    Описание:
+        Индекс широко применяется в биологии для описания вероятности принадлежности любых двух особей,
+        случайно отобранных из неопределенно большого сообщества, к разным видам
+        С определенными допущениями применим и для описания лексического разнообразия текста
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Значение индекса
+    """
+    n_words = len(text)
+    den = n_words * (n_words - 1)
+    perms = permutations(text, 2)
+    counter = 0
+    for perm in perms:
+        if perm[0] == perm[1]:
+            counter += 1
+    simpson_index = counter / den
+    simpson_index = 1 / simpson_index
+    return simpson_index
+
+def calc_hapax_index(text: List[str]) -> float:
+    """
+    Вычисление Гапакс-индекса
+
+    Описание:
+        Гапакс - слово, встретившееся в тексте только один раз
+        Гапаксы того или иного автора нередко используют для атрибуции ему некоторого другого произведения, 
+        где встречаются такие слова
+
+    Ссылки:
+        https://ru.wikipedia.org/wiki/Гапакс
+        https://en.wikipedia.org/wiki/Hapax_legomenon
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Значение индекса
+    """
+    n_words = len(text)
+    n_lexemes = len(set(text))
+    num = 100 * log10(n_words)
+    freqs = FreqDist(text)
+    hapaxes = len(freqs.hapaxes())
+    den = 1 - (hapaxes / n_lexemes)
+    hapax_index = num / den
+    return hapax_index

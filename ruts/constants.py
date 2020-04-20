@@ -167,5 +167,7 @@ DIVERSITY_STATS_DESC = {
     'msttr': 'Mean Segmental Type-Token Ratio (MSTTR)',
     'mtld': 'Measure of Textual Lexical Diversity (MTLD)',
     'mamtld': 'Moving Average Measure of Textual Lexical Diversity (MTLD)',
-    'hdd': 'Hypergeometric Distribution D (HD-D)'
+    'hdd': 'Hypergeometric Distribution D (HD-D)',
+    'simpson_index': 'Индекс Симпсона',
+    'hapax_index': 'Гапакс-индекс'
 }
