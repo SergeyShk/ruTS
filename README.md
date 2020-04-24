@@ -8,6 +8,10 @@
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
 ![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
 
+<p align="center"> 
+<img src="https://clipartart.com/images/free-tree-roots-clipart-black-and-white-2.png">
+</p>
+
 Библиотека для извлечения статистик из текстов на русском языке.
 
 ## Установка
