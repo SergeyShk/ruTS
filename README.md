@@ -183,12 +183,55 @@ rs.print_stats()
 * Moving Average Type-Token Ratio (MATTR)
 * Mean Segmental Type-Token Ratio (MSTTR)
 * Measure of Textual Lexical Diversity (MTLD)
-* Moving Average Measure of Textual Lexical Diversity (MTLD)
+* Moving Average Measure of Textual Lexical Diversity (MAMTLD)
 * Hypergeometric Distribution D (HD-D)
 * Индекс Симпсона
 * Гапакс-индекс
 
 Часть реализаций метрик взята из проекта [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity).
+
+Пример:
+
+```python
+from ruts import DiversityStats
+text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+ds = DiversityStats(text)
+ds.get_stats()
+
+    {'ttr': 0.7333333333333333,
+    'rttr': 2.840187787218772,
+    'cttr': 2.008316044185609,
+    'httr': 0.8854692840710253,
+    'sttr': 0.2500605793160845,
+    'mttr': 0.0973825075623254,
+    'dttr': 10.268784661968104,
+    'mattr': 0.7333333333333333,
+    'msttr': 0.7333333333333333,
+    'mtld': 15.0,
+    'mamtld': 11.875,
+    'hdd': -1,
+    'simpson_index': 21.0,
+    'hapax_index': 431.2334616537499}
+
+ds.print_stats()
+
+                              Метрика                           | Значение 
+    ----------------------------------------------------------------------
+    Type-Token Ratio (TTR)                                      |   0.92   
+    Root Type-Token Ratio (RTTR)                                |   7.17   
+    Corrected Type-Token Ratio (CTTR)                           |   5.07   
+    Herdan Type-Token Ratio (HTTR)                              |   0.98   
+    Summer Type-Token Ratio (STTR)                              |   0.96   
+    Mass Type-Token Ratio (MTTR)                                |   0.01   
+    Dugast Type-Token Ratio (DTTR)                              |  85.82   
+    Moving Average Type-Token Ratio (MATTR)                     |   0.91   
+    Mean Segmental Type-Token Ratio (MSTTR)                     |   0.94   
+    Measure of Textual Lexical Diversity (MTLD)                 |  208.38  
+    Moving Average Measure of Textual Lexical Diversity (MTLD)  |   1.00   
+    Hypergeometric Distribution D (HD-D)                        |   0.94   
+    Индекс Симпсона                                             |  305.00  
+    Гапакс-индекс                                               | 2499.46  
+```
 
 ### Морфологические статистики
 
