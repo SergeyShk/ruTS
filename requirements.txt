@@ -1,3 +1,4 @@
 nltk
 pymorphy2
+scipy
 spacy>=2.0.12

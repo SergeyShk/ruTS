@@ -11,6 +11,7 @@ with io.open(readme_file, mode='r', encoding='utf-8') as f:
     README = f.read()
 
 INSTALL_REQUIRES = [
+    'scipy',
     'nltk',
     'pymorphy2',
     'spacy>=2.0.12'
@@ -40,7 +41,7 @@ setup(
     author='Шкарин Сергей, Смирнова Екатерина',
     author_email='kouki.sergey@gmail.com, ekanerina@yandex.ru',
     url='https://github.com/SergeyShk/ruTS',
-    download_url='https://github.com/SergeyShk/ruTS/archive/0.1.0.tar.gz',
+    download_url='https://github.com/SergeyShk/ruTS/archive/0.4.0.tar.gz',
     packages=find_packages(exclude=('tests.*', 'tests')),
     python_requires='>=3.6',
     classifiers=(
