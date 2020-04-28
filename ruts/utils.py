@@ -131,3 +131,24 @@ def extract_archive(
                 return os.path.join(extract_dir, src_basename)
         else:
             return extract_dir
+
+def safe_divide(
+    num: Union[float, int],
+    den: Union[float, int],
+    default: Union[float, int] = 0
+) -> float:
+    """
+    Безопасное деление двух чисел
+
+    Аргументы:
+        num (float|int): Число в числителе
+        den (float|int): Число в знаменателе
+        default (float|int): Значение по умолчанию при возникновении ошибки
+
+    Вывод:
+        float: Результат безопасного деления
+    """
+    if not den:
+        return default
+    else:
+        return num / den

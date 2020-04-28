@@ -1,5 +1,6 @@
 from .constants import DIVERSITY_STATS_DESC
 from .extractors import WordsExtractor
+from .utils import safe_divide
 from collections import Counter
 from itertools import permutations
 from math import sqrt, log10
@@ -194,7 +195,7 @@ def calc_ttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return n_lexemes / n_words
+    return safe_divide(n_lexemes, n_words)
 
 def calc_rttr(text: List[str]) -> float:
     """
@@ -211,7 +212,7 @@ def calc_rttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return n_lexemes / sqrt(n_words)
+    return safe_divide(n_lexemes, sqrt(n_words))
 
 def calc_cttr(text: List[str]) -> float:
     """
@@ -228,7 +229,7 @@ def calc_cttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return n_lexemes / sqrt(2 * n_words)
+    return safe_divide(n_lexemes, sqrt(2 * n_words))
 
 def calc_httr(text: List[str]) -> float:
     """
@@ -245,7 +246,7 @@ def calc_httr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return log10(n_lexemes) / log10(n_words)
+    return safe_divide(log10(n_lexemes), log10(n_words))
 
 def calc_sttr(text: List[str]) -> float:
     """
@@ -262,7 +263,7 @@ def calc_sttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return log10(log10(n_lexemes)) / log10(log10(n_words))
+    return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
 
 def calc_mttr(text: List[str]) -> float:
     """
@@ -280,7 +281,7 @@ def calc_mttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return (log10(n_words) - log10(n_lexemes)) / log10(n_words)**2
+    return safe_divide((log10(n_words) - log10(n_lexemes)), log10(n_words)**2)
 
 def calc_dttr(text: List[str]) -> float:
     """
@@ -297,7 +298,7 @@ def calc_dttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return log10(n_words)**2 / (log10(n_words) - log10(n_lexemes))
+    return safe_divide(log10(n_words)**2, (log10(n_words) - log10(n_lexemes)))
 
 def calc_mattr(
     text: List[str],
@@ -328,7 +329,7 @@ def calc_mattr(
                 break
             window_count += 1
             window_ttr += len(set(window)) / float(window_len)
-        mattr = window_ttr / window_count
+        mattr = safe_divide(window_ttr, window_count)
     return mattr
 
 def calc_msttr(
@@ -359,8 +360,8 @@ def calc_msttr(
             segment = text[seed: (seed + segment_len)]
             segment_count += 1
             seed += segment_len
-            segment_ttr += len(set(segment)) / len(segment)
-        msttr = segment_ttr / segment_count
+            segment_ttr += safe_divide(len(set(segment)), len(segment))
+        msttr = safe_divide(segment_ttr, segment_count)
     return msttr
 
 def calc_mtld(
@@ -401,7 +402,7 @@ def calc_mtld(
                     start = n + 1
                 else:
                     continue
-        mtld_base = factor_len / factor
+        mtld_base = safe_divide(factor_len, factor)
         return mtld_base
     
     mltd_forward = calc_mtld_base(text)
@@ -442,7 +443,7 @@ def calc_mamtld(
                         breaker = True
                     else:
                         continue
-        mamtld_base = factor_len / factor if factor else 1
+        mamtld_base = safe_divide(factor_len, factor, 1)
         return mamtld_base
 
     mamtld_forward = calc_mamtld_base(text)
@@ -515,8 +516,7 @@ def calc_simpson_index(text: List[str]) -> float:
     for perm in perms:
         if perm[0] == perm[1]:
             counter += 1
-    simpson_index = counter / den
-    simpson_index = 1 / simpson_index
+    simpson_index = safe_divide(den, counter)
     return simpson_index
 
 def calc_hapax_index(text: List[str]) -> float:
@@ -543,6 +543,6 @@ def calc_hapax_index(text: List[str]) -> float:
     num = 100 * log10(n_words)
     freqs = FreqDist(text)
     hapaxes = len(freqs.hapaxes())
-    den = 1 - (hapaxes / n_lexemes)
-    hapax_index = num / den
+    den = 1 - (safe_divide(hapaxes, n_lexemes))
+    hapax_index = safe_divide(num, den)
     return hapax_index

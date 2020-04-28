@@ -457,6 +457,7 @@ doc._.bs.get_stats()
 * **tests**:
     * test_basic_stats.py - тесты базовых текстовых статистик
     * test_components.py - тесты компонентов spaCy
+    * test_diversity_stats.py - тесты метрик лексического разнообразия текста
     * test_extractors.py - тесты инструментов для извлечения объектов из текста
     * test_morph_stats - тесты морфологических статистик
     * test_readability_stats.py - тесты метрик удобочитаемости текста
