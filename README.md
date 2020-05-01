@@ -405,6 +405,7 @@ zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=Tru
 Библиотека позволяет создавать компоненты spaCy для следующих классов:
 
 * BasicStats
+* DiversityStats
 * MorphStats
 * ReadabilityStats
 
