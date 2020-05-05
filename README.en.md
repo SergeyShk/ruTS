@@ -1,4 +1,4 @@
-# Russian Texts Statistics (ruTS) ![README_RU](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/Russia.png) [![README_EN](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/United-Kingdom.png)](https://github.com/SergeyShk/ruTS/blob/master/README.en.md)
+# Russian Texts Statistics (ruTS) [![README_RU](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/Russia.png)](https://github.com/SergeyShk/ruTS/blob/master/README.md) ![README_EN](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/United-Kingdom.png)
 
 ![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/pypistats.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/pypistats/)
@@ -12,17 +12,17 @@
 <img src="https://clipartart.com/images/free-tree-roots-clipart-black-and-white-2.png">
 </p>
 
-Библиотека для извлечения статистик из текстов на русском языке.
+Library for statistics extraction from texts in Russian.
 
-## Установка
+## Installation
 
-Выполнить:
+Run the following command:
 
 ```bash
 $ pip install ruts
 ```
 
-Зависимости:
+Dependencies:
 
 * python 3.6+
 * nltk
@@ -30,22 +30,22 @@ $ pip install ruts
 * scipy
 * spacy
 
-Библиотека по умолчанию использует токенизатор от nltk, который необходимо предварительно скачать:
+By default, the package utilizes the nltk’s tokenizer, which you should download in advance:
 
 ```python
 import nltk
 nltk.download('punkt') 
 ```
 
-## Функционал
+## Usage
 
-Основной функционал базируется на адаптированных для русского языка статистиках библиотеки [textacy](https://github.com/chartbeat-labs/textacy) и позволяет работать как непосредственно с текстами, так и с подготовленными Doc-объектами библиотеки [spaCy](https://github.com/explosion/spaCy).
+The main functions are based on the [textacy](https://github.com/chartbeat-labs/textacy) statistics adapted to Russian language. The library allows working both with raw texts and Doc-objects of the [spaCy](https://github.com/explosion/spaCy) library.
 
-### Извлечение объектов
+### Object extraction
 
-Библиотека позволяет создавать свои инструменты для извлечения предложений и слов из текста, которые затем можно использовать при вычислении статистик.
+The library allows creating your own tools for sentence and word extraction from a text, which can be further employed for counting statistics.
 
-Пример:
+Example:
 
 ```python
 import re
@@ -67,27 +67,27 @@ we.get_most_common(3)
     [('иметь', 2), ('рубль', 1), ('друг', 1)]
 ```
 
-### Базовые статистики
+### Basic statistics
 
-Библиотека позволяет извлекать из текста следующие статистические показатели:
+The library allows extracting the following statistics from a text:
 
-* количество предложений
-* количество слов
-* количество уникальных слов
-* количество длинных слов
-* количество сложных слов
-* количество простых слов
-* количество односложных слов
-* количество многосложных слов
-* количество символов
-* количество букв
-* количество пробелов
-* количество слогов
-* количество знаков препинания
-* распределение слов по количеству букв
-* распределение слов по количеству слогов
+* the number of sentences
+* the number of words
+* the number of unique words
+* the number of long words
+* the number of complex words
+* the number of simple words
+* the number of monosyllabic words
+* the number of polysyllabic words
+* the number of symbols
+* the number of letters
+* the number of spaces
+* the number of syllables
+* the number of punctuation marks
+* word distribution by the number of letters
+* word distribution by the number of syllables
 
-Пример:
+Example:
 
 ```python
 from ruts import BasicStats
@@ -130,20 +130,20 @@ bs.print_stats()
     Знаки препинания    |    2
 ```
 
-### Метрики удобочитаемости
+### Readability metrics
 
-Библиотека позволяет вычислять для текста следующие метрики удобочитаемости:
+The library allows counting the following readability metrics:
 
-* Тест Флеша-Кинкайда
-* Индекс удобочитаемости Флеша
-* Индекс Колман-Лиау
-* Индекс SMOG
-* Автоматический индекс удобочитаемости
-* Индекс удобочитаемости LIX
+* Flesch Reading Ease
+* Flesch-Kincaid Grade Level
+* Coleman-Liau Index
+* SMOG Index
+* Automated Readability Index
+* LIX readability measure
 
-Коэффициенты метрик для русского языка были взяты из работы исследователей проекта [Plain Russian Language](https://github.com/infoculture/plainrussian), которые получили их на основе специально подобранных текстов с предварительными возрастными пометками.
+Coefficients for Russian language were borrowed from the [Plain Russian Language](https://github.com/infoculture/plainrussian) project dedicated to counting readability coefficients based on a special corpus of texts with age labels.
 
-Пример:
+Example:
 
 ```python
 from ruts import ReadabilityStats
@@ -170,9 +170,9 @@ rs.print_stats()
     Индекс удобочитаемости LIX              |  48.33  
 ```
 
-### Метрики лексического разнообразия
+### Lexical diversity metrics
 
-Библиотека позволяет вычислять для текста следующие метрики лексического разнообразия:
+The library allows counting the following lexical diversity metrics for a text:
 
 * Type-Token Ratio (TTR)
 * Root Type-Token Ratio (RTTR)
@@ -186,12 +186,12 @@ rs.print_stats()
 * Measure of Textual Lexical Diversity (MTLD)
 * Moving Average Measure of Textual Lexical Diversity (MAMTLD)
 * Hypergeometric Distribution D (HD-D)
-* Индекс Симпсона
-* Гапакс-индекс
+* Simpson's Diversity Index
+* Hapax Legomena Index
 
-Часть реализаций метрик взята из проекта [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity).
+Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project.
 
-Пример:
+Example:
 
 ```python
 from ruts import DiversityStats
@@ -234,26 +234,26 @@ ds.print_stats()
     Гапакс-индекс                                               | 2499.46  
 ```
 
-### Морфологические статистики
+### Morphological statistics
 
-Библиотека позволяет извлекать из текста следующие морфологические признаки:
+The library allows extracting the following morphological features:
 
-* часть речи
-* одушевленность
-* вид
-* падеж
-* род
-* совместность
-* наклонение
-* число
-* лицо
-* время
-* переходность
-* залог
+* part of speech
+* animacy
+* aspect
+* case
+* gender
+* involvement
+* mood
+* number
+* person
+* tense
+* transitivity
+* voice
 
-Для морфологического разбора текста используется библиотека [pymorphy2](https://github.com/kmike/pymorphy2). Описание статистик взяты из корпуса [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
+Morphological analysis is made using [pymorphy2](https://github.com/kmike/pymorphy2). Descriptions of morphological features were borrowed from [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
 
-Пример:
+Example:
 
 ```python
 from ruts import MorphStats
@@ -333,15 +333,15 @@ ms.print_stats('pos', 'tense')
     Прошедшее                     |    1 
 ```
 
-### Наборы данных
+### Datasets
 
-Библиотека позволяет работать с несколькими заранее предобработанными наборами данных:
+Library allows working with a number of  preprocessed datasets:
 
-* sov_chrest_lit - советские хрестоматии по литературе
+* sov_chrest_lit - soviet reading-books for literature classes
 
-Существует возможность работать как с чистыми текстами (без заголовочной информации), так и с записями, а также фильтровать их по различным критериям.
+One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
-Пример:
+Example:
 
 ```python
 from ruts.datasets import SovChLit
@@ -378,13 +378,13 @@ for i in sc.get_texts(text_type='Басня', limit=1):
     'зверя нет.')
 ```
 
-### Визуализация
+### Visualization
 
-Библиотека позволяет визуализировать тексты с помощью следующих видов графиков:
+Library allows visualizing text with the help of the following graphs:
 
-* Закон Ципфа (Zipf's law)
+* Zipf's law
 
-Пример:
+Example:
 
 ```python
 from collections import Counter
@@ -400,16 +400,16 @@ tokens_with_count = Counter(we.extract())
 zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
 ```
 
-### Компоненты
+### Components
 
-Библиотека позволяет создавать компоненты spaCy для следующих классов:
+Library allows creating the following classes of spaCy components:
 
 * BasicStats
 * DiversityStats
 * MorphStats
 * ReadabilityStats
 
-Пример:
+Example:
 
 ```python
 from ruts import BasicStatsComponent
@@ -440,30 +440,30 @@ doc._.bs.get_stats()
     'n_words': 9}
 ```
 
-## Структура проекта
+## Project structure
 
 * **ruts**:
-    * basic_stats.py - базовые текстовые статистики
-    * components.py - компоненты spaCy
-    * constants.py - основные используемые константы
-    * diversity_stats.py - метрики лексического разнообразия текста
-    * extractors.py - инструменты для извлечения объектов из текста
-    * morph_stats.py - морфологические статистики
-    * readability_stats.py - метрики удобочитаемости текста
-    * utils.py - вспомогательные инструменты
-    * visualizers.py - инструменты для визуализации текстов
-    * **datasets** - наборы данных:
-        * dataset.py - базовый класс для работы с наборами данных
-        * sov_chrest_lit.py - советские хрестоматии по литературе
+    * basic_stats.py - basic text statistics
+    * components.py - spaCy components
+    * constants.py - main constants
+    * diversity_stats.py - lexical diversity metrics
+    * extractors.py - tools for object extraction from a text
+    * morph_stats.py - morphological statistics 
+    * readability_stats.py - readability metrics
+    * utils.py - subsidiary tools
+    * visualizers.py - tools for text visualization
+    * **datasets**:
+        * dataset.py - basic class for working with datasets
+        * sov_chrest_lit.py - soviet reading-books for literature classes
 * **tests**:
-    * test_basic_stats.py - тесты базовых текстовых статистик
-    * test_components.py - тесты компонентов spaCy
-    * test_diversity_stats.py - тесты метрик лексического разнообразия текста
-    * test_extractors.py - тесты инструментов для извлечения объектов из текста
-    * test_morph_stats - тесты морфологических статистик
-    * test_readability_stats.py - тесты метрик удобочитаемости текста
+    * test_basic_stats.py - test for basic text statistics
+    * test_components.py - tests for spaCy components
+    * test_diversity_stats.py - tests for lexical diversity metrics
+    * test_extractors.py - tests for object extraction tools
+    * test_morph_stats - tests for morphological statistics
+    * test_readability_stats.py - tests for readability metrics
 
 ## Авторы
 
-* Шкарин Сергей (kouki.sergey@gmail.com)
-* Смирнова Екатерина (ekanerina@yandex.ru)
+* Sergey Shkarin (kouki.sergey@gmail.com)
+* Ekaterina Smirnova (ekanerina@yandex.ru)
