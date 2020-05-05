@@ -24,11 +24,11 @@ $ pip install ruts
 
 Dependencies:
 
-* python 3.6+
-* nltk
-* pymorphy2
-* scipy
-* spacy
+*   python 3.6+
+*   nltk
+*   pymorphy2
+*   scipy
+*   spacy
 
 By default, the package utilizes the nltk’s tokenizer, which you should download in advance:
 
@@ -71,21 +71,21 @@ we.get_most_common(3)
 
 The library allows extracting the following statistics from a text:
 
-* the number of sentences
-* the number of words
-* the number of unique words
-* the number of long words
-* the number of complex words
-* the number of simple words
-* the number of monosyllabic words
-* the number of polysyllabic words
-* the number of symbols
-* the number of letters
-* the number of spaces
-* the number of syllables
-* the number of punctuation marks
-* word distribution by the number of letters
-* word distribution by the number of syllables
+*   the number of sentences
+*   the number of words
+*   the number of unique words
+*   the number of long words
+*   the number of complex words
+*   the number of simple words
+*   the number of monosyllabic words
+*   the number of polysyllabic words
+*   the number of symbols
+*   the number of letters
+*   the number of spaces
+*   the number of syllables
+*   the number of punctuation marks
+*   word distribution by the number of letters
+*   word distribution by the number of syllables
 
 Example:
 
@@ -134,12 +134,12 @@ bs.print_stats()
 
 The library allows counting the following readability metrics:
 
-* Flesch Reading Ease
-* Flesch-Kincaid Grade Level
-* Coleman-Liau Index
-* SMOG Index
-* Automated Readability Index
-* LIX readability measure
+*   Flesch Reading Ease
+*   Flesch-Kincaid Grade Level
+*   Coleman-Liau Index
+*   SMOG Index
+*   Automated Readability Index
+*   LIX readability measure
 
 Coefficients for Russian language were borrowed from the [Plain Russian Language](https://github.com/infoculture/plainrussian) project dedicated to counting readability coefficients based on a special corpus of texts with age labels.
 
@@ -174,20 +174,20 @@ rs.print_stats()
 
 The library allows counting the following lexical diversity metrics for a text:
 
-* Type-Token Ratio (TTR)
-* Root Type-Token Ratio (RTTR)
-* Corrected Type-Token Ratio (CTTR)
-* Herdan Type-Token Ratio (HTTR)
-* Summer Type-Token Ratio (STTR)
-* Mass Type-Token Ratio (MTTR)
-* Dugast Type-Token Ratio (DTTR)
-* Moving Average Type-Token Ratio (MATTR)
-* Mean Segmental Type-Token Ratio (MSTTR)
-* Measure of Textual Lexical Diversity (MTLD)
-* Moving Average Measure of Textual Lexical Diversity (MAMTLD)
-* Hypergeometric Distribution D (HD-D)
-* Simpson's Diversity Index
-* Hapax Legomena Index
+*   Type-Token Ratio (TTR)
+*   Root Type-Token Ratio (RTTR)
+*   Corrected Type-Token Ratio (CTTR)
+*   Herdan Type-Token Ratio (HTTR)
+*   Summer Type-Token Ratio (STTR)
+*   Mass Type-Token Ratio (MTTR)
+*   Dugast Type-Token Ratio (DTTR)
+*   Moving Average Type-Token Ratio (MATTR)
+*   Mean Segmental Type-Token Ratio (MSTTR)
+*   Measure of Textual Lexical Diversity (MTLD)
+*   Moving Average Measure of Textual Lexical Diversity (MAMTLD)
+*   Hypergeometric Distribution D (HD-D)
+*   Simpson's Diversity Index
+*   Hapax Legomena Index
 
 Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project.
 
@@ -238,18 +238,18 @@ ds.print_stats()
 
 The library allows extracting the following morphological features:
 
-* part of speech
-* animacy
-* aspect
-* case
-* gender
-* involvement
-* mood
-* number
-* person
-* tense
-* transitivity
-* voice
+*   part of speech
+*   animacy
+*   aspect
+*   case
+*   gender
+*   involvement
+*   mood
+*   number
+*   person
+*   tense
+*   transitivity
+*   voice
 
 Morphological analysis is made using [pymorphy2](https://github.com/kmike/pymorphy2). Descriptions of morphological features were borrowed from [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
 
@@ -337,7 +337,7 @@ ms.print_stats('pos', 'tense')
 
 Library allows working with a number of  preprocessed datasets:
 
-* sov_chrest_lit - soviet reading-books for literature classes
+*   sov_chrest_lit - soviet reading-books for literature classes
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
@@ -382,7 +382,7 @@ for i in sc.get_texts(text_type='Басня', limit=1):
 
 Library allows visualizing text with the help of the following graphs:
 
-* Zipf's law
+*   Zipf's law
 
 Example:
 
@@ -404,10 +404,10 @@ zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=Tru
 
 Library allows creating the following classes of spaCy components:
 
-* BasicStats
-* DiversityStats
-* MorphStats
-* ReadabilityStats
+*   BasicStats
+*   DiversityStats
+*   MorphStats
+*   ReadabilityStats
 
 Example:
 
@@ -442,28 +442,28 @@ doc._.bs.get_stats()
 
 ## Project structure
 
-* **ruts**:
-    * basic_stats.py - basic text statistics
-    * components.py - spaCy components
-    * constants.py - main constants
-    * diversity_stats.py - lexical diversity metrics
-    * extractors.py - tools for object extraction from a text
-    * morph_stats.py - morphological statistics 
-    * readability_stats.py - readability metrics
-    * utils.py - subsidiary tools
-    * visualizers.py - tools for text visualization
-    * **datasets**:
-        * dataset.py - basic class for working with datasets
-        * sov_chrest_lit.py - soviet reading-books for literature classes
-* **tests**:
-    * test_basic_stats.py - test for basic text statistics
-    * test_components.py - tests for spaCy components
-    * test_diversity_stats.py - tests for lexical diversity metrics
-    * test_extractors.py - tests for object extraction tools
-    * test_morph_stats - tests for morphological statistics
-    * test_readability_stats.py - tests for readability metrics
+*   **ruts**:
+    *   basic_stats.py - basic text statistics
+    *   components.py - spaCy components
+    *   constants.py - main constants
+    *   diversity_stats.py - lexical diversity metrics
+    *   extractors.py - tools for object extraction from a text
+    *   morph_stats.py - morphological statistics 
+    *   readability_stats.py - readability metrics
+    *   utils.py - subsidiary tools
+    *   visualizers.py - tools for text visualization
+    *   **datasets**:
+        *   dataset.py - basic class for working with datasets
+        *   sov_chrest_lit.py - soviet reading-books for literature classes
+*   **tests**:
+    *   test_basic_stats.py - test for basic text statistics
+    *   test_components.py - tests for spaCy components
+    *   test_diversity_stats.py - tests for lexical diversity metrics
+    *   test_extractors.py - tests for object extraction tools
+    *   test_morph_stats - tests for morphological statistics
+    *   test_readability_stats.py - tests for readability metrics
 
 ## Авторы
 
-* Sergey Shkarin (kouki.sergey@gmail.com)
-* Ekaterina Smirnova (ekanerina@yandex.ru)
+*   Sergey Shkarin (kouki.sergey@gmail.com)
+*   Ekaterina Smirnova (ekanerina@yandex.ru)
