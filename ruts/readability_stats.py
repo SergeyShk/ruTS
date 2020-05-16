@@ -37,6 +37,9 @@ class ReadabilityStats(object):
     Методы:
         get_stats: Получение вычисленных метрик удобочитаемости текста
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
+
+    Исключения:
+        ValueError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -46,6 +49,8 @@ class ReadabilityStats(object):
         words_extractor: WordsExtractor = None
     ):
         self.bs = BasicStats(source, sents_extractor, words_extractor)
+        if not self.bs.n_words:
+            raise ValueError("В источнике данных отсутствуют слова")
 
     @property
     def flesch_kincaid_grade(self):

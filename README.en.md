@@ -383,6 +383,7 @@ for i in sc.get_texts(text_type='Басня', limit=1):
 Library allows visualizing text with the help of the following graphs:
 
 *   Zipf's law
+*   Literature Fingerprinting
 
 Example:
 
@@ -463,7 +464,7 @@ doc._.bs.get_stats()
     *   test_morph_stats - tests for morphological statistics
     *   test_readability_stats.py - tests for readability metrics
 
-## Авторы
+## Authors
 
 *   Sergey Shkarin (kouki.sergey@gmail.com)
 *   Ekaterina Smirnova (ekanerina@yandex.ru)

@@ -28,7 +28,7 @@ class BasicStatsComponent(object):
     def __init__(self, name: str = "bs"):
         self.name = name
         Doc.set_extension(self.name, default=None, force=True)
-    
+
     def __call__(self, doc: Doc) -> Doc:
         """
         Добавление извлеченных статистик в компонент
