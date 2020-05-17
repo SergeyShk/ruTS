@@ -1,5 +1,4 @@
 from .diversity_stats import calc_ttr
-from .extractors import WordsExtractor
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
@@ -93,7 +92,8 @@ def fingerprinting(
     metric: Callable = None,
     x_size=800,
     y_size=600,
-    cmap='PuOr'
+    cmap='PuOr',
+    is_return=True
 ) -> Figure:
     """
     Визуализация литературной дактилоскопии (Literature Fingerprinting)
@@ -108,6 +108,7 @@ def fingerprinting(
         x_size (int): Ширина области для визуализации
         y_size (int): Высота области для визуализации
         cmap (str): Цветовая карта
+        is_return (bool): Возвращать объект Figure
 
     Вывод:
         fig (Figure): Визуализация литературной дактилоскопии
@@ -115,7 +116,7 @@ def fingerprinting(
     Исключения:
         TypeError: Если передаваемое значение не является списком списков
     """
-    if not any(isinstance(text, list) for text in texts):
+    if not any(isinstance(text, (list, tuple)) for text in texts):
         raise TypeError("Тексты должны быть представлены в виде списка списков слов")
     metrics = {}
     if isinstance(metric, FunctionType):
@@ -178,7 +179,7 @@ def fingerprinting(
                 if b[i][j] == 0:
                     rect = Rectangle((x, y), tam_quad, tam_quad, color='Black')
                     ax.add_patch(rect)
-                else:    
+                else:
                     rect = Rectangle((x, y), tam_quad, tam_quad, color=cmaps(b[i][j] / max_metric))
                     ax.add_patch(rect)
                 x += tam_quad
@@ -189,4 +190,5 @@ def fingerprinting(
     plt.xlim([-x_size, x_size])
     plt.ylim([-y_size, y_size])
     plt.title("Литературная дактилоскопия")
-    return fig
+    if is_return:
+        return fig
