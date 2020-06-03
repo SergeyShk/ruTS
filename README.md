@@ -3,6 +3,8 @@
 ![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/pypistats.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/pypistats/)
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
+[![Build Status](https://travis-ci.com/SergeyShk/ruTS.svg?branch=master)](https://travis-ci.com/SergeyShk/ruTS)
+[![codecov](https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg)](https://codecov.io/gh/SergeyShk/ruTS)
 ![Status](https://img.shields.io/pypi/status/ruts)
 [![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
