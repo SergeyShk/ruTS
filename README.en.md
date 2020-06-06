@@ -29,6 +29,7 @@ Dependencies:
 *   python 3.6+
 *   nltk
 *   pymorphy2
+*   razdel
 *   scipy
 *   spacy
 

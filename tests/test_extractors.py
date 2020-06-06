@@ -1,7 +1,7 @@
 import re
 import pytest
 from nltk.corpus import stopwords
-from nltk.tokenize import wordpunct_tokenize
+from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 from ruts import SentsExtractor, WordsExtractor
 
 @pytest.fixture(scope='module')
@@ -19,8 +19,12 @@ class TestSentsExtractor(object):
 
     @staticmethod
     def test_tokenizer(text):
-        se = SentsExtractor(text, tokenizer=re.compile(r'[;.]'))
-        assert len(tuple(se.extract())) == 4
+        se_1 = SentsExtractor(text)
+        se_2 = SentsExtractor(text, tokenizer=re.compile(r'[;.]'))
+        se_3 = SentsExtractor(text, tokenizer=sent_tokenize)
+        assert len(tuple(se_1.extract())) == 2
+        assert len(tuple(se_2.extract())) == 4
+        assert len(tuple(se_3.extract())) == 2
 
 class TestWordsExtractor(object):
     @staticmethod
@@ -30,10 +34,12 @@ class TestWordsExtractor(object):
 
     @staticmethod
     def test_tokenizer(text):
-        we_1 = WordsExtractor(text, tokenizer=re.compile(r'[^\w]+'))
-        we_2 = WordsExtractor(text, tokenizer=wordpunct_tokenize)
-        assert len(we_1.extract()) == 62
-        assert len(we_2.extract()) == 63
+        we_1 = WordsExtractor(text)
+        we_2 = WordsExtractor(text, tokenizer=re.compile(r'[^\w]+'))
+        we_3 = WordsExtractor(text, tokenizer=wordpunct_tokenize)
+        assert len(we_1.extract()) == 61
+        assert len(we_2.extract()) == 62
+        assert len(we_3.extract()) == 63
 
     @staticmethod
     def test_filter_punct(text):

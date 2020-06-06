@@ -3,7 +3,7 @@ import re
 from .constants import PUNCTUATIONS
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from nltk.tokenize import sent_tokenize, word_tokenize
+from razdel import sentenize, tokenize
 from typing import Callable, List, Pattern, Tuple, Union
 
 class Extractor(object, metaclass=ABCMeta):
@@ -80,7 +80,7 @@ class SentsExtractor(Extractor):
             TypeError: Если некорректно задан токенизатор
         """
         if not self.tokenizer:
-            self.sents = sent_tokenize(self.text)
+            self.sents = (sent.text for sent in sentenize(self.text))
         elif isinstance(self.tokenizer, Pattern):
             self.sents = re.split(self.tokenizer, self.text)
         else:
@@ -99,9 +99,11 @@ class WordsExtractor(Extractor):
     Класс для извлечения слов из текста
 
     Пример использования:
+        >>> from nltk.corpus import stopwords
         >>> from ruts import WordsExtractor
         >>> text = "Не имей 100 рублей, а имей 100 друзей"
-        >>> we = WordsExtractor(text, use_lexemes=True, filter_nums=True, ngram_range=(1, 2))
+        >>> we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'),
+        >>>                     filter_nums=True, ngram_range=(1, 2))
         >>> we.extract()
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
@@ -165,7 +167,7 @@ class WordsExtractor(Extractor):
             TypeError: Если некорректно задан токенизатор
         """
         if not self.tokenizer:
-            self.words = (word for word in word_tokenize(self.text))
+            self.words = (word.text for word in tokenize(self.text))
         elif isinstance(self.tokenizer, Pattern):
             self.words = (word for word in re.split(self.tokenizer, self.text))
         else:

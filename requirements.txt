@@ -1,4 +1,5 @@
 nltk
 pymorphy2
+razdel
 scipy
 spacy>=2.0.12
