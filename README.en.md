@@ -33,13 +33,6 @@ Dependencies:
 *   scipy
 *   spacy
 
-By default, the package utilizes the nltk’s tokenizer, which you should download in advance:
-
-```python
-import nltk
-nltk.download('punkt') 
-```
-
 ## Usage
 
 The main functions are based on the [textacy](https://github.com/chartbeat-labs/textacy) statistics adapted to Russian language. The library allows working both with raw texts and Doc-objects of the [spaCy](https://github.com/explosion/spaCy) library.
