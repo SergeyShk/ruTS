@@ -9,6 +9,17 @@ def ms():
     ms_ = MorphStats(text)
     return ms_
 
+def test_init_value_error():
+    text = "+ _"
+    with pytest.raises(ValueError):
+        MorphStats(text)
+
+def test_init_type_error():
+    texts = [666, ['a', 'b'], {'a': 'b'}]
+    for text in texts:
+        with pytest.raises(TypeError):
+            MorphStats(text)
+
 def test_pos(ms):
     assert ms.pos == ('VERB', 'INFN', 'CONJ', 'CONJ', 'VERB', 'ADVB', 'VERB', 'INFN', 'CONJ', 'CONJ', 'VERB')
 
@@ -45,8 +56,43 @@ def test_transitivity(ms):
 def test_voice(ms):
     assert ms.voice == (None, None, None, None, None, None, None, None, None, None, None)
 
-def test_morph_counts(ms):
+def test_get_stats(ms):
     stats = ms.get_stats()
     assert isinstance(stats, dict)
     for key in MORPHOLOGY_STATS_DESC.keys():
         assert stats[key] == Counter(getattr(ms, key))
+
+def test_get_stats_args(ms):
+    stats = ms.get_stats('pos', 'tense')
+    assert set(stats.keys()) == set(['pos', 'tense'])
+
+def test_get_stats_filter_none(ms):
+    stats = ms.get_stats(filter_none=True)
+    assert all([None not in v.keys() for v in stats.values()])
+
+def test_explain_text(ms):
+    explain = ms.explain_text()
+    assert isinstance(explain, tuple)
+    assert list(zip(*explain))[0] == ms.words
+
+def test_explain_text_args(ms):
+    explain = ms.explain_text('pos', 'tense')
+    assert all([set(v.keys()) == set(['pos', 'tense']) for v in tuple(zip(*explain))[1]])
+
+def test_explain_text_filter_none(ms):
+    explain = ms.explain_text(filter_none=True)
+    assert all([None not in v.values() for v in tuple(zip(*explain))[1]])
+
+def test_print_stats(capsys, ms):
+    ms.print_stats()
+    captured = capsys.readouterr()
+    assert captured.out.count('|') == 29
+
+def test_print_stats_args(capsys, ms):
+    ms.print_stats('pos', 'tense')
+    captured = capsys.readouterr()
+    assert captured.out.count('|') == 8
+
+def test_check_stat_key_error(ms):
+    with pytest.raises(KeyError):
+        ms.get_stats('foo', 'tense')

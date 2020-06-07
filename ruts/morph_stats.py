@@ -62,7 +62,7 @@ class MorphStats(object):
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если анализируемый текст является пустой строкой
+        ValueError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -80,8 +80,8 @@ class MorphStats(object):
             self.words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")
-        if not text:
-            raise ValueError("Анализируемый текст пуст")
+        if not self.words:
+            raise ValueError("В источнике данных отсутствуют слова")
 
         morph = pymorphy2.MorphAnalyzer()
         self.tags = tuple(morph.parse(word)[0].tag for word in self.words)
@@ -138,7 +138,7 @@ class MorphStats(object):
             filter_none (bool): Фильтровать пустые значения
 
         Вывод:
-            dict[str, dict[str, str]]: Справочник слов текста с морфологическими статистиками
+            tuple[str, dict[str, str]]: Кортеж слов текста с морфологическими статистиками
         """
         if not args:
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
@@ -149,7 +149,7 @@ class MorphStats(object):
             explains = tuple(dict((k, v) for (k, v) in dict(zip(args, value)).items() if v) for value in values)
         else:
             explains = tuple(dict(zip(args, value)) for value in values)
-        print(tuple(zip(self.words, explains)))
+        return tuple(zip(self.words, explains))
 
     def print_stats(
         self,
