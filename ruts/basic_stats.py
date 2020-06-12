@@ -58,7 +58,7 @@ class BasicStats(object):
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если анализируемый текст является пустой строкой
+        ValueError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -81,8 +81,8 @@ class BasicStats(object):
             words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")
-        if not text:
-            raise ValueError("Анализируемый текст пуст")
+        if not words:
+            raise ValueError("В источнике данных отсутствуют слова")
 
         letters_per_word = tuple(len(word) for word in words)
         syllables_per_word = tuple(count_syllables(word) for word in words)

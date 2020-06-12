@@ -11,6 +11,17 @@ def bs():
     bs_ = BasicStats(text)
     return bs_
 
+def test_init_value_error():
+    text = "+ _"
+    with pytest.raises(ValueError):
+        BasicStats(text)
+
+def test_init_type_error():
+    texts = [666, ['a', 'b'], {'a': 'b'}]
+    for text in texts:
+        with pytest.raises(TypeError):
+            BasicStats(text)
+
 def test_c_letters(bs):
     assert bs.c_letters == {1: 4, 2: 3, 3: 4, 4: 1, 5: 8, 6: 6, 7: 5, 8: 6, 9: 5,
                             10: 5, 11: 6, 12: 4, 13: 2, 15: 1, 18: 1}
@@ -57,8 +68,13 @@ def test_n_words(bs):
 def test_n_punctuations(bs):
     assert bs.n_punctuations == 12
 
-def test_basic_counts(bs):
+def test_get_stats(bs):
     stats = bs.get_stats()
     assert isinstance(stats, dict)
     for key in BASIC_STATS_DESC.keys():
         assert stats[key] == getattr(bs, key)
+
+def test_print_stats(capsys, bs):
+    bs.print_stats()
+    captured = capsys.readouterr()
+    assert captured.out.count('|') == 14
