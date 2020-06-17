@@ -3,6 +3,7 @@ import pytest
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 from ruts import SentsExtractor, WordsExtractor
+from ruts.extractors import Extractor
 
 @pytest.fixture(scope='module')
 def text():
@@ -10,6 +11,10 @@ def text():
         какого-либо его сегмента; тематический, или идеографический способ упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению\
         с формальными онтологиями является выход в сферу лексических значений, установление связей не только между значениями и выражающими их словами,\
         а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
+
+def test_extractor_type_error():
+    with pytest.raises(TypeError):
+        Extractor("test")
 
 class TestSentsExtractor(object):
     @staticmethod
@@ -131,3 +136,9 @@ class TestWordsExtractor(object):
         with pytest.raises(ValueError):
             we = WordsExtractor(text)
             we.get_most_common(0)
+
+    @staticmethod
+    def test_get_most_common(text):
+        we = WordsExtractor(text)
+        we.extract()
+        assert we.get_most_common(1) == [('значений', 3)]
