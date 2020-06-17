@@ -12,10 +12,6 @@ def text():
         с формальными онтологиями является выход в сферу лексических значений, установление связей не только между значениями и выражающими их словами,\
         а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
 
-def test_extractor_type_error():
-    with pytest.raises(TypeError):
-        Extractor("test")
-
 class TestSentsExtractor(object):
     @staticmethod
     def test_init_value_error(text):

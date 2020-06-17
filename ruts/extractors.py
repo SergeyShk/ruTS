@@ -86,9 +86,8 @@ class SentsExtractor(Extractor):
         else:
             try:
                 self.sents = self.tokenizer(self.text)
-            except TypeError:
-                print("Токенизатор задан некорректно")
-                raise
+            except:
+                raise TypeError("Токенизатор задан некорректно")
         if self.min_len > 0:
             self.sents = (sent for sent in self.sents if len(sent) >= self.min_len)
         if self.max_len > 0:
@@ -174,9 +173,8 @@ class WordsExtractor(Extractor):
         else:
             try:
                 self.words = (word for word in self.tokenizer(self.text))
-            except TypeError:
-                print("Токенизатор задан некорректно")
-                raise
+            except:
+                raise TypeError("Токенизатор задан некорректно")
         if self.filter_punct:
             self.words = (word for word in self.words if word not in PUNCTUATIONS)
         if self.filter_nums:
