@@ -29,7 +29,7 @@ class Extractor(object, metaclass=ABCMeta):
 
     @abstractmethod
     def extract(self) -> Tuple[str, ...]:
-        pass
+        raise NotImplementedError
 
 class SentsExtractor(Extractor):
     """
@@ -66,7 +66,7 @@ class SentsExtractor(Extractor):
         super().__init__(text, tokenizer)
         self.min_len = min_len
         self.max_len = max_len
-        if self.min_len > self.max_len:
+        if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина предложения больше максимальной")
 
     def extract(self) -> Tuple[str, ...]:
