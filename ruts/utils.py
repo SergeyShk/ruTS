@@ -98,7 +98,7 @@ def extract_archive(
     if not extract_dir:
         extract_dir = str(archive_file.parent)
     archive_file = str(archive_file)
-    os.makedirs(extract_dir, exist_ok=True)
+    Path(extract_dir).mkdir(parents=True, exist_ok=True)
     is_zip = zipfile.is_zipfile(archive_file)
     is_tar = tarfile.is_tarfile(archive_file)
     if not is_zip and not is_tar:
