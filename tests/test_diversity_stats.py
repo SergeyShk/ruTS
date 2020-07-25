@@ -1,6 +1,7 @@
 import pytest
 from ruts import DiversityStats
 from ruts.constants import DIVERSITY_STATS_DESC
+from ruts.diversity_stats import calc_hdd, calc_mattr, calc_msttr, calc_ttr
 
 @pytest.fixture(scope='module')
 def ds():
@@ -10,6 +11,17 @@ def ds():
         а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
     ds_ = DiversityStats(text)
     return ds_
+
+def test_init_value_error():
+    text = "+ _"
+    with pytest.raises(ValueError):
+        DiversityStats(text)
+
+def test_init_type_error():
+    texts = [666, ['a', 'b'], {'a': 'b'}]
+    for text in texts:
+        with pytest.raises(TypeError):
+            DiversityStats(text)
 
 def test_ttr(ds):
     assert ds.ttr == pytest.approx(0.9180327868852459, rel=0.01)
@@ -35,8 +47,16 @@ def test_dttr(ds):
 def test_mattr(ds):
     assert ds.mattr == pytest.approx(0.9133333333333336, rel=0.01)
 
+def test_mattr_n_words():
+    text = ["социалистическая", "революция"]
+    assert calc_mattr(text, 50) == calc_ttr(text)
+
 def test_msttr(ds):
     assert ds.msttr == pytest.approx(0.94, rel=0.01)
+
+def test_msttr_n_words():
+    text = ["социалистическая", "революция"]
+    assert calc_msttr(text, 50) == calc_ttr(text)
 
 def test_mtld(ds):
     assert ds.mtld == pytest.approx(208.3760000000001, rel=1)
@@ -47,14 +67,27 @@ def test_mamtld(ds):
 def test_hdd(ds):
     assert ds.hdd == pytest.approx(0.9403815874780037, rel=0.01)
 
+def test_hdd_n_words():
+    text = ["социалистическая", "революция"]
+    assert calc_hdd(text) == -1
+
+def test_hdd_zero_division_error(ds):
+    text = ds.words
+    assert calc_hdd(text, 0) == 0.0
+
 def test_simpson_index(ds):
     assert ds.simpson_index == pytest.approx(305.0, rel=1)
 
 def test_hapax_index(ds):
     assert ds.hapax_index == pytest.approx(2499.4617690150753, rel=1)
 
-def test_diversity_counts(ds):
+def test_get_stats(ds):
     stats = ds.get_stats()
     assert isinstance(stats, dict)
     for key in DIVERSITY_STATS_DESC.keys():
         assert stats[key] == getattr(ds, key)
+
+def test_print_stats(capsys, ds):
+    ds.print_stats()
+    captured = capsys.readouterr()
+    assert captured.out.count('|') == 15

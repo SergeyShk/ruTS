@@ -70,7 +70,7 @@ class DiversityStats(object):
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если анализируемый текст является пустой строкой
+        ValueError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -88,8 +88,8 @@ class DiversityStats(object):
             self.words = words_extractor.extract()
         else:
             raise TypeError("Некорректный источник данных")
-        if not text:
-            raise ValueError("Анализируемый текст пуст")
+        if not self.words:
+            raise ValueError("В источнике данных отсутствуют слова")
 
     @property
     def ttr(self):
