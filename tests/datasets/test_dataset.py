@@ -26,7 +26,7 @@ class TestDataset(Dataset):
 
 @pytest.fixture(scope='module')
 def dataset():
-    dataset_ = TestDataset("", {})
+    dataset_ = TestDataset("test", {'a': 1, 'b': 2})
     return dataset_
 
 def test_iter_non_implement_error(dataset):
@@ -48,6 +48,12 @@ def test_get_records_non_implement_error(dataset):
 def test_download_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.download(False)
+
+def test_repr(dataset):
+    assert dataset.__repr__() == "Набор данных('test')"
+
+def test_info(dataset):
+    assert list(dataset.info.keys()) == ['Наименование', 'a', 'b']
 
 def test_type_error():
     with pytest.raises(TypeError):
