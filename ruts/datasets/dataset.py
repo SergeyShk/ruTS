@@ -15,6 +15,7 @@ class Dataset(object, metaclass=ABCMeta):
         get_records: Получение записей (с заголовками) из набора данных
         download: Загрузка набора данных из сети
     """
+    __test__ = False
 
     @abstractmethod
     def __init__(self, name, meta=None):
@@ -32,20 +33,20 @@ class Dataset(object, metaclass=ABCMeta):
 
     @abstractmethod
     def __iter__(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def check_data(self) -> bool:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_texts(self, *args: Any) -> Generator[str, None, None]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_records(self, *args: Any) -> Generator[Dict[str, Any], None, None]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def download(self, force: bool = False):
-        pass
+        raise NotImplementedError
