@@ -8,7 +8,7 @@ def bs():
         какого-либо его сегмента; тематический, или идеографический способ упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению\
         с формальными онтологиями является выход в сферу лексических значений, установление связей не только между значениями и выражающими их словами,\
         а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
-    bs_ = BasicStats(text)
+    bs_ = BasicStats(text, normalize=True)
     return bs_
 
 def test_init_value_error():
@@ -67,6 +67,33 @@ def test_n_words(bs):
 
 def test_n_punctuations(bs):
     assert bs.n_punctuations == 12
+
+def test_p_unique_words(bs):
+    assert bs.p_unique_words == pytest.approx(0.91, rel=0.1)
+
+def test_p_long_words(bs):
+    assert bs.p_long_words == pytest.approx(0.67, rel=0.1)
+
+def test_p_complex_words(bs):
+    assert bs.p_complex_words == pytest.approx(0.39, rel=0.1)
+
+def test_p_simple_words(bs):
+    assert bs.p_simple_words == pytest.approx(0.57, rel=0.1)
+
+def test_p_monosyllable_words(bs):
+    assert bs.p_monosyllable_words == pytest.approx(0.13, rel=0.1)
+
+def test_p_polysyllable_words(bs):
+    assert bs.p_polysyllable_words == pytest.approx(0.83, rel=0.1)
+
+def test_p_letters(bs):
+    assert bs.p_letters == pytest.approx(0.82, rel=0.1)
+
+def test_p_spaces(bs):
+    assert bs.p_spaces == pytest.approx(0.15, rel=0.1)
+
+def test_p_punctuations(bs):
+    assert bs.p_punctuations == pytest.approx(0.02, rel=0.1)
 
 def test_get_stats(bs):
     stats = bs.get_stats()

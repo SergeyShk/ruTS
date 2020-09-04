@@ -34,6 +34,7 @@ class BasicStats(object):
         source (str|Doc): Источник данных (строка или объект Doc)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
+        normalize (bool): Вычислять нормализованные статистики
 
     Атрибуты:
         c_letters (dict[int, int]): Распределение слов по количеству букв
@@ -51,6 +52,15 @@ class BasicStats(object):
         n_spaces (int): Количество пробелов
         n_syllables (int): Количество слогов
         n_punctuations (int): Количество знаков препинания
+        p_unique_words (float): Нормализованное количество уникальных слов
+        p_long_words (float): Нормализованное количество длинных слов
+        p_complex_words (float): Нормализованное количество сложных слов
+        p_simple_words (float): Нормализованное количество простых слов
+        p_monosyllable_words (float): Нормализованное количество односложных слов
+        p_polysyllable_words (float): Нормализованное количество многосложных слов
+        p_letters (float): Нормализованное количество букв
+        p_spaces (float): Нормализованное количество пробелов
+        p_punctuations (float): Нормализованное количество знаков препинания
 
     Методы:
         get_stats: Получение вычисленных статистик текста
@@ -65,7 +75,8 @@ class BasicStats(object):
         self,
         source: Union[str, Doc],
         sents_extractor: SentsExtractor = None,
-        words_extractor: WordsExtractor = None
+        words_extractor: WordsExtractor = None,
+        normalize: bool = False
     ):
         if isinstance(source, Doc):
             text = source.text
@@ -101,6 +112,17 @@ class BasicStats(object):
         self.n_spaces = sum((1 for char in text if char in SPACES))
         self.n_syllables = sum(syllables_per_word)
         self.n_punctuations = sum((1 for char in text if char in PUNCTUATIONS))
+
+        if normalize:
+            self.p_unique_words = self.n_unique_words / self.n_words
+            self.p_long_words = self.n_long_words / self.n_words
+            self.p_complex_words = self.n_complex_words / self.n_words
+            self.p_simple_words = self.n_simple_words / self.n_words
+            self.p_monosyllable_words = self.n_monosyllable_words / self.n_words
+            self.p_polysyllable_words = self.n_polysyllable_words / self.n_words
+            self.p_letters = self.n_letters / self.n_chars
+            self.p_spaces = self.n_spaces / self.n_chars
+            self.p_punctuations = self.n_punctuations / self.n_chars
 
     def get_stats(self) -> Dict[str, int]:
         """
