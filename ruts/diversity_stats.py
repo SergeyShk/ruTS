@@ -263,7 +263,10 @@ def calc_sttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
+    if n_words == 1 or n_lexemes == 1:
+        return 0
+    else:
+        return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
 
 def calc_mttr(text: List[str]) -> float:
     """

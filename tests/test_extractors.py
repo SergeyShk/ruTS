@@ -3,7 +3,6 @@ import pytest
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 from ruts import SentsExtractor, WordsExtractor
-from ruts.extractors import Extractor
 
 @pytest.fixture(scope='module')
 def text():
