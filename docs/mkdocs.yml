@@ -1,0 +1,19 @@
+site_name: RuTS
+docs_dir: pages
+lang: ['ru', 'en']
+site_description: "Библиотека для извлечения статистик из текстов на русском языке"
+
+nav:
+    - Главная: index.md
+    - Извлечение объектов: extractors.md
+    - Подсчет статистик:
+        - Базовые статистики: stats/basic_stats.md
+        - Метрики удобочитаемости: stats/readability_stats.md
+        - Метрики лексического разнообразия: stats/diversity_stats.md
+        - Морфологические статистики: stats/morph_stats.md        
+    - Наборы данных: datasets.md
+    - Визуализация: visualizers.md
+    - Компоненты: components.md        
+
+theme:
+    name: material

@@ -4,3 +4,5 @@ __pycache__/
 dist/
 ruts_data
 .ipynb_checkpoints
+site/
+target/
