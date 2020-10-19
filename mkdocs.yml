@@ -1,0 +1,55 @@
+site_name: RuTS
+site_description: "Библиотека для извлечения статистик из текстов на русском языке"
+repo_url: https://github.com/SergeyShk/ruTS
+
+nav:
+    - Главная: index.md
+    - Извлечение объектов:
+      - Извлечение объектов: extractors.md
+    - Подсчет статистик:
+        - Базовые статистики: stats/basic_stats.md
+        - Метрики удобочитаемости: stats/readability_stats.md
+        - Метрики лексического разнообразия: stats/diversity_stats.md
+        - Морфологические статистики: stats/morph_stats.md        
+    - Наборы данных:
+        - Наборы данных: datasets.md
+    - Визуализация:
+        - Визуализация: visualizers.md
+    - Компоненты:
+        - Компоненты: components.md  
+
+theme:
+  name: material
+  language: ru
+  palette:
+    scheme: slate
+    primary: blue
+    accent: blue
+  font:
+    text: Source Sans Pro
+  features:
+    - navigation.tabs
+    - navigation.instant
+
+plugins:
+  - search:
+      lang: 
+        - ru
+        - en
+
+extra: 
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/SergeyShk
+    - icon: fontawesome/brands/twitter 
+      link: https://twitter.com/shk_sergey
+    - icon: fontawesome/brands/linkedin 
+      link: https://www.linkedin.com/in/kouki91/
+ 
+markdown_extensions:
+  - toc:
+      permalink: True
+  - admonition
+  - codehilite
+  - pymdownx.details
+  - pymdownx.superfences
