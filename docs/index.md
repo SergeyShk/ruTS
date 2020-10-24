@@ -46,7 +46,10 @@ $ pip install ruts
     *   test_morph_stats - тесты морфологических статистик
     *   test_readability_stats.py - тесты метрик удобочитаемости текста
 
-## Авторы
-
-*   Шкарин Сергей (kouki.sergey@gmail.com)
-*   Смирнова Екатерина (ekanerina@yandex.ru)
+```mermaid
+graph TD
+    A[Hard] -->|Text| B(Round)
+    B --> C{Decision}
+    C -->|One| D[Result 1]
+    C -->|Two| E[Result 2]
+```
