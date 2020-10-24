@@ -41,6 +41,10 @@
     
     
     
+      <link rel="stylesheet" href="https://unpkg.com/mermaid@7.1.2/dist/mermaid.css">
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
     
       
     
@@ -53,7 +57,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue">
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="blue" data-md-color-accent="blue">
       
   
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -159,13 +163,16 @@
     <ul class="md-tabs__list">
       
         
-  <li class="md-tabs__item">
-    
-      <a href="../.." class="md-tabs__link">
-        Главная
-      </a>
-    
-  </li>
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../.." class="md-tabs__link">
+          Главная
+        </a>
+      
+    </li>
+  
 
       
         
@@ -212,7 +219,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../visualizers/" class="md-tabs__link">
+        <a href="../../visualizers/zipf/" class="md-tabs__link">
           Визуализация
         </a>
       
@@ -278,10 +285,48 @@
       
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1">
+    
+    <label class="md-nav__link" for="nav-1">
+      Главная
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Главная" data-md-level="1">
+      <label class="md-nav__title" for="nav-1">
+        <span class="md-nav__icon md-icon"></span>
+        Главная
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../.." class="md-nav__link">
-      Главная
+      О проекте
     </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../authors/" class="md-nav__link">
+      Авторы
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
     
@@ -473,8 +518,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../../visualizers/" class="md-nav__link">
-      Визуализация
+    <a href="../../visualizers/zipf/" class="md-nav__link">
+      Закон Ципфа
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../visualizers/fingerprinting/" class="md-nav__link">
+      Литературная дактилоскопия
     </a>
   </li>
 
@@ -664,6 +721,8 @@
           }, typeof search !== "undefined" && search)
         })
       </script>
+      
+        <script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
       
     
   </body>
