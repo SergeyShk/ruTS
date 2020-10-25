@@ -5,6 +5,7 @@ repo_url: https://github.com/SergeyShk/ruTS
 nav:
     - Главная:
       - О проекте: index.md
+      - Установка: installation.md
       - Авторы: authors.md
     - Извлечение объектов:
       - Извлечение объектов: extractors.md
@@ -14,8 +15,8 @@ nav:
         - Метрики лексического разнообразия: stats/diversity_stats.md
         - Морфологические статистики: stats/morph_stats.md        
     - Наборы данных:
-        - Наборы данных: datasets.md
-    - Визуализация:
+        - Советские христоматии (литература): datasets/sovchlit.md
+    - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md
     - Компоненты:
@@ -50,11 +51,11 @@ extra:
       link: https://www.linkedin.com/in/kouki91/
 
 extra_css:
-  - https://unpkg.com/mermaid@7.1.2/dist/mermaid.css
+  - css/mermaid.css
   - css/extra.css
 
 extra_javascript:
-  - https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js
+  - js/mermaid.min.js
 
 markdown_extensions:
   - toc:
