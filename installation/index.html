@@ -15,7 +15,7 @@
     
     
       
-        <title>Наборы данных - RuTS</title>
+        <title>Установка - RuTS</title>
       
     
     
@@ -41,7 +41,7 @@
     
     
     
-      <link rel="stylesheet" href="https://unpkg.com/mermaid@7.1.2/dist/mermaid.css">
+      <link rel="stylesheet" href="../css/mermaid.css">
     
       <link rel="stylesheet" href="../css/extra.css">
     
@@ -96,7 +96,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Наборы данных
+              Установка
             
           </span>
         </div>
@@ -167,7 +167,7 @@
   
     <li class="md-tabs__item">
       
-        <a href=".." class="md-tabs__link">
+        <a href=".." class="md-tabs__link md-tabs__link--active">
           Главная
         </a>
       
@@ -206,7 +206,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="./" class="md-tabs__link md-tabs__link--active">
+        <a href="../datasets/sovchlit/" class="md-tabs__link">
           Наборы данных
         </a>
       
@@ -220,7 +220,7 @@
     <li class="md-tabs__item">
       
         <a href="../visualizers/zipf/" class="md-tabs__link">
-          Визуализация
+          Визуализации
         </a>
       
     </li>
@@ -284,10 +284,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-1" type="checkbox" id="nav-1" checked>
     
     <label class="md-nav__link" for="nav-1">
       Главная
@@ -310,6 +312,70 @@
     <a href=".." class="md-nav__link">
       О проекте
     </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Установка
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      Установка
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Зависимости
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip" class="md-nav__link">
+    Установка с помощью pip
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#git" class="md-nav__link">
+    Установка с помощью git
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -446,12 +512,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
     
     <label class="md-nav__link" for="nav-4">
       Наборы данных
@@ -469,20 +533,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
-      Наборы данных
+  <li class="md-nav__item">
+    <a href="../datasets/sovchlit/" class="md-nav__link">
+      Советские христоматии (литература)
     </a>
-    
   </li>
 
         
@@ -501,13 +556,13 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
     <label class="md-nav__link" for="nav-5">
-      Визуализация
+      Визуализации
       <span class="md-nav__icon md-icon"></span>
     </label>
-    <nav class="md-nav" aria-label="Визуализация" data-md-level="1">
+    <nav class="md-nav" aria-label="Визуализации" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
         <span class="md-nav__icon md-icon"></span>
-        Визуализация
+        Визуализации
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -596,6 +651,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Зависимости
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip" class="md-nav__link">
+    Установка с помощью pip
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#git" class="md-nav__link">
+    Установка с помощью git
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -606,12 +690,55 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/SergeyShk/ruTS/edit/master/docs/datasets.md" title="Редактировать страницу" class="md-content__button md-icon">
+                  <a href="https://github.com/SergeyShk/ruTS/edit/master/docs/installation.md" title="Редактировать страницу" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="_1">Наборы данных<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+                <h1 id="_1">Установка<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Для начала работы с библиотекой ее можно установить с помощью утилиты <code>pip</code> или склонировав репозиторий проекта через <code>git</code>.</p>
+<h2 id="_2">Зависимости<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Функционал ruTS использует следующие сторонние библиотеки:</p>
+<ul>
+<li><code>python</code> - 3.6 и выше</li>
+<li><code>nltk</code></li>
+<li><code>pymorphy2</code></li>
+<li><code>razdel</code></li>
+<li><code>scipy</code></li>
+<li><code>spacy</code> - 2.0.12 и выше</li>
+</ul>
+<h2 id="pip">Установка с помощью <code>pip</code><a class="headerlink" href="#pip" title="Permanent link">&para;</a></h2>
+<p>Наберите в командной строке:</p>
+<div class="highlight"><pre><span></span><code>pip install ruts
+</code></pre></div>
+<p>В результате будет установлена релизная версия библиотеки и все зависимости.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>С подробным руководством по работе с менеджером пакетов <code>pip</code> можно ознакомиться на <a href="https://pip.pypa.io/en/stable/">сайте разработчика</a>.</p>
+</div>
+<h2 id="git">Установка с помощью <code>git</code><a class="headerlink" href="#git" title="Permanent link">&para;</a></h2>
+<p>Данный способ позволяет установить последнюю версию библиотеки непосредственно из репозитория проекта. Для этого необходимо выполнить следующие команды:</p>
+<ol>
+<li>
+<p>Склонировать репозиторий в локальную директорию:</p>
+<div class="highlight"><pre><span></span><code>git clone https://github.com/SergeyShk/ruTS.git
+</code></pre></div>
+</li>
+<li>
+<p>Перейти в неё:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span> ruTS
+</code></pre></div>
+</li>
+<li>
+<p>Запустить файл установки:</p>
+<div class="highlight"><pre><span></span><code>python setup.py install
+</code></pre></div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>С подробным руководством по работе с системой управления версиями <code>git</code> можно ознакомиться на <a href="https://git-scm.com/">сайте разработчика</a>.</p>
+</div>
                 
               
               
@@ -630,7 +757,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../stats/morph_stats/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -639,19 +766,19 @@
                 <span class="md-footer-nav__direction">
                   Назад
                 </span>
-                Морфологические статистики
+                О проекте
               </div>
             </div>
           </a>
         
         
-          <a href="../visualizers/zipf/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../authors/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Вперед
                 </span>
-                Закон Ципфа
+                Авторы
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
@@ -722,7 +849,7 @@
         })
       </script>
       
-        <script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+        <script src="../js/mermaid.min.js"></script>
       
     
   </body>

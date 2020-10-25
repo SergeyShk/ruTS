@@ -41,7 +41,7 @@
     
     
     
-      <link rel="stylesheet" href="https://unpkg.com/mermaid@7.1.2/dist/mermaid.css">
+      <link rel="stylesheet" href="../../css/mermaid.css">
     
       <link rel="stylesheet" href="../../css/extra.css">
     
@@ -206,7 +206,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../datasets/" class="md-tabs__link">
+        <a href="../../datasets/sovchlit/" class="md-tabs__link">
           Наборы данных
         </a>
       
@@ -220,7 +220,7 @@
     <li class="md-tabs__item">
       
         <a href="../zipf/" class="md-tabs__link md-tabs__link--active">
-          Визуализация
+          Визуализации
         </a>
       
     </li>
@@ -309,6 +309,18 @@
   <li class="md-nav__item">
     <a href="../.." class="md-nav__link">
       О проекте
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../installation/" class="md-nav__link">
+      Установка
     </a>
   </li>
 
@@ -469,8 +481,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../datasets/" class="md-nav__link">
-      Наборы данных
+    <a href="../../datasets/sovchlit/" class="md-nav__link">
+      Советские христоматии (литература)
     </a>
   </li>
 
@@ -492,13 +504,13 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
     <label class="md-nav__link" for="nav-5">
-      Визуализация
+      Визуализации
       <span class="md-nav__icon md-icon"></span>
     </label>
-    <nav class="md-nav" aria-label="Визуализация" data-md-level="1">
+    <nav class="md-nav" aria-label="Визуализации" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
         <span class="md-nav__icon md-icon"></span>
-        Визуализация
+        Визуализации
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -529,9 +541,52 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Литературная дактилоскопия
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
       Литературная дактилоскопия
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Пример использования
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -596,6 +651,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Пример использования
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -612,6 +696,102 @@
                 
                 
                 <h1 id="_1">Литературная дактилоскопия<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.visualizers.fingerprinting()</strong></p>
+</div>
+<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Визуализация литературной дактилоскопии (Literature Fingerprinting).</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Более подробно с литературной дактилоскопией можно ознакомиться в данной <a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">публикации</a>.</p>
+</div>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>text</code></td>
+<td align="center">List[List[str]]</td>
+<td align="center"><code>-</code></td>
+<td align="center">Список списков слов</td>
+</tr>
+<tr>
+<td align="center"><code>segment_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>10</code></td>
+<td align="center">Размер сегмента</td>
+</tr>
+<tr>
+<td align="center"><code>metric</code></td>
+<td align="center">Callable</td>
+<td align="center"><code>None</code></td>
+<td align="center">Функция для подсчета метрики <a href="../../stats/diversity_stats/">лексического разнообразия</a></td>
+</tr>
+<tr>
+<td align="center"><code>x_size</code></td>
+<td align="center">int</td>
+<td align="center"><code>800</code></td>
+<td align="center">Ширина области для визуализации</td>
+</tr>
+<tr>
+<td align="center"><code>y_size</code></td>
+<td align="center">int</td>
+<td align="center"><code>600</code></td>
+<td align="center">Высота области для визуализации</td>
+</tr>
+<tr>
+<td align="center"><code>cmap</code></td>
+<td align="center">str</td>
+<td align="center"><code>'PuOr'</code></td>
+<td align="center">Цветовая карта</td>
+</tr>
+<tr>
+<td align="center"><code>is_return</code></td>
+<td align="center">str</td>
+<td align="center"><code>True</code></td>
+<td align="center">Возвращать объект Figure</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">WordsExtractor</span>
+<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">SovChLit</span>
+<span class="kn">from</span> <span class="nn">ruts.diversity_stats</span> <span class="kn">import</span> <span class="n">calc_simpson_index</span>
+<span class="kn">from</span> <span class="nn">ruts.visualizers</span> <span class="kn">import</span> <span class="n">fingerprinting</span>
+
+<span class="c1"># Подготовка данных</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SovChLit</span><span class="p">()</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">)]</span>
+
+<span class="c1"># Подготовка списка списков слов</span>
+<span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
+    <span class="n">words_extractor</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">())</span>
+
+<span class="c1"># Построение графика</span>
+<span class="n">fingerprinting</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> 
+    <span class="n">metric</span><span class="o">=</span><span class="n">calc_simpson_index</span><span class="p">,</span> 
+    <span class="n">x_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> 
+    <span class="n">y_size</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">is_return</span><span class="o">=</span><span class="bp">False</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<p><img alt="ruts" class="center" src="../../img/fingerprinting.png" /></p>
+</div>
                 
               
               
@@ -722,7 +902,7 @@
         })
       </script>
       
-        <script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+        <script src="../../js/mermaid.min.js"></script>
       
     
   </body>

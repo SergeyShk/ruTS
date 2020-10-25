@@ -41,7 +41,7 @@
     
     
     
-      <link rel="stylesheet" href="https://unpkg.com/mermaid@7.1.2/dist/mermaid.css">
+      <link rel="stylesheet" href="../../css/mermaid.css">
     
       <link rel="stylesheet" href="../../css/extra.css">
     
@@ -206,7 +206,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../../datasets/" class="md-tabs__link">
+        <a href="../../datasets/sovchlit/" class="md-tabs__link">
           Наборы данных
         </a>
       
@@ -220,7 +220,7 @@
     <li class="md-tabs__item">
       
         <a href="./" class="md-tabs__link md-tabs__link--active">
-          Визуализация
+          Визуализации
         </a>
       
     </li>
@@ -309,6 +309,18 @@
   <li class="md-nav__item">
     <a href="../.." class="md-nav__link">
       О проекте
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../installation/" class="md-nav__link">
+      Установка
     </a>
   </li>
 
@@ -469,8 +481,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../datasets/" class="md-nav__link">
-      Наборы данных
+    <a href="../../datasets/sovchlit/" class="md-nav__link">
+      Советские христоматии (литература)
     </a>
   </li>
 
@@ -492,13 +504,13 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
     
     <label class="md-nav__link" for="nav-5">
-      Визуализация
+      Визуализации
       <span class="md-nav__icon md-icon"></span>
     </label>
-    <nav class="md-nav" aria-label="Визуализация" data-md-level="1">
+    <nav class="md-nav" aria-label="Визуализации" data-md-level="1">
       <label class="md-nav__title" for="nav-5">
         <span class="md-nav__icon md-icon"></span>
-        Визуализация
+        Визуализации
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -684,11 +696,14 @@
                 
                 
                 <h1 id="_1">Закон Ципфа<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.visualizers.zipf()</strong></p>
+</div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Построение графика <a href="https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BA%D0%BE%D0%BD_%D0%A6%D0%B8%D0%BF%D1%84%D0%B0">Закона Ципфа</a> (Zipf's law) на основе справочника частотности слов.</p>
-<div class="admonition info">
-<p class="admonition-title">Адрес</p>
-<p><strong>ruts.visualizers.zipf()</strong></p>
+<div class="admonition quote">
+<p class="admonition-title">Определение</p>
+<p>Зако́н Ци́пфа («ранг—частота») — эмпирическая закономерность распределения частоты слов естественного языка: если все слова языка (или просто достаточно длинного текста) упорядочить по убыванию частоты их использования, то частота n-го слова в таком списке окажется приблизительно обратно пропорциональной его порядковому номеру n (так называемому рангу этого слова, см. шкала порядка). Например, второе по используемости слово встречается примерно в два раза реже, чем первое, третье — в три раза реже, чем первое, и так далее.</p>
 </div>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
@@ -704,43 +719,43 @@
 <tr>
 <td align="center"><code>counter</code></td>
 <td align="center">Counter</td>
-<td align="center">-</td>
+<td align="center"><code>-</code></td>
 <td align="center">Справочник частотности слов</td>
 </tr>
 <tr>
 <td align="center"><code>num_words</code></td>
 <td align="center">int</td>
-<td align="center">None</td>
+<td align="center"><code>None</code></td>
 <td align="center">Количество самых частотных слов</td>
 </tr>
 <tr>
 <td align="center"><code>num_labels</code></td>
 <td align="center">int</td>
-<td align="center">10</td>
+<td align="center"><code>10</code></td>
 <td align="center">Количество слов, отображаемых на графике</td>
 </tr>
 <tr>
 <td align="center"><code>log</code></td>
 <td align="center">bool</td>
-<td align="center">True</td>
+<td align="center"><code>True</code></td>
 <td align="center">Использовать логарифмическую шкалу</td>
 </tr>
 <tr>
 <td align="center"><code>show_theory</code></td>
 <td align="center">bool</td>
-<td align="center">False</td>
+<td align="center"><code>False</code></td>
 <td align="center">Отображать график теоретического Закону Ципфа</td>
 </tr>
 <tr>
 <td align="center"><code>alpha</code></td>
 <td align="center">float</td>
-<td align="center">1.5</td>
+<td align="center"><code>1.5</code></td>
 <td align="center">Коэффициент α теоретического Закона Ципфа</td>
 </tr>
 </tbody>
 </table>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных SovChLit.</p>
+<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
@@ -796,7 +811,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../../datasets/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../../datasets/sovchlit/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -805,7 +820,7 @@
                 <span class="md-footer-nav__direction">
                   Назад
                 </span>
-                Наборы данных
+                Советские христоматии (литература)
               </div>
             </div>
           </a>
@@ -888,7 +903,7 @@
         })
       </script>
       
-        <script src="https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js"></script>
+        <script src="../../js/mermaid.min.js"></script>
       
     
   </body>
