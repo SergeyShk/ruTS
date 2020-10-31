@@ -8,7 +8,8 @@ nav:
       - Установка: installation.md
       - Авторы: authors.md
     - Извлечение объектов:
-      - Извлечение объектов: extractors.md
+      - Извлечение предложений: extractors/sentences.md
+      - Извлечение слов: extractors/words.md
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
         - Метрики удобочитаемости: stats/readability_stats.md
@@ -24,7 +25,6 @@ nav:
 
 theme:
   name: material
-  custom_dir: docs/overrides
   language: ru
   palette:
     primary: blue
