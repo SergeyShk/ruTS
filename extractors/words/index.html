@@ -387,9 +387,72 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Извлечение слов
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
       Извлечение слов
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extract" class="md-nav__link">
+    extract
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_most_common" class="md-nav__link">
+    get_most_common
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -616,6 +679,55 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extract" class="md-nav__link">
+    extract
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_most_common" class="md-nav__link">
+    get_most_common
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -632,6 +744,145 @@
                 
                 
                 <h1 id="_1">Извлечение слов<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.extractors.WordsExtractor</strong></p>
+</div>
+<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Модуль для извлечения слов из текста. Позволяет использовать различные токенизаторы, фильтровать стоп-слова, числа и знаки препинания, проводить лемматизацию, формировать N-граммы, а также настраивать минимальную и максимальную длину извлекаемых слов.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>В качестве токенизитора по умолчанию используется функция <code>tokenize</code> из библиотеки <a href="https://github.com/natasha/razdel">razdel</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>В качестве морфологического анализитора для лемматизации по умолчанию используется класс <code>MorphAnalyzer</code> из библиотеки <a href="https://github.com/kmike/pymorphy2">pymorphy2</a>.</p>
+</div>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>text</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Строка текста</td>
+</tr>
+<tr>
+<td align="center"><code>tokenizer</code></td>
+<td align="center">Pattern/Сallable</td>
+<td align="center"><code>None</code></td>
+<td align="center">Токенизатор или регулярное выражение</td>
+</tr>
+<tr>
+<td align="center"><code>filter_punct</code></td>
+<td align="center">bool</td>
+<td align="center"><code>True</code></td>
+<td align="center">Фильтровать знаки препинания</td>
+</tr>
+<tr>
+<td align="center"><code>filter_nums</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Фильтровать числа</td>
+</tr>
+<tr>
+<td align="center"><code>use_lexemes</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Использовать леммы слов</td>
+</tr>
+<tr>
+<td align="center"><code>stopwords</code></td>
+<td align="center">List[str]</td>
+<td align="center"><code>None</code></td>
+<td align="center">Список стоп-слов</td>
+</tr>
+<tr>
+<td align="center"><code>lowercase</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Конвертировать слова в нижний регистр</td>
+</tr>
+<tr>
+<td align="center"><code>ngram_range</code></td>
+<td align="center">Tuple[int, int]</td>
+<td align="center"><code>(1, 1)</code></td>
+<td align="center">Нижняя и верхняя граница размера N-грамм</td>
+</tr>
+<tr>
+<td align="center"><code>min_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>0</code></td>
+<td align="center">Минимальная длина извлекаемого слова</td>
+</tr>
+<tr>
+<td align="center"><code>max_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>0</code></td>
+<td align="center">Максимальная длина извлекаемого слова</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
+<p>Выполняет извлечение слов из текста.</p>
+<p>Рассмотрим пример извлечения слов, используя в качестве токенов биграммы, а также выполнив предварительную фильтрацию стоп-слов и лемматизацию:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">WordsExtractor</span>
+
+<span class="c1"># Подготовка данных</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Не имей 100 рублей, а имей 100 друзей&quot;</span>
+
+<span class="c1"># Извлечение предложений</span>
+<span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span>
+    <span class="n">text</span><span class="p">,</span>
+    <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;russian&#39;</span><span class="p">),</span>
+    <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">&#39;иметь&#39;</span>, <span class="s1">&#39;рубль&#39;</span>, <span class="s1">&#39;иметь&#39;</span>, <span class="s1">&#39;друг&#39;</span>, <span class="s1">&#39;иметь_рубль&#39;</span>, <span class="s1">&#39;рубль_иметь&#39;</span>, <span class="s1">&#39;иметь_друг&#39;</span><span class="o">)</span>
+</code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для корректной работы данного примера необходимо иметь предварительно загруженный список стоп-слов библиотеки <a href="https://github.com/nltk/nltk">nltk</a> на локальном компьютере. Сделать это можно, выполнив следующий код:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">nltk</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;stopwords&#39;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
+<p>Позволяет получить счетчик топ-слов текста. В качестве параметров принимает количество выводимых топ-слов.</p>
+<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Вывод топ-слов</span>
+<span class="n">we</span><span class="o">.</span><span class="n">get_most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">[(</span><span class="s1">&#39;иметь&#39;</span>, <span class="m">2</span><span class="o">)</span>, <span class="o">(</span><span class="s1">&#39;рубль&#39;</span>, <span class="m">1</span><span class="o">)</span>, <span class="o">(</span><span class="s1">&#39;друг&#39;</span>, <span class="m">1</span><span class="o">)]</span>
+</code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для корректной работы метода, он должен вызываться после извлечения слов методом <code>extract</code>.</p>
+</div>
                 
               
               
