@@ -12,7 +12,9 @@ nav:
       - Извлечение слов: extractors/words.md
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
-        - Метрики удобочитаемости: stats/readability_stats.md
+        - Метрики удобочитаемости:
+          - Модуль вычисления метрик: stats/readability_stats.md
+          - Функции вычисления метрик: stats/readability_stats_funcs.md
         - Метрики лексического разнообразия: stats/diversity_stats.md
         - Морфологические статистики: stats/morph_stats.md        
     - Наборы данных:
@@ -55,7 +57,10 @@ extra_css:
   - css/extra.css
 
 extra_javascript:
+  - js/config.js
   - js/mermaid.min.js
+  - js/polyfill.min.js
+  - js/tex-mml-chtml.js  
 
 markdown_extensions:
   - toc:
@@ -69,3 +74,5 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.arithmatex:
+      generic: True
