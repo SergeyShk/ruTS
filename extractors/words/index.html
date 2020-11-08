@@ -500,10 +500,48 @@
           
 
 
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      Метрики удобочитаемости
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Метрики удобочитаемости" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        <span class="md-nav__icon md-icon"></span>
+        Метрики удобочитаемости
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
   <li class="md-nav__item">
     <a href="../../stats/readability_stats/" class="md-nav__link">
-      Метрики удобочитаемости
+      Модуль вычисления метрик
     </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
+      Функции вычисления метрик
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
         
@@ -872,7 +910,9 @@
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Вывод топ-слов</span>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># Вывод топ-слов</span>
 <span class="n">we</span><span class="o">.</span><span class="n">get_most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
@@ -993,7 +1033,13 @@
         })
       </script>
       
+        <script src="../../js/config.js"></script>
+      
         <script src="../../js/mermaid.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
