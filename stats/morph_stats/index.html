@@ -499,9 +499,86 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Морфологические статистики
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
       Морфологические статистики
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_stats" class="md-nav__link">
+    get_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_stats" class="md-nav__link">
+    print_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explain_text" class="md-nav__link">
+    explain_text
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -654,6 +731,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_stats" class="md-nav__link">
+    get_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_stats" class="md-nav__link">
+    print_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explain_text" class="md-nav__link">
+    explain_text
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -670,6 +810,301 @@
                 
                 
                 <h1 id="_1">Морфологические статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.morph_stats.MorphStats</strong></p>
+</div>
+<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Модуль для вычисления морфологических статистик текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>В модуле реализована возможность использования предварительно созданного объекта класса <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации слов перед вычислением статистик.</p>
+<p>Для морфологического разбора текста используется библиотека <a href="https://github.com/kmike/pymorphy2">pymorphy2</a>. Описание статистик взяты из корпуса <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Вычисление статистик происходит в момент инициализации объекта класса <code>MorphStats</code>.</p>
+</div>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>source</code></td>
+<td align="center">str/Doc</td>
+<td align="center"><code>-</code></td>
+<td align="center">Источник данных (строка или объект Doc)</td>
+</tr>
+<tr>
+<td align="center"><code>words_extractor</code></td>
+<td align="center">WordsExtractor</td>
+<td align="center"><code>None</code></td>
+<td align="center">Инструмент для извлечения слов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Атрибут</th>
+<th align="center">Тип</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>words</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж извлеченных слов</td>
+</tr>
+<tr>
+<td align="center"><code>tags</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж извлеченных тэгов OpenCorpora</td>
+</tr>
+<tr>
+<td align="center"><code>pos</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений части речи</td>
+</tr>
+<tr>
+<td align="center"><code>animacy</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений одушевленности</td>
+</tr>
+<tr>
+<td align="center"><code>aspect</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений вида</td>
+</tr>
+<tr>
+<td align="center"><code>case</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений падежа</td>
+</tr>
+<tr>
+<td align="center"><code>gender</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений пола</td>
+</tr>
+<tr>
+<td align="center"><code>involvement</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений совместности</td>
+</tr>
+<tr>
+<td align="center"><code>mood</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений наклонения</td>
+</tr>
+<tr>
+<td align="center"><code>number</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений числа</td>
+</tr>
+<tr>
+<td align="center"><code>person</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений лица</td>
+</tr>
+<tr>
+<td align="center"><code>tense</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений времени</td>
+</tr>
+<tr>
+<td align="center"><code>transitivity</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений переходности</td>
+</tr>
+<tr>
+<td align="center"><code>voice</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж значений залога</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
+<p>Возвращает справочник с вычисленными морфологическими статистиками.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>args</code></td>
+<td align="center">tuple[str]</td>
+<td align="center"><code>-</code></td>
+<td align="center">Перечень выбранных статистик</td>
+</tr>
+<tr>
+<td align="center"><code>filter_none</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Фильтровать пустые значения</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
+</div>
+<p>Рассмотрим пример вычисления морфологических статистик, выбрав только часть речи, время, число и лицо, а также используя фильтрацию пустых значений:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="c1"># Подготовка данных</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Постарайтесь получить то, что любите, иначе придется полюбить то, что получили&quot;</span>
+
+<span class="c1"># Вычисление статистик</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span>
+    <span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;tense&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;person&#39;</span><span class="p">,</span>
+    <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">&#39;number&#39;</span>: <span class="o">{</span><span class="s1">&#39;plur&#39;</span>: <span class="m">3</span>, <span class="s1">&#39;sing&#39;</span>: <span class="m">1</span><span class="o">}</span>,
+<span class="s1">&#39;person&#39;</span>: <span class="o">{</span><span class="s1">&#39;2per&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;3per&#39;</span>: <span class="m">1</span><span class="o">}</span>,
+<span class="s1">&#39;pos&#39;</span>: <span class="o">{</span><span class="s1">&#39;ADVB&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;CONJ&#39;</span>: <span class="m">4</span>, <span class="s1">&#39;INFN&#39;</span>: <span class="m">2</span>, <span class="s1">&#39;VERB&#39;</span>: <span class="m">4</span><span class="o">}</span>,
+<span class="s1">&#39;tense&#39;</span>: <span class="o">{</span><span class="s1">&#39;futr&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;past&#39;</span>: <span class="m">1</span>, <span class="s1">&#39;pres&#39;</span>: <span class="m">1</span><span class="o">}}</span>
+</code></pre></div>
+</div>
+<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
+<p>Выводит на экран таблицу с вычисленными морфологическими статистиками.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>args</code></td>
+<td align="center">tuple[str]</td>
+<td align="center"><code>-</code></td>
+<td align="center">Перечень выбранных статистик</td>
+</tr>
+<tr>
+<td align="center"><code>filter_none</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Фильтровать пустые значения</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
+</div>
+<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># Отображение таблицы вычисленных статистик</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span>
+    <span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;tense&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;person&#39;</span><span class="p">,</span>
+    <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code>---------------Часть речи---------------
+Глагол <span class="o">(</span>личная форма<span class="o">)</span>         <span class="p">|</span>    <span class="m">4</span>     
+Союз                          <span class="p">|</span>    <span class="m">4</span>     
+Глагол <span class="o">(</span>инфинитив<span class="o">)</span>            <span class="p">|</span>    <span class="m">2</span>     
+Наречие                       <span class="p">|</span>    <span class="m">1</span>     
+
+-----------------Время------------------
+Настоящее                     <span class="p">|</span>    <span class="m">1</span>     
+Будущее                       <span class="p">|</span>    <span class="m">1</span>     
+Прошедшее                     <span class="p">|</span>    <span class="m">1</span>     
+
+-----------------Число------------------
+Множественное                 <span class="p">|</span>    <span class="m">3</span>     
+Единственное                  <span class="p">|</span>    <span class="m">1</span>     
+
+------------------Лицо------------------
+<span class="m">2</span>                             <span class="p">|</span>    <span class="m">1</span>     
+<span class="m">3</span>                             <span class="p">|</span>    <span class="m">1</span>    
+</code></pre></div>
+</div>
+<h3 id="explain_text">explain_text<a class="headerlink" href="#explain_text" title="Permanent link">&para;</a></h3>
+<p>Выполняет разбор текста по морфологическим статистикам. Возвращает словарь, в котором ключами являются слова текста, а значениями - словарь их морфологических статистик.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>args</code></td>
+<td align="center">tuple[str]</td>
+<td align="center"><code>-</code></td>
+<td align="center">Перечень выбранных статистик</td>
+</tr>
+<tr>
+<td align="center"><code>filter_none</code></td>
+<td align="center">bool</td>
+<td align="center"><code>False</code></td>
+<td align="center">Фильтровать пустые значения</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
+</div>
+<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># Разбор текста по морфологическим статистикам</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span>
+    <span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;tense&#39;</span><span class="p">,</span> <span class="s1">&#39;number&#39;</span><span class="p">,</span> <span class="s1">&#39;person&#39;</span><span class="p">,</span>
+    <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">((</span><span class="s1">&#39;Постарайтесь&#39;</span>, <span class="o">{</span><span class="s1">&#39;number&#39;</span>: <span class="s1">&#39;plur&#39;</span>, <span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;VERB&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;получить&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;INFN&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;то&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;CONJ&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;что&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;CONJ&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;любите&#39;</span>, <span class="o">{</span><span class="s1">&#39;number&#39;</span>: <span class="s1">&#39;plur&#39;</span>, <span class="s1">&#39;person&#39;</span>: <span class="s1">&#39;2per&#39;</span>, <span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;VERB&#39;</span>, <span class="s1">&#39;tense&#39;</span>: <span class="s1">&#39;pres&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;иначе&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;ADVB&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;придется&#39;</span>, <span class="o">{</span><span class="s1">&#39;number&#39;</span>: <span class="s1">&#39;sing&#39;</span>, <span class="s1">&#39;person&#39;</span>: <span class="s1">&#39;3per&#39;</span>, <span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;VERB&#39;</span>, <span class="s1">&#39;tense&#39;</span>: <span class="s1">&#39;futr&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;полюбить&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;INFN&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;то&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;CONJ&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;что&#39;</span>, <span class="o">{</span><span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;CONJ&#39;</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">&#39;получили&#39;</span>, <span class="o">{</span><span class="s1">&#39;number&#39;</span>: <span class="s1">&#39;plur&#39;</span>, <span class="s1">&#39;pos&#39;</span>: <span class="s1">&#39;VERB&#39;</span>, <span class="s1">&#39;tense&#39;</span>: <span class="s1">&#39;past&#39;</span><span class="o">}))</span>
+</code></pre></div>
+</div>
                 
               
               
