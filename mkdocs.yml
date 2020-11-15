@@ -15,7 +15,9 @@ nav:
         - Метрики удобочитаемости:
           - Модуль вычисления метрик: stats/readability_stats.md
           - Функции вычисления метрик: stats/readability_stats_funcs.md
-        - Метрики лексического разнообразия: stats/diversity_stats.md
+        - Метрики лексического разнообразия:
+          - Модуль вычисления метрик: stats/diversity_stats.md
+          - Функции вычисления метрик: stats/diversity_stats_funcs.md        
         - Морфологические статистики: stats/morph_stats.md        
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
