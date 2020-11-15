@@ -15,7 +15,7 @@
     
     
       
-        <title>Метрики лексического разнообразия - RuTS</title>
+        <title>Модуль вычисления метрик - RuTS</title>
       
     
     
@@ -94,7 +94,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Метрики лексического разнообразия
+              Модуль вычисления метрик
             
           </span>
         </div>
@@ -480,6 +480,29 @@
   
 
 
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-3" type="checkbox" id="nav-3-3" checked>
+    
+    <label class="md-nav__link" for="nav-3-3">
+      Метрики лексического разнообразия
+      <span class="md-nav__icon md-icon"></span>
+    </label>
+    <nav class="md-nav" aria-label="Метрики лексического разнообразия" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-3">
+        <span class="md-nav__icon md-icon"></span>
+        Метрики лексического разнообразия
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
   <li class="md-nav__item md-nav__item--active">
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
@@ -487,10 +510,97 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Модуль вычисления метрик
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
-      Метрики лексического разнообразия
+      Модуль вычисления метрик
     </a>
     
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_stats" class="md-nav__link">
+    get_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_stats" class="md-nav__link">
+    print_stats
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../diversity_stats_funcs/" class="md-nav__link">
+      Функции вычисления метрик
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
   </li>
 
         
@@ -654,6 +764,62 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get_stats" class="md-nav__link">
+    get_stats
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_stats" class="md-nav__link">
+    print_stats
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -670,6 +836,191 @@
                 
                 
                 <h1 id="_1">Метрики лексического разнообразия<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.diversity_stats.DiversityStats</strong></p>
+</div>
+<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Модуль для вычисления основных метрик <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%BB%D0%B5%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%BD%D0%BE%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B8%D1%8F">лексического разнообразия</a> текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>В модуле реализована возможность использования предварительно созданного объекта класса <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации слов перед вычислением статистик.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>DiversityStats</code>.</p>
+</div>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>source</code></td>
+<td align="center">str/Doc</td>
+<td align="center"><code>-</code></td>
+<td align="center">Источник данных (строка или объект Doc)</td>
+</tr>
+<tr>
+<td align="center"><code>words_extractor</code></td>
+<td align="center">WordsExtractor</td>
+<td align="center"><code>None</code></td>
+<td align="center">Инструмент для извлечения слов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Атрибут</th>
+<th align="center">Тип</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>ttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Type-Token Ratio (TTR)</td>
+</tr>
+<tr>
+<td align="center"><code>rttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Root Type-Token Ratio (RTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>cttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Corrected Type-Token Ratio (CTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>httr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Herdan Type-Token Ratio (HTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>sttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Summer Type-Token Ratio (STTR)</td>
+</tr>
+<tr>
+<td align="center"><code>mttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Mass Type-Token Ratio (MTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>dttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Dugast Type-Token Ratio (DTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>mattr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Moving Average Type-Token Ratio (MATTR)</td>
+</tr>
+<tr>
+<td align="center"><code>msttr</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Mean Segmental Type-Token Ratio (MSTTR)</td>
+</tr>
+<tr>
+<td align="center"><code>mtld</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Measure of Textual Lexical Diversity (MTLD)</td>
+</tr>
+<tr>
+<td align="center"><code>mamtld</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Moving Average Measure of Textual Lexical Diversity (MTLD)</td>
+</tr>
+<tr>
+<td align="center"><code>hdd</code></td>
+<td align="center">float</td>
+<td align="center">Метрика Hypergeometric Distribution D (HD-D)</td>
+</tr>
+<tr>
+<td align="center"><code>simpson_index</code></td>
+<td align="center">float</td>
+<td align="center">Индекс Симпсона</td>
+</tr>
+<tr>
+<td align="center"><code>hapax_index</code></td>
+<td align="center">float</td>
+<td align="center">Гапакс-индекс</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках лексического разнообразия и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../diversity_stats_funcs/">разделе</a>.</p>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
+<p>Возвращает справочник с вычисленными метриками лексического разнообразия текста.</p>
+<p>Рассмотрим пример вычисления метрик лексического разнообразия текста:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">DiversityStats</span>
+
+<span class="c1"># Подготовка данных</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать&quot;</span>
+
+<span class="c1"># Вычисление метрик</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">DiversityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">&#39;cttr&#39;</span>: <span class="m">2</span>.008316044185609,
+<span class="s1">&#39;dttr&#39;</span>: <span class="m">10</span>.268784661968104,
+<span class="s1">&#39;hapax_index&#39;</span>: <span class="m">431</span>.2334616537499,
+<span class="s1">&#39;hdd&#39;</span>: -1,
+<span class="s1">&#39;httr&#39;</span>: <span class="m">0</span>.8854692840710253,
+<span class="s1">&#39;mamtld&#39;</span>: <span class="m">11</span>.875,
+<span class="s1">&#39;mattr&#39;</span>: <span class="m">0</span>.7333333333333333,
+<span class="s1">&#39;msttr&#39;</span>: <span class="m">0</span>.7333333333333333,
+<span class="s1">&#39;mtld&#39;</span>: <span class="m">15</span>.0,
+<span class="s1">&#39;mttr&#39;</span>: <span class="m">0</span>.0973825075623254,
+<span class="s1">&#39;rttr&#39;</span>: <span class="m">2</span>.840187787218772,
+<span class="s1">&#39;simpson_index&#39;</span>: <span class="m">21</span>.0,
+<span class="s1">&#39;sttr&#39;</span>: <span class="m">0</span>.2500605793160845,
+<span class="s1">&#39;ttr&#39;</span>: <span class="m">0</span>.7333333333333333<span class="o">}</span>
+</code></pre></div>
+</div>
+<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
+<p>Выводит на экран таблицу с вычисленными метриками лексического разнообразия текста.</p>
+<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># Отображение таблицы вычисленных метрик</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code>                        Метрика                             <span class="p">|</span> Значение 
+----------------------------------------------------------------------
+Type-Token Ratio <span class="o">(</span>TTR<span class="o">)</span>                                      <span class="p">|</span>   <span class="m">0</span>.73   
+Root Type-Token Ratio <span class="o">(</span>RTTR<span class="o">)</span>                                <span class="p">|</span>   <span class="m">2</span>.84   
+Corrected Type-Token Ratio <span class="o">(</span>CTTR<span class="o">)</span>                           <span class="p">|</span>   <span class="m">2</span>.01   
+Herdan Type-Token Ratio <span class="o">(</span>HTTR<span class="o">)</span>                              <span class="p">|</span>   <span class="m">0</span>.89   
+Summer Type-Token Ratio <span class="o">(</span>STTR<span class="o">)</span>                              <span class="p">|</span>   <span class="m">0</span>.25   
+Mass Type-Token Ratio <span class="o">(</span>MTTR<span class="o">)</span>                                <span class="p">|</span>   <span class="m">0</span>.10   
+Dugast Type-Token Ratio <span class="o">(</span>DTTR<span class="o">)</span>                              <span class="p">|</span>  <span class="m">10</span>.27   
+Moving Average Type-Token Ratio <span class="o">(</span>MATTR<span class="o">)</span>                     <span class="p">|</span>   <span class="m">0</span>.73   
+Mean Segmental Type-Token Ratio <span class="o">(</span>MSTTR<span class="o">)</span>                     <span class="p">|</span>   <span class="m">0</span>.73   
+Measure of Textual Lexical Diversity <span class="o">(</span>MTLD<span class="o">)</span>                 <span class="p">|</span>  <span class="m">15</span>.00   
+Moving Average Measure of Textual Lexical Diversity <span class="o">(</span>MTLD<span class="o">)</span>  <span class="p">|</span>  <span class="m">11</span>.88   
+Hypergeometric Distribution D <span class="o">(</span>HD-D<span class="o">)</span>                        <span class="p">|</span>  -1.00   
+Индекс Симпсона                                             <span class="p">|</span>  <span class="m">21</span>.00   
+Гапакс-индекс                                               <span class="p">|</span>  <span class="m">431</span>.23 
+</code></pre></div>
+</div>
                 
               
               
@@ -703,13 +1054,13 @@
           </a>
         
         
-          <a href="../morph_stats/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../diversity_stats_funcs/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Вперед
                 </span>
-                Морфологические статистики
+                Функции вычисления метрик
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
