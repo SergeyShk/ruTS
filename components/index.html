@@ -663,9 +663,59 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Компоненты
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
       Компоненты
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basicstatscomponent" class="md-nav__link">
+    BasicStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#morphstatscomponent" class="md-nav__link">
+    MorphStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#readabilitystatscomponent" class="md-nav__link">
+    ReadabilityStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diversitystatscomponent" class="md-nav__link">
+    DiversityStatsComponent
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -692,6 +742,42 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basicstatscomponent" class="md-nav__link">
+    BasicStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#morphstatscomponent" class="md-nav__link">
+    MorphStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#readabilitystatscomponent" class="md-nav__link">
+    ReadabilityStatsComponent
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diversitystatscomponent" class="md-nav__link">
+    DiversityStatsComponent
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -708,6 +794,195 @@
                 
                 
                 <h1 id="_1">Компоненты<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Набор модулей для создания компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>. Каждый модуль представляет собой класс с двумя реализованными методами: <code>__init__</code> (добавляет новое расширение в пайплайн при инициализации) и <code>__call__</code> (принимает объект класса <code>Doc</code> и возвращает его модифицированную версию).</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Подробную информацию о разработке пользовательских компонентов для spaCy можно узнать в соответствующем разделе <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации</a>.</p>
+</div>
+<h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.BasicStatsComponent</strong></p>
+</div>
+<p>Модуль для компонента основных текстовых статистик.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>name</code></td>
+<td align="center">str</td>
+<td align="center"><code>"bs"</code></td>
+<td align="center">Наименование компонента в пайплайне</td>
+</tr>
+</tbody>
+</table>
+<p>Пример использования:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">BasicStatsComponent</span>
+
+<span class="c1"># Загрузка модели spaCy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+
+<span class="c1"># Добавление компонента</span>
+<span class="n">bsc</span> <span class="o">=</span> <span class="n">BasicStatsComponent</span><span class="p">()</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">bsc</span><span class="p">,</span> <span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Доступ к посчитанным метрикам</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">bs</span><span class="o">.</span><span class="n">c_letters</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="m">4</span>: <span class="m">3</span><span class="o">}</span>
+</code></pre></div>
+</div>
+<h2 id="morphstatscomponent">MorphStatsComponent<a class="headerlink" href="#morphstatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.MorphStatsComponent</strong></p>
+</div>
+<p>Модуль для компонента морфологических статистик текста.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>name</code></td>
+<td align="center">str</td>
+<td align="center"><code>"ms"</code></td>
+<td align="center">Наименование компонента в пайплайне</td>
+</tr>
+</tbody>
+</table>
+<p>Пример использования:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">MorphStatsComponent</span>
+
+<span class="c1"># Загрузка модели spaCy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+
+<span class="c1"># Добавление компонента</span>
+<span class="n">msc</span> <span class="o">=</span> <span class="n">MorphStatsComponent</span><span class="p">()</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">msc</span><span class="p">,</span> <span class="s1">&#39;morph&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Доступ к посчитанным метрикам</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">case</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">&#39;nomn&#39;</span>, <span class="s1">&#39;gent&#39;</span>, <span class="s1">&#39;datv&#39;</span><span class="o">)</span>
+</code></pre></div>
+</div>
+<h2 id="readabilitystatscomponent">ReadabilityStatsComponent<a class="headerlink" href="#readabilitystatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.ReadabilityStatsComponent</strong></p>
+</div>
+<p>Модуль для компонента основных метрик удобочитаемости текста.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>name</code></td>
+<td align="center">str</td>
+<td align="center"><code>"rs"</code></td>
+<td align="center">Наименование компонента в пайплайне</td>
+</tr>
+</tbody>
+</table>
+<p>Пример использования:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">ReadabilityStatsComponent</span>
+
+<span class="c1"># Загрузка модели spaCy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+
+<span class="c1"># Добавление компонента</span>
+<span class="n">rsc</span> <span class="o">=</span> <span class="n">ReadabilityStatsComponent</span><span class="p">()</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">rsc</span><span class="p">,</span> <span class="s1">&#39;readability&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Доступ к посчитанным метрикам</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="m">82</span>.735
+</code></pre></div>
+</div>
+<h2 id="diversitystatscomponent">DiversityStatsComponent<a class="headerlink" href="#diversitystatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.DiversityStatsComponent</strong></p>
+</div>
+<p>Модуль для компонента основных метрик лексического разнообразия текста.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>name</code></td>
+<td align="center">str</td>
+<td align="center"><code>"ds"</code></td>
+<td align="center">Наименование компонента в пайплайне</td>
+</tr>
+</tbody>
+</table>
+<p>Пример использования:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">DiversityStatsComponent</span>
+
+<span class="c1"># Загрузка модели spaCy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+
+<span class="c1"># Добавление компонента</span>
+<span class="n">dsc</span> <span class="o">=</span> <span class="n">DiversityStatsComponent</span><span class="p">()</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">dsc</span><span class="p">,</span> <span class="s1">&#39;diversity&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Доступ к посчитанным метрикам</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">rttr</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="m">1</span>.7320508075688774
+</code></pre></div>
+</div>
                 
               
               
