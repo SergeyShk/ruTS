@@ -575,9 +575,86 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Советские христоматии (литература)
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
       Советские христоматии (литература)
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    download
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_texts" class="md-nav__link">
+    get_texts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_records" class="md-nav__link">
+    get_records
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -692,6 +769,69 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Содержание
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    Описание
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    Параметры
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    Атрибуты
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    Методы
+  </a>
+  
+    <nav class="md-nav" aria-label="Методы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#download" class="md-nav__link">
+    download
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_texts" class="md-nav__link">
+    get_texts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_records" class="md-nav__link">
+    get_records
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -707,7 +847,294 @@
                   </a>
                 
                 
-                <h1 id="_1">Наборы данных<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+                <h1 id="_1">Советские христоматии (литература)<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<div class="admonition info">
+<p><strong>ruts.datasets.SovChLit</strong></p>
+</div>
+<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Модуль для работы с набором данных советских хрестоматий по литературе.</p>
+<p>Для формирования набора данных используются оцифрованные издания проекта <a href="https://sheba.spb.ru/shkola/">"Школьные учебники СССР"</a>:</p>
+<ul>
+<li>Родная речь. Книга для чтения в I классе начальной школы. Е.Е. Соловьева, Л.А. Карпинская, Н.Н. Щепетова</li>
+</ul>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>data_dir</code></td>
+<td align="center">str</td>
+<td align="center"><code>DEFAULT_DATA_DIR.joinpath("texts")</code></td>
+<td align="center">Путь к директории с набором данных</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th align="center">Атрибут</th>
+<th align="center">Тип</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>labels</code></td>
+<td align="center">tuple[str]</td>
+<td align="center">Кортеж уровней сложности текстов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="download">download<a class="headerlink" href="#download" title="Permanent link">&para;</a></h3>
+<p>Выполняет загрузку набора данных из сети и извлечение файлов.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>force</code></td>
+<td align="center">bool</td>
+<td align="center"><code>-</code></td>
+<td align="center">Загрузить набор данных, даже если он уже загружен</td>
+</tr>
+</tbody>
+</table>
+<p>Рассмотрим пример загрузки набора данных и вывод информации о нем:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">SovChLit</span>
+
+<span class="c1"># Создание объекта набора данных</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SovChLit</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+<span class="c1"># Загрузка набора данных</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Отображение информации о наборе данных</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">info</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">&#39;description&#39;</span>: <span class="s1">&#39;Корпус советских хрестоматий по литературе&#39;</span>,
+<span class="s1">&#39;url&#39;</span>: <span class="s1">&#39;https://dataverse.harvard.edu/file.xhtml?fileId=3670902&amp;version=DRAFT&#39;</span>,
+<span class="s1">&#39;Наименование&#39;</span>: <span class="s1">&#39;sov_chrest_lit&#39;</span><span class="o">}</span>
+</code></pre></div>
+</div>
+<h3 id="get_texts">get_texts<a class="headerlink" href="#get_texts" title="Permanent link">&para;</a></h3>
+<p>Выполняет извлечение текстов (без заголовков) из набора данных.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>grade</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Уровень сложности текстов</td>
+</tr>
+<tr>
+<td align="center"><code>book</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Наименование книги</td>
+</tr>
+<tr>
+<td align="center"><code>year</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Год издания книги</td>
+</tr>
+<tr>
+<td align="center"><code>category</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Категория текстов</td>
+</tr>
+<tr>
+<td align="center"><code>text_type</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Тип текстов</td>
+</tr>
+<tr>
+<td align="center"><code>subject</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Наименование текстов</td>
+</tr>
+<tr>
+<td align="center"><code>author</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Автор текстов</td>
+</tr>
+<tr>
+<td align="center"><code>min_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Минимальная длина текста (в символах)</td>
+</tr>
+<tr>
+<td align="center"><code>max_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Максимальная длина текста (в символах)</td>
+</tr>
+<tr>
+<td align="center"><code>limit</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Количество текстов</td>
+</tr>
+</tbody>
+</table>
+<p>Рассмотрим пример извлечения текстов из набора данных, выбрав только 1 текст из категории "Весна" длиной не более 100 символов:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">SovChLit</span>
+
+<span class="c1"># Создание объекта набора данных</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SovChLit</span><span class="p">()</span>
+
+<span class="c1"># Отображение извлеченных текстов</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">max_len</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">&#39;Весна&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code>В марте курочка под порожком водицы напьётся.
+Март с водой, апрель с травой.
+В апреле земля преет.
+</code></pre></div>
+</div>
+<h3 id="get_records">get_records<a class="headerlink" href="#get_records" title="Permanent link">&para;</a></h3>
+<p>Выполняет извлечение записей (с заголовками) из набора данных.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>grade</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Уровень сложности текстов</td>
+</tr>
+<tr>
+<td align="center"><code>book</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Наименование книги</td>
+</tr>
+<tr>
+<td align="center"><code>year</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Год издания книги</td>
+</tr>
+<tr>
+<td align="center"><code>category</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Категория текстов</td>
+</tr>
+<tr>
+<td align="center"><code>text_type</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Тип текстов</td>
+</tr>
+<tr>
+<td align="center"><code>subject</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Наименование текстов</td>
+</tr>
+<tr>
+<td align="center"><code>author</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Автор текстов</td>
+</tr>
+<tr>
+<td align="center"><code>min_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Минимальная длина текста (в символах)</td>
+</tr>
+<tr>
+<td align="center"><code>max_len</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Максимальная длина текста (в символах)</td>
+</tr>
+<tr>
+<td align="center"><code>limit</code></td>
+<td align="center">int</td>
+<td align="center"><code>-</code></td>
+<td align="center">Количество текстов</td>
+</tr>
+</tbody>
+</table>
+<p>Рассмотрим пример извлечения записей из набора данных, выбрав только 1 запись из категории "Весна" длиной не более 100 символов:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">SovChLit</span>
+
+<span class="c1"># Создание объекта набора данных</span>
+<span class="n">sc</span> <span class="o">=</span> <span class="n">SovChLit</span><span class="p">()</span>
+
+<span class="c1"># Отображение извлеченных текстов</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_records</span><span class="p">(</span><span class="n">max_len</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s1">&#39;Весна&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">&#39;author&#39;</span>: <span class="s1">&#39;Е. Трутнева&#39;</span>,
+<span class="s1">&#39;book&#39;</span>: <span class="s1">&#39;Родная речь. Книга для чтения в I классе начальной школы&#39;</span>,
+<span class="s1">&#39;category&#39;</span>: <span class="s1">&#39;Весна&#39;</span>,
+<span class="s1">&#39;file&#39;</span>: PosixPath<span class="o">(</span><span class="s1">&#39;../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/155&#39;</span><span class="o">)</span>,
+<span class="s1">&#39;grade&#39;</span>: <span class="m">1</span>,
+<span class="s1">&#39;subject&#39;</span>: <span class="s1">&#39;Дождик&#39;</span>,
+<span class="s1">&#39;text&#39;</span>: <span class="s1">&#39;В марте курочка под порожком водицы напьётся.\n&#39;</span>
+        <span class="s1">&#39;В марте курочка под порожком водицы напьётся.\n&#39;</span>
+        <span class="s1">&#39;В апреле земля преет.&#39;</span>,
+<span class="s1">&#39;type&#39;</span>: <span class="s1">&#39;Стихотворение&#39;</span>,
+<span class="s1">&#39;year&#39;</span>: <span class="m">1963</span><span class="o">}</span>
+</code></pre></div>
+</div>
                 
               
               
