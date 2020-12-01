@@ -134,8 +134,8 @@ class SovChLit(Dataset):
             year (int): Год издания книги
             category (str): Категория текстов
             text_type (str): Тип текстов
-            subject (str): Наименование текста
-            author (str): Автор текста
+            subject (str): Наименование текстов
+            author (str): Автор текстов
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -169,8 +169,8 @@ class SovChLit(Dataset):
             year (int): Год издания книги
             category (str): Категория текстов
             text_type (str): Тип текстов
-            subject (str): Наименование текста
-            author (str): Автор текста
+            subject (str): Наименование текстов
+            author (str): Автор текстов
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
