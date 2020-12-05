@@ -439,6 +439,7 @@ doc._.bs.get_stats()
 
 ## Project structure
 
+*   **docs** - project documentation
 *   **ruts**:
     *   basic_stats.py - basic text statistics
     *   components.py - spaCy components

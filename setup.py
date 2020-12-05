@@ -14,6 +14,7 @@ INSTALL_REQUIRES = [
     'scipy',
     'nltk',
     'pymorphy2',
+    'razdel',
     'spacy>=2.0.12'
 ]
 
@@ -41,11 +42,11 @@ setup(
     author='Шкарин Сергей, Смирнова Екатерина',
     author_email='kouki.sergey@gmail.com, ekanerina@yandex.ru',
     url='https://github.com/SergeyShk/ruTS',
-    download_url='https://github.com/SergeyShk/ruTS/archive/0.5.0.tar.gz',
-    packages=find_packages(exclude=('tests.*', 'tests')),
+    download_url='https://github.com/SergeyShk/ruTS/archive/0.6.0.tar.gz',
+    packages=find_packages(exclude=('tests.*', 'tests', 'docs')),
     python_requires='>=3.6',
     classifiers=(
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
