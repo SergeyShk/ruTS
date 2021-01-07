@@ -32,14 +32,14 @@ class SovChLit(Dataset):
     Примеры использования:
     Информация о наборе данных:
         >>> from ruts.datasets import SovChLit
-        >>> sc = SovChLit()
-        >>> sc.info
+        >>> svc = SovChLit()
+        >>> svc.info
         {'description': 'Корпус советских хрестоматий по литературе',
         'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
         'Наименование': 'sov_chrest_lit'}
 
     Итерация по набору данных:
-        >>> for i in sc.get_records(max_len=100, category='Весна', limit=1):
+        >>> for i in svc.get_records(max_len=100, category='Весна', limit=1):
         >>>     print(i)
         {'author': 'Е. Трутнева',
         'book': 'Родная речь. Книга для чтения в I классе начальной школы',
@@ -299,7 +299,7 @@ class SovChLit(Dataset):
             )
         if year:
             filters.append(
-                lambda record: record.get('year', '') == grade
+                lambda record: record.get('year', '') == year
             )
         if category:
             filters.append(
@@ -310,6 +310,16 @@ class SovChLit(Dataset):
                 raise ValueError(f"Некорректно выбран тип текста - {text_type}")
             filters.append(
                 lambda record: record.get('type', '') == text_type
+            )
+        if subject:
+            pattern = re.compile(f".*{subject}.*")
+            filters.append(
+                lambda record: len(re.findall(pattern, record.get('subject', ''))) > 0
+            )
+        if author:
+            pattern = re.compile(f".*{author}.*")
+            filters.append(
+                lambda record: len(re.findall(pattern, record.get('author', ''))) > 0
             )
         if min_len:
             if min_len < 1:
