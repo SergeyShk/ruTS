@@ -334,6 +334,7 @@ ms.print_stats('pos', 'tense')
 Library allows working with a number of  preprocessed datasets:
 
 *   sov_chrest_lit - soviet reading-books for literature classes
+*   stalin_works - the collected works of Stalin
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
