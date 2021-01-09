@@ -12,7 +12,8 @@ from typing import Any, Dict, Generator, List, Union
 NAME = "sov_chrest_lit"
 META = {
     'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
-    'description': 'Корпус советских хрестоматий по литературе'
+    'description': 'Корпус советских хрестоматий по литературе',
+    'author': 'Шкарин С.С.'
 }
 DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HK5RYS/EPJUN0"
 TEXT_TYPES = ['Рассказ', 'Стихотворение', 'Сказка', 'Пословица', 'Загадка', 'Песня', 'Басня']
@@ -293,7 +294,7 @@ class SovChLit(Dataset):
                 lambda record: record.get('grade', '') == grade
             )
         if book:
-            pattern = re.compile(f".*{book}.*")
+            pattern = re.compile(f".*{book}.*", re.IGNORECASE)
             filters.append(
                 lambda record: len(re.findall(pattern, record.get('book', ''))) > 0
             )
@@ -312,12 +313,12 @@ class SovChLit(Dataset):
                 lambda record: record.get('type', '') == text_type
             )
         if subject:
-            pattern = re.compile(f".*{subject}.*")
+            pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
             filters.append(
                 lambda record: len(re.findall(pattern, record.get('subject', ''))) > 0
             )
         if author:
-            pattern = re.compile(f".*{author}.*")
+            pattern = re.compile(f".*{author}.*", re.IGNORECASE)
             filters.append(
                 lambda record: len(re.findall(pattern, record.get('author', ''))) > 0
             )
