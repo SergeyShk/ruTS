@@ -407,19 +407,25 @@ Library allows creating the following classes of spaCy components:
 *   MorphStats
 *   ReadabilityStats
 
+Russian-language spaCy model can be downloaded by running the command:
+
+```bash
+$ python -m spacy download ru_core_news_sm
+```
+
 Example:
 
 ```python
-from ruts import BasicStatsComponent
-nlp = spacy.load('ru')
-bsc = BasicStatsComponent()
-nlp.add_pipe(bsc, 'basic', last=True)
+import ruts
+import spacy
+nlp = spacy.load('ru_core_news_sm')
+nlp.add_pipe('basic', last=True)
 doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
-doc._.bs.c_letters
+doc._.basic.c_letters
 
     {1: 1, 3: 2, 4: 3, 6: 1, 10: 2}
 
-doc._.bs.get_stats()
+doc._.basic.get_stats()
 
     {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
     'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
@@ -466,3 +472,18 @@ doc._.bs.get_stats()
 
 *   Sergey Shkarin (kouki.sergey@gmail.com)
 *   Ekaterina Smirnova (ekanerina@yandex.ru)
+
+## Attribution
+
+Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software.
+Citations are helpful for the continued development and maintenance of this library.
+
+```
+@software{ruTS,
+  author = {Sergey Shkarin},
+  title = {{ruTS, a library for statistics extraction from texts in Russian}},
+  year = 2021,
+  publisher = {Moscow},
+  url = {https://github.com/SergeyShk/ruTS}
+}
+```

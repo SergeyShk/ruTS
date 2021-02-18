@@ -2,4 +2,4 @@ nltk
 pymorphy2
 razdel
 scipy
-spacy>=2.0.12
+spacy>=3.0.3

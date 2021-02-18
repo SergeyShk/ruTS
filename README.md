@@ -407,19 +407,25 @@ zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=Tru
 *   MorphStats
 *   ReadabilityStats
 
+Русскоязычную модель spaCy можно скачать, выполнив команду:
+
+```bash
+$ python -m spacy download ru_core_news_sm
+```
+
 Пример:
 
 ```python
-from ruts import BasicStatsComponent
-nlp = spacy.load('ru')
-bsc = BasicStatsComponent()
-nlp.add_pipe(bsc, 'basic', last=True)
+import ruts
+import spacy
+nlp = spacy.load('ru_core_news_sm')
+nlp.add_pipe('basic', last=True)
 doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
-doc._.bs.c_letters
+doc._.basic.c_letters
 
     {1: 1, 3: 2, 4: 3, 6: 1, 10: 2}
 
-doc._.bs.get_stats()
+doc._.basic.get_stats()
 
     {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
     'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
@@ -466,3 +472,18 @@ doc._.bs.get_stats()
 
 *   Шкарин Сергей (kouki.sergey@gmail.com)
 *   Смирнова Екатерина (ekanerina@yandex.ru)
+
+## Атрибуция
+
+Пожалуйста, используйте следующую BibTeX нотацию для цитирования библиотеки **ruTS**, если вы используете ее в своих исследованиях или программах.
+Цитирование является очень полезным для дальнейшей разработки и поддержки данного проекта.
+
+```
+@software{ruTS,
+  author = {Sergey Shkarin},
+  title = {{ruTS, a library for statistics extraction from texts in Russian}},
+  year = 2021,
+  publisher = {Moscow},
+  url = {https://github.com/SergeyShk/ruTS}
+}
+```

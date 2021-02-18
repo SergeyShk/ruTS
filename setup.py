@@ -15,7 +15,7 @@ INSTALL_REQUIRES = [
     'nltk',
     'pymorphy2',
     'razdel',
-    'spacy>=2.0.12'
+    'spacy>=3.0.3'
 ]
 
 EXTRAS_REQUIRES = {
@@ -62,5 +62,10 @@ setup(
     ),
     package_data={'ruts': ['VERSION']},
     install_requires=INSTALL_REQUIRES,
-    extras_requires=EXTRAS_REQUIRES
+    extras_requires=EXTRAS_REQUIRES,
+    project_urls = {
+        "Source Code": "https://github.com/SergeyShk/ruTS",
+        "Issue Tracker": "https://github.com/SergeyShk/ruTS/issues",
+        "spaCy uniVerse": "https://spacy.io/universe/project/spacy-pytextrank",
+    }
 )
