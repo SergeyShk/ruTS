@@ -816,9 +816,15 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><code>nlp</code></td>
+<td align="center">Language</td>
+<td align="center"><code>-</code></td>
+<td align="center">Объект класса Language</td>
+</tr>
+<tr>
 <td align="center"><code>name</code></td>
 <td align="center">str</td>
-<td align="center"><code>"bs"</code></td>
+<td align="center"><code>"basic"</code></td>
 <td align="center">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -828,18 +834,18 @@
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">BasicStatsComponent</span>
+<span class="kn">import</span> <span class="nn">ruts</span>
+<span class="kn">import</span> <span class="nn">spacy</span>
 
 <span class="c1"># Загрузка модели spaCy</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru_core_news_sm&#39;</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">bsc</span> <span class="o">=</span> <span class="n">BasicStatsComponent</span><span class="p">()</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">bsc</span><span class="p">,</span> <span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">bs</span><span class="o">.</span><span class="n">c_letters</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span><span class="o">.</span><span class="n">c_letters</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span><span class="m">4</span>: <span class="m">3</span><span class="o">}</span>
@@ -862,9 +868,15 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><code>nlp</code></td>
+<td align="center">Language</td>
+<td align="center"><code>-</code></td>
+<td align="center">Объект класса Language</td>
+</tr>
+<tr>
 <td align="center"><code>name</code></td>
 <td align="center">str</td>
-<td align="center"><code>"ms"</code></td>
+<td align="center"><code>"morph"</code></td>
 <td align="center">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -874,18 +886,18 @@
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">MorphStatsComponent</span>
+<span class="kn">import</span> <span class="nn">ruts</span>
+<span class="kn">import</span> <span class="nn">spacy</span>
 
 <span class="c1"># Загрузка модели spaCy</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru_core_news_sm&#39;</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">msc</span> <span class="o">=</span> <span class="n">MorphStatsComponent</span><span class="p">()</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">msc</span><span class="p">,</span> <span class="s1">&#39;morph&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">&#39;morph&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">case</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">morph</span><span class="o">.</span><span class="n">case</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">&#39;nomn&#39;</span>, <span class="s1">&#39;gent&#39;</span>, <span class="s1">&#39;datv&#39;</span><span class="o">)</span>
@@ -908,9 +920,15 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><code>nlp</code></td>
+<td align="center">Language</td>
+<td align="center"><code>-</code></td>
+<td align="center">Объект класса Language</td>
+</tr>
+<tr>
 <td align="center"><code>name</code></td>
 <td align="center">str</td>
-<td align="center"><code>"rs"</code></td>
+<td align="center"><code>"readability"</code></td>
 <td align="center">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -920,18 +938,18 @@
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">ReadabilityStatsComponent</span>
+<span class="kn">import</span> <span class="nn">ruts</span>
+<span class="kn">import</span> <span class="nn">spacy</span>
 
 <span class="c1"># Загрузка модели spaCy</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru_core_news_sm&#39;</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">rsc</span> <span class="o">=</span> <span class="n">ReadabilityStatsComponent</span><span class="p">()</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">rsc</span><span class="p">,</span> <span class="s1">&#39;readability&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">&#39;readability&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">rs</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">readability</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="m">82</span>.735
@@ -954,9 +972,15 @@
 </thead>
 <tbody>
 <tr>
+<td align="center"><code>nlp</code></td>
+<td align="center">Language</td>
+<td align="center"><code>-</code></td>
+<td align="center">Объект класса Language</td>
+</tr>
+<tr>
 <td align="center"><code>name</code></td>
 <td align="center">str</td>
-<td align="center"><code>"ds"</code></td>
+<td align="center"><code>"diversity"</code></td>
 <td align="center">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -966,18 +990,18 @@
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">DiversityStatsComponent</span>
+<span class="kn">import</span> <span class="nn">ruts</span>
+<span class="kn">import</span> <span class="nn">spacy</span>
 
 <span class="c1"># Загрузка модели spaCy</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru&#39;</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;ru_core_news_sm&#39;</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">dsc</span> <span class="o">=</span> <span class="n">DiversityStatsComponent</span><span class="p">()</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="n">dsc</span><span class="p">,</span> <span class="s1">&#39;diversity&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s1">&#39;diversity&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;мама мыла раму&quot;</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">ds</span><span class="o">.</span><span class="n">rttr</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">diversity</span><span class="o">.</span><span class="n">rttr</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="m">1</span>.7320508075688774
