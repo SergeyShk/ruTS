@@ -16,7 +16,8 @@
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
-| `name` | str | `"bs"` | Наименование компонента в пайплайне |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"basic"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -26,18 +27,18 @@
 
     ``` python
     # Загрузка библиотек
-    from ruts import BasicStatsComponent
+    import ruts
+    import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru')
+    nlp = spacy.load('ru_core_news_sm')
 
     # Добавление компонента
-    bsc = BasicStatsComponent()
-    nlp.add_pipe(bsc, 'basic', last=True)
+    nlp.add_pipe('basic', last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
-    doc._.bs.c_letters
+    doc._.basic.c_letters
     ```
 
     _Результат_:
@@ -57,7 +58,8 @@
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
-| `name` | str | `"ms"` | Наименование компонента в пайплайне |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"morph"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -67,18 +69,18 @@
 
     ``` python
     # Загрузка библиотек
-    from ruts import MorphStatsComponent
+    import ruts
+    import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru')
+    nlp = spacy.load('ru_core_news_sm')
 
     # Добавление компонента
-    msc = MorphStatsComponent()
-    nlp.add_pipe(msc, 'morph', last=True)
+    nlp.add_pipe('morph', last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
-    doc._.ms.case
+    doc._.morph.case
     ```
 
     _Результат_:
@@ -98,7 +100,8 @@
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
-| `name` | str | `"rs"` | Наименование компонента в пайплайне |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"readability"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -108,18 +111,18 @@
 
     ``` python
     # Загрузка библиотек
-    from ruts import ReadabilityStatsComponent
+    import ruts
+    import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru')
+    nlp = spacy.load('ru_core_news_sm')
 
     # Добавление компонента
-    rsc = ReadabilityStatsComponent()
-    nlp.add_pipe(rsc, 'readability', last=True)
+    nlp.add_pipe('readability', last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
-    doc._.rs.flesch_reading_easy
+    doc._.readability.flesch_reading_easy
     ```
 
     _Результат_:
@@ -139,7 +142,8 @@
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
-| `name` | str | `"ds"` | Наименование компонента в пайплайне |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"diversity"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -149,18 +153,18 @@
 
     ``` python
     # Загрузка библиотек
-    from ruts import DiversityStatsComponent
+    import ruts
+    import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru')
+    nlp = spacy.load('ru_core_news_sm')
 
     # Добавление компонента
-    dsc = DiversityStatsComponent()
-    nlp.add_pipe(dsc, 'diversity', last=True)
+    nlp.add_pipe('diversity', last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
-    doc._.ds.rttr
+    doc._.diversity.rttr
     ```
 
     _Результат_:
