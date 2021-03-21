@@ -12,7 +12,7 @@ matrix:
       dist: bionic
 
 install:
-    - "pip install -r requirements.txt"
+    - "pip install -p Pipfile"
     - "pip install -e ."
     - "pip install pytest-cov codecov"
     - "python -m nltk.downloader punkt stopwords"
