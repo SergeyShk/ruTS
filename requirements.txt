@@ -1,5 +1,0 @@
-nltk
-pymorphy2
-razdel
-scipy
-spacy>=3.0.3

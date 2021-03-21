@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+nltk = "*"
+pymorphy2 = "*"
+razdel = "*"
+scipy = "*"
+spacy = ">=3.0.3"
+matplotlib = "*"
+
+[dev-packages]
+black = "==20.8b1"
+flake8 = "*"
+isort = "*"
+mypy = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
