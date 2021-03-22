@@ -12,10 +12,8 @@ matrix:
       dist: bionic
 
 install:
-    - "pip install pipenv"
+    - "pip install pipenv pytest-cov codecov"
     - "pipenv install"
-    - "pipenv install -e ."
-    - "pipenv install pytest-cov codecov"
     - "python -m nltk.downloader punkt stopwords"
 
 script:
