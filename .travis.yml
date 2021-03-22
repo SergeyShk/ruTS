@@ -17,7 +17,7 @@ install:
     - "python -m nltk.downloader punkt stopwords"
 
 script:
-    - "python -m pytest --cov=ruts"
+    - "python -m pytest --cov=ruts --cov-fail-under=70"
 
 after_success:
     - codecov

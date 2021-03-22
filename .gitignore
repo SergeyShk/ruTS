@@ -4,5 +4,8 @@ __pycache__/
 dist/
 ruts_data
 .ipynb_checkpoints
+.coverage
 site/
 target/
+.mypy_cache
+.pytest_cache
