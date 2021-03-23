@@ -1,15 +1,19 @@
 import re
+
 import pytest
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, wordpunct_tokenize
+
 from ruts import SentsExtractor, WordsExtractor
 
-@pytest.fixture(scope='module')
+
+@pytest.fixture(scope="module")
 def text():
     return "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений словарного состава языка или\
         какого-либо его сегмента; тематический, или идеографический способ упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению\
         с формальными онтологиями является выход в сферу лексических значений, установление связей не только между значениями и выражающими их словами,\
         а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
+
 
 class TestSentsExtractor(object):
     @staticmethod
@@ -24,7 +28,7 @@ class TestSentsExtractor(object):
 
     @staticmethod
     def test_extract_type_error(text):
-        tokenizers = [666, ['a', 'b'], {'a': 'b'}]
+        tokenizers = [666, ["a", "b"], {"a": "b"}]
         for tokenizer in tokenizers:
             try:
                 SentsExtractor(text, tokenizer=tokenizer)
@@ -34,7 +38,7 @@ class TestSentsExtractor(object):
     @staticmethod
     def test_extract_tokenizer(text):
         se_1 = SentsExtractor(text)
-        se_2 = SentsExtractor(text, tokenizer=re.compile(r'[;.]'))
+        se_2 = SentsExtractor(text, tokenizer=re.compile(r"[;.]"))
         se_3 = SentsExtractor(text, tokenizer=sent_tokenize)
         assert len(tuple(se_1.extract())) == 2
         assert len(tuple(se_2.extract())) == 4
@@ -54,6 +58,7 @@ class TestSentsExtractor(object):
         assert len(tuple(se_1.extract())) == 1
         assert len(tuple(se_2.extract())) == 0
 
+
 class TestWordsExtractor(object):
     @staticmethod
     def test_init_value_error_1(text):
@@ -72,7 +77,7 @@ class TestWordsExtractor(object):
 
     @staticmethod
     def test_extract_type_error(text):
-        tokenizers = [666, ['a', 'b'], {'a': 'b'}]
+        tokenizers = [666, ["a", "b"], {"a": "b"}]
         for tokenizer in tokenizers:
             try:
                 WordsExtractor(text, tokenizer=tokenizer)
@@ -82,7 +87,7 @@ class TestWordsExtractor(object):
     @staticmethod
     def test_extract_tokenizer(text):
         we_1 = WordsExtractor(text)
-        we_2 = WordsExtractor(text, tokenizer=re.compile(r'[^\w]+'))
+        we_2 = WordsExtractor(text, tokenizer=re.compile(r"[^\w]+"))
         we_3 = WordsExtractor(text, tokenizer=wordpunct_tokenize)
         assert len(we_1.extract()) == 61
         assert len(we_2.extract()) == 62
@@ -101,12 +106,15 @@ class TestWordsExtractor(object):
     @staticmethod
     def test_extract_use_lexemes(text):
         we = WordsExtractor(text, use_lexemes=True)
-        assert len(set(['онтология', 'значение', 'связь']).intersection(set(we.extract()))) == 3
+        assert (
+            len(set(["онтология", "значение", "связь"]).intersection(set(we.extract())))
+            == 3
+        )
 
     @staticmethod
     def test_extract_stopwords(text):
-        we_1 = WordsExtractor(text, stopwords=stopwords.words('russian'))
-        we_2 = WordsExtractor(text, stopwords=['и', 'а', 'с', 'в'])
+        we_1 = WordsExtractor(text, stopwords=stopwords.words("russian"))
+        we_2 = WordsExtractor(text, stopwords=["и", "а", "с", "в"])
         assert len(we_1.extract()) == 47
         assert len(we_2.extract()) == 57
 
@@ -124,7 +132,7 @@ class TestWordsExtractor(object):
     def test_extract_ngram_range(text):
         we = WordsExtractor(text, ngram_range=(1, 3))
         assert len(we.extract()) == 180
-        assert 'формальными_онтологиями_является' in we.words
+        assert "формальными_онтологиями_является" in we.words
 
     @staticmethod
     def test_get_most_common_value_error(text):
@@ -136,4 +144,4 @@ class TestWordsExtractor(object):
     def test_get_most_common(text):
         we = WordsExtractor(text)
         we.extract()
-        assert we.get_most_common(1) == [('значений', 3)]
+        assert we.get_most_common(1) == [("значений", 3)]

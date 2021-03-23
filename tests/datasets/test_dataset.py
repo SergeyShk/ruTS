@@ -1,9 +1,12 @@
 import pytest
+
 from ruts.datasets.dataset import Dataset
+
 
 class TestErrorDataset(Dataset):
     def __init__(self, name, meta):
         super(TestErrorDataset, self).__init__(name, meta)
+
 
 class TestDataset(Dataset):
     def __init__(self, name, meta):
@@ -24,36 +27,45 @@ class TestDataset(Dataset):
     def download(self, force):
         super(TestDataset, self).download()
 
-@pytest.fixture(scope='module')
+
+@pytest.fixture(scope="module")
 def dataset():
-    dataset_ = TestDataset("test", {'a': 1, 'b': 2})
+    dataset_ = TestDataset("test", {"a": 1, "b": 2})
     return dataset_
+
 
 def test_iter_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.__iter__()
 
+
 def test_check_data_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.check_data()
+
 
 def test_get_texts_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.get_texts()
 
+
 def test_get_records_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.get_records()
+
 
 def test_download_non_implement_error(dataset):
     with pytest.raises(NotImplementedError):
         dataset.download(False)
 
+
 def test_repr(dataset):
     assert dataset.__repr__() == "Набор данных('test')"
 
+
 def test_info(dataset):
-    assert list(dataset.info.keys()) == ['Наименование', 'a', 'b']
+    assert list(dataset.info.keys()) == ["Наименование", "a", "b"]
+
 
 def test_type_error():
     with pytest.raises(TypeError):
