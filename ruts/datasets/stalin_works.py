@@ -1,22 +1,23 @@
-
 import io
 import os
 import re
-from ..constants import DEFAULT_DATA_DIR
-from ..utils import to_path, download_file, extract_archive
-from .dataset import Dataset
 from itertools import islice
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Union
 
+from ..constants import DEFAULT_DATA_DIR
+from ..utils import download_file, extract_archive, to_path
+from .dataset import Dataset
+
 NAME = "stalin_works"
 META = {
-    'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
-    'description': 'Полное собрание сочинений И.В. Сталина',
-    'author': 'Шкарин С.С.'
+    "url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM",
+    "description": "Полное собрание сочинений И.В. Сталина",
+    "author": "Шкарин С.С.",
 }
 DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/4288732"
-TEXT_TYPES = ['Статья', 'Брошюра', 'Прокламация', 'Письмо']
+TEXT_TYPES = ["Статья", "Брошюра", "Прокламация", "Письмо"]
+
 
 class StalinWorks(Dataset):
     """
@@ -98,10 +99,7 @@ class StalinWorks(Dataset):
         Исключения:
             OSError: Если набор данных не обнаружен
         """
-        dirpaths = (
-            self.data_dir.joinpath(NAME, label)
-            for label in self.labels
-        )
+        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
             if not dirpath.is_dir():
                 msg = (
@@ -122,9 +120,9 @@ class StalinWorks(Dataset):
         """
         filepath = download_file(
             url=DOWNLOAD_URL,
-            filename='stalin_works.tar.xz',
+            filename="stalin_works.tar.xz",
             dirpath=self.data_dir,
-            force=force
+            force=force,
         )
         if filepath:
             extract_archive(filepath)
@@ -141,7 +139,7 @@ class StalinWorks(Dataset):
         topic: str = None,
         min_len: int = None,
         max_len: int = None,
-        limit: int = None
+        limit: int = None,
     ) -> Generator[str, None, None]:
         """
         Получение текстов (без заголовков) из набора данных
@@ -161,9 +159,19 @@ class StalinWorks(Dataset):
         Вывод:
             generator[str]: Генератор текстов
         """
-        filters = self.__get_filters(volume, year, text_type, is_translation, source, subject, topic, min_len, max_len)
+        filters = self.__get_filters(
+            volume,
+            year,
+            text_type,
+            is_translation,
+            source,
+            subject,
+            topic,
+            min_len,
+            max_len,
+        )
         for record in islice(self.__filtered_iter(filters), limit):
-            yield record['text']
+            yield record["text"]
 
     def get_records(
         self,
@@ -176,7 +184,7 @@ class StalinWorks(Dataset):
         topic: str = None,
         min_len: int = None,
         max_len: int = None,
-        limit: int = None
+        limit: int = None,
     ) -> Generator[Dict[str, Any], None, None]:
         """
         Получение записей (с заголовками) из набора данных
@@ -196,7 +204,17 @@ class StalinWorks(Dataset):
         Вывод:
             generator[dict[str, object]]: Генератор записей
         """
-        filters = self.__get_filters(volume, year, text_type, is_translation, source, subject, topic, min_len, max_len)
+        filters = self.__get_filters(
+            volume,
+            year,
+            text_type,
+            is_translation,
+            source,
+            subject,
+            topic,
+            min_len,
+            max_len,
+        )
         for record in islice(self.__filtered_iter(filters), limit):
             yield record
 
@@ -208,13 +226,10 @@ class StalinWorks(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         self.check_data()
-        dirpaths = (
-            self.data_dir.joinpath(NAME, label)
-            for label in self.labels
-        )
+        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
             for filepath in os.listdir(dirpath):
-                if re.match(r'[0-9]+', filepath):
+                if re.match(r"[0-9]+", filepath):
                     yield self.__load_record(dirpath.joinpath(filepath))
 
     def __filtered_iter(self, filters) -> Generator[Dict[str, Any], None, None]:
@@ -250,21 +265,23 @@ class StalinWorks(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with io.open(filepath, mode='r', encoding='utf-8') as f:
-                headers, text = f.read().strip().split('\n\n')
-                headers = tuple(header.split(':')[1][1:] for header in headers.split('\n'))
+            with io.open(filepath, mode="r", encoding="utf-8") as f:
+                headers, text = f.read().strip().split("\n\n")
+                headers = tuple(
+                    header.split(":")[1][1:] for header in headers.split("\n")
+                )
             return {
-                'volume': int(headers[0]),
-                'year': int(headers[1]),
-                'type': headers[2],
-                'is_translation': bool(int(headers[3])),
-                'source': headers[4],
-                'subject': headers[5],
-                'topic': headers[6],
-                'text': text,
-                'file': filepath
+                "volume": int(headers[0]),
+                "year": int(headers[1]),
+                "type": headers[2],
+                "is_translation": bool(int(headers[3])),
+                "source": headers[4],
+                "subject": headers[5],
+                "topic": headers[6],
+                "text": text,
+                "file": filepath,
             }
-        except:
+        except Exception:
             raise ValueError("Не удалось извлечь записи из файла")
 
     @staticmethod
@@ -277,7 +294,7 @@ class StalinWorks(Dataset):
         subject: str,
         topic: str,
         min_len: int,
-        max_len: int
+        max_len: int,
     ) -> List[str]:
         """
         Получение списка фильтров
@@ -307,50 +324,40 @@ class StalinWorks(Dataset):
         if volume:
             if volume not in range(1, 12):
                 raise ValueError(f"Некорректно выбран номер тома (1-18) - {volume}")
-            filters.append(
-                lambda record: record.get('volume', '') == volume
-            )
+            filters.append(lambda record: record.get("volume", "") == volume)
         if year:
-            filters.append(
-                lambda record: record.get('year', '') == year
-            )
+            filters.append(lambda record: record.get("year", "") == year)
         if text_type:
             if text_type not in TEXT_TYPES:
                 raise ValueError(f"Некорректно выбран тип текста - {text_type}")
-            filters.append(
-                lambda record: record.get('type', '') == text_type
-            )
+            filters.append(lambda record: record.get("type", "") == text_type)
         if is_translation is not None:
             filters.append(
-                lambda record: record.get('is_translation', '') == is_translation
+                lambda record: record.get("is_translation", "") == is_translation
             )
         if source:
             pattern = re.compile(f".*{source}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('source', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("source", ""))) > 0
             )
         if subject:
             pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('subject', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0
             )
         if topic:
             pattern = re.compile(f".*{topic}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('topic', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("topic", ""))) > 0
             )
         if min_len:
             if min_len < 1:
-                raise ValueError(f"Минимальная длина текста должна быть больше 0")
-            filters.append(
-                lambda record: len(record.get('text', '')) >= min_len
-            )
+                raise ValueError("Минимальная длина текста должна быть больше 0")
+            filters.append(lambda record: len(record.get("text", "")) >= min_len)
         if max_len:
             if max_len < 1:
-                raise ValueError(f"Максимальная длина текста должна быть больше 0")
-            filters.append(
-                lambda record: len(record.get('text', '')) <= max_len
-            )
+                raise ValueError("Максимальная длина текста должна быть больше 0")
+            filters.append(lambda record: len(record.get("text", "")) <= max_len)
         if min_len and max_len and min_len > max_len:
             raise ValueError("Минимальная длина текста больше максимальной")
         return filters

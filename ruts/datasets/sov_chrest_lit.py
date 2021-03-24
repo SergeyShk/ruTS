@@ -1,22 +1,31 @@
-
 import io
 import os
 import re
-from ..constants import DEFAULT_DATA_DIR
-from ..utils import to_path, download_file, extract_archive
-from .dataset import Dataset
 from itertools import islice
 from pathlib import Path
 from typing import Any, Dict, Generator, List, Union
 
+from ..constants import DEFAULT_DATA_DIR
+from ..utils import download_file, extract_archive, to_path
+from .dataset import Dataset
+
 NAME = "sov_chrest_lit"
 META = {
-    'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
-    'description': 'Корпус советских хрестоматий по литературе',
-    'author': 'Шкарин С.С.'
+    "url": "https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT",
+    "description": "Корпус советских хрестоматий по литературе",
+    "author": "Шкарин С.С.",
 }
 DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/:persistentId?persistentId=doi:10.7910/DVN/HK5RYS/EPJUN0"
-TEXT_TYPES = ['Рассказ', 'Стихотворение', 'Сказка', 'Пословица', 'Загадка', 'Песня', 'Басня']
+TEXT_TYPES = [
+    "Рассказ",
+    "Стихотворение",
+    "Сказка",
+    "Пословица",
+    "Загадка",
+    "Песня",
+    "Басня",
+]
+
 
 class SovChLit(Dataset):
     """
@@ -81,10 +90,7 @@ class SovChLit(Dataset):
         Исключения:
             OSError: Если набор данных не обнаружен
         """
-        dirpaths = (
-            self.data_dir.joinpath(NAME, label)
-            for label in self.labels
-        )
+        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
             if not dirpath.is_dir():
                 msg = (
@@ -105,9 +111,9 @@ class SovChLit(Dataset):
         """
         filepath = download_file(
             url=DOWNLOAD_URL,
-            filename='sov_chrest_lit.tar.xz',
+            filename="sov_chrest_lit.tar.xz",
             dirpath=self.data_dir,
-            force=force
+            force=force,
         )
         if filepath:
             extract_archive(filepath)
@@ -124,7 +130,7 @@ class SovChLit(Dataset):
         author: str = None,
         min_len: int = None,
         max_len: int = None,
-        limit: int = None
+        limit: int = None,
     ) -> Generator[str, None, None]:
         """
         Получение текстов (без заголовков) из набора данных
@@ -144,9 +150,11 @@ class SovChLit(Dataset):
         Вывод:
             generator[str]: Генератор текстов
         """
-        filters = self.__get_filters(grade, book, year, category, text_type, subject, author, min_len, max_len)
+        filters = self.__get_filters(
+            grade, book, year, category, text_type, subject, author, min_len, max_len
+        )
         for record in islice(self.__filtered_iter(filters), limit):
-            yield record['text']
+            yield record["text"]
 
     def get_records(
         self,
@@ -159,7 +167,7 @@ class SovChLit(Dataset):
         author: str = None,
         min_len: int = None,
         max_len: int = None,
-        limit: int = None
+        limit: int = None,
     ) -> Generator[Dict[str, Any], None, None]:
         """
         Получение записей (с заголовками) из набора данных
@@ -179,7 +187,9 @@ class SovChLit(Dataset):
         Вывод:
             generator[dict[str, object]]: Генератор записей
         """
-        filters = self.__get_filters(grade, book, year, category, text_type, subject, author, min_len, max_len)
+        filters = self.__get_filters(
+            grade, book, year, category, text_type, subject, author, min_len, max_len
+        )
         for record in islice(self.__filtered_iter(filters), limit):
             yield record
 
@@ -191,13 +201,10 @@ class SovChLit(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         self.check_data()
-        dirpaths = (
-            self.data_dir.joinpath(NAME, label)
-            for label in self.labels
-        )
+        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
             for filepath in os.listdir(dirpath):
-                if re.match(r'[0-9]+', filepath):
+                if re.match(r"[0-9]+", filepath):
                     yield self.__load_record(dirpath.joinpath(filepath))
 
     def __filtered_iter(self, filters) -> Generator[Dict[str, Any], None, None]:
@@ -233,21 +240,23 @@ class SovChLit(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with io.open(filepath, mode='r', encoding='utf-8') as f:
-                headers, text = f.read().strip().split('\n\n')
-                headers = tuple(header.split(':')[1][1:] for header in headers.split('\n'))
+            with io.open(filepath, mode="r", encoding="utf-8") as f:
+                headers, text = f.read().strip().split("\n\n")
+                headers = tuple(
+                    header.split(":")[1][1:] for header in headers.split("\n")
+                )
             return {
-                'grade': int(headers[0]),
-                'book': headers[1],
-                'year': int(headers[2]),
-                'category': headers[3],
-                'type': headers[4],
-                'subject': headers[5],
-                'author': headers[6],
-                'text': text,
-                'file': filepath
+                "grade": int(headers[0]),
+                "book": headers[1],
+                "year": int(headers[2]),
+                "category": headers[3],
+                "type": headers[4],
+                "subject": headers[5],
+                "author": headers[6],
+                "text": text,
+                "file": filepath,
             }
-        except:
+        except Exception:
             raise ValueError("Не удалось извлечь записи из файла")
 
     @staticmethod
@@ -260,7 +269,7 @@ class SovChLit(Dataset):
         subject: str,
         author: str,
         min_len: int,
-        max_len: int
+        max_len: int,
     ) -> List[str]:
         """
         Получение списка фильтров
@@ -290,50 +299,38 @@ class SovChLit(Dataset):
         if grade:
             if grade not in range(1, 12):
                 raise ValueError(f"Некорректно выбран уровень текста (1-11) - {grade}")
-            filters.append(
-                lambda record: record.get('grade', '') == grade
-            )
+            filters.append(lambda record: record.get("grade", "") == grade)
         if book:
             pattern = re.compile(f".*{book}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('book', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("book", ""))) > 0
             )
         if year:
-            filters.append(
-                lambda record: record.get('year', '') == year
-            )
+            filters.append(lambda record: record.get("year", "") == year)
         if category:
-            filters.append(
-                lambda record: record.get('category', '') == category
-            )
+            filters.append(lambda record: record.get("category", "") == category)
         if text_type:
             if text_type not in TEXT_TYPES:
                 raise ValueError(f"Некорректно выбран тип текста - {text_type}")
-            filters.append(
-                lambda record: record.get('type', '') == text_type
-            )
+            filters.append(lambda record: record.get("type", "") == text_type)
         if subject:
             pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('subject', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0
             )
         if author:
             pattern = re.compile(f".*{author}.*", re.IGNORECASE)
             filters.append(
-                lambda record: len(re.findall(pattern, record.get('author', ''))) > 0
+                lambda record: len(re.findall(pattern, record.get("author", ""))) > 0
             )
         if min_len:
             if min_len < 1:
-                raise ValueError(f"Минимальная длина текста должна быть больше 0")
-            filters.append(
-                lambda record: len(record.get('text', '')) >= min_len
-            )
+                raise ValueError("Минимальная длина текста должна быть больше 0")
+            filters.append(lambda record: len(record.get("text", "")) >= min_len)
         if max_len:
             if max_len < 1:
-                raise ValueError(f"Максимальная длина текста должна быть больше 0")
-            filters.append(
-                lambda record: len(record.get('text', '')) <= max_len
-            )
+                raise ValueError("Максимальная длина текста должна быть больше 0")
+            filters.append(lambda record: len(record.get("text", "")) <= max_len)
         if min_len and max_len and min_len > max_len:
             raise ValueError("Минимальная длина текста больше максимальной")
         return filters

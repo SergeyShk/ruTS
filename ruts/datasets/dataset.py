@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, Generator
 
+
 class Dataset(object, metaclass=ABCMeta):
     """
     Абстрактный класс для работы с набором данных
@@ -15,6 +16,7 @@ class Dataset(object, metaclass=ABCMeta):
         get_records: Получение записей (с заголовками) из набора данных
         download: Загрузка набора данных из сети
     """
+
     __test__ = False
 
     @abstractmethod
@@ -27,7 +29,7 @@ class Dataset(object, metaclass=ABCMeta):
 
     @property
     def info(self):
-        info = {'Наименование': self.name}
+        info = {"Наименование": self.name}
         info.update(self.meta)
         return info
 
