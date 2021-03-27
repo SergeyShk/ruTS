@@ -1,10 +1,13 @@
-import pymorphy2
 import re
-from .constants import PUNCTUATIONS
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from razdel import sentenize, tokenize
 from typing import Callable, List, Pattern, Tuple, Union
+
+import pymorphy2
+from razdel import sentenize, tokenize
+
+from .constants import PUNCTUATIONS
+
 
 class Extractor(object, metaclass=ABCMeta):
     """
@@ -19,17 +22,14 @@ class Extractor(object, metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __init__(
-        self,
-        text: str,
-        tokenizer: Union[Pattern, Callable] = None
-    ):
+    def __init__(self, text: str, tokenizer: Union[Pattern, Callable] = None):
         self.text = text
         self.tokenizer = tokenizer
 
     @abstractmethod
     def extract(self) -> Tuple[str, ...]:
         raise NotImplementedError
+
 
 class SentsExtractor(Extractor):
     """
@@ -61,7 +61,7 @@ class SentsExtractor(Extractor):
         text: str,
         tokenizer: Union[Pattern, Callable] = None,
         min_len: int = 0,
-        max_len: int = 0
+        max_len: int = 0,
     ):
         super().__init__(text, tokenizer)
         self.min_len = min_len
@@ -86,13 +86,14 @@ class SentsExtractor(Extractor):
         else:
             try:
                 self.sents = self.tokenizer(self.text)
-            except:
+            except Exception:
                 raise TypeError("Токенизатор задан некорректно")
         if self.min_len > 0:
             self.sents = (sent for sent in self.sents if len(sent) >= self.min_len)
         if self.max_len > 0:
             self.sents = (sent for sent in self.sents if len(sent) <= self.max_len)
         return tuple(self.sents)
+
 
 class WordsExtractor(Extractor):
     """
@@ -139,7 +140,7 @@ class WordsExtractor(Extractor):
         lowercase: bool = False,
         ngram_range: Tuple[int, int] = (1, 1),
         min_len: int = 0,
-        max_len: int = 0
+        max_len: int = 0,
     ):
         super().__init__(text, tokenizer)
         self.filter_punct = filter_punct
@@ -173,7 +174,7 @@ class WordsExtractor(Extractor):
         else:
             try:
                 self.words = (word for word in self.tokenizer(self.text))
-            except:
+            except Exception:
                 raise TypeError("Токенизатор задан некорректно")
         if self.filter_punct:
             self.words = (word for word in self.words if word not in PUNCTUATIONS)
@@ -221,5 +222,7 @@ class WordsExtractor(Extractor):
         """
         ngrams = ()
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
-            ngrams += tuple('_'.join(self.words[i: i + n]) for i in range(len(self.words) - n + 1))
+            ngrams += tuple(
+                "_".join(self.words[i : i + n]) for i in range(len(self.words) - n + 1)
+            )
         return ngrams

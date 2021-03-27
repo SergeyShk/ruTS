@@ -1,9 +1,12 @@
+from math import sqrt
+from typing import Dict, Union
+
+from spacy.tokens import Doc
+
 from .basic_stats import BasicStats
 from .constants import READABILITY_STATS_DESC
 from .extractors import SentsExtractor, WordsExtractor
-from math import sqrt
-from spacy.tokens import Doc
-from typing import Dict, Union
+
 
 class ReadabilityStats(object):
     """
@@ -46,7 +49,7 @@ class ReadabilityStats(object):
         self,
         source: Union[str, Doc],
         sents_extractor: SentsExtractor = None,
-        words_extractor: WordsExtractor = None
+        words_extractor: WordsExtractor = None,
     ):
         self.bs = BasicStats(source, sents_extractor, words_extractor)
         if not self.bs.n_words:
@@ -54,15 +57,21 @@ class ReadabilityStats(object):
 
     @property
     def flesch_kincaid_grade(self):
-        return calc_flesch_kincaid_grade(self.bs.n_syllables, self.bs.n_words, self.bs.n_sents)
+        return calc_flesch_kincaid_grade(
+            self.bs.n_syllables, self.bs.n_words, self.bs.n_sents
+        )
 
     @property
     def flesch_reading_easy(self):
-        return calc_flesch_reading_easy(self.bs.n_syllables, self.bs.n_words, self.bs.n_sents)
+        return calc_flesch_reading_easy(
+            self.bs.n_syllables, self.bs.n_words, self.bs.n_sents
+        )
 
     @property
     def coleman_liau_index(self):
-        return calc_coleman_liau_index(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
+        return calc_coleman_liau_index(
+            self.bs.n_letters, self.bs.n_words, self.bs.n_sents
+        )
 
     @property
     def smog_index(self):
@@ -70,7 +79,9 @@ class ReadabilityStats(object):
 
     @property
     def automated_readability_index(self):
-        return calc_automated_readability_index(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
+        return calc_automated_readability_index(
+            self.bs.n_letters, self.bs.n_words, self.bs.n_sents
+        )
 
     @property
     def lix(self):
@@ -84,12 +95,12 @@ class ReadabilityStats(object):
             dict[str, float]: Справочник вычисленных метрик удобочитаемости текста
         """
         return {
-            'flesch_kincaid_grade': self.flesch_kincaid_grade,
-            'flesch_reading_easy': self.flesch_reading_easy,
-            'coleman_liau_index': self.coleman_liau_index,
-            'smog_index': self.smog_index,
-            'automated_readability_index': self.automated_readability_index,
-            'lix': self.lix
+            "flesch_kincaid_grade": self.flesch_kincaid_grade,
+            "flesch_reading_easy": self.flesch_reading_easy,
+            "coleman_liau_index": self.coleman_liau_index,
+            "smog_index": self.smog_index,
+            "automated_readability_index": self.automated_readability_index,
+            "lix": self.lix,
         }
 
     def print_stats(self):
@@ -106,7 +117,7 @@ def calc_flesch_kincaid_grade(
     n_sents: int,
     A: float = 0.49,
     B: float = 7.3,
-    C: float = 16.59
+    C: float = 16.59,
 ) -> float:
     """
     Вычисление теста Флеша-Кинкайда
@@ -131,13 +142,14 @@ def calc_flesch_kincaid_grade(
     """
     return (A * n_words / n_sents) + (B * n_syllables / n_words) - C
 
+
 def calc_flesch_reading_easy(
     n_syllables: int,
     n_words: int,
     n_sents: int,
     A: float = 1.3,
     B: float = 60.1,
-    C: float = 206.835
+    C: float = 206.835,
 ) -> float:
     """
     Вычисление индекса удобочитаемости Флеша
@@ -170,13 +182,14 @@ def calc_flesch_reading_easy(
     """
     return C - (A * n_words / n_sents) - (B * n_syllables / n_words)
 
+
 def calc_coleman_liau_index(
     n_letters: int,
     n_words: int,
     n_sents: int,
     A: float = 6.26,
     B: float = 0.2805,
-    C: float = 31.04
+    C: float = 31.04,
 ) -> float:
     """
     Вычисление индекса Колман-Лиау
@@ -202,12 +215,9 @@ def calc_coleman_liau_index(
     """
     return (A * n_letters / n_words) + (B * n_words / n_sents) - C
 
+
 def calc_smog_index(
-    n_complex: int,
-    n_sents: int,
-    A: float = 1.1,
-    B: float = 64.6,
-    C: float = 0.05
+    n_complex: int, n_sents: int, A: float = 1.1, B: float = 64.6, C: float = 0.05
 ) -> float:
     """
     Вычисление индекса SMOG
@@ -233,13 +243,14 @@ def calc_smog_index(
     """
     return (A * sqrt(B * n_complex / n_sents)) + C
 
+
 def calc_automated_readability_index(
     n_letters: int,
     n_words: int,
     n_sents: int,
     A: float = 6.26,
     B: float = 0.2805,
-    C: float = 31.04
+    C: float = 31.04,
 ) -> float:
     """
     Вычисление автоматического индекса удобочитаемости
@@ -278,11 +289,8 @@ def calc_automated_readability_index(
     """
     return (A * n_letters / n_words) + (B * n_words / n_sents) - C
 
-def calc_lix(
-    n_long_words: int,
-    n_words: int,
-    n_sents: int
-) -> float:
+
+def calc_lix(n_long_words: int, n_words: int, n_sents: int) -> float:
     """
     Вычисление индекса удобочитаемости LIX
 

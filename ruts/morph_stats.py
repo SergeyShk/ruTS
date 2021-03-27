@@ -1,9 +1,12 @@
+from collections import Counter, OrderedDict
+from typing import Dict, Tuple, Union
+
 import pymorphy2
+from spacy.tokens import Doc
+
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
-from collections import Counter, OrderedDict
-from spacy.tokens import Doc
-from typing import Dict, Tuple, Union
+
 
 class MorphStats(object):
     """
@@ -65,11 +68,7 @@ class MorphStats(object):
         ValueError: Если в источнике данных отсутствуют слова
     """
 
-    def __init__(
-        self,
-        source: Union[str, Doc],
-        words_extractor: WordsExtractor = None
-    ):
+    def __init__(self, source: Union[str, Doc], words_extractor: WordsExtractor = None):
         if isinstance(source, Doc):
             text = source.text
             self.words = tuple(word.text for word in source)
@@ -99,9 +98,7 @@ class MorphStats(object):
         self.voice = tuple(tag.voice for tag in self.tags)
 
     def get_stats(
-        self,
-        *args: Tuple[str, ...],
-        filter_none: bool = False
+        self, *args: Tuple[str, ...], filter_none: bool = False
     ) -> Dict[str, Dict[str, int]]:
         """
         Получение вычисленных морфологических статистик текста
@@ -120,15 +117,15 @@ class MorphStats(object):
         stats = dict()
         for arg in args:
             if filter_none:
-                stats[arg] = dict((k, v) for (k, v) in dict(Counter(vars(self).get(arg))).items() if k)
+                stats[arg] = dict(
+                    (k, v) for (k, v) in dict(Counter(vars(self).get(arg))).items() if k
+                )
             else:
                 stats[arg] = dict(Counter(vars(self).get(arg)))
         return stats
 
     def explain_text(
-        self,
-        *args: Tuple[str, ...],
-        filter_none: bool = False
+        self, *args: Tuple[str, ...], filter_none: bool = False
     ) -> Dict[str, Dict[str, str]]:
         """
         Разбор текста по морфологическим статистикам
@@ -146,16 +143,15 @@ class MorphStats(object):
             self.__check_stat(*args)
         values = tuple(zip(*(vars(self).get(arg) for arg in args)))
         if filter_none:
-            explains = tuple(dict((k, v) for (k, v) in dict(zip(args, value)).items() if v) for value in values)
+            explains = tuple(
+                dict((k, v) for (k, v) in dict(zip(args, value)).items() if v)
+                for value in values
+            )
         else:
             explains = tuple(dict(zip(args, value)) for value in values)
         return tuple(zip(self.words, explains))
 
-    def print_stats(
-        self,
-        *args: Tuple[str, ...],
-        filter_none: bool = False
-    ):
+    def print_stats(self, *args: Tuple[str, ...], filter_none: bool = False):
         """
         Отображение вычисленных морфологических статистик текста с описанием на экран
 
@@ -171,11 +167,15 @@ class MorphStats(object):
         for stat, values in stats.items():
             stat_desc = MORPHOLOGY_STATS_DESC.get(stat)
             print(f"{stat_desc.get('name').center(40, '-')}")
-            value_desc = stat_desc.get('values')
-            for value, number in OrderedDict(sorted(values.items(), key=lambda x: x[1], reverse=True)).items():
+            value_desc = stat_desc.get("values")
+            for value, number in OrderedDict(
+                sorted(values.items(), key=lambda x: x[1], reverse=True)
+            ).items():
                 if filter_none and not value:
                     continue
-                print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}")
+                print(
+                    f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}"
+                )
             print()
 
     @staticmethod
@@ -194,6 +194,10 @@ class MorphStats(object):
         """
         for arg in args:
             if not MORPHOLOGY_STATS_DESC.get(arg):
-                print(f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}")
-                raise KeyError(arg + " отсутствует в справочнике морфологических статистик")
+                print(
+                    f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}"
+                )
+                raise KeyError(
+                    arg + " отсутствует в справочнике морфологических статистик"
+                )
         return True

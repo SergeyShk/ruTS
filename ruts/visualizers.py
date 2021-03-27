@@ -1,12 +1,15 @@
-from .diversity_stats import calc_ttr
+from types import FunctionType
+from typing import Callable, Counter, List
+
+import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 from scipy import special
-from types import FunctionType
-from typing import Callable, Counter, List
-import matplotlib.pyplot as plt
-import numpy as np
+
+from .diversity_stats import calc_ttr
+
 
 def zipf(
     counter: Counter,
@@ -14,7 +17,7 @@ def zipf(
     num_labels: int = 10,
     log: bool = True,
     show_theory: bool = False,
-    alpha: float = 1.5
+    alpha: float = 1.5,
 ) -> Line2D:
     """
     Построение графика Закона Ципфа (Zipf's law) на основе справочника частотности слов
@@ -46,15 +49,23 @@ def zipf(
     indices = counts.argsort()[::-1][:]
     frequencies = counts[indices]
     if log:
-        plot = plt.loglog(ranks, frequencies, marker=".", label='Экспериментальный закон')[0]
+        plot = plt.loglog(
+            ranks, frequencies, marker=".", label="Экспериментальный закон"
+        )[0]
     else:
-        plot = plt.plot(ranks, frequencies, marker=".", label='Экспериментальный закон')[0]
+        plot = plt.plot(
+            ranks, frequencies, marker=".", label="Экспериментальный закон"
+        )[0]
     if num_labels > 0:
-        for n in list(np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)):
-            dummy = plt.text(
-                ranks[n], frequencies[n], " " + tokens[indices[n]],
-                verticalalignment='bottom',
-                horizontalalignment='left'
+        for n in list(
+            np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)
+        ):
+            plt.text(
+                ranks[n],
+                frequencies[n],
+                " " + tokens[indices[n]],
+                verticalalignment="bottom",
+                horizontalalignment="left",
             )
     plt.title("Закон Ципфа")
     plt.xlabel("Ранк слова")
@@ -65,11 +76,8 @@ def zipf(
         plt.legend()
     return plot
 
-def zipf_theory(
-    size: int,
-    num_ranks: int,
-    alpha: float = 1.5
-) -> Line2D:
+
+def zipf_theory(size: int, num_ranks: int, alpha: float = 1.5) -> Line2D:
     """
     Построение теоретического графика Закона Ципфа (Zipf's law) по заданным параметрам
 
@@ -82,9 +90,12 @@ def zipf_theory(
         plot (Line2D): График теоретического Закона Ципфа
     """
     x = np.arange(1, num_ranks + 1)
-    y = x**(-alpha) / special.zetac(alpha)
-    plot = plt.plot(x, y / max(y) * size, linewidth=2, color='r', label='Теоретический закон')
+    y = x ** (-alpha) / special.zetac(alpha)
+    plot = plt.plot(
+        x, y / max(y) * size, linewidth=2, color="r", label="Теоретический закон"
+    )
     return plot
+
 
 def fingerprinting(
     texts: List[List[str]],
@@ -92,8 +103,8 @@ def fingerprinting(
     metric: Callable = None,
     x_size=800,
     y_size=600,
-    cmap='PuOr',
-    is_return=True
+    cmap="PuOr",
+    is_return=True,
 ) -> Figure:
     """
     Визуализация литературной дактилоскопии (Literature Fingerprinting)
@@ -132,7 +143,7 @@ def fingerprinting(
         n_words = len(text)
         segments = []
         while end <= n_words:
-            segment = text[start: end]
+            segment = text[start:end]
             metric_value = metric_func(segment)
             segments.append(metric_value)
             start += window_len
@@ -147,16 +158,18 @@ def fingerprinting(
     ax.axes.get_yaxis().set_visible(False)
     cmaps = plt.get_cmap(cmap)
     cmap_list = [cmaps(i) for i in range(cmaps.N)]
-    cx = ax.imshow(cmap_list, interpolation='nearest', cmap=cmap, visible=None)
+    cx = ax.imshow(cmap_list, interpolation="nearest", cmap=cmap, visible=None)
     fig.colorbar(cx)
     x = -x_size + 30
-    y = y_size -50
+    y = y_size - 50
     max_metric = max([max(v) for k, v in metrics.items()])
     n_cols = 0
     n_rows = 0
     for _, segments in metrics.items():
         n_segments = len(segments)
-        n_cols = int(n_segments / 8) if (n_segments % 8) == 0 else int(n_segments / 8) + 1
+        n_cols = (
+            int(n_segments / 8) if (n_segments % 8) == 0 else int(n_segments / 8) + 1
+        )
         n_rows = 8 if n_cols > 1 else n_segments
         b = np.zeros((n_rows, n_cols))
         pos = 0
@@ -170,23 +183,25 @@ def fingerprinting(
         tam_quad = 15
         x_max = x_size - 25
         margin = 25
-        x_accum = (n_cols * tam_quad)
+        x_accum = n_cols * tam_quad
         if (x + x_accum + margin) > x_max:
             y = y - ((8 * tam_quad) + margin)
             x = -x_size + 25
         for i in range(n_rows):
             for j in range(n_cols):
                 if b[i][j] == 0:
-                    rect = Rectangle((x, y), tam_quad, tam_quad, color='Black')
+                    rect = Rectangle((x, y), tam_quad, tam_quad, color="Black")
                     ax.add_patch(rect)
                 else:
-                    rect = Rectangle((x, y), tam_quad, tam_quad, color=cmaps(b[i][j] / max_metric))
+                    rect = Rectangle(
+                        (x, y), tam_quad, tam_quad, color=cmaps(b[i][j] / max_metric)
+                    )
                     ax.add_patch(rect)
                 x += tam_quad
-            x -= (n_cols * tam_quad)
+            x -= n_cols * tam_quad
             y -= tam_quad
         x += (n_cols * tam_quad) + margin
-        y += (n_rows * tam_quad)
+        y += n_rows * tam_quad
     plt.xlim([-x_size, x_size])
     plt.ylim([-y_size, y_size])
     plt.title("Литературная дактилоскопия")

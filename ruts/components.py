@@ -1,9 +1,11 @@
+from spacy.language import Language
+from spacy.tokens import Doc
+
 from .basic_stats import BasicStats
 from .diversity_stats import DiversityStats
 from .morph_stats import MorphStats
 from .readability_stats import ReadabilityStats
-from spacy.language import Language
-from spacy.tokens import Doc
+
 
 @Language.factory("basic")
 class BasicStatsComponent(object):
@@ -45,6 +47,7 @@ class BasicStatsComponent(object):
         doc._.set(self.name, bs)
         return doc
 
+
 @Language.factory("morph")
 class MorphStatsComponent(object):
     """
@@ -84,6 +87,7 @@ class MorphStatsComponent(object):
         doc._.set(self.name, ms)
         return doc
 
+
 @Language.factory("readability")
 class ReadabilityStatsComponent(object):
     """
@@ -122,6 +126,7 @@ class ReadabilityStatsComponent(object):
         rs = ReadabilityStats(doc)
         doc._.set(self.name, rs)
         return doc
+
 
 @Language.factory("diversity")
 class DiversityStatsComponent(object):

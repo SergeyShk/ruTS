@@ -3,9 +3,11 @@ import shutil
 import tarfile
 import urllib
 import zipfile
-from .constants import RU_VOWELS, DEFAULT_DATA_DIR
 from pathlib import Path
 from typing import Union
+
+from .constants import DEFAULT_DATA_DIR, RU_VOWELS
+
 
 def count_syllables(word: str) -> int:
     """
@@ -18,6 +20,7 @@ def count_syllables(word: str) -> int:
         int: Количество слогов
     """
     return sum((1 for char in word if char in RU_VOWELS))
+
 
 def to_path(path: str) -> Path:
     """
@@ -39,11 +42,12 @@ def to_path(path: str) -> Path:
     else:
         raise TypeError("Некорректно указан путь")
 
+
 def download_file(
     url: str,
     filename: str = None,
     dirpath: Union[str, Path] = DEFAULT_DATA_DIR,
-    force: bool = False
+    force: bool = False,
 ) -> str:
     """
     Загрузка файла из сети
@@ -63,7 +67,9 @@ def download_file(
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     if not filename:
-        filename = os.path.basename(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path)
+        filename = os.path.basename(
+            urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path
+        )
     filepath = to_path(dirpath).resolve() / filename
     if filepath.is_file() and force is False:
         print(f"Файл {filepath} уже загружен")
@@ -72,17 +78,19 @@ def download_file(
         try:
             print(f"Загрузка файла {url}...")
             req = urllib.request.Request(url)
-            with urllib.request.urlopen(req) as response, open(filepath, 'wb') as out_file:
+            with urllib.request.urlopen(req) as response, open(
+                filepath, "wb"
+            ) as out_file:
                 shutil.copyfileobj(response, out_file)
-        except:
+        except Exception:
             raise RuntimeError("Не удалось загрузить файл")
         else:
             print(f"Файл успешно загружен: {filepath}")
     return str(filepath)
 
+
 def extract_archive(
-    archive_file: Union[str, Path],
-    extract_dir: Union[str, Path] = None
+    archive_file: Union[str, Path], extract_dir: Union[str, Path] = None
 ) -> str:
     """
     Извлечение файлов из архива в формате ZIP или TAR
@@ -108,10 +116,10 @@ def extract_archive(
         print(f"Извлечение файлов из архива {archive_file}...")
         shutil.unpack_archive(archive_file, extract_dir=extract_dir, format=None)
         if is_zip:
-            with zipfile.ZipFile(archive_file, mode='r') as f:
+            with zipfile.ZipFile(archive_file, mode="r") as f:
                 members = f.namelist()
         else:
-            with tarfile.open(archive_file, mode='r') as f:
+            with tarfile.open(archive_file, mode="r") as f:
                 members = f.getnames()
         src_basename = os.path.commonpath(members)
         dest_basename = os.path.basename(archive_file)
@@ -132,10 +140,9 @@ def extract_archive(
         else:
             return extract_dir
 
+
 def safe_divide(
-    num: Union[float, int],
-    den: Union[float, int],
-    default: Union[float, int] = 0
+    num: Union[float, int], den: Union[float, int], default: Union[float, int] = 0
 ) -> float:
     """
     Безопасное деление двух чисел

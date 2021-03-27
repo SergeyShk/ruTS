@@ -1,9 +1,18 @@
-from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, PUNCTUATIONS, RU_LETTERS, SPACES
+from collections import Counter
+from typing import Dict, Union
+
+from spacy.tokens import Doc
+
+from .constants import (
+    BASIC_STATS_DESC,
+    COMPLEX_SYL_FACTOR,
+    PUNCTUATIONS,
+    RU_LETTERS,
+    SPACES,
+)
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
-from collections import Counter
-from spacy.tokens import Doc
-from typing import Dict, Union
+
 
 class BasicStats(object):
     """
@@ -76,7 +85,7 @@ class BasicStats(object):
         source: Union[str, Doc],
         sents_extractor: SentsExtractor = None,
         words_extractor: WordsExtractor = None,
-        normalize: bool = False
+        normalize: bool = False,
     ):
         if isinstance(source, Doc):
             text = source.text
@@ -103,11 +112,17 @@ class BasicStats(object):
         self.n_words = len(words)
         self.n_unique_words = len({word.lower() for word in words})
         self.n_long_words = sum(1 for cpw in letters_per_word if cpw >= 6)
-        self.n_complex_words = sum(1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR)
-        self.n_simple_words = sum(1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0)
+        self.n_complex_words = sum(
+            1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR
+        )
+        self.n_simple_words = sum(
+            1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0
+        )
         self.n_monosyllable_words = self.c_syllables.get(1, 0)
-        self.n_polysyllable_words = self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
-        self.n_chars = len(text.replace('\n', ''))
+        self.n_polysyllable_words = (
+            self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
+        )
+        self.n_chars = len(text.replace("\n", ""))
         self.n_letters = sum((1 for char in text if char in RU_LETTERS))
         self.n_spaces = sum((1 for char in text if char in SPACES))
         self.n_syllables = sum(syllables_per_word)

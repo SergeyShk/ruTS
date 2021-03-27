@@ -1,13 +1,16 @@
-from .constants import DIVERSITY_STATS_DESC
-from .extractors import WordsExtractor
-from .utils import safe_divide
 from collections import Counter
 from itertools import permutations
-from math import sqrt, log10
+from math import log10, sqrt
+from typing import Dict, List, Union
+
 from nltk import FreqDist
 from scipy.special import comb
 from spacy.tokens import Doc
-from typing import Dict, List, Union
+
+from .constants import DIVERSITY_STATS_DESC
+from .extractors import WordsExtractor
+from .utils import safe_divide
+
 
 class DiversityStats(object):
     """
@@ -73,11 +76,7 @@ class DiversityStats(object):
         ValueError: Если в источнике данных отсутствуют слова
     """
 
-    def __init__(
-        self,
-        source: Union[str, Doc],
-        words_extractor: WordsExtractor = None
-    ):
+    def __init__(self, source: Union[str, Doc], words_extractor: WordsExtractor = None):
         if isinstance(source, Doc):
             text = source.text
             self.words = tuple(word.text for word in source)
@@ -155,20 +154,20 @@ class DiversityStats(object):
             dict[str, float]: Справочник вычисленных метрик лексического разнообразия текста
         """
         return {
-            'ttr': self.ttr,
-            'rttr': self.rttr,
-            'cttr': self.cttr,
-            'httr': self.httr,
-            'sttr': self.sttr,
-            'mttr': self.mttr,
-            'dttr': self.dttr,
-            'mattr': self.mattr,
-            'msttr': self.msttr,
-            'mtld': self.mtld,
-            'mamtld': self.mamtld,
-            'hdd': self.hdd,
-            'simpson_index': self.simpson_index,
-            'hapax_index': self.hapax_index
+            "ttr": self.ttr,
+            "rttr": self.rttr,
+            "cttr": self.cttr,
+            "httr": self.httr,
+            "sttr": self.sttr,
+            "mttr": self.mttr,
+            "dttr": self.dttr,
+            "mattr": self.mattr,
+            "msttr": self.msttr,
+            "mtld": self.mtld,
+            "mamtld": self.mamtld,
+            "hdd": self.hdd,
+            "simpson_index": self.simpson_index,
+            "hapax_index": self.hapax_index,
         }
 
     def print_stats(self):
@@ -197,6 +196,7 @@ def calc_ttr(text: List[str]) -> float:
     n_lexemes = len(set(text))
     return safe_divide(n_lexemes, n_words)
 
+
 def calc_rttr(text: List[str]) -> float:
     """
     Вычисление метрики Root Type-Token Ratio (RTTR)
@@ -213,6 +213,7 @@ def calc_rttr(text: List[str]) -> float:
     n_words = len(text)
     n_lexemes = len(set(text))
     return safe_divide(n_lexemes, sqrt(n_words))
+
 
 def calc_cttr(text: List[str]) -> float:
     """
@@ -231,6 +232,7 @@ def calc_cttr(text: List[str]) -> float:
     n_lexemes = len(set(text))
     return safe_divide(n_lexemes, sqrt(2 * n_words))
 
+
 def calc_httr(text: List[str]) -> float:
     """
     Вычисление метрики Herdan Type-Token Ratio (HTTR)
@@ -247,6 +249,7 @@ def calc_httr(text: List[str]) -> float:
     n_words = len(text)
     n_lexemes = len(set(text))
     return safe_divide(log10(n_lexemes), log10(n_words))
+
 
 def calc_sttr(text: List[str]) -> float:
     """
@@ -268,6 +271,7 @@ def calc_sttr(text: List[str]) -> float:
     else:
         return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
 
+
 def calc_mttr(text: List[str]) -> float:
     """
     Вычисление метрики Mass Type-Token Ratio (MTTR)
@@ -284,7 +288,8 @@ def calc_mttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return safe_divide((log10(n_words) - log10(n_lexemes)), log10(n_words)**2)
+    return safe_divide((log10(n_words) - log10(n_lexemes)), log10(n_words) ** 2)
+
 
 def calc_dttr(text: List[str]) -> float:
     """
@@ -301,12 +306,10 @@ def calc_dttr(text: List[str]) -> float:
     """
     n_words = len(text)
     n_lexemes = len(set(text))
-    return safe_divide(log10(n_words)**2, (log10(n_words) - log10(n_lexemes)))
+    return safe_divide(log10(n_words) ** 2, (log10(n_words) - log10(n_lexemes)))
 
-def calc_mattr(
-    text: List[str],
-    window_len: int = 50
-) -> float:
+
+def calc_mattr(text: List[str], window_len: int = 50) -> float:
     """
     Вычисление метрики Moving Average Type-Token Ratio (MATTR)
 
@@ -327,7 +330,7 @@ def calc_mattr(
         window_ttr = 0
         window_count = 0
         for n in range(n_words):
-            window = text[n: (n + window_len)]
+            window = text[n : (n + window_len)]
             if len(window) < window_len:
                 break
             window_count += 1
@@ -335,10 +338,8 @@ def calc_mattr(
         mattr = safe_divide(window_ttr, window_count)
     return mattr
 
-def calc_msttr(
-    text: List[str],
-    segment_len: int = 50
-) -> float:
+
+def calc_msttr(text: List[str], segment_len: int = 50) -> float:
     """
     Вычисление метрики Mean Segmental Type-Token Ratio (MSTTR)
 
@@ -360,17 +361,15 @@ def calc_msttr(
         segment_count = 0
         seed = 0
         for _ in range(int(n_words / segment_len)):
-            segment = text[seed: (seed + segment_len)]
+            segment = text[seed : (seed + segment_len)]
             segment_count += 1
             seed += segment_len
             segment_ttr += safe_divide(len(set(segment)), len(segment))
         msttr = safe_divide(segment_ttr, segment_count)
     return msttr
 
-def calc_mtld(
-    text: List[str],
-    min_len: int = 10
-) -> float:
+
+def calc_mtld(text: List[str], min_len: int = 10) -> float:
     """
     Вычисление метрики Measure of Textual Lexical Diversity (MTLD)
 
@@ -388,13 +387,14 @@ def calc_mtld(
     Вывод:
         float: Значение метрики
     """
+
     def calc_mtld_base(text):
         """Подсчет базовой метрики MTLD"""
         factor = 0
         factor_len = 0
         start = 0
         for n in range(len(text)):
-            factor_text = text[start: n + 1]
+            factor_text = text[start : n + 1]
             if n + 1 == len(text):
                 factor += (1 - calc_ttr(factor_text)) / (1 - 0.72)
                 factor_len += len(factor_text)
@@ -413,10 +413,8 @@ def calc_mtld(
     mtld = (mltd_forward + mltd_backward) / 2
     return mtld
 
-def calc_mamtld(
-    text: List[str],
-    min_len: int = 10
-) -> float:
+
+def calc_mamtld(text: List[str], min_len: int = 10) -> float:
     """
     Вычисление метрики Moving Average Measure of Textual Lexical Diversity (MAMTLD)
 
@@ -430,6 +428,7 @@ def calc_mamtld(
     Вывод:
         float: Значение метрики
     """
+
     def calc_mamtld_base(text):
         """Подсчет базовой метрики MAMTLD"""
         factor = 0
@@ -454,10 +453,8 @@ def calc_mamtld(
     mamtld = (mamtld_forward + mamtld_backward) / 2
     return mamtld
 
-def calc_hdd(
-    text: List[str],
-    sample_size: int = 42
-) -> float:
+
+def calc_hdd(text: List[str], sample_size: int = 42) -> float:
     """
     Вычисление метрики Hypergeometric Distribution D (HD-D)
 
@@ -473,14 +470,22 @@ def calc_hdd(
     Вывод:
         float: Значение метрики
     """
+
     def hyper(successes, sample_size, population_size, freq):
         """
-            Вероятность появления слова по крайней мере в одном сегменте, каждый из которых
-            сформирован на основе гипергеометрического распределения
+        Вероятность появления слова по крайней мере в одном сегменте, каждый из которых
+        сформирован на основе гипергеометрического распределения
         """
         try:
-            prob = 1.0 - (float((comb(freq, successes) * comb((population_size - freq),(sample_size - successes)))) /\
-                    float(comb(population_size, sample_size)))
+            prob = 1.0 - (
+                float(
+                    (
+                        comb(freq, successes)
+                        * comb((population_size - freq), (sample_size - successes))
+                    )
+                )
+                / float(comb(population_size, sample_size))
+            )
             prob = prob * (1 / sample_size)
         except ZeroDivisionError:
             prob = 0
@@ -496,6 +501,7 @@ def calc_hdd(
         prob = hyper(0, sample_size, n_words, freqs[lexeme])
         hdd += prob
     return hdd
+
 
 def calc_simpson_index(text: List[str]) -> float:
     """
@@ -521,6 +527,7 @@ def calc_simpson_index(text: List[str]) -> float:
             counter += 1
     simpson_index = safe_divide(den, counter)
     return simpson_index
+
 
 def calc_hapax_index(text: List[str]) -> float:
     """
