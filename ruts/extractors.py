@@ -1,7 +1,7 @@
 import re
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from typing import Callable, List, Pattern, Tuple, Union
+from typing import Any, Callable, Generator, List, Pattern, Tuple, Union
 
 import pymorphy2
 from razdel import sentenize, tokenize
@@ -79,6 +79,7 @@ class SentsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
+        self.sents: Union[Generator[Any, None, None], List[Any]]
         if not self.tokenizer:
             self.sents = (sent.text for sent in sentenize(self.text))
         elif isinstance(self.tokenizer, Pattern):
@@ -155,7 +156,7 @@ class WordsExtractor(Extractor):
         self.max_len = max_len
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина слова больше максимальной")
-        self.words = ()
+        self.words: Union[Generator[Any, None, None], Tuple] = ()
 
     def extract(self) -> Tuple[str, ...]:
         """
@@ -196,7 +197,7 @@ class WordsExtractor(Extractor):
             self.words = self.__make_ngrams()
         return tuple(self.words)
 
-    def get_most_common(self, n: int = 10) -> Counter:
+    def get_most_common(self, n: int = 10) -> List[Tuple[Any, int]]:
         """
         Получение счетчика топ-слов
 
@@ -204,7 +205,7 @@ class WordsExtractor(Extractor):
             n (int): Количество слов
 
         Вывод:
-            Counter: Счетчик топ-слов
+            List: Список топ-слов
 
         Исключения:
             ValueError: Если указанное количество слов меньше 0
@@ -220,9 +221,10 @@ class WordsExtractor(Extractor):
         Вывод:
             ngrams (tuple[str]): Кортеж извлеченных N-грамм
         """
-        ngrams = ()
+        ngrams: Tuple[str, ...] = ()
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
             ngrams += tuple(
-                "_".join(self.words[i : i + n]) for i in range(len(self.words) - n + 1)
+                "_".join(tuple(self.words)[i : i + n])
+                for i in range(len(tuple(self.words)) - n + 1)
             )
         return ngrams

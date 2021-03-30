@@ -1,7 +1,8 @@
 import os
 import shutil
 import tarfile
-import urllib
+import urllib.parse
+import urllib.request
 import zipfile
 from pathlib import Path
 from typing import Union
@@ -22,7 +23,7 @@ def count_syllables(word: str) -> int:
     return sum((1 for char in word if char in RU_VOWELS))
 
 
-def to_path(path: str) -> Path:
+def to_path(path: Union[str, Path]) -> Path:
     """
     Перевод строкового представления пути в объект Path
 
@@ -73,7 +74,7 @@ def download_file(
     filepath = to_path(dirpath).resolve() / filename
     if filepath.is_file() and force is False:
         print(f"Файл {filepath} уже загружен")
-        return None
+        return ""
     else:
         try:
             print(f"Загрузка файла {url}...")
@@ -111,16 +112,16 @@ def extract_archive(
     is_tar = tarfile.is_tarfile(archive_file)
     if not is_zip and not is_tar:
         print(f"Файл {archive_file} не является архивом в формате ZIP или TAR")
-        return extract_dir
+        return str(extract_dir)
     else:
         print(f"Извлечение файлов из архива {archive_file}...")
         shutil.unpack_archive(archive_file, extract_dir=extract_dir, format=None)
         if is_zip:
-            with zipfile.ZipFile(archive_file, mode="r") as f:
-                members = f.namelist()
+            with zipfile.ZipFile(archive_file, mode="r") as f1:
+                members = f1.namelist()
         else:
-            with tarfile.open(archive_file, mode="r") as f:
-                members = f.getnames()
+            with tarfile.open(archive_file, mode="r") as f2:
+                members = f2.getnames()
         src_basename = os.path.commonpath(members)
         dest_basename = os.path.basename(archive_file)
         if src_basename:
@@ -138,7 +139,7 @@ def extract_archive(
             else:
                 return os.path.join(extract_dir, src_basename)
         else:
-            return extract_dir
+            return str(extract_dir)
 
 
 def safe_divide(

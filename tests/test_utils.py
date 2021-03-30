@@ -33,7 +33,7 @@ def test_download_file():
         download_file(url_tar, filename=filename, dirpath=dirpath)
         == "/tmp/ruts_download/razdel.tar.gz"
     )
-    assert download_file(url_zip, dirpath=dirpath) is None
+    assert download_file(url_zip, dirpath=dirpath) == ""
 
 
 def test_download_file_runtime_error():

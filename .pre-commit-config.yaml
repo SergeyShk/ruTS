@@ -24,6 +24,13 @@ repos:
         types: [python]
         exclude: setup.py
 
+      - id: mypy
+        name: mypy
+        stages: [commit]
+        language: system
+        entry: pipenv run mypy --follow-imports silent
+        types: [python]
+
       - id: pytest
         name: pytest
         stages: [commit]
