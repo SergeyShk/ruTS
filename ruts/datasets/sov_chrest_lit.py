@@ -25,6 +25,7 @@ TEXT_TYPES = [
     "Песня",
     "Басня",
 ]
+DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
 class SovChLit(Dataset):
@@ -75,7 +76,7 @@ class SovChLit(Dataset):
         get_records: Получение записей (с заголовками) из набора данных
     """
 
-    def __init__(self, data_dir: str = DEFAULT_DATA_DIR.joinpath("texts")):
+    def __init__(self, data_dir: str = DEFAULT_DATASET_DIR):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = ("grade_1",)

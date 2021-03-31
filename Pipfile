@@ -19,6 +19,9 @@ mypy = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-cov = "*"
+pep8-naming = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
 
 [requires]
 python_version = "3.8"
