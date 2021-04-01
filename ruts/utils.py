@@ -68,9 +68,7 @@ def download_file(
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     if not filename:
-        filename = os.path.basename(
-            urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path
-        )
+        filename = os.path.basename(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path)
     filepath = to_path(dirpath).resolve() / filename
     if filepath.is_file() and force is False:
         print(f"Файл {filepath} уже загружен")
@@ -79,9 +77,7 @@ def download_file(
         try:
             print(f"Загрузка файла {url}...")
             req = urllib.request.Request(url)
-            with urllib.request.urlopen(req) as response, open(
-                filepath, "wb"
-            ) as out_file:
+            with urllib.request.urlopen(req) as response, open(filepath, "wb") as out_file:
                 shutil.copyfileobj(response, out_file)
         except Exception:
             raise RuntimeError("Не удалось загрузить файл")
@@ -90,9 +86,7 @@ def download_file(
     return str(filepath)
 
 
-def extract_archive(
-    archive_file: Union[str, Path], extract_dir: Union[str, Path] = None
-) -> str:
+def extract_archive(archive_file: Union[str, Path], extract_dir: Union[str, Path] = None) -> str:
     """
     Извлечение файлов из архива в формате ZIP или TAR
 

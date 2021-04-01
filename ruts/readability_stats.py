@@ -57,21 +57,15 @@ class ReadabilityStats(object):
 
     @property
     def flesch_kincaid_grade(self):
-        return calc_flesch_kincaid_grade(
-            self.bs.n_syllables, self.bs.n_words, self.bs.n_sents
-        )
+        return calc_flesch_kincaid_grade(self.bs.n_syllables, self.bs.n_words, self.bs.n_sents)
 
     @property
     def flesch_reading_easy(self):
-        return calc_flesch_reading_easy(
-            self.bs.n_syllables, self.bs.n_words, self.bs.n_sents
-        )
+        return calc_flesch_reading_easy(self.bs.n_syllables, self.bs.n_words, self.bs.n_sents)
 
     @property
     def coleman_liau_index(self):
-        return calc_coleman_liau_index(
-            self.bs.n_letters, self.bs.n_words, self.bs.n_sents
-        )
+        return calc_coleman_liau_index(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
 
     @property
     def smog_index(self):
@@ -79,9 +73,7 @@ class ReadabilityStats(object):
 
     @property
     def automated_readability_index(self):
-        return calc_automated_readability_index(
-            self.bs.n_letters, self.bs.n_words, self.bs.n_sents
-        )
+        return calc_automated_readability_index(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
 
     @property
     def lix(self):

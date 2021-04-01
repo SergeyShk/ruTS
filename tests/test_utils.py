@@ -24,7 +24,9 @@ def test_to_path_type_error():
 
 
 def test_download_file():
-    url_zip = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopwords.zip"
+    url_zip = (
+        "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopwords.zip"
+    )
     url_tar = "https://bit.ly/30JYkQF"
     filename = "razdel.tar.gz"
     dirpath = "/tmp/ruts_download"
@@ -48,14 +50,10 @@ def test_extract_archive():
     archive_file_tar = "/tmp/ruts_download/razdel.tar.gz"
     extract_dir = "/tmp/ruts_extract"
     assert (
-        extract_archive(archive_file_zip, extract_dir=extract_dir)
-        == "/tmp/ruts_extract/stopwords"
+        extract_archive(archive_file_zip, extract_dir=extract_dir) == "/tmp/ruts_extract/stopwords"
     )
     assert extract_archive(archive_file_tar) == "/tmp/ruts_download/razdel"
-    assert (
-        extract_archive("/tmp/ruts_extract/stopwords/russian")
-        == "/tmp/ruts_extract/stopwords"
-    )
+    assert extract_archive("/tmp/ruts_extract/stopwords/russian") == "/tmp/ruts_extract/stopwords"
     shutil.rmtree("/tmp/ruts_extract", ignore_errors=True)
     shutil.rmtree("/tmp/ruts_download", ignore_errors=True)
 

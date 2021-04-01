@@ -268,9 +268,7 @@ class StalinWorks(Dataset):
         try:
             with io.open(filepath, mode="r", encoding="utf-8") as f:
                 headers, text = f.read().strip().split("\n\n")
-                headers = tuple(
-                    header.split(":")[1][1:] for header in headers.split("\n")
-                )
+                headers = tuple(header.split(":")[1][1:] for header in headers.split("\n"))
             return {
                 "volume": int(headers[0]),
                 "year": int(headers[1]),
@@ -333,24 +331,16 @@ class StalinWorks(Dataset):
                 raise ValueError(f"Некорректно выбран тип текста - {text_type}")
             filters.append(lambda record: record.get("type", "") == text_type)
         if is_translation is not None:
-            filters.append(
-                lambda record: record.get("is_translation", "") == is_translation
-            )
+            filters.append(lambda record: record.get("is_translation", "") == is_translation)
         if source:
             pattern = re.compile(f".*{source}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("source", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("source", ""))) > 0)
         if subject:
             pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
         if topic:
             pattern = re.compile(f".*{topic}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("topic", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("topic", ""))) > 0)
         if min_len:
             if min_len < 1:
                 raise ValueError("Минимальная длина текста должна быть больше 0")

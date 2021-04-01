@@ -49,17 +49,11 @@ def zipf(
     indices = counts.argsort()[::-1][:]
     frequencies = counts[indices]
     if log:
-        plot = plt.loglog(
-            ranks, frequencies, marker=".", label="Экспериментальный закон"
-        )[0]
+        plot = plt.loglog(ranks, frequencies, marker=".", label="Экспериментальный закон")[0]
     else:
-        plot = plt.plot(
-            ranks, frequencies, marker=".", label="Экспериментальный закон"
-        )[0]
+        plot = plt.plot(ranks, frequencies, marker=".", label="Экспериментальный закон")[0]
     if num_labels > 0:
-        for n in list(
-            np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)
-        ):
+        for n in list(np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)):
             plt.text(
                 ranks[n],
                 frequencies[n],
@@ -91,9 +85,7 @@ def zipf_theory(size: int, num_ranks: int, alpha: float = 1.5) -> Line2D:
     """
     x = np.arange(1, num_ranks + 1)
     y = x ** (-alpha) / special.zetac(alpha)
-    plot = plt.plot(
-        x, y / max(y) * size, linewidth=2, color="r", label="Теоретический закон"
-    )
+    plot = plt.plot(x, y / max(y) * size, linewidth=2, color="r", label="Теоретический закон")
     return plot
 
 
@@ -167,9 +159,7 @@ def fingerprinting(
     n_rows = 0
     for _, segments in metrics.items():
         n_segments = len(segments)
-        n_cols = (
-            int(n_segments / 8) if (n_segments % 8) == 0 else int(n_segments / 8) + 1
-        )
+        n_cols = int(n_segments / 8) if (n_segments % 8) == 0 else int(n_segments / 8) + 1
         n_rows = 8 if n_cols > 1 else n_segments
         b = np.zeros((n_rows, n_cols))
         pos = 0
@@ -193,9 +183,7 @@ def fingerprinting(
                     rect = Rectangle((x, y), tam_quad, tam_quad, color="Black")
                     ax.add_patch(rect)
                 else:
-                    rect = Rectangle(
-                        (x, y), tam_quad, tam_quad, color=cmaps(b[i][j] / max_metric)
-                    )
+                    rect = Rectangle((x, y), tam_quad, tam_quad, color=cmaps(b[i][j] / max_metric))
                     ax.add_patch(rect)
                 x += tam_quad
             x -= n_cols * tam_quad

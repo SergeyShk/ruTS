@@ -8,9 +8,7 @@ from ruts.constants import MORPHOLOGY_STATS_DESC
 
 @pytest.fixture(scope="module")
 def ms():
-    text = (
-        "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
-    )
+    text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
     ms_ = MorphStats(text)
     return ms_
 
@@ -233,9 +231,7 @@ def test_explain_text(ms):
 
 def test_explain_text_args(ms):
     explain = ms.explain_text("pos", "tense")
-    assert all(
-        [set(v.keys()) == set(["pos", "tense"]) for v in tuple(zip(*explain))[1]]
-    )
+    assert all([set(v.keys()) == set(["pos", "tense"]) for v in tuple(zip(*explain))[1]])
 
 
 def test_explain_text_filter_none(ms):

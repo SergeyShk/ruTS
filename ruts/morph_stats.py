@@ -144,8 +144,7 @@ class MorphStats(object):
         values = tuple(zip(*(vars(self).get(arg) for arg in args)))
         if filter_none:
             explains = tuple(
-                dict((k, v) for (k, v) in dict(zip(args, value)).items() if v)
-                for value in values
+                dict((k, v) for (k, v) in dict(zip(args, value)).items() if v) for value in values
             )
         else:
             explains = tuple(dict(zip(args, value)) for value in values)
@@ -173,9 +172,7 @@ class MorphStats(object):
             ).items():
                 if filter_none and not value:
                     continue
-                print(
-                    f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}"
-                )
+                print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}")
             print()
 
     @staticmethod
@@ -197,7 +194,5 @@ class MorphStats(object):
                 print(
                     f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}"
                 )
-                raise KeyError(
-                    arg + " отсутствует в справочнике морфологических статистик"
-                )
+                raise KeyError(arg + " отсутствует в справочнике морфологических статистик")
         return True

@@ -243,9 +243,7 @@ class SovChLit(Dataset):
         try:
             with io.open(filepath, mode="r", encoding="utf-8") as f:
                 headers, text = f.read().strip().split("\n\n")
-                headers = tuple(
-                    header.split(":")[1][1:] for header in headers.split("\n")
-                )
+                headers = tuple(header.split(":")[1][1:] for header in headers.split("\n"))
             return {
                 "grade": int(headers[0]),
                 "book": headers[1],
@@ -303,9 +301,7 @@ class SovChLit(Dataset):
             filters.append(lambda record: record.get("grade", "") == grade)
         if book:
             pattern = re.compile(f".*{book}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("book", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("book", ""))) > 0)
         if year:
             filters.append(lambda record: record.get("year", "") == year)
         if category:
@@ -316,14 +312,10 @@ class SovChLit(Dataset):
             filters.append(lambda record: record.get("type", "") == text_type)
         if subject:
             pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
         if author:
             pattern = re.compile(f".*{author}.*", re.IGNORECASE)
-            filters.append(
-                lambda record: len(re.findall(pattern, record.get("author", ""))) > 0
-            )
+            filters.append(lambda record: len(re.findall(pattern, record.get("author", ""))) > 0)
         if min_len:
             if min_len < 1:
                 raise ValueError("Минимальная длина текста должна быть больше 0")

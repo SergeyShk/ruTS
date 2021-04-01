@@ -112,12 +112,8 @@ class BasicStats(object):
         self.n_words = len(words)
         self.n_unique_words = len({word.lower() for word in words})
         self.n_long_words = sum(1 for cpw in letters_per_word if cpw >= 6)
-        self.n_complex_words = sum(
-            1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR
-        )
-        self.n_simple_words = sum(
-            1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0
-        )
+        self.n_complex_words = sum(1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR)
+        self.n_simple_words = sum(1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0)
         self.n_monosyllable_words = self.c_syllables.get(1, 0)
         self.n_polysyllable_words = (
             self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)

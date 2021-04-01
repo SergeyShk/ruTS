@@ -107,10 +107,7 @@ class TestWordsExtractor(object):
     @staticmethod
     def test_extract_use_lexemes(text):
         we = WordsExtractor(text, use_lexemes=True)
-        assert (
-            len(set(["онтология", "значение", "связь"]).intersection(set(we.extract())))
-            == 3
-        )
+        assert len(set(["онтология", "значение", "связь"]).intersection(set(we.extract()))) == 3
 
     @staticmethod
     def test_extract_stopwords(text):
