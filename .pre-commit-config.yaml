@@ -5,7 +5,7 @@ repos:
         name: black
         stages: [commit]
         language: system
-        args: ["--line-length", "100"]
+        args: ["--line-length", "99"]
         entry: pipenv run black
         types: [python]
 
