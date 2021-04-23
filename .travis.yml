@@ -13,7 +13,7 @@ matrix:
 
 install:
     - "pip install pipenv pytest-cov codecov"
-    - "pipenv install"
+    - "pipenv install --dev"
     - "python -m nltk.downloader punkt stopwords"
 
 script:
