@@ -21,6 +21,7 @@ nav:
         - Морфологические статистики: stats/morph_stats.md        
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
+        - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
     - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md

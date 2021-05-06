@@ -73,7 +73,9 @@ class ReadabilityStats(object):
 
     @property
     def automated_readability_index(self):
-        return calc_automated_readability_index(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
+        return calc_automated_readability_index(
+            self.bs.n_letters, self.bs.n_words, self.bs.n_sents
+        )
 
     @property
     def lix(self):

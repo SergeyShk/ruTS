@@ -15,8 +15,26 @@ META = {
     "description": "Полное собрание сочинений И.В. Сталина",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/4288732"
-TEXT_TYPES = ["Статья", "Брошюра", "Прокламация", "Письмо"]
+DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/4623793"
+TEXT_TYPES = [
+    "Протокол",
+    "Прошение",
+    "Стихотворение",
+    "Телеграмма",
+    "Доклад",
+    "Приказ",
+    "Статья",
+    "Выступление",
+    "Беседа",
+    "Записка",
+    "Отчет",
+    "Письмо",
+    "Брошюра",
+    "Прокламация",
+    "Постановление",
+    "Резолюция",
+    "Комментарий",
+]
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -25,7 +43,7 @@ class StalinWorks(Dataset):
     Класс для работы с набором данных полного собрания сочинений И.В. Сталина
 
     Описание:
-        Для формирования набора данных используются все 18 томов оцифрованного полного собрания сочинений И.В. Сталина:
+        Для формирования набора данных используются 16 основных томов оцифрованного полного собрания сочинений И.В. Сталина:
             Том 1. Произведения 1901-1907
             Том 2. Произведения 1907-1913
             Том 3. Произведения 1917 (март-октябрь)
@@ -42,11 +60,9 @@ class StalinWorks(Dataset):
             Том 14. Произведения 1934-1940
             Том 15. Произведения 1941-1945
             Том 16. Произведения 1946-1952
-            Том 17. Не вошедшее
-            Том 18. Не вошедшее
 
     Ссылки:
-        https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT
+        https://dataverse.harvard.edu/file.xhtml?fileId=4623793&version=DRAFT
         https://ruslit.traumlibrary.net/page/stalin.html
 
     Примеры использования:
@@ -55,22 +71,29 @@ class StalinWorks(Dataset):
         >>> sw = StalinWorks()
         >>> sw.info
         {'description': 'Полное собрание сочинений И.В. Сталина',
-        'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
+        'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
         'Наименование': 'stalin_works'}
 
     Итерация по набору данных:
-        >>> for i in sc.get_records(max_len=100, category='Весна', limit=1):
+        >>> for i in sw.get_records(year=1937, text_type='Письмо', limit=1):
         >>>     print(i)
-        {'author': 'Е. Трутнева',
-        'book': 'Родная речь. Книга для чтения в I классе начальной школы',
-        'category': 'Весна',
-        'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/155'),
-        'grade': 1,
-        'subject': 'Дождик',
-        'text': 'Дождик, дождик, поливай, будет хлеба каравай!\n'
-                'Дождик, дождик, припусти, дай гороху подрасти!',
-        'type': 'Стихотворение',
-        'year': 1963}
+        {'file': PosixPath('../ruTS/ruts_data/texts/stalin_works/volume_14/59'),
+        'is_translation': False,
+        'source': 'Книга "Иосиф Сталин в объятиях семьи"',
+        'subject': 'Письмо матери 10 марта 1937 года',
+        'text': 'Маме – моей привет!\n'
+                'Как живет, как чувствует себя мама – моя? Передают, что ты здорова и '
+                'бодра. Правда это? Если это правда, то я бесконечно рад этому. Наш '
+                'род, видимо, крепкий род.\n'
+                'Я здоров.\n'
+                'Мои дети тоже чувствуют себя хорошо.\n'
+                'Желаю здоровья, живи долгие годы, мама – моя.\n'
+                'Твой Coco.\n'
+                '10.\xa0III.37\xa0г.',
+        'topic': '',
+        'type': 'Письмо',
+        'volume': 14,
+        'year': 1937}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных
@@ -88,7 +111,7 @@ class StalinWorks(Dataset):
     def __init__(self, data_dir: str = DEFAULT_DATASET_DIR):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
-        self.labels = ("volume_1",)
+        self.labels = tuple(f"volume_{i}" for i in range(1, 17))
 
     def check_data(self) -> bool:
         """
@@ -321,8 +344,8 @@ class StalinWorks(Dataset):
         """
         filters = []
         if volume:
-            if volume not in range(1, 12):
-                raise ValueError(f"Некорректно выбран номер тома (1-18) - {volume}")
+            if volume not in range(1, 17):
+                raise ValueError(f"Некорректно выбран номер тома (1-16) - {volume}")
             filters.append(lambda record: record.get("volume", "") == volume)
         if year:
             filters.append(lambda record: record.get("year", "") == year)
