@@ -55,3 +55,9 @@ dist: clean ## Собрать дистрибутив
 
 install: clean ## Установить дистрибутив
 	python3 setup.py install
+
+docs-build: ## Собрать документацию
+	mkdocs build
+
+docs-deploy: ## Задеплоить документацию
+	mkdocs gh-deploy

@@ -24,7 +24,7 @@ class TestDataset(Dataset):
     def get_records(self, *args):
         super(TestDataset, self).get_records()
 
-    def download(self, force):
+    def download(self):
         super(TestDataset, self).download()
 
 
@@ -39,26 +39,6 @@ def test_iter_non_implement_error(dataset):
         dataset.__iter__()
 
 
-def test_check_data_non_implement_error(dataset):
-    with pytest.raises(NotImplementedError):
-        dataset.check_data()
-
-
-def test_get_texts_non_implement_error(dataset):
-    with pytest.raises(NotImplementedError):
-        dataset.get_texts()
-
-
-def test_get_records_non_implement_error(dataset):
-    with pytest.raises(NotImplementedError):
-        dataset.get_records()
-
-
-def test_download_non_implement_error(dataset):
-    with pytest.raises(NotImplementedError):
-        dataset.download(False)
-
-
 def test_repr(dataset):
     assert dataset.__repr__() == "Набор данных('test')"
 
@@ -70,3 +50,10 @@ def test_info(dataset):
 def test_type_error():
     with pytest.raises(TypeError):
         TestErrorDataset("", {})
+
+
+def test_methods(dataset):
+    for name in ("__iter__", "check_data", "get_texts", "get_records", "download"):
+        assert hasattr(dataset, name)
+        with pytest.raises(NotImplementedError):
+            getattr(dataset, name)()
