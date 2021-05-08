@@ -4,27 +4,29 @@ import pytest
 
 from ruts.datasets.sov_chrest_lit import SovChLit
 
-DATASET = SovChLit()
-
 
 @pytest.fixture(scope="module")
 def dataset():
-    dataset_ = SovChLit()
+    path = "/tmp/ruts_data_scl"
+    os.makedirs(path, exist_ok=True)
+    dataset_ = SovChLit(data_dir=path)
+    print(dataset_.filepath)
     return dataset_
 
 
-pytestmark = pytest.mark.skipif(
-    DATASET.data_dir is None,
-    reason="Необходимо загрузить набор данных перед запуском тестов",
-)
-
-
-@pytest.mark.skip("Не нужно загружать набор данных при каждом запуске теста")
-def test_download(tmpdir):
-    dataset = SovChLit(data_dir=str(tmpdir))
+def test_download(dataset):
+    if dataset.filepath:
+        pytest.skip(f"Не нужно загружать набор данных при каждом запуске теста {dataset.filepath}")
     dataset.download()
+    print(dataset._filepath)
     assert os.path.isfile(dataset._filepath)
     assert os.path.isdir(dataset.data_dir)
+
+
+def test_oserror():
+    dataset = SovChLit(data_dir="/tmp")
+    with pytest.raises(OSError):
+        _ = list(dataset.get_texts())
 
 
 def test_get_texts(dataset):
