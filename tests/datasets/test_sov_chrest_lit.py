@@ -110,6 +110,7 @@ def test_bad_filters(dataset):
         {"text_type": "Сталин"},
         {"min_len": -1},
         {"max_len": -1},
+        {"min_len": 10, "max_len": 5},
     )
     for bad_filter in bad_filters:
         with pytest.raises(ValueError):
