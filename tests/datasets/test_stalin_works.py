@@ -2,14 +2,14 @@ import os
 
 import pytest
 
-from ruts.datasets.sov_chrest_lit import SovChLit
+from ruts.datasets.stalin_works import StalinWorks
 
 
 @pytest.fixture(scope="module")
 def dataset():
-    path = "/tmp/ruts_data_scl"
+    path = "/tmp/ruts_data_sw"
     os.makedirs(path, exist_ok=True)
-    dataset_ = SovChLit(data_dir=path)
+    dataset_ = StalinWorks(data_dir=path)
     return dataset_
 
 
@@ -22,7 +22,7 @@ def test_download(dataset):
 
 
 def test_oserror():
-    dataset = SovChLit(data_dir="/tmp")
+    dataset = StalinWorks(data_dir="/tmp")
     with pytest.raises(OSError):
         _ = list(dataset.get_texts())
 
@@ -48,64 +48,64 @@ def test_get_texts_max_len(dataset):
 
 
 def test_get_records(dataset):
-    fields = ["grade", "book", "year", "category", "type", "subject", "author"]
+    fields = ["volume", "year", "type", "is_translation", "source", "subject", "topic"]
     for record in dataset.get_records(limit=2):
         assert isinstance(record, dict)
         assert all(field in record.keys() for field in fields)
 
 
-@pytest.mark.parametrize("grade,expected", [(1, 179)])
-def test_get_records_grade(dataset, grade, expected):
-    records = list(dataset.get_records(grade=grade))
+@pytest.mark.parametrize("volume,expected", [(1, 62), (5, 63), (10, 38)])
+def test_get_records_volume(dataset, volume, expected):
+    records = list(dataset.get_records(volume=volume))
     assert len(records) == expected
 
 
-@pytest.mark.parametrize(
-    "book,expected", [("Родная речь. Книга для чтения в I классе начальной школы", 179)]
-)
-def test_get_records_book(dataset, book, expected):
-    records = list(dataset.get_records(book=book))
-    assert len(records) == expected
-
-
-@pytest.mark.parametrize("year,expected", [(1963, 179)])
+@pytest.mark.parametrize("year,expected", [(1917, 124), (1937, 14), (1945, 22)])
 def test_get_records_year(dataset, year, expected):
     records = list(dataset.get_records(year=year))
     assert len(records) == expected
 
 
-@pytest.mark.parametrize("category,expected", [("Лето", 13), ("Весна", 53), ("Зима", 21)])
-def test_get_records_category(dataset, category, expected):
-    records = list(dataset.get_records(category=category))
-    assert len(records) == expected
-
-
 @pytest.mark.parametrize(
-    "text_type,expected", [("Рассказ", 109), ("Басня", 4), ("Стихотворение", 37)]
+    "text_type,expected", [("Доклад", 367), ("Письмо", 101), ("Телеграмма", 20)]
 )
 def test_get_records_text_type(dataset, text_type, expected):
     records = list(dataset.get_records(text_type=text_type))
     assert len(records) == expected
 
 
-@pytest.mark.parametrize("subject,expected", [("Лиса", 6), ("Погляди", 3), ("Ленин", 6)])
+@pytest.mark.parametrize("is_translation,expected", [(True, 63), (False, 1180)])
+def test_get_records_is_translation(dataset, is_translation, expected):
+    records = list(dataset.get_records(is_translation=is_translation))
+    assert len(records) == expected
+
+
+@pytest.mark.parametrize(
+    "source,expected", [("Правда", 692), ("Большевик", 49), ("Коммунист", 42)]
+)
+def test_get_records_source(dataset, source, expected):
+    records = list(dataset.get_records(source=source))
+    assert len(records) == expected
+
+
+@pytest.mark.parametrize(
+    "subject,expected", [("Съезд", 161), ("Интервью", 3), ("Приветствие", 20)]
+)
 def test_get_records_subject(dataset, subject, expected):
     records = list(dataset.get_records(subject=subject))
     assert len(records) == expected
 
 
-@pytest.mark.parametrize(
-    "author,expected", [("Скребицкий", 10), ("Михалков", 4), ("Чуковский", 1)]
-)
-def test_get_records_author(dataset, author, expected):
-    records = list(dataset.get_records(author=author))
+@pytest.mark.parametrize("topic,expected", [("I", 330), ("2", 38), ("Доклад", 18)])
+def test_get_records_topic(dataset, topic, expected):
+    records = list(dataset.get_records(topic=topic))
     assert len(records) == expected
 
 
 def test_bad_filters(dataset):
     bad_filters = (
-        {"grade": 99},
-        {"text_type": "Сталин"},
+        {"volume": 99},
+        {"text_type": "Фильм"},
         {"min_len": -1},
         {"max_len": -1},
         {"min_len": 10, "max_len": 5},

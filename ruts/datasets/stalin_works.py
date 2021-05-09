@@ -3,7 +3,7 @@ import os
 import re
 from itertools import islice
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from ..constants import DEFAULT_DATA_DIR
 from ..utils import download_file, extract_archive, to_path
@@ -112,6 +112,18 @@ class StalinWorks(Dataset):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = tuple(f"volume_{i}" for i in range(1, 17))
+        self._filename = NAME + ".tar.xz"
+        self._filepath = self.data_dir.joinpath(self._filename)
+
+    @property
+    def filepath(self) -> Optional[str]:
+        """
+        Путь к архиву набора данных.
+        """
+        if self._filepath.is_file():
+            return str(self._filepath)
+        else:
+            return None
 
     def check_data(self) -> bool:
         """
