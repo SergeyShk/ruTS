@@ -839,12 +839,6 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><code>text</code></td>
-<td align="center">str</td>
-<td align="center"><code>-</code></td>
-<td align="center">Строка текста</td>
-</tr>
-<tr>
 <td align="center"><code>tokenizer</code></td>
 <td align="center">Pattern/Сallable</td>
 <td align="center"><code>None</code></td>
@@ -867,6 +861,25 @@
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Выполняет извлечение предложений из текста.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>text</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Строка текста</td>
+</tr>
+</tbody>
+</table>
 <p>Рассмотрим пример извлечения предложений, используя в качестве токенизитора регулярное выражение:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -879,11 +892,8 @@
 <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Не имей 100 рублей, а имей 100 друзей&quot;</span>
 
 <span class="c1"># Извлечение предложений</span>
-<span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">(</span>
-    <span class="n">text</span><span class="p">,</span>
-    <span class="n">tokenizer</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">se</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;, &#39;</span><span class="p">))</span>
+<span class="n">se</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">&#39;Не имей 100 рублей&#39;</span>, <span class="s1">&#39;а имей 100 друзей&#39;</span><span class="o">)</span>

@@ -857,12 +857,6 @@
 </thead>
 <tbody>
 <tr>
-<td align="center"><code>text</code></td>
-<td align="center">str</td>
-<td align="center"><code>-</code></td>
-<td align="center">Строка текста</td>
-</tr>
-<tr>
 <td align="center"><code>tokenizer</code></td>
 <td align="center">Pattern/Сallable</td>
 <td align="center"><code>None</code></td>
@@ -921,6 +915,24 @@
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Выполняет извлечение слов из текста.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Параметр</th>
+<th align="center">Тип</th>
+<th align="center">По умолчанию</th>
+<th align="center">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>text</code></td>
+<td align="center">str</td>
+<td align="center"><code>-</code></td>
+<td align="center">Строка текста</td>
+</tr>
+</tbody>
+</table>
 <p>Рассмотрим пример извлечения слов, используя в качестве токенов биграммы, а также выполнив предварительную фильтрацию стоп-слов и лемматизацию:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -935,13 +947,12 @@
 
 <span class="c1"># Извлечение предложений</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span>
-    <span class="n">text</span><span class="p">,</span>
     <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;russian&#39;</span><span class="p">),</span>
     <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="p">)</span>
-<span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
+<span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">&#39;иметь&#39;</span>, <span class="s1">&#39;рубль&#39;</span>, <span class="s1">&#39;иметь&#39;</span>, <span class="s1">&#39;друг&#39;</span>, <span class="s1">&#39;иметь_рубль&#39;</span>, <span class="s1">&#39;рубль_иметь&#39;</span>, <span class="s1">&#39;иметь_друг&#39;</span><span class="o">)</span>
