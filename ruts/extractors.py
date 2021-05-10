@@ -1,7 +1,7 @@
 import re
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from typing import Any, Callable, Generator, List, Pattern, Tuple, Union
+from typing import Any, Callable, List, Pattern, Tuple, Union
 
 import pymorphy2
 from razdel import sentenize, tokenize
@@ -14,17 +14,21 @@ class Extractor(object, metaclass=ABCMeta):
     Абстрактный класс для извлечения объектов из текста
 
     Аргументы:
-        text (str): Строка текста
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
+        min_len (int): Минимальная длина извлекаемого объекта
+        max_len (int): Максимальная длина извлекаемого объекта
 
     Методы:
         extract: Извлечение объектов из текста
     """
 
     @abstractmethod
-    def __init__(self, text: str, tokenizer: Union[Pattern, Callable] = None):
-        self.text = text
+    def __init__(
+        self, tokenizer: Union[Pattern, Callable] = None, min_len: int = 0, max_len: int = 0
+    ):
         self.tokenizer = tokenizer
+        self.min_len = min_len
+        self.max_len = max_len
 
     @abstractmethod
     def extract(self) -> Tuple[str, ...]:
@@ -39,12 +43,11 @@ class SentsExtractor(Extractor):
         >>> import re
         >>> from ruts import SentsExtractor
         >>> text = "Не имей 100 рублей, а имей 100 друзей"
-        >>> se = SentsExtractor(text, tokenizer=re.compile(r', '))
-        >>> se.extract()
+        >>> se = SentsExtractor(tokenizer=re.compile(r', '))
+        >>> se.extract(text)
         ('Не имей 100 рублей', 'а имей 100 друзей')
 
     Аргументы:
-        text (str): Строка текста
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
         min_len (int): Минимальная длина извлекаемого предложения
         max_len (int): Максимальная длина извлекаемого предложения
@@ -58,20 +61,21 @@ class SentsExtractor(Extractor):
 
     def __init__(
         self,
-        text: str,
         tokenizer: Union[Pattern, Callable] = None,
         min_len: int = 0,
         max_len: int = 0,
     ):
-        super().__init__(text, tokenizer)
-        self.min_len = min_len
-        self.max_len = max_len
+        super().__init__(tokenizer, min_len, max_len)
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина предложения больше максимальной")
+        self.sents = ()
 
-    def extract(self) -> Tuple[str, ...]:
+    def extract(self, text: str) -> Tuple[str, ...]:
         """
         Извлечение предложений из текста
+
+        Аргументы:
+            text (str): Строка текста
 
         Вывод:
             sents (tuple[str]): Кортеж извлеченных предложений
@@ -79,14 +83,14 @@ class SentsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
-        self.sents: Union[Generator[Any, None, None], List[Any]]
         if not self.tokenizer:
-            self.sents = (sent.text for sent in sentenize(self.text))
+            self.tokenizer = sentenize
+            self.sents = (sent.text for sent in self.tokenizer(text))
         elif isinstance(self.tokenizer, Pattern):
-            self.sents = re.split(self.tokenizer, self.text)
+            self.sents = re.split(self.tokenizer, text)
         else:
             try:
-                self.sents = self.tokenizer(self.text)
+                self.sents = self.tokenizer(text)
             except Exception:
                 raise TypeError("Токенизатор задан некорректно")
         if self.min_len > 0:
@@ -104,13 +108,12 @@ class WordsExtractor(Extractor):
         >>> from nltk.corpus import stopwords
         >>> from ruts import WordsExtractor
         >>> text = "Не имей 100 рублей, а имей 100 друзей"
-        >>> we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'),
+        >>> we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'),
         >>>                     filter_nums=True, ngram_range=(1, 2))
-        >>> we.extract()
+        >>> we.extract(text)
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
     Аргументы:
-        text (str): Строка текста
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
         filter_punct (bool): Фильтровать знаки препинания
         filter_nums (bool): Фильтровать числа
@@ -132,7 +135,6 @@ class WordsExtractor(Extractor):
 
     def __init__(
         self,
-        text: str,
         tokenizer: Union[Pattern, Callable] = None,
         filter_punct: bool = True,
         filter_nums: bool = False,
@@ -143,7 +145,7 @@ class WordsExtractor(Extractor):
         min_len: int = 0,
         max_len: int = 0,
     ):
-        super().__init__(text, tokenizer)
+        super().__init__(tokenizer, min_len, max_len)
         self.filter_punct = filter_punct
         self.filter_nums = filter_nums
         self.use_lexemes = use_lexemes
@@ -156,11 +158,17 @@ class WordsExtractor(Extractor):
         self.max_len = max_len
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина слова больше максимальной")
-        self.words: Union[Generator[Any, None, None], Tuple] = ()
+        self.words = ()
 
-    def extract(self) -> Tuple[str, ...]:
+    def extract(
+        self,
+        text: str,
+    ) -> Tuple[str, ...]:
         """
         Извлечение слов из текста
+
+        Аргументы:
+            text (str): Строка текста
 
         Вывод:
             words (tuple[str]): Кортеж извлеченных слов
@@ -169,12 +177,13 @@ class WordsExtractor(Extractor):
             TypeError: Если некорректно задан токенизатор
         """
         if not self.tokenizer:
-            self.words = (word.text for word in tokenize(self.text))
+            self.tokenizer = tokenize
+            self.words = (word.text for word in self.tokenizer(text))
         elif isinstance(self.tokenizer, Pattern):
-            self.words = (word for word in re.split(self.tokenizer, self.text))
+            self.words = (word for word in re.split(self.tokenizer, text))
         else:
             try:
-                self.words = (word for word in self.tokenizer(self.text))
+                self.words = (word for word in self.tokenizer(text))
             except Exception:
                 raise TypeError("Токенизатор задан некорректно")
         if self.filter_punct:

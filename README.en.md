@@ -48,13 +48,13 @@ import re
 from nltk.corpus import stopwords
 from ruts import SentsExtractor, WordsExtractor
 text = "Не имей 100 рублей, а имей 100 друзей"
-se = SentsExtractor(text, tokenizer=re.compile(r', '))
-se.extract()
+se = SentsExtractor(tokenizer=re.compile(r', '))
+se.extract(text)
 
     ('Не имей 100 рублей', 'а имей 100 друзей')
 
-we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
-we.extract()
+we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
+we.extract(text)
 
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
    
