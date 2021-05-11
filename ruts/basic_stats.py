@@ -94,11 +94,11 @@ class BasicStats(object):
         elif isinstance(source, str):
             text = source
             if not sents_extractor:
-                sents_extractor = SentsExtractor(text)
-            sents = sents_extractor.extract()
+                sents_extractor = SentsExtractor()
+            sents = sents_extractor.extract(text)
             if not words_extractor:
-                words_extractor = WordsExtractor(text)
-            words = words_extractor.extract()
+                words_extractor = WordsExtractor()
+            words = words_extractor.extract(text)
         else:
             raise TypeError("Некорректный источник данных")
         if not words:

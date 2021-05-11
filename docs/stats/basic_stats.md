@@ -75,7 +75,7 @@
     # Вычисление статистик
     bs = BasicStats(
         text,
-        normlize=True
+        normalize=True
     )
     bs.get_stats()
     ```

@@ -75,8 +75,8 @@ class MorphStats(object):
         elif isinstance(source, str):
             text = source
             if not words_extractor:
-                words_extractor = WordsExtractor(text)
-            self.words = words_extractor.extract()
+                words_extractor = WordsExtractor()
+            self.words = words_extractor.extract(text)
         else:
             raise TypeError("Некорректный источник данных")
         if not self.words:
