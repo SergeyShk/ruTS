@@ -12,12 +12,13 @@ with io.open(readme_file, mode="r", encoding="utf-8") as f:
     README = f.read()
 
 INSTALL_REQUIRES = [
-    "scipy<=1.5.0",
+    "scipy==1.6.3",
     "nltk",
     "pymorphy2",
     "razdel",
-    "spacy>=3.0.3",
-    "matplotlib",
+    "spacy==3.0.6",
+    "matplotlib==3.4.2",
+    "numpy==1.20.3",
 ]
 
 setup(
@@ -42,14 +43,14 @@ setup(
     url="https://github.com/SergeyShk/ruTS",
     download_url="https://github.com/SergeyShk/ruTS/archive/0.6.0.tar.gz",
     packages=find_packages(exclude=("tests.*", "tests", "docs")),
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     classifiers=(
         "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Information Technology",

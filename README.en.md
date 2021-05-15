@@ -26,12 +26,13 @@ $ pip install ruts
 
 Dependencies:
 
-*   python 3.6+
+*   python 3.7+
 *   nltk
 *   pymorphy2
 *   razdel
 *   scipy
 *   spacy
+*   numpy
 
 ## Usage
 
