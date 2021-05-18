@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: clean clean-test clean-pyc clean-build lint reformat test release install dist help
 .DEFAULT_GOAL := help
 
 define PRINT_HELP_PYSCRIPT
@@ -16,11 +16,13 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 clean: clean-build clean-pyc clean-test ## Удалить все артефакты
+	rm .coverage
 
 clean-build: ## Удалить артефакты сборки
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
+	rm -fr target/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
@@ -32,6 +34,7 @@ clean-pyc: ## Удалить артефакты компиляции
 
 clean-test: ## Удалить артефакты тестирования
 	rm -fr .pytest_cache
+	rm -fr .mypy_cache
 
 lint: ## Проверить код с помощью flake8
 	flake8 ruts tests
@@ -57,6 +60,7 @@ install: clean ## Установить дистрибутив
 	python3 setup.py install
 
 docs-build: ## Собрать документацию
+	rm -fr site/
 	mkdocs build
 
 docs-deploy: ## Задеплоить документацию
