@@ -394,8 +394,8 @@ from ruts.visualizers import zipf
 
 sc = SovChLit()
 text = '\n'.join([text for text in sc.get_texts(limit=100)])
-we = WordsExtractor(text, use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True)
-tokens_with_count = Counter(we.extract())
+we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True)
+tokens_with_count = Counter(we.extract(text))
 zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
 ```
 

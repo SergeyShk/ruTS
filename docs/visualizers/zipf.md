@@ -45,12 +45,11 @@
 
     # Подсчет частотности слов
     we = WordsExtractor(
-        text,
         use_lexemes=True,
         stopwords=stopwords.words('russian'),
         filter_nums=True
     )
-    tokens_with_count = Counter(we.extract())
+    tokens_with_count = Counter(we.extract(text))
 
     # Построение графика
     zipf(

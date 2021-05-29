@@ -97,11 +97,9 @@ class WordTree(object):
 
     def search(self):
         frequencies_dict = defaultdict(int)
-        for text in texts:
+        for text in self.texts:
             for sent in self.sents_extractor.extract(text):
-                print(sent)
                 tokens = self.words_extractor.extract(sent)
-                print(tokens)
                 for n in range(2, self.max_n + 1):
                     for i in range(0, len(tokens) - n + 1):
                         ngram = tokens[i : i + n]
@@ -162,33 +160,20 @@ class WordTree(object):
         forward_tree, backward_tree = self.build_trees()
         td = TreeDrawer(self.keyword, forward_tree, backward_tree, **kwargs)
         return td.draw()
-        # return fwd_tree, bwd_tree
-        # self.forward_tree, self.backward_tree = self.build_both_trees()
-        # return
 
 
-def wordtree(texts, keyword, max_n=5, max_per_n=8, words_extractor=None, **kwargs):
-    # ngrams, frequencies = search(texts, keyword, max_n=max_n, tokenizer=tokenizer)
-    # return draw(keyword, ngrams, frequencies, **kwargs)
+def wordtree(
+    texts, keyword, max_n=5, max_per_n=8, sents_extractor=None, words_extractor=None, **kwargs
+):
     wt = WordTree(
-        texts, keyword, max_n=max_n, max_per_n=max_per_n, words_extractor=words_extractor
+        texts,
+        keyword,
+        max_n=max_n,
+        max_per_n=max_per_n,
+        sents_extractor=sents_extractor,
+        words_extractor=words_extractor,
     )
     wt.search()
     if not wt.ngrams:
         raise ValueError("Ключевое слово не найдено")
-    return wt.draw()
-
-
-if __name__ == "__main__":
-    import tempfile
-
-    from ruts.datasets import StalinWorks
-
-    sw = StalinWorks()
-    # texts = list(itertools.chain(*[SentsExtractor(text).extract() for text in sw.get_texts(limit=50)]))
-    texts = [text for text in sw.get_texts(limit=50)]
-    # wt = WordTree(texts, "масса", max_n=5, max_per_n=8)
-    # wt.search()
-    # print(wt.build_trees())
-    g = wordtree(texts, "масса", max_n=5)
-    g.view(tempfile.mktemp(".gv"))
+    return wt.draw(**kwargs)

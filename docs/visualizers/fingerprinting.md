@@ -43,9 +43,9 @@
 
     # Подготовка списка списков слов
     words = []
+    words_extractor = WordsExtractor(lowercase=True)
     for text in texts:
-        words_extractor = WordsExtractor(text, lowercase=True)
-        words.append(words_extractor.extract())
+        words.append(words_extractor.extract(text))
 
     # Построение графика
     fingerprinting(words, 
