@@ -869,12 +869,11 @@
 
 <span class="c1"># Подсчет частотности слов</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span>
-    <span class="n">text</span><span class="p">,</span>
     <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;russian&#39;</span><span class="p">),</span>
     <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
-<span class="n">tokens_with_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">())</span>
+<span class="n">tokens_with_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
 <span class="n">zipf</span><span class="p">(</span>

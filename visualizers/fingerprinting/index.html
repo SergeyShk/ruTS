@@ -873,9 +873,9 @@
 
 <span class="c1"># Подготовка списка списков слов</span>
 <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">words_extractor</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
-    <span class="n">words_extractor</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">())</span>
+    <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
 <span class="n">fingerprinting</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> 
