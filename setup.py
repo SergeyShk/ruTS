@@ -19,6 +19,8 @@ INSTALL_REQUIRES = [
     "spacy==3.0.6",
     "matplotlib==3.4.2",
     "numpy==1.20.3",
+    "pandas",
+    "graphviz"
 ]
 
 setup(
