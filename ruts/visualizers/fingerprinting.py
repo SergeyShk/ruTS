@@ -25,7 +25,7 @@ def fingerprinting(
         https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf
 
     Аргументы:
-        text (list[list[str]]): Список списков слов
+        texts (list[list[str]]): Список списков слов
         segment_len (int): Размер сегмента
         metric (callable): Функция для подсчета метрики лексического разнообразия
         x_size (int): Ширина области для визуализации

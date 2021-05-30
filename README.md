@@ -33,6 +33,9 @@ $ pip install ruts
 *   scipy
 *   spacy
 *   numpy
+*   pandas
+*   matplotlib
+*   graphviz
 
 ## Функционал
 
@@ -382,6 +385,7 @@ for i in sc.get_texts(text_type='Басня', limit=1):
 
 *   Закон Ципфа (Zipf's law)
 *   Литературная дактилоскопия (Literature Fingerprinting)
+*   Дерево слов (Word Tree)
 
 Пример:
 
@@ -457,10 +461,14 @@ doc._.basic.get_stats()
     *   morph_stats.py - морфологические статистики
     *   readability_stats.py - метрики удобочитаемости текста
     *   utils.py - вспомогательные инструменты
-    *   visualizers.py - инструменты для визуализации текстов
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных
         *   sov_chrest_lit.py - советские хрестоматии по литературе
+        *   stalin_works.py - полное собрание сочинений И.В. Сталина
+    *   **visualizers** - инструменты для визуализации текстов:
+        *   fingerprinting.py - Литературная дактилоскопия
+        *   word_tree.py - Дерево слов
+        *   zipf.py - Закон Ципфа
 *   **tests**:
     *   test_basic_stats.py - тесты базовых текстовых статистик
     *   test_components.py - тесты компонентов spaCy

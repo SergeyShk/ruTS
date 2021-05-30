@@ -33,6 +33,9 @@ Dependencies:
 *   scipy
 *   spacy
 *   numpy
+*   pandas
+*   matplotlib
+*   graphviz
 
 ## Usage
 
@@ -382,6 +385,7 @@ Library allows visualizing text with the help of the following graphs:
 
 *   Zipf's law
 *   Literature Fingerprinting
+*   Word Tree
 
 Example:
 
@@ -457,10 +461,14 @@ doc._.basic.get_stats()
     *   morph_stats.py - morphological statistics 
     *   readability_stats.py - readability metrics
     *   utils.py - subsidiary tools
-    *   visualizers.py - tools for text visualization
     *   **datasets**:
         *   dataset.py - basic class for working with datasets
         *   sov_chrest_lit.py - soviet reading-books for literature classes
+        *   stalin_works.py - the collected works of Stalin
+    *   **visualizers** - tools for text visualization:
+        *   fingerprinting.py - Literature Fingerprinting
+        *   word_tree.py - Word Tree
+        *   zipf.py - Zipf's law
 *   **tests**:
     *   test_basic_stats.py - test for basic text statistics
     *   test_components.py - tests for spaCy components

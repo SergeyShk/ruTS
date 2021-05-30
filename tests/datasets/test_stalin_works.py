@@ -44,7 +44,7 @@ def test_get_texts_min_len(dataset):
 
 def test_get_texts_max_len(dataset):
     for max_len in (100, 200, 1000):
-        assert all(len(text) < max_len for text in dataset.get_texts(max_len=max_len, limit=5))
+        assert all(len(text) < max_len for text in dataset.get_texts(max_len=max_len, limit=1))
 
 
 def test_get_records(dataset):
