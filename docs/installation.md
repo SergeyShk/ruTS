@@ -12,6 +12,10 @@
 *   `razdel`
 *   `scipy`
 *   `spacy` - 3.0.6 и выше
+*   `numpy`
+*   `pandas`
+*   `matplotlib`
+*   `graphviz`
 
 ## Установка с помощью `pip`
 
