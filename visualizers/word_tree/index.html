@@ -15,7 +15,7 @@
     
     
       
-        <title>Литературная дактилоскопия - RuTS</title>
+        <title>Дерево слов - RuTS</title>
       
     
     
@@ -94,7 +94,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Литературная дактилоскопия
+              Дерево слов
             
           </span>
         </div>
@@ -154,9 +154,7 @@
         
           
 
-  
-
-<nav class="md-tabs md-tabs--active" aria-label="Tabs" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-tabs__inner md-grid">
     <ul class="md-tabs__list">
       
@@ -217,7 +215,7 @@
   
     <li class="md-tabs__item">
       
-        <a href="../zipf/" class="md-tabs__link md-tabs__link--active">
+        <a href="../zipf/" class="md-tabs__link">
           Визуализации
         </a>
       
@@ -592,12 +590,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
     
     <label class="md-nav__link" for="nav-5">
       Визуализации
@@ -627,63 +623,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Литературная дактилоскопия
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../fingerprinting/" class="md-nav__link">
       Литературная дактилоскопия
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Содержание">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Содержание
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
-    Описание
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    Параметры
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    Пример использования
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -786,20 +730,20 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/SergeyShk/ruTS/edit/master/docs/visualizers/fingerprinting.md" title="Редактировать страницу" class="md-content__button md-icon">
+                  <a href="https://github.com/SergeyShk/ruTS/edit/master/docs/visualizers/word_tree.md" title="Редактировать страницу" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="_1">Литературная дактилоскопия<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+                <h1 id="_1">Дерево слов<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.visualizers.fingerprinting()</strong></p>
+<p><strong>ruts.visualizers.wordtree()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Визуализация литературной дактилоскопии (Literature Fingerprinting).</p>
+<p>Построение <a href="https://www.weblyzard.com/word-tree/">дерева слов</a> (Word Tree), отображающее контекст для заданного ключевого слова в тексте.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Более подробно с литературной дактилоскопией можно ознакомиться в данной <a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">публикации</a>.</p>
+<p>Более подробно с деревом слов можно ознакомиться в данной <a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">публикации</a>.</p>
 </div>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <table>
@@ -819,74 +763,62 @@
 <td align="center">Список списков слов</td>
 </tr>
 <tr>
-<td align="center"><code>segment_len</code></td>
-<td align="center">int</td>
-<td align="center"><code>10</code></td>
-<td align="center">Размер сегмента</td>
-</tr>
-<tr>
-<td align="center"><code>metric</code></td>
-<td align="center">Callable</td>
+<td align="center"><code>keyword</code></td>
+<td align="center">str</td>
 <td align="center"><code>None</code></td>
-<td align="center">Функция для подсчета метрики <a href="../../stats/diversity_stats/">лексического разнообразия</a></td>
+<td align="center">Ключевое слово, по которому ищется контекст</td>
 </tr>
 <tr>
-<td align="center"><code>x_size</code></td>
+<td align="center"><code>max_n</code></td>
 <td align="center">int</td>
-<td align="center"><code>800</code></td>
-<td align="center">Ширина области для визуализации</td>
+<td align="center"><code>5</code></td>
+<td align="center">Максимальные размер контекста</td>
 </tr>
 <tr>
-<td align="center"><code>y_size</code></td>
+<td align="center"><code>max_per_n</code></td>
 <td align="center">int</td>
-<td align="center"><code>600</code></td>
-<td align="center">Высота области для визуализации</td>
-</tr>
-<tr>
-<td align="center"><code>cmap</code></td>
-<td align="center">str</td>
-<td align="center"><code>'PuOr'</code></td>
-<td align="center">Цветовая карта</td>
-</tr>
-<tr>
-<td align="center"><code>is_return</code></td>
-<td align="center">str</td>
-<td align="center"><code>True</code></td>
-<td align="center">Возвращать объект Figure</td>
+<td align="center"><code>8</code></td>
+<td align="center">Максимальное число примеров для каждого размера контекста</td>
 </tr>
 </tbody>
 </table>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
+<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">WordsExtractor</span>
-<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">SovChLit</span>
-<span class="kn">from</span> <span class="nn">ruts.diversity_stats</span> <span class="kn">import</span> <span class="n">calc_simpson_index</span>
-<span class="kn">from</span> <span class="nn">ruts.visualizers</span> <span class="kn">import</span> <span class="n">fingerprinting</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">ruts</span> <span class="kn">import</span> <span class="n">SentsExtractor</span><span class="p">,</span> <span class="n">WordsExtractor</span>
+<span class="kn">from</span> <span class="nn">ruts.datasets</span> <span class="kn">import</span> <span class="n">StalinWorks</span>
+<span class="kn">from</span> <span class="nn">ruts.visualizers</span> <span class="kn">import</span> <span class="n">wordtree</span>
 
 <span class="c1"># Подготовка данных</span>
-<span class="n">sc</span> <span class="o">=</span> <span class="n">SovChLit</span><span class="p">()</span>
-<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sc</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">100</span><span class="p">)]</span>
+<span class="n">sw</span> <span class="o">=</span> <span class="n">StalinWorks</span><span class="p">()</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">()</span>
+<span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sw</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)]</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
 
 <span class="c1"># Подготовка списка списков слов</span>
 <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">words_extractor</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
-    <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+    <span class="n">sents</span> <span class="o">=</span> <span class="n">se</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">sents</span><span class="p">:</span>
+        <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
-<span class="n">fingerprinting</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> 
-    <span class="n">metric</span><span class="o">=</span><span class="n">calc_simpson_index</span><span class="p">,</span> 
-    <span class="n">x_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> 
-    <span class="n">y_size</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
-    <span class="n">is_return</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">wordtree</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="s2">&quot;рабочий&quot;</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="c1"># Сохранение визуализации на диск</span>
+<span class="n">g</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="s2">&quot;.gv&quot;</span><span class="p">))</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<p><img alt="ruts" class="center" src="../../img/fingerprinting.png" /></p>
+<p><img alt="ruts" class="center" src="../../img/wordtree.png" /></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для просмотра визуализации необходимо установить инструмент <code>Graphviz</code>.</p>
 </div>
                 
               
@@ -902,41 +834,6 @@
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../zipf/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-            </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Назад
-                </span>
-                Закон Ципфа
-              </div>
-            </div>
-          </a>
-        
-        
-          <a href="../../components/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Вперед
-                </span>
-                Компоненты
-              </div>
-            </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
