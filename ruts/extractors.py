@@ -69,6 +69,8 @@ class SentsExtractor(Extractor):
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина предложения больше максимальной")
         self.sents = ()
+        if not self.tokenizer:
+            self.tokenizer = lambda text: (sent.text for sent in sentenize(text))
 
     def extract(self, text: str) -> Tuple[str, ...]:
         """
@@ -83,10 +85,7 @@ class SentsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
-        if not self.tokenizer:
-            self.tokenizer = sentenize
-            self.sents = (sent.text for sent in self.tokenizer(text))
-        elif isinstance(self.tokenizer, Pattern):
+        if isinstance(self.tokenizer, Pattern):
             self.sents = re.split(self.tokenizer, text)
         else:
             try:
@@ -159,6 +158,8 @@ class WordsExtractor(Extractor):
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина слова больше максимальной")
         self.words = ()
+        if not self.tokenizer:
+            self.tokenizer = lambda text: (word.text for word in tokenize(text))
 
     def extract(
         self,
@@ -176,10 +177,7 @@ class WordsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
-        if not self.tokenizer:
-            self.tokenizer = tokenize
-            self.words = (word.text for word in self.tokenizer(text))
-        elif isinstance(self.tokenizer, Pattern):
+        if isinstance(self.tokenizer, Pattern):
             self.words = (word for word in re.split(self.tokenizer, text))
         else:
             try:
