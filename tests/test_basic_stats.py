@@ -21,11 +21,10 @@ def test_init_value_error():
         BasicStats(text)
 
 
-def test_init_type_error():
-    texts = [666, ["a", "b"], {"a": "b"}]
-    for text in texts:
-        with pytest.raises(TypeError):
-            BasicStats(text)
+@pytest.mark.parametrize("text", [666, ["a", "b"], {"a": "b"}])
+def test_init_type_error(text):
+    with pytest.raises(TypeError):
+        BasicStats(text)
 
 
 def test_c_letters(bs):

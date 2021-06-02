@@ -16,11 +16,10 @@ def test_to_path_is_path():
     assert to_path(path) == path
 
 
-def test_to_path_type_error():
-    paths = [666, ["a", "b"], {"a": "b"}]
-    for path in paths:
-        with pytest.raises(TypeError):
-            to_path(path)
+@pytest.mark.parametrize("path", [666, ["a", "b"], {"a": "b"}])
+def test_to_path_type_error(path):
+    with pytest.raises(TypeError):
+        to_path(path)
 
 
 def test_download_file():
@@ -58,7 +57,6 @@ def test_extract_archive():
     shutil.rmtree("/tmp/ruts_download", ignore_errors=True)
 
 
-def test_safe_divide():
-    assert safe_divide(1, 5) == 0.2
-    assert safe_divide(1, 0) == 0
-    assert safe_divide(1, "", -1) == -1
+@pytest.mark.parametrize("args, result", [((1, 5), 0.2), ((1, 0), 0), ((1, "", -1), -1)])
+def test_safe_divide(args, result):
+    assert safe_divide(*args) == result

@@ -21,6 +21,12 @@ def test_init_value_error():
         ReadabilityStats(text)
 
 
+@pytest.mark.parametrize("text", [666, ["a", "b"], {"a": "b"}])
+def test_init_type_error(text):
+    with pytest.raises(TypeError):
+        ReadabilityStats(text)
+
+
 def test_flesch_kincaid_grade(rs):
     assert rs.flesch_kincaid_grade == pytest.approx(22.050081967213114, rel=0.1)
 

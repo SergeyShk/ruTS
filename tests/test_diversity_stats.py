@@ -22,11 +22,10 @@ def test_init_value_error():
         DiversityStats(text)
 
 
-def test_init_type_error():
-    texts = [666, ["a", "b"], {"a": "b"}]
-    for text in texts:
-        with pytest.raises(TypeError):
-            DiversityStats(text)
+@pytest.mark.parametrize("text", [666, ["a", "b"], {"a": "b"}])
+def test_init_type_error(text):
+    with pytest.raises(TypeError):
+        DiversityStats(text)
 
 
 def test_ttr(ds):

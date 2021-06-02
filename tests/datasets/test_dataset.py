@@ -52,8 +52,10 @@ def test_type_error():
         TestErrorDataset("", {})
 
 
-def test_methods(dataset):
-    for name in ("__iter__", "check_data", "get_texts", "get_records", "download"):
-        assert hasattr(dataset, name)
-        with pytest.raises(NotImplementedError):
-            getattr(dataset, name)()
+@pytest.mark.parametrize(
+    "name", ["__iter__", "check_data", "get_texts", "get_records", "download"]
+)
+def test_methods(dataset, name):
+    assert hasattr(dataset, name)
+    with pytest.raises(NotImplementedError):
+        getattr(dataset, name)()
