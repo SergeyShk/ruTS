@@ -208,7 +208,7 @@ class WordTree(object):
         """
         forward_ngrams: List[str] = []
         forward_frequencies: List[int] = []
-        backward_ngrams: List[str] = []
+        backward_ngrams: List[List[str]] = []
         backward_frequencies: List[int] = []
         for ngram, freq in zip(self.ngrams, self.frequencies):
             forward = ngram[0] == self.keyword
@@ -217,7 +217,7 @@ class WordTree(object):
                 forward_ngrams.append(ngram[1:])
                 forward_frequencies.append(freq)
             if backward:
-                backward_ngrams.append(str(reversed(ngram[:-1])))
+                backward_ngrams.append(list(reversed(ngram[:-1])))
                 backward_frequencies.append(freq)
         forward_tree = self.build_tree(forward_ngrams, forward_frequencies)
         backward_tree = self.build_tree(backward_ngrams, backward_frequencies)
