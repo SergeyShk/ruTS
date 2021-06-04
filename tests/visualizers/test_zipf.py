@@ -15,7 +15,7 @@ def tokens():
 def test_zipf_theory():
     plt.cla()
     plot = zipf_theory(10, 5, 1.0)[0]
-    assert type(plot) == Line2D
+    assert isinstance(plot, Line2D)
     assert plot._label == "Теоретический закон"
     assert plot.get_linewidth() == 2
     assert plot.get_color() == "r"
@@ -29,7 +29,7 @@ def test_zipf_type_error():
 def test_zipf(tokens):
     plt.cla()
     plot = zipf(tokens)
-    assert type(plot) == Line2D
+    assert isinstance(plot, Line2D)
     assert plot._label == "Экспериментальный закон"
     assert plot.axes.title.get_text() == "Закон Ципфа"
     assert plot.axes.title.get_position() == (0.5, 1.0)
@@ -66,4 +66,4 @@ def test_zipf_with_theory(tokens):
     plt.cla()
     plot = zipf(tokens, show_theory=True)
     assert len(plot) == 1
-    assert all(type(p) == Line2D for p in plot)
+    assert all(isinstance(p, Line2D) for p in plot)

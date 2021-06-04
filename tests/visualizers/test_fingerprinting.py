@@ -19,7 +19,7 @@ def test_fingerprinting_type_error():
 def test_fingerprinting(texts):
     plt.cla()
     plot = fingerprinting(texts, x_size=600, y_size=500)
-    assert type(plot) == Figure
+    assert isinstance(plot, Figure)
     assert len(plot.axes) == 2
     assert plot.axes[0].title.get_text() == "Литературная дактилоскопия"
     assert plot.axes[0].title.get_position() == (0.5, 1.0)
@@ -37,4 +37,4 @@ def test_fingerprinting_is_return(texts):
 def test_fingerprinting_metric(texts):
     plt.cla()
     plot = fingerprinting(texts, metric=calc_simpson_index)
-    assert type(plot) == Figure
+    assert isinstance(plot, Figure)

@@ -11,7 +11,7 @@ def texts():
 
 def test_wordtree_type_error():
     with pytest.raises(TypeError):
-        wordtree(1)
+        wordtree(1, "тест")
 
 
 def test_wordtree_value_error(texts):
@@ -21,6 +21,6 @@ def test_wordtree_value_error(texts):
 
 def test_wordtree(texts):
     g = wordtree(texts, "рабочий", max_n=2)
-    assert type(g) == Digraph
+    assert isinstance(g, Digraph)
     assert len(g.body) == 11
     assert g.name == "рабочий"
