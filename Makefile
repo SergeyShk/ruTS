@@ -16,7 +16,7 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 clean: clean-build clean-pyc clean-test ## Удалить все артефакты
-	rm .coverage
+	rm -f .coverage
 
 clean-build: ## Удалить артефакты сборки
 	rm -fr build/

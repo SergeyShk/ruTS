@@ -25,6 +25,7 @@ nav:
     - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md
+        - Дерево слов: visualizers/word_tree.md
     - Компоненты:
         - Компоненты: components.md  
 
