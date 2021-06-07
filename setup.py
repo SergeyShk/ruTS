@@ -12,15 +12,15 @@ with io.open(readme_file, mode="r", encoding="utf-8") as f:
     README = f.read()
 
 INSTALL_REQUIRES = [
-    "scipy==1.6.3",
+    "scipy>=1.6.0",
     "nltk",
     "pymorphy2",
     "razdel",
-    "spacy==3.0.6",
-    "matplotlib==3.4.2",
-    "numpy==1.20.3",
+    "spacy>=3.0.0",
+    "matplotlib>=3.3.0",
+    "numpy>=1.20.0",
     "pandas",
-    "graphviz"
+    "graphviz",
 ]
 
 setup(
@@ -43,7 +43,7 @@ setup(
     author="Шкарин Сергей, Смирнова Екатерина",
     author_email="kouki.sergey@gmail.com, ekanerina@yandex.ru",
     url="https://github.com/SergeyShk/ruTS",
-    download_url="https://github.com/SergeyShk/ruTS/archive/0.6.0.tar.gz",
+    download_url="https://github.com/SergeyShk/ruTS/archive/0.7.0.tar.gz",
     packages=find_packages(exclude=("tests.*", "tests", "docs")),
     python_requires=">=3.7",
     classifiers=(

@@ -11,7 +11,7 @@
 *   `pymorphy2`
 *   `razdel`
 *   `scipy`
-*   `spacy` - 3.0.6 и выше
+*   `spacy` - 3.0.0 и выше
 *   `numpy`
 *   `pandas`
 *   `matplotlib`
