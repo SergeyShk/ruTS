@@ -1,12 +1,12 @@
 # Russian Texts Statistics (ruTS) [![README_RU](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/Russia.png)](https://github.com/SergeyShk/ruTS/blob/master/README.md) ![README_EN](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/United-Kingdom.png)
 
 ![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/pypistats.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/pypistats/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/ruts.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/ruts/)
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
 [![Build Status](https://travis-ci.com/SergeyShk/ruTS.svg?branch=master)](https://travis-ci.com/SergeyShk/ruTS)
 [![codecov](https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg)](https://codecov.io/gh/SergeyShk/ruTS)
 ![Status](https://img.shields.io/pypi/status/ruts)
-[![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
+[![License](https://img.shields.io/github/license/sergeyshk/ruts.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
 ![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
 
@@ -470,12 +470,20 @@ doc._.basic.get_stats()
         *   word_tree.py - Word Tree
         *   zipf.py - Zipf's law
 *   **tests**:
-    *   test_basic_stats.py - test for basic text statistics
+    *   test_basic_stats.py - tests for basic text statistics
     *   test_components.py - tests for spaCy components
     *   test_diversity_stats.py - tests for lexical diversity metrics
     *   test_extractors.py - tests for object extraction tools
     *   test_morph_stats - tests for morphological statistics
     *   test_readability_stats.py - tests for readability metrics
+    *   **datasets** - tests for datasets:
+        *   test_dataset.py - tests for basic class for working with datasets
+        *   test_sov_chrest_lit.py - tests for dataset soviet reading-books for literature classes
+        *   test_stalin_works.py - tests for dataset the collected works of Stalin
+    *   **visualizers** - tests for tools for text visualization:
+        *   test_fingerprinting.py - tests for visualization Literature Fingerprinting
+        *   test_word_tree.py - tests for visualization Word Tree
+        *   test_zipf.py - tests for visualization Zipf's law
 
 ## Authors
 

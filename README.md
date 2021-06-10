@@ -1,12 +1,12 @@
 # Russian Texts Statistics (ruTS) ![README_RU](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/Russia.png) [![README_EN](https://raw.githubusercontent.com/gosquared/flags/master/flags/flags/flat/24/United-Kingdom.png)](https://github.com/SergeyShk/ruTS/blob/master/README.en.md)
 
 ![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/pypistats.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/pypistats/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/ruts.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/ruts/)
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
 [![Build Status](https://travis-ci.com/SergeyShk/ruTS.svg?branch=master)](https://travis-ci.com/SergeyShk/ruTS)
 [![codecov](https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg)](https://codecov.io/gh/SergeyShk/ruTS)
 ![Status](https://img.shields.io/pypi/status/ruts)
-[![License](https://img.shields.io/github/license/hugovk/pypistats.svg)](LICENSE.txt)
+[![License](https://img.shields.io/github/license/sergeyshk/ruts.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
 ![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
 
@@ -476,6 +476,14 @@ doc._.basic.get_stats()
     *   test_extractors.py - тесты инструментов для извлечения объектов из текста
     *   test_morph_stats - тесты морфологических статистик
     *   test_readability_stats.py - тесты метрик удобочитаемости текста
+    *   **datasets** - тесты наборов данных:
+        *   test_dataset.py - тесты базового класса для работы с наборами данных
+        *   test_sov_chrest_lit.py - тесты набора данных советских хрестоматий по литературе
+        *   test_stalin_works.py - тесты набора данных полного собрания сочинений И.В. Сталина
+    *   **visualizers** - тесты инструментов для визуализации текстов:
+        *   test_fingerprinting.py - тесты визуализации Литературная дактилоскопия
+        *   test_word_tree.py - тесты визуализации Дерево слов
+        *   test_zipf.py - тесты визуализации Закон Ципфа
 
 ## Авторы
 
