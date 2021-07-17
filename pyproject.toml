@@ -119,4 +119,3 @@ pep8-naming = ["+*"]
 [tool.pytest.ini_options]
 addopts = "-vv -x --lf"
 testpaths = ["tests"]
-pass_filenames = false

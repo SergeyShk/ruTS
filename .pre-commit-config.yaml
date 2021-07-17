@@ -42,3 +42,4 @@ repos:
         language: system
         entry: poetry run pytest --cov ruts --cov-fail-under 70
         types: [python]
+        pass_filenames: false
