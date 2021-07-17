@@ -40,5 +40,5 @@ repos:
         name: pytest
         stages: [push]
         language: system
-        entry: poetry run pytest --cov ruts --cov-fail-under=70
+        entry: poetry run pytest --cov ruts --cov-fail-under 70
         types: [python]
