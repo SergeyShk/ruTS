@@ -5,47 +5,40 @@ repos:
         name: black
         stages: [commit]
         language: system
-        args: ["--line-length", "99"]
-        entry: pipenv run black
+        entry: poetry run black --config pyproject.toml
         types: [python]
 
       - id: isort
         name: isort
         stages: [commit]
         language: system
-        args: ["--profile", "black"]
-        entry: pipenv run isort
+        entry: poetry run isort --settings-path pyproject.toml
         types: [python]
 
       - id: flake8
         name: flake8
         stages: [commit]
         language: system
-        entry: pipenv run flake8
+        entry: poetry run flakehell lint
         types: [python]
-        exclude: setup.py
 
       - id: mypy
         name: mypy
         stages: [commit]
         language: system
-        entry: pipenv run mypy --follow-imports silent
+        entry: poetry run mypy --config-file pyproject.toml
         types: [python]
 
       - id: pytest
         name: pytest
         stages: [commit]
         language: system
-        entry: pipenv run pytest
+        entry: poetry run pytest
         types: [python]
-        pass_filenames: false
-        exclude: setup.py
 
       - id: pytest-cov
         name: pytest
         stages: [push]
         language: system
-        entry: pipenv run pytest --cov ruts --cov-fail-under=70
+        entry: poetry run pytest --cov ruts --cov-fail-under=70
         types: [python]
-        pass_filenames: false
-        exclude: setup.py

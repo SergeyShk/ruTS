@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build lint reformat test release install dist help
+.PHONY: clean clean-test clean-pyc clean-build lint reformat test release dist help
 .DEFAULT_GOAL := help
 
 define PRINT_HELP_PYSCRIPT
@@ -37,31 +37,27 @@ clean-test: ## Удалить артефакты тестирования
 	rm -fr .mypy_cache
 
 lint: ## Проверить код с помощью flake8
-	flake8 ruts tests
+	poetry run flakehell lint ruts tests
 
 reformat: ## Форматировать код с помощью black
-	black --line-length 99 ruts tests
+	poetry run black --config pyproject.toml ruts tests
 
 test: ## Запустить тесты
-	pytest
+	poetry run pytest
 
 release-test: dist ## Загрузить тестовый релиз
-	twine upload dist/* -r pypitest
+	poetry publish -r testpypi
 
 release: dist ## Загрузить релиз
-	twine upload dist/*
+	poetry publish
 
 dist: clean ## Собрать дистрибутив
-	python3 setup.py sdist
-	python3 setup.py bdist_wheel
+	poetry build
 	ls -l dist
-
-install: clean ## Установить дистрибутив
-	python3 setup.py install
 
 docs-build: ## Собрать документацию
 	rm -fr site/
-	mkdocs build
+	poetry run mkdocs build
 
 docs-deploy: ## Задеплоить документацию
-	mkdocs gh-deploy
+	poetry run mkdocs gh-deploy

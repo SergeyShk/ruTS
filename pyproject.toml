@@ -1,0 +1,122 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ruts"
+version = "0.7.2"
+homepage = "https://github.com/SergeyShk/ruTS"
+repository = "https://github.com/SergeyShk/ruTS"
+documentation = "https://sergeyshk.github.io/ruTS/"
+authors = [
+    "Шкарин Сергей <kouki.sergey@gmail.com>",
+    "Смирнова Екатерина <ekanerina@yandex.ru>",
+]
+maintainers = ["Шкарин Сергей <kouki.sergey@gmail.com>"]
+description = "Russian Texts Statistics"
+license = "MIT"
+keywords = ["NLP", "natural", "language", "processing", "CL", "computational", "linguistics", "text", "analytics", "russian"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Linguistic",
+    "Natural Language :: Russian"
+]
+readme = "README.md"
+exclude = ["tests", "docs"]
+include = ["LICENSE.txt"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+graphviz = "*"
+matplotlib = "^3.3.0"
+nltk = "*"
+numpy = "^1.20.0"
+pandas = "*"
+pymorphy2 = "*"
+razdel = "*"
+scipy = "^1.6.0"
+spacy = "^3.0.0"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
+isort = "*"
+mypy = "*"
+pep8-naming = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+flakehell = "^0.9.0"
+
+[tool.black]
+target-version = ["py37"]
+line-length = 99
+color = true
+
+[tool.isort]
+py_version = 37
+line_length = 99
+known_typing = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
+sections = ["FUTURE", "TYPING", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+profile = "black"
+include_trailing_comma = true
+multi_line_output = 3
+indent = 4
+color_output = true
+
+[tool.mypy]
+python_version = 3.7
+files = ["ruts", "tests"]
+pretty = true
+show_traceback = true
+color_output = true
+allow_redefinition = false
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+ignore_missing_imports = true
+implicit_reexport = false
+no_implicit_optional = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.flakehell]
+exclude = ["*.md"]
+format = "grouped"
+max_line_length = 99
+max_complexity = 18
+show_source = true
+extended_default_ignore = []
+
+[tool.flakehell.plugins]
+pylint = ["+*", "-E203", "-E266", "-E501", "-W503"]
+pyflakes = ["+*", "-F401"]
+"flake8-*" = ["+*"]
+mccabe = ["+*"]
+pep8-naming = ["+*"]
+
+[tool.pytest.ini_options]
+addopts = "-vv -x --lf"
+testpaths = ["tests"]
+pass_filenames = false
