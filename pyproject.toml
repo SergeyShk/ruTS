@@ -32,8 +32,8 @@ classifiers = [
     "Natural Language :: Russian"
 ]
 readme = "README.md"
-exclude = ["tests", "docs"]
-include = ["LICENSE.txt"]
+exclude = ["tests", "docs", "ruts/datasets/data"]
+include = ["LICENSE.txt", "README.en.md"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -42,7 +42,7 @@ matplotlib = "^3.3.0"
 nltk = "*"
 numpy = "^1.20.0"
 pandas = "*"
-pymorphy2 = "*"
+pymorphy2 = "0.9.0"
 razdel = "*"
 scipy = "^1.6.0"
 spacy = "^3.0.0"

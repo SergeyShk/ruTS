@@ -19,7 +19,7 @@ install:
     - python -m nltk.downloader punkt stopwords
 
 script:
-    - poetry run pytest --cov ruts --cov-fail-under 70
+    - poetry run pytest --cov ruts --cov-fail-under 80
 
 before_deploy:
     - poetry config repositories.testpypi https://test.pypi.org/legacy/
