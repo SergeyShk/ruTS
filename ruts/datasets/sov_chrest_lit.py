@@ -16,7 +16,9 @@ META = {
     "description": "Корпус советских хрестоматий по литературе",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/sov_chrest_lit.tar.xz"
+DOWNLOAD_URL = (
+    "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/sov_chrest_lit.tar.xz"
+)
 TEXT_TYPES = [
     "Рассказ",
     "Стихотворение",

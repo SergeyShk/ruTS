@@ -16,7 +16,9 @@ META = {
     "description": "Полное собрание сочинений И.В. Сталина",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/stalin_works.tar.xz"
+DOWNLOAD_URL = (
+    "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/stalin_works.tar.xz"
+)
 TEXT_TYPES = [
     "Протокол",
     "Прошение",

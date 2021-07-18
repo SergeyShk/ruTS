@@ -1,5 +1,6 @@
-from collections import Counter, OrderedDict
 from typing import Dict, Tuple, Union
+
+from collections import Counter, OrderedDict
 
 import pymorphy2
 from spacy.tokens import Doc

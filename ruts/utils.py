@@ -1,3 +1,5 @@
+from typing import Union
+
 import os
 import shutil
 import tarfile
@@ -5,7 +7,6 @@ import urllib.parse
 import urllib.request
 import zipfile
 from pathlib import Path
-from typing import Union
 
 from .constants import DEFAULT_DATA_DIR, RU_VOWELS
 

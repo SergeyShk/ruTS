@@ -1,7 +1,8 @@
+from typing import Any, Callable, List, Pattern, Tuple, Union
+
 import re
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from typing import Any, Callable, List, Pattern, Tuple, Union
 
 import pymorphy2
 from razdel import sentenize, tokenize

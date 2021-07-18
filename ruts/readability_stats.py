@@ -1,5 +1,6 @@
-from math import sqrt
 from typing import Dict, Union
+
+from math import sqrt
 
 from spacy.tokens import Doc
 
@@ -109,9 +110,9 @@ def calc_flesch_kincaid_grade(
     n_syllables: int,
     n_words: int,
     n_sents: int,
-    A: float = 0.49,
-    B: float = 7.3,
-    C: float = 16.59,
+    a: float = 0.49,
+    b: float = 7.3,
+    c: float = 16.59,
 ) -> float:
     """
     Вычисление теста Флеша-Кинкайда
@@ -127,23 +128,23 @@ def calc_flesch_kincaid_grade(
         n_syllables (int): Количество слогов
         n_words (int): Количество слов
         n_sents (int): Количество предложений
-        A (float): Коэффициент A
-        B (float): Коэффициент B
-        C (float): Коэффициент C
+        a (float): Коэффициент a
+        b (float): Коэффициент b
+        c (float): Коэффициент c
 
     Вывод:
         float: Значение теста
     """
-    return (A * n_words / n_sents) + (B * n_syllables / n_words) - C
+    return (a * n_words / n_sents) + (b * n_syllables / n_words) - c
 
 
 def calc_flesch_reading_easy(
     n_syllables: int,
     n_words: int,
     n_sents: int,
-    A: float = 1.3,
-    B: float = 60.1,
-    C: float = 206.835,
+    a: float = 1.3,
+    b: float = 60.1,
+    c: float = 206.835,
 ) -> float:
     """
     Вычисление индекса удобочитаемости Флеша
@@ -167,23 +168,23 @@ def calc_flesch_reading_easy(
         n_syllables (int): Количество слогов
         n_words (int): Количество слов
         n_sents (int): Количество предложений
-        A (float): Коэффициент A
-        B (float): Коэффициент B
-        C (float): Коэффициент C
+        a (float): Коэффициент a
+        b (float): Коэффициент b
+        c (float): Коэффициент c
 
     Вывод:
         float: Значение индекса
     """
-    return C - (A * n_words / n_sents) - (B * n_syllables / n_words)
+    return c - (a * n_words / n_sents) - (b * n_syllables / n_words)
 
 
 def calc_coleman_liau_index(
     n_letters: int,
     n_words: int,
     n_sents: int,
-    A: float = 6.26,
-    B: float = 0.2805,
-    C: float = 31.04,
+    a: float = 6.26,
+    b: float = 0.2805,
+    c: float = 31.04,
 ) -> float:
     """
     Вычисление индекса Колман-Лиау
@@ -200,18 +201,18 @@ def calc_coleman_liau_index(
         n_letters (int): Количество букв
         n_words (int): Количество слов
         n_sents (int): Количество предложений
-        A (float): Коэффициент A
-        B (float): Коэффициент B
-        C (float): Коэффициент C
+        a (float): Коэффициент a
+        b (float): Коэффициент b
+        c (float): Коэффициент c
 
     Вывод:
         float: Значение индекса
     """
-    return (A * n_letters / n_words) + (B * n_words / n_sents) - C
+    return (a * n_letters / n_words) + (b * n_words / n_sents) - c
 
 
 def calc_smog_index(
-    n_complex: int, n_sents: int, A: float = 1.1, B: float = 64.6, C: float = 0.05
+    n_complex: int, n_sents: int, a: float = 1.1, b: float = 64.6, c: float = 0.05
 ) -> float:
     """
     Вычисление индекса SMOG
@@ -228,23 +229,23 @@ def calc_smog_index(
     Аргументы:
         n_complex (int): Количество сложных слов
         n_sents (int): Количество предложений
-        A (float): Коэффициент A
-        B (float): Коэффициент B
-        C (float): Коэффициент C
+        a (float): Коэффициент a
+        b (float): Коэффициент b
+        c (float): Коэффициент c
 
     Вывод:
         float: Значение индекса
     """
-    return (A * sqrt(B * n_complex / n_sents)) + C
+    return (a * sqrt(b * n_complex / n_sents)) + c
 
 
 def calc_automated_readability_index(
     n_letters: int,
     n_words: int,
     n_sents: int,
-    A: float = 6.26,
-    B: float = 0.2805,
-    C: float = 31.04,
+    a: float = 6.26,
+    b: float = 0.2805,
+    c: float = 31.04,
 ) -> float:
     """
     Вычисление автоматического индекса удобочитаемости
@@ -274,14 +275,14 @@ def calc_automated_readability_index(
         n_letters (int): Количество букв
         n_words (int): Количество слов
         n_sents (int): Количество предложений
-        A (float): Коэффициент A
-        B (float): Коэффициент B
-        C (float): Коэффициент C
+        a (float): Коэффициент a
+        b (float): Коэффициент b
+        c (float): Коэффициент c
 
     Вывод:
         float: Значение индекса
     """
-    return (A * n_letters / n_words) + (B * n_words / n_sents) - C
+    return (a * n_letters / n_words) + (b * n_words / n_sents) - c
 
 
 def calc_lix(n_long_words: int, n_words: int, n_sents: int) -> float:

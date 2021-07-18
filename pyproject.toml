@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ruts"
-version = "0.7.2"
+version = "0.7.3"
 homepage = "https://github.com/SergeyShk/ruTS"
 repository = "https://github.com/SergeyShk/ruTS"
 documentation = "https://sergeyshk.github.io/ruTS/"

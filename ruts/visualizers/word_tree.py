@@ -1,7 +1,8 @@
+from typing import Any, Callable, Dict, List, Tuple
+
 from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, List, Tuple
 
 import pandas as pd
 from graphviz import Digraph

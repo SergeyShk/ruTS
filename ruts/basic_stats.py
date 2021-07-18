@@ -1,15 +1,10 @@
-from collections import Counter
 from typing import Dict, Union
+
+from collections import Counter
 
 from spacy.tokens import Doc
 
-from .constants import (
-    BASIC_STATS_DESC,
-    COMPLEX_SYL_FACTOR,
-    PUNCTUATIONS,
-    RU_LETTERS,
-    SPACES,
-)
+from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, PUNCTUATIONS, RU_LETTERS, SPACES
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
 
