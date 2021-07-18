@@ -1,6 +1,0 @@
-include LICENSE.txt MANIFEST.in
-include setup.py
-include ruts/VERSION
-prune tests
-prune docs
-global-exclude *~

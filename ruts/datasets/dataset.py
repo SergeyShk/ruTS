@@ -1,5 +1,6 @@
-from abc import ABCMeta, abstractmethod
 from typing import Any, Dict, Generator
+
+from abc import ABCMeta, abstractmethod
 
 
 class Dataset(object, metaclass=ABCMeta):

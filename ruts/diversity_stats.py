@@ -1,7 +1,8 @@
+from typing import Dict, List, Union
+
 from collections import Counter
 from itertools import permutations
 from math import log10, sqrt
-from typing import Dict, List, Union
 
 from nltk import FreqDist
 from scipy.special import comb

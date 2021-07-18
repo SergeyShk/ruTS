@@ -4,20 +4,36 @@ cache: pip
 matrix:
   fast_finish: true
   include:
-    - python: 3.7
+    - python: 3.7.9
       dist: bionic
-    - python: 3.8
+    - python: 3.8.7
       dist: bionic
     - python: 3.9
       dist: bionic
 
+before_install:
+    - pip install -U pip
+    - pip install poetry
+
 install:
-    - "pip install pipenv pytest-cov codecov"
-    - "pipenv install --dev"
-    - "python -m nltk.downloader punkt stopwords"
+    - poetry install
+    - python -m nltk.downloader punkt stopwords
 
 script:
-    - "python -m pytest --cov=ruts --cov-fail-under=70"
+    - poetry run pytest --cov ruts --cov-fail-under 80
+
+before_deploy:
+    - poetry config repositories.testpypi https://test.pypi.org/legacy/
+    - poetry config http-basic.mypypi $PYPI_LOGIN $PYPI_PASS
+    - poetry build -f sdist
+
+deploy:
+  provider: script
+  script: poetry publish -r testpypi
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
 
 after_success:
     - codecov

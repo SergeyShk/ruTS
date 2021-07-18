@@ -1,9 +1,10 @@
+from typing import Any, Dict, Generator, List, Optional, Union
+
 import io
 import os
 import re
 from itertools import islice
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional, Union
 
 from ..constants import DEFAULT_DATA_DIR
 from ..utils import download_file, extract_archive, to_path
@@ -15,7 +16,9 @@ META = {
     "description": "Полное собрание сочинений И.В. Сталина",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = "https://dataverse.harvard.edu/api/access/datafile/4623793"
+DOWNLOAD_URL = (
+    "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/stalin_works.tar.xz"
+)
 TEXT_TYPES = [
     "Протокол",
     "Прошение",
