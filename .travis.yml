@@ -4,14 +4,15 @@ cache: pip
 matrix:
   fast_finish: true
   include:
-    - python: 3.7
+    - python: 3.7.9
       dist: bionic
-    - python: 3.8
+    - python: 3.8.7
       dist: bionic
     - python: 3.9
       dist: bionic
 
 before_install:
+    - pip install -U pip
     - pip install poetry
 
 install:

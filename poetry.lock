@@ -655,7 +655,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pymorphy2"
-version = "0.9"
+version = "0.9.1"
 description = "Morphological analyzer (POS tagger + inflection engine) for Russian language."
 category = "main"
 optional = false
@@ -1043,7 +1043,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f48cf081828fa8f962a3cd87c578196536a3178ea9bd56b337d15c9e477cd23b"
+content-hash = "0e74961dbffa8a3ce6db8755cb6b67ffc4fb47324620afbcb4ac24f8f65bdc51"
 
 [metadata.files]
 appdirs = [
@@ -1585,8 +1585,8 @@ pygments = [
     {file = "Pygments-2.9.0.tar.gz", hash = "sha256:a18f47b506a429f6f4b9df81bb02beab9ca21d0a5fee38ed15aef65f0545519f"},
 ]
 pymorphy2 = [
-    {file = "pymorphy2-0.9-py3-none-any.whl", hash = "sha256:fac815036a66b55fb466c37bea370fe636187144438307cbdb609231dcac8a5c"},
-    {file = "pymorphy2-0.9.tar.gz", hash = "sha256:d4dc611f1aad8cd13c10b6a47c2d301c8321640534d9b3df563e28b3b28d2581"},
+    {file = "pymorphy2-0.9.1-py3-none-any.whl", hash = "sha256:a5224ec153cd6920a33961ae636793ad5185143bc8045b3f9a9f8bd62ecacf68"},
+    {file = "pymorphy2-0.9.1.tar.gz", hash = "sha256:86c447157dee2eb2341efbe4538e1281a754756ba1aa32da77a89614c58b560c"},
 ]
 pymorphy2-dicts-ru = [
     {file = "pymorphy2-dicts-ru-2.4.417127.4579844.tar.gz", hash = "sha256:78cad03adca605021abd387a3b2eb515c851b86e94682a1ef2354a2c74fcc196"},
