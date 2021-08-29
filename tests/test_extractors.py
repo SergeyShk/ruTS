@@ -29,28 +29,32 @@ class TestSentsExtractor(object):
         tokenizers = [666, ["a", "b"], {"a": "b"}]
         for tokenizer in tokenizers:
             with pytest.raises(TypeError):
-                se = SentsExtractor(tokenizer=tokenizer)
+                se = SentsExtractor(tokenizer=tokenizer)  # type: ignore
                 se.extract(text)
 
-    def test_extract_tokenizer(self, text):
-        se_1 = SentsExtractor()
-        se_2 = SentsExtractor(tokenizer=re.compile(r"[;.]"))
-        se_3 = SentsExtractor(tokenizer=sent_tokenize)
-        assert len(tuple(se_1.extract(text))) == 2
-        assert len(tuple(se_2.extract(text))) == 4
-        assert len(tuple(se_3.extract(text))) == 2
+    @pytest.mark.parametrize(
+        "tokenizer, expected",
+        [(None, 2), (re.compile(r"[;.]"), 4), (sent_tokenize, 2)],
+    )
+    def test_extract_tokenizer(self, text, tokenizer, expected):
+        se = SentsExtractor(tokenizer=tokenizer)
+        assert len(tuple(se.extract(text))) == expected
 
-    def test_extract_min_len(self, text):
-        se_1 = SentsExtractor(min_len=400)
-        se_2 = SentsExtractor(min_len=250)
-        assert len(tuple(se_1.extract(text))) == 0
-        assert len(tuple(se_2.extract(text))) == 1
+    @pytest.mark.parametrize(
+        "min_len, expected",
+        [(400, 0), (250, 1)],
+    )
+    def test_extract_min_len(self, text, min_len, expected):
+        se = SentsExtractor(min_len=min_len)
+        assert len(tuple(se.extract(text))) == expected
 
-    def test_extract_max_len(self, text):
-        se_1 = SentsExtractor(max_len=250)
-        se_2 = SentsExtractor(max_len=100)
-        assert len(tuple(se_1.extract(text))) == 1
-        assert len(tuple(se_2.extract(text))) == 0
+    @pytest.mark.parametrize(
+        "max_len, expected",
+        [(250, 1), (100, 0)],
+    )
+    def test_extract_max_len(self, text, max_len, expected):
+        se = SentsExtractor(max_len=max_len)
+        assert len(tuple(se.extract(text))) == expected
 
 
 class TestWordsExtractor(object):
@@ -74,13 +78,17 @@ class TestWordsExtractor(object):
                 we = WordsExtractor(tokenizer=tokenizer)
                 we.extract(text)
 
-    def test_extract_tokenizer(self, text):
-        we_1 = WordsExtractor()
-        we_2 = WordsExtractor(tokenizer=re.compile(r"[^\w]+"))
-        we_3 = WordsExtractor(tokenizer=wordpunct_tokenize)
-        assert len(we_1.extract(text)) == 61
-        assert len(we_2.extract(text)) == 62
-        assert len(we_3.extract(text)) == 63
+    @pytest.mark.parametrize(
+        "tokenizer, expected",
+        [
+            (None, 61),
+            (re.compile(r"[^\w]+"), 62),
+            (wordpunct_tokenize, 63),
+        ],
+    )
+    def test_extract_tokenizer(self, text, tokenizer, expected):
+        we = WordsExtractor(tokenizer=tokenizer)
+        assert len(we.extract(text)) == expected
 
     def test_extract_filter_punct(self, text):
         we = WordsExtractor(filter_punct=False)
@@ -96,19 +104,32 @@ class TestWordsExtractor(object):
             len(set(["онтология", "значение", "связь"]).intersection(set(we.extract(text)))) == 3
         )
 
-    def test_extract_stopwords(self, text):
-        we_1 = WordsExtractor(stopwords=stopwords.words("russian"))
-        we_2 = WordsExtractor(stopwords=["и", "а", "с", "в"])
-        assert len(we_1.extract(text)) == 47
-        assert len(we_2.extract(text)) == 57
+    @pytest.mark.parametrize(
+        "stopwords, expected",
+        [
+            (stopwords.words("russian"), 47),
+            (["и", "а", "с", "в"], 57),
+        ],
+    )
+    def test_extract_stopwords(self, text, stopwords, expected):
+        we = WordsExtractor(stopwords=stopwords)
+        assert len(we.extract(text)) == expected
 
-    def test_extract_min_len(self, text):
-        we = WordsExtractor(min_len=6)
-        assert len(we.extract(text)) == 41
+    @pytest.mark.parametrize(
+        "min_len, expected",
+        [(6, 41), (3, 54)],
+    )
+    def test_extract_min_len(self, text, min_len, expected):
+        we = WordsExtractor(min_len=min_len)
+        assert len(we.extract(text)) == expected
 
-    def test_extract_max_len(self, text):
-        we = WordsExtractor(max_len=6)
-        assert len(we.extract(text)) == 26
+    @pytest.mark.parametrize(
+        "max_len, expected",
+        [(6, 26), (3, 11)],
+    )
+    def test_extract_max_len(self, text, max_len, expected):
+        we = WordsExtractor(max_len=max_len)
+        assert len(we.extract(text)) == expected
 
     def test_extract_ngram_range(self, text):
         we = WordsExtractor(ngram_range=(1, 3))

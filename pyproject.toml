@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ruts"
-version = "0.7.3"
+version = "0.8.0"
 homepage = "https://github.com/SergeyShk/ruTS"
 repository = "https://github.com/SergeyShk/ruTS"
 documentation = "https://sergeyshk.github.io/ruTS/"
@@ -78,7 +78,7 @@ color_output = true
 
 [tool.mypy]
 python_version = 3.7
-files = ["ruts", "tests"]
+files = ["ruts"]
 pretty = true
 show_traceback = true
 color_output = true

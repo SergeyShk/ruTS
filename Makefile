@@ -59,5 +59,8 @@ docs-build: ## Собрать документацию
 	rm -fr site/
 	poetry run mkdocs build
 
+docs-serve: ## Запустить сервер документации
+	poetry run mkdocs serve
+
 docs-deploy: ## Задеплоить документацию
 	poetry run mkdocs gh-deploy

@@ -35,6 +35,7 @@ repos:
         language: system
         entry: poetry run pytest
         types: [python]
+        pass_filenames: false
 
       - id: pytest-cov
         name: pytest

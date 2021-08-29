@@ -41,6 +41,8 @@ Dependencies:
 
 The main functions are based on the [textacy](https://github.com/chartbeat-labs/textacy) statistics adapted to Russian language. The library allows working both with raw texts and Doc-objects of the [spaCy](https://github.com/explosion/spaCy) library.
 
+[API](https://ruts-api.herokuapp.com/docs) to explore the available functions.
+
 ### Object extraction
 
 The library allows creating your own tools for sentence and word extraction from a text, which can be further employed for counting statistics.

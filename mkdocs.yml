@@ -27,7 +27,8 @@ nav:
         - Литературная дактилоскопия: visualizers/fingerprinting.md
         - Дерево слов: visualizers/word_tree.md
     - Компоненты:
-        - Компоненты: components.md  
+        - Компоненты: components.md
+    - API: "https://ruts-api.herokuapp.com/docs"
 
 theme:
   name: material
