@@ -42,7 +42,7 @@ def test_get_texts_min_len(dataset, min_len):
     assert all(len(text) >= min_len for text in dataset.get_texts(min_len=min_len, limit=5))
 
 
-@pytest.mark.parametrize("max_len", [100, 200, 1000])
+@pytest.mark.parametrize("max_len", [250, 500, 1000])
 def test_get_texts_max_len(dataset, max_len):
     assert all(len(text) < max_len for text in dataset.get_texts(max_len=max_len, limit=1))
 
