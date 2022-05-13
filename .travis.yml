@@ -24,7 +24,7 @@ script:
 
 before_deploy:
     - poetry config repositories.testpypi https://test.pypi.org/legacy/
-    - poetry config http-basic.mypypi $PYPI_LOGIN $PYPI_PASS
+    - poetry config http-basic.mypypi "$PYPI_LOGIN" "$PYPI_PASS"
     - poetry build -f sdist
 
 deploy:
