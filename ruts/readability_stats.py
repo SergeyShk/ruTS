@@ -182,9 +182,9 @@ def calc_coleman_liau_index(
     n_letters: int,
     n_words: int,
     n_sents: int,
-    a: float = 6.26,
-    b: float = 0.2805,
-    c: float = 31.04,
+    a: float = 0.055,
+    b: float = 0.35,
+    c: float = 20.33,
 ) -> float:
     """
     Вычисление индекса Колман-Лиау
@@ -208,7 +208,7 @@ def calc_coleman_liau_index(
     Вывод:
         float: Значение индекса
     """
-    return (a * n_letters / n_words) + (b * n_words / n_sents) - c
+    return (a * n_letters / n_words * 100) - (b * n_sents / n_words * 100) - c
 
 
 def calc_smog_index(
