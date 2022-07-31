@@ -19,15 +19,15 @@ repos:
         name: flake8
         stages: [commit]
         language: system
-        entry: poetry run flakehell lint
+        entry: poetry run flakeheaven lint
         types: [python]
 
-      - id: mypy
-        name: mypy
-        stages: [commit]
-        language: system
-        entry: poetry run mypy --config-file pyproject.toml
-        types: [python]
+      # - id: mypy
+      #   name: mypy
+      #   stages: [commit]
+      #   language: system
+      #   entry: poetry run mypy --config-file pyproject.toml
+      #   types: [python]
 
       - id: pytest
         name: pytest
@@ -41,6 +41,6 @@ repos:
         name: pytest
         stages: [push]
         language: system
-        entry: poetry run pytest --cov ruts --cov-fail-under 80
+        entry: poetry run pytest --cov ruts --cov-fail-under 85
         types: [python]
         pass_filenames: false

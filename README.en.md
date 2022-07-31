@@ -26,12 +26,12 @@ $ pip install ruts
 
 Dependencies:
 
-*   python 3.7+
+*   python 3.8+
 *   nltk
 *   pymorphy2
 *   razdel
 *   scipy
-*   spacy
+*   spaCy
 *   numpy
 *   pandas
 *   matplotlib
@@ -501,7 +501,7 @@ Citations are helpful for the continued development and maintenance of this libr
 @software{ruTS,
   author = {Sergey Shkarin},
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
-  year = 2021,
+  year = 2022,
   publisher = {Moscow},
   url = {https://github.com/SergeyShk/ruTS}
 }
