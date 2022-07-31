@@ -4,7 +4,7 @@ cache: pip
 matrix:
   fast_finish: true
   include:
-    - python: 3.8
+    - python: 3.8.7
       dist: bionic
     - python: 3.9
       dist: bionic
