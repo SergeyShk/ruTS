@@ -59,7 +59,7 @@ def test_zipf_show_theory(tokens):
     plt.cla()
     plot = zipf(tokens, show_theory=True)[0]
     assert plot.axes.get_children()[0]._label == "Экспериментальный закон"
-    assert plot.axes.get_children()[1]._label == "Теоретический закон"
+    assert plot.axes.get_children()[11]._label == "Теоретический закон"
 
 
 def test_zipf_with_theory(tokens):

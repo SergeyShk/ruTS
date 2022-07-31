@@ -1,6 +1,6 @@
 # Russian Texts Statistics (ruTS)
 #
-# Copyright (C) 2019-2021
+# Copyright (C) 2019-2022
 # Авторы: Шкарин Сергей <kouki.sergey@gmail.com>
 #         Смирнова Екатерина <ekanerina@yandex.ru>
 # URL: <https://github.com/SergeyShk/ruTS>
@@ -20,7 +20,7 @@ from .readability_stats import ReadabilityStats
 # Метаданные
 
 __doc__ = """Инструмент для извлечения статистик для текстов на русском языке.
-Требует версию Python 3.7 и выше"""
+Требует версию Python 3.8 и выше"""
 __author__ = "Шкарин Сергей, Смирнова Екатерина"
 __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 

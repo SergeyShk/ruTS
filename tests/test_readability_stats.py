@@ -36,7 +36,7 @@ def test_flesch_reading_easy(rs):
 
 
 def test_coleman_liau_index(rs):
-    assert rs.coleman_liau_index == pytest.approx(23.900823770491805, rel=0.1)
+    assert rs.coleman_liau_index == pytest.approx(19.276557377049187, rel=0.1)
 
 
 def test_smog_index(rs):
