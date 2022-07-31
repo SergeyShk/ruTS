@@ -14,7 +14,7 @@
 <a href="https://twitter.com/shk_sergey">
     <img src="https://github.com/squidfunk/mkdocs-material/raw/master/material/.icons/fontawesome/brands/twitter-square.svg" width="48">
 </a>
-<a href="https://www.linkedin.com/in/kouki91/">
+<a href="https://www.linkedin.com/in/sshkarin/">
     <img src="https://github.com/squidfunk/mkdocs-material/raw/master/material/.icons/fontawesome/brands/linkedin.svg" width="48">
 </a>
 <a href="https://vk.com/shkarinsergey">

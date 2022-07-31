@@ -6,12 +6,12 @@
 
 Функционал ruTS использует следующие сторонние библиотеки:
 
-*   `python` - 3.7 и выше
+*   `python` - 3.8 и выше
 *   `nltk`
 *   `pymorphy2`
 *   `razdel`
 *   `scipy`
-*   `spacy` - 3.0.0 и выше
+*   `spaCy` - 3.4.0 и выше
 *   `numpy`
 *   `pandas`
 *   `matplotlib`
