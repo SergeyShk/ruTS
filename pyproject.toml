@@ -49,16 +49,12 @@ spacy = "^3.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "*"
-flake8 = "*"
-flake8-bugbear = "*"
-flake8-builtins = "*"
 isort = "*"
 mypy = "*"
-pep8-naming = "*"
+ruff = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-cov = "*"
-flakeheaven = "*"
 
 [tool.black]
 target-version = ["py38"]
@@ -101,20 +97,17 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-[tool.flakeheaven]
-exclude = ["*.md"]
+[tool.ruff]
+target-version = "py38"
+line-length = 99
+select = ["E", "B", "F", "C", "W", "N", "Q", "UP"]
+ignore = ["E501", "F401", "B904"]
 format = "grouped"
-max_line_length = 99
-max_complexity = 18
-show_source = true
-extended_default_ignore = []
+exclude = ["*.md"]
+show-source = true
 
-[tool.flakeheaven.plugins]
-pylint = ["+*", "-E203", "-E266", "-E501", "-W503"]
-pyflakes = ["+*", "-F401"]
-"flake8-*" = ["+*"]
-mccabe = ["+*"]
-pep8-naming = ["+*"]
+[tool.ruff.mccabe]
+max-complexity = 18
 
 [tool.pytest.ini_options]
 addopts = "-vv -x --lf"

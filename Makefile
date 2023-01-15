@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build flake black isort mypy test check-code release-test release dist docs-build docs-serve docs-deploy help
+.PHONY: clean clean-test clean-pyc clean-build ruff black isort mypy test check-code release-test release dist docs-build docs-serve docs-deploy help
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 
@@ -36,9 +36,10 @@ clean-pyc: ## Удалить артефакты компиляции
 clean-test: ## Удалить артефакты тестирования
 	rm -fr .pytest_cache
 	rm -fr .mypy_cache
+	rm -fr .ruff_cache
 
-flake: ## Проверить код с помощью flake8
-	poetry run flakeheaven lint ${APP_PATH}
+ruff: ## Проверить код с помощью ruff
+	poetry run ruff ${APP_PATH}
 
 black: ## Форматировать код с помощью black
 	poetry run black ${APP_PATH}
@@ -52,7 +53,7 @@ mypy: ## Проверить код с помощью mypy
 test: ## Запустить тесты
 	poetry run pytest
 
-check-code: flake black isort test ## Запустить все проверки кода
+check-code: ruff black isort test ## Запустить все проверки кода
 
 release-test: dist ## Загрузить тестовый релиз
 	poetry publish -r testpypi
