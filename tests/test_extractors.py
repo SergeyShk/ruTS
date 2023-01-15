@@ -16,7 +16,7 @@ def text():
         словами, а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
 
 
-class TestSentsExtractor(object):
+class TestSentsExtractor:
     def test_init_value_error(self):
         with pytest.raises(ValueError):
             SentsExtractor(min_len=10, max_len=5)
@@ -57,7 +57,7 @@ class TestSentsExtractor(object):
         assert len(tuple(se.extract(text))) == expected
 
 
-class TestWordsExtractor(object):
+class TestWordsExtractor:
     def test_init_value_error_1(self):
         with pytest.raises(ValueError):
             WordsExtractor(ngram_range=(2, 1))
@@ -100,9 +100,7 @@ class TestWordsExtractor(object):
 
     def test_extract_use_lexemes(self, text):
         we = WordsExtractor(use_lexemes=True)
-        assert (
-            len(set(["онтология", "значение", "связь"]).intersection(set(we.extract(text)))) == 3
-        )
+        assert len({"онтология", "значение", "связь"}.intersection(set(we.extract(text)))) == 3
 
     @pytest.mark.parametrize(
         "stopwords, expected",

@@ -123,7 +123,7 @@ class TreeDrawer:
         return self.graph
 
 
-class WordTree(object):
+class WordTree:
     """
     Класс для построения дерева слов
 

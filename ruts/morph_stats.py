@@ -9,7 +9,7 @@ from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
 
 
-class MorphStats(object):
+class MorphStats:
     """
     Класс для вычисления морфологических статистик текста
 
@@ -115,12 +115,10 @@ class MorphStats(object):
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
         else:
             self.__check_stat(*args)
-        stats = dict()
+        stats = {}
         for arg in args:
             if filter_none:
-                stats[arg] = dict(
-                    (k, v) for (k, v) in dict(Counter(vars(self).get(arg))).items() if k
-                )
+                stats[arg] = {k: v for (k, v) in dict(Counter(vars(self).get(arg))).items() if k}
             else:
                 stats[arg] = dict(Counter(vars(self).get(arg)))
         return stats
@@ -145,7 +143,7 @@ class MorphStats(object):
         values = tuple(zip(*(vars(self).get(arg) for arg in args)))
         if filter_none:
             explains = tuple(
-                dict((k, v) for (k, v) in dict(zip(args, value)).items() if v) for value in values
+                {k: v for (k, v) in dict(zip(args, value)).items() if v} for value in values
             )
         else:
             explains = tuple(dict(zip(args, value)) for value in values)

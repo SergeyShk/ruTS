@@ -9,7 +9,7 @@ from .constants import READABILITY_STATS_DESC
 from .extractors import SentsExtractor, WordsExtractor
 
 
-class ReadabilityStats(object):
+class ReadabilityStats:
     """
     Класс для вычисления основных метрик удобочитаемости текста
 

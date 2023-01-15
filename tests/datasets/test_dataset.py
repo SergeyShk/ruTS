@@ -5,27 +5,27 @@ from ruts.datasets.dataset import Dataset
 
 class TestErrorDataset(Dataset):
     def __init__(self, name, meta):
-        super(TestErrorDataset, self).__init__(name, meta)
+        super().__init__(name, meta)
 
 
 class TestDataset(Dataset):
     def __init__(self, name, meta):
-        super(TestDataset, self).__init__(name, meta)
+        super().__init__(name, meta)
 
     def __iter__(self):
-        super(TestDataset, self).__iter__()
+        super().__iter__()
 
     def check_data(self):
-        super(TestDataset, self).check_data()
+        super().check_data()
 
     def get_texts(self, *args):
-        super(TestDataset, self).get_texts()
+        super().get_texts()
 
     def get_records(self, *args):
-        super(TestDataset, self).get_records()
+        super().get_records()
 
     def download(self):
-        super(TestDataset, self).download()
+        super().download()
 
 
 @pytest.fixture(scope="module")

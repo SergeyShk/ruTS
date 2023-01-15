@@ -3,7 +3,7 @@ from typing import Any, Dict, Generator
 from abc import ABCMeta, abstractmethod
 
 
-class Dataset(object, metaclass=ABCMeta):
+class Dataset(metaclass=ABCMeta):
     """
     Абстрактный класс для работы с набором данных
 

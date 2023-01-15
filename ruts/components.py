@@ -8,7 +8,7 @@ from .readability_stats import ReadabilityStats
 
 
 @Language.factory("basic")
-class BasicStatsComponent(object):
+class BasicStatsComponent:
     """
     Класс для компонента основных статистик текста
 
@@ -49,7 +49,7 @@ class BasicStatsComponent(object):
 
 
 @Language.factory("morph")
-class MorphStatsComponent(object):
+class MorphStatsComponent:
     """
     Класс для компонента морфологических статистик текста
 
@@ -89,7 +89,7 @@ class MorphStatsComponent(object):
 
 
 @Language.factory("readability")
-class ReadabilityStatsComponent(object):
+class ReadabilityStatsComponent:
     """
     Класс для компонента основных метрик удобочитаемости текста
 
@@ -129,7 +129,7 @@ class ReadabilityStatsComponent(object):
 
 
 @Language.factory("diversity")
-class DiversityStatsComponent(object):
+class DiversityStatsComponent:
     """
     Класс для компонента основных метрик лексического разнообразия текста
 

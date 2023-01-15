@@ -10,7 +10,7 @@ from razdel import sentenize, tokenize
 from .constants import PUNCTUATIONS
 
 
-class Extractor(object, metaclass=ABCMeta):
+class Extractor(metaclass=ABCMeta):
     """
     Абстрактный класс для извлечения объектов из текста
 

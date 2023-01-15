@@ -9,7 +9,7 @@ from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
 
 
-class BasicStats(object):
+class BasicStats:
     """
     Класс для вычисления основных статистик текста
 

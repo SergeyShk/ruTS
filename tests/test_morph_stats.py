@@ -214,7 +214,7 @@ def test_get_stats(ms):
 
 def test_get_stats_args(ms):
     stats = ms.get_stats("pos", "tense")
-    assert set(stats.keys()) == set(["pos", "tense"])
+    assert set(stats.keys()) == {"pos", "tense"}
 
 
 def test_get_stats_filter_none(ms):
@@ -230,7 +230,7 @@ def test_explain_text(ms):
 
 def test_explain_text_args(ms):
     explain = ms.explain_text("pos", "tense")
-    assert all([set(v.keys()) == set(["pos", "tense"]) for v in tuple(zip(*explain))[1]])
+    assert all([set(v.keys()) == {"pos", "tense"} for v in tuple(zip(*explain))[1]])
 
 
 def test_explain_text_filter_none(ms):

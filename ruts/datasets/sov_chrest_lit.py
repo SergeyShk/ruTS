@@ -206,8 +206,7 @@ class SovChLit(Dataset):
         filters = self.__get_filters(
             grade, book, year, category, text_type, subject, author, min_len, max_len
         )
-        for record in islice(self.__filtered_iter(filters), limit):
-            yield record
+        yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[Dict[str, Any], None, None]:
         """
@@ -256,7 +255,7 @@ class SovChLit(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with io.open(filepath, mode="r", encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 headers, text = f.read().strip().split("\n\n")
                 headers = tuple(header.split(":")[1][1:] for header in headers.split("\n"))
             return {

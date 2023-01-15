@@ -13,7 +13,7 @@ from .extractors import WordsExtractor
 from .utils import safe_divide
 
 
-class DiversityStats(object):
+class DiversityStats:
     """
     Класс для вычисления основных метрик лексического разнообразия текста
 
