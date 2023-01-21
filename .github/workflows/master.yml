@@ -29,11 +29,11 @@ jobs:
           poetry run python -m nltk.downloader punkt stopwords
       - name: Run tests
         run: |
-          poetry run pytest --cov ruts --cov-fail-under 90
+          poetry run pytest --cov ruts --cov-fail-under 90 --cov-report=xml
       - name: Send report
         uses: codecov/codecov-action@v3
         with:
-          files: ./.coverage
+          files: ./coverage.xml
           flags: unittests
           name: codecov-ruts
           fail_ci_if_error: true
