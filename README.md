@@ -26,7 +26,7 @@ $ pip install ruts
 
 Зависимости:
 
-*   python 3.8+
+*   python 3.8-3.10
 *   nltk
 *   pymorphy2
 *   razdel
@@ -501,7 +501,7 @@ doc._.basic.get_stats()
 @software{ruTS,
   author = {Sergey Shkarin},
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
-  year = 2022,
+  year = 2023,
   publisher = {Moscow},
   url = {https://github.com/SergeyShk/ruTS}
 }

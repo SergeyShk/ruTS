@@ -6,6 +6,7 @@ build/
 ruts_data
 .ipynb_checkpoints
 .coverage
+coverage.xml
 site/
 target/
 .mypy_cache

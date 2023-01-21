@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "ruts"
-version = "0.8.1"
+version = "0.8.2.dev"
 homepage = "https://github.com/SergeyShk/ruTS"
 repository = "https://github.com/SergeyShk/ruTS"
 documentation = "https://sergeyshk.github.io/ruTS/"
@@ -100,8 +100,8 @@ warn_unused_ignores = true
 [tool.ruff]
 target-version = "py38"
 line-length = 99
-select = ["E", "B", "F", "C", "W", "N", "Q", "UP"]
-ignore = ["E501", "F401", "B904"]
+select = ["A", "B", "C", "E", "F", "N", "Q", "W", "UP"]
+ignore = ["E501", "B904"]
 format = "grouped"
 exclude = ["*.md"]
 show-source = true
