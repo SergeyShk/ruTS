@@ -33,9 +33,11 @@ jobs:
       - name: Send report
         uses: codecov/codecov-action@v3
         with:
+          directory: .
           files: ./coverage
           flags: unittests
           name: codecov-ruts
+          fail_ci_if_error: true
           verbose: true
       - name: Build distribution
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
