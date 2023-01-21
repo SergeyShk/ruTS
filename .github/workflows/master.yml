@@ -44,10 +44,10 @@ jobs:
           fail_ci_if_error: true
           verbose: true
       - name: Build distribution
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && ${{ matrix.python-version }} == "3.10"
         run: |
           poetry config repositories.pypi https://pypi.org
-          poetry config http-basic.pypi '$PYPI_LOGIN' '$PYPI_PASS'
+          poetry config http-basic.pypi $PYPI_LOGIN $PYPI_PASS
           poetry build -f sdist
           poetry build -f wheel
           poetry publish -r pypi
