@@ -33,8 +33,7 @@ jobs:
       - name: Send report
         uses: codecov/codecov-action@v3
         with:
-          directory: .
-          files: ./coverage
+          files: ./.coverage
           flags: unittests
           name: codecov-ruts
           fail_ci_if_error: true
