@@ -26,7 +26,7 @@ $ pip install ruts
 
 Зависимости:
 
-*   python 3.8+
+*   python 3.8-3.10
 *   nltk
 *   pymorphy2
 *   razdel
