@@ -501,7 +501,7 @@ Citations are helpful for the continued development and maintenance of this libr
 @software{ruTS,
   author = {Sergey Shkarin},
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
-  year = 2022,
+  year = 2023,
   publisher = {Moscow},
   url = {https://github.com/SergeyShk/ruTS}
 }
