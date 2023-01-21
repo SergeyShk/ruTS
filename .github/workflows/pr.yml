@@ -34,7 +34,7 @@ jobs:
         run: |
           codecov
       - name: Build distribution
-        if: github.event_name == "push" && startsWith(github.ref, "refs/tags")
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
           poetry config repositories.testpypi https://test.pypi.org/legacy/
           poetry config http-basic.testpypi '$TEST_PYPI_LOGIN' '$TEST_PYPI_PASS'
