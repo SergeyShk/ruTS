@@ -1,6 +1,5 @@
 from typing import Any, Dict, Generator, List, Optional, Union
 
-import io
 import os
 import re
 from itertools import islice
