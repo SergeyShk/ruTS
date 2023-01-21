@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+  release:
+    types: [published]
 
 env:
   PYPI_LOGIN: ${{ secrets.PYPI_LOGIN }}
@@ -42,7 +44,7 @@ jobs:
           fail_ci_if_error: true
           verbose: true
       - name: Build distribution
-        if: startsWith(github.ref, 'refs/tags')
+        if: github.event_name == 'release'
         run: |
           poetry config repositories.pypi https://pypi.org
           poetry config http-basic.pypi '$PYPI_LOGIN' '$PYPI_PASS'

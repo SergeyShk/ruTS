@@ -3,7 +3,10 @@ name: build
 on:
   pull_request:
     branches:
-      - "**"
+      - "*"
+  push:
+    tags:
+      - "*"
 
 env:
   TEST_PYPI_LOGIN: ${{ secrets.TEST_PYPI_LOGIN }}
@@ -43,7 +46,7 @@ jobs:
           verbose: true
 
       - name: Build distribution
-        if: startsWith(github.ref, 'refs/tags')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
         run: |
           poetry config repositories.testpypi https://test.pypi.org/legacy/
           poetry config http-basic.testpypi '$TEST_PYPI_LOGIN' '$TEST_PYPI_PASS'
