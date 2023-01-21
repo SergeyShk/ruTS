@@ -10,6 +10,8 @@ on:
 env:
   TEST_PYPI_LOGIN: ${{ secrets.TEST_PYPI_LOGIN }}
   TEST_PYPI_PASS: ${{ secrets.TEST_PYPI_PASS }}
+  PYPI_LOGIN: ${{ secrets.PYPI_LOGIN }}
+  PYPI_PASS: ${{ secrets.PYPI_PASS }}
 
 jobs:
   publish:

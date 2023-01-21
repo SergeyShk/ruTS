@@ -5,10 +5,6 @@ on:
     branches:
       - master
 
-env:
-  PYPI_LOGIN: ${{ secrets.PYPI_LOGIN }}
-  PYPI_PASS: ${{ secrets.PYPI_PASS }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
