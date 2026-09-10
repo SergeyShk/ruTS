@@ -10,6 +10,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -26,13 +28,7 @@ jobs:
           ls -l dist
       - name: Publish distribution (test)
         if: github.event_name == 'push'
-        env:
-          UV_PUBLISH_USERNAME: ${{ secrets.TEST_PYPI_LOGIN }}
-          UV_PUBLISH_PASSWORD: ${{ secrets.TEST_PYPI_PASS }}
-        run: uv publish --index testpypi
+        run: uv publish --index testpypi --trusted-publishing always
       - name: Publish distribution
         if: github.event_name == 'release'
-        env:
-          UV_PUBLISH_USERNAME: ${{ secrets.PYPI_LOGIN }}
-          UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_PASS }}
-        run: uv publish
+        run: uv publish --trusted-publishing always
