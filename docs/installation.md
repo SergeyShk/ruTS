@@ -6,12 +6,12 @@
 
 Функционал ruTS использует следующие сторонние библиотеки:
 
-*   `python` - 3.8 и выше
+*   `python` - 3.11 и выше
 *   `nltk`
-*   `pymorphy2`
+*   `pymorphy3`
 *   `razdel`
 *   `scipy`
-*   `spaCy` - 3.4.0 и выше
+*   `spaCy` - 3.7.0 и выше
 *   `numpy`
 *   `pandas`
 *   `matplotlib`
@@ -46,10 +46,16 @@ pip install ruts
     cd ruTS
     ```
 
-3. Запустить файл установки:
+3. Установить библиотеку в текущее окружение:
 
     ``` bash
-    python setup.py install
+    pip install .
+    ```
+
+    Для разработки удобнее использовать [uv](https://docs.astral.sh/uv/), который создаст изолированное окружение и установит все зависимости, включая инструменты разработки:
+
+    ``` bash
+    uv sync --all-groups
     ```
 
 !!! note "Примечание"

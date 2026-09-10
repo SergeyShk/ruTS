@@ -41,25 +41,14 @@
     # Подготовка данных
     sc = SovChLit()
     texts = [text for text in sc.get_texts(limit=100)]
-    text = '\n'.join(texts)
+    text = "\n".join(texts)
 
     # Подсчет частотности слов
-    we = WordsExtractor(
-        use_lexemes=True,
-        stopwords=stopwords.words('russian'),
-        filter_nums=True
-    )
+    we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True)
     tokens_with_count = Counter(we.extract(text))
 
     # Построение графика
-    zipf(
-        tokens_with_count,
-        num_words=100,
-        num_labels=10,
-        log=False,
-        show_theory=True,
-        alpha=1.1
-    )
+    zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
     ```
 
     _Результат_:

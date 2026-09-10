@@ -46,7 +46,7 @@
     from ruts.datasets import SovChLit
 
     # Создание объекта набора данных
-    sc = SovChLit(data_dir='.')
+    sc = SovChLit(data_dir=".")
 
     # Загрузка набора данных
     sc.download(force=True)
@@ -96,7 +96,7 @@
     sc = SovChLit()
 
     # Отображение извлеченных текстов
-    for i in sc.get_texts(max_len=100, category='Весна', limit=1):
+    for i in sc.get_texts(max_len=100, category="Весна", limit=1):
         print(i)
     ```
 
@@ -141,7 +141,7 @@
     sc = SovChLit()
 
     # Отображение извлеченных текстов
-    for i in sc.get_records(max_len=100, category='Весна', limit=1):
+    for i in sc.get_records(max_len=100, category="Весна", limit=1):
         print(i)
     ```
 

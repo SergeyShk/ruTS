@@ -11,7 +11,7 @@
     В качестве токенизитора по умолчанию используется функция `tokenize` из библиотеки [razdel](https://github.com/natasha/razdel).
 
 !!! note "Примечание"
-    В качестве морфологического анализитора для лемматизации по умолчанию используется класс `MorphAnalyzer` из библиотеки [pymorphy2](https://github.com/kmike/pymorphy2).
+    В качестве морфологического анализитора для лемматизации по умолчанию используется класс `MorphAnalyzer` из библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3).
 
 ## Параметры
 
@@ -54,10 +54,7 @@
 
     # Извлечение предложений
     we = WordsExtractor(
-        use_lexemes=True,
-        stopwords=stopwords.words('russian'),
-        filter_nums=True,
-        ngram_range=(1, 2)
+        use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True, ngram_range=(1, 2)
     )
     we.extract(text)
     ```
@@ -73,7 +70,8 @@
 
     ``` python
     import nltk
-    nltk.download('stopwords')
+
+    nltk.download("stopwords")
     ```
 
 ### get_most_common
@@ -88,7 +86,7 @@
 
     ``` python
     ...
-    
+
     # Вывод топ-слов
     we.get_most_common(3)
     ```

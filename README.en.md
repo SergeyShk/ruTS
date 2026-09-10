@@ -3,14 +3,14 @@
 ![Version](https://img.shields.io/pypi/v/ruTS?logo=pypi&logoColor=FFE873)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/ruts.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/ruts/)
 ![Downloads](https://img.shields.io/pypi/dm/ruTS)
-[![Build Status](https://travis-ci.com/SergeyShk/ruTS.svg?branch=master)](https://travis-ci.com/SergeyShk/ruTS)
+[![Build Status](https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml/badge.svg)](https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg)](https://codecov.io/gh/SergeyShk/ruTS)
 ![Status](https://img.shields.io/pypi/status/ruts)
 [![License](https://img.shields.io/github/license/sergeyshk/ruts.svg)](LICENSE.txt)
 ![Repo size](https://img.shields.io/github/repo-size/SergeyShk/ruTS)
 ![Codacy grade](https://img.shields.io/codacy/grade/5e1cef0e2fa64bdc835f7bfcb7996edc.svg?logo=codacy)
 
-<p align="center"> 
+<p align="center">
 <img src="https://clipartart.com/images/free-tree-roots-clipart-black-and-white-2.png">
 </p>
 
@@ -26,9 +26,9 @@ $ pip install ruts
 
 Dependencies:
 
-*   python 3.8-3.10
+*   python 3.11+
 *   nltk
-*   pymorphy2
+*   pymorphy3
 *   razdel
 *   scipy
 *   spaCy
@@ -63,7 +63,7 @@ we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'), filt
 we.extract(text)
 
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
-   
+
 we.get_most_common(3)
 
     [('иметь', 2), ('рубль', 1), ('друг', 1)]
@@ -115,19 +115,19 @@ bs.get_stats()
 
 bs.print_stats()
 
-        Статистика     | Значение 
+        Статистика     | Значение
     ------------------------------
-    Предложения         |    1     
-    Слова               |    9     
-    Уникальные слова    |    8     
-    Длинные слова       |    3     
-    Сложные слова       |    2     
-    Простые слова       |    7     
-    Односложные слова   |    5     
-    Многосложные слова  |    4     
-    Символы             |    55    
-    Буквы               |    45    
-    Пробелы             |    8     
+    Предложения         |    1
+    Слова               |    9
+    Уникальные слова    |    8
+    Длинные слова       |    3
+    Сложные слова       |    2
+    Простые слова       |    7
+    Односложные слова   |    5
+    Многосложные слова  |    4
+    Символы             |    55
+    Буквы               |    45
+    Пробелы             |    8
     Слоги               |    18
     Знаки препинания    |    2
 ```
@@ -162,14 +162,14 @@ rs.get_stats()
 
 rs.print_stats()
 
-                    Метрика                 | Значение 
+                    Метрика                 | Значение
     --------------------------------------------------
-    Тест Флеша-Кинкайда                     |   3.41   
-    Индекс удобочитаемости Флеша            |  83.16   
-    Индекс Колман-Лиау                      |   0.29   
-    Индекс SMOG                             |   0.05   
-    Автоматический индекс удобочитаемости   |   0.29   
-    Индекс удобочитаемости LIX              |  48.33  
+    Тест Флеша-Кинкайда                     |   3.41
+    Индекс удобочитаемости Флеша            |  83.16
+    Индекс Колман-Лиау                      |   0.29
+    Индекс SMOG                             |   0.05
+    Автоматический индекс удобочитаемости   |   0.29
+    Индекс удобочитаемости LIX              |  48.33
 ```
 
 ### Lexical diversity metrics
@@ -218,22 +218,22 @@ ds.get_stats()
 
 ds.print_stats()
 
-                              Метрика                           | Значение 
+                              Метрика                           | Значение
     ----------------------------------------------------------------------
-    Type-Token Ratio (TTR)                                      |   0.92   
-    Root Type-Token Ratio (RTTR)                                |   7.17   
-    Corrected Type-Token Ratio (CTTR)                           |   5.07   
-    Herdan Type-Token Ratio (HTTR)                              |   0.98   
-    Summer Type-Token Ratio (STTR)                              |   0.96   
-    Mass Type-Token Ratio (MTTR)                                |   0.01   
-    Dugast Type-Token Ratio (DTTR)                              |  85.82   
-    Moving Average Type-Token Ratio (MATTR)                     |   0.91   
-    Mean Segmental Type-Token Ratio (MSTTR)                     |   0.94   
-    Measure of Textual Lexical Diversity (MTLD)                 |  208.38  
-    Moving Average Measure of Textual Lexical Diversity (MTLD)  |   1.00   
-    Hypergeometric Distribution D (HD-D)                        |   0.94   
-    Индекс Симпсона                                             |  305.00  
-    Гапакс-индекс                                               | 2499.46  
+    Type-Token Ratio (TTR)                                      |   0.92
+    Root Type-Token Ratio (RTTR)                                |   7.17
+    Corrected Type-Token Ratio (CTTR)                           |   5.07
+    Herdan Type-Token Ratio (HTTR)                              |   0.98
+    Summer Type-Token Ratio (STTR)                              |   0.96
+    Mass Type-Token Ratio (MTTR)                                |   0.01
+    Dugast Type-Token Ratio (DTTR)                              |  85.82
+    Moving Average Type-Token Ratio (MATTR)                     |   0.91
+    Mean Segmental Type-Token Ratio (MSTTR)                     |   0.94
+    Measure of Textual Lexical Diversity (MTLD)                 |  208.38
+    Moving Average Measure of Textual Lexical Diversity (MTLD)  |   1.00
+    Hypergeometric Distribution D (HD-D)                        |   0.94
+    Индекс Симпсона                                             |  305.00
+    Гапакс-индекс                                               | 2499.46
 ```
 
 ### Morphological statistics
@@ -253,7 +253,7 @@ The library allows extracting the following morphological features:
 *   transitivity
 *   voice
 
-Morphological analysis is made using [pymorphy2](https://github.com/kmike/pymorphy2). Descriptions of morphological features were borrowed from [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
+Morphological analysis is made using [pymorphy3](https://github.com/no-plagiarism/pymorphy3). Descriptions of morphological features were borrowed from [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
 
 Example:
 
@@ -323,16 +323,16 @@ ms.explain_text(filter_none=True)
 ms.print_stats('pos', 'tense')
 
     ---------------Часть речи---------------
-    Глагол (личная форма)         |    4     
-    Союз                          |    4     
-    Глагол (инфинитив)            |    2     
-    Наречие                       |    1     
+    Глагол (личная форма)         |    4
+    Союз                          |    4
+    Глагол (инфинитив)            |    2
+    Наречие                       |    1
 
     -----------------Время------------------
-    Неизвестно                    |    8     
-    Настоящее                     |    1     
-    Будущее                       |    1     
-    Прошедшее                     |    1 
+    Неизвестно                    |    8
+    Настоящее                     |    1
+    Будущее                       |    1
+    Прошедшее                     |    1
 ```
 
 ### Datasets
@@ -399,8 +399,8 @@ from ruts.datasets import SovChLit
 from ruts.visualizers import zipf
 
 sc = SovChLit()
-text = '\n'.join([text for text in sc.get_texts(limit=100)])
-we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True)
+text = "\n".join([text for text in sc.get_texts(limit=100)])
+we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True)
 tokens_with_count = Counter(we.extract(text))
 zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
 ```
@@ -460,7 +460,7 @@ doc._.basic.get_stats()
     *   constants.py - main constants
     *   diversity_stats.py - lexical diversity metrics
     *   extractors.py - tools for object extraction from a text
-    *   morph_stats.py - morphological statistics 
+    *   morph_stats.py - morphological statistics
     *   readability_stats.py - readability metrics
     *   utils.py - subsidiary tools
     *   **datasets**:

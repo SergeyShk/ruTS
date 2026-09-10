@@ -61,7 +61,7 @@
     from ruts.datasets import StalinWorks
 
     # Создание объекта набора данных
-    sw = StalinWorks(data_dir='.')
+    sw = StalinWorks(data_dir=".")
 
     # Загрузка набора данных
     sw.download(force=True)
@@ -111,7 +111,7 @@
     sw = StalinWorks()
 
     # Отображение извлеченных текстов
-    for i in sw.get_texts(year=1937, text_type='Письмо', limit=1):
+    for i in sw.get_texts(year=1937, text_type="Письмо", limit=1):
         print(i)
     ```
 
@@ -160,7 +160,7 @@
     sw = StalinWorks()
 
     # Отображение извлеченных текстов
-    for i in sw.get_records(year=1937, text_type='Письмо', limit=1):
+    for i in sw.get_records(year=1937, text_type="Письмо", limit=1):
         print(i)
     ```
 

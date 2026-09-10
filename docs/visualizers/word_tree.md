@@ -39,7 +39,7 @@
     se = SentsExtractor()
     we = WordsExtractor(min_len=3)
     texts = [text for text in sw.get_texts(limit=50)]
-    text = '\n'.join(texts)
+    text = "\n".join(texts)
 
     # Подготовка списка списков слов
     words = []
