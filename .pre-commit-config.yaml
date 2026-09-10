@@ -1,45 +1,50 @@
+default_install_hook_types: [pre-commit, pre-push]
+
 repos:
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.222'
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
     hooks:
-      - id: ruff
-        args: ["--force-exclude"]
+      - id: trailing-whitespace
+        exclude: ^docs/js/
+      - id: end-of-file-fixer
+        exclude: ^docs/js/
+      - id: check-yaml
+        # mkdocs.yml использует тег !!python/name: для pymdownx
+        exclude: ^mkdocs\.yml$
+      - id: check-toml
+      - id: check-added-large-files
+        # архивы наборов данных лежат в репозитории намеренно
+        exclude: ^ruts/datasets/data/
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.6
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.12.12
+    hooks:
+      # uv.lock должен оставаться синхронным с pyproject.toml
+      - id: uv-lock
 
   - repo: local
     hooks:
-      - id: black
-        name: black
-        stages: [commit]
+      # mypy и pytest запускаются в окружении проекта, где установлены зависимости
+      - id: mypy
+        name: mypy
         language: system
-        entry: poetry run black --config pyproject.toml
-        types: [python]
-
-      - id: isort
-        name: isort
-        stages: [commit]
-        language: system
-        entry: poetry run isort --settings-path pyproject.toml
-        types: [python]
-
-      # - id: mypy
-      #   name: mypy
-      #   stages: [commit]
-      #   language: system
-      #   entry: poetry run mypy --config-file pyproject.toml
-      #   types: [python]
-
-      - id: pytest
-        name: pytest
-        stages: [commit]
-        language: system
-        entry: poetry run pytest
+        entry: uv run mypy
         types: [python]
         pass_filenames: false
 
-      - id: pytest-cov
+      # Тесты — только на push: на каждый коммит это слишком медленно
+      - id: pytest
         name: pytest
-        stages: [push]
+        stages: [pre-push]
         language: system
-        entry: poetry run pytest --cov ruts --cov-fail-under 90
+        entry: uv run pytest --cov ruts --cov-fail-under 90
         types: [python]
         pass_filenames: false

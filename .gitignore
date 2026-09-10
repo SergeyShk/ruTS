@@ -1,14 +1,28 @@
+# Python
 __pycache__/
-.vscode
 *.egg-info/
 dist/
 build/
-ruts_data
-.ipynb_checkpoints
+target/
+
+# Окружения
+.venv/
+venv/
+.env
+
+# Инструменты
 .coverage
 coverage.xml
-site/
-target/
 .mypy_cache
 .pytest_cache
 .ruff_cache
+.ipynb_checkpoints
+
+# Данные и документация
+ruts_data
+site/
+
+# Редакторы и ОС
+.vscode
+.idea
+.DS_Store
