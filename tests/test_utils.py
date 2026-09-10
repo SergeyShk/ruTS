@@ -45,7 +45,6 @@ def test_download_file_runtime_error(tmp_path):
 
 @pytest.fixture
 def zip_archive(tmp_path):
-    """ZIP, корневая директория которого совпадает с именем архива."""
     path = tmp_path / "stopwords.zip"
     with zipfile.ZipFile(path, mode="w") as archive:
         archive.writestr("stopwords/russian", "и\nв\nне\n")
@@ -55,7 +54,6 @@ def zip_archive(tmp_path):
 
 @pytest.fixture
 def tar_archive(tmp_path):
-    """TAR, корневая директория которого отличается от имени архива."""
     payload = tmp_path / "payload.txt"
     payload.write_text("razdel", encoding="utf-8")
     path = tmp_path / "razdel.tar.gz"
@@ -72,7 +70,6 @@ def test_extract_archive_zip(zip_archive, tmp_path):
 
 
 def test_extract_archive_tar_renames_root(tar_archive):
-    """Корневая директория архива приводится к имени архива без расширений."""
     extracted = extract_archive(tar_archive)
     assert extracted == str(tar_archive.parent / "razdel")
     assert (Path(extracted) / "setup.py").is_file()

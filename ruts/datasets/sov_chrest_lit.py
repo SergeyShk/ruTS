@@ -8,7 +8,7 @@ from ..constants import DEFAULT_DATA_DIR
 from ..utils import download_file, extract_archive, to_path
 from .dataset import Dataset
 
-# Фильтр — предикат над записью набора данных
+# Фильтр - предикат над записью набора данных
 Filters = list[Callable[[dict[str, Any]], bool]]
 
 NAME = "sov_chrest_lit"
@@ -218,7 +218,6 @@ class SovChLit(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            # sorted(): iterdir() не гарантирует порядок, а выборка с limit должна быть воспроизводимой
             for filepath in sorted(dirpath.iterdir()):
                 if re.match(r"[0-9]+", filepath.name):
                     yield self.__load_record(filepath)

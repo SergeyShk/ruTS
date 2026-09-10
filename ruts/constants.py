@@ -4,8 +4,6 @@ from typing import TypedDict
 
 
 class MorphologyStatDesc(TypedDict):
-    """Описание морфологической статистики: название и расшифровки значений"""
-
     name: str
     values: dict[str, str]
 

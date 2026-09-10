@@ -6,7 +6,6 @@ on:
       - master
   pull_request:
 
-# Новый пуш в ветку отменяет предыдущий незавершённый прогон
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -62,6 +61,5 @@ jobs:
           flags: unittests
           name: ruts-${{ matrix.python-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          # Загрузка покрытия не должна ронять сборку из-за перебоев на стороне Codecov
           fail_ci_if_error: false
           verbose: true

@@ -17,10 +17,6 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
     """
     Получение морфологического анализатора pymorphy3
 
-    Описание:
-        Каждый экземпляр MorphAnalyzer загружает словарь заново (~13 мс и десятки МБ),
-        поэтому анализатор создается один раз на процесс и переиспользуется
-
     Вывод:
         MorphAnalyzer: Морфологический анализатор
     """
@@ -126,7 +122,6 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
         with zipfile.ZipFile(archive_path, mode="r") as zip_file:
             members = zip_file.namelist()
     else:
-        # PEP 706: без фильтра tar-архив может писать файлы за пределы extract_dir.
         shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
         with tarfile.open(archive_path, mode="r") as tar_file:
             members = tar_file.getnames()

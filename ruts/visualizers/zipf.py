@@ -26,7 +26,7 @@ def zipf(
         alpha (float): Коэффициент α теоретического Закона Ципфа
 
     Вывод:
-        plot (Line2D|list[Line2D]): График Закона Ципфа; при show_theory=True — список линий
+        plot (Line2D|list[Line2D]): График Закона Ципфа; при show_theory=True - список линий
 
     Исключения:
         TypeError: Если передаваемое значение не является объектом Counter
@@ -62,7 +62,6 @@ def zipf(
     plt.ylabel("Частота слова")
     plt.grid()
     if show_theory:
-        # zipf_theory рисует ещё одну линию, поэтому возвращается список, а не одна Line2D
         theory_plot = zipf_theory(top_frequency, num_words, alpha)
         plt.legend()
         return theory_plot

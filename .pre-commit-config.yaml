@@ -9,11 +9,9 @@ repos:
       - id: end-of-file-fixer
         exclude: ^docs/js/
       - id: check-yaml
-        # mkdocs.yml использует тег !!python/name: для pymdownx
         exclude: ^mkdocs\.yml$
       - id: check-toml
       - id: check-added-large-files
-        # архивы наборов данных лежат в репозитории намеренно
         exclude: ^ruts/datasets/data/
       - id: check-merge-conflict
 
@@ -27,12 +25,10 @@ repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.12.12
     hooks:
-      # uv.lock должен оставаться синхронным с pyproject.toml
       - id: uv-lock
 
   - repo: local
     hooks:
-      # mypy и pytest запускаются в окружении проекта, где установлены зависимости
       - id: mypy
         name: mypy
         language: system
@@ -40,7 +36,6 @@ repos:
         types: [python]
         pass_filenames: false
 
-      # Тесты — только на push: на каждый коммит это слишком медленно
       - id: pytest
         name: pytest
         stages: [pre-push]
