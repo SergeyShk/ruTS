@@ -500,7 +500,7 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Функционал
+        Возможности
       
     </span>
   </a>
@@ -511,7 +511,18 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Структура проекта
+        Установка
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Быстрый старт
       
     </span>
   </a>
@@ -1440,7 +1451,7 @@
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Функционал
+        Возможности
       
     </span>
   </a>
@@ -1451,7 +1462,18 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Структура проекта
+        Установка
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Быстрый старт
       
     </span>
   </a>
@@ -1480,12 +1502,11 @@
 
 <h1 id="russian-texts-statistics-ruts">Russian Texts Statistics (ruTS)<a class="headerlink" href="#russian-texts-statistics-ruts" title="Permanent link">&para;</a></h1>
 <p><img alt="ruts" src="img/ruts.png" /></p>
-<p>Библиотека для извлечения статистик из текстов на русском языке.</p>
-<h2 id="_1">Функционал<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>Основной функционал базируется на адаптированных для русского языка статистиках библиотеки <a href="https://github.com/chartbeat-labs/textacy">textacy</a> и позволяет работать как непосредственно с текстами, так и с подготовленными Doc-объектами библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Библиотека позволяет:</p>
+<p><strong>ruTS</strong> считает по русскому тексту то, для чего обычно приходится собирать несколько разрозненных инструментов: базовые статистики, метрики удобочитаемости и лексического разнообразия, морфологические признаки. Функционал основан на адаптированных для русского языка статистиках библиотеки <a href="https://github.com/chartbeat-labs/textacy">textacy</a>.</p>
+<p>Работать можно как с обычными строками, так и с готовыми <code>Doc</code>-объектами <a href="https://github.com/explosion/spaCy">spaCy</a> - каждая статистика доступна и как отдельный класс, и как компонент пайплайна spaCy.</p>
+<h2 id="_1">Возможности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <ul>
-<li>создавать токенизиторы <a href="extractors/words/">слов</a> и <a href="extractors/sentences/">предложений</a></li>
+<li>создавать токенизаторы <a href="extractors/words/">слов</a> и <a href="extractors/sentences/">предложений</a></li>
 <li>считать <a href="stats/basic_stats/">базовые текстовые статистики</a> (количество слов, предложений, знаков препинания, слогов и др.)</li>
 <li>считать <a href="stats/readability_stats/">метрики удобочитаемости</a> текста (Тест Флеша-Кинкайда, Индекс SMOG, Индекс удобочитаемости LIX и др.)</li>
 <li>считать <a href="stats/diversity_stats/">метрики лексического разнообразия</a> текста (Type-Token Ratio, Measure of Textual Lexical Diversity, Гапакс-индекс и др.)</li>
@@ -1494,7 +1515,59 @@
 <li>визуализировать текстовые данные (<a href="visualizers/zipf/">Закон Ципфа</a>, <a href="visualizers/fingerprinting/">Литературная дактилоскопия</a>, <a href="visualizers/word_tree/">Дерево слов</a>)</li>
 <li>создавать <a href="components/">компоненты</a> для встраивания в <a href="https://github.com/explosion/spaCy">spaCy</a></li>
 </ul>
-<h2 id="_2">Структура проекта<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="_2">Установка<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Требуется Python 3.11 или новее.</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ruts
+</code></pre></div>
+<p>Подробнее о зависимостях и установке из репозитория - на странице <a href="installation/">Установка</a>.</p>
+<h2 id="_3">Быстрый старт<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span><span class="p">,</span> <span class="n">DiversityStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span> <span class="o">=</span> <span class="s2">"Существуют три вида лжи: ложь, наглая ложь и статистика"</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+<span class="p">{</span><span class="s1">'c_letters'</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+ <span class="s1">'c_syllables'</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+ <span class="s1">'n_sents'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+ <span class="s1">'n_words'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+ <span class="s1">'n_unique_words'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+ <span class="s1">'n_long_words'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+ <span class="s1">'n_complex_words'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+ <span class="s1">'n_simple_words'</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+ <span class="s1">'n_monosyllable_words'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+ <span class="s1">'n_polysyllable_words'</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+ <span class="s1">'n_chars'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+ <span class="s1">'n_letters'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+ <span class="s1">'n_spaces'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+ <span class="s1">'n_syllables'</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+ <span class="s1">'n_punctuations'</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
+<span class="mf">74.93500000000003</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">DiversityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">ttr</span>
+<span class="mf">0.8888888888888888</span>
+</code></pre></div>
+<p>Любую статистику можно вывести на экран в читаемом виде:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+     <span class="n">Статистика</span>     <span class="o">|</span> <span class="n">Значение</span>
+<span class="o">------------------------------</span>
+<span class="n">Предложения</span>         <span class="o">|</span>    <span class="mi">1</span>
+<span class="n">Слова</span>               <span class="o">|</span>    <span class="mi">9</span>
+<span class="n">Уникальные</span> <span class="n">слова</span>    <span class="o">|</span>    <span class="mi">8</span>
+<span class="n">Длинные</span> <span class="n">слова</span>       <span class="o">|</span>    <span class="mi">3</span>
+<span class="n">Сложные</span> <span class="n">слова</span>       <span class="o">|</span>    <span class="mi">2</span>
+<span class="n">Простые</span> <span class="n">слова</span>       <span class="o">|</span>    <span class="mi">7</span>
+<span class="n">Односложные</span> <span class="n">слова</span>   <span class="o">|</span>    <span class="mi">5</span>
+<span class="n">Многосложные</span> <span class="n">слова</span>  <span class="o">|</span>    <span class="mi">4</span>
+<span class="n">Символы</span>             <span class="o">|</span>    <span class="mi">55</span>
+<span class="n">Буквы</span>               <span class="o">|</span>    <span class="mi">45</span>
+<span class="n">Пробелы</span>             <span class="o">|</span>    <span class="mi">8</span>
+<span class="n">Слоги</span>               <span class="o">|</span>    <span class="mi">18</span>
+<span class="n">Знаки</span> <span class="n">препинания</span>    <span class="o">|</span>    <span class="mi">2</span>
+</code></pre></div>
+<details class="note">
+<summary>Структура проекта</summary>
 <ul>
 <li><strong>docs</strong> - документация по проекту</li>
 <li><strong>ruts</strong>:<ul>
@@ -1520,28 +1593,9 @@
 </li>
 </ul>
 </li>
-<li><strong>tests</strong>:<ul>
-<li>test_basic_stats.py - тесты базовых текстовых статистик</li>
-<li>test_components.py - тесты компонентов spaCy</li>
-<li>test_diversity_stats.py - тесты метрик лексического разнообразия текста</li>
-<li>test_extractors.py - тесты инструментов для извлечения объектов из текста</li>
-<li>test_morph_stats - тесты морфологических статистик</li>
-<li>test_readability_stats.py - тесты метрик удобочитаемости текста</li>
-<li><strong>datasets</strong> - тесты наборов данных:<ul>
-<li>test_dataset.py - тесты базового класса для работы с наборами данных</li>
-<li>test_sov_chrest_lit.py - тесты набора данных советских хрестоматий по литературе</li>
-<li>test_stalin_works.py - тесты набора данных полного собрания сочинений И.В. Сталина</li>
+<li><strong>tests</strong> - тесты, повторяющие структуру пакета</li>
 </ul>
-</li>
-<li><strong>visualizers</strong> - тесты инструментов для визуализации текстов:<ul>
-<li>test_fingerprinting.py - тесты визуализации Литературная дактилоскопия</li>
-<li>test_word_tree.py - тесты визуализации Дерево слов</li>
-<li>test_zipf.py - тесты визуализации Закон Ципфа</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+</details>
 
 
 
