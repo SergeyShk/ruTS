@@ -11,8 +11,7 @@ def bs():
         упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению с формальными онтологиями\
         является выход в сферу лексических значений, установление связей не только между значениями и выражающими их\
         словами, а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
-    bs_ = BasicStats(text, normalize=True)
-    return bs_
+    return BasicStats(text, normalize=True)
 
 
 def test_init_value_error():
@@ -142,7 +141,7 @@ def test_p_punctuations(bs):
 def test_get_stats(bs):
     stats = bs.get_stats()
     assert isinstance(stats, dict)
-    for key in BASIC_STATS_DESC.keys():
+    for key in BASIC_STATS_DESC:
         assert stats[key] == getattr(bs, key)
 
 

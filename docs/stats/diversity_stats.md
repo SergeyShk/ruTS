@@ -96,7 +96,7 @@
 
     ``` python
     ...
-    
+
     # Отображение таблицы вычисленных метрик
     ds.print_stats()
     ```
@@ -104,20 +104,20 @@
     _Результат_:
 
     ``` bash
-                            Метрика                             | Значение 
+                            Метрика                             | Значение
     ----------------------------------------------------------------------
-    Type-Token Ratio (TTR)                                      |   0.73   
-    Root Type-Token Ratio (RTTR)                                |   2.84   
-    Corrected Type-Token Ratio (CTTR)                           |   2.01   
-    Herdan Type-Token Ratio (HTTR)                              |   0.89   
-    Summer Type-Token Ratio (STTR)                              |   0.25   
-    Mass Type-Token Ratio (MTTR)                                |   0.10   
-    Dugast Type-Token Ratio (DTTR)                              |  10.27   
-    Moving Average Type-Token Ratio (MATTR)                     |   0.73   
-    Mean Segmental Type-Token Ratio (MSTTR)                     |   0.73   
-    Measure of Textual Lexical Diversity (MTLD)                 |  15.00   
-    Moving Average Measure of Textual Lexical Diversity (MTLD)  |  11.88   
-    Hypergeometric Distribution D (HD-D)                        |  -1.00   
-    Индекс Симпсона                                             |  21.00   
-    Гапакс-индекс                                               |  431.23 
+    Type-Token Ratio (TTR)                                      |   0.73
+    Root Type-Token Ratio (RTTR)                                |   2.84
+    Corrected Type-Token Ratio (CTTR)                           |   2.01
+    Herdan Type-Token Ratio (HTTR)                              |   0.89
+    Summer Type-Token Ratio (STTR)                              |   0.25
+    Mass Type-Token Ratio (MTTR)                                |   0.10
+    Dugast Type-Token Ratio (DTTR)                              |  10.27
+    Moving Average Type-Token Ratio (MATTR)                     |   0.73
+    Mean Segmental Type-Token Ratio (MSTTR)                     |   0.73
+    Measure of Textual Lexical Diversity (MTLD)                 |  15.00
+    Moving Average Measure of Textual Lexical Diversity (MTLD)  |  11.88
+    Hypergeometric Distribution D (HD-D)                        |  -1.00
+    Индекс Симпсона                                             |  21.00
+    Гапакс-индекс                                               |  431.23
     ```

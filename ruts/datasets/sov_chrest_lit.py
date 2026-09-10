@@ -1,13 +1,15 @@
-from typing import Any, Dict, Generator, List, Optional, Union
-
-import os
 import re
+from collections.abc import Callable, Generator
 from itertools import islice
 from pathlib import Path
+from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
 from ..utils import download_file, extract_archive, to_path
 from .dataset import Dataset
+
+# Фильтр - предикат над записью набора данных
+Filters = list[Callable[[dict[str, Any]], bool]]
 
 NAME = "sov_chrest_lit"
 META = {
@@ -16,7 +18,7 @@ META = {
     "author": "Шкарин С.С.",
 }
 DOWNLOAD_URL = (
-    "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/sov_chrest_lit.tar.xz"
+    "https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/sov_chrest_lit.tar.xz"
 )
 TEXT_TYPES = [
     "Рассказ",
@@ -78,7 +80,7 @@ class SovChLit(Dataset):
         get_records: Получение записей (с заголовками) из набора данных
     """
 
-    def __init__(self, data_dir: str = DEFAULT_DATASET_DIR):
+    def __init__(self, data_dir: str | Path = DEFAULT_DATASET_DIR) -> None:
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = ("grade_1",)
@@ -86,14 +88,13 @@ class SovChLit(Dataset):
         self._filepath = self.data_dir.joinpath(self._filename)
 
     @property
-    def filepath(self) -> Optional[str]:
+    def filepath(self) -> str | None:
         """
         Путь к архиву набора данных.
         """
         if self._filepath.is_file():
             return str(self._filepath)
-        else:
-            return None
+        return None
 
     def check_data(self) -> bool:
         """
@@ -117,7 +118,7 @@ class SovChLit(Dataset):
                 raise OSError(msg)
         return True
 
-    def download(self, force: bool = False):
+    def download(self, force: bool = False) -> None:
         """
         Загрузка набора данных из сети и извлечение файлов
 
@@ -136,16 +137,16 @@ class SovChLit(Dataset):
 
     def get_texts(
         self,
-        grade: int = None,
-        book: str = None,
-        year: int = None,
-        category: str = None,
-        text_type: str = None,
-        subject: str = None,
-        author: str = None,
-        min_len: int = None,
-        max_len: int = None,
-        limit: int = None,
+        grade: int | None = None,
+        book: str | None = None,
+        year: int | None = None,
+        category: str | None = None,
+        text_type: str | None = None,
+        subject: str | None = None,
+        author: str | None = None,
+        min_len: int | None = None,
+        max_len: int | None = None,
+        limit: int | None = None,
     ) -> Generator[str, None, None]:
         """
         Получение текстов (без заголовков) из набора данных
@@ -173,17 +174,17 @@ class SovChLit(Dataset):
 
     def get_records(
         self,
-        grade: int = None,
-        book: str = None,
-        year: int = None,
-        category: str = None,
-        text_type: str = None,
-        subject: str = None,
-        author: str = None,
-        min_len: int = None,
-        max_len: int = None,
-        limit: int = None,
-    ) -> Generator[Dict[str, Any], None, None]:
+        grade: int | None = None,
+        book: str | None = None,
+        year: int | None = None,
+        category: str | None = None,
+        text_type: str | None = None,
+        subject: str | None = None,
+        author: str | None = None,
+        min_len: int | None = None,
+        max_len: int | None = None,
+        limit: int | None = None,
+    ) -> Generator[dict[str, Any], None, None]:
         """
         Получение записей (с заголовками) из набора данных
 
@@ -207,7 +208,7 @@ class SovChLit(Dataset):
         )
         yield from islice(self.__filtered_iter(filters), limit)
 
-    def __iter__(self) -> Generator[Dict[str, Any], None, None]:
+    def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
         Итерация по набору данных
 
@@ -217,16 +218,16 @@ class SovChLit(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            for filepath in os.listdir(dirpath):
-                if re.match(r"[0-9]+", filepath):
-                    yield self.__load_record(dirpath.joinpath(filepath))
+            for filepath in sorted(dirpath.iterdir()):
+                if re.match(r"[0-9]+", filepath.name):
+                    yield self.__load_record(filepath)
 
-    def __filtered_iter(self, filters) -> Generator[Dict[str, Any], None, None]:
+    def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
         """
         Итерация по набору данных с учетом фильтров
 
         Аргументы:
-            filters (list[str]): Список фильтров
+            filters (Filters): Список фильтров-предикатов
 
         Вывод:
             generator[dict[str, object]]: Генератор записей
@@ -240,7 +241,7 @@ class SovChLit(Dataset):
                 yield record
 
     @staticmethod
-    def __load_record(filepath: Union[str, Path]) -> Dict[str, Any]:
+    def __load_record(filepath: str | Path) -> dict[str, Any]:
         """
         Загрузка записи из файла набора данных
 
@@ -254,9 +255,9 @@ class SovChLit(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with open(filepath, encoding="utf-8") as f:
-                headers, text = f.read().strip().split("\n\n")
-                headers = tuple(header.split(":")[1][1:] for header in headers.split("\n"))
+            with to_path(filepath).open(encoding="utf-8") as f:
+                header_block, text = f.read().strip().split("\n\n")
+                headers = tuple(header.split(":")[1][1:] for header in header_block.split("\n"))
             return {
                 "grade": int(headers[0]),
                 "book": headers[1],
@@ -268,21 +269,21 @@ class SovChLit(Dataset):
                 "text": text,
                 "file": filepath,
             }
-        except Exception:
-            raise ValueError("Не удалось извлечь записи из файла")
+        except Exception as e:
+            raise ValueError("Не удалось извлечь записи из файла") from e
 
     @staticmethod
     def __get_filters(
-        grade: int,
-        book: str,
-        year: str,
-        category: str,
-        text_type: str,
-        subject: str,
-        author: str,
-        min_len: int,
-        max_len: int,
-    ) -> List[str]:
+        grade: int | None,
+        book: str | None,
+        year: int | None,
+        category: str | None,
+        text_type: str | None,
+        subject: str | None,
+        author: str | None,
+        min_len: int | None,
+        max_len: int | None,
+    ) -> Filters:
         """
         Получение списка фильтров
 
@@ -298,7 +299,7 @@ class SovChLit(Dataset):
             max_len (int): Максимальная длина текста (в символах)
 
         Вывод:
-            filters (list[str]): Список фильтров
+            filters (Filters): Список фильтров-предикатов
 
         Исключения:
             ValueError: Если некорректно выбран уровень текста
@@ -307,7 +308,7 @@ class SovChLit(Dataset):
             ValueError: Если максимальная длина текста не больше 0
             ValueError: Если минимальная длина текста больше максимальной
         """
-        filters = []
+        filters: Filters = []
         if grade:
             if grade not in range(1, 12):
                 raise ValueError(f"Некорректно выбран уровень текста (1-11) - {grade}")

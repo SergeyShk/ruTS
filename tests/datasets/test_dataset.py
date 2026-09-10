@@ -30,8 +30,7 @@ class TestDataset(Dataset):
 
 @pytest.fixture(scope="module")
 def dataset():
-    dataset_ = TestDataset("test", {"a": 1, "b": 2})
-    return dataset_
+    return TestDataset("test", {"a": 1, "b": 2})
 
 
 def test_iter_non_implement_error(dataset):

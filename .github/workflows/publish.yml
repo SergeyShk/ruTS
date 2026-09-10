@@ -1,4 +1,4 @@
-name: build
+name: publish
 
 on:
   push:
@@ -7,39 +7,28 @@ on:
   release:
     types: [published]
 
-env:
-  TEST_PYPI_LOGIN: ${{ secrets.TEST_PYPI_LOGIN }}
-  TEST_PYPI_PASS: ${{ secrets.TEST_PYPI_PASS }}
-  PYPI_LOGIN: ${{ secrets.PYPI_LOGIN }}
-  PYPI_PASS: ${{ secrets.PYPI_PASS }}
-
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/checkout@v7
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v10.0.1
         with:
-          python-version: "3.10"
-      - name: Install poetry
-        run: |
-          pip install -U pip
-          pip install poetry
+          enable-cache: true
+          python-version: "3.13"
       - name: Build distribution
+        run: uv build
+      - name: Check distribution
         run: |
-          poetry build -f sdist
-          poetry build -f wheel
+          uv tool run twine check dist/*
+          ls -l dist
       - name: Publish distribution (test)
         if: github.event_name == 'push'
-        run: |
-          poetry config repositories.testpypi https://test.pypi.org/legacy/
-          poetry config http-basic.testpypi $TEST_PYPI_LOGIN $TEST_PYPI_PASS
-          poetry publish -r testpypi
+        run: uv publish --index testpypi --trusted-publishing always
       - name: Publish distribution
         if: github.event_name == 'release'
-        run: |
-          poetry config repositories.pypi https://pypi.org
-          poetry config http-basic.pypi $PYPI_LOGIN $PYPI_PASS
-          poetry publish -r pypi
+        run: uv publish --trusted-publishing always

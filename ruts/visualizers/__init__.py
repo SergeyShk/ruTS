@@ -4,7 +4,7 @@ from .zipf import zipf, zipf_theory
 
 __all__ = [
     "fingerprinting",
+    "wordtree",
     "zipf",
     "zipf_theory",
-    "wordtree",
 ]

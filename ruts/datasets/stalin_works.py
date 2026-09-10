@@ -1,13 +1,15 @@
-from typing import Any, Dict, Generator, List, Optional, Union
-
-import os
 import re
+from collections.abc import Callable, Generator
 from itertools import islice
 from pathlib import Path
+from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
 from ..utils import download_file, extract_archive, to_path
 from .dataset import Dataset
+
+# Фильтр - предикат над записью набора данных
+Filters = list[Callable[[dict[str, Any]], bool]]
 
 NAME = "stalin_works"
 META = {
@@ -16,7 +18,7 @@ META = {
     "author": "Шкарин С.С.",
 }
 DOWNLOAD_URL = (
-    "https://github.com/SergeyShk/ruTS/raw/poetry/ruts/datasets/data/stalin_works.tar.xz"
+    "https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/stalin_works.tar.xz"
 )
 TEXT_TYPES = [
     "Протокол",
@@ -110,7 +112,7 @@ class StalinWorks(Dataset):
         get_records: Получение записей (с заголовками) из набора данных
     """
 
-    def __init__(self, data_dir: str = DEFAULT_DATASET_DIR):
+    def __init__(self, data_dir: str | Path = DEFAULT_DATASET_DIR) -> None:
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = tuple(f"volume_{i}" for i in range(1, 17))
@@ -118,14 +120,13 @@ class StalinWorks(Dataset):
         self._filepath = self.data_dir.joinpath(self._filename)
 
     @property
-    def filepath(self) -> Optional[str]:
+    def filepath(self) -> str | None:
         """
         Путь к архиву набора данных.
         """
         if self._filepath.is_file():
             return str(self._filepath)
-        else:
-            return None
+        return None
 
     def check_data(self) -> bool:
         """
@@ -149,7 +150,7 @@ class StalinWorks(Dataset):
                 raise OSError(msg)
         return True
 
-    def download(self, force: bool = False):
+    def download(self, force: bool = False) -> None:
         """
         Загрузка набора данных из сети и извлечение файлов
 
@@ -168,16 +169,16 @@ class StalinWorks(Dataset):
 
     def get_texts(
         self,
-        volume: int = None,
-        year: int = None,
-        text_type: str = None,
-        is_translation: bool = None,
-        source: str = None,
-        subject: str = None,
-        topic: str = None,
-        min_len: int = None,
-        max_len: int = None,
-        limit: int = None,
+        volume: int | None = None,
+        year: int | None = None,
+        text_type: str | None = None,
+        is_translation: bool | None = None,
+        source: str | None = None,
+        subject: str | None = None,
+        topic: str | None = None,
+        min_len: int | None = None,
+        max_len: int | None = None,
+        limit: int | None = None,
     ) -> Generator[str, None, None]:
         """
         Получение текстов (без заголовков) из набора данных
@@ -213,17 +214,17 @@ class StalinWorks(Dataset):
 
     def get_records(
         self,
-        volume: int = None,
-        year: int = None,
-        text_type: str = None,
-        is_translation: bool = None,
-        source: str = None,
-        subject: str = None,
-        topic: str = None,
-        min_len: int = None,
-        max_len: int = None,
-        limit: int = None,
-    ) -> Generator[Dict[str, Any], None, None]:
+        volume: int | None = None,
+        year: int | None = None,
+        text_type: str | None = None,
+        is_translation: bool | None = None,
+        source: str | None = None,
+        subject: str | None = None,
+        topic: str | None = None,
+        min_len: int | None = None,
+        max_len: int | None = None,
+        limit: int | None = None,
+    ) -> Generator[dict[str, Any], None, None]:
         """
         Получение записей (с заголовками) из набора данных
 
@@ -255,7 +256,7 @@ class StalinWorks(Dataset):
         )
         yield from islice(self.__filtered_iter(filters), limit)
 
-    def __iter__(self) -> Generator[Dict[str, Any], None, None]:
+    def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
         Итерация по набору данных
 
@@ -265,16 +266,16 @@ class StalinWorks(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            for filepath in os.listdir(dirpath):
-                if re.match(r"[0-9]+", filepath):
-                    yield self.__load_record(dirpath.joinpath(filepath))
+            for filepath in sorted(dirpath.iterdir()):
+                if re.match(r"[0-9]+", filepath.name):
+                    yield self.__load_record(filepath)
 
-    def __filtered_iter(self, filters) -> Generator[Dict[str, Any], None, None]:
+    def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
         """
         Итерация по набору данных с учетом фильтров
 
         Аргументы:
-            filters (list[str]): Список фильтров
+            filters (Filters): Список фильтров-предикатов
 
         Вывод:
             generator[dict[str, object]]: Генератор записей
@@ -288,7 +289,7 @@ class StalinWorks(Dataset):
                 yield record
 
     @staticmethod
-    def __load_record(filepath: Union[str, Path]) -> Dict[str, Any]:
+    def __load_record(filepath: str | Path) -> dict[str, Any]:
         """
         Загрузка записи из файла набора данных
 
@@ -302,9 +303,9 @@ class StalinWorks(Dataset):
             ValueError: Если не удалось извлечь записи из файла
         """
         try:
-            with open(filepath, encoding="utf-8") as f:
-                headers, text = f.read().strip().split("\n\n")
-                headers = tuple(header.split(":")[1][1:] for header in headers.split("\n"))
+            with to_path(filepath).open(encoding="utf-8") as f:
+                header_block, text = f.read().strip().split("\n\n")
+                headers = tuple(header.split(":")[1][1:] for header in header_block.split("\n"))
             return {
                 "volume": int(headers[0]),
                 "year": int(headers[1]),
@@ -316,21 +317,21 @@ class StalinWorks(Dataset):
                 "text": text,
                 "file": filepath,
             }
-        except Exception:
-            raise ValueError("Не удалось извлечь записи из файла")
+        except Exception as e:
+            raise ValueError("Не удалось извлечь записи из файла") from e
 
     @staticmethod
     def __get_filters(
-        volume: int,
-        year: int,
-        text_type: str,
-        is_translation: bool,
-        source: str,
-        subject: str,
-        topic: str,
-        min_len: int,
-        max_len: int,
-    ) -> List[str]:
+        volume: int | None,
+        year: int | None,
+        text_type: str | None,
+        is_translation: bool | None,
+        source: str | None,
+        subject: str | None,
+        topic: str | None,
+        min_len: int | None,
+        max_len: int | None,
+    ) -> Filters:
         """
         Получение списка фильтров
 
@@ -346,7 +347,7 @@ class StalinWorks(Dataset):
             max_len (int): Максимальная длина текста (в символах)
 
         Вывод:
-            filters (list[str]): Список фильтров
+            filters (Filters): Список фильтров-предикатов
 
         Исключения:
             ValueError: Если некорректно выбран номер тома
@@ -355,7 +356,7 @@ class StalinWorks(Dataset):
             ValueError: Если максимальная длина текста не больше 0
             ValueError: Если минимальная длина текста больше максимальной
         """
-        filters = []
+        filters: Filters = []
         if volume:
             if volume not in range(1, 17):
                 raise ValueError(f"Некорректно выбран номер тома (1-16) - {volume}")

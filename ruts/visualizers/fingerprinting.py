@@ -1,5 +1,5 @@
+from collections.abc import Callable, Sequence
 from types import FunctionType
-from typing import Callable, List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,14 +10,14 @@ from ..diversity_stats import calc_ttr
 
 
 def fingerprinting(
-    texts: List[List[str]],
+    texts: list[list[str]],
     segment_len: int = 10,
-    metric: Callable = None,
-    x_size=800,
-    y_size=600,
-    cmap="PuOr",
-    is_return=True,
-) -> Figure:
+    metric: Callable[[Sequence[str]], float] | None = None,
+    x_size: int = 800,
+    y_size: int = 600,
+    cmap: str = "PuOr",
+    is_return: bool = True,
+) -> Figure | None:
     """
     Визуализация литературной дактилоскопии (Literature Fingerprinting)
 
@@ -34,7 +34,7 @@ def fingerprinting(
         is_return (bool): Возвращать объект Figure
 
     Вывод:
-        fig (Figure): Визуализация литературной дактилоскопии
+        fig (Figure|None): Визуализация литературной дактилоскопии либо None при is_return=False
 
     Исключения:
         TypeError: Если передаваемое значение не является списком списков
@@ -42,10 +42,7 @@ def fingerprinting(
     if not any(isinstance(text, (list, tuple)) for text in texts):
         raise TypeError("Тексты должны быть представлены в виде списка списков слов")
     metrics = {}
-    if isinstance(metric, FunctionType):
-        metric_func = metric
-    else:
-        metric_func = calc_ttr
+    metric_func = metric if isinstance(metric, FunctionType) else calc_ttr
     for i, text in enumerate(texts):
         start = 0
         end = segment_len
@@ -66,8 +63,8 @@ def fingerprinting(
 
     fig = plt.figure(figsize=(15, 10))
     ax = fig.add_subplot(111)
-    ax.axes.get_xaxis().set_visible(False)
-    ax.axes.get_yaxis().set_visible(False)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
     cmaps = plt.get_cmap(cmap)
     cmap_list = [cmaps(i) for i in range(cmaps.N)]
     cx = ax.imshow(cmap_list, interpolation="nearest", cmap=cmap, visible=None)
@@ -77,7 +74,7 @@ def fingerprinting(
     max_metric = max([max(v) for k, v in metrics.items()])
     n_cols = 0
     n_rows = 0
-    for _, segments in metrics.items():
+    for segments in metrics.values():
         n_segments = len(segments)
         n_cols = int(n_segments / 8) if (n_segments % 8) == 0 else int(n_segments / 8) + 1
         n_rows = 8 if n_cols > 1 else n_segments
@@ -110,8 +107,9 @@ def fingerprinting(
             y -= tam_quad
         x += (n_cols * tam_quad) + margin
         y += n_rows * tam_quad
-    plt.xlim([-x_size, x_size])
-    plt.ylim([-y_size, y_size])
+    plt.xlim(-x_size, x_size)
+    plt.ylim(-y_size, y_size)
     plt.title("Литературная дактилоскопия")
     if is_return:
         return fig
+    return None

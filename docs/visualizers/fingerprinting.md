@@ -48,12 +48,7 @@
         words.append(words_extractor.extract(text))
 
     # Построение графика
-    fingerprinting(words, 
-        metric=calc_simpson_index, 
-        x_size=1000, 
-        y_size=800,
-        is_return=False
-    )
+    fingerprinting(words, metric=calc_simpson_index, x_size=1000, y_size=800, is_return=False)
     ```
 
     _Результат_:

@@ -1,5 +1,3 @@
-from typing import Dict, Union
-
 from math import sqrt
 
 from spacy.tokens import Doc
@@ -48,9 +46,9 @@ class ReadabilityStats:
 
     def __init__(
         self,
-        source: Union[str, Doc],
-        sents_extractor: SentsExtractor = None,
-        words_extractor: WordsExtractor = None,
+        source: str | Doc,
+        sents_extractor: SentsExtractor | None = None,
+        words_extractor: WordsExtractor | None = None,
     ):
         self.bs = BasicStats(source, sents_extractor, words_extractor)
         if not self.bs.n_words:
@@ -82,7 +80,7 @@ class ReadabilityStats:
     def lix(self):
         return calc_lix(self.bs.n_long_words, self.bs.n_words, self.bs.n_sents)
 
-    def get_stats(self) -> Dict[str, float]:
+    def get_stats(self) -> dict[str, float]:
         """
         Получение вычисленных метрик удобочитаемости текста
 

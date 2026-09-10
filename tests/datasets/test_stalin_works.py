@@ -1,4 +1,5 @@
-import os
+import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -7,18 +8,17 @@ from ruts.datasets.stalin_works import StalinWorks
 
 @pytest.fixture(scope="module")
 def dataset():
-    path = "/tmp/ruts_data_sw"
-    os.makedirs(path, exist_ok=True)
-    dataset_ = StalinWorks(data_dir=path)
-    return dataset_
+    path = Path(tempfile.gettempdir()) / "ruts_data_sw"
+    path.mkdir(parents=True, exist_ok=True)
+    return StalinWorks(data_dir=path)
 
 
 def test_download(dataset):
     if dataset.filepath:
         pytest.skip(f"Не нужно загружать набор данных при каждом запуске теста {dataset.filepath}")
     dataset.download()
-    assert os.path.isfile(dataset._filepath)
-    assert os.path.isdir(dataset.data_dir)
+    assert Path(dataset._filepath).is_file()
+    assert Path(dataset.data_dir).is_dir()
 
 
 def test_oserror():
@@ -51,7 +51,7 @@ def test_get_records(dataset):
     fields = ["volume", "year", "type", "is_translation", "source", "subject", "topic"]
     for record in dataset.get_records(limit=2):
         assert isinstance(record, dict)
-        assert all(field in record.keys() for field in fields)
+        assert all(field in record for field in fields)
 
 
 @pytest.mark.parametrize("volume, expected", [(1, 62), (5, 63), (10, 38)])

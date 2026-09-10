@@ -17,8 +17,8 @@ nav:
           - Функции вычисления метрик: stats/readability_stats_funcs.md
         - Метрики лексического разнообразия:
           - Модуль вычисления метрик: stats/diversity_stats.md
-          - Функции вычисления метрик: stats/diversity_stats_funcs.md        
-        - Морфологические статистики: stats/morph_stats.md        
+          - Функции вычисления метрик: stats/diversity_stats_funcs.md
+        - Морфологические статистики: stats/morph_stats.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
@@ -44,17 +44,17 @@ theme:
 
 plugins:
   - search:
-      lang: 
+      lang:
         - ru
         - en
 
-extra: 
+extra:
   social:
-    - icon: fontawesome/brands/github 
+    - icon: fontawesome/brands/github
       link: https://github.com/SergeyShk
-    - icon: fontawesome/brands/twitter 
+    - icon: fontawesome/brands/twitter
       link: https://twitter.com/shk_sergey
-    - icon: fontawesome/brands/linkedin 
+    - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/kouki91/
 
 extra_css:

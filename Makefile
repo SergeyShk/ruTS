@@ -1,76 +1,85 @@
-.PHONY: clean clean-test clean-pyc clean-build ruff black isort mypy test check-code release-test release dist docs-build docs-serve docs-deploy help
+.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy
 .DEFAULT_GOAL := help
 APP_PATH := ruts
+TESTS_PATH := tests
 
-define PRINT_HELP_PYSCRIPT
-import re, sys
+help: ## Показать список команд
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
 
-for line in sys.stdin:
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
-	if match:
-		target, help = match.groups()
-		print("%-20s %s" % (target, help))
-endef
-export PRINT_HELP_PYSCRIPT
+uv: ## Проверить наличие uv
+	@which uv >/dev/null 2>&1 || { \
+		echo "uv не установлен. Выполните 'curl -LsSf https://astral.sh/uv/install.sh | sh' или 'brew install uv'"; \
+		exit 1; \
+	}
 
-help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+deps: uv ## Установить зависимости
+ifeq ($(MODE), ci)
+	uv sync --locked --all-groups
+else
+	uv sync --all-groups
+endif
+
+lock: uv ## Обновить lock-файл до последних версий зависимостей
+	uv lock --upgrade
+
+nltk-data: deps ## Загрузить данные NLTK, необходимые для тестов
+	uv run python -m nltk.downloader punkt punkt_tab stopwords
+
+lint: ruff mypy ## Запустить все проверки кода
+
+ruff: deps ## Проверить и отформатировать код с помощью ruff
+ifeq ($(MODE), ci)
+	uv run ruff check $(APP_PATH) $(TESTS_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) --check
+else
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) --fix
+	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+endif
+
+format: deps ## Отформатировать код
+	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+
+mypy: deps ## Проверить типы с помощью mypy
+	uv run mypy
+
+test: deps ## Запустить тесты
+	uv run pytest
+
+test-cov: deps ## Запустить тесты с проверкой покрытия
+	uv run pytest --cov $(APP_PATH) --cov-fail-under 90 --cov-report term-missing
 
 clean: clean-build clean-pyc clean-test ## Удалить все артефакты
 	rm -f .coverage coverage.xml
 
 clean-build: ## Удалить артефакты сборки
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	rm -fr target/
+	rm -fr build/ dist/ .eggs/ target/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
 clean-pyc: ## Удалить артефакты компиляции
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+	find . -name '*.pyc' -delete
+	find . -name '*.pyo' -delete
+	find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
 
-clean-test: ## Удалить артефакты тестирования
-	rm -fr .pytest_cache
-	rm -fr .mypy_cache
-	rm -fr .ruff_cache
+clean-test: ## Удалить артефакты тестирования и линтинга
+	rm -fr .pytest_cache .mypy_cache .ruff_cache
 
-ruff: ## Проверить код с помощью ruff
-	poetry run ruff ${APP_PATH}
-
-black: ## Форматировать код с помощью black
-	poetry run black ${APP_PATH}
-
-isort: ## Форматировать код с помощью isort
-	poetry run isort ${APP_PATH}
-
-mypy: ## Проверить код с помощью mypy
-	poetry run mypy ${APP_PATH}
-
-test: ## Запустить тесты
-	poetry run pytest
-
-check-code: ruff black isort test ## Запустить все проверки кода
-
-release-test: dist ## Загрузить тестовый релиз
-	poetry publish -r testpypi
-
-release: dist ## Загрузить релиз
-	poetry publish
-
-dist: clean ## Собрать дистрибутив
-	poetry build
+build: clean uv ## Собрать дистрибутив
+	uv build
 	ls -l dist
 
-docs-build: ## Собрать документацию
+publish: build ## Опубликовать релиз на PyPI
+	uv publish
+
+publish-test: build ## Опубликовать релиз на TestPyPI
+	uv publish --index testpypi
+
+docs-build: deps ## Собрать документацию
 	rm -fr site/
-	poetry run mkdocs build
+	uv run mkdocs build
 
-docs-serve: ## Запустить сервер документации
-	poetry run mkdocs serve
+docs-serve: deps ## Запустить сервер документации
+	uv run mkdocs serve
 
-docs-deploy: ## Задеплоить документацию
-	poetry run mkdocs gh-deploy
+docs-deploy: deps ## Задеплоить документацию
+	uv run mkdocs gh-deploy

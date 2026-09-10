@@ -45,7 +45,7 @@
     text = "Не имей 100 рублей, а имей 100 друзей"
 
     # Извлечение предложений
-    se = SentsExtractor(tokenizer=re.compile(r', '))
+    se = SentsExtractor(tokenizer=re.compile(r", "))
     se.extract(text)
     ```
 

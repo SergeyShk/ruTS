@@ -1,5 +1,12 @@
 import string
 from pathlib import Path
+from typing import TypedDict
+
+
+class MorphologyStatDesc(TypedDict):
+    name: str
+    values: dict[str, str]
+
 
 DEFAULT_DATA_DIR = Path(__file__).parent.parent.resolve() / "ruts_data"
 RU_VOWELS = ["а", "е", "и", "у", "о", "я", "ё", "э", "ю", "ы"]
@@ -40,7 +47,7 @@ READABILITY_STATS_DESC = {
     "automated_readability_index": "Автоматический индекс удобочитаемости",
     "lix": "Индекс удобочитаемости LIX",
 }
-MORPHOLOGY_STATS_DESC = {
+MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
     "pos": {
         "name": "Часть речи",
         "values": {

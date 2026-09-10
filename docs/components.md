@@ -31,10 +31,10 @@
     import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru_core_news_sm')
+    nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe('basic', last=True)
+    nlp.add_pipe("basic", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -73,10 +73,10 @@
     import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru_core_news_sm')
+    nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe('morph', last=True)
+    nlp.add_pipe("morph", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -115,10 +115,10 @@
     import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru_core_news_sm')
+    nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe('readability', last=True)
+    nlp.add_pipe("readability", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -157,10 +157,10 @@
     import spacy
 
     # Загрузка модели spaCy
-    nlp = spacy.load('ru_core_news_sm')
+    nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe('diversity', last=True)
+    nlp.add_pipe("diversity", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")

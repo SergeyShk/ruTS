@@ -11,8 +11,7 @@ def rs():
         упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению с формальными онтологиями\
         является выход в сферу лексических значений, установление связей не только между значениями и выражающими их\
         словами, а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
-    rs_ = ReadabilityStats(text)
-    return rs_
+    return ReadabilityStats(text)
 
 
 def test_init_value_error():
@@ -54,7 +53,7 @@ def test_lix(rs):
 def test_get_stats(rs):
     stats = rs.get_stats()
     assert isinstance(stats, dict)
-    for key in READABILITY_STATS_DESC.keys():
+    for key in READABILITY_STATS_DESC:
         assert stats[key] == getattr(rs, key)
 
 

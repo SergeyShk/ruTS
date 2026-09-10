@@ -1,79 +1,134 @@
-[build-system]
-requires = ["poetry_core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "ruts"
-version = "0.8.2.dev"
-homepage = "https://github.com/SergeyShk/ruTS"
-repository = "https://github.com/SergeyShk/ruTS"
-documentation = "https://sergeyshk.github.io/ruTS/"
-authors = [
-    "Шкарин Сергей <kouki.sergey@gmail.com>",
-    "Смирнова Екатерина <ekanerina@yandex.ru>",
-]
-maintainers = ["Шкарин Сергей <kouki.sergey@gmail.com>"]
+version = "0.9.0"
 description = "Russian Texts Statistics"
+readme = "README.md"
+requires-python = ">=3.11"
 license = "MIT"
-keywords = ["NLP", "natural", "language", "processing", "CL", "computational", "linguistics", "text", "analytics", "russian"]
+license-files = ["LICENSE.txt"]
+authors = [
+    { name = "Шкарин Сергей", email = "kouki.sergey@gmail.com" },
+    { name = "Смирнова Екатерина", email = "ekanerina@yandex.ru" },
+]
+maintainers = [{ name = "Шкарин Сергей", email = "kouki.sergey@gmail.com" }]
+keywords = [
+    "NLP",
+    "natural",
+    "language",
+    "processing",
+    "CL",
+    "computational",
+    "linguistics",
+    "text",
+    "analytics",
+    "russian",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Operating System :: OS Independent",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Information Technology",
     "Intended Audience :: Science/Research",
     "Topic :: Text Processing",
     "Topic :: Text Processing :: Linguistic",
-    "Natural Language :: Russian"
+    "Typing :: Typed",
+    "Natural Language :: Russian",
 ]
-readme = "README.md"
-exclude = ["tests", "docs", "ruts/datasets/data"]
-include = ["LICENSE.txt", "README.en.md"]
+dependencies = [
+    "graphviz>=0.20.3",
+    "matplotlib>=3.8",
+    "nltk>=3.9",
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "pymorphy3>=2.0.4",
+    "razdel>=0.5.0",
+    "scipy>=1.11",
+    "spacy>=3.7",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.8,<3.12"
-graphviz = "^0.20.1"
-matplotlib = "^3.3.0"
-nltk = "^3.7"
-numpy = "^1.23.0"
-pandas = "^1.4.3"
-pymorphy2 = "^0.9.1"
-razdel = "^0.5.0"
-scipy = "^1.9.0"
-spacy = "^3.4.0"
+[project.urls]
+Homepage = "https://github.com/SergeyShk/ruTS"
+Repository = "https://github.com/SergeyShk/ruTS"
+Documentation = "https://sergeyshk.github.io/ruTS/"
+Issues = "https://github.com/SergeyShk/ruTS/issues"
 
-[tool.poetry.dev-dependencies]
-black = "*"
-isort = "*"
-mypy = "*"
-ruff = "*"
-pre-commit = "*"
-pytest = "*"
-pytest-cov = "*"
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
 
-[tool.black]
-target-version = ["py38"]
+[tool.hatch.build.targets.wheel]
+packages = ["ruts"]
+exclude = ["ruts/datasets/data"]
+
+[tool.hatch.build.targets.sdist]
+include = ["ruts", "README.md", "README.en.md", "LICENSE.txt"]
+exclude = ["ruts/datasets/data"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[dependency-groups]
+test = ["pytest>=8.3", "pytest-cov>=6.0"]
+lint = ["mypy>=1.14", "pre-commit>=4.0", "ruff>=0.9"]
+docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "pymdown-extensions>=10.0"]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+    { include-group = "docs" },
+]
+
+[tool.ruff]
+target-version = "py311"
 line-length = 99
-color = true
+src = ["ruts", "tests"]
 
-[tool.isort]
-py_version = 38
-line_length = 99
-known_typing = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
-sections = ["FUTURE", "TYPING", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
-profile = "black"
-include_trailing_comma = true
-multi_line_output = 3
-indent = 4
-color_output = true
+[tool.ruff.lint]
+select = [
+    "A",    # flake8-builtins
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "C90",  # mccabe
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "PERF", # perflint
+    "PTH",  # flake8-use-pathlib
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RUF",  # ruff-specific
+    "SIM",  # flake8-simplify
+    "UP",   # pyupgrade
+    "W",    # pycodestyle warnings
+]
+ignore = [
+    "E501",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 18
+
+[tool.ruff.lint.isort]
+known-first-party = ["ruts"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["N801", "N802"]
 
 [tool.mypy]
-python_version = 3.8
+python_version = "3.11"
 files = ["ruts"]
 pretty = true
 show_traceback = true
@@ -97,18 +152,16 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
 
-[tool.ruff]
-target-version = "py38"
-line-length = 99
-select = ["A", "B", "C", "E", "F", "N", "Q", "W", "UP"]
-ignore = ["E501", "B904"]
-format = "grouped"
-exclude = ["*.md"]
-show-source = true
-
-[tool.ruff.mccabe]
-max-complexity = 18
-
 [tool.pytest.ini_options]
-addopts = "-vv -x --lf"
+addopts = "-v --strict-markers --strict-config"
 testpaths = ["tests"]
+markers = [
+    "network: тест ходит в сеть; отключается через -m 'not network'",
+]
+
+[tool.coverage.run]
+source = ["ruts"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]

@@ -8,11 +8,13 @@ from ruts.constants import (
     READABILITY_STATS_DESC,
 )
 
-text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
+text = (
+    "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
     словарного состава языка или какого-либо его сегмента; тематический, или идеографический способ упорядочения\
     значений слов. Отличительной особенностью тезаурусов по сравнению с формальными онтологиями является выход в сферу\
     лексических значений, установление связей не только между значениями и выражающими их словами, а также между самими\
     значениями (регистрация различных семантических отношений внутри словаря)."
+)
 
 
 @pytest.fixture(scope="module")
@@ -34,8 +36,7 @@ def spacy_nlp():
 
 @pytest.fixture(scope="module")
 def spacy_doc(spacy_nlp):
-    spacy_doc = spacy_nlp(text)
-    return spacy_doc
+    return spacy_nlp(text)
 
 
 def test_components_names(spacy_nlp):
@@ -46,20 +47,20 @@ def test_components_names(spacy_nlp):
 
 
 def test_component_basic(spacy_doc):
-    for key in BASIC_STATS_DESC.keys():
+    for key in BASIC_STATS_DESC:
         assert hasattr(spacy_doc._.basic, key)
 
 
 def test_component_morph(spacy_doc):
-    for key in MORPHOLOGY_STATS_DESC.keys():
+    for key in MORPHOLOGY_STATS_DESC:
         assert hasattr(spacy_doc._.morph, key)
 
 
 def test_component_readability(spacy_doc):
-    for key in READABILITY_STATS_DESC.keys():
+    for key in READABILITY_STATS_DESC:
         assert hasattr(spacy_doc._.readability, key)
 
 
 def test_component_diversity(spacy_doc):
-    for key in DIVERSITY_STATS_DESC.keys():
+    for key in DIVERSITY_STATS_DESC:
         assert hasattr(spacy_doc._.diversity, key)

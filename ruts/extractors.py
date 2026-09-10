@@ -1,13 +1,16 @@
-from typing import Any, Callable, List, Pattern, Tuple, Union
-
 import re
 from abc import ABCMeta, abstractmethod
 from collections import Counter
+from collections.abc import Callable, Iterable, Iterator
+from re import Pattern
+from typing import Any
 
-import pymorphy2
 from razdel import sentenize, tokenize
 
 from .constants import PUNCTUATIONS
+from .utils import get_morph_analyzer
+
+Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
 
 
 class Extractor(metaclass=ABCMeta):
@@ -25,15 +28,35 @@ class Extractor(metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(
-        self, tokenizer: Union[Pattern, Callable] = None, min_len: int = 0, max_len: int = 0
-    ):
+        self, tokenizer: Tokenizer | None = None, min_len: int = 0, max_len: int = 0
+    ) -> None:
         self.tokenizer = tokenizer
         self.min_len = min_len
         self.max_len = max_len
 
     @abstractmethod
-    def extract(self) -> Tuple[str, ...]:
+    def extract(self, text: str) -> tuple[str, ...]:
         raise NotImplementedError
+
+    def _tokenize(self, text: str) -> Iterator[str]:
+        """
+        Разбиение текста токенизатором
+
+        Аргументы:
+            text (str): Строка текста
+
+        Вывод:
+            iterator[str]: Итератор токенов
+
+        Исключения:
+            TypeError: Если некорректно задан токенизатор
+        """
+        if isinstance(self.tokenizer, Pattern):
+            return iter(re.split(self.tokenizer, text))
+        try:
+            return iter(self.tokenizer(text))  # type: ignore[misc]
+        except Exception as e:
+            raise TypeError("Токенизатор задан некорректно") from e
 
 
 class SentsExtractor(Extractor):
@@ -62,18 +85,18 @@ class SentsExtractor(Extractor):
 
     def __init__(
         self,
-        tokenizer: Union[Pattern, Callable] = None,
+        tokenizer: Tokenizer | None = None,
         min_len: int = 0,
         max_len: int = 0,
-    ):
+    ) -> None:
         super().__init__(tokenizer, min_len, max_len)
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина предложения больше максимальной")
-        self.sents = ()
+        self.sents: tuple[str, ...] = ()
         if not self.tokenizer:
             self.tokenizer = lambda text: (sent.text for sent in sentenize(text))
 
-    def extract(self, text: str) -> Tuple[str, ...]:
+    def extract(self, text: str) -> tuple[str, ...]:
         """
         Извлечение предложений из текста
 
@@ -86,18 +109,13 @@ class SentsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
-        if isinstance(self.tokenizer, Pattern):
-            self.sents = re.split(self.tokenizer, text)
-        else:
-            try:
-                self.sents = self.tokenizer(text)
-            except Exception:
-                raise TypeError("Токенизатор задан некорректно")
+        sents = self._tokenize(text)
         if self.min_len > 0:
-            self.sents = (sent for sent in self.sents if len(sent) >= self.min_len)
+            sents = (sent for sent in sents if len(sent) >= self.min_len)
         if self.max_len > 0:
-            self.sents = (sent for sent in self.sents if len(sent) <= self.max_len)
-        return tuple(self.sents)
+            sents = (sent for sent in sents if len(sent) <= self.max_len)
+        self.sents = tuple(sents)
+        return self.sents
 
 
 class WordsExtractor(Extractor):
@@ -135,16 +153,16 @@ class WordsExtractor(Extractor):
 
     def __init__(
         self,
-        tokenizer: Union[Pattern, Callable] = None,
+        tokenizer: Tokenizer | None = None,
         filter_punct: bool = True,
         filter_nums: bool = False,
         use_lexemes: bool = False,
-        stopwords: List[str] = None,
+        stopwords: list[str] | None = None,
         lowercase: bool = False,
-        ngram_range: Tuple[int, int] = (1, 1),
+        ngram_range: tuple[int, int] = (1, 1),
         min_len: int = 0,
         max_len: int = 0,
-    ):
+    ) -> None:
         super().__init__(tokenizer, min_len, max_len)
         self.filter_punct = filter_punct
         self.filter_nums = filter_nums
@@ -158,14 +176,14 @@ class WordsExtractor(Extractor):
         self.max_len = max_len
         if self.min_len and self.max_len and self.min_len > self.max_len:
             raise ValueError("Минимальная длина слова больше максимальной")
-        self.words = ()
+        self.words: tuple[str, ...] = ()
         if not self.tokenizer:
             self.tokenizer = lambda text: (word.text for word in tokenize(text))
 
     def extract(
         self,
         text: str,
-    ) -> Tuple[str, ...]:
+    ) -> tuple[str, ...]:
         """
         Извлечение слов из текста
 
@@ -178,34 +196,28 @@ class WordsExtractor(Extractor):
         Исключения:
             TypeError: Если некорректно задан токенизатор
         """
-        if isinstance(self.tokenizer, Pattern):
-            self.words = (word for word in re.split(self.tokenizer, text))
-        else:
-            try:
-                self.words = (word for word in self.tokenizer(text))
-            except Exception:
-                raise TypeError("Токенизатор задан некорректно")
+        words = self._tokenize(text)
         if self.filter_punct:
-            self.words = (word for word in self.words if word not in PUNCTUATIONS)
+            words = (word for word in words if word not in PUNCTUATIONS)
         if self.filter_nums:
-            self.words = (word for word in self.words if not word.isnumeric())
+            words = (word for word in words if not word.isnumeric())
         if self.use_lexemes:
-            morph = pymorphy2.MorphAnalyzer()
-            self.words = (morph.parse(word)[0].normal_form for word in self.words)
+            morph = get_morph_analyzer()
+            words = (morph.parse(word)[0].normal_form for word in words)
         if self.stopwords:
-            self.words = (word for word in self.words if word not in self.stopwords)
+            words = (word for word in words if word not in self.stopwords)
         if self.lowercase:
-            self.words = (word.lower() for word in self.words)
+            words = (word.lower() for word in words)
         if self.min_len > 0:
-            self.words = (word for word in self.words if len(word) >= self.min_len)
+            words = (word for word in words if len(word) >= self.min_len)
         if self.max_len > 0:
-            self.words = (word for word in self.words if len(word) <= self.max_len)
-        self.words = tuple(self.words)
+            words = (word for word in words if len(word) <= self.max_len)
+        self.words = tuple(words)
         if self.ngram_range != (1, 1):
             self.words = self.__make_ngrams()
-        return tuple(self.words)
+        return self.words
 
-    def get_most_common(self, n: int = 10) -> List[Tuple[Any, int]]:
+    def get_most_common(self, n: int = 10) -> list[tuple[Any, int]]:
         """
         Получение счетчика топ-слов
 
@@ -222,17 +234,16 @@ class WordsExtractor(Extractor):
             raise ValueError("Количество слов должно быть больше 0")
         return Counter(self.words).most_common(n)
 
-    def __make_ngrams(self) -> Tuple[str, ...]:
+    def __make_ngrams(self) -> tuple[str, ...]:
         """
         Формирование N-грамм
 
         Вывод:
             ngrams (tuple[str]): Кортеж извлеченных N-грамм
         """
-        ngrams: Tuple[str, ...] = ()
+        ngrams: tuple[str, ...] = ()
         for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
             ngrams += tuple(
-                "_".join(tuple(self.words)[i : i + n])
-                for i in range(len(tuple(self.words)) - n + 1)
+                "_".join(self.words[i : i + n]) for i in range(len(self.words) - n + 1)
             )
         return ngrams
