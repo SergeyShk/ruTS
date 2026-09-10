@@ -1,8 +1,8 @@
-from typing import Any, Callable, Dict, List, Tuple
-
 from collections import defaultdict
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 import pandas as pd
 from graphviz import Digraph
@@ -16,7 +16,7 @@ class Direction(Enum):
 @dataclass
 class FreqNode:
     freq: int
-    children: Dict[str, "FreqNode"]
+    children: dict[str, "FreqNode"]
 
 
 class TreeDrawer:
@@ -48,8 +48,8 @@ class TreeDrawer:
         bwd_tree: FreqNode,
         max_font_size: int = 30,
         min_font_size: int = 12,
-        font_interp: Callable = None,
-    ):
+        font_interp: Callable[[float], float] | None = None,
+    ) -> None:
         self.keyword = keyword
         self.fwd_tree = fwd_tree
         self.bwd_tree = bwd_tree
@@ -79,14 +79,14 @@ class TreeDrawer:
         t = freq / self.max_freq
 
         def quad(t: float) -> float:
-            return t ** (1.0 / 3)
+            return float(t ** (1.0 / 3))
 
         font_interp = quad if self.font_interp is None else self.font_interp
         return int(font_interp(t) * (upper - lower) + lower)
 
     def draw_subtree(
         self, tree: FreqNode, direction: Direction, root: str, suffix: str, depth: int
-    ):
+    ) -> None:
         """
         Отображение поддерева слов
 
@@ -101,7 +101,7 @@ class TreeDrawer:
             fontsize = self.interpolate_fontsize(tree.freq)
             self.graph.node(root + suffix, label=root, fontsize=str(fontsize))
         for word, subtree in tree.children.items():
-            new_suffix = "{}-{}".format(suffix, word)
+            new_suffix = f"{suffix}-{word}"
             self.draw_subtree(subtree, direction, word, new_suffix, depth + 1)
             src = root if depth == 0 else root + suffix
             dst = word + new_suffix
@@ -149,7 +149,7 @@ class WordTree:
 
     def __init__(
         self,
-        texts: List[List[str]],
+        texts: list[list[str]],
         keyword: str,
         max_n: int = 5,
         max_per_n: int = 8,
@@ -160,38 +160,38 @@ class WordTree:
         self.keyword = keyword
         self.max_n = max_n
         self.max_per_n = max_per_n
-        self.ngrams: List[str] = []
-        self.frequencies: List[int] = []
+        self.ngrams: list[tuple[str, ...]] = []
+        self.frequencies: list[int] = []
 
-    def search(self):
+    def search(self) -> None:
         """
         Построение списков n-грам и их встречаемостей по ключевому слову
         """
-        frequencies_dict = defaultdict(int)
+        frequencies_dict: defaultdict[tuple[str, ...], int] = defaultdict(int)
         for sent in self.texts:
             for n in range(2, self.max_n + 1):
                 for i in range(0, len(sent) - n + 1):
                     ngram = sent[i : i + n]
                     if ngram[0] == self.keyword or ngram[-1] == self.keyword:
                         frequencies_dict[tuple(ngram)] += 1
-        for ngram, freq in frequencies_dict.items():
-            self.ngrams.append(ngram)
+        for found_ngram, freq in frequencies_dict.items():
+            self.ngrams.append(found_ngram)
             self.frequencies.append(freq)
 
     @staticmethod
-    def build_tree(ngrams: List[str], frequencies: List[int]) -> FreqNode:
+    def build_tree(ngrams: Sequence[Sequence[str]], frequencies: Sequence[int]) -> FreqNode:
         """
         Построение поддерева слов
 
         Аргументы:
-            ngrams (list[str]): Список n-грам
-            frequencies (list[int]): Список частот встречаемости n-грам
+            ngrams (Sequence[Sequence[str]]): Список n-грам
+            frequencies (Sequence[int]): Список частот встречаемости n-грам
 
         Вывод:
             tree (FreqNode): Поддерево слов
         """
         tree = FreqNode(freq=0, children={})
-        for ngram, freq in zip(ngrams, frequencies):
+        for ngram, freq in zip(ngrams, frequencies, strict=False):
             subtree = tree
             for gram in ngram:
                 if gram not in subtree.children:
@@ -200,18 +200,18 @@ class WordTree:
             subtree.freq = freq
         return tree
 
-    def build_trees(self) -> Tuple[FreqNode, FreqNode]:
+    def build_trees(self) -> tuple[FreqNode, FreqNode]:
         """
         Построение поддеревьев слов до ключевого слова и после него
 
         Вывод:
             trees (tuple[FreqNode, FreqNode]): Поддеревья слов
         """
-        forward_ngrams: List[str] = []
-        forward_frequencies: List[int] = []
-        backward_ngrams: List[List[str]] = []
-        backward_frequencies: List[int] = []
-        for ngram, freq in zip(self.ngrams, self.frequencies):
+        forward_ngrams: list[Sequence[str]] = []
+        forward_frequencies: list[int] = []
+        backward_ngrams: list[Sequence[str]] = []
+        backward_frequencies: list[int] = []
+        for ngram, freq in zip(self.ngrams, self.frequencies, strict=False):
             forward = ngram[0] == self.keyword
             backward = ngram[-1] == self.keyword
             if forward:
@@ -239,7 +239,7 @@ class WordTree:
                     "forward": ngram[0] == self.keyword,
                     "freq": freq,
                 }
-                for ngram, freq in zip(self.ngrams, self.frequencies)
+                for ngram, freq in zip(self.ngrams, self.frequencies, strict=False)
             ]
         )
         filtered_df = (
@@ -256,7 +256,7 @@ class WordTree:
 
 
 def wordtree(
-    texts: List[List[str]], keyword: str, max_n: int = 5, max_per_n: int = 8, **kwargs: Any
+    texts: list[list[str]], keyword: str, max_n: int = 5, max_per_n: int = 8, **kwargs: Any
 ) -> Digraph:
     """
     Построение дерева слов, отображающее контекст для заданного ключевого слова в тексте

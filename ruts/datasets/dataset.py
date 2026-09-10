@@ -1,6 +1,6 @@
-from typing import Any, Dict, Generator
-
 from abc import ABCMeta, abstractmethod
+from collections.abc import Generator
+from typing import Any
 
 
 class Dataset(metaclass=ABCMeta):
@@ -47,9 +47,9 @@ class Dataset(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def get_records(self, *args: Any) -> Generator[Dict[str, Any], None, None]:
+    def get_records(self, *args: Any) -> Generator[dict[str, Any], None, None]:
         raise NotImplementedError
 
     @abstractmethod
-    def download(self, force: bool = False):
+    def download(self, force: bool = False) -> None:
         raise NotImplementedError

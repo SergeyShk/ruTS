@@ -1,8 +1,7 @@
-from typing import Dict, Union
-
 from collections import Counter
+from collections.abc import Iterable
 
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Span
 
 from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, PUNCTUATIONS, RU_LETTERS, SPACES
 from .extractors import SentsExtractor, WordsExtractor
@@ -77,11 +76,12 @@ class BasicStats:
 
     def __init__(
         self,
-        source: Union[str, Doc],
-        sents_extractor: SentsExtractor = None,
-        words_extractor: WordsExtractor = None,
+        source: str | Doc,
+        sents_extractor: SentsExtractor | None = None,
+        words_extractor: WordsExtractor | None = None,
         normalize: bool = False,
     ):
+        sents: Iterable[Span] | Iterable[str]
         if isinstance(source, Doc):
             text = source.text
             sents = source.sents
@@ -114,10 +114,10 @@ class BasicStats:
             self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
         )
         self.n_chars = len(text.replace("\n", ""))
-        self.n_letters = sum((1 for char in text if char in RU_LETTERS))
-        self.n_spaces = sum((1 for char in text if char in SPACES))
+        self.n_letters = sum(1 for char in text if char in RU_LETTERS)
+        self.n_spaces = sum(1 for char in text if char in SPACES)
         self.n_syllables = sum(syllables_per_word)
-        self.n_punctuations = sum((1 for char in text if char in PUNCTUATIONS))
+        self.n_punctuations = sum(1 for char in text if char in PUNCTUATIONS)
 
         if normalize:
             self.p_unique_words = self.n_unique_words / self.n_words
@@ -130,7 +130,7 @@ class BasicStats:
             self.p_spaces = self.n_spaces / self.n_chars
             self.p_punctuations = self.n_punctuations / self.n_chars
 
-    def get_stats(self) -> Dict[str, int]:
+    def get_stats(self) -> dict[str, int]:
         """
         Получение вычисленных статистик текста
 

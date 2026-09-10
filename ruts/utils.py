@@ -1,14 +1,30 @@
-from typing import Union
-
 import os
 import shutil
 import tarfile
 import urllib.parse
 import urllib.request
 import zipfile
+from functools import lru_cache
 from pathlib import Path
 
+import pymorphy3
+
 from .constants import DEFAULT_DATA_DIR, RU_VOWELS
+
+
+@lru_cache(maxsize=1)
+def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
+    """
+    Получение морфологического анализатора pymorphy3
+
+    Описание:
+        Каждый экземпляр MorphAnalyzer загружает словарь заново (~13 мс и десятки МБ),
+        поэтому анализатор создается один раз на процесс и переиспользуется
+
+    Вывод:
+        MorphAnalyzer: Морфологический анализатор
+    """
+    return pymorphy3.MorphAnalyzer()
 
 
 def count_syllables(word: str) -> int:
@@ -21,10 +37,10 @@ def count_syllables(word: str) -> int:
     Вывод:
         int: Количество слогов
     """
-    return sum((1 for char in word if char in RU_VOWELS))
+    return sum(1 for char in word if char in RU_VOWELS)
 
 
-def to_path(path: Union[str, Path]) -> Path:
+def to_path(path: str | Path) -> Path:
     """
     Перевод строкового представления пути в объект Path
 
@@ -39,16 +55,15 @@ def to_path(path: Union[str, Path]) -> Path:
     """
     if isinstance(path, str):
         return Path(path)
-    elif isinstance(path, Path):
+    if isinstance(path, Path):
         return path
-    else:
-        raise TypeError("Некорректно указан путь")
+    raise TypeError("Некорректно указан путь")
 
 
 def download_file(
     url: str,
-    filename: str = None,
-    dirpath: Union[str, Path] = DEFAULT_DATA_DIR,
+    filename: str | None = None,
+    dirpath: str | Path = DEFAULT_DATA_DIR,
     force: bool = False,
 ) -> str:
     """
@@ -66,28 +81,27 @@ def download_file(
     Исключения:
         RuntimeError: Если не удалось загрузить файл
     """
-    if not os.path.exists(dirpath):
-        os.makedirs(dirpath)
+    dirpath = to_path(dirpath)
+    dirpath.mkdir(parents=True, exist_ok=True)
     if not filename:
-        filename = os.path.basename(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path)
-    filepath = to_path(dirpath).resolve() / filename
+        filename = Path(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path).name
+    filepath = dirpath.resolve() / filename
     if filepath.is_file() and force is False:
         print(f"Файл {filepath} уже загружен")
         return ""
+    try:
+        print(f"Загрузка файла {url}...")
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as response, filepath.open("wb") as out_file:
+            shutil.copyfileobj(response, out_file)
+    except Exception as e:
+        raise RuntimeError("Не удалось загрузить файл") from e
     else:
-        try:
-            print(f"Загрузка файла {url}...")
-            req = urllib.request.Request(url)
-            with urllib.request.urlopen(req) as response, open(filepath, "wb") as out_file:
-                shutil.copyfileobj(response, out_file)
-        except Exception:
-            raise RuntimeError("Не удалось загрузить файл")
-        else:
-            print(f"Файл успешно загружен: {filepath}")
+        print(f"Файл успешно загружен: {filepath}")
     return str(filepath)
 
 
-def extract_archive(archive_file: Union[str, Path], extract_dir: Union[str, Path] = None) -> str:
+def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = None) -> str:
     """
     Извлечение файлов из архива в формате ZIP или TAR
 
@@ -98,48 +112,37 @@ def extract_archive(archive_file: Union[str, Path], extract_dir: Union[str, Path
     Вывод:
         str: Путь к директории с извлеченными файлами
     """
-    archive_file = to_path(archive_file).resolve()
-    if not extract_dir:
-        extract_dir = str(archive_file.parent)
-    archive_file = str(archive_file)
-    Path(extract_dir).mkdir(parents=True, exist_ok=True)
-    is_zip = zipfile.is_zipfile(archive_file)
-    is_tar = tarfile.is_tarfile(archive_file)
+    archive_path = to_path(archive_file).resolve()
+    extract_path = to_path(extract_dir) if extract_dir else archive_path.parent
+    extract_path.mkdir(parents=True, exist_ok=True)
+    is_zip = zipfile.is_zipfile(archive_path)
+    is_tar = tarfile.is_tarfile(archive_path)
     if not is_zip and not is_tar:
-        print(f"Файл {archive_file} не является архивом в формате ZIP или TAR")
-        return str(extract_dir)
+        print(f"Файл {archive_path} не является архивом в формате ZIP или TAR")
+        return str(extract_path)
+    print(f"Извлечение файлов из архива {archive_path}...")
+    if is_zip:
+        shutil.unpack_archive(archive_path, extract_dir=extract_path)
+        with zipfile.ZipFile(archive_path, mode="r") as zip_file:
+            members = zip_file.namelist()
     else:
-        print(f"Извлечение файлов из архива {archive_file}...")
-        shutil.unpack_archive(archive_file, extract_dir=extract_dir, format=None)
-        if is_zip:
-            with zipfile.ZipFile(archive_file, mode="r") as f1:
-                members = f1.namelist()
-        else:
-            with tarfile.open(archive_file, mode="r") as f2:
-                members = f2.getnames()
-        src_basename = os.path.commonpath(members)
-        dest_basename = os.path.basename(archive_file)
-        if src_basename:
-            while True:
-                tmp, _ = os.path.splitext(dest_basename)
-                if tmp == dest_basename:
-                    break
-                else:
-                    dest_basename = tmp
-            if src_basename != dest_basename:
-                return shutil.move(
-                    os.path.join(extract_dir, src_basename),
-                    os.path.join(extract_dir, dest_basename),
-                )
-            else:
-                return os.path.join(extract_dir, src_basename)
-        else:
-            return str(extract_dir)
+        # PEP 706: без фильтра tar-архив может писать файлы за пределы extract_dir.
+        shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
+        with tarfile.open(archive_path, mode="r") as tar_file:
+            members = tar_file.getnames()
+    src_basename = os.path.commonpath(members)
+    if not src_basename:
+        return str(extract_path)
+    # Отбрасываем все расширения: stalin_works.tar.xz -> stalin_works
+    dest_basename = archive_path.name
+    while (stem := Path(dest_basename).stem) != dest_basename:
+        dest_basename = stem
+    if src_basename != dest_basename:
+        return str(shutil.move(extract_path / src_basename, extract_path / dest_basename))
+    return str(extract_path / src_basename)
 
 
-def safe_divide(
-    num: Union[float, int], den: Union[float, int], default: Union[float, int] = 0
-) -> float:
+def safe_divide(num: float | int, den: float | int, default: float | int = 0) -> float:
     """
     Безопасное деление двух чисел
 
@@ -153,5 +156,4 @@ def safe_divide(
     """
     if not den:
         return default
-    else:
-        return num / den
+    return num / den

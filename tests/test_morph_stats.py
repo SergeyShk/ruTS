@@ -9,8 +9,7 @@ from ruts.constants import MORPHOLOGY_STATS_DESC
 @pytest.fixture(scope="module")
 def ms():
     text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
-    ms_ = MorphStats(text)
-    return ms_
+    return MorphStats(text)
 
 
 def test_init_value_error():
@@ -208,7 +207,7 @@ def test_voice(ms):
 def test_get_stats(ms):
     stats = ms.get_stats()
     assert isinstance(stats, dict)
-    for key in MORPHOLOGY_STATS_DESC.keys():
+    for key in MORPHOLOGY_STATS_DESC:
         assert stats[key] == Counter(getattr(ms, key))
 
 
@@ -219,23 +218,23 @@ def test_get_stats_args(ms):
 
 def test_get_stats_filter_none(ms):
     stats = ms.get_stats(filter_none=True)
-    assert all([None not in v.keys() for v in stats.values()])
+    assert all(None not in v for v in stats.values())
 
 
 def test_explain_text(ms):
     explain = ms.explain_text()
     assert isinstance(explain, tuple)
-    assert list(zip(*explain))[0] == ms.words
+    assert next(zip(*explain, strict=False)) == ms.words
 
 
 def test_explain_text_args(ms):
     explain = ms.explain_text("pos", "tense")
-    assert all([set(v.keys()) == {"pos", "tense"} for v in tuple(zip(*explain))[1]])
+    assert all(set(v.keys()) == {"pos", "tense"} for v in tuple(zip(*explain, strict=False))[1])
 
 
 def test_explain_text_filter_none(ms):
     explain = ms.explain_text(filter_none=True)
-    assert all([None not in v.values() for v in tuple(zip(*explain))[1]])
+    assert all(None not in v.values() for v in tuple(zip(*explain, strict=False))[1])
 
 
 def test_print_stats(capsys, ms):

@@ -12,8 +12,7 @@ def ds():
         упорядочения значений слов. Отличительной особенностью тезаурусов по сравнению с формальными онтологиями\
         является выход в сферу лексических значений, установление связей не только между значениями и выражающими их\
         словами, а также между самими значениями (регистрация различных семантических отношений внутри словаря)."
-    ds_ = DiversityStats(text)
-    return ds_
+    return DiversityStats(text)
 
 
 def test_init_value_error():
@@ -107,7 +106,7 @@ def test_hapax_index(ds):
 def test_get_stats(ds):
     stats = ds.get_stats()
     assert isinstance(stats, dict)
-    for key in DIVERSITY_STATS_DESC.keys():
+    for key in DIVERSITY_STATS_DESC:
         assert stats[key] == getattr(ds, key)
 
 

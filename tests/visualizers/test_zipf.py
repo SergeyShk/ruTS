@@ -1,4 +1,4 @@
-from typing import Counter
+from collections import Counter
 
 import matplotlib.pyplot as plt
 import pytest

@@ -1,12 +1,10 @@
-from typing import Dict, Tuple, Union
-
 from collections import Counter, OrderedDict
 
-import pymorphy2
 from spacy.tokens import Doc
 
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
+from .utils import get_morph_analyzer
 
 
 class MorphStats:
@@ -14,11 +12,11 @@ class MorphStats:
     Класс для вычисления морфологических статистик текста
 
     Описание:
-        Для морфологического разбора текста используется библиотека pymorphy2
+        Для морфологического разбора текста используется библиотека pymorphy3
         Описание статистик взяты из корпуса OpenCorpora
 
     Ссылки:
-        https://pymorphy2.readthedocs.io/en/0.2/user/index.html
+        https://github.com/no-plagiarism/pymorphy3
         http://opencorpora.org/dict.php?act=gram
 
     Пример использования:
@@ -69,7 +67,7 @@ class MorphStats:
         ValueError: Если в источнике данных отсутствуют слова
     """
 
-    def __init__(self, source: Union[str, Doc], words_extractor: WordsExtractor = None):
+    def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         if isinstance(source, Doc):
             text = source.text
             self.words = tuple(word.text for word in source)
@@ -83,7 +81,7 @@ class MorphStats:
         if not self.words:
             raise ValueError("В источнике данных отсутствуют слова")
 
-        morph = pymorphy2.MorphAnalyzer()
+        morph = get_morph_analyzer()
         self.tags = tuple(morph.parse(word)[0].tag for word in self.words)
         self.pos = tuple(tag.POS for tag in self.tags)
         self.animacy = tuple(tag.animacy for tag in self.tags)
@@ -98,9 +96,7 @@ class MorphStats:
         self.transitivity = tuple(tag.transitivity for tag in self.tags)
         self.voice = tuple(tag.voice for tag in self.tags)
 
-    def get_stats(
-        self, *args: Tuple[str, ...], filter_none: bool = False
-    ) -> Dict[str, Dict[str, int]]:
+    def get_stats(self, *args: str, filter_none: bool = False) -> dict[str, dict[str, int]]:
         """
         Получение вычисленных морфологических статистик текста
 
@@ -115,17 +111,15 @@ class MorphStats:
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
         else:
             self.__check_stat(*args)
-        stats = {}
+        stats: dict[str, dict[str, int]] = {}
         for arg in args:
-            if filter_none:
-                stats[arg] = {k: v for (k, v) in dict(Counter(vars(self).get(arg))).items() if k}
-            else:
-                stats[arg] = dict(Counter(vars(self).get(arg)))
+            counts = dict(Counter(getattr(self, arg)))
+            stats[arg] = {k: v for (k, v) in counts.items() if k} if filter_none else counts
         return stats
 
     def explain_text(
-        self, *args: Tuple[str, ...], filter_none: bool = False
-    ) -> Dict[str, Dict[str, str]]:
+        self, *args: str, filter_none: bool = False
+    ) -> tuple[tuple[str, dict[str, str]], ...]:
         """
         Разбор текста по морфологическим статистикам
 
@@ -140,16 +134,17 @@ class MorphStats:
             args = tuple(MORPHOLOGY_STATS_DESC.keys())
         else:
             self.__check_stat(*args)
-        values = tuple(zip(*(vars(self).get(arg) for arg in args)))
+        values = tuple(zip(*(getattr(self, arg) for arg in args), strict=False))
         if filter_none:
             explains = tuple(
-                {k: v for (k, v) in dict(zip(args, value)).items() if v} for value in values
+                {k: v for (k, v) in dict(zip(args, value, strict=False)).items() if v}
+                for value in values
             )
         else:
-            explains = tuple(dict(zip(args, value)) for value in values)
-        return tuple(zip(self.words, explains))
+            explains = tuple(dict(zip(args, value, strict=False)) for value in values)
+        return tuple(zip(self.words, explains, strict=False))
 
-    def print_stats(self, *args: Tuple[str, ...], filter_none: bool = False):
+    def print_stats(self, *args: str, filter_none: bool = False) -> None:
         """
         Отображение вычисленных морфологических статистик текста с описанием на экран
 
@@ -163,19 +158,19 @@ class MorphStats:
             self.__check_stat(*args)
         stats = self.get_stats(*args)
         for stat, values in stats.items():
-            stat_desc = MORPHOLOGY_STATS_DESC.get(stat)
-            print(f"{stat_desc.get('name').center(40, '-')}")
-            value_desc = stat_desc.get("values")
+            stat_desc = MORPHOLOGY_STATS_DESC[stat]
+            print(f"{stat_desc['name'].center(40, '-')}")
+            value_desc = stat_desc["values"]
             for value, number in OrderedDict(
                 sorted(values.items(), key=lambda x: x[1], reverse=True)
             ).items():
                 if filter_none and not value:
                     continue
-                print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{str(number):^10}")
+                print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{number!s:^10}")
             print()
 
     @staticmethod
-    def __check_stat(*args: Tuple[str, ...]) -> bool:
+    def __check_stat(*args: str) -> bool:
         """
         Проверка выбранных морфологических статистик
 

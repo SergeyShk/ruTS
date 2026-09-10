@@ -1,6 +1,5 @@
-from typing import Dict, List, Union
-
 from collections import Counter
+from collections.abc import Sequence
 from itertools import permutations
 from math import log10, sqrt
 
@@ -77,7 +76,7 @@ class DiversityStats:
         ValueError: Если в источнике данных отсутствуют слова
     """
 
-    def __init__(self, source: Union[str, Doc], words_extractor: WordsExtractor = None):
+    def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         if isinstance(source, Doc):
             text = source.text
             self.words = tuple(word.text for word in source)
@@ -92,62 +91,62 @@ class DiversityStats:
             raise ValueError("В источнике данных отсутствуют слова")
 
     @property
-    def ttr(self):
+    def ttr(self) -> float:
         return calc_ttr(self.words)
 
     @property
-    def rttr(self):
+    def rttr(self) -> float:
         return calc_rttr(self.words)
 
     @property
-    def cttr(self):
+    def cttr(self) -> float:
         return calc_cttr(self.words)
 
     @property
-    def httr(self):
+    def httr(self) -> float:
         return calc_httr(self.words)
 
     @property
-    def sttr(self):
+    def sttr(self) -> float:
         return calc_sttr(self.words)
 
     @property
-    def mttr(self):
+    def mttr(self) -> float:
         return calc_mttr(self.words)
 
     @property
-    def dttr(self):
+    def dttr(self) -> float:
         return calc_dttr(self.words)
 
     @property
-    def mattr(self):
+    def mattr(self) -> float:
         return calc_mattr(self.words, 50)
 
     @property
-    def msttr(self):
+    def msttr(self) -> float:
         return calc_msttr(self.words, 50)
 
     @property
-    def mtld(self):
+    def mtld(self) -> float:
         return calc_mtld(self.words, 10)
 
     @property
-    def mamtld(self):
+    def mamtld(self) -> float:
         return calc_mamtld(self.words, 10)
 
     @property
-    def hdd(self):
+    def hdd(self) -> float:
         return calc_hdd(self.words, 42)
 
     @property
-    def simpson_index(self):
+    def simpson_index(self) -> float:
         return calc_simpson_index(self.words)
 
     @property
-    def hapax_index(self):
+    def hapax_index(self) -> float:
         return calc_hapax_index(self.words)
 
-    def get_stats(self) -> Dict[str, float]:
+    def get_stats(self) -> dict[str, float]:
         """
         Получение вычисленных метрик лексического разнообразия текста
 
@@ -179,7 +178,7 @@ class DiversityStats:
             print(f"{value:60}|{self.get_stats().get(stat):^10.2f}")
 
 
-def calc_ttr(text: List[str]) -> float:
+def calc_ttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Type-Token Ratio (TTR)
 
@@ -198,7 +197,7 @@ def calc_ttr(text: List[str]) -> float:
     return safe_divide(n_lexemes, n_words)
 
 
-def calc_rttr(text: List[str]) -> float:
+def calc_rttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Root Type-Token Ratio (RTTR)
 
@@ -216,7 +215,7 @@ def calc_rttr(text: List[str]) -> float:
     return safe_divide(n_lexemes, sqrt(n_words))
 
 
-def calc_cttr(text: List[str]) -> float:
+def calc_cttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Corrected Type-Token Ratio (CTTR)
 
@@ -234,7 +233,7 @@ def calc_cttr(text: List[str]) -> float:
     return safe_divide(n_lexemes, sqrt(2 * n_words))
 
 
-def calc_httr(text: List[str]) -> float:
+def calc_httr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Herdan Type-Token Ratio (HTTR)
 
@@ -252,7 +251,7 @@ def calc_httr(text: List[str]) -> float:
     return safe_divide(log10(n_lexemes), log10(n_words))
 
 
-def calc_sttr(text: List[str]) -> float:
+def calc_sttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Summer Type-Token Ratio (STTR)
 
@@ -269,11 +268,10 @@ def calc_sttr(text: List[str]) -> float:
     n_lexemes = len(set(text))
     if n_words == 1 or n_lexemes == 1:
         return 0
-    else:
-        return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
+    return safe_divide(log10(log10(n_lexemes)), log10(log10(n_words)))
 
 
-def calc_mttr(text: List[str]) -> float:
+def calc_mttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Mass Type-Token Ratio (MTTR)
 
@@ -292,7 +290,7 @@ def calc_mttr(text: List[str]) -> float:
     return safe_divide((log10(n_words) - log10(n_lexemes)), log10(n_words) ** 2)
 
 
-def calc_dttr(text: List[str]) -> float:
+def calc_dttr(text: Sequence[str]) -> float:
     """
     Вычисление метрики Dugast Type-Token Ratio (DTTR)
 
@@ -310,7 +308,7 @@ def calc_dttr(text: List[str]) -> float:
     return safe_divide(log10(n_words) ** 2, (log10(n_words) - log10(n_lexemes)))
 
 
-def calc_mattr(text: List[str], window_len: int = 50) -> float:
+def calc_mattr(text: Sequence[str], window_len: int = 50) -> float:
     """
     Вычисление метрики Moving Average Type-Token Ratio (MATTR)
 
@@ -328,7 +326,7 @@ def calc_mattr(text: List[str], window_len: int = 50) -> float:
     if n_words < (window_len + 1):
         mattr = calc_ttr(text)
     else:
-        window_ttr = 0
+        window_ttr = 0.0
         window_count = 0
         for n in range(n_words):
             window = text[n : (n + window_len)]
@@ -340,7 +338,7 @@ def calc_mattr(text: List[str], window_len: int = 50) -> float:
     return mattr
 
 
-def calc_msttr(text: List[str], segment_len: int = 50) -> float:
+def calc_msttr(text: Sequence[str], segment_len: int = 50) -> float:
     """
     Вычисление метрики Mean Segmental Type-Token Ratio (MSTTR)
 
@@ -358,7 +356,7 @@ def calc_msttr(text: List[str], segment_len: int = 50) -> float:
     if n_words < (segment_len + 1):
         msttr = calc_ttr(text)
     else:
-        segment_ttr = 0
+        segment_ttr = 0.0
         segment_count = 0
         seed = 0
         for _ in range(int(n_words / segment_len)):
@@ -370,7 +368,7 @@ def calc_msttr(text: List[str], segment_len: int = 50) -> float:
     return msttr
 
 
-def calc_mtld(text: List[str], min_len: int = 10) -> float:
+def calc_mtld(text: Sequence[str], min_len: int = 10) -> float:
     """
     Вычисление метрики Measure of Textual Lexical Diversity (MTLD)
 
@@ -389,9 +387,9 @@ def calc_mtld(text: List[str], min_len: int = 10) -> float:
         float: Значение метрики
     """
 
-    def calc_mtld_base(text):
+    def calc_mtld_base(text: Sequence[str]) -> float:
         """Подсчет базовой метрики MTLD"""
-        factor = 0
+        factor = 0.0
         factor_len = 0
         start = 0
         for n in range(len(text)):
@@ -406,16 +404,14 @@ def calc_mtld(text: List[str], min_len: int = 10) -> float:
                     start = n + 1
                 else:
                     continue
-        mtld_base = safe_divide(factor_len, factor)
-        return mtld_base
+        return safe_divide(factor_len, factor)
 
     mltd_forward = calc_mtld_base(text)
     mltd_backward = calc_mtld_base(list(reversed(text)))
-    mtld = (mltd_forward + mltd_backward) / 2
-    return mtld
+    return (mltd_forward + mltd_backward) / 2
 
 
-def calc_mamtld(text: List[str], min_len: int = 10) -> float:
+def calc_mamtld(text: Sequence[str], min_len: int = 10) -> float:
     """
     Вычисление метрики Moving Average Measure of Textual Lexical Diversity (MAMTLD)
 
@@ -430,9 +426,9 @@ def calc_mamtld(text: List[str], min_len: int = 10) -> float:
         float: Значение метрики
     """
 
-    def calc_mamtld_base(text):
+    def calc_mamtld_base(text: Sequence[str]) -> float:
         """Подсчет базовой метрики MAMTLD"""
-        factor = 0
+        factor = 0.0
         factor_len = 0
         for n in range(len(text)):
             sub_text = text[n:]
@@ -446,16 +442,14 @@ def calc_mamtld(text: List[str], min_len: int = 10) -> float:
                         breaker = True
                     else:
                         continue
-        mamtld_base = safe_divide(factor_len, factor, 1)
-        return mamtld_base
+        return safe_divide(factor_len, factor, 1)
 
     mamtld_forward = calc_mamtld_base(text)
     mamtld_backward = calc_mamtld_base(list(reversed(text)))
-    mamtld = (mamtld_forward + mamtld_backward) / 2
-    return mamtld
+    return (mamtld_forward + mamtld_backward) / 2
 
 
-def calc_hdd(text: List[str], sample_size: int = 42) -> float:
+def calc_hdd(text: Sequence[str], sample_size: int = 42) -> float:
     """
     Вычисление метрики Hypergeometric Distribution D (HD-D)
 
@@ -480,10 +474,8 @@ def calc_hdd(text: List[str], sample_size: int = 42) -> float:
         try:
             prob = 1.0 - (
                 float(
-                    (
-                        comb(freq, successes)
-                        * comb((population_size - freq), (sample_size - successes))
-                    )
+                    comb(freq, successes)
+                    * comb((population_size - freq), (sample_size - successes))
                 )
                 / float(comb(population_size, sample_size))
             )
@@ -504,7 +496,7 @@ def calc_hdd(text: List[str], sample_size: int = 42) -> float:
     return hdd
 
 
-def calc_simpson_index(text: List[str]) -> float:
+def calc_simpson_index(text: Sequence[str]) -> float:
     """
     Вычисление индекса Симпсона
 
@@ -526,11 +518,10 @@ def calc_simpson_index(text: List[str]) -> float:
     for perm in perms:
         if perm[0] == perm[1]:
             counter += 1
-    simpson_index = safe_divide(den, counter)
-    return simpson_index
+    return safe_divide(den, counter)
 
 
-def calc_hapax_index(text: List[str]) -> float:
+def calc_hapax_index(text: Sequence[str]) -> float:
     """
     Вычисление Гапакс-индекса
 
@@ -555,5 +546,4 @@ def calc_hapax_index(text: List[str]) -> float:
     freqs = FreqDist(text)
     hapaxes = len(freqs.hapaxes())
     den = 1 - (safe_divide(hapaxes, n_lexemes))
-    hapax_index = safe_divide(num, den)
-    return hapax_index
+    return safe_divide(num, den)
