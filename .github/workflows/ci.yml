@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup uv
-        uses: astral-sh/setup-uv@v10
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: true
       - name: Install dependencies
@@ -40,14 +40,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup uv
-        uses: astral-sh/setup-uv@v10
+        uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: uv sync --locked --all-groups
       - name: Cache NLTK data
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/nltk_data
           key: nltk-punkt-stopwords-v1
