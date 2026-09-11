@@ -950,6 +950,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Соглашения
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -971,6 +982,17 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windowed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        windowed
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#get_stats" class="md-nav__link">
@@ -1467,6 +1489,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Соглашения
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1488,6 +1521,17 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windowed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        windowed
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#get_stats" class="md-nav__link">
@@ -1570,8 +1614,77 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Инструмент для извлечения слов</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>window_len</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>50</code></td>
+<td style="text-align: center;">Размер окна для MATTR и сегмента для MSTTR</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>mtld_threshold</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.72</code></td>
+<td style="text-align: center;">Порог TTR для MTLD, MA-MTLD и MTLD-W</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>mtld_min_len</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>hdd_sample_size</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>42</code></td>
+<td style="text-align: center;">Размер выборки для HD-D</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>log_base</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Основание логарифма для метрик Summer, Maas и Dugast</td>
+</tr>
 </tbody>
 </table>
+<h2 id="conventions">Соглашения<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
+<p>Значения части метрик зависят от параметров, которые в разных библиотеках выбраны по-разному. Значения по умолчанию совпадают с koRpus и lexical-diversity Кайла, все они вынесены в параметры класса:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">ruTS</th>
+<th style="text-align: center;">Другие библиотеки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Основание логарифма для Summer, Maas, Dugast's U и Dugast's k</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">LexicalRichness, textcomplexity и zipfR - натуральный</td>
+</tr>
+<tr>
+<td style="text-align: center;">Окно MATTR и сегмент MSTTR</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">quanteda и koRpus - 100</td>
+</tr>
+<tr>
+<td style="text-align: center;">Порог TTR для MTLD</td>
+<td style="text-align: center;">0.72</td>
+<td style="text-align: center;">в литературе 0.66-0.75</td>
+</tr>
+<tr>
+<td style="text-align: center;">Минимальная длина фактора MTLD</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">koRpus применяет только к MA-MTLD, LexicalRichness и textcomplexity не применяют</td>
+</tr>
+<tr>
+<td style="text-align: center;">Размер выборки HD-D</td>
+<td style="text-align: center;">42</td>
+<td style="text-align: center;">в литературе 35-50</td>
+</tr>
+</tbody>
+</table>
+<p>По Zenker и Kyle (2021) MATTR, MTLD и HD-D стабильны на текстах от 50-200 слов, MTLD-W, MA-MTLD и Maas нестабильны на коротких текстах, семейство TTR не стабилизируется вовсе. Для сравнения текстов разной длины используйте <a href="#windowed">оконный расчет</a> с доверительными интервалами.</p>
 <h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1582,6 +1695,16 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: center;"><code>words</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Кортеж извлеченных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>frequency_spectrum</code></td>
+<td style="text-align: center;">dict[int, int]</td>
+<td style="text-align: center;">Спектр частот - количество лексем с заданной частотой</td>
+</tr>
 <tr>
 <td style="text-align: center;"><code>ttr</code></td>
 <td style="text-align: center;">float</td>
@@ -1635,7 +1758,12 @@
 <tr>
 <td style="text-align: center;"><code>mamtld</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Метрика Moving Average Measure of Textual Lexical Diversity (MTLD)</td>
+<td style="text-align: center;">Метрика Moving Average Measure of Textual Lexical Diversity (MA-MTLD)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>mtldw</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Метрика MTLD со скользящим окном и заворотом текста (MTLD-W)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>hdd</code></td>
@@ -1667,6 +1795,81 @@
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Псевдоним для гапакс-индекса</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>yule_k</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Характеристика Юла (Yule's K)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>yule_i</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Обратная характеристика Юла (Yule's I)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>herdan_vm</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Хердана (Herdan's Vm)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>sichel_s</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Сишела (Sichel's S)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>michea_m</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Мишеа (Michéa's M)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>brunet_w</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Брюне (Brunet's W)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>dugast_k</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Дюга (Dugast's k)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>baayen_p</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Мера Баайена (Baayen's P)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>hapax_ratio</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Доля гапаксов среди лексем</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>alpha2</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Показатель α₂</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>entropy</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Энтропия Шеннона в битах</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>evenness</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Выравненность - отношение энтропии к максимальной</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>perplexity</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Перплексия</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>zipf_alpha</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Наклон закона Ципфа</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>heaps_beta</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Показатель закона Хипса</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
@@ -1674,6 +1877,58 @@
 <p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках лексического разнообразия и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../diversity_stats_funcs/">разделе</a>.</p>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="windowed">windowed<a class="headerlink" href="#windowed" title="Permanent link">&para;</a></h3>
+<p>Оконный расчет метрики: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины; STTR Кубата и Милички - оконный расчет TTR с окном 1000 слов и 95% доверительным интервалом. Для текстов короче окна метрика считается по всему тексту как по единственному окну, окна с неопределенным значением метрики (<code>nan</code>) не учитываются. Если хотя бы в одном окне метрика бесконечна, среднее равно бесконечности, а стандартное отклонение и доверительный интервал не определены.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Название метрики из <code>get_stats</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>window_len</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>100</code></td>
+<td style="text-align: center;">Размер окна</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>step</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Шаг окна, по умолчанию равен размеру окна (окна не пересекаются)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>confidence</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.95</code></td>
+<td style="text-align: center;">Уровень доверия</td>
+</tr>
+</tbody>
+</table>
+<p>Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiversityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">DiversityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">windowed</span><span class="p">(</span><span class="s2">"ttr"</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="c1"># WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180167025, upper=1.220176848649964, n_windows=3)</span>
+<span class="n">ds</span><span class="o">.</span><span class="n">windowed</span><span class="p">(</span><span class="s2">"ttr"</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">n_windows</span>
+<span class="c1"># 6</span>
+</code></pre></div>
+</div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
 <p>Возвращает справочник с вычисленными метриками лексического разнообразия текста.</p>
 <p>Рассмотрим пример вычисления метрик лексического разнообразия текста:</p>
@@ -1691,22 +1946,38 @@
 <span class="n">ds</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'cttr'</span>:<span class="w"> </span><span class="m">2</span>.008316044185609,
-<span class="s1">'dttr'</span>:<span class="w"> </span><span class="m">10</span>.268784661968121,
-<span class="s1">'gini_simpson_index'</span>:<span class="w"> </span><span class="m">0</span>.9523809523809523,
-<span class="s1">'hapax_index'</span>:<span class="w"> </span><span class="m">992</span>.9517404041437,
-<span class="s1">'hdd'</span>:<span class="w"> </span>nan,
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'ttr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333,
+<span class="s1">'rttr'</span>:<span class="w"> </span><span class="m">2</span>.840187787218772,
+<span class="s1">'cttr'</span>:<span class="w"> </span><span class="m">2</span>.008316044185609,
 <span class="s1">'httr'</span>:<span class="w"> </span><span class="m">0</span>.8854692840710255,
-<span class="s1">'inverse_simpson_index'</span>:<span class="w"> </span><span class="m">21</span>.0,
-<span class="s1">'mamtld'</span>:<span class="w"> </span><span class="m">11</span>.875,
+<span class="s1">'sttr'</span>:<span class="w"> </span><span class="m">0</span>.2500605793160848,
+<span class="s1">'mttr'</span>:<span class="w"> </span><span class="m">0</span>.09738250756232528,
+<span class="s1">'dttr'</span>:<span class="w"> </span><span class="m">10</span>.268784661968118,
 <span class="s1">'mattr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333,
 <span class="s1">'msttr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333,
 <span class="s1">'mtld'</span>:<span class="w"> </span><span class="m">15</span>.0,
-<span class="s1">'mttr'</span>:<span class="w"> </span><span class="m">0</span>.09738250756232525,
-<span class="s1">'rttr'</span>:<span class="w"> </span><span class="m">2</span>.840187787218772,
+<span class="s1">'mamtld'</span>:<span class="w"> </span><span class="m">12</span>.0,
+<span class="s1">'mtldw'</span>:<span class="w"> </span><span class="m">13</span>.25,
+<span class="s1">'hdd'</span>:<span class="w"> </span>nan,
 <span class="s1">'simpson_index'</span>:<span class="w"> </span><span class="m">0</span>.047619047619047616,
-<span class="s1">'sttr'</span>:<span class="w"> </span><span class="m">0</span>.25006057931608583,
-<span class="s1">'ttr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333<span class="o">}</span>
+<span class="s1">'inverse_simpson_index'</span>:<span class="w"> </span><span class="m">21</span>.0,
+<span class="s1">'gini_simpson_index'</span>:<span class="w"> </span><span class="m">0</span>.9523809523809523,
+<span class="s1">'hapax_index'</span>:<span class="w"> </span><span class="m">992</span>.9517404041437,
+<span class="s1">'yule_k'</span>:<span class="w"> </span><span class="m">444</span>.44444444444446,
+<span class="s1">'yule_i'</span>:<span class="w"> </span><span class="m">8</span>.642857142857142,
+<span class="s1">'herdan_vm'</span>:<span class="w"> </span><span class="m">0</span>.1421338109037403,
+<span class="s1">'sichel_s'</span>:<span class="w"> </span><span class="m">0</span>.18181818181818182,
+<span class="s1">'michea_m'</span>:<span class="w"> </span><span class="m">5</span>.5,
+<span class="s1">'brunet_w'</span>:<span class="w"> </span><span class="m">6</span>.00637847898991,
+<span class="s1">'dugast_k'</span>:<span class="w"> </span><span class="m">14</span>.783895126869226,
+<span class="s1">'baayen_p'</span>:<span class="w"> </span><span class="m">0</span>.5333333333333333,
+<span class="s1">'hapax_ratio'</span>:<span class="w"> </span><span class="m">0</span>.7272727272727273,
+<span class="s1">'alpha2'</span>:<span class="w"> </span><span class="m">0</span>.5,
+<span class="s1">'entropy'</span>:<span class="w"> </span><span class="m">3</span>.3232314287976203,
+<span class="s1">'evenness'</span>:<span class="w"> </span><span class="m">0</span>.9606293157795304,
+<span class="s1">'perplexity'</span>:<span class="w"> </span><span class="m">10</span>.009038104159247,
+<span class="s1">'zipf_alpha'</span>:<span class="w"> </span><span class="m">0</span>.4884512334695912,
+<span class="s1">'heaps_beta'</span>:<span class="w"> </span><span class="m">0</span>.8366147342060046<span class="o">}</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -1721,24 +1992,40 @@
 <span class="n">ds</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                        </span>Метрика<span class="w">                             </span><span class="p">|</span><span class="w"> </span>Значение
-----------------------------------------------------------------------
-Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>TTR<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
-Root<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>RTTR<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.84
-Corrected<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>CTTR<span class="o">)</span><span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.01
-Herdan<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>HTTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.89
-Summer<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>STTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.25
-Maas<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MTTR<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.10
-Dugast<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>DTTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">  </span><span class="m">10</span>.27
-Moving<span class="w"> </span>Average<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MATTR<span class="o">)</span><span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
-Mean<span class="w"> </span>Segmental<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MSTTR<span class="o">)</span><span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
-Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MTLD<span class="o">)</span><span class="w">                 </span><span class="p">|</span><span class="w">  </span><span class="m">15</span>.00
-Moving<span class="w"> </span>Average<span class="w"> </span>Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MTLD<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w">  </span><span class="m">11</span>.88
-Hypergeometric<span class="w"> </span>Distribution<span class="w"> </span>D<span class="w"> </span><span class="o">(</span>HD-D<span class="o">)</span><span class="w">                        </span><span class="p">|</span><span class="w">   </span>nan
-Индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span>D<span class="o">)</span><span class="w">                                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
-Обратный<span class="w"> </span>индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>/D<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">  </span><span class="m">21</span>.00
-Индекс<span class="w"> </span>Джини-Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>-D<span class="o">)</span><span class="w">                                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.95
-Гапакс-индекс<span class="w"> </span><span class="o">(</span>Honoré<span class="err">'</span>s<span class="w"> </span>R<span class="o">)</span><span class="w">                                  </span><span class="p">|</span><span class="w">  </span><span class="m">992</span>.95
+<div class="highlight"><pre><span></span><code><span class="w">                                  </span>Метрика<span class="w">                                  </span><span class="p">|</span><span class="w"> </span>Значение
+-------------------------------------------------------------------------------------
+Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>TTR<span class="o">)</span><span class="w">                                                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
+Root<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>RTTR<span class="o">)</span><span class="w">                                               </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.84
+Corrected<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>CTTR<span class="o">)</span><span class="w">                                          </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.01
+Herdan<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>HTTR<span class="o">)</span><span class="w">                                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.89
+Summer<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>STTR<span class="o">)</span><span class="w">                                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.25
+Maas<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MTTR<span class="o">)</span><span class="w">                                               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.10
+Dugast<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>DTTR<span class="o">)</span><span class="w">                                             </span><span class="p">|</span><span class="w">  </span><span class="m">10</span>.27
+Moving<span class="w"> </span>Average<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MATTR<span class="o">)</span><span class="w">                                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
+Mean<span class="w"> </span>Segmental<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MSTTR<span class="o">)</span><span class="w">                                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
+Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MTLD<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">  </span><span class="m">15</span>.00
+Moving<span class="w"> </span>Average<span class="w"> </span>Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MA-MTLD<span class="o">)</span><span class="w">              </span><span class="p">|</span><span class="w">  </span><span class="m">12</span>.00
+Moving<span class="w"> </span>Average<span class="w"> </span>Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span>with<span class="w"> </span>Wrap<span class="w"> </span><span class="o">(</span>MTLD-W<span class="o">)</span><span class="w">     </span><span class="p">|</span><span class="w">  </span><span class="m">13</span>.25
+Hypergeometric<span class="w"> </span>Distribution<span class="w"> </span>D<span class="w"> </span><span class="o">(</span>HD-D<span class="o">)</span><span class="w">                                       </span><span class="p">|</span><span class="w">   </span>nan
+Индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span>D<span class="o">)</span><span class="w">                                                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
+Обратный<span class="w"> </span>индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>/D<span class="o">)</span><span class="w">                                             </span><span class="p">|</span><span class="w">  </span><span class="m">21</span>.00
+Индекс<span class="w"> </span>Джини-Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>-D<span class="o">)</span><span class="w">                                                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.95
+Гапакс-индекс<span class="w"> </span><span class="o">(</span>Honoré<span class="s1">'s R)                                                 |  992.95</span>
+<span class="s1">Характеристика Юла (Yule'</span>s<span class="w"> </span>K<span class="o">)</span><span class="w">                                              </span><span class="p">|</span><span class="w">  </span><span class="m">444</span>.44
+Обратная<span class="w"> </span>характеристика<span class="w"> </span>Юла<span class="w"> </span><span class="o">(</span>Yule<span class="s1">'s I)                                     |   8.64</span>
+<span class="s1">Мера Хердана (Herdan'</span>s<span class="w"> </span>Vm<span class="o">)</span><span class="w">                                                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.14
+Мера<span class="w"> </span>Сишела<span class="w"> </span><span class="o">(</span>Sichel<span class="s1">'s S)                                                   |   0.18</span>
+<span class="s1">Мера Мишеа (Michéa'</span>s<span class="w"> </span>M<span class="o">)</span><span class="w">                                                    </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.50
+Мера<span class="w"> </span>Брюне<span class="w"> </span><span class="o">(</span>Brunet<span class="s1">'s W)                                                    |   6.01</span>
+<span class="s1">Мера Дюга (Dugast'</span>s<span class="w"> </span>k<span class="o">)</span><span class="w">                                                     </span><span class="p">|</span><span class="w">  </span><span class="m">14</span>.78
+Мера<span class="w"> </span>Баайена<span class="w"> </span><span class="o">(</span>Baayen<span class="err">'</span>s<span class="w"> </span>P<span class="o">)</span><span class="w">                                                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.53
+Доля<span class="w"> </span>гапаксов<span class="w">                                                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
+Показатель<span class="w"> </span>α₂<span class="w">                                                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Энтропия<span class="w"> </span>Шеннона<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">                                                     </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.32
+Выравненность<span class="w">                                                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.96
+Перплексия<span class="w">                                                                 </span><span class="p">|</span><span class="w">  </span><span class="m">10</span>.01
+Наклон<span class="w"> </span>закона<span class="w"> </span>Ципфа<span class="w"> </span><span class="o">(</span>α<span class="o">)</span><span class="w">                                                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.49
+Показатель<span class="w"> </span>закона<span class="w"> </span>Хипса<span class="w"> </span><span class="o">(</span>β<span class="o">)</span><span class="w">                                                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.84
 </code></pre></div>
 </div>
 
