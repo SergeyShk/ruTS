@@ -181,8 +181,13 @@ The library allows counting the following readability metrics:
 *   SMOG Index
 *   Automated Readability Index
 *   LIX readability measure
+*   RIX readability measure
+*   Solovyev-Ivanov-Solnyshkina formula
+*   Matskovsky formula
+*   Dale-Chall Index
+*   Gunning Fog Index
 
-Coefficients for the Russian language were borrowed from the [Plain Russian Language](https://github.com/infoculture/plainrussian) project dedicated to counting readability coefficients based on a special corpus of texts with age labels.
+Coefficients of the formulas adapted for Russian are selected by the `preset` argument: by default the library uses the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project obtained on texts with grade labels (`plainrussian`); Oborneva's coefficients for fiction (`fiction`) and the Kazan group's (Solovyev, Ivanov, Solnyshkina) coefficients for academic texts (`academic`) are also available.
 
 ```python
 >>> from pprint import pprint
@@ -194,20 +199,30 @@ Coefficients for the Russian language were borrowed from the [Plain Russian Lang
 >>> pprint(rs.get_stats())
 {'automated_readability_index': 0.2941666666666656,
  'coleman_liau_index': 1.1700000000000053,
- 'flesch_kincaid_grade': 2.926666666666666,
+ 'dale_chall_index': 4.095000000000001,
+ 'flesch_kincaid_grade': -2.0633333333333326,
  'flesch_reading_easy': 87.16833333333334,
+ 'gunning_fog_index': 6.0,
  'lix': 28.333333333333336,
+ 'matskovsky_index': 9.351,
+ 'rix': 2.0,
+ 'sis_grade': 1.5166666666666675,
  'smog_index': 0.05}
 
 >>> rs.print_stats()
-                Метрика                 | Значение
---------------------------------------------------
-Тест Флеша-Кинкайда                     |   2.93
-Индекс удобочитаемости Флеша            |  87.17
-Индекс Колман-Лиау                      |   1.17
-Индекс SMOG                             |   0.05
-Автоматический индекс удобочитаемости   |   0.29
-Индекс удобочитаемости LIX              |  28.33
+                   Метрика                   | Значение
+-------------------------------------------------------
+Тест Флеша-Кинкайда                          |  -2.06
+Индекс удобочитаемости Флеша                 |  87.17
+Индекс Колман-Лиау                           |   1.17
+Индекс SMOG                                  |   0.05
+Автоматический индекс удобочитаемости        |   0.29
+Индекс удобочитаемости LIX                   |  28.33
+Индекс удобочитаемости RIX                   |   2.00
+Формула Соловьёва, Иванова, Солнышкиной      |   1.52
+Формула Мацковского                          |   9.35
+Индекс Дейла-Чейла                           |   4.10
+Индекс Ганнинга                              |   6.00
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/readability_stats/).

@@ -49,6 +49,38 @@ READABILITY_STATS_DESC = {
     "smog_index": "Индекс SMOG",
     "automated_readability_index": "Автоматический индекс удобочитаемости",
     "lix": "Индекс удобочитаемости LIX",
+    "rix": "Индекс удобочитаемости RIX",
+    "sis_grade": "Формула Соловьёва, Иванова, Солнышкиной",
+    "matskovsky_index": "Формула Мацковского",
+    "dale_chall_index": "Индекс Дейла-Чейла",
+    "gunning_fog_index": "Индекс Ганнинга",
+}
+_PLAINRUSSIAN_ADAPTED_COEFFICIENTS = {
+    "coleman_liau_index": (0.055, 0.35, 20.33),
+    "smog_index": (1.1, 64.6, 0.05),
+    "automated_readability_index": (6.26, 0.2805, 31.04),
+}
+READABILITY_PRESETS: dict[str, dict[str, tuple[float, float, float]]] = {
+    "plainrussian": {
+        "flesch_kincaid_grade": (0.318, 14.2, 30.5),
+        "flesch_reading_easy": (1.3, 60.1, 206.835),
+        **_PLAINRUSSIAN_ADAPTED_COEFFICIENTS,
+    },
+    "fiction": {
+        "flesch_kincaid_grade": (0.5, 8.4, 15.59),
+        "flesch_reading_easy": (1.3, 60.1, 206.835),
+        **_PLAINRUSSIAN_ADAPTED_COEFFICIENTS,
+    },
+    "academic": {
+        "flesch_kincaid_grade": (0.36, 5.76, 11.97),
+        "flesch_reading_easy": (1.52, 65.14, 206.836),
+        **_PLAINRUSSIAN_ADAPTED_COEFFICIENTS,
+    },
+}
+SIS_GRADE_STAGES: dict[str, tuple[float, float, float]] = {
+    "2-4": (-2.59, 0.17, 0.61),
+    "5-7": (-5.29, 0.20, 1.34),
+    "8-11": (-3.26, 0.21, 1.35),
 }
 MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
     "pos": {
