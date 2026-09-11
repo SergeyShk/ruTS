@@ -28,15 +28,18 @@
 | `cttr` | float | Метрика Corrected Type-Token Ratio (CTTR) |
 | `httr` | float | Метрика Herdan Type-Token Ratio (HTTR) |
 | `sttr` | float | Метрика Summer Type-Token Ratio (STTR) |
-| `mttr` | float | Метрика Mass Type-Token Ratio (MTTR) |
+| `mttr` | float | Метрика Maas Type-Token Ratio (MTTR) |
 | `dttr` | float | Метрика Dugast Type-Token Ratio (DTTR) |
 | `mattr` | float | Метрика Moving Average Type-Token Ratio (MATTR) |
 | `msttr` | float | Метрика Mean Segmental Type-Token Ratio (MSTTR) |
 | `mtld` | float | Метрика Measure of Textual Lexical Diversity (MTLD) |
 | `mamtld` | float | Метрика Moving Average Measure of Textual Lexical Diversity (MTLD) |
 | `hdd` | float | Метрика Hypergeometric Distribution D (HD-D) |
-| `simpson_index` | float | Индекс Симпсона |
-| `hapax_index` | float | Гапакс-индекс |
+| `simpson_index` | float | Индекс Симпсона (D) |
+| `inverse_simpson_index` | float | Обратный индекс Симпсона (1/D) |
+| `gini_simpson_index` | float | Индекс Джини-Симпсона (1-D) |
+| `hapax_index` | float | Гапакс-индекс, он же Honoré's R |
+| `honore_r` | float | Псевдоним для гапакс-индекса |
 
 !!! note "Примечание"
     Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках лексического разнообразия и функциях, используемых для их вычисления, можно узнать в соответствующем [разделе](diversity_stats_funcs.md).
@@ -69,18 +72,20 @@
 
     ``` bash
     {'cttr': 2.008316044185609,
-    'dttr': 10.268784661968104,
-    'hapax_index': 431.2334616537499,
-    'hdd': -1,
-    'httr': 0.8854692840710253,
+    'dttr': 10.268784661968121,
+    'gini_simpson_index': 0.9523809523809523,
+    'hapax_index': 992.9517404041437,
+    'hdd': nan,
+    'httr': 0.8854692840710255,
+    'inverse_simpson_index': 21.0,
     'mamtld': 11.875,
     'mattr': 0.7333333333333333,
     'msttr': 0.7333333333333333,
     'mtld': 15.0,
-    'mttr': 0.0973825075623254,
+    'mttr': 0.09738250756232525,
     'rttr': 2.840187787218772,
-    'simpson_index': 21.0,
-    'sttr': 0.2500605793160845,
+    'simpson_index': 0.047619047619047616,
+    'sttr': 0.25006057931608583,
     'ttr': 0.7333333333333333}
     ```
 
@@ -111,13 +116,15 @@
     Corrected Type-Token Ratio (CTTR)                           |   2.01
     Herdan Type-Token Ratio (HTTR)                              |   0.89
     Summer Type-Token Ratio (STTR)                              |   0.25
-    Mass Type-Token Ratio (MTTR)                                |   0.10
+    Maas Type-Token Ratio (MTTR)                                |   0.10
     Dugast Type-Token Ratio (DTTR)                              |  10.27
     Moving Average Type-Token Ratio (MATTR)                     |   0.73
     Mean Segmental Type-Token Ratio (MSTTR)                     |   0.73
     Measure of Textual Lexical Diversity (MTLD)                 |  15.00
     Moving Average Measure of Textual Lexical Diversity (MTLD)  |  11.88
-    Hypergeometric Distribution D (HD-D)                        |  -1.00
-    Индекс Симпсона                                             |  21.00
-    Гапакс-индекс                                               |  431.23
+    Hypergeometric Distribution D (HD-D)                        |   nan
+    Индекс Симпсона (D)                                         |   0.05
+    Обратный индекс Симпсона (1/D)                              |  21.00
+    Индекс Джини-Симпсона (1-D)                                 |   0.95
+    Гапакс-индекс (Honoré's R)                                  |  992.95
     ```

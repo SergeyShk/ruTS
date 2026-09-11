@@ -196,7 +196,7 @@ Coefficients for the Russian language were borrowed from the [Plain Russian Lang
  'coleman_liau_index': 1.1700000000000053,
  'flesch_kincaid_grade': 2.926666666666666,
  'flesch_reading_easy': 87.16833333333334,
- 'lix': 35.0,
+ 'lix': 28.333333333333336,
  'smog_index': 0.05}
 
 >>> rs.print_stats()
@@ -207,7 +207,7 @@ Coefficients for the Russian language were borrowed from the [Plain Russian Lang
 Индекс Колман-Лиау                      |   1.17
 Индекс SMOG                             |   0.05
 Автоматический индекс удобочитаемости   |   0.29
-Индекс удобочитаемости LIX              |  35.00
+Индекс удобочитаемости LIX              |  28.33
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/readability_stats/).
@@ -226,15 +226,17 @@ The library allows counting the following lexical diversity metrics for a text:
 *   Corrected Type-Token Ratio (CTTR)
 *   Herdan Type-Token Ratio (HTTR)
 *   Summer Type-Token Ratio (STTR)
-*   Mass Type-Token Ratio (MTTR)
+*   Maas Type-Token Ratio (MTTR)
 *   Dugast Type-Token Ratio (DTTR)
 *   Moving Average Type-Token Ratio (MATTR)
 *   Mean Segmental Type-Token Ratio (MSTTR)
 *   Measure of Textual Lexical Diversity (MTLD)
 *   Moving Average Measure of Textual Lexical Diversity (MAMTLD)
 *   Hypergeometric Distribution D (HD-D)
-*   Simpson's Diversity Index
-*   Hapax Legomena Index
+*   Simpson's Diversity Index (D)
+*   Inverse Simpson Index (1/D)
+*   Gini-Simpson Index (1-D)
+*   Hapax Legomena Index (Honoré's R)
 
 Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project.
 
@@ -247,16 +249,18 @@ Some of the implementations were borrowed from the [lexical_diversity](https://g
 >>> pprint(DiversityStats(text).get_stats())
 {'cttr': 2.008316044185609,
  'dttr': 10.268784661968121,
- 'hapax_index': 431.2334616537499,
- 'hdd': -1,
+ 'gini_simpson_index': 0.9523809523809523,
+ 'hapax_index': 992.9517404041437,
+ 'hdd': nan,
  'httr': 0.8854692840710255,
+ 'inverse_simpson_index': 21.0,
  'mamtld': 11.875,
  'mattr': 0.7333333333333333,
  'msttr': 0.7333333333333333,
  'mtld': 15.0,
  'mttr': 0.09738250756232525,
  'rttr': 2.840187787218772,
- 'simpson_index': 21.0,
+ 'simpson_index': 0.047619047619047616,
  'sttr': 0.25006057931608583,
  'ttr': 0.7333333333333333}
 ```

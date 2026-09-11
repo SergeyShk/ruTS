@@ -39,7 +39,7 @@ def test_coleman_liau_index(rs):
 
 
 def test_smog_index(rs):
-    assert rs.smog_index == pytest.approx(30.676655057318946, rel=0.1)
+    assert rs.smog_index == pytest.approx(25.826171166408717, rel=0.1)
 
 
 def test_automated_readability_index(rs):
@@ -47,7 +47,7 @@ def test_automated_readability_index(rs):
 
 
 def test_lix(rs):
-    assert rs.lix == pytest.approx(97.71311475409836, rel=0.1)
+    assert rs.lix == pytest.approx(87.87704918032787, rel=0.1)
 
 
 def test_get_stats(rs):

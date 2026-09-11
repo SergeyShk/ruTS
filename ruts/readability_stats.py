@@ -3,7 +3,11 @@ from math import sqrt
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
-from .constants import READABILITY_STATS_DESC
+from .constants import (
+    LIX_LONG_WORD_LETTER_FACTOR,
+    READABILITY_STATS_DESC,
+    SMOG_COMPLEX_SYL_FACTOR,
+)
 from .extractors import SentsExtractor, WordsExtractor
 
 
@@ -17,10 +21,10 @@ class ReadabilityStats:
         >>> rs = ReadabilityStats(text)
         >>> rs.get_stats()
         {'automated_readability_index': 0.2941666666666656,
-        'coleman_liau_index': 0.2941666666666656,
-        'flesch_kincaid_grade': 3.4133333333333304,
-        'flesch_reading_easy': 83.16166666666666,
-        'lix': 48.333333333333336,
+        'coleman_liau_index': 1.1700000000000053,
+        'flesch_kincaid_grade': 2.926666666666666,
+        'flesch_reading_easy': 87.16833333333334,
+        'lix': 28.333333333333336,
         'smog_index': 0.05}
 
     Аргументы:
@@ -68,7 +72,9 @@ class ReadabilityStats:
 
     @property
     def smog_index(self):
-        return calc_smog_index(self.bs.n_complex_words, self.bs.n_sents)
+        return calc_smog_index(
+            self.bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR), self.bs.n_sents
+        )
 
     @property
     def automated_readability_index(self):
@@ -78,7 +84,11 @@ class ReadabilityStats:
 
     @property
     def lix(self):
-        return calc_lix(self.bs.n_long_words, self.bs.n_words, self.bs.n_sents)
+        return calc_lix(
+            self.bs.count_words_by_letters(LIX_LONG_WORD_LETTER_FACTOR),
+            self.bs.n_words,
+            self.bs.n_sents,
+        )
 
     def get_stats(self) -> dict[str, float]:
         """
@@ -220,6 +230,8 @@ def calc_smog_index(
         Наиболее авторитетная метрика читабельности
         Чем выше показатель, тем сложнее текст для чтения
         Результатом является число лет обучения в американской системе образования, необходимых для понимания текста
+        Коэффициенты формулы получены для порога сложного слова в 5 слогов, поэтому
+        класс ReadabilityStats передает количество слов с числом слогов не меньше 5
 
     Ссылки:
         https://en.wikipedia.org/wiki/SMOG
@@ -295,6 +307,8 @@ def calc_lix(n_long_words: int, n_words: int, n_sents: int) -> float:
             40-50 - Тексты средней сложности, журнальные статьи
             50-60 - Сложные тексты, научно-популярные статьи, профессиональная литература, официальные тексты
             60-100 - Очень сложные тексты, написанные канцелярским языком, законы
+        В канонической формуле длинным считается слово длиннее 6 букв, поэтому
+        класс ReadabilityStats передает количество слов с числом букв не меньше 7
 
     Ссылки:
         https://en.wikipedia.org/wiki/Lix_(readability_test)

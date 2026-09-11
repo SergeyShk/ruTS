@@ -3,7 +3,14 @@ from collections.abc import Iterable
 
 from spacy.tokens import Doc, Span
 
-from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, PUNCTUATIONS, RU_LETTERS, SPACES
+from .constants import (
+    BASIC_STATS_DESC,
+    COMPLEX_SYL_FACTOR,
+    LONG_WORD_LETTER_FACTOR,
+    PUNCTUATIONS,
+    RU_LETTERS,
+    SPACES,
+)
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables
 
@@ -38,6 +45,8 @@ class BasicStats:
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
         normalize (bool): Вычислять нормализованные статистики
+        complex_syl_factor (int): Минимальное количество слогов в сложном слове
+        long_word_letter_factor (int): Минимальное количество букв в длинном слове
 
     Атрибуты:
         c_letters (dict[int, int]): Распределение слов по количеству букв
@@ -68,6 +77,8 @@ class BasicStats:
     Методы:
         get_stats: Получение вычисленных статистик текста
         print_stats: Отображение вычисленных статистик текста с описанием на экран
+        count_words_by_syllables: Количество слов с заданным минимальным числом слогов
+        count_words_by_letters: Количество слов с заданным минимальным числом букв
 
     Исключения:
         TypeError: Если передаваемое значение не является строкой или объектом Doc
@@ -80,12 +91,14 @@ class BasicStats:
         sents_extractor: SentsExtractor | None = None,
         words_extractor: WordsExtractor | None = None,
         normalize: bool = False,
+        complex_syl_factor: int = COMPLEX_SYL_FACTOR,
+        long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,
     ):
         sents: Iterable[Span] | Iterable[str]
         if isinstance(source, Doc):
             text = source.text
             sents = source.sents
-            words = tuple(word.text for word in source)
+            words = tuple(word.text for word in source if not word.is_punct and not word.is_space)
         elif isinstance(source, str):
             text = source
             if not sents_extractor:
@@ -106,9 +119,11 @@ class BasicStats:
         self.n_sents = sum(1 for sent in sents)
         self.n_words = len(words)
         self.n_unique_words = len({word.lower() for word in words})
-        self.n_long_words = sum(1 for cpw in letters_per_word if cpw >= 6)
-        self.n_complex_words = sum(1 for spw in syllables_per_word if spw >= COMPLEX_SYL_FACTOR)
-        self.n_simple_words = sum(1 for spw in syllables_per_word if COMPLEX_SYL_FACTOR > spw > 0)
+        self.n_long_words = self.count_words_by_letters(long_word_letter_factor)
+        self.n_complex_words = self.count_words_by_syllables(complex_syl_factor)
+        self.n_simple_words = sum(
+            count for spw, count in self.c_syllables.items() if complex_syl_factor > spw > 0
+        )
         self.n_monosyllable_words = self.c_syllables.get(1, 0)
         self.n_polysyllable_words = (
             self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
@@ -129,6 +144,30 @@ class BasicStats:
             self.p_letters = self.n_letters / self.n_chars
             self.p_spaces = self.n_spaces / self.n_chars
             self.p_punctuations = self.n_punctuations / self.n_chars
+
+    def count_words_by_syllables(self, min_syllables: int) -> int:
+        """
+        Получение количества слов с заданным минимальным числом слогов
+
+        Аргументы:
+            min_syllables (int): Минимальное количество слогов в слове
+
+        Вывод:
+            int: Количество слов
+        """
+        return sum(count for spw, count in self.c_syllables.items() if spw >= min_syllables)
+
+    def count_words_by_letters(self, min_letters: int) -> int:
+        """
+        Получение количества слов с заданным минимальным числом букв
+
+        Аргументы:
+            min_letters (int): Минимальное количество букв в слове
+
+        Вывод:
+            int: Количество слов
+        """
+        return sum(count for cpw, count in self.c_letters.items() if cpw >= min_letters)
 
     def get_stats(self) -> dict[str, int]:
         """

@@ -5,6 +5,7 @@ from ruts.constants import (
     BASIC_STATS_DESC,
     DIVERSITY_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
+    PUNCTUATIONS,
     READABILITY_STATS_DESC,
 )
 
@@ -64,3 +65,12 @@ def test_component_readability(spacy_doc):
 def test_component_diversity(spacy_doc):
     for key in DIVERSITY_STATS_DESC:
         assert hasattr(spacy_doc._.diversity, key)
+
+
+def test_components_filter_punctuation(spacy_doc):
+    n_tokens = sum(1 for token in spacy_doc if not token.is_punct and not token.is_space)
+    assert n_tokens < len(spacy_doc)
+    assert spacy_doc._.basic.n_words == n_tokens
+    assert len(spacy_doc._.diversity.words) == n_tokens
+    assert len(spacy_doc._.morph.words) == n_tokens
+    assert not any(word in PUNCTUATIONS for word in spacy_doc._.diversity.words)

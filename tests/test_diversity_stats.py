@@ -1,8 +1,19 @@
+from math import inf, isnan
+
 import pytest
 
 from ruts import DiversityStats
 from ruts.constants import DIVERSITY_STATS_DESC
-from ruts.diversity_stats import calc_hdd, calc_mattr, calc_msttr, calc_ttr
+from ruts.diversity_stats import (
+    calc_hapax_index,
+    calc_hdd,
+    calc_honore_r,
+    calc_inverse_simpson_index,
+    calc_mattr,
+    calc_msttr,
+    calc_simpson_index,
+    calc_ttr,
+)
 
 
 @pytest.fixture(scope="module")
@@ -87,7 +98,7 @@ def test_hdd(ds):
 
 def test_hdd_n_words():
     text = ["социалистическая", "революция"]
-    assert calc_hdd(text) == -1
+    assert isnan(calc_hdd(text))
 
 
 def test_hdd_zero_division_error(ds):
@@ -96,11 +107,39 @@ def test_hdd_zero_division_error(ds):
 
 
 def test_simpson_index(ds):
-    assert ds.simpson_index == pytest.approx(305.0, rel=1)
+    assert ds.simpson_index == pytest.approx(0.003278688524590164, rel=0.01)
+
+
+def test_simpson_index_unique_words():
+    text = ["социалистическая", "революция"]
+    assert calc_simpson_index(text) == 0.0
+
+
+def test_inverse_simpson_index(ds):
+    assert ds.inverse_simpson_index == pytest.approx(305.0, rel=0.01)
+
+
+def test_inverse_simpson_index_unique_words():
+    text = ["социалистическая", "революция"]
+    assert calc_inverse_simpson_index(text) == inf
+
+
+def test_gini_simpson_index(ds):
+    assert ds.gini_simpson_index == pytest.approx(0.9967213114754099, rel=0.01)
 
 
 def test_hapax_index(ds):
-    assert ds.hapax_index == pytest.approx(2499.4617690150753, rel=1)
+    assert ds.hapax_index == pytest.approx(5755.223409842638, rel=0.01)
+
+
+def test_hapax_index_all_hapaxes():
+    text = ["социалистическая", "революция"]
+    assert calc_hapax_index(text) == inf
+
+
+def test_honore_r(ds):
+    assert ds.honore_r == ds.hapax_index
+    assert calc_honore_r is calc_hapax_index
 
 
 def test_get_stats(ds):
@@ -113,4 +152,4 @@ def test_get_stats(ds):
 def test_print_stats(capsys, ds):
     ds.print_stats()
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 15
+    assert captured.out.count("|") == 17

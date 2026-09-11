@@ -138,6 +138,24 @@ def test_p_punctuations(bs):
     assert bs.p_punctuations == pytest.approx(0.02, rel=0.1)
 
 
+def test_count_words_by_syllables(bs):
+    assert bs.count_words_by_syllables(4) == bs.n_complex_words
+    assert bs.count_words_by_syllables(5) == 17
+
+
+def test_count_words_by_letters(bs):
+    assert bs.count_words_by_letters(6) == bs.n_long_words
+    assert bs.count_words_by_letters(7) == 35
+
+
+def test_custom_factors():
+    text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
+    bs = BasicStats(text, complex_syl_factor=5, long_word_letter_factor=7)
+    assert bs.n_complex_words == 0
+    assert bs.n_simple_words == 9
+    assert bs.n_long_words == 2
+
+
 def test_get_stats(bs):
     stats = bs.get_stats()
     assert isinstance(stats, dict)
