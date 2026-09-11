@@ -70,7 +70,9 @@ class MorphStats:
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         if isinstance(source, Doc):
             text = source.text
-            self.words = tuple(word.text for word in source)
+            self.words = tuple(
+                word.text for word in source if not word.is_punct and not word.is_space
+            )
         elif isinstance(source, str):
             text = source
             if not words_extractor:

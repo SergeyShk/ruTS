@@ -1,7 +1,6 @@
 from collections import Counter
 from collections.abc import Sequence
-from itertools import permutations
-from math import log10, sqrt
+from math import inf, log, log10, nan, sqrt
 
 from nltk import FreqDist
 from scipy.special import comb
@@ -35,17 +34,19 @@ class DiversityStats:
         {'ttr': 0.7333333333333333,
         'rttr': 2.840187787218772,
         'cttr': 2.008316044185609,
-        'httr': 0.8854692840710253,
-        'sttr': 0.2500605793160845,
-        'mttr': 0.0973825075623254,
-        'dttr': 10.268784661968104,
+        'httr': 0.8854692840710255,
+        'sttr': 0.25006057931608583,
+        'mttr': 0.09738250756232525,
+        'dttr': 10.268784661968121,
         'mattr': 0.7333333333333333,
         'msttr': 0.7333333333333333,
         'mtld': 15.0,
         'mamtld': 11.875,
-        'hdd': -1,
-        'simpson_index': 21.0,
-        'hapax_index': 431.2334616537499}
+        'hdd': nan,
+        'simpson_index': 0.047619047619047616,
+        'inverse_simpson_index': 21.0,
+        'gini_simpson_index': 0.9523809523809523,
+        'hapax_index': 992.9517404041437}
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
@@ -57,15 +58,18 @@ class DiversityStats:
         cttr (float): Метрика Corrected Type-Token Ratio (CTTR)
         httr (float): Метрика Herdan Type-Token Ratio (HTTR)
         sttr (float): Метрика Summer Type-Token Ratio (STTR)
-        mttr (float): Метрика Mass Type-Token Ratio (MTTR)
+        mttr (float): Метрика Maas Type-Token Ratio (MTTR)
         dttr (float): Метрика Dugast Type-Token Ratio (DTTR)
         mattr (float): Метрика Moving Average Type-Token Ratio (MATTR)
         msttr (float): Метрика Mean Segmental Type-Token Ratio (MSTTR)
         mtld (float): Метрика Measure of Textual Lexical Diversity (MTLD)
         mamtld (float): Метрика Moving Average Measure of Textual Lexical Diversity (MTLD)
         hdd (float): Метрика Hypergeometric Distribution D (HD-D)
-        simpson_index (float): Индекс Симпсона
-        hapax_index (float): Гапакс-индекс
+        simpson_index (float): Индекс Симпсона (D)
+        inverse_simpson_index (float): Обратный индекс Симпсона (1/D)
+        gini_simpson_index (float): Индекс Джини-Симпсона (1-D)
+        hapax_index (float): Гапакс-индекс, он же Honoré's R
+        honore_r (float): Псевдоним для гапакс-индекса
 
     Методы:
         get_stats: Получение вычисленных метрик лексического разнообразия текста
@@ -79,7 +83,9 @@ class DiversityStats:
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         if isinstance(source, Doc):
             text = source.text
-            self.words = tuple(word.text for word in source)
+            self.words = tuple(
+                word.lower_ for word in source if not word.is_punct and not word.is_space
+            )
         elif isinstance(source, str):
             text = source
             if not words_extractor:
@@ -143,7 +149,19 @@ class DiversityStats:
         return calc_simpson_index(self.words)
 
     @property
+    def inverse_simpson_index(self) -> float:
+        return calc_inverse_simpson_index(self.words)
+
+    @property
+    def gini_simpson_index(self) -> float:
+        return calc_gini_simpson_index(self.words)
+
+    @property
     def hapax_index(self) -> float:
+        return calc_hapax_index(self.words)
+
+    @property
+    def honore_r(self) -> float:
         return calc_hapax_index(self.words)
 
     def get_stats(self) -> dict[str, float]:
@@ -167,6 +185,8 @@ class DiversityStats:
             "mamtld": self.mamtld,
             "hdd": self.hdd,
             "simpson_index": self.simpson_index,
+            "inverse_simpson_index": self.inverse_simpson_index,
+            "gini_simpson_index": self.gini_simpson_index,
             "hapax_index": self.hapax_index,
         }
 
@@ -174,8 +194,9 @@ class DiversityStats:
         """Отображение вычисленных метрик лексического разнообразия текста с описанием на экран"""
         print(f"{'Метрика':^60}|{'Значение':^10}")
         print("-" * 70)
+        stats = self.get_stats()
         for stat, value in DIVERSITY_STATS_DESC.items():
-            print(f"{value:60}|{self.get_stats().get(stat):^10.2f}")
+            print(f"{value:60}|{stats.get(stat):^10.2f}")
 
 
 def calc_ttr(text: Sequence[str]) -> float:
@@ -273,10 +294,10 @@ def calc_sttr(text: Sequence[str]) -> float:
 
 def calc_mttr(text: Sequence[str]) -> float:
     """
-    Вычисление метрики Mass Type-Token Ratio (MTTR)
+    Вычисление метрики Maas Type-Token Ratio (MTTR)
 
     Описание:
-        Модификация метрики TTR с использованием логарифмической функции (1966, Mass)
+        Модификация метрики TTR с использованием логарифмической функции (1972, Maas)
         Наиболее стабильная метрика в отношении длины текста
 
     Аргументы:
@@ -463,7 +484,7 @@ def calc_hdd(text: Sequence[str], sample_size: int = 42) -> float:
         sample_size (int): Длина сегмента
 
     Вывод:
-        float: Значение метрики
+        float: Значение метрики, для текстов короче 50 слов - nan
     """
 
     def hyper(successes, sample_size, population_size, freq):
@@ -486,7 +507,7 @@ def calc_hdd(text: Sequence[str], sample_size: int = 42) -> float:
 
     n_words = len(text)
     if n_words < 50:
-        return -1
+        return nan
     hdd = 0.0
     lexemes = list(set(text))
     freqs = Counter(text)
@@ -498,37 +519,89 @@ def calc_hdd(text: Sequence[str], sample_size: int = 42) -> float:
 
 def calc_simpson_index(text: Sequence[str]) -> float:
     """
-    Вычисление индекса Симпсона
+    Вычисление индекса Симпсона (D)
 
     Описание:
         Индекс широко применяется в биологии для описания вероятности принадлежности любых двух особей,
         случайно отобранных из неопределенно большого сообщества, к разным видам
         С определенными допущениями применим и для описания лексического разнообразия текста
+        Вычисляется в классической форме без возвращения (D = Σ n·(n-1) / N·(N-1)),
+        как в quanteda, LexicalRichness и zipfR
+        Чем ниже показатель, тем богаче словарь текста
+        Обратная величина (1/D) и индекс Джини-Симпсона (1-D) вычисляются отдельными функциями
+        Для текстов короче двух слов индекс не определен, как в zipfR и quanteda
+
+    Ссылки:
+        https://en.wikipedia.org/wiki/Diversity_index#Simpson_index
 
     Аргументы:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     n_words = len(text)
-    den = n_words * (n_words - 1)
-    perms = permutations(text, 2)
-    counter = 0
-    for perm in perms:
-        if perm[0] == perm[1]:
-            counter += 1
-    return safe_divide(den, counter)
+    if n_words < 2:
+        return nan
+    num = sum(freq * (freq - 1) for freq in Counter(text).values())
+    return num / (n_words * (n_words - 1))
+
+
+def calc_inverse_simpson_index(text: Sequence[str]) -> float:
+    """
+    Вычисление обратного индекса Симпсона (1/D)
+
+    Описание:
+        Обратная величина индекса Симпсона, число Хилла второго порядка
+        Чем выше показатель, тем богаче словарь текста
+        Если все слова текста уникальны, индекс Симпсона равен 0, а обратный индекс - бесконечности
+
+    Ссылки:
+        https://en.wikipedia.org/wiki/Diversity_index#Inverse_Simpson_index
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Значение индекса, для текстов короче двух слов - nan
+    """
+    return safe_divide(1, calc_simpson_index(text), inf)
+
+
+def calc_gini_simpson_index(text: Sequence[str]) -> float:
+    """
+    Вычисление индекса Джини-Симпсона (1-D)
+
+    Описание:
+        Вероятность того, что два случайно выбранных слова текста окажутся разными
+        Чем выше показатель, тем богаче словарь текста
+
+    Ссылки:
+        https://en.wikipedia.org/wiki/Diversity_index#Gini–Simpson_index
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Значение индекса, для текстов короче двух слов - nan
+    """
+    return 1 - calc_simpson_index(text)
 
 
 def calc_hapax_index(text: Sequence[str]) -> float:
     """
-    Вычисление Гапакс-индекса
+    Вычисление Гапакс-индекса (Honoré's R)
 
     Описание:
         Гапакс - слово, встретившееся в тексте только один раз
         Гапаксы того или иного автора нередко используют для атрибуции ему некоторого другого произведения,
         где встречаются такие слова
+        Метрика совпадает с мерой Оноре (1979): R = 100 · ln N / (1 - V1/V),
+        где N - количество слов, V - количество лексем, V1 - количество гапаксов
+        Используется натуральный логарифм, как в zipfR и textcomplexity
+        Если все слова текста являются гапаксами, значение индекса равно бесконечности
+        Для текстов короче двух слов индекс не определен, как в zipfR
+        Доступна под псевдонимом calc_honore_r
 
     Ссылки:
         https://ru.wikipedia.org/wiki/Гапакс
@@ -538,12 +611,17 @@ def calc_hapax_index(text: Sequence[str]) -> float:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     n_words = len(text)
+    if n_words < 2:
+        return nan
     n_lexemes = len(set(text))
-    num = 100 * log10(n_words)
+    num = 100 * log(n_words)
     freqs = FreqDist(text)
     hapaxes = len(freqs.hapaxes())
     den = 1 - (safe_divide(hapaxes, n_lexemes))
-    return safe_divide(num, den)
+    return safe_divide(num, den, inf)
+
+
+calc_honore_r = calc_hapax_index

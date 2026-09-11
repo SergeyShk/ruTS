@@ -24,6 +24,9 @@ RU_LETTERS = RU_CONSONANTS + RU_MARKS + RU_VOWELS
 PUNCTUATIONS = string.punctuation + "—«»“”..."
 SPACES = [" ", "\t"]
 COMPLEX_SYL_FACTOR = 4
+LONG_WORD_LETTER_FACTOR = 6
+SMOG_COMPLEX_SYL_FACTOR = 5
+LIX_LONG_WORD_LETTER_FACTOR = 7
 BASIC_STATS_DESC = {
     "n_sents": "Предложения",
     "n_words": "Слова",
@@ -139,13 +142,15 @@ DIVERSITY_STATS_DESC = {
     "cttr": "Corrected Type-Token Ratio (CTTR)",
     "httr": "Herdan Type-Token Ratio (HTTR)",
     "sttr": "Summer Type-Token Ratio (STTR)",
-    "mttr": "Mass Type-Token Ratio (MTTR)",
+    "mttr": "Maas Type-Token Ratio (MTTR)",
     "dttr": "Dugast Type-Token Ratio (DTTR)",
     "mattr": "Moving Average Type-Token Ratio (MATTR)",
     "msttr": "Mean Segmental Type-Token Ratio (MSTTR)",
     "mtld": "Measure of Textual Lexical Diversity (MTLD)",
     "mamtld": "Moving Average Measure of Textual Lexical Diversity (MTLD)",
     "hdd": "Hypergeometric Distribution D (HD-D)",
-    "simpson_index": "Индекс Симпсона",
-    "hapax_index": "Гапакс-индекс",
+    "simpson_index": "Индекс Симпсона (D)",
+    "inverse_simpson_index": "Обратный индекс Симпсона (1/D)",
+    "gini_simpson_index": "Индекс Джини-Симпсона (1-D)",
+    "hapax_index": "Гапакс-индекс (Honoré's R)",
 }
