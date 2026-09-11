@@ -157,14 +157,16 @@ def test_gunning_fog_index(rs):
 def test_consensus_grade(rs):
     assert rs.consensus_grade == 23.5
     grades = [getattr(rs, stat) for stat in READABILITY_GRADE_STATS]
-    grades.append(flesch_reading_easy_to_grade(rs.flesch_reading_easy))
-    assert rs.consensus_grade == calc_consensus_grade(grades)
+    assert rs.consensus_grade == calc_consensus_grade(grades, rs.flesch_reading_easy)
 
 
 def test_calc_consensus_grade():
-    assert calc_consensus_grade([-2.06, 1.17, 0.05, 0.29, 1.52, 4.1, 6.0, 6]) == 1.5
+    assert calc_consensus_grade([-2.06, 1.17, 0.05, 0.29, 1.52, 4.1, 6.0], 87.17) == 1.5
     assert calc_consensus_grade([2.5, 2.5, 3.4]) == 3.0
     assert calc_consensus_grade([7.0]) == 7.0
+    assert calc_consensus_grade([], 65) == 8.5
+    assert calc_consensus_grade([8, 8, 9, 9], 65) == 8.5
+    assert calc_consensus_grade([8.5]) == 9.0
     with pytest.raises(ValueError):
         calc_consensus_grade([])
 
@@ -220,6 +222,21 @@ def test_reading_time(rs):
     assert calc_reading_time(180, 60) == 3.0
     with pytest.raises(ValueError):
         calc_reading_time(100, 0)
+
+
+def test_reading_time_by_speed(rs):
+    assert rs.reading_time_by_speed(180) == rs.reading_time
+    assert rs.reading_time_by_speed(61) == 1.0
+    with pytest.raises(ValueError):
+        rs.reading_time_by_speed(-1)
+
+
+def test_reading_time_by_norm(rs):
+    fast, slow = rs.reading_time_by_norm("grade_1")
+    assert (fast, slow) == (pytest.approx(61 / 40), pytest.approx(61 / 25))
+    assert rs.reading_time_by_norm("adult_silent")[0] == rs.reading_time
+    with pytest.raises(ValueError):
+        rs.reading_time_by_norm("grade_12")
 
 
 def test_get_stats(rs):

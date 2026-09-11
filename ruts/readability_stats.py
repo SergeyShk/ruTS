@@ -12,6 +12,7 @@ from .constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    READING_SPEED_NORMS,
     READING_SPEED_WPM,
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
@@ -82,6 +83,8 @@ class ReadabilityStats:
     Методы:
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
         describe_grade: Класс школы и возраст читателя для сводного класса или отдельной формулы
+        reading_time_by_speed: Время чтения при заданной скорости
+        reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
         get_stats: Получение вычисленных метрик удобочитаемости текста
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
@@ -195,8 +198,7 @@ class ReadabilityStats:
     @property
     def consensus_grade(self) -> float:
         grades = [getattr(self, stat) for stat in READABILITY_GRADE_STATS]
-        grades.append(flesch_reading_easy_to_grade(self.flesch_reading_easy))
-        return calc_consensus_grade(grades)
+        return calc_consensus_grade(grades, self.flesch_reading_easy)
 
     @property
     def reading_time(self) -> float:
@@ -221,6 +223,41 @@ class ReadabilityStats:
                 f"Метрика {stat} не является формулой класса. Формулы класса: {grade_stats}"
             )
         return grade_to_age(getattr(self, stat))
+
+    def reading_time_by_speed(self, wpm: int) -> float:
+        """
+        Вычисление времени чтения текста при заданной скорости
+
+        Аргументы:
+            wpm (int): Скорость чтения, слов в минуту
+
+        Вывод:
+            float: Время чтения в минутах
+        """
+        return calc_reading_time(self.bs.n_words, wpm)
+
+    def reading_time_by_norm(self, norm: str) -> tuple[float, float]:
+        """
+        Вычисление времени чтения текста в границах нормы скорости чтения
+
+        Аргументы:
+            norm (str): Название нормы из справочника READING_SPEED_NORMS
+
+        Вывод:
+            tuple[float, float]: Время чтения в минутах при верхней и нижней границе нормы
+
+        Исключения:
+            ValueError: Если указана неизвестная норма скорости чтения
+        """
+        if norm not in READING_SPEED_NORMS:
+            raise ValueError(
+                f"Неизвестная норма скорости чтения: {norm}. "
+                f"Доступные нормы: {tuple(READING_SPEED_NORMS)}"
+            )
+        min_wpm, max_wpm = READING_SPEED_NORMS[norm]
+        return calc_reading_time(self.bs.n_words, max_wpm), calc_reading_time(
+            self.bs.n_words, min_wpm
+        )
 
     def sis_grade_by_stage(self, stage: str) -> float:
         """
@@ -688,7 +725,9 @@ def flesch_reading_easy_to_grade(flesch_reading_easy: float) -> float:
     return 13
 
 
-def calc_consensus_grade(grades: Iterable[float]) -> float:
+def calc_consensus_grade(
+    grades: Iterable[float], flesch_reading_easy: float | None = None
+) -> float:
     """
     Вычисление сводного класса
 
@@ -696,10 +735,13 @@ def calc_consensus_grade(grades: Iterable[float]) -> float:
         Медиана округленных значений формул класса по аналогии с text_standard
         библиотеки textstat, где вместо медианы используется мода
         Медиана устойчивее к выбросам отдельных формул
-        Значения округляются арифметически (половина - вверх)
+        Значения формул округляются арифметически (половина - вверх)
+        Индекс Флеша переводится в класс функцией flesch_reading_easy_to_grade
+        и добавляется без округления, поэтому для диапазона 60-70 он голосует за 8.5
 
     Аргументы:
         grades (list[float]): Значения формул класса
+        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
 
     Вывод:
         float: Сводный класс
@@ -707,10 +749,12 @@ def calc_consensus_grade(grades: Iterable[float]) -> float:
     Исключения:
         ValueError: Если список значений пуст
     """
-    rounded = [floor(grade + 0.5) for grade in grades]
-    if not rounded:
+    values = [float(floor(grade + 0.5)) for grade in grades]
+    if flesch_reading_easy is not None:
+        values.append(flesch_reading_easy_to_grade(flesch_reading_easy))
+    if not values:
         raise ValueError("Список формул класса пуст")
-    return float(median(rounded))
+    return float(median(values))
 
 
 def grade_to_age(grade: float) -> str:
