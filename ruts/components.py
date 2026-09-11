@@ -99,6 +99,9 @@ class ReadabilityStatsComponent:
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('readability', last=True)
 
+    Выбор пресета коэффициентов:
+        >>> nlp.add_pipe('readability', config={'preset': 'fiction'}, last=True)
+
     Доступ к извлеченным метрикам:
         >>> doc = nlp("мама мыла раму")
         >>> doc._.readability.get_stats()
@@ -107,10 +110,12 @@ class ReadabilityStatsComponent:
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
+        preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
     """
 
-    def __init__(self, nlp: Language, name: str = "readability"):
+    def __init__(self, nlp: Language, name: str = "readability", preset: str = "plainrussian"):
         self.name = name
+        self.preset = preset
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -123,7 +128,7 @@ class ReadabilityStatsComponent:
         Вывод:
             doc (Doc): Модифицированный объект Doc
         """
-        rs = ReadabilityStats(doc)
+        rs = ReadabilityStats(doc, preset=self.preset)
         doc._.set(self.name, rs)
         return doc
 

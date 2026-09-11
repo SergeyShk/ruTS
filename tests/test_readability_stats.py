@@ -45,6 +45,16 @@ def test_default_preset(rs):
     assert rs.coefficients == READABILITY_PRESETS["plainrussian"]
 
 
+def test_coefficients_copy():
+    rs = ReadabilityStats(text)
+    rs.coefficients["flesch_kincaid_grade"] = (0.5, 8.4, 15.59)
+    assert rs.flesch_kincaid_grade == pytest.approx(26.925573770491805, rel=0.01)
+    assert READABILITY_PRESETS["plainrussian"]["flesch_kincaid_grade"] == (0.318, 14.2, 30.5)
+    assert ReadabilityStats(text).flesch_kincaid_grade == pytest.approx(
+        25.29080327868852, rel=0.01
+    )
+
+
 @pytest.mark.parametrize(
     ("preset", "flesch_kincaid_grade", "flesch_reading_easy"),
     [

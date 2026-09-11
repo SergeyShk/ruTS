@@ -102,6 +102,7 @@
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
 | `name` | str | `"readability"` | Наименование компонента в пайплайне |
+| `preset` | str | `"plainrussian"` | [Пресет коэффициентов](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`) |
 
 Пример использования:
 
@@ -129,6 +130,14 @@
 
     ``` bash
     82.735
+    ```
+
+Пресет коэффициентов передается через `config`:
+
+!!! example "Пример"
+
+    ``` python
+    nlp.add_pipe("readability", config={"preset": "fiction"}, last=True)
     ```
 
 ## DiversityStatsComponent

@@ -51,7 +51,8 @@ class ReadabilityStats:
     Атрибуты:
         bs (BasicStats): Объект основных статистик текста
         preset (str): Название пресета коэффициентов
-        coefficients (dict[str, tuple[float, float, float]]): Коэффициенты формул пресета
+        coefficients (dict[str, tuple[float, float, float]]): Коэффициенты формул пресета,
+            копия справочника READABILITY_PRESETS, которую можно менять для отдельного объекта
         flesch_kincaid_grade (float): Тест Флеша-Кинкайда
         flesch_reading_easy (float): Индекс удобочитаемости Флеша
         coleman_liau_index (float): Индекс Колман-Лиау
@@ -87,7 +88,7 @@ class ReadabilityStats:
                 f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
             )
         self.preset = preset
-        self.coefficients = READABILITY_PRESETS[preset]
+        self.coefficients = dict(READABILITY_PRESETS[preset])
         self.bs = BasicStats(source, sents_extractor, words_extractor)
         if not self.bs.n_words:
             raise ValueError("В источнике данных отсутствуют слова")
@@ -530,7 +531,7 @@ def calc_matskovsky_index(
         передает количество слов с числом слогов не меньше 4
 
     Ссылки:
-        https://www.dialog-21.ru/media/4262/ivanovvv.pdf
+        https://dialogue-conf.org/media/4302/ivanovvv.pdf
 
     Аргументы:
         n_complex (int): Количество сложных слов
