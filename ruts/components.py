@@ -2,6 +2,13 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
+from .constants import (
+    DIVERSITY_LOG_BASE,
+    HDD_SAMPLE_SIZE,
+    MATTR_WINDOW_LEN,
+    MTLD_MIN_LEN,
+    MTLD_TTR_THRESHOLD,
+)
 from .diversity_stats import DiversityStats
 from .morph_stats import MorphStats
 from .readability_stats import ReadabilityStats
@@ -144,6 +151,9 @@ class DiversityStatsComponent:
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('diversity', last=True)
 
+    Настройка окон, порогов и основания логарифма:
+        >>> nlp.add_pipe('diversity', config={'window_len': 100, 'log_base': 2.718281828459045}, last=True)
+
     Доступ к извлеченным метрикам:
         >>> doc = nlp("мама мыла раму")
         >>> doc._.diversity.get_stats()
@@ -152,10 +162,29 @@ class DiversityStatsComponent:
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
+        window_len (int): Размер окна для MATTR и сегмента для MSTTR
+        mtld_threshold (float): Порог TTR для MTLD, MA-MTLD и MTLD-W
+        mtld_min_len (int): Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W
+        hdd_sample_size (int): Размер выборки для HD-D
+        log_base (float): Основание логарифма для метрик Summer, Maas и Dugast
     """
 
-    def __init__(self, nlp: Language, name: str = "diversity"):
+    def __init__(
+        self,
+        nlp: Language,
+        name: str = "diversity",
+        window_len: int = MATTR_WINDOW_LEN,
+        mtld_threshold: float = MTLD_TTR_THRESHOLD,
+        mtld_min_len: int = MTLD_MIN_LEN,
+        hdd_sample_size: int = HDD_SAMPLE_SIZE,
+        log_base: float = DIVERSITY_LOG_BASE,
+    ):
         self.name = name
+        self.window_len = window_len
+        self.mtld_threshold = mtld_threshold
+        self.mtld_min_len = mtld_min_len
+        self.hdd_sample_size = hdd_sample_size
+        self.log_base = log_base
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -168,6 +197,13 @@ class DiversityStatsComponent:
         Вывод:
             doc (Doc): Модифицированный объект Doc
         """
-        ds = DiversityStats(doc)
+        ds = DiversityStats(
+            doc,
+            window_len=self.window_len,
+            mtld_threshold=self.mtld_threshold,
+            mtld_min_len=self.mtld_min_len,
+            hdd_sample_size=self.hdd_sample_size,
+            log_base=self.log_base,
+        )
         doc._.set(self.name, ds)
         return doc

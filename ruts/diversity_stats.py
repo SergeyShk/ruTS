@@ -362,6 +362,8 @@ class DiversityStats:
             Стандартный способ сравнения текстов разной длины: метрика считается
             по окнам одинаковой длины, разброс по окнам дает доверительный интервал
             STTR Кубата и Милички - это оконный расчет TTR с окном 1000 слов
+            Окна с неопределенной метрикой (nan) не учитываются, бесконечное значение
+            хотя бы в одном окне дает бесконечное среднее без интервала
 
         Аргументы:
             stat (str): Название метрики из get_stats
@@ -676,8 +678,10 @@ def _mtld_factor_lengths(
     lengths = []
     for start in range(n_words):
         counts: Counter[str] = Counter()
-        for factor_len, word in enumerate(source[start : start + n_words], start=1):
-            counts[word] += 1
+        end = start + n_words if wrap else n_words
+        for pos in range(start, end):
+            counts[source[pos]] += 1
+            factor_len = pos - start + 1
             if len(counts) / factor_len <= threshold and factor_len >= min_len:
                 lengths.append(factor_len)
                 break
@@ -744,13 +748,14 @@ def calc_hdd(text: Sequence[str], sample_size: int = HDD_SAMPLE_SIZE) -> float:
         В основе алгоритма лежит метод случайного отбора из текста сегментов длиной от 32 до 50 слов и
         вычисления для них TTR с последующим усреднением
         Размер выборки по умолчанию 42 слова, в литературе встречаются значения от 35 до 50
+        Метрика не определена для текстов короче 50 слов и для текстов короче размера выборки
 
     Аргументы:
         text (list[str]): Список слов
         sample_size (int): Длина сегмента
 
     Вывод:
-        float: Значение метрики, для текстов короче 50 слов - nan
+        float: Значение метрики, для текстов короче 50 слов или размера выборки - nan
     """
 
     def hyper(successes, sample_size, population_size, freq):
@@ -772,7 +777,7 @@ def calc_hdd(text: Sequence[str], sample_size: int = HDD_SAMPLE_SIZE) -> float:
         return prob
 
     n_words = len(text)
-    if n_words < 50:
+    if n_words < 50 or n_words < sample_size:
         return nan
     hdd = 0.0
     lexemes = list(set(text))
@@ -1252,6 +1257,8 @@ def calc_windowed(
         с окном 1000 слов и 95% доверительным интервалом
         Для текстов короче окна метрика считается по всему тексту как по единственному окну
         Окна, в которых метрика не определена (nan), не учитываются
+        Если хотя бы в одном окне метрика бесконечна, среднее равно бесконечности,
+        а стандартное отклонение и доверительный интервал не определены
 
     Аргументы:
         text (list[str]): Список слов
@@ -1282,12 +1289,13 @@ def calc_windowed(
             text[start : start + window_len] for start in range(0, n_words - window_len + 1, step)
         ]
     values = np.array([func(window) for window in windows], dtype=float)
-    values = values[np.isfinite(values)]
+    values = values[~np.isnan(values)]
     n_windows = int(values.size)
     if not n_windows:
         return WindowStats(nan, nan, nan, nan, 0)
-    mean = float(values.mean())
-    if n_windows < 2:
+    with np.errstate(invalid="ignore"):
+        mean = float(values.mean())
+    if n_windows < 2 or not np.isfinite(mean):
         return WindowStats(mean, nan, nan, nan, n_windows)
     std = float(values.std(ddof=1))
     half_width = float(student_t.ppf((1 + confidence) / 2, n_windows - 1)) * std / sqrt(n_windows)

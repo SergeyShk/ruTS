@@ -215,6 +215,12 @@ def test_hdd_zero_division_error(ds):
     assert calc_hdd(text, 0) == 0.0
 
 
+def test_hdd_sample_size_longer_than_text(ds):
+    assert isnan(calc_hdd(ds.words, len(ds.words) + 1))
+    assert isnan(DiversityStats(text, hdd_sample_size=70).hdd)
+    assert DiversityStats(text, hdd_sample_size=30).hdd == pytest.approx(calc_hdd(ds.words, 30))
+
+
 def test_simpson_index(ds):
     assert ds.simpson_index == pytest.approx(0.003278688524590164, rel=0.01)
 
@@ -346,6 +352,15 @@ def test_windowed_short_text():
 
 def test_windowed_nan_windows():
     assert calc_windowed(riddle, calc_hdd, window_len=5) == WindowStats(nan, nan, nan, nan, 0)
+
+
+def test_windowed_inf_windows():
+    # четыре окна из уникальных слов дают inf, пятое - 1.0: среднее бесконечно, окна учтены все
+    words = [*"абвгдежзиклмнопр", "с", "с", "с", "с"]
+    stats = calc_windowed(words, calc_inverse_simpson_index, window_len=4)
+    assert stats.mean == inf
+    assert stats.n_windows == 5
+    assert isnan(stats.std) and isnan(stats.lower) and isnan(stats.upper)
 
 
 def test_windowed_errors(ds):

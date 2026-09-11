@@ -153,6 +153,11 @@
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
 | `name` | str | `"diversity"` | Наименование компонента в пайплайне |
+| `window_len` | int | `50` | Размер окна для MATTR и сегмента для MSTTR |
+| `mtld_threshold` | float | `0.72` | Порог TTR для MTLD, MA-MTLD и MTLD-W |
+| `mtld_min_len` | int | `10` | Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W |
+| `hdd_sample_size` | int | `42` | Размер выборки для HD-D |
+| `log_base` | float | `10` | Основание логарифма для метрик Summer, Maas и Dugast |
 
 Пример использования:
 
@@ -180,4 +185,12 @@
 
     ``` bash
     1.7320508075688774
+    ```
+
+Окна, пороги и основание логарифма передаются через `config`:
+
+!!! example "Пример"
+
+    ``` python
+    nlp.add_pipe("diversity", config={"window_len": 100, "log_base": 2.718281828459045}, last=True)
     ```
