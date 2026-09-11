@@ -907,6 +907,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#rix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости RIX
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Мацковского
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Дейла-Чейла
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Ганнинга
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1504,6 +1559,61 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#rix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости RIX
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Мацковского
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Дейла-Чейла
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Ганнинга
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1531,6 +1641,7 @@
 </div>
 <p>Вычисление <a href="https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch–Kincaid_grade_level">теста Флеша-Кинкайда</a>.</p>
 <p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
+<p>Коэффициенты по умолчанию взяты из актуальной версии проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. Альтернативные коэффициенты для русского языка доступны через <a href="../readability_stats/#presets">пресеты</a>: Оборнева (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) и FKG_SIS Соловьёва, Иванова и Солнышкиной (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 a\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+b\times\frac{\textrm{Количество слогов}}{\textrm{Количество слов}}–C
@@ -1567,19 +1678,19 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 <tr>
 <td style="text-align: center;"><code>a</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>0.49</code></td>
+<td style="text-align: center;"><code>0.318</code></td>
 <td style="text-align: center;">Коэффициент a</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>7.3</code></td>
+<td style="text-align: center;"><code>14.2</code></td>
 <td style="text-align: center;">Коэффициент b</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>16.59</code></td>
+<td style="text-align: center;"><code>30.5</code></td>
 <td style="text-align: center;">Коэффициент c</td>
 </tr>
 </tbody>
@@ -1628,6 +1739,7 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 </tr>
 </tbody>
 </table>
+<p>Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), которым пользуется казанская группа, доступен через пресет <code>academic</code>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 c–a\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}-b\times\frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
@@ -1998,6 +2110,373 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Количество предложений</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rix">Индекс удобочитаемости RIX<a class="headerlink" href="#rix" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_rix()</strong></p>
+</div>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Lix_(readability_test)">индекса удобочитаемости RIX</a>.</p>
+<p>Упрощенный спутник индекса LIX (1983, Anderson), не зависящий от языка. Чем выше показатель, тем сложнее текст для чтения. Значения индекса могут интерпретироваться следующим образом:</p>
+<table>
+<thead>
+<tr>
+<th>Показатель</th>
+<th>Уровень сложности</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt; 0.2</code></td>
+<td>1-й класс</td>
+</tr>
+<tr>
+<td><code>0.2-0.5</code></td>
+<td>2-й класс</td>
+</tr>
+<tr>
+<td><code>0.5-0.8</code></td>
+<td>3-й класс</td>
+</tr>
+<tr>
+<td><code>0.8-1.3</code></td>
+<td>4-й класс</td>
+</tr>
+<tr>
+<td><code>1.3-1.8</code></td>
+<td>5-й класс</td>
+</tr>
+<tr>
+<td><code>1.8-2.4</code></td>
+<td>6-й класс</td>
+</tr>
+<tr>
+<td><code>2.4-3.0</code></td>
+<td>7-й класс</td>
+</tr>
+<tr>
+<td><code>3.0-3.7</code></td>
+<td>8-й класс</td>
+</tr>
+<tr>
+<td><code>3.7-4.5</code></td>
+<td>9-й класс</td>
+</tr>
+<tr>
+<td><code>4.5-5.3</code></td>
+<td>10-й класс</td>
+</tr>
+<tr>
+<td><code>5.3-6.2</code></td>
+<td>11-й класс</td>
+</tr>
+<tr>
+<td><code>6.2-7.2</code></td>
+<td>12-й класс</td>
+</tr>
+<tr>
+<td><code>&gt; 7.2</code></td>
+<td>Университет</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Как и для LIX, длинным считается слово длиннее 6 букв, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество длинных слов}}{\textrm{Количество предложений}}
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_long_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество длинных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Формула Соловьёва, Иванова, Солнышкиной<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_sis_grade()</strong></p>
+</div>
+<p>Вычисление формулы удобочитаемости для русских академических текстов (<a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a>).</p>
+<p>Формула получена на корпусе Russian Academic Corpus из 154 учебников для 2-11 классов (5.7 млн токенов). Результатом является класс школы, средняя ошибка около одного класса. В отличие от теста Флеша-Кинкайда использует среднюю длину слова в буквах, а не в слогах.</p>
+<p>Коэффициенты по умолчанию соответствуют общей формуле. Для отдельных ступеней обучения авторы приводят собственные коэффициенты, они доступны в справочнике <code>ruts.constants.SIS_GRADE_STAGES</code> и через метод <a href="../readability_stats/#sis_grade_by_stage"><code>sis_grade_by_stage</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th>Ступень</th>
+<th>a</th>
+<th>b</th>
+<th>c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2-4 классы</td>
+<td><code>-2.59</code></td>
+<td><code>0.17</code></td>
+<td><code>0.61</code></td>
+</tr>
+<tr>
+<td>5-7 классы</td>
+<td><code>-5.29</code></td>
+<td><code>0.20</code></td>
+<td><code>1.34</code></td>
+</tr>
+<tr>
+<td>8-11 классы</td>
+<td><code>-3.26</code></td>
+<td><code>0.21</code></td>
+<td><code>1.35</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Авторы считали среднюю длину предложения по токенам spaCy, куда попадает пунктуация, поэтому расчет по словам ruTS дает класс чуть ниже.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a+b\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+c\times\frac{\textrm{Количество букв}}{\textrm{Количество слов}}
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_letters</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество букв</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>a</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-17.5</code></td>
+<td style="text-align: center;">Коэффициент a (свободный член)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>b</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.56</code></td>
+<td style="text-align: center;">Коэффициент b (при средней длине предложения)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>c</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>2.45</code></td>
+<td style="text-align: center;">Коэффициент c (при средней длине слова)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_5">Формула Мацковского<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_matskovsky_index()</strong></p>
+</div>
+<p>Вычисление формулы Мацковского - первой формулы удобочитаемости для русского языка (1976), полученной методом последовательных интервалов.</p>
+<p>Чем выше показатель, тем сложнее текст для чтения.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Сложным считается слово с числом слогов больше трех, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 4.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+b\times100\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество слов}}+c
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_complex</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>a</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.62</code></td>
+<td style="text-align: center;">Коэффициент a (при средней длине предложения)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>b</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.123</code></td>
+<td style="text-align: center;">Коэффициент b (при доле сложных слов)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>c</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.051</code></td>
+<td style="text-align: center;">Коэффициент c (свободный член)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-_2">Индекс Дейла-Чейла<a class="headerlink" href="#-_2" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_dale_chall_index()</strong></p>
+</div>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Dale–Chall_readability_formula">индекса Дейла-Чейла</a>.</p>
+<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
+<p>Оригинальная формула использует список из 3000 знакомых слов, для русского языка такого свободного списка нет, поэтому применяется адаптация проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, где вместо доли незнакомых слов используется доля сложных слов. Оригинальные коэффициенты формулы: <code>0.1579</code> и <code>0.0496</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Сложным считается слово с числом слогов больше четырех, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a\times100\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество слов}}+b\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_complex</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>a</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.552</code></td>
+<td style="text-align: center;">Коэффициент a (при доле сложных слов)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>b</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.273</code></td>
+<td style="text-align: center;">Коэффициент b (при средней длине предложения)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_6">Индекс Ганнинга<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_gunning_fog_index()</strong></p>
+</div>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Gunning_fog_index">индекса туманности Ганнинга</a> (1952, Gunning).</p>
+<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста. Используется в адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. SEO-сервисы дополнительно умножают результат на <code>0.78</code>, обоснование этого множителя не опубликовано.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Сложным считается слово с числом слогов больше четырех, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+100\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество слов}}\right)
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_complex</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>a</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0.4</code></td>
+<td style="text-align: center;">Коэффициент a</td>
 </tr>
 </tbody>
 </table>

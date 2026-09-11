@@ -1614,6 +1614,12 @@
 <td style="text-align: center;"><code>"readability"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>preset</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>"plainrussian"</code></td>
+<td style="text-align: center;"><a href="../stats/readability_stats/#presets">Пресет коэффициентов</a> (<code>plainrussian</code>, <code>fiction</code>, <code>academic</code>)</td>
+</tr>
 </tbody>
 </table>
 <p>Пример использования:</p>
@@ -1636,6 +1642,12 @@
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="m">82</span>.735
+</code></pre></div>
+</div>
+<p>Пресет коэффициентов передается через <code>config</code>:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"readability"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"preset"</span><span class="p">:</span> <span class="s2">"fiction"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="diversitystatscomponent">DiversityStatsComponent<a class="headerlink" href="#diversitystatscomponent" title="Permanent link">&para;</a></h2>
