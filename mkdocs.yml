@@ -63,7 +63,7 @@ extra_css:
 extra_javascript:
   - js/config.js
   - js/mermaid.min.js
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - js/mathjax/tex-svg.js
 
 markdown_extensions:
   - toc:
