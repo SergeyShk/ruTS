@@ -110,8 +110,9 @@ class ReadabilityStats:
         """Отображение вычисленных метрик удобочитаемости текста с описанием на экран"""
         print(f"{'Метрика':^40}|{'Значение':^10}")
         print("-" * 50)
+        stats = self.get_stats()
         for stat, value in READABILITY_STATS_DESC.items():
-            print(f"{value:40}|{self.get_stats().get(stat):^10.2f}")
+            print(f"{value:40}|{stats.get(stat):^10.2f}")
 
 
 def calc_flesch_kincaid_grade(

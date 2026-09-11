@@ -1,10 +1,12 @@
 from math import inf, isnan
 
 import pytest
+import spacy
 
 from ruts import DiversityStats
 from ruts.constants import DIVERSITY_STATS_DESC
 from ruts.diversity_stats import (
+    calc_gini_simpson_index,
     calc_hapax_index,
     calc_hdd,
     calc_honore_r,
@@ -36,6 +38,28 @@ def test_init_value_error():
 def test_init_type_error(text):
     with pytest.raises(TypeError):
         DiversityStats(text)
+
+
+def test_init_doc_lowercase():
+    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать. Ног — это ноги"
+    doc = spacy.blank("ru")(text)
+    assert DiversityStats(doc).words == DiversityStats(text).words
+    assert DiversityStats(doc).ttr == DiversityStats(text).ttr
+
+
+def test_single_word_nan():
+    ds = DiversityStats("слово")
+    for stat in ("simpson_index", "inverse_simpson_index", "gini_simpson_index", "hapax_index"):
+        assert isnan(getattr(ds, stat))
+
+
+@pytest.mark.parametrize(
+    "func",
+    [calc_simpson_index, calc_inverse_simpson_index, calc_gini_simpson_index, calc_hapax_index],
+)
+def test_short_text_nan(func):
+    assert isnan(func(["слово"]))
+    assert isnan(func([]))
 
 
 def test_ttr(ds):

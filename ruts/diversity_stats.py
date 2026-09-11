@@ -84,7 +84,7 @@ class DiversityStats:
         if isinstance(source, Doc):
             text = source.text
             self.words = tuple(
-                word.text for word in source if not word.is_punct and not word.is_space
+                word.lower_ for word in source if not word.is_punct and not word.is_space
             )
         elif isinstance(source, str):
             text = source
@@ -194,8 +194,9 @@ class DiversityStats:
         """Отображение вычисленных метрик лексического разнообразия текста с описанием на экран"""
         print(f"{'Метрика':^60}|{'Значение':^10}")
         print("-" * 70)
+        stats = self.get_stats()
         for stat, value in DIVERSITY_STATS_DESC.items():
-            print(f"{value:60}|{self.get_stats().get(stat):^10.2f}")
+            print(f"{value:60}|{stats.get(stat):^10.2f}")
 
 
 def calc_ttr(text: Sequence[str]) -> float:
@@ -528,6 +529,7 @@ def calc_simpson_index(text: Sequence[str]) -> float:
         как в quanteda, LexicalRichness и zipfR
         Чем ниже показатель, тем богаче словарь текста
         Обратная величина (1/D) и индекс Джини-Симпсона (1-D) вычисляются отдельными функциями
+        Для текстов короче двух слов индекс не определен, как в zipfR и quanteda
 
     Ссылки:
         https://en.wikipedia.org/wiki/Diversity_index#Simpson_index
@@ -536,12 +538,13 @@ def calc_simpson_index(text: Sequence[str]) -> float:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     n_words = len(text)
+    if n_words < 2:
+        return nan
     num = sum(freq * (freq - 1) for freq in Counter(text).values())
-    den = n_words * (n_words - 1)
-    return safe_divide(num, den)
+    return num / (n_words * (n_words - 1))
 
 
 def calc_inverse_simpson_index(text: Sequence[str]) -> float:
@@ -560,7 +563,7 @@ def calc_inverse_simpson_index(text: Sequence[str]) -> float:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     return safe_divide(1, calc_simpson_index(text), inf)
 
@@ -580,7 +583,7 @@ def calc_gini_simpson_index(text: Sequence[str]) -> float:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     return 1 - calc_simpson_index(text)
 
@@ -597,6 +600,7 @@ def calc_hapax_index(text: Sequence[str]) -> float:
         где N - количество слов, V - количество лексем, V1 - количество гапаксов
         Используется натуральный логарифм, как в zipfR и textcomplexity
         Если все слова текста являются гапаксами, значение индекса равно бесконечности
+        Для текстов короче двух слов индекс не определен, как в zipfR
         Доступна под псевдонимом calc_honore_r
 
     Ссылки:
@@ -607,9 +611,11 @@ def calc_hapax_index(text: Sequence[str]) -> float:
         text (list[str]): Список слов
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, для текстов короче двух слов - nan
     """
     n_words = len(text)
+    if n_words < 2:
+        return nan
     n_lexemes = len(set(text))
     num = 100 * log(n_words)
     freqs = FreqDist(text)
