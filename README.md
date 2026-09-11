@@ -187,6 +187,8 @@ python -m spacy download ru_core_news_sm
 *   Индекс Дейла-Чейла
 *   Индекс Ганнинга
 
+Поверх формул работает интерпретирующий слой: сводный класс по медиане формул класса, соответствие класса возрасту читателя по таблице plainrussian и время чтения.
+
 Коэффициенты формул, адаптированных для русского языка, задаются пресетом `preset`: по умолчанию используются коэффициенты проекта [Plain Russian Language](https://github.com/infoculture/plainrussian), полученные на текстах с метками класса (`plainrussian`), доступны также коэффициенты Оборневой для художественных текстов (`fiction`) и казанской группы (Соловьёв, Иванов, Солнышкина) для учебных (`academic`).
 
 ```python
@@ -199,12 +201,14 @@ python -m spacy download ru_core_news_sm
 >>> pprint(rs.get_stats())
 {'automated_readability_index': 0.2941666666666656,
  'coleman_liau_index': 1.1700000000000053,
+ 'consensus_grade': 1.5,
  'dale_chall_index': 4.095000000000001,
  'flesch_kincaid_grade': -2.0633333333333326,
  'flesch_reading_easy': 87.16833333333334,
  'gunning_fog_index': 6.0,
  'lix': 28.333333333333336,
  'matskovsky_index': 9.351,
+ 'reading_time': 0.08333333333333333,
  'rix': 2.0,
  'sis_grade': 1.5166666666666675,
  'smog_index': 0.05}
@@ -223,6 +227,11 @@ python -m spacy download ru_core_news_sm
 Формула Мацковского                          |   9.35
 Индекс Дейла-Чейла                           |   4.10
 Индекс Ганнинга                              |   6.00
+Сводный класс                                |   1.50
+Время чтения (мин.)                          |   0.08
+
+>>> rs.describe_grade()
+'1-3-й класс (6-8 лет)'
 ```
 
 Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/readability_stats/).

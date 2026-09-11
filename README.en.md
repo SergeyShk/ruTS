@@ -187,6 +187,8 @@ The library allows counting the following readability metrics:
 *   Dale-Chall Index
 *   Gunning Fog Index
 
+An interpretation layer works on top of the formulas: a consensus grade as the median of the grade formulas, mapping of the grade to the reader's age by the plainrussian table, and reading time.
+
 Coefficients of the formulas adapted for Russian are selected by the `preset` argument: by default the library uses the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project obtained on texts with grade labels (`plainrussian`); Oborneva's coefficients for fiction (`fiction`) and the Kazan group's (Solovyev, Ivanov, Solnyshkina) coefficients for academic texts (`academic`) are also available.
 
 ```python
@@ -199,12 +201,14 @@ Coefficients of the formulas adapted for Russian are selected by the `preset` ar
 >>> pprint(rs.get_stats())
 {'automated_readability_index': 0.2941666666666656,
  'coleman_liau_index': 1.1700000000000053,
+ 'consensus_grade': 1.5,
  'dale_chall_index': 4.095000000000001,
  'flesch_kincaid_grade': -2.0633333333333326,
  'flesch_reading_easy': 87.16833333333334,
  'gunning_fog_index': 6.0,
  'lix': 28.333333333333336,
  'matskovsky_index': 9.351,
+ 'reading_time': 0.08333333333333333,
  'rix': 2.0,
  'sis_grade': 1.5166666666666675,
  'smog_index': 0.05}
@@ -223,6 +227,11 @@ Coefficients of the formulas adapted for Russian are selected by the `preset` ar
 Формула Мацковского                          |   9.35
 Индекс Дейла-Чейла                           |   4.10
 Индекс Ганнинга                              |   6.00
+Сводный класс                                |   1.50
+Время чтения (мин.)                          |   0.08
+
+>>> rs.describe_grade()
+'1-3-й класс (6-8 лет)'
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/readability_stats/).
