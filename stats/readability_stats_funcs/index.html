@@ -962,6 +962,50 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#flesch_reading_easy_to_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Перевод индекса Флеша в класс
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_consensus_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сводный класс
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grade_to_age" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Класс и возраст читателя
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_reading_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Время чтения
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1608,6 +1652,50 @@
     <span class="md-ellipsis">
       
         Индекс Ганнинга
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flesch_reading_easy_to_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Перевод индекса Флеша в класс
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_consensus_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сводный класс
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grade_to_age" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Класс и возраст читателя
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_reading_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Время чтения
       
     </span>
   </a>
@@ -2477,6 +2565,239 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0.4</code></td>
 <td style="text-align: center;">Коэффициент a</td>
+</tr>
+</tbody>
+</table>
+<h2 id="flesch_reading_easy_to_grade">Перевод индекса Флеша в класс<a class="headerlink" href="#flesch_reading_easy_to_grade" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.flesch_reading_easy_to_grade()</strong></p>
+</div>
+<p>Перевод индекса удобочитаемости Флеша в класс школы для включения в <a href="#calc_consensus_grade">сводный класс</a> по аналогии с <code>text_standard</code> библиотеки <a href="https://github.com/textstat/textstat">textstat</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Индекс Флеша</th>
+<th>Класс</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>90-100</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td><code>80-90</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>70-80</code></td>
+<td>7</td>
+</tr>
+<tr>
+<td><code>60-70</code></td>
+<td>8.5 (8-9 классы)</td>
+</tr>
+<tr>
+<td><code>50-60</code></td>
+<td>10</td>
+</tr>
+<tr>
+<td><code>40-50</code></td>
+<td>11</td>
+</tr>
+<tr>
+<td><code>30-40</code></td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>меньше 30</code></td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<p>Значения больше 100 относятся к 5-му классу.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>flesch_reading_easy</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Значение индекса удобочитаемости Флеша</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_consensus_grade">Сводный класс<a class="headerlink" href="#calc_consensus_grade" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_consensus_grade()</strong></p>
+</div>
+<p>Вычисление сводного класса - медианы округлённых значений формул класса. Аналог <code>text_standard</code> библиотеки textstat, где вместо медианы используется мода; медиана устойчивее к выбросам отдельных формул. Значения формул округляются арифметически (половина - вверх). Индекс Флеша <a href="#flesch_reading_easy_to_grade">переводится в класс</a> и добавляется без округления, поэтому для диапазона 60-70 он голосует за 8.5.</p>
+<p>Класс <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a> передаёт в функцию тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формулу Соловьёва, Иванова, Солнышкиной и индекс Флеша.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>grades</code></td>
+<td style="text-align: center;">list[float]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Значения формул класса</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>flesch_reading_easy</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Значение индекса удобочитаемости Флеша</td>
+</tr>
+</tbody>
+</table>
+<h2 id="grade_to_age">Класс и возраст читателя<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.grade_to_age()</strong></p>
+</div>
+<p>Получение класса школы и возраста читателя по значению формулы класса. Соответствие взято из таблицы <code>GRADE_TEXT</code> проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> и доступно в справочнике <code>ruts.constants.GRADE_AGE_LEVELS</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Класс</th>
+<th style="text-align: center;">Ступень</th>
+<th style="text-align: center;">Возраст</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1-3</td>
+<td style="text-align: center;">1-3-й класс</td>
+<td style="text-align: center;">6-8 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">4-6</td>
+<td style="text-align: center;">4-6-й класс</td>
+<td style="text-align: center;">9-11 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">7-9</td>
+<td style="text-align: center;">7-9-й класс</td>
+<td style="text-align: center;">12-14 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">10-11</td>
+<td style="text-align: center;">10-11-й класс</td>
+<td style="text-align: center;">15-16 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">12-14</td>
+<td style="text-align: center;">1-3-й курс вуза</td>
+<td style="text-align: center;">17-19 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">15-17</td>
+<td style="text-align: center;">4-6-й курс вуза</td>
+<td style="text-align: center;">20-22 года</td>
+</tr>
+<tr>
+<td style="text-align: center;">больше 17</td>
+<td style="text-align: center;">аспирантура</td>
+<td style="text-align: center;">старше 22 лет</td>
+</tr>
+</tbody>
+</table>
+<p>Значение округляется арифметически, значения меньше 1 относятся к 1-3-му классу.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Значение формулы класса</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_reading_time">Время чтения<a class="headerlink" href="#calc_reading_time" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_reading_time()</strong></p>
+</div>
+<p>Вычисление времени чтения текста в минутах. Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию используется верхняя граница. Нормы чтения вслух для начальной школы по ФГОС доступны в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Норма</th>
+<th>Слов в минуту</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>adult_silent</code></td>
+<td>120-180</td>
+</tr>
+<tr>
+<td><code>grade_1</code></td>
+<td>25-40</td>
+</tr>
+<tr>
+<td><code>grade_2</code></td>
+<td>60-80</td>
+</tr>
+<tr>
+<td><code>grade_3</code></td>
+<td>80-100</td>
+</tr>
+<tr>
+<td><code>grade_4</code></td>
+<td>90-110</td>
+</tr>
+</tbody>
+</table>
+<p>Формула:</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество слов}}{\textrm{Скорость чтения}}
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>wpm</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>180</code></td>
+<td style="text-align: center;">Скорость чтения, слов в минуту</td>
 </tr>
 </tbody>
 </table>

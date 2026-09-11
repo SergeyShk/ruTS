@@ -858,6 +858,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interpretation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Интерпретация
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -868,6 +879,39 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describe_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe_grade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time_by_speed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reading_time_by_speed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time_by_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reading_time_by_norm
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#sis_grade_by_stage" class="md-nav__link">
@@ -1511,6 +1555,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interpretation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Интерпретация
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1521,6 +1576,39 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#describe_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe_grade
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time_by_speed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reading_time_by_speed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time_by_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reading_time_by_norm
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#sis_grade_by_stage" class="md-nav__link">
@@ -1710,6 +1798,16 @@
 <td style="text-align: center;">Индекс Ганнинга в адаптации plainrussian</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>consensus_grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Сводный класс по всем формулам класса и индексу Флеша</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>reading_time</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Время чтения в минутах при скорости 180 слов в минуту</td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>bs</code></td>
 <td style="text-align: center;">BasicStats</td>
 <td style="text-align: center;">Базовые текстовые статистики</td>
@@ -1780,7 +1878,143 @@
 <p class="admonition-title">Примечание</p>
 <p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках удобочитаемости и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../readability_stats_funcs/">разделе</a>.</p>
 </div>
+<h2 id="interpretation">Интерпретация<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
+<p>Формулы, результатом которых является класс школы (тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формула Соловьёва, Иванова, Солнышкиной), сводятся в атрибут <code>consensus_grade</code> - медиану округлённых значений, к которым добавлен индекс Флеша, переведённый в класс. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Класс</th>
+<th style="text-align: center;">Ступень</th>
+<th style="text-align: center;">Возраст</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1-3</td>
+<td style="text-align: center;">1-3-й класс</td>
+<td style="text-align: center;">6-8 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">4-6</td>
+<td style="text-align: center;">4-6-й класс</td>
+<td style="text-align: center;">9-11 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">7-9</td>
+<td style="text-align: center;">7-9-й класс</td>
+<td style="text-align: center;">12-14 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">10-11</td>
+<td style="text-align: center;">10-11-й класс</td>
+<td style="text-align: center;">15-16 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">12-14</td>
+<td style="text-align: center;">1-3-й курс вуза</td>
+<td style="text-align: center;">17-19 лет</td>
+</tr>
+<tr>
+<td style="text-align: center;">15-17</td>
+<td style="text-align: center;">4-6-й курс вуза</td>
+<td style="text-align: center;">20-22 года</td>
+</tr>
+<tr>
+<td style="text-align: center;">больше 17</td>
+<td style="text-align: center;">аспирантура</td>
+<td style="text-align: center;">старше 22 лет</td>
+</tr>
+</tbody>
+</table>
+<p>Атрибут <code>reading_time</code> оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a>, а метод <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> считает время в границах нормы из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе школьных норм чтения вслух по ФГОС.</p>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
+<p>Возвращает класс школы и возраст читателя для сводного класса или отдельной формулы класса.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>consensus_grade</code></td>
+<td style="text-align: center;">Название формулы класса</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">()</span>
+<span class="c1"># '1-3-й класс (6-8 лет)'</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">(</span><span class="s2">"gunning_fog_index"</span><span class="p">)</span>
+<span class="c1"># '4-6-й класс (9-11 лет)'</span>
+</code></pre></div>
+</div>
+<h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>
+<p>Возвращает время чтения текста в минутах при заданной скорости.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>wpm</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Скорость чтения, слов в минуту</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reading_time_by_norm">reading_time_by_norm<a class="headerlink" href="#reading_time_by_norm" title="Permanent link">&para;</a></h3>
+<p>Возвращает время чтения текста в минутах при верхней и нижней границе нормы скорости чтения из справочника <code>ruts.constants.READING_SPEED_NORMS</code> (<code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code>, <code>grade_4</code>).</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>norm</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Название нормы скорости чтения</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_speed</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+<span class="c1"># 0.125</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_norm</span><span class="p">(</span><span class="s2">"grade_1"</span><span class="p">)</span>
+<span class="c1"># (0.375, 0.6)</span>
+</code></pre></div>
+</div>
 <h3 id="sis_grade_by_stage">sis_grade_by_stage<a class="headerlink" href="#sis_grade_by_stage" title="Permanent link">&para;</a></h3>
 <p>Возвращает значение формулы Соловьёва, Иванова, Солнышкиной (2023) с коэффициентами для заданной ступени обучения. Общая формула доступна через атрибут <code>sis_grade</code>, коэффициенты ступеней - в справочнике <code>ruts.constants.SIS_GRADE_STAGES</code>.</p>
 <p>Параметры:</p>
@@ -1829,7 +2063,9 @@
 <span class="s1">'sis_grade'</span>:<span class="w"> </span><span class="m">1</span>.5166666666666675,
 <span class="s1">'matskovsky_index'</span>:<span class="w"> </span><span class="m">9</span>.351,
 <span class="s1">'dale_chall_index'</span>:<span class="w"> </span><span class="m">4</span>.095000000000001,
-<span class="s1">'gunning_fog_index'</span>:<span class="w"> </span><span class="m">6</span>.0<span class="o">}</span>
+<span class="s1">'gunning_fog_index'</span>:<span class="w"> </span><span class="m">6</span>.0,
+<span class="s1">'consensus_grade'</span>:<span class="w"> </span><span class="m">1</span>.5,
+<span class="s1">'reading_time'</span>:<span class="w"> </span><span class="m">0</span>.08333333333333333<span class="o">}</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -1857,6 +2093,8 @@
 Формула<span class="w"> </span>Мацковского<span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">9</span>.35
 Индекс<span class="w"> </span>Дейла-Чейла<span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.10
 Индекс<span class="w"> </span>Ганнинга<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">6</span>.00
+Сводный<span class="w"> </span>класс<span class="w">                                </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
+Время<span class="w"> </span>чтения<span class="w"> </span><span class="o">(</span>мин.<span class="o">)</span><span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.08
 </code></pre></div>
 </div>
 
