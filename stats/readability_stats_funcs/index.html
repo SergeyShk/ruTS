@@ -313,25 +313,6 @@
   
 
       
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-tabs__link">
-        
-  
-  
-    
-  
-  API
-
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -1431,33 +1412,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1792,6 +1746,10 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </div>
 <p>Вычисление <a href="https://en.wikipedia.org/wiki/SMOG">индекса SMOG</a> (Simple Measure of Gobbledygook, «Простое измерение разглагольствований»). Наиболее авторитетная метрика читабельности.</p>
 <p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Коэффициенты формулы получены для порога сложного слова в 5 слогов, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5, а не атрибут <code>n_complex_words</code> объекта класса <code>BasicStats</code>.</p>
+</div>
 <p>Формула:</p>
 <div class="arithmatex">\[
 a\times\sqrt{b\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество предложений}}}+c
@@ -2004,6 +1962,10 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>В канонической формуле длинным считается слово длиннее 6 букв, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7, а не атрибут <code>n_long_words</code> объекта класса <code>BasicStats</code>.</p>
+</div>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+100\times\frac{\textrm{Количество длинных слов}}{\textrm{Количество слов}}

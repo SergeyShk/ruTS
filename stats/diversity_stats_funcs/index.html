@@ -313,25 +313,6 @@
   
 
       
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-tabs__link">
-        
-  
-  
-    
-  
-  API
-
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -1030,10 +1011,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mass-type-token-ratio-mttr" class="md-nav__link">
+  <a href="#maas-type-token-ratio-mttr" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mass Type-Token Ratio (MTTR)
+        Maas Type-Token Ratio (MTTR)
       
     </span>
   </a>
@@ -1107,10 +1088,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Индекс Симпсона
+        Индекс Симпсона (D)
       
     </span>
   </a>
@@ -1118,10 +1099,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-" class="md-nav__link">
+  <a href="#1d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Гапакс-индекс
+        Обратный индекс Симпсона (1/D)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-1-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Джини-Симпсона (1-D)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-honores-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Гапакс-индекс (Honoré's R)
       
     </span>
   </a>
@@ -1519,33 +1522,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1628,10 +1604,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mass-type-token-ratio-mttr" class="md-nav__link">
+  <a href="#maas-type-token-ratio-mttr" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mass Type-Token Ratio (MTTR)
+        Maas Type-Token Ratio (MTTR)
       
     </span>
   </a>
@@ -1705,10 +1681,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_2" class="md-nav__link">
+  <a href="#d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Индекс Симпсона
+        Индекс Симпсона (D)
       
     </span>
   </a>
@@ -1716,10 +1692,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#-" class="md-nav__link">
+  <a href="#1d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Гапакс-индекс
+        Обратный индекс Симпсона (1/D)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-1-d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Джини-Симпсона (1-D)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-honores-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Гапакс-индекс (Honoré's R)
       
     </span>
   </a>
@@ -1892,12 +1890,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="mass-type-token-ratio-mttr">Mass Type-Token Ratio (MTTR)<a class="headerlink" href="#mass-type-token-ratio-mttr" title="Permanent link">&para;</a></h2>
+<h2 id="maas-type-token-ratio-mttr">Maas Type-Token Ratio (MTTR)<a class="headerlink" href="#maas-type-token-ratio-mttr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mttr()</strong></p>
 </div>
-<p>Вычисление метрики Mass Type-Token Ratio (MTTR).</p>
-<p>Модификация метрики TTR с использованием логарифмической функции (1966, Mass). Наиболее стабильная метрика в отношении длины текста.</p>
+<p>Вычисление метрики Maas Type-Token Ratio (MTTR).</p>
+<p>Модификация метрики TTR с использованием логарифмической функции (1972, Maas). Наиболее стабильная метрика в отношении длины текста.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\log_{10} {\textrm{(Количество слов)}}-\log_{10} {\textrm{(Количество лексем)}}}{\log_{10} {{\textrm{(Количество слов)}}}^2}
@@ -2104,6 +2102,10 @@
 <li>Вычисление метрики TTR для каждого сегмента</li>
 <li>Усреднение метрик</li>
 </ol>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для текстов короче 50 слов метрика не определена, функция возвращает <code>nan</code>.</p>
+</div>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -2129,12 +2131,22 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_2">Индекс Симпсона<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="d">Индекс Симпсона (D)<a class="headerlink" href="#d" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_simpson_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://ru.qaz.wiki/wiki/Diversity_index#Simpson_index">индекса Симпсона</a>.</p>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Simpson_index">индекса Симпсона</a>.</p>
 <p>Индекс широко применяется в биологии для описания вероятности принадлежности любых двух особей, случайно отобранных из неопределенно большого сообщества, к разным видам. С определенными допущениями применим и для описания лексического разнообразия текста.</p>
+<p>Вычисляется в классической форме без возвращения, как в quanteda, LexicalRichness и zipfR. Чем ниже показатель, тем богаче словарь текста.</p>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Для текстов короче двух слов индекс не определен, функция возвращает <code>nan</code>. То же относится к обратному индексу Симпсона и индексу Джини-Симпсона.</p>
+</div>
+<p>Формула:</p>
+<div class="arithmatex">\[
+\frac{\sum n\times(n-1)}{\textrm{(Количество слов)}\times(\textrm{Количество слов}-1)}
+\]</div>
+<p>где <span class="arithmatex">\(n\)</span> - количество вхождений лексемы в текст.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -2154,9 +2166,71 @@
 </tr>
 </tbody>
 </table>
-<h2 id="-">Гапакс-индекс<a class="headerlink" href="#-" title="Permanent link">&para;</a></h2>
+<h2 id="1d">Обратный индекс Симпсона (1/D)<a class="headerlink" href="#1d" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.diversity_stats.calc_hapax_index()</strong></p>
+<p><strong>ruts.diversity_stats.calc_inverse_simpson_index()</strong></p>
+</div>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Inverse_Simpson_index">обратного индекса Симпсона</a>, числа Хилла второго порядка.</p>
+<p>Чем выше показатель, тем богаче словарь текста.</p>
+<p>Формула:</p>
+<div class="arithmatex">\[
+\frac{1}{D}
+\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Если все слова текста уникальны, индекс Симпсона равен 0, а обратный индекс - бесконечности.</p>
+</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-1-d">Индекс Джини-Симпсона (1-D)<a class="headerlink" href="#-1-d" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.diversity_stats.calc_gini_simpson_index()</strong></p>
+</div>
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Gini–Simpson_index">индекса Джини-Симпсона</a>.</p>
+<p>Вероятность того, что два случайно выбранных слова текста окажутся разными. Чем выше показатель, тем богаче словарь текста.</p>
+<p>Формула:</p>
+<div class="arithmatex">\[
+1-D
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="-honores-r">Гапакс-индекс (Honoré's R)<a class="headerlink" href="#-honores-r" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.diversity_stats.calc_hapax_index()</strong>, псевдоним <strong>ruts.diversity_stats.calc_honore_r()</strong></p>
 </div>
 <p>Вычисление <a href="https://ru.wikipedia.org/wiki/Гапакс">Гапакс-индекса</a>.</p>
 <div class="admonition quote">
@@ -2164,6 +2238,15 @@
 <p>Гапакс (греч. ἅπαξ λεγόμενον - «только раз названное») - слово, встретившееся в некотором корпусе текстов только один раз. Так, можно сказать, что боливар («шляпа определённого фасона») - гапакс языка Пушкина (оно встречается только в знаменитом месте из «Евгения Онегина»). Термин «гапакс» популярен в исследованиях Библии, в которой обнаружено несколько сотен подобных слов.</p>
 </div>
 <p>Гапаксы того или иного автора нередко используют для атрибуции ему некоторого другого произведения, где встречаются такие слова.</p>
+<p>Метрика совпадает с мерой Оноре (1979). Используется натуральный логарифм, как в zipfR и textcomplexity.</p>
+<p>Формула:</p>
+<div class="arithmatex">\[
+100\times\frac{\ln {\textrm{(Количество слов)}}}{1-\frac{\textrm{Количество гапаксов}}{\textrm{Количество лексем}}}
+\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Если все слова текста являются гапаксами, значение индекса равно бесконечности. Для текстов короче двух слов индекс не определен, функция возвращает <code>nan</code>.</p>
+</div>
 <p>Параметры:</p>
 <table>
 <thead>

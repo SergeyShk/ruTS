@@ -313,25 +313,6 @@
   
 
       
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-tabs__link">
-        
-  
-  
-    
-  
-  API
-
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -796,6 +777,28 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#count_words_by_syllables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        count_words_by_syllables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#count_words_by_letters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        count_words_by_letters
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#get_stats" class="md-nav__link">
@@ -1435,33 +1438,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1532,6 +1508,28 @@
   
     <nav class="md-nav" aria-label="Методы">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#count_words_by_syllables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        count_words_by_syllables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#count_words_by_letters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        count_words_by_letters
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#get_stats" class="md-nav__link">
@@ -1625,6 +1623,18 @@
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
 <td style="text-align: center;">Вычислять нормализованные статистики</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>complex_syl_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;">Минимальное количество слогов в сложном слове</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>long_word_letter_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>6</code></td>
+<td style="text-align: center;">Минимальное количество букв в длинном слове</td>
 </tr>
 </tbody>
 </table>
@@ -1765,6 +1775,52 @@
 <p>Атрибуты с нормализованными статистиками <code>p_*</code> доступны только при инициализации объекта с параметром <code>normalize=True</code>.</p>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h3 id="count_words_by_syllables">count_words_by_syllables<a class="headerlink" href="#count_words_by_syllables" title="Permanent link">&para;</a></h3>
+<p>Возвращает количество слов с заданным минимальным числом слогов.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>min_syllables</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Минимальное количество слогов в слове</td>
+</tr>
+</tbody>
+</table>
+<h3 id="count_words_by_letters">count_words_by_letters<a class="headerlink" href="#count_words_by_letters" title="Permanent link">&para;</a></h3>
+<p>Возвращает количество слов с заданным минимальным числом букв.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>min_letters</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Минимальное количество букв в слове</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Методы позволяют пересчитать количество сложных и длинных слов с порогом, отличным от заданного при инициализации объекта. Так, класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> использует их для вычисления индекса SMOG (сложное слово - от 5 слогов) и индекса LIX (длинное слово - от 7 букв).</p>
+</div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
 <p>Возвращает справочник с вычисленными текстовыми статистиками.</p>
 <p>Рассмотрим пример вычисления базовых текстовых статистик с использованием нормализации:</p>

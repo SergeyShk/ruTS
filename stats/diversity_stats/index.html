@@ -313,25 +313,6 @@
   
 
       
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-tabs__link">
-        
-  
-  
-    
-  
-  API
-
-      </a>
-    </li>
-  
-
-      
     </ul>
   </div>
 </nav>
@@ -1437,33 +1418,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="https://ruts-api.herokuapp.com/docs" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1656,7 +1610,7 @@
 <tr>
 <td style="text-align: center;"><code>mttr</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Метрика Mass Type-Token Ratio (MTTR)</td>
+<td style="text-align: center;">Метрика Maas Type-Token Ratio (MTTR)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>dttr</code></td>
@@ -1691,12 +1645,27 @@
 <tr>
 <td style="text-align: center;"><code>simpson_index</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс Симпсона</td>
+<td style="text-align: center;">Индекс Симпсона (D)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>inverse_simpson_index</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Обратный индекс Симпсона (1/D)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>gini_simpson_index</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Индекс Джини-Симпсона (1-D)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>hapax_index</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Гапакс-индекс</td>
+<td style="text-align: center;">Гапакс-индекс, он же Honoré's R</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>honore_r</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Псевдоним для гапакс-индекса</td>
 </tr>
 </tbody>
 </table>
@@ -1723,18 +1692,20 @@
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'cttr'</span>:<span class="w"> </span><span class="m">2</span>.008316044185609,
-<span class="s1">'dttr'</span>:<span class="w"> </span><span class="m">10</span>.268784661968104,
-<span class="s1">'hapax_index'</span>:<span class="w"> </span><span class="m">431</span>.2334616537499,
-<span class="s1">'hdd'</span>:<span class="w"> </span>-1,
-<span class="s1">'httr'</span>:<span class="w"> </span><span class="m">0</span>.8854692840710253,
+<span class="s1">'dttr'</span>:<span class="w"> </span><span class="m">10</span>.268784661968121,
+<span class="s1">'gini_simpson_index'</span>:<span class="w"> </span><span class="m">0</span>.9523809523809523,
+<span class="s1">'hapax_index'</span>:<span class="w"> </span><span class="m">992</span>.9517404041437,
+<span class="s1">'hdd'</span>:<span class="w"> </span>nan,
+<span class="s1">'httr'</span>:<span class="w"> </span><span class="m">0</span>.8854692840710255,
+<span class="s1">'inverse_simpson_index'</span>:<span class="w"> </span><span class="m">21</span>.0,
 <span class="s1">'mamtld'</span>:<span class="w"> </span><span class="m">11</span>.875,
 <span class="s1">'mattr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333,
 <span class="s1">'msttr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333,
 <span class="s1">'mtld'</span>:<span class="w"> </span><span class="m">15</span>.0,
-<span class="s1">'mttr'</span>:<span class="w"> </span><span class="m">0</span>.0973825075623254,
+<span class="s1">'mttr'</span>:<span class="w"> </span><span class="m">0</span>.09738250756232525,
 <span class="s1">'rttr'</span>:<span class="w"> </span><span class="m">2</span>.840187787218772,
-<span class="s1">'simpson_index'</span>:<span class="w"> </span><span class="m">21</span>.0,
-<span class="s1">'sttr'</span>:<span class="w"> </span><span class="m">0</span>.2500605793160845,
+<span class="s1">'simpson_index'</span>:<span class="w"> </span><span class="m">0</span>.047619047619047616,
+<span class="s1">'sttr'</span>:<span class="w"> </span><span class="m">0</span>.25006057931608583,
 <span class="s1">'ttr'</span>:<span class="w"> </span><span class="m">0</span>.7333333333333333<span class="o">}</span>
 </code></pre></div>
 </div>
@@ -1757,15 +1728,17 @@ Root<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="
 Corrected<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>CTTR<span class="o">)</span><span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.01
 Herdan<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>HTTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.89
 Summer<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>STTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.25
-Mass<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MTTR<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.10
+Maas<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MTTR<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.10
 Dugast<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>DTTR<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">  </span><span class="m">10</span>.27
 Moving<span class="w"> </span>Average<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MATTR<span class="o">)</span><span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
 Mean<span class="w"> </span>Segmental<span class="w"> </span>Type-Token<span class="w"> </span>Ratio<span class="w"> </span><span class="o">(</span>MSTTR<span class="o">)</span><span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.73
 Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MTLD<span class="o">)</span><span class="w">                 </span><span class="p">|</span><span class="w">  </span><span class="m">15</span>.00
 Moving<span class="w"> </span>Average<span class="w"> </span>Measure<span class="w"> </span>of<span class="w"> </span>Textual<span class="w"> </span>Lexical<span class="w"> </span>Diversity<span class="w"> </span><span class="o">(</span>MTLD<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w">  </span><span class="m">11</span>.88
-Hypergeometric<span class="w"> </span>Distribution<span class="w"> </span>D<span class="w"> </span><span class="o">(</span>HD-D<span class="o">)</span><span class="w">                        </span><span class="p">|</span><span class="w">  </span>-1.00
-Индекс<span class="w"> </span>Симпсона<span class="w">                                             </span><span class="p">|</span><span class="w">  </span><span class="m">21</span>.00
-Гапакс-индекс<span class="w">                                               </span><span class="p">|</span><span class="w">  </span><span class="m">431</span>.23
+Hypergeometric<span class="w"> </span>Distribution<span class="w"> </span>D<span class="w"> </span><span class="o">(</span>HD-D<span class="o">)</span><span class="w">                        </span><span class="p">|</span><span class="w">   </span>nan
+Индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span>D<span class="o">)</span><span class="w">                                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
+Обратный<span class="w"> </span>индекс<span class="w"> </span>Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>/D<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">  </span><span class="m">21</span>.00
+Индекс<span class="w"> </span>Джини-Симпсона<span class="w"> </span><span class="o">(</span><span class="m">1</span>-D<span class="o">)</span><span class="w">                                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.95
+Гапакс-индекс<span class="w"> </span><span class="o">(</span>Honoré<span class="err">'</span>s<span class="w"> </span>R<span class="o">)</span><span class="w">                                  </span><span class="p">|</span><span class="w">  </span><span class="m">992</span>.95
 </code></pre></div>
 </div>
 
