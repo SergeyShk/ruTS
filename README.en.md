@@ -33,7 +33,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 * **[Object extraction](https://sergeyshk.github.io/ruTS/extractors/words/)** - configurable word and sentence tokenizers
 * **[Basic statistics](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
 * **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
-* **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's index
+* **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree
@@ -255,14 +255,16 @@ The library allows counting the following lexical diversity metrics for a text:
 *   Moving Average Type-Token Ratio (MATTR)
 *   Mean Segmental Type-Token Ratio (MSTTR)
 *   Measure of Textual Lexical Diversity (MTLD)
-*   Moving Average Measure of Textual Lexical Diversity (MAMTLD)
+*   Moving Average Measure of Textual Lexical Diversity (MA-MTLD)
+*   MTLD with a moving window and wrap-around (MTLD-W)
 *   Hypergeometric Distribution D (HD-D)
-*   Simpson's Diversity Index (D)
-*   Inverse Simpson Index (1/D)
-*   Gini-Simpson Index (1-D)
-*   Hapax Legomena Index (Honoré's R)
+*   Simpson's Diversity Index (D), Inverse Simpson Index (1/D) and Gini-Simpson Index (1-D)
+*   Hapax Legomena Index (Honoré's R), hapax ratio, Baayen's P and α₂
+*   Yule's K and I, Herdan's Vm, Sichel's S, Michéa's M, Brunet's W and Dugast's k
+*   Shannon entropy, evenness and perplexity
+*   Zipf's law slope (α) and Heaps' law exponent (β)
 
-Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project.
+Windows, thresholds and the logarithm base are parameters of `DiversityStats`; any measure can be computed over windows with a confidence interval via the `windowed` method. Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project, the frequency-spectrum measures were checked against Tweedie and Baayen (1998), zipfR and quanteda.
 
 ```python
 >>> from pprint import pprint
@@ -271,22 +273,41 @@ Some of the implementations were borrowed from the [lexical_diversity](https://g
 >>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
 
 >>> pprint(DiversityStats(text).get_stats())
-{'cttr': 2.008316044185609,
- 'dttr': 10.268784661968121,
+{'alpha2': 0.5,
+ 'baayen_p': 0.5333333333333333,
+ 'brunet_w': 6.00637847898991,
+ 'cttr': 2.008316044185609,
+ 'dttr': 10.268784661968118,
+ 'dugast_k': 14.783895126869226,
+ 'entropy': 3.3232314287976203,
+ 'evenness': 0.9606293157795304,
  'gini_simpson_index': 0.9523809523809523,
  'hapax_index': 992.9517404041437,
+ 'hapax_ratio': 0.7272727272727273,
  'hdd': nan,
+ 'heaps_beta': 0.8366147342060046,
+ 'herdan_vm': 0.1421338109037403,
  'httr': 0.8854692840710255,
  'inverse_simpson_index': 21.0,
- 'mamtld': 11.875,
+ 'mamtld': 12.0,
  'mattr': 0.7333333333333333,
+ 'michea_m': 5.5,
  'msttr': 0.7333333333333333,
  'mtld': 15.0,
- 'mttr': 0.09738250756232525,
+ 'mtldw': 13.25,
+ 'mttr': 0.09738250756232528,
+ 'perplexity': 10.009038104159247,
  'rttr': 2.840187787218772,
+ 'sichel_s': 0.18181818181818182,
  'simpson_index': 0.047619047619047616,
- 'sttr': 0.25006057931608583,
- 'ttr': 0.7333333333333333}
+ 'sttr': 0.2500605793160848,
+ 'ttr': 0.7333333333333333,
+ 'yule_i': 8.642857142857142,
+ 'yule_k': 444.44444444444446,
+ 'zipf_alpha': 0.4884512334695912}
+
+>>> DiversityStats(text).windowed("ttr", window_len=5)
+WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180167025, upper=1.220176848649964, n_windows=3)
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/diversity_stats/).

@@ -33,7 +33,7 @@
 * **[Извлечение объектов](https://sergeyshk.github.io/ruTS/extractors/words/)** - настраиваемые токенизаторы слов и предложений
 * **[Базовые статистики](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - количество слов, предложений, слогов, знаков препинания и их распределения
 * **[Метрики удобочитаемости](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - тест Флеша-Кинкайда, индекс SMOG, LIX и другие, с коэффициентами для русского языка
-* **[Метрики лексического разнообразия](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR и его вариации, MTLD, HD-D, индекс Симпсона
+* **[Метрики лексического разнообразия](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR и его вариации, MTLD, HD-D, индексы Симпсона и Юла, энтропия, законы Ципфа и Хипса
 * **[Морфологические статистики](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - часть речи, падеж, наклонение, переходность и другие признаки
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов
@@ -255,14 +255,16 @@ python -m spacy download ru_core_news_sm
 *   Moving Average Type-Token Ratio (MATTR)
 *   Mean Segmental Type-Token Ratio (MSTTR)
 *   Measure of Textual Lexical Diversity (MTLD)
-*   Moving Average Measure of Textual Lexical Diversity (MAMTLD)
+*   Moving Average Measure of Textual Lexical Diversity (MA-MTLD)
+*   MTLD со скользящим окном и заворотом текста (MTLD-W)
 *   Hypergeometric Distribution D (HD-D)
-*   Индекс Симпсона (D)
-*   Обратный индекс Симпсона (1/D)
-*   Индекс Джини-Симпсона (1-D)
-*   Гапакс-индекс (Honoré's R)
+*   Индекс Симпсона (D), обратный индекс Симпсона (1/D) и индекс Джини-Симпсона (1-D)
+*   Гапакс-индекс (Honoré's R), доля гапаксов, меры Баайена (P) и показатель α₂
+*   Характеристики Юла (K и I), меры Хердана (Vm), Сишела (S), Мишеа (M), Брюне (W) и Дюга (k)
+*   Энтропия Шеннона, выравненность и перплексия
+*   Наклон закона Ципфа (α) и показатель закона Хипса (β)
 
-Часть реализаций метрик взята из проекта [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity).
+Окна, пороги и основание логарифма вынесены в параметры `DiversityStats`, любую метрику можно посчитать по окнам с доверительным интервалом методом `windowed`. Часть реализаций метрик взята из проекта [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity), формулы мер по спектру частот сверены с Tweedie и Baayen (1998), zipfR и quanteda.
 
 ```python
 >>> from pprint import pprint
@@ -271,22 +273,41 @@ python -m spacy download ru_core_news_sm
 >>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
 
 >>> pprint(DiversityStats(text).get_stats())
-{'cttr': 2.008316044185609,
- 'dttr': 10.268784661968121,
+{'alpha2': 0.5,
+ 'baayen_p': 0.5333333333333333,
+ 'brunet_w': 6.00637847898991,
+ 'cttr': 2.008316044185609,
+ 'dttr': 10.268784661968118,
+ 'dugast_k': 14.783895126869226,
+ 'entropy': 3.3232314287976203,
+ 'evenness': 0.9606293157795304,
  'gini_simpson_index': 0.9523809523809523,
  'hapax_index': 992.9517404041437,
+ 'hapax_ratio': 0.7272727272727273,
  'hdd': nan,
+ 'heaps_beta': 0.8366147342060046,
+ 'herdan_vm': 0.1421338109037403,
  'httr': 0.8854692840710255,
  'inverse_simpson_index': 21.0,
- 'mamtld': 11.875,
+ 'mamtld': 12.0,
  'mattr': 0.7333333333333333,
+ 'michea_m': 5.5,
  'msttr': 0.7333333333333333,
  'mtld': 15.0,
- 'mttr': 0.09738250756232525,
+ 'mtldw': 13.25,
+ 'mttr': 0.09738250756232528,
+ 'perplexity': 10.009038104159247,
  'rttr': 2.840187787218772,
+ 'sichel_s': 0.18181818181818182,
  'simpson_index': 0.047619047619047616,
- 'sttr': 0.25006057931608583,
- 'ttr': 0.7333333333333333}
+ 'sttr': 0.2500605793160848,
+ 'ttr': 0.7333333333333333,
+ 'yule_i': 8.642857142857142,
+ 'yule_k': 444.44444444444446,
+ 'zipf_alpha': 0.4884512334695912}
+
+>>> DiversityStats(text).windowed("ttr", window_len=5)
+WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180167025, upper=1.220176848649964, n_windows=3)
 ```
 
 Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/diversity_stats/).
