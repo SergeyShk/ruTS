@@ -1,7 +1,7 @@
 import pytest
 import spacy
 
-from ruts import ReadabilityStats
+from ruts import DiversityStats, ReadabilityStats
 from ruts.constants import (
     BASIC_STATS_DESC,
     DIVERSITY_STATS_DESC,
@@ -81,6 +81,26 @@ def test_component_readability_preset(spacy_doc):
     assert doc._.readability_fiction.flesch_kincaid_grade == pytest.approx(
         ReadabilityStats(doc, preset="fiction").flesch_kincaid_grade
     )
+
+
+def test_component_diversity_params(spacy_doc):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe(
+        "diversity",
+        name="diversity_custom",
+        config={"window_len": 20, "mtld_threshold": 0.9, "log_base": 2.718281828459045},
+    )
+    doc = nlp(text)
+    custom = doc._.diversity_custom
+    assert (custom.window_len, custom.mtld_threshold, custom.log_base) == (
+        20,
+        0.9,
+        2.718281828459045,
+    )
+    assert custom.mattr != spacy_doc._.diversity.mattr
+    assert custom.mattr == pytest.approx(DiversityStats(doc, window_len=20).mattr)
+    assert custom.mttr == pytest.approx(DiversityStats(doc, log_base=2.718281828459045).mttr)
 
 
 def test_components_filter_punctuation(spacy_doc):

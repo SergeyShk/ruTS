@@ -207,10 +207,32 @@ DIVERSITY_STATS_DESC = {
     "mattr": "Moving Average Type-Token Ratio (MATTR)",
     "msttr": "Mean Segmental Type-Token Ratio (MSTTR)",
     "mtld": "Measure of Textual Lexical Diversity (MTLD)",
-    "mamtld": "Moving Average Measure of Textual Lexical Diversity (MTLD)",
+    "mamtld": "Moving Average Measure of Textual Lexical Diversity (MA-MTLD)",
+    "mtldw": "Moving Average Measure of Textual Lexical Diversity with Wrap (MTLD-W)",
     "hdd": "Hypergeometric Distribution D (HD-D)",
     "simpson_index": "Индекс Симпсона (D)",
     "inverse_simpson_index": "Обратный индекс Симпсона (1/D)",
     "gini_simpson_index": "Индекс Джини-Симпсона (1-D)",
     "hapax_index": "Гапакс-индекс (Honoré's R)",
+    "yule_k": "Характеристика Юла (Yule's K)",
+    "yule_i": "Обратная характеристика Юла (Yule's I)",
+    "herdan_vm": "Мера Хердана (Herdan's Vm)",
+    "sichel_s": "Мера Сишела (Sichel's S)",
+    "michea_m": "Мера Мишеа (Michéa's M)",
+    "brunet_w": "Мера Брюне (Brunet's W)",
+    "dugast_k": "Мера Дюга (Dugast's k)",
+    "baayen_p": "Мера Баайена (Baayen's P)",
+    "hapax_ratio": "Доля гапаксов",
+    "alpha2": "Показатель α₂",
+    "entropy": "Энтропия Шеннона (бит)",
+    "evenness": "Выравненность",
+    "perplexity": "Перплексия",
+    "zipf_alpha": "Наклон закона Ципфа (α)",
+    "heaps_beta": "Показатель закона Хипса (β)",
 }
+MATTR_WINDOW_LEN = 50
+MTLD_TTR_THRESHOLD = 0.72
+MTLD_MIN_LEN = 10
+HDD_SAMPLE_SIZE = 42
+DIVERSITY_LOG_BASE = 10
+BRUNET_W_EXPONENT = 0.172
