@@ -54,6 +54,34 @@ READABILITY_STATS_DESC = {
     "matskovsky_index": "Формула Мацковского",
     "dale_chall_index": "Индекс Дейла-Чейла",
     "gunning_fog_index": "Индекс Ганнинга",
+    "consensus_grade": "Сводный класс",
+    "reading_time": "Время чтения (мин.)",
+}
+READABILITY_GRADE_STATS = (
+    "flesch_kincaid_grade",
+    "coleman_liau_index",
+    "smog_index",
+    "automated_readability_index",
+    "sis_grade",
+    "dale_chall_index",
+    "gunning_fog_index",
+)
+GRADE_AGE_LEVELS: tuple[tuple[int, int, str, str], ...] = (
+    (1, 3, "1-3-й класс", "6-8 лет"),
+    (4, 6, "4-6-й класс", "9-11 лет"),
+    (7, 9, "7-9-й класс", "12-14 лет"),
+    (10, 11, "10-11-й класс", "15-16 лет"),
+    (12, 14, "1-3-й курс вуза", "17-19 лет"),
+    (15, 17, "4-6-й курс вуза", "20-22 года"),
+)
+POSTGRADUATE_LEVEL = ("аспирантура", "старше 22 лет")
+READING_SPEED_WPM = 180
+READING_SPEED_NORMS: dict[str, tuple[int, int]] = {
+    "adult_silent": (120, 180),
+    "grade_1": (25, 40),
+    "grade_2": (60, 80),
+    "grade_3": (80, 100),
+    "grade_4": (90, 110),
 }
 _PLAINRUSSIAN_ADAPTED_COEFFICIENTS = {
     "coleman_liau_index": (0.055, 0.35, 20.33),

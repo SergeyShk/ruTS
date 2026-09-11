@@ -1,12 +1,19 @@
-from math import sqrt
+from collections.abc import Iterable
+from math import floor, sqrt
+from statistics import median
 
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
 from .constants import (
+    GRADE_AGE_LEVELS,
     LIX_LONG_WORD_LETTER_FACTOR,
+    POSTGRADUATE_LEVEL,
+    READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    READING_SPEED_NORMS,
+    READING_SPEED_WPM,
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
 )
@@ -24,6 +31,8 @@ class ReadabilityStats:
             academic - Соловьёв, Иванов, Солнышкина (2018), учебники 5-11 классов
         Пресет задает коэффициенты теста Флеша-Кинкайда и индекса Флеша, коэффициенты
         индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из plainrussian
+        Интерпретирующий слой: сводный класс по медиане формул класса, соответствие
+        класса возрасту по таблице plainrussian и время чтения
 
     Пример использования:
         >>> from ruts import ReadabilityStats
@@ -40,7 +49,11 @@ class ReadabilityStats:
         'sis_grade': 1.5166666666666675,
         'matskovsky_index': 9.351,
         'dale_chall_index': 4.095000000000001,
-        'gunning_fog_index': 6.0}
+        'gunning_fog_index': 6.0,
+        'consensus_grade': 1.5,
+        'reading_time': 0.08333333333333333}
+        >>> rs.describe_grade()
+        '1-3-й класс (6-8 лет)'
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
@@ -64,9 +77,14 @@ class ReadabilityStats:
         matskovsky_index (float): Формула Мацковского
         dale_chall_index (float): Индекс Дейла-Чейла в адаптации plainrussian
         gunning_fog_index (float): Индекс Ганнинга в адаптации plainrussian
+        consensus_grade (float): Сводный класс по всем формулам класса и индексу Флеша
+        reading_time (float): Время чтения в минутах при скорости 180 слов в минуту
 
     Методы:
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
+        describe_grade: Класс школы и возраст читателя для сводного класса или отдельной формулы
+        reading_time_by_speed: Время чтения при заданной скорости
+        reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
         get_stats: Получение вычисленных метрик удобочитаемости текста
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
@@ -175,6 +193,70 @@ class ReadabilityStats:
             self.bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR),
             self.bs.n_words,
             self.bs.n_sents,
+        )
+
+    @property
+    def consensus_grade(self) -> float:
+        grades = [getattr(self, stat) for stat in READABILITY_GRADE_STATS]
+        return calc_consensus_grade(grades, self.flesch_reading_easy)
+
+    @property
+    def reading_time(self) -> float:
+        return calc_reading_time(self.bs.n_words)
+
+    def describe_grade(self, stat: str = "consensus_grade") -> str:
+        """
+        Получение класса школы и возраста читателя по значению формулы класса
+
+        Аргументы:
+            stat (str): Название формулы класса, по умолчанию сводный класс
+
+        Вывод:
+            str: Класс школы и возраст читателя
+
+        Исключения:
+            ValueError: Если указанная метрика не является формулой класса
+        """
+        grade_stats = ("consensus_grade", *READABILITY_GRADE_STATS)
+        if stat not in grade_stats:
+            raise ValueError(
+                f"Метрика {stat} не является формулой класса. Формулы класса: {grade_stats}"
+            )
+        return grade_to_age(getattr(self, stat))
+
+    def reading_time_by_speed(self, wpm: int) -> float:
+        """
+        Вычисление времени чтения текста при заданной скорости
+
+        Аргументы:
+            wpm (int): Скорость чтения, слов в минуту
+
+        Вывод:
+            float: Время чтения в минутах
+        """
+        return calc_reading_time(self.bs.n_words, wpm)
+
+    def reading_time_by_norm(self, norm: str) -> tuple[float, float]:
+        """
+        Вычисление времени чтения текста в границах нормы скорости чтения
+
+        Аргументы:
+            norm (str): Название нормы из справочника READING_SPEED_NORMS
+
+        Вывод:
+            tuple[float, float]: Время чтения в минутах при верхней и нижней границе нормы
+
+        Исключения:
+            ValueError: Если указана неизвестная норма скорости чтения
+        """
+        if norm not in READING_SPEED_NORMS:
+            raise ValueError(
+                f"Неизвестная норма скорости чтения: {norm}. "
+                f"Доступные нормы: {tuple(READING_SPEED_NORMS)}"
+            )
+        min_wpm, max_wpm = READING_SPEED_NORMS[norm]
+        return calc_reading_time(self.bs.n_words, max_wpm), calc_reading_time(
+            self.bs.n_words, min_wpm
         )
 
     def sis_grade_by_stage(self, stage: str) -> float:
@@ -611,3 +693,128 @@ def calc_gunning_fog_index(n_complex: int, n_words: int, n_sents: int, a: float 
         float: Значение индекса
     """
     return a * ((n_words / n_sents) + (100 * n_complex / n_words))
+
+
+def flesch_reading_easy_to_grade(flesch_reading_easy: float) -> float:
+    """
+    Перевод индекса удобочитаемости Флеша в класс школы
+
+    Описание:
+        Используется для включения индекса Флеша в сводный класс по аналогии
+        с text_standard библиотеки textstat:
+            90-100 - 5
+            80-90 - 6
+            70-80 - 7
+            60-70 - 8.5 (8-9 классы)
+            50-60 - 10
+            40-50 - 11
+            30-40 - 12
+            меньше 30 - 13
+        Значения больше 100 относятся к 5-му классу
+
+    Аргументы:
+        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
+
+    Вывод:
+        float: Класс школы
+    """
+    thresholds = ((90, 5), (80, 6), (70, 7), (60, 8.5), (50, 10), (40, 11), (30, 12))
+    for threshold, grade in thresholds:
+        if flesch_reading_easy >= threshold:
+            return grade
+    return 13
+
+
+def calc_consensus_grade(
+    grades: Iterable[float], flesch_reading_easy: float | None = None
+) -> float:
+    """
+    Вычисление сводного класса
+
+    Описание:
+        Медиана округленных значений формул класса по аналогии с text_standard
+        библиотеки textstat, где вместо медианы используется мода
+        Медиана устойчивее к выбросам отдельных формул
+        Значения формул округляются арифметически (половина - вверх)
+        Индекс Флеша переводится в класс функцией flesch_reading_easy_to_grade
+        и добавляется без округления, поэтому для диапазона 60-70 он голосует за 8.5
+
+    Аргументы:
+        grades (list[float]): Значения формул класса
+        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
+
+    Вывод:
+        float: Сводный класс
+
+    Исключения:
+        ValueError: Если список значений пуст
+    """
+    values = [float(floor(grade + 0.5)) for grade in grades]
+    if flesch_reading_easy is not None:
+        values.append(flesch_reading_easy_to_grade(flesch_reading_easy))
+    if not values:
+        raise ValueError("Список формул класса пуст")
+    return float(median(values))
+
+
+def grade_to_age(grade: float) -> str:
+    """
+    Получение класса школы и возраста читателя по значению формулы класса
+
+    Описание:
+        Соответствие взято из таблицы GRADE_TEXT проекта Plain Russian Language:
+            1-3 - 1-3-й класс, 6-8 лет
+            4-6 - 4-6-й класс, 9-11 лет
+            7-9 - 7-9-й класс, 12-14 лет
+            10-11 - 10-11-й класс, 15-16 лет
+            12-14 - 1-3-й курс вуза, 17-19 лет
+            15-17 - 4-6-й курс вуза, 20-22 года
+            больше 17 - аспирантура, старше 22 лет
+        Значение округляется арифметически, значения меньше 1 относятся к 1-3-му классу
+        Применимо к формулам, результатом которых является класс: тест Флеша-Кинкайда,
+        индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формула Соловьёва,
+        Иванова, Солнышкиной, сводный класс
+
+    Ссылки:
+        https://github.com/infoculture/plainrussian
+
+    Аргументы:
+        grade (float): Значение формулы класса
+
+    Вывод:
+        str: Класс школы и возраст читателя
+    """
+    rounded = floor(grade + 0.5)
+    for _, high, education, age in GRADE_AGE_LEVELS:
+        if rounded <= high:
+            return f"{education} ({age})"
+    education, age = POSTGRADUATE_LEVEL
+    return f"{education} ({age})"
+
+
+def calc_reading_time(n_words: int, wpm: int = READING_SPEED_WPM) -> float:
+    """
+    Вычисление времени чтения текста
+
+    Описание:
+        Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991)
+        Нормы чтения вслух по ФГОС для начальной школы, слов в минуту:
+            1 класс - 25-40
+            2 класс - 60-80
+            3 класс - 80-100
+            4 класс - 90-110
+        Нормы доступны в справочнике READING_SPEED_NORMS
+
+    Аргументы:
+        n_words (int): Количество слов
+        wpm (int): Скорость чтения, слов в минуту
+
+    Вывод:
+        float: Время чтения в минутах
+
+    Исключения:
+        ValueError: Если скорость чтения не положительна
+    """
+    if wpm <= 0:
+        raise ValueError("Скорость чтения должна быть больше 0")
+    return n_words / wpm
