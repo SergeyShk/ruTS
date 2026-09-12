@@ -83,12 +83,42 @@ class TestWordsExtractor:
         [
             (None, 61),
             (re.compile(r"[^\w]+"), 62),
-            (wordpunct_tokenize, 63),
+            (wordpunct_tokenize, 62),
         ],
     )
     def test_extract_tokenizer(self, text, tokenizer, expected):
         we = WordsExtractor(tokenizer=tokenizer)
         assert len(we.extract(text)) == expected
+
+    def test_extract_stopwords_after_lowercase(self):
+        we = WordsExtractor(stopwords=["не", "а"], lowercase=True)
+        text = "Не имей сто рублей, а имей сто друзей. А не так."
+        assert we.extract(text) == ("имей", "сто", "рублей", "имей", "сто", "друзей", "так")
+
+    @pytest.mark.parametrize(
+        ("token", "is_number"),
+        [
+            ("100", True),
+            ("2020-2021", True),
+            ("5.5", True),
+            ("1,5", True),
+            ("3-й", True),
+            ("90-х", True),
+            ("10-ГО", True),
+            ("слово", False),
+            ("какого-либо", False),
+            ("3-мя-", False),
+        ],
+    )
+    def test_extract_filter_nums_tokens(self, token, is_number):
+        we = WordsExtractor(filter_nums=True)
+        expected = ("слово", "слово") if is_number else ("слово", token, "слово")
+        assert we.extract(f"слово {token} слово") == expected
+
+    def test_extract_filter_multichar_punct(self):
+        text = "Что?! Да!!! Нет... Слово -- слово … № 5 – да „так“ ‘вот’"
+        expected = ("Что", "Да", "Нет", "Слово", "слово", "5", "да", "так", "вот")
+        assert WordsExtractor().extract(text) == expected
 
     def test_extract_filter_punct(self, text):
         we = WordsExtractor(filter_punct=False)
@@ -96,7 +126,7 @@ class TestWordsExtractor:
 
     def test_extract_filter_nums(self, text):
         we = WordsExtractor(filter_nums=True)
-        assert len(we.extract(text + " 33.5 + 99")) == 62
+        assert len(we.extract(text + " 33.5 + 99")) == 61
 
     def test_extract_use_lexemes(self, text):
         we = WordsExtractor(use_lexemes=True)

@@ -4,7 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from ruts.utils import download_file, extract_archive, safe_divide, to_path
+from ruts.utils import (
+    download_file,
+    extract_archive,
+    is_punctuation,
+    parse_word,
+    safe_divide,
+    to_path,
+)
 
 STOPWORDS_URL = (
     "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopwords.zip"
@@ -88,3 +95,36 @@ def test_extract_archive_not_an_archive(tmp_path):
 @pytest.mark.parametrize("args, result", [((1, 5), 0.2), ((1, 0), 0), ((1, "", -1), -1)])
 def test_safe_divide(args, result):
     assert safe_divide(*args) == result
+
+
+@pytest.mark.parametrize(
+    ("token", "expected"),
+    [
+        ("!", True),
+        ("?!", True),
+        ("!..", True),
+        ("--", True),
+        ("…", True),
+        ("–", True),
+        ("№", True),
+        ("„", True),
+        ("’", True),
+        ("«»", True),
+        ("+", True),
+        ("слово", False),
+        ("какого-либо", False),
+        ("3-й", False),
+        ("100", False),
+        ("a", False),
+    ],
+)
+def test_is_punctuation(token, expected):
+    assert is_punctuation(token) is expected
+
+
+def test_parse_word_cached():
+    parse_word.cache_clear()
+    assert parse_word("рублей").normal_form == "рубль"
+    assert parse_word("рублей").tag.POS == "NOUN"
+    assert parse_word.cache_info().hits == 1
+    assert parse_word.cache_info().misses == 1

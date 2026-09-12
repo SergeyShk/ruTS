@@ -156,6 +156,12 @@ def test_custom_factors():
     assert bs.n_long_words == 2
 
 
+def test_multichar_punctuation():
+    bs = BasicStats("Ура!!! Ура?! Ура... Слово – слово… и №1")
+    assert bs.n_words == 7
+    assert bs.n_punctuations == 11
+
+
 def test_get_stats(bs):
     stats = bs.get_stats()
     assert isinstance(stats, dict)

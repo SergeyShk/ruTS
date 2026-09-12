@@ -1,6 +1,6 @@
 import pytest
 
-from ruts import ReadabilityStats
+from ruts import ReadabilityStats, SentsExtractor
 from ruts.constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
@@ -42,6 +42,11 @@ def test_init_value_error():
 def test_init_type_error(text):
     with pytest.raises(TypeError):
         ReadabilityStats(text)
+
+
+def test_init_no_sents_error():
+    with pytest.raises(ValueError, match="предложения"):
+        ReadabilityStats("Текст один. Текст два.", sents_extractor=SentsExtractor(min_len=1000))
 
 
 def test_init_preset_error():

@@ -4,7 +4,7 @@ from spacy.tokens import Doc
 
 from .constants import MORPHOLOGY_STATS_DESC
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer
+from .utils import parse_word
 
 
 class MorphStats:
@@ -83,8 +83,7 @@ class MorphStats:
         if not self.words:
             raise ValueError("В источнике данных отсутствуют слова")
 
-        morph = get_morph_analyzer()
-        self.tags = tuple(morph.parse(word)[0].tag for word in self.words)
+        self.tags = tuple(parse_word(word).tag for word in self.words)
         self.pos = tuple(tag.POS for tag in self.tags)
         self.animacy = tuple(tag.animacy for tag in self.tags)
         self.aspect = tuple(tag.aspect for tag in self.tags)
