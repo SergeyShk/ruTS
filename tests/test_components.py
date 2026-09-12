@@ -1,11 +1,12 @@
 import pytest
 import spacy
 
-from ruts import DiversityStats, ReadabilityStats, StyleStats
+from ruts import DiversityStats, PhonStats, ReadabilityStats, StyleStats
 from ruts.constants import (
     BASIC_STATS_DESC,
     DIVERSITY_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
+    PHON_STATS_DESC,
     PUNCTUATIONS,
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
@@ -29,6 +30,7 @@ def spacy_nlp():
     spacy_nlp.add_pipe("readability", last=True)
     spacy_nlp.add_pipe("diversity", last=True)
     spacy_nlp.add_pipe("style", last=True)
+    spacy_nlp.add_pipe("phon", last=True)
 
     yield spacy_nlp
 
@@ -37,6 +39,7 @@ def spacy_nlp():
     spacy_nlp.remove_pipe("readability")
     spacy_nlp.remove_pipe("diversity")
     spacy_nlp.remove_pipe("style")
+    spacy_nlp.remove_pipe("phon")
 
 
 @pytest.fixture(scope="module")
@@ -50,6 +53,7 @@ def test_components_names(spacy_nlp):
     assert spacy_nlp.has_pipe("readability") is True
     assert spacy_nlp.has_pipe("diversity") is True
     assert spacy_nlp.has_pipe("style") is True
+    assert spacy_nlp.has_pipe("phon") is True
 
 
 def test_component_basic(spacy_doc):
@@ -91,6 +95,23 @@ def test_component_style(spacy_doc):
     for key in STYLE_STATS_DESC:
         assert hasattr(spacy_doc._.style, key)
     assert spacy_doc._.style.get_stats() == StyleStats(spacy_doc).get_stats()
+
+
+def test_component_phon(spacy_doc):
+    for key in PHON_STATS_DESC:
+        assert hasattr(spacy_doc._.phon, key)
+    assert spacy_doc._.phon.get_stats() == PhonStats(spacy_doc).get_stats()
+
+
+def test_component_phon_params(spacy_doc):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("phon", name="phon_custom", config={"window_len": 5})
+    doc = nlp(text)
+    assert doc._.phon_custom.window_len == 5
+    assert doc._.phon_custom.alliteration == pytest.approx(
+        PhonStats(doc, window_len=5).alliteration
+    )
+    assert doc._.phon_custom.alliteration != pytest.approx(spacy_doc._.phon.alliteration)
 
 
 def test_component_style_params(spacy_doc):

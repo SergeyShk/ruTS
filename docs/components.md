@@ -246,3 +246,54 @@
     ``` python
     nlp.add_pipe("style", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True)
     ```
+
+## PhonStatsComponent
+
+!!! info ""
+    **ruts.components.PhonStatsComponent**
+
+Модуль для компонента фоностатистик текста.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"phon"` | Наименование компонента в пайплайне |
+| `window_len` | int | `3` | Размер окна в словах для аллитерации и ассонанса |
+
+Пример использования:
+
+!!! example "Пример"
+
+    _Код_:
+
+    ``` python
+    # Загрузка библиотек
+    import ruts
+    import spacy
+
+    # Загрузка модели spaCy
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Добавление компонента
+    nlp.add_pipe("phon", last=True)
+
+    # Доступ к посчитанным статистикам
+    doc = nlp("мама мыла раму")
+    doc._.phon.p_open_syllables
+    ```
+
+    _Результат_:
+
+    ``` bash
+    1.0
+    ```
+
+Размер окна передается через `config`:
+
+!!! example "Пример"
+
+    ``` python
+    nlp.add_pipe("phon", config={"window_len": 5}, last=True)
+    ```

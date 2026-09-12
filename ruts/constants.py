@@ -237,6 +237,22 @@ STYLE_STATS_DESC = {
     "spam": "Заспамленность (%)",
     "zipf_naturalness": "Естественность по Ципфу (%)",
 }
+PHON_STATS_DESC = {
+    "p_vowels": "Доля гласных",
+    "p_sonorants": "Доля сонорных согласных",
+    "p_voiced": "Доля звонких шумных согласных",
+    "p_voiceless": "Доля глухих шумных согласных",
+    "consonant_vowel_ratio": "Отношение согласных к гласным",
+    "p_heavy_clusters": "Доля кластеров из 3 и более согласных",
+    "p_hiatus": "Зияний гласных на слово",
+    "cv_entropy": "Энтропия CV-шаблонов слов (бит)",
+    "hardness": "Жёсткость",
+    "alliteration": "Индекс аллитерации",
+    "assonance": "Индекс ассонанса",
+    "p_open_syllables": "Доля открытых слогов",
+    "mean_syllable_len": "Средняя длина слога (букв)",
+}
+PHON_WINDOW_LEN = 3
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10
