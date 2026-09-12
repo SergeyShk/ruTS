@@ -35,6 +35,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 * **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features
+* **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -381,6 +382,43 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/morph_stats/)
 </details>
 
 <details>
+<summary><b>SEO style metrics</b></summary>
+
+<br>
+
+The library reproduces the indicators of the [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo) services:
+
+*   Classic and academic nausea
+*   Water content
+*   Spam score
+*   Naturalness by Zipf's law
+*   Keyword and phrase density
+
+The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content are detected by part of speech with pymorphy3 or passed as a list.
+
+```python
+>>> from pprint import pprint
+>>> from ruts import StyleStats
+
+>>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+>>> ss = StyleStats(text)
+
+>>> pprint(ss.get_stats())
+{'academic_nausea': 93.33333333333333,
+ 'classic_nausea': 1.7320508075688772,
+ 'spam': 26.666666666666668,
+ 'water': 33.333333333333336,
+ 'zipf_naturalness': 55.55555555555556}
+
+>>> ss.keyword_density("когда", "нет а")
+{'когда': 20.0, 'нет а': 13.333333333333334}
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/stats/style_stats/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -463,6 +501,7 @@ The library allows creating the following classes of spaCy components:
 *   `DiversityStats`
 *   `MorphStats`
 *   `ReadabilityStats`
+*   `StyleStats`
 
 ```python
 >>> import ruts
@@ -525,6 +564,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   extractors.py - tools for object extraction from a text
     *   morph_stats.py - morphological statistics
     *   readability_stats.py - readability metrics
+    *   style_stats.py - SEO style metrics
     *   utils.py - helper tools
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets

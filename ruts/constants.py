@@ -230,6 +230,16 @@ DIVERSITY_STATS_DESC = {
     "zipf_alpha": "Наклон закона Ципфа (α)",
     "heaps_beta": "Показатель закона Хипса (β)",
 }
+STYLE_STATS_DESC = {
+    "classic_nausea": "Классическая тошнота",
+    "academic_nausea": "Академическая тошнота (%)",
+    "water": "Водность (%)",
+    "spam": "Заспамленность (%)",
+    "zipf_naturalness": "Естественность по Ципфу (%)",
+}
+STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ"})
+STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns"})
+NAUSEA_TOP_N = 10
 MATTR_WINDOW_LEN = 50
 MTLD_TTR_THRESHOLD = 0.72
 MTLD_MIN_LEN = 10

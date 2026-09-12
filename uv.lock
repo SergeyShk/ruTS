@@ -2409,7 +2409,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.10.0.dev4"
+version = "0.10.0.dev5"
 source = { editable = "." }
 dependencies = [
     { name = "graphviz" },

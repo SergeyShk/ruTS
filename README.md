@@ -35,6 +35,7 @@
 * **[Метрики удобочитаемости](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - тест Флеша-Кинкайда, индекс SMOG, LIX и другие, с коэффициентами для русского языка
 * **[Метрики лексического разнообразия](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR и его вариации, MTLD, HD-D, индексы Симпсона и Юла, энтропия, законы Ципфа и Хипса
 * **[Морфологические статистики](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - часть речи, падеж, наклонение, переходность и другие признаки
+* **[SEO-метрики стиля](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -381,6 +382,43 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
+<summary><b>SEO-метрики стиля</b></summary>
+
+<br>
+
+Библиотека повторяет показатели сервисов [Advego](https://advego.com/text/seo/) и [Text.ru](https://text.ru/seo):
+
+*   Классическая и академическая тошнота
+*   Водность
+*   Заспамленность
+*   Естественность по закону Ципфа
+*   Плотность ключевых слов и фраз
+
+Точные формулы сервисов не опубликованы, поэтому реализованы общепринятые определения; стоп-слова для водности определяются по части речи с помощью pymorphy3 или задаются списком.
+
+```python
+>>> from pprint import pprint
+>>> from ruts import StyleStats
+
+>>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+>>> ss = StyleStats(text)
+
+>>> pprint(ss.get_stats())
+{'academic_nausea': 93.33333333333333,
+ 'classic_nausea': 1.7320508075688772,
+ 'spam': 26.666666666666668,
+ 'water': 33.333333333333336,
+ 'zipf_naturalness': 55.55555555555556}
+
+>>> ss.keyword_density("когда", "нет а")
+{'когда': 20.0, 'нет а': 13.333333333333334}
+```
+
+Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/style_stats/).
+
+</details>
+
+<details>
 <summary><b>Наборы данных</b></summary>
 
 <br>
@@ -463,6 +501,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   `DiversityStats`
 *   `MorphStats`
 *   `ReadabilityStats`
+*   `StyleStats`
 
 ```python
 >>> import ruts
@@ -525,6 +564,7 @@ uv run pre-commit install
     *   extractors.py - инструменты для извлечения объектов из текста
     *   morph_stats.py - морфологические статистики
     *   readability_stats.py - метрики удобочитаемости текста
+    *   style_stats.py - SEO-метрики стиля текста
     *   utils.py - вспомогательные инструменты
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных

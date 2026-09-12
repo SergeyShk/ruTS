@@ -194,3 +194,55 @@
     ``` python
     nlp.add_pipe("diversity", config={"window_len": 100, "log_base": 2.718281828459045}, last=True)
     ```
+
+## StyleStatsComponent
+
+!!! info ""
+    **ruts.components.StyleStatsComponent**
+
+Модуль для компонента SEO-метрик стиля текста.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"style"` | Наименование компонента в пайплайне |
+| `stopwords` | list[str] | `None` | Список стоп-слов для водности; если не задан, используется разметка pymorphy3 |
+| `top_n` | int | `10` | Количество самых частых слов для академической тошноты и естественности по Ципфу |
+
+Пример использования:
+
+!!! example "Пример"
+
+    _Код_:
+
+    ``` python
+    # Загрузка библиотек
+    import ruts
+    import spacy
+
+    # Загрузка модели spaCy
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Добавление компонента
+    nlp.add_pipe("style", last=True)
+
+    # Доступ к посчитанным метрикам
+    doc = nlp("мама мыла раму")
+    doc._.style.water
+    ```
+
+    _Результат_:
+
+    ``` bash
+    0.0
+    ```
+
+Список стоп-слов и количество самых частых слов передаются через `config`:
+
+!!! example "Пример"
+
+    ``` python
+    nlp.add_pipe("style", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True)
+    ```

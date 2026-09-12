@@ -8,10 +8,12 @@ from .constants import (
     MATTR_WINDOW_LEN,
     MTLD_MIN_LEN,
     MTLD_TTR_THRESHOLD,
+    NAUSEA_TOP_N,
 )
 from .diversity_stats import DiversityStats
 from .morph_stats import MorphStats
 from .readability_stats import ReadabilityStats
+from .style_stats import StyleStats
 
 
 @Language.factory("basic")
@@ -206,4 +208,57 @@ class DiversityStatsComponent:
             log_base=self.log_base,
         )
         doc._.set(self.name, ds)
+        return doc
+
+
+@Language.factory("style")
+class StyleStatsComponent:
+    """
+    Класс для компонента SEO-метрик стиля текста
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('style', last=True)
+
+    Настройка списка стоп-слов и количества самых частых слов:
+        >>> nlp.add_pipe('style', config={'stopwords': ['и', 'в', 'не'], 'top_n': 5}, last=True)
+
+    Доступ к извлеченным метрикам:
+        >>> doc = nlp("мама мыла раму")
+        >>> doc._.style.get_stats()
+        >>> doc._.style.water
+        0.0
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+        stopwords (list[str]): Список стоп-слов для водности; если не задан, используется разметка pymorphy3
+        top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
+    """
+
+    def __init__(
+        self,
+        nlp: Language,
+        name: str = "style",
+        stopwords: list[str] | None = None,
+        top_n: int = NAUSEA_TOP_N,
+    ):
+        self.name = name
+        self.stopwords = stopwords
+        self.top_n = top_n
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных метрик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        ss = StyleStats(doc, stopwords=self.stopwords, top_n=self.top_n)
+        doc._.set(self.name, ss)
         return doc

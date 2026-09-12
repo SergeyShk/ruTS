@@ -1,13 +1,14 @@
 import pytest
 import spacy
 
-from ruts import DiversityStats, ReadabilityStats
+from ruts import DiversityStats, ReadabilityStats, StyleStats
 from ruts.constants import (
     BASIC_STATS_DESC,
     DIVERSITY_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
     PUNCTUATIONS,
     READABILITY_STATS_DESC,
+    STYLE_STATS_DESC,
 )
 
 text = (
@@ -27,6 +28,7 @@ def spacy_nlp():
     spacy_nlp.add_pipe("morph", last=True)
     spacy_nlp.add_pipe("readability", last=True)
     spacy_nlp.add_pipe("diversity", last=True)
+    spacy_nlp.add_pipe("style", last=True)
 
     yield spacy_nlp
 
@@ -34,6 +36,7 @@ def spacy_nlp():
     spacy_nlp.remove_pipe("morph")
     spacy_nlp.remove_pipe("readability")
     spacy_nlp.remove_pipe("diversity")
+    spacy_nlp.remove_pipe("style")
 
 
 @pytest.fixture(scope="module")
@@ -46,6 +49,7 @@ def test_components_names(spacy_nlp):
     assert spacy_nlp.has_pipe("morph") is True
     assert spacy_nlp.has_pipe("readability") is True
     assert spacy_nlp.has_pipe("diversity") is True
+    assert spacy_nlp.has_pipe("style") is True
 
 
 def test_component_basic(spacy_doc):
@@ -81,6 +85,23 @@ def test_component_readability_preset(spacy_doc):
     assert doc._.readability_fiction.flesch_kincaid_grade == pytest.approx(
         ReadabilityStats(doc, preset="fiction").flesch_kincaid_grade
     )
+
+
+def test_component_style(spacy_doc):
+    for key in STYLE_STATS_DESC:
+        assert hasattr(spacy_doc._.style, key)
+    assert spacy_doc._.style.get_stats() == StyleStats(spacy_doc).get_stats()
+
+
+def test_component_style_params(spacy_doc):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("style", name="style_custom", config={"stopwords": ["и", "или"], "top_n": 3})
+    doc = nlp(text)
+    custom = doc._.style_custom
+    assert custom.stopwords == ("и", "или")
+    assert custom.water == pytest.approx(StyleStats(doc, stopwords=["и", "или"]).water)
+    assert custom.water != spacy_doc._.style.water
+    assert custom.academic_nausea == pytest.approx(StyleStats(doc, top_n=3).academic_nausea)
 
 
 def test_component_diversity_params(spacy_doc):
