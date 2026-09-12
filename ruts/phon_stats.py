@@ -369,14 +369,16 @@ def _calc_repetition_index(text: Sequence[str], letters: frozenset[str], window_
     n_words = len(tokens)
     if n_words < window_len:
         return nan
-    windows = [tokens[i : i + window_len] for i in range(n_words - window_len + 1)]
+    n_windows = n_words - window_len + 1
     observed = 0
+    for i in range(n_windows):
+        counts = Counter(letter for token in tokens[i : i + window_len] for letter in token)
+        observed += sum(1 for count in counts.values() if count >= 2)
     expected = 0.0
-    for letter in set().union(*tokens):
-        p = sum(1 for token in tokens if letter in token) / n_words
-        observed += sum(1 for window in windows if sum(letter in token for token in window) >= 2)
+    for count in Counter(letter for token in tokens for letter in token).values():
+        p = count / n_words
         p_single = window_len * p * (1 - p) ** (window_len - 1)
-        expected += len(windows) * (1 - (1 - p) ** window_len - p_single)
+        expected += n_windows * (1 - (1 - p) ** window_len - p_single)
     return safe_divide(observed, expected, nan)
 
 
