@@ -7,8 +7,7 @@ from typing import Any
 
 from razdel import sentenize, tokenize
 
-from .constants import PUNCTUATIONS
-from .utils import get_morph_analyzer
+from .utils import get_morph_analyzer, is_punctuation
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
 
@@ -198,7 +197,7 @@ class WordsExtractor(Extractor):
         """
         words = self._tokenize(text)
         if self.filter_punct:
-            words = (word for word in words if word not in PUNCTUATIONS)
+            words = (word for word in words if not is_punctuation(word))
         if self.filter_nums:
             words = (word for word in words if not word.isnumeric())
         if self.use_lexemes:

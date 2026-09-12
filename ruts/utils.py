@@ -1,6 +1,7 @@
 import os
 import shutil
 import tarfile
+import unicodedata
 import urllib.parse
 import urllib.request
 import zipfile
@@ -9,7 +10,7 @@ from pathlib import Path
 
 import pymorphy3
 
-from .constants import DEFAULT_DATA_DIR, RU_VOWELS
+from .constants import DEFAULT_DATA_DIR, PUNCTUATIONS, RU_VOWELS
 
 
 @lru_cache(maxsize=1)
@@ -21,6 +22,24 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
         MorphAnalyzer: Морфологический анализатор
     """
     return pymorphy3.MorphAnalyzer()
+
+
+def is_punctuation(token: str) -> bool:
+    """
+    Проверка, состоит ли токен только из знаков препинания и символов
+
+    Описание:
+        Знаками считаются символы из PUNCTUATIONS и символы Юникода категорий
+        P (пунктуация) и S (символы), поэтому фильтруются и многосимвольные
+        токены вроде «?!», «!..», «--», «…», «№», «„»
+
+    Аргументы:
+        token (str): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return all(char in PUNCTUATIONS or unicodedata.category(char)[0] in "PS" for char in token)
 
 
 def count_syllables(word: str) -> int:

@@ -83,12 +83,17 @@ class TestWordsExtractor:
         [
             (None, 61),
             (re.compile(r"[^\w]+"), 62),
-            (wordpunct_tokenize, 63),
+            (wordpunct_tokenize, 62),
         ],
     )
     def test_extract_tokenizer(self, text, tokenizer, expected):
         we = WordsExtractor(tokenizer=tokenizer)
         assert len(we.extract(text)) == expected
+
+    def test_extract_filter_multichar_punct(self):
+        text = "Что?! Да!!! Нет... Слово -- слово … № 5 – да „так“ ‘вот’"
+        expected = ("Что", "Да", "Нет", "Слово", "слово", "5", "да", "так", "вот")
+        assert WordsExtractor().extract(text) == expected
 
     def test_extract_filter_punct(self, text):
         we = WordsExtractor(filter_punct=False)
