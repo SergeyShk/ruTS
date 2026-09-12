@@ -30,10 +30,11 @@ class TextsByGrade(Dataset):
     Класс для работы с набором данных текстов с метками класса проекта Plain Russian Language
 
     Описание:
-        68 текстов, на которых Иван Бегтин подбирал коэффициенты формул удобочитаемости
-        для русского языка: сказки и детская литература (1 класс), школьная программа
-        по литературе (3-11 классы), статья Википедии (12 класс), научный текст (15 класс),
-        нормативные и деловые документы (17 класс)
+        68 текстов из репозитория проекта: 55 из списка TEXT_LIST, на которых Иван Бегтин
+        подбирал коэффициенты формул удобочитаемости для русского языка, и 13 из папок
+        репозитория, не вошедших в список. Сказки и детская литература (1 класс), школьная
+        программа по литературе (3-11 классы), статья Википедии (12 класс), газетная статья
+        (15 класс), нормативные и деловые документы (17 класс)
         Метка - класс школы или год обучения: 12-14 соответствуют 1-3 курсам вуза,
         15-17 - 4-6 курсам
         Тексты распространяются под лицензией CC0 1.0 и используются для проверки
@@ -190,9 +191,9 @@ class TextsByGrade(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            for filepath in sorted(dirpath.iterdir(), key=lambda path: int(path.name)):
-                if re.fullmatch(r"[0-9]+", filepath.name):
-                    yield self.__load_record(filepath)
+            filepaths = (path for path in dirpath.iterdir() if re.fullmatch(r"[0-9]+", path.name))
+            for filepath in sorted(filepaths, key=lambda path: int(path.name)):
+                yield self.__load_record(filepath)
 
     def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
         """

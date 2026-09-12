@@ -98,9 +98,25 @@ def test_get_records_subject(dataset):
 
 
 def test_get_records_no_source(dataset):
-    records = list(dataset.get_records(subject="Котлован"))
+    records = list(dataset.get_records(subject="Буратино"))
     assert len(records) == 1
     assert records[0]["source"] == ""
+    assert sum(1 for record in dataset if not record["source"]) == 2
+
+
+def test_get_records_commented_source(dataset):
+    records = list(dataset.get_records(subject="Котлован"))
+    assert len(records) == 1
+    assert records[0]["source"] == "http://ilibrary.ru/text/1010/p.1/index.html"
+
+
+def test_iter_ignores_foreign_files(dataset):
+    stray = dataset.data_dir / "texts_by_grade" / "grade_1" / ".DS_Store"
+    stray.write_bytes(b"")
+    try:
+        assert sum(1 for _ in dataset) == 68
+    finally:
+        stray.unlink()
 
 
 @pytest.mark.parametrize(
