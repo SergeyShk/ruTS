@@ -24,6 +24,9 @@ VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
 SONORANTS = frozenset(letter.lower() for letter in RU_CONSONANTS_SONOR + RU_CONSONANTS_YET)
 CONSONANTS = VOICELESS | VOICED | SONORANTS
 MARKS = frozenset(letter.lower() for letter in RU_MARKS)
+SOUNDS = VOWELS | CONSONANTS
+LETTERS = SOUNDS | MARKS
+IOTATED = frozenset("еёюя")
 
 
 class PhonStats:
@@ -197,11 +200,7 @@ def cv_pattern(word: str) -> str:
     Вывод:
         str: CV-шаблон
     """
-    return "".join(
-        "V" if letter in VOWELS else "C"
-        for letter in word.lower()
-        if letter in VOWELS | CONSONANTS
-    )
+    return "".join("V" if letter in VOWELS else "C" for letter in word.lower() if letter in SOUNDS)
 
 
 def syllabify(word: str) -> list[str]:
@@ -209,7 +208,8 @@ def syllabify(word: str) -> list[str]:
     Деление слова на слоги по правилу восходящей звучности (Аванесов)
 
     Описание:
-        Слогов в слове столько, сколько гласных; слово без гласных - один слог
+        Слогов в слове столько, сколько гласных; слово без гласных (предлоги в, к, с)
+        слога не образует - это проклитика, для него возвращается пустой список
         Граница слога проходит по правилам:
             одиночный согласный между гласными отходит к следующему слогу: ко-ро-ва
             сочетание шумных и шумного с сонорным отходит к следующему слогу: ко-шка, се-стра, по-зна-ко-мить
@@ -231,10 +231,12 @@ def syllabify(word: str) -> list[str]:
     Вывод:
         list[str]: Список слогов
     """
-    word = "".join(letter for letter in word.lower() if letter in VOWELS | CONSONANTS | MARKS)
+    word = "".join(letter for letter in word.lower() if letter in LETTERS)
     vowel_positions = [i for i, letter in enumerate(word) if letter in VOWELS]
-    if len(vowel_positions) < 2:
-        return [word] if word else []
+    if not vowel_positions:
+        return []
+    if len(vowel_positions) == 1:
+        return [word]
     syllables = []
     start = 0
     for current, following in pairwise(vowel_positions):
@@ -309,8 +311,10 @@ def calc_hiatus(text: Sequence[str]) -> int:
     Вычисление количества зияний гласных
 
     Описание:
-        Зияние - две и более гласных подряд внутри слова: аэропорт, поэзия, заяц
-        Считается по буквам, поэтому йотированные гласные после гласной тоже дают зияние
+        Зияние - две и более гласных подряд внутри слова: аэропорт, аист, поэзия (о-э)
+        Йотированные е, ё, ю, я после гласной обозначают [j] и гласный и зияния
+        не образуют: заяц, моя, красивая, читает - иначе окончания прилагательных
+        и глаголов давали бы четыре пятых всех зияний
 
     Аргументы:
         text (list[str]): Список слов
@@ -324,10 +328,11 @@ def calc_hiatus(text: Sequence[str]) -> int:
         run = False
         for letter in word.lower():
             is_vowel = letter in VOWELS
-            if is_vowel and previous_vowel and not run:
-                hiatus += 1
+            if is_vowel and previous_vowel and letter not in IOTATED:
+                if not run:
+                    hiatus += 1
                 run = True
-            elif not is_vowel:
+            else:
                 run = False
             previous_vowel = is_vowel
     return hiatus

@@ -64,7 +64,8 @@ def test_init_doc(ps):
         ("заяц", ["за", "яц"]),
         ("ёлка", ["ёл", "ка"]),
         ("Мама", ["ма", "ма"]),
-        ("к", ["к"]),
+        ("к", []),
+        ("вскрь", []),
         ("дом", ["дом"]),
         ("какого-либо", ["ка", "ко", "го", "ли", "бо"]),
         ("100", []),
@@ -124,10 +125,12 @@ def test_consonant_clusters(ps):
 
 
 def test_hiatus(ps):
-    assert calc_hiatus(["аэропорт", "поэзия", "заяц", "мама"]) == 4
-    assert calc_hiatus(["аэроион"]) == 2
+    # йотированные гласные после гласной зияния не образуют: за-яц, поэзи-я, чита-ет
+    assert calc_hiatus(["аэропорт", "поэзия", "заяц", "мама"]) == 2
+    assert calc_hiatus(["аист", "свои", "читает", "красивая", "моя"]) == 2
+    assert calc_hiatus(["аэроион", "ааа"]) == 3
     assert ps.p_hiatus == 0.0
-    assert PhonStats("поэзия и аэропорт").p_hiatus == pytest.approx(3 / 3)
+    assert PhonStats("поэзия и аэропорт").p_hiatus == pytest.approx(2 / 3)
 
 
 def test_cv_entropy(ps):
@@ -164,6 +167,11 @@ def test_assonance(ps):
 def test_syllable_stats(ps):
     assert ps.syllables[:4] == (("ног",), ("нет",), ("а",), ("хо", "жу"))
     assert sum(len(word) for word in ps.syllables) == ps.n_vowels
+    # предлоги без гласных слога не образуют и не смещают статистики слогов
+    with_clitics = PhonStats("в лесу к дому с мамой")
+    assert with_clitics.syllables[0] == ()
+    assert sum(len(word) for word in with_clitics.syllables) == with_clitics.n_vowels
+    assert "C" not in with_clitics.c_syllable_patterns
     assert ps.c_syllable_patterns == {"CCCV": 1, "CCV": 5, "CCVC": 1, "CV": 11, "CVC": 5, "V": 2}
     assert ps.p_open_syllables == pytest.approx(19 / 25)
     assert ps.mean_syllable_len == pytest.approx(65 / 25)
