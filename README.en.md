@@ -501,7 +501,7 @@ One can work solely with texts (without title info) or texts with metadata. Ther
  'year': 1963}
 ```
 
-A dataset is downloaded on first access and cached locally.
+A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `OSError` with a hint.
 
 </details>
 
@@ -559,13 +559,13 @@ The library allows creating the following classes of spaCy components:
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
 >>> doc._.basic.c_letters
-{1: 3, 3: 2, 4: 3, 6: 1, 10: 2}
+{1: 1, 3: 2, 4: 3, 6: 1, 10: 2}
 
 >>> doc._.basic.n_words
-11
+9
 ```
 
-The values differ from the example above: spaCy emits punctuation marks as separate tokens, and they are counted as words.
+The values match the example above: punctuation and whitespace tokens of spaCy are filtered out when counting.
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/components/).
 
