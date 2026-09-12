@@ -237,8 +237,8 @@ STYLE_STATS_DESC = {
     "spam": "Заспамленность (%)",
     "zipf_naturalness": "Естественность по Ципфу (%)",
 }
-STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ"})
-STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns"})
+STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
+STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10
 MATTR_WINDOW_LEN = 50
 MTLD_TTR_THRESHOLD = 0.72

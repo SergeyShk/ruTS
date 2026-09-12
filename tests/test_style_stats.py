@@ -1,3 +1,5 @@
+from math import isnan
+
 import pytest
 import spacy
 
@@ -69,6 +71,10 @@ def test_init_lexemes():
         ("который", True),
         ("конечно", True),
         ("там", True),
+        ("где", True),
+        ("почему", True),
+        ("нет", True),
+        ("надо", True),
         ("ох", True),
         ("мама", False),
         ("быстро", False),
@@ -97,7 +103,8 @@ def test_academic_nausea(ss):
 
 
 def test_water(ss):
-    assert calc_water(riddle) == pytest.approx(100 * 5 / 15)
+    # стоп-слова: нет (предикатив) x2, а (союз) x2, когда (союз) x3
+    assert calc_water(riddle) == pytest.approx(100 * 7 / 15)
     assert calc_water(riddle, stopwords=["нет", "а"]) == pytest.approx(100 * 4 / 15)
     assert calc_water(riddle, stopwords=["НЕТ"]) == pytest.approx(100 * 2 / 15)
     assert calc_water(riddle, stopwords=[]) == 0.0
@@ -113,14 +120,20 @@ def test_spam(ss):
 
 
 def test_zipf_naturalness(ss):
-    # частоты 3, 2, 2 при идеальных 3, 1.5, 1: отклонения 0, 1/3 и 1
-    assert calc_zipf_naturalness(riddle) == pytest.approx(100 * (1 - (0 + 1 / 3 + 1) / 3))
+    # частоты 2, 2 на рангах 2 и 3 при идеальных 1.5 и 1: отклонения 1/3 и 1, ранг 1 не учитывается
+    assert calc_zipf_naturalness(riddle) == pytest.approx(100 * (1 - (1 / 3 + 1) / 2))
     assert calc_zipf_naturalness(["а"] * 12 + ["б"] * 6 + ["в"] * 4 + ["г"] * 3) == 100.0
     assert calc_zipf_naturalness(["а"] * 6 + ["б"] * 6 + ["в"] * 6 + ["г"] * 6) == 0.0
-    assert calc_zipf_naturalness(["а", "б", "в"]) == 100.0
-    assert calc_zipf_naturalness([]) == 0.0
-    assert ss.zipf_naturalness == pytest.approx(55.55555555555556)
-    assert StyleStats(text, top_n=1).zipf_naturalness == 100.0
+    # равномерные частоты дают 0 независимо от их величины
+    assert calc_zipf_naturalness(["а", "б", "в", "г"] * 2) == 0.0
+    assert calc_zipf_naturalness(["а", "б", "в"] * 3) == 0.0
+    # нет рангов для сравнения: одни гапаксы, одна лексема, top_n меньше 2
+    assert isnan(calc_zipf_naturalness(["а", "б", "в"]))
+    assert isnan(calc_zipf_naturalness(["а", "а", "а"]))
+    assert isnan(calc_zipf_naturalness(riddle, top_n=1))
+    assert isnan(calc_zipf_naturalness([]))
+    assert ss.zipf_naturalness == pytest.approx(100 / 3)
+    assert isnan(StyleStats(text, top_n=1).zipf_naturalness)
 
 
 def test_keyword_density(ss):

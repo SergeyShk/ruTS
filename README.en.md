@@ -407,8 +407,8 @@ The exact formulas of the services are not published, so the commonly accepted d
 {'academic_nausea': 93.33333333333333,
  'classic_nausea': 1.7320508075688772,
  'spam': 26.666666666666668,
- 'water': 33.333333333333336,
- 'zipf_naturalness': 55.55555555555556}
+ 'water': 46.666666666666664,
+ 'zipf_naturalness': 33.333333333333336}
 
 >>> ss.keyword_density("когда", "нет а")
 {'когда': 20.0, 'нет а': 13.333333333333334}

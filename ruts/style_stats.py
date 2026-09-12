@@ -1,7 +1,7 @@
 from collections import Counter
 from collections.abc import Sequence
 from functools import lru_cache
-from math import sqrt
+from math import nan, sqrt
 
 from spacy.tokens import Doc
 
@@ -29,9 +29,9 @@ class StyleStats:
         >>> ss.get_stats()
         {'classic_nausea': 1.7320508075688772,
         'academic_nausea': 93.33333333333333,
-        'water': 33.333333333333336,
+        'water': 46.666666666666664,
         'spam': 26.666666666666668,
-        'zipf_naturalness': 55.55555555555556}
+        'zipf_naturalness': 33.333333333333336}
         >>> ss.keyword_density("когда", "нет а")
         {'когда': 20.0, 'нет а': 13.333333333333334}
 
@@ -144,8 +144,9 @@ def is_stopword(word: str) -> bool:
 
     Описание:
         Стоп-словами считаются союзы, частицы, предлоги, местоимения-существительные,
-        междометия, местоименные прилагательные (этот, такой, который, весь), вводные
-        слова (конечно, например) и указательные наречия (там, тогда) по разметке pymorphy3
+        междометия, предикативы (нет, надо, можно), местоименные прилагательные
+        (этот, такой, который, весь), вводные слова (конечно, например), указательные
+        (там, тогда) и вопросительные (где, почему) наречия по разметке pymorphy3
         Результаты разбора кэшируются
 
     Аргументы:
@@ -211,15 +212,15 @@ def calc_water(text: Sequence[str], stopwords: Sequence[str] | None = None) -> f
     Вычисление водности
 
     Описание:
-        Доля незначимых слов в тексте в процентах (Advego, Text.ru)
+        Доля незначимых слов в тексте в процентах (Text.ru)
         Незначимыми считаются стоп-слова: союзы, частицы, предлоги, местоимения, междометия,
-        вводные слова и указательные наречия по разметке pymorphy3 (функция is_stopword)
-        или слова из переданного списка стоп-слов
+        предикативы, вводные слова, указательные и вопросительные наречия по разметке
+        pymorphy3 (функция is_stopword) или слова из переданного списка стоп-слов
         Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое
+        «Вода» Advego - другой показатель с нормой 55-75%, здесь не реализован
 
     Ссылки:
         https://text.ru/seo
-        https://advego.com/text/seo/
 
     Аргументы:
         text (list[str]): Список слов
@@ -268,9 +269,12 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
         Согласие частот самых частых слов с идеальным распределением f_r = f_1 / r,
         где f_1 - частота самого частого слова, r - ранг слова (pr-cy, megaindex)
         Считается как 100 · (1 - среднее относительное отклонение частот от идеальных)
-        по рангам от 1 до min(top_n, V, f_1): при рангах больше f_1 идеальная частота
-        меньше единицы и отклонение хапаксов растет без ограничения
+        по рангам от 2 до min(top_n, V, f_1): ранг 1 совпадает с идеалом по построению,
+        а при рангах больше f_1 идеальная частота меньше единицы и отклонение
+        гапаксов растет без ограничения
         Отрицательные значения обрезаются до 0; норма сервисов - не меньше 50%
+        Не определена, если рангов для сравнения нет: все слова - гапаксы,
+        одна лексема или top_n меньше 2
 
     Ссылки:
         https://en.wikipedia.org/wiki/Zipf's_law
@@ -280,20 +284,19 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
         top_n (int): Количество самых частых слов
 
     Вывод:
-        float: Значение естественности в процентах
+        float: Значение естественности в процентах, nan если рангов для сравнения нет
     """
     frequencies = sorted(Counter(text).values(), reverse=True)
     if not frequencies:
-        return 0.0
+        return nan
     top_freq = frequencies[0]
     n_ranks = min(top_n, len(frequencies), top_freq)
-    deviation = (
-        sum(
-            abs(freq - top_freq / rank) / (top_freq / rank)
-            for rank, freq in enumerate(frequencies[:n_ranks], start=1)
-        )
-        / n_ranks
-    )
+    if n_ranks < 2:
+        return nan
+    deviation = sum(
+        abs(freq - top_freq / rank) / (top_freq / rank)
+        for rank, freq in enumerate(frequencies[1:n_ranks], start=2)
+    ) / (n_ranks - 1)
     return max(0.0, 100 * (1 - deviation))
 
 
