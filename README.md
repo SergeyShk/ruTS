@@ -427,6 +427,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 
 *   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/datasets/sovchlit/) - советские хрестоматии по литературе
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - полное собрание сочинений И.В. Сталина
+*   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - тексты с метками класса проекта Plain Russian Language (CC0), на которых проверяются формулы удобочитаемости
 
 Существует возможность работать как с чистыми текстами (без заголовочной информации), так и с записями, а также фильтровать их по различным критериям.
 
@@ -570,6 +571,7 @@ uv run pre-commit install
         *   dataset.py - базовый класс для работы с наборами данных
         *   sov_chrest_lit.py - советские хрестоматии по литературе
         *   stalin_works.py - полное собрание сочинений И.В. Сталина
+        *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
     *   **visualizers** - инструменты для визуализации текстов:
         *   fingerprinting.py - Литературная дактилоскопия
         *   word_tree.py - Дерево слов

@@ -25,6 +25,7 @@ nav:
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
+        - Тексты с метками класса: datasets/textsbygrade.md
     - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md
