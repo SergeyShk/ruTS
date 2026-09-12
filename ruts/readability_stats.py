@@ -89,7 +89,7 @@ class ReadabilityStats:
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
     Исключения:
-        ValueError: Если в источнике данных отсутствуют слова
+        ValueError: Если в источнике данных отсутствуют слова или предложения
         ValueError: Если указан неизвестный пресет коэффициентов
     """
 
@@ -108,8 +108,8 @@ class ReadabilityStats:
         self.preset = preset
         self.coefficients = dict(READABILITY_PRESETS[preset])
         self.bs = BasicStats(source, sents_extractor, words_extractor)
-        if not self.bs.n_words:
-            raise ValueError("В источнике данных отсутствуют слова")
+        if not self.bs.n_sents:
+            raise ValueError("В источнике данных отсутствуют предложения")
 
     @property
     def flesch_kincaid_grade(self) -> float:
