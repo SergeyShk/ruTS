@@ -24,6 +24,25 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
     return pymorphy3.MorphAnalyzer()
 
 
+@lru_cache(maxsize=131072)
+def parse_word(word: str) -> pymorphy3.analyzer.Parse:
+    """
+    Морфологический разбор словоформы с кэшированием
+
+    Описание:
+        Возвращает первый (наиболее вероятный) разбор pymorphy3
+        Результаты кэшируются по словоформе: в тексте на 75 тысяч токенов
+        всего около 14 тысяч уникальных форм, повторный разбор не нужен
+
+    Аргументы:
+        word (str): Словоформа
+
+    Вывод:
+        Parse: Разбор словоформы
+    """
+    return get_morph_analyzer().parse(word)[0]
+
+
 def is_punctuation(token: str) -> bool:
     """
     Проверка, состоит ли токен только из знаков препинания и символов

@@ -7,7 +7,7 @@ from typing import Any
 
 from razdel import sentenize, tokenize
 
-from .utils import get_morph_analyzer, is_punctuation
+from .utils import is_punctuation, parse_word
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
 # Числа, диапазоны, дроби и порядковые числительные: 100, 2020-2021, 5.5, 1,5, 3-й, 90-х
@@ -210,8 +210,7 @@ class WordsExtractor(Extractor):
         if self.filter_nums:
             words = (word for word in words if not NUMBER_PATTERN.fullmatch(word.lower()))
         if self.use_lexemes:
-            morph = get_morph_analyzer()
-            words = (morph.parse(word)[0].normal_form for word in words)
+            words = (parse_word(word).normal_form for word in words)
         if self.lowercase:
             words = (word.lower() for word in words)
         if self.stopwords:

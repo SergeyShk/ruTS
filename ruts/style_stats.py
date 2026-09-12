@@ -7,7 +7,7 @@ from spacy.tokens import Doc
 
 from .constants import NAUSEA_TOP_N, STOPWORD_GRAMMEMES, STOPWORD_POS, STYLE_STATS_DESC
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer, safe_divide
+from .utils import parse_word, safe_divide
 
 
 class StyleStats:
@@ -147,7 +147,7 @@ def is_stopword(word: str) -> bool:
         междометия, предикативы (нет, надо, можно), местоименные прилагательные
         (этот, такой, который, весь), вводные слова (конечно, например), указательные
         (там, тогда) и вопросительные (где, почему) наречия по разметке pymorphy3
-        Результаты разбора кэшируются
+        Разбор словоформы кэшируется в parse_word, результат проверки - здесь
 
     Аргументы:
         word (str): Слово
@@ -155,7 +155,7 @@ def is_stopword(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    tag = get_morph_analyzer().parse(word)[0].tag
+    tag = parse_word(word).tag
     return tag.POS in STOPWORD_POS or bool(STOPWORD_GRAMMEMES & tag.grammemes)
 
 
