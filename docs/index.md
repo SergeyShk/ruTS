@@ -14,7 +14,7 @@
 *   считать [метрики лексического разнообразия](stats/diversity_stats.md) текста (Type-Token Ratio, Measure of Textual Lexical Diversity, Гапакс-индекс и др.)
 *   извлекать [морфологические признаки](stats/morph_stats.md) из текста (часть речи, падеж, наклонение, переходность и др.)
 *   считать [SEO-метрики стиля](stats/style_stats.md) текста (тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов)
-*   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md))
+*   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md))
 *   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md))
 *   создавать [компоненты](components.md) для встраивания в [spaCy](https://github.com/explosion/spaCy)
 
@@ -91,11 +91,13 @@ pip install ruts
         *   extractors.py - инструменты для извлечения объектов из текста
         *   morph_stats.py - морфологические статистики
         *   readability_stats.py - метрики удобочитаемости текста
+        *   style_stats.py - SEO-метрики стиля текста
         *   utils.py - вспомогательные инструменты
         *   **datasets** - наборы данных:
             *   dataset.py - базовый класс для работы с наборами данных
             *   sov_chrest_lit.py - советские хрестоматии по литературе
             *   stalin_works.py - полное собрание сочинений И.В. Сталина
+            *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
         *   **visualizers** - инструменты для визуализации текстов:
             *   fingerprinting.py - Литературная дактилоскопия
             *   word_tree.py - Дерево слов

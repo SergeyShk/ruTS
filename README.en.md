@@ -427,6 +427,7 @@ The library allows working with a number of preprocessed datasets:
 
 *   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/datasets/sovchlit/) - soviet reading-books for literature classes
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - the collected works of Stalin
+*   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
@@ -570,6 +571,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   dataset.py - base class for working with datasets
         *   sov_chrest_lit.py - soviet reading-books for literature classes
         *   stalin_works.py - the collected works of Stalin
+        *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
     *   **visualizers** - tools for text visualization:
         *   fingerprinting.py - Literature Fingerprinting
         *   word_tree.py - Word Tree
