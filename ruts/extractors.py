@@ -10,6 +10,8 @@ from razdel import sentenize, tokenize
 from .utils import get_morph_analyzer, is_punctuation
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
+# Числа, диапазоны, дроби и порядковые числительные: 100, 2020-2021, 5.5, 1,5, 3-й, 90-х
+NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
 
 
 class Extractor(metaclass=ABCMeta):
@@ -130,6 +132,13 @@ class WordsExtractor(Extractor):
         >>> we.extract(text)
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
+    Описание:
+        Фильтры применяются по порядку: знаки препинания, числа, лемматизация,
+        нижний регистр, стоп-слова, длина слова; стоп-слова сравниваются
+        уже после приведения к нижнему регистру
+        Числами считаются также диапазоны, дроби и порядковые числительные:
+        2020-2021, 5.5, 1,5, 3-й, 90-х
+
     Аргументы:
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
         filter_punct (bool): Фильтровать знаки препинания
@@ -199,14 +208,14 @@ class WordsExtractor(Extractor):
         if self.filter_punct:
             words = (word for word in words if not is_punctuation(word))
         if self.filter_nums:
-            words = (word for word in words if not word.isnumeric())
+            words = (word for word in words if not NUMBER_PATTERN.fullmatch(word.lower()))
         if self.use_lexemes:
             morph = get_morph_analyzer()
             words = (morph.parse(word)[0].normal_form for word in words)
-        if self.stopwords:
-            words = (word for word in words if word not in self.stopwords)
         if self.lowercase:
             words = (word.lower() for word in words)
+        if self.stopwords:
+            words = (word for word in words if word not in self.stopwords)
         if self.min_len > 0:
             words = (word for word in words if len(word) >= self.min_len)
         if self.max_len > 0:
