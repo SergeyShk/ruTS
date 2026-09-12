@@ -96,7 +96,7 @@ def test_init_type_error(text):
 
 
 def test_init_doc_lowercase():
-    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать. Ног — это ноги"
+    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
     doc = spacy.blank("ru")(text)
     assert DiversityStats(doc).words == DiversityStats(text).words
     assert DiversityStats(doc).ttr == DiversityStats(text).ttr

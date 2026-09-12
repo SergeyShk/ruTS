@@ -11,11 +11,13 @@ from .components import (
     DiversityStatsComponent,
     MorphStatsComponent,
     ReadabilityStatsComponent,
+    StyleStatsComponent,
 )
 from .diversity_stats import DiversityStats
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import MorphStats
 from .readability_stats import ReadabilityStats
+from .style_stats import StyleStats
 
 # Метаданные
 
@@ -34,5 +36,7 @@ __all__ = [
     "ReadabilityStats",
     "ReadabilityStatsComponent",
     "SentsExtractor",
+    "StyleStats",
+    "StyleStatsComponent",
     "WordsExtractor",
 ]

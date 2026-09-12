@@ -19,6 +19,9 @@ nav:
           - Модуль вычисления метрик: stats/diversity_stats.md
           - Функции вычисления метрик: stats/diversity_stats_funcs.md
         - Морфологические статистики: stats/morph_stats.md
+        - SEO-метрики стиля:
+          - Модуль вычисления метрик: stats/style_stats.md
+          - Функции вычисления метрик: stats/style_stats_funcs.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
