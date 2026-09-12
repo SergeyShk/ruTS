@@ -1058,6 +1058,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Фоностатистики
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Фоностатистики
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stats/phon_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Модуль вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stats/phon_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Функции вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1523,6 +1637,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#phonstatscomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhonStatsComponent
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1614,6 +1739,17 @@
     <span class="md-ellipsis">
       
         StyleStatsComponent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phonstatscomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhonStatsComponent
       
     </span>
   </a>
@@ -1970,6 +2106,70 @@
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<h2 id="phonstatscomponent">PhonStatsComponent<a class="headerlink" href="#phonstatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.PhonStatsComponent</strong></p>
+</div>
+<p>Модуль для компонента фоностатистик текста.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>nlp</code></td>
+<td style="text-align: center;">Language</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Объект класса Language</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>name</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>"phon"</code></td>
+<td style="text-align: center;">Наименование компонента в пайплайне</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>window_len</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>3</code></td>
+<td style="text-align: center;">Размер окна в словах для аллитерации и ассонанса</td>
+</tr>
+</tbody>
+</table>
+<p>Пример использования:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="c1"># Загрузка модели spaCy</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+
+<span class="c1"># Добавление компонента</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Доступ к посчитанным статистикам</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">phon</span><span class="o">.</span><span class="n">p_open_syllables</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="m">1</span>.0
+</code></pre></div>
+</div>
+<p>Размер окна передается через <code>config</code>:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 
