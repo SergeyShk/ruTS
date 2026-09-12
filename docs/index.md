@@ -91,11 +91,13 @@ pip install ruts
         *   extractors.py - инструменты для извлечения объектов из текста
         *   morph_stats.py - морфологические статистики
         *   readability_stats.py - метрики удобочитаемости текста
+        *   style_stats.py - SEO-метрики стиля текста
         *   utils.py - вспомогательные инструменты
         *   **datasets** - наборы данных:
             *   dataset.py - базовый класс для работы с наборами данных
             *   sov_chrest_lit.py - советские хрестоматии по литературе
             *   stalin_works.py - полное собрание сочинений И.В. Сталина
+            *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
         *   **visualizers** - инструменты для визуализации текстов:
             *   fingerprinting.py - Литературная дактилоскопия
             *   word_tree.py - Дерево слов
