@@ -1809,7 +1809,7 @@
 <td style="text-align: center;"><code>filter_nums</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Фильтровать числа</td>
+<td style="text-align: center;">Фильтровать числа, в том числе диапазоны, дроби и порядковые числительные (2020-2021, 5.5, 1,5, 3-й)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>use_lexemes</code></td>
@@ -1849,6 +1849,10 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Стоп-слова сравниваются уже после приведения к нижнему регистру, поэтому при <code>lowercase=True</code> список стоп-слов достаточно задать в нижнем регистре. Знаком препинания считается токен, целиком состоящий из знаков и символов, в том числе многосимвольный: <code>?!</code>, <code>!..</code>, <code>--</code>, <code>…</code>.</p>
+</div>
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Выполняет извлечение слов из текста.</p>

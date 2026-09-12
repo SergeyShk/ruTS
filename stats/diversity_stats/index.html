@@ -1903,7 +1903,7 @@
 </tbody>
 </table>
 <h2 id="conventions">Соглашения<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
-<p>Значения части метрик зависят от параметров, которые в разных библиотеках выбраны по-разному. Значения по умолчанию совпадают с koRpus и lexical-diversity Кайла, все они вынесены в параметры класса:</p>
+<p>Значения части метрик зависят от параметров, которые в разных библиотеках выбраны по-разному. Значения по умолчанию совпадают с koRpus и lexical-diversity Кайла, все они вынесены в параметры класса. Сравнение с порогом MTLD - единственное соглашение, которое параметром не является:</p>
 <table>
 <thead>
 <tr>
@@ -1927,6 +1927,11 @@
 <td style="text-align: center;">Порог TTR для MTLD</td>
 <td style="text-align: center;">0.72</td>
 <td style="text-align: center;">в литературе 0.66-0.75</td>
+</tr>
+<tr>
+<td style="text-align: center;">Сравнение с порогом MTLD</td>
+<td style="text-align: center;">фактор закрывается при TTR ≤ 0.72 - у McCarthy и Jarvis (2010) фактор завершается, когда TTR «достигает» 0.720</td>
+<td style="text-align: center;">lexical-diversity и TAALED - строгое <code>&lt;</code>, поэтому на факторах, где TTR попадает ровно в порог (18/25, 36/50), значения MTLD, MA-MTLD и MTLD-W расходятся</td>
 </tr>
 <tr>
 <td style="text-align: center;">Минимальная длина фактора MTLD</td>
