@@ -36,6 +36,7 @@
 * **[Метрики лексического разнообразия](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR и его вариации, MTLD, HD-D, индексы Симпсона и Юла, энтропия, законы Ципфа и Хипса
 * **[Морфологические статистики](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - часть речи, падеж, наклонение, переходность и другие признаки
 * **[SEO-метрики стиля](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов
+* **[Фоностатистики](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - классы звуков, кластеры, аллитерация и ассонанс, слоги по правилу восходящей звучности
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -419,6 +420,50 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
+<summary><b>Фоностатистики</b></summary>
+
+<br>
+
+Библиотека считает по буквам, без учета оглушения и ударения:
+
+*   Доли гласных, сонорных, звонких и глухих согласных, отношение согласных к гласным
+*   Консонантные кластеры и зияния гласных
+*   Энтропию CV-шаблонов слов и «жёсткость»
+*   Индексы аллитерации и ассонанса относительно ожидаемых повторов
+*   Слоги по правилу восходящей звучности: доля открытых слогов, средняя длина слога, CV-шаблоны
+
+```python
+>>> from pprint import pprint
+>>> from ruts import PhonStats
+>>> from ruts.phon_stats import syllabify
+
+>>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+>>> ps = PhonStats(text)
+
+>>> pprint(ps.get_stats())
+{'alliteration': 0.9149440867502556,
+ 'assonance': 0.802520508857449,
+ 'consonant_vowel_ratio': 1.48,
+ 'cv_entropy': 3.1395722619867223,
+ 'hardness': 0.5625,
+ 'mean_syllable_len': 2.6,
+ 'p_heavy_clusters': 0.034482758620689655,
+ 'p_hiatus': 0.0,
+ 'p_open_syllables': 0.76,
+ 'p_sonorants': 0.11290322580645161,
+ 'p_voiced': 0.1935483870967742,
+ 'p_voiceless': 0.2903225806451613,
+ 'p_vowels': 0.4032258064516129}
+
+>>> syllabify("здравствуйте")
+['здра', 'вствуй', 'те']
+```
+
+Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/phon_stats/).
+
+</details>
+
+<details>
 <summary><b>Наборы данных</b></summary>
 
 <br>
@@ -501,6 +546,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   `BasicStats`
 *   `DiversityStats`
 *   `MorphStats`
+*   `PhonStats`
 *   `ReadabilityStats`
 *   `StyleStats`
 
@@ -564,6 +610,7 @@ uv run pre-commit install
     *   diversity_stats.py - метрики лексического разнообразия текста
     *   extractors.py - инструменты для извлечения объектов из текста
     *   morph_stats.py - морфологические статистики
+    *   phon_stats.py - фоностатистики текста
     *   readability_stats.py - метрики удобочитаемости текста
     *   style_stats.py - SEO-метрики стиля текста
     *   utils.py - вспомогательные инструменты

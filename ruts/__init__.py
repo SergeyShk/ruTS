@@ -10,12 +10,14 @@ from .components import (
     BasicStatsComponent,
     DiversityStatsComponent,
     MorphStatsComponent,
+    PhonStatsComponent,
     ReadabilityStatsComponent,
     StyleStatsComponent,
 )
 from .diversity_stats import DiversityStats
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import MorphStats
+from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 
@@ -33,6 +35,8 @@ __all__ = [
     "DiversityStatsComponent",
     "MorphStats",
     "MorphStatsComponent",
+    "PhonStats",
+    "PhonStatsComponent",
     "ReadabilityStats",
     "ReadabilityStatsComponent",
     "SentsExtractor",

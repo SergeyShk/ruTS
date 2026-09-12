@@ -36,6 +36,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density
+* **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -419,6 +420,50 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/style_stats/)
 </details>
 
 <details>
+<summary><b>Phonostatistics</b></summary>
+
+<br>
+
+The library counts by letters, without devoicing or stress:
+
+*   Shares of vowels, sonorants, voiced and voiceless consonants, consonant-to-vowel ratio
+*   Consonant clusters and vowel hiatus
+*   Entropy of word CV patterns and "hardness"
+*   Alliteration and assonance indices relative to expected repetitions
+*   Syllables by the rising sonority rule: share of open syllables, mean syllable length, CV patterns
+
+```python
+>>> from pprint import pprint
+>>> from ruts import PhonStats
+>>> from ruts.phon_stats import syllabify
+
+>>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+>>> ps = PhonStats(text)
+
+>>> pprint(ps.get_stats())
+{'alliteration': 0.9149440867502556,
+ 'assonance': 0.802520508857449,
+ 'consonant_vowel_ratio': 1.48,
+ 'cv_entropy': 3.1395722619867223,
+ 'hardness': 0.5625,
+ 'mean_syllable_len': 2.6,
+ 'p_heavy_clusters': 0.034482758620689655,
+ 'p_hiatus': 0.0,
+ 'p_open_syllables': 0.76,
+ 'p_sonorants': 0.11290322580645161,
+ 'p_voiced': 0.1935483870967742,
+ 'p_voiceless': 0.2903225806451613,
+ 'p_vowels': 0.4032258064516129}
+
+>>> syllabify("здравствуйте")
+['здра', 'вствуй', 'те']
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/stats/phon_stats/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -501,6 +546,7 @@ The library allows creating the following classes of spaCy components:
 *   `BasicStats`
 *   `DiversityStats`
 *   `MorphStats`
+*   `PhonStats`
 *   `ReadabilityStats`
 *   `StyleStats`
 
@@ -564,6 +610,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   diversity_stats.py - lexical diversity metrics
     *   extractors.py - tools for object extraction from a text
     *   morph_stats.py - morphological statistics
+    *   phon_stats.py - phonostatistics
     *   readability_stats.py - readability metrics
     *   style_stats.py - SEO style metrics
     *   utils.py - helper tools

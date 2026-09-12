@@ -22,6 +22,9 @@ nav:
         - SEO-метрики стиля:
           - Модуль вычисления метрик: stats/style_stats.md
           - Функции вычисления метрик: stats/style_stats_funcs.md
+        - Фоностатистики:
+          - Модуль вычисления статистик: stats/phon_stats.md
+          - Функции вычисления статистик: stats/phon_stats_funcs.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md

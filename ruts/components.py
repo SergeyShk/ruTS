@@ -9,9 +9,11 @@ from .constants import (
     MTLD_MIN_LEN,
     MTLD_TTR_THRESHOLD,
     NAUSEA_TOP_N,
+    PHON_WINDOW_LEN,
 )
 from .diversity_stats import DiversityStats
 from .morph_stats import MorphStats
+from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 
@@ -261,4 +263,49 @@ class StyleStatsComponent:
         """
         ss = StyleStats(doc, stopwords=self.stopwords, top_n=self.top_n)
         doc._.set(self.name, ss)
+        return doc
+
+
+@Language.factory("phon")
+class PhonStatsComponent:
+    """
+    Класс для компонента фоностатистик текста
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('phon', last=True)
+
+    Настройка окна для аллитерации и ассонанса:
+        >>> nlp.add_pipe('phon', config={'window_len': 5}, last=True)
+
+    Доступ к извлеченным статистикам:
+        >>> doc = nlp("мама мыла раму")
+        >>> doc._.phon.get_stats()
+        >>> doc._.phon.p_open_syllables
+        1.0
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+        window_len (int): Размер окна в словах для аллитерации и ассонанса
+    """
+
+    def __init__(self, nlp: Language, name: str = "phon", window_len: int = PHON_WINDOW_LEN):
+        self.name = name
+        self.window_len = window_len
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных статистик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        ps = PhonStats(doc, window_len=self.window_len)
+        doc._.set(self.name, ps)
         return doc
