@@ -10,7 +10,6 @@ from razdel import sentenize, tokenize
 from .utils import is_punctuation, parse_word
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
-# Числа, диапазоны, дроби и порядковые числительные: 100, 2020-2021, 5.5, 1,5, 3-й, 90-х
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
 
 

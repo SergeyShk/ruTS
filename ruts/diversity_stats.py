@@ -683,7 +683,6 @@ def _mtld_factor_lengths(
     source = tuple(text) + tuple(text) if wrap else tuple(text)
     lengths = []
     for start in range(n_words):
-        # Для порога нужно только количество типов, поэтому вместо счетчика - множество
         types: set[str] = set()
         end = start + n_words if wrap else n_words
         for pos in range(start, end):
