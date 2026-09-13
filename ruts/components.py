@@ -16,6 +16,7 @@ from .morph_stats import MorphStats
 from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
+from .syntax_stats import SyntaxStats
 
 
 @Language.factory("basic")
@@ -308,4 +309,48 @@ class PhonStatsComponent:
         """
         ps = PhonStats(doc, window_len=self.window_len)
         doc._.set(self.name, ps)
+        return doc
+
+
+@Language.factory("syntax", requires=["token.dep", "token.head"])
+class SyntaxStatsComponent:
+    """
+    Класс для компонента синтаксических статистик текста
+
+    Описание:
+        Компонент работает по дереву зависимостей, поэтому в пайплайне должен
+        быть парсер (модели ru_core_news_sm, ru_core_news_md, ru_core_news_lg)
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('syntax', last=True)
+
+    Доступ к извлеченным статистикам:
+        >>> doc = nlp("мама мыла раму")
+        >>> doc._.syntax.get_stats()
+        >>> doc._.syntax.tree_depth
+        1.0
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+    """
+
+    def __init__(self, nlp: Language, name: str = "syntax"):
+        self.name = name
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных статистик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        ss = SyntaxStats(doc)
+        doc._.set(self.name, ss)
         return doc

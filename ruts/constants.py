@@ -253,6 +253,41 @@ PHON_STATS_DESC = {
     "mean_syllable_len": "Средняя длина слога (букв)",
 }
 PHON_WINDOW_LEN = 3
+SYNTAX_STATS_DESC = {
+    "mean_dependency_distance": "Средняя длина зависимости",
+    "std_dependency_distance": "Стандартное отклонение длины зависимости",
+    "max_dependency_distance": "Максимальная длина зависимости",
+    "p_adjacent_dependencies": "Доля смежных связей",
+    "tree_depth": "Глубина дерева зависимостей",
+    "leaves_per_sent": "Листьев на предложение",
+    "subtrees_per_sent": "Поддеревьев на предложение",
+    "nodes_per_leaf": "Узлов на лист",
+    "verb_valency": "Валентность финитных глаголов",
+    "coordination_chains_per_sent": "Сочинительных цепочек на предложение",
+    "mean_coordination_chain_len": "Средняя длина сочинительной цепочки",
+    "clauses_per_sent": "Клауз на предложение",
+    "mean_clause_len": "Средняя длина клаузы (слов)",
+    "subordinate_clauses_per_sent": "Придаточных клауз на предложение",
+    "p_complex_sents": "Доля предложений с придаточными",
+    "modifiers_per_noun": "Модификаторов на именную группу",
+    "genitive_chains_per_sent": "Цепочек родительных падежей на предложение",
+    "max_genitive_chain_len": "Максимальная длина цепочки родительных падежей",
+    "participle_clauses_per_sent": "Причастных оборотов на предложение",
+    "mean_participle_clause_len": "Средняя длина причастного оборота (слов)",
+    "converb_clauses_per_sent": "Деепричастных оборотов на предложение",
+    "mean_converb_clause_len": "Средняя длина деепричастного оборота (слов)",
+    "p_passive": "Доля пассивных форм среди глаголов",
+    "p_agentless_passive": "Доля безагентного пассива",
+    "infinitives_per_sent": "Инфинитивов на предложение",
+    "negations_per_sent": "Отрицаний на предложение",
+}
+CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass", "parataxis"})
+SUBORDINATE_CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass"})
+SUBJECT_DEPS = frozenset({"nsubj", "csubj"})
+VALENCY_IGNORED_DEPS = frozenset({"cc", "conj", "parataxis", "punct"})
+NOUN_MODIFIER_DEPS = frozenset({"amod", "det", "nmod", "nummod", "acl"})
+PASSIVE_DEPS = frozenset({"nsubj:pass", "csubj:pass", "aux:pass"})
+NEGATION_PARTICLES = frozenset({"не", "ни"})
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10

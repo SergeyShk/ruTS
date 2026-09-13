@@ -37,6 +37,7 @@
 * **[Морфологические статистики](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - часть речи, падеж, наклонение, переходность и другие признаки
 * **[SEO-метрики стиля](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов
 * **[Фоностатистики](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - классы звуков, кластеры, аллитерация и ассонанс, слоги по правилу восходящей звучности
+* **[Синтаксические статистики](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей по разбору spaCy
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -55,7 +56,7 @@ pip install ruts
 uv add ruts
 ```
 
-Для работы с компонентами spaCy понадобится русскоязычная модель:
+Для работы с компонентами spaCy и синтаксическими статистиками понадобится русскоязычная модель:
 
 ```bash
 python -m spacy download ru_core_news_sm
@@ -464,6 +465,38 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
+<summary><b>Синтаксические статистики</b></summary>
+
+<br>
+
+Библиотека считает по дереву зависимостей spaCy (нужна модель с парсером):
+
+*   Длины зависимостей, глубину дерева, число листьев и поддеревьев, валентность глаголов
+*   Сочинительные цепочки, клаузы и придаточные
+*   Модификаторы именной группы и цепочки родительных падежей
+*   Причастные и деепричастные обороты, пассив, инфинитивы и отрицания
+
+```python
+>>> import spacy
+>>> from ruts import SyntaxStats
+
+>>> nlp = spacy.load('ru_core_news_sm')
+>>> text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
+>>> ss = SyntaxStats(nlp(text))
+
+>>> ss.tree_depth, ss.mean_dependency_distance
+(4.0, 1.9333333333333333)
+>>> ss.clauses_per_sent, ss.subordinate_clauses_per_sent
+(1.5, 0.5)
+>>> ss.participle_clauses_per_sent, ss.converb_clauses_per_sent, ss.p_passive
+(0.5, 0.5, 0.4)
+```
+
+Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/syntax_stats/).
+
+</details>
+
+<details>
 <summary><b>Наборы данных</b></summary>
 
 <br>
@@ -549,6 +582,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   `PhonStats`
 *   `ReadabilityStats`
 *   `StyleStats`
+*   `SyntaxStats`
 
 ```python
 >>> import ruts
@@ -613,6 +647,7 @@ uv run pre-commit install
     *   phon_stats.py - фоностатистики текста
     *   readability_stats.py - метрики удобочитаемости текста
     *   style_stats.py - SEO-метрики стиля текста
+    *   syntax_stats.py - синтаксические статистики текста
     *   utils.py - вспомогательные инструменты
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных

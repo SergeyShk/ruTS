@@ -297,3 +297,45 @@
     ``` python
     nlp.add_pipe("phon", config={"window_len": 5}, last=True)
     ```
+
+## SyntaxStatsComponent
+
+!!! info ""
+    **ruts.components.SyntaxStatsComponent**
+
+Модуль для компонента синтаксических статистик текста. Компонент работает по дереву зависимостей, поэтому в пайплайне должен быть парсер: модели `ru_core_news_sm`, `ru_core_news_md` или `ru_core_news_lg`; в пайплайне без парсера компонент вызывает исключение `ValueError`.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"syntax"` | Наименование компонента в пайплайне |
+
+Пример использования:
+
+!!! example "Пример"
+
+    _Код_:
+
+    ``` python
+    # Загрузка библиотек
+    import ruts
+    import spacy
+
+    # Загрузка модели spaCy
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Добавление компонента
+    nlp.add_pipe("syntax", last=True)
+
+    # Доступ к посчитанным статистикам
+    doc = nlp("Дом, построенный рабочими в прошлом году, был продан")
+    doc._.syntax.tree_depth
+    ```
+
+    _Результат_:
+
+    ``` bash
+    4.0
+    ```

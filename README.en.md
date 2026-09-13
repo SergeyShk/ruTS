@@ -37,6 +37,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
+* **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains over the spaCy parse
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -55,7 +56,7 @@ Or with [uv](https://docs.astral.sh/uv/):
 uv add ruts
 ```
 
-Working with spaCy components requires the Russian-language model:
+Working with spaCy components and syntactic statistics requires the Russian-language model:
 
 ```bash
 python -m spacy download ru_core_news_sm
@@ -464,6 +465,38 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/phon_stats/).
 </details>
 
 <details>
+<summary><b>Syntactic statistics</b></summary>
+
+<br>
+
+The library counts over the spaCy dependency tree (a model with a parser is required):
+
+*   Dependency distances, tree depth, numbers of leaves and subtrees, verb valency
+*   Coordination chains, clauses and subordinate clauses
+*   Noun phrase modifiers and genitive chains
+*   Participial and adverbial participial clauses, passive voice, infinitives and negations
+
+```python
+>>> import spacy
+>>> from ruts import SyntaxStats
+
+>>> nlp = spacy.load('ru_core_news_sm')
+>>> text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
+>>> ss = SyntaxStats(nlp(text))
+
+>>> ss.tree_depth, ss.mean_dependency_distance
+(4.0, 1.9333333333333333)
+>>> ss.clauses_per_sent, ss.subordinate_clauses_per_sent
+(1.5, 0.5)
+>>> ss.participle_clauses_per_sent, ss.converb_clauses_per_sent, ss.p_passive
+(0.5, 0.5, 0.4)
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/stats/syntax_stats/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -549,6 +582,7 @@ The library allows creating the following classes of spaCy components:
 *   `PhonStats`
 *   `ReadabilityStats`
 *   `StyleStats`
+*   `SyntaxStats`
 
 ```python
 >>> import ruts
@@ -613,6 +647,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   phon_stats.py - phonostatistics
     *   readability_stats.py - readability metrics
     *   style_stats.py - SEO style metrics
+    *   syntax_stats.py - syntactic statistics
     *   utils.py - helper tools
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets

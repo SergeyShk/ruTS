@@ -25,6 +25,9 @@ nav:
         - Фоностатистики:
           - Модуль вычисления статистик: stats/phon_stats.md
           - Функции вычисления статистик: stats/phon_stats_funcs.md
+        - Синтаксические статистики:
+          - Модуль вычисления статистик: stats/syntax_stats.md
+          - Функции вычисления статистик: stats/syntax_stats_funcs.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
