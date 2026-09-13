@@ -1,7 +1,7 @@
 import pytest
 import spacy
 
-from ruts import DiversityStats, PhonStats, ReadabilityStats, StyleStats
+from ruts import DiversityStats, PhonStats, ReadabilityStats, StyleStats, SyntaxStats
 from ruts.constants import (
     BASIC_STATS_DESC,
     DIVERSITY_STATS_DESC,
@@ -10,6 +10,7 @@ from ruts.constants import (
     PUNCTUATIONS,
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
+    SYNTAX_STATS_DESC,
 )
 
 text = (
@@ -152,3 +153,30 @@ def test_components_filter_punctuation(spacy_doc):
     assert len(spacy_doc._.diversity.words) == n_tokens
     assert len(spacy_doc._.morph.words) == n_tokens
     assert not any(word in PUNCTUATIONS for word in spacy_doc._.diversity.words)
+
+
+@pytest.fixture(scope="module")
+def parsed_nlp():
+    pytest.importorskip("ru_core_news_sm")
+    parsed_nlp = spacy.load("ru_core_news_sm")
+    parsed_nlp.add_pipe("syntax", last=True)
+
+    yield parsed_nlp
+
+    parsed_nlp.remove_pipe("syntax")
+
+
+def test_component_syntax(parsed_nlp):
+    doc = parsed_nlp(text)
+    assert parsed_nlp.has_pipe("syntax") is True
+    for key in SYNTAX_STATS_DESC:
+        assert hasattr(doc._.syntax, key)
+    assert doc._.syntax.get_stats() == SyntaxStats(doc).get_stats()
+
+
+def test_component_syntax_requires_parser():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe("syntax", last=True)
+    with pytest.raises(ValueError):
+        nlp(text)

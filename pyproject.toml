@@ -77,8 +77,11 @@ url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
 explicit = true
 
+[tool.uv.sources]
+ru-core-news-sm = { url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" }
+
 [dependency-groups]
-test = ["pytest>=8.3", "pytest-cov>=6.0"]
+test = ["pytest>=8.3", "pytest-cov>=6.0", "ru-core-news-sm"]
 lint = ["mypy>=1.14", "pre-commit>=4.0", "ruff>=0.9"]
 docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "pymdown-extensions>=10.0"]
 dev = [

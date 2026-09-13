@@ -2486,6 +2486,20 @@ wheels = [
 ]
 
 [[package]]
+name = "ru-core-news-sm"
+version = "3.8.0"
+source = { url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" }
+dependencies = [
+    { name = "pymorphy3" },
+]
+wheels = [
+    { url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl", hash = "sha256:69978d47b43e2c4f329bebdb155e8e9d3861bba1a58ba25551419dae7d7e07fc" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pymorphy3", specifier = ">=1.0.0" }]
+
+[[package]]
 name = "ruff"
 version = "0.16.7"
 source = { registry = "https://pypi.org/simple" }
@@ -2537,6 +2551,7 @@ dev = [
     { name = "pymdown-extensions" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "ru-core-news-sm" },
     { name = "ruff" },
 ]
 docs = [
@@ -2552,6 +2567,7 @@ lint = [
 test = [
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "ru-core-news-sm" },
 ]
 
 [package.metadata]
@@ -2576,6 +2592,7 @@ dev = [
     { name = "pymdown-extensions", specifier = ">=10.0" },
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "ru-core-news-sm", url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" },
     { name = "ruff", specifier = ">=0.9" },
 ]
 docs = [
@@ -2591,6 +2608,7 @@ lint = [
 test = [
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=6.0" },
+    { name = "ru-core-news-sm", url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" },
 ]
 
 [[package]]
