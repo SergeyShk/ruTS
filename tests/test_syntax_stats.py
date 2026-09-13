@@ -23,6 +23,7 @@ from ruts.syntax_stats import (
     is_participle,
     is_participle_clause,
     is_passive,
+    is_predicate,
     is_subordinate_clause_head,
     subtree_len,
 )
@@ -201,7 +202,7 @@ def test_dependency_distances(ss):
     all_distances = [distance for sent in DISTANCES for distance in sent]
     assert ss.mean_dependency_distance == pytest.approx(40 / 22)
     assert ss.std_dependency_distance == pytest.approx(pstdev(all_distances))
-    assert ss.max_dependency_distance == pytest.approx(17 / 5)
+    assert ss.max_dependency_distance == pytest.approx(17 / 4)
     assert ss.p_adjacent_dependencies == pytest.approx(14 / 22)
 
 
@@ -241,7 +242,7 @@ def test_single_word_sentence():
     assert isnan(ss.mean_dependency_distance)
     assert isnan(ss.std_dependency_distance)
     assert isnan(ss.p_adjacent_dependencies)
-    assert ss.max_dependency_distance == 0
+    assert isnan(ss.max_dependency_distance)
     assert ss.tree_depth == 0
     assert ss.nodes_per_leaf == 1
     assert ss.clauses_per_sent == 1
@@ -330,6 +331,53 @@ def test_subordinate_conj():
     assert ss.n_subordinate_clauses == 2
 
 
+def test_parataxis():
+    doc = build_doc(
+        [
+            (
+                "Во-первых , он не пришёл .",
+                [4, 4, 4, 4, 4, 4],
+                ["parataxis", "punct", "nsubj", "advmod", "ROOT", "punct"],
+                ["ADV", "PUNCT", "PRON", "PART", "VERB", "PUNCT"],
+                ["", "", "Case=Nom", "Polarity=Neg", "VerbForm=Fin", ""],
+            ),
+            (
+                "Он сказал : уходи .",
+                [1, 1, 1, 1, 1],
+                ["nsubj", "ROOT", "punct", "parataxis", "punct"],
+                ["PRON", "VERB", "PUNCT", "VERB", "PUNCT"],
+                ["Case=Nom", "VerbForm=Fin", "", "Mood=Imp|VerbForm=Fin", ""],
+            ),
+            (
+                "Она думала , что он умён .",
+                [1, 1, 5, 5, 5, 1, 1],
+                ["nsubj", "ROOT", "punct", "mark", "nsubj", "ccomp", "punct"],
+                ["PRON", "VERB", "PUNCT", "SCONJ", "PRON", "ADJ", "PUNCT"],
+                ["Case=Nom", "VerbForm=Fin", "", "", "Case=Nom", "Variant=Short", ""],
+            ),
+        ]
+    )
+    assert [token.text for token in doc if is_clause_head(token)] == [
+        "пришёл",
+        "сказал",
+        "уходи",
+        "думала",
+        "умён",
+    ]
+    assert not is_predicate(doc[0])
+    assert is_predicate(doc[9])
+    assert is_predicate(doc[16])
+    ss = SyntaxStats(doc)
+    assert ss.n_clauses == 5
+    assert ss.n_subordinate_clauses == 1
+
+
+def test_max_dependency_distance_skips_sents_without_dependencies():
+    ss = SyntaxStats(build_doc([SENTENCES[3], SENTENCES[1]]))
+    assert ss.max_dependency_distance == 5
+    assert ss.mean_dependency_distance == pytest.approx(13 / 6)
+
+
 def test_token_predicates(sents):
     first, second, _, _, last = sents
     assert is_participle(first[2])
@@ -378,10 +426,17 @@ def test_model(nlp):
     assert ss.n_passive <= ss.n_verbs
     assert 0 <= ss.p_adjacent_dependencies <= 1
     assert ss.tree_depth >= 1
-    assert ss.max_dependency_distance >= ss.mean_dependency_distance
+    assert ss.max_dependency_distance >= 1
     assert ss.n_coordination_chains >= 1
     assert ss.n_genitive_chains >= 1
     assert ss.n_participle_clauses == ss.n_converb_clauses == ss.n_passive == 0
+
+
+def test_model_parataxis(nlp):
+    ss = SyntaxStats(
+        nlp("Во-первых, он не пришёл. Он, например, не пришёл. Он, конечно, не пришёл.")
+    )
+    assert ss.n_clauses == 3
     assert isnan(ss.p_agentless_passive)
 
 

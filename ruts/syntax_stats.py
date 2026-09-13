@@ -99,7 +99,7 @@ class SyntaxStats:
         c_deps (dict[str, int]): Распределение слов по синтаксическим отношениям
         mean_dependency_distance (float): Средняя длина зависимости
         std_dependency_distance (float): Стандартное отклонение длины зависимости
-        max_dependency_distance (float): Максимальная длина зависимости в предложении
+        max_dependency_distance (float): Максимальная длина зависимости в предложении (по предложениям с зависимостями)
         p_adjacent_dependencies (float): Доля смежных связей - зависимостей длины 1
         tree_depth (float): Глубина дерева зависимостей
         leaves_per_sent (float): Листьев на предложение
@@ -180,7 +180,8 @@ class SyntaxStats:
 
         self.mean_dependency_distance = fmean(all_distances) if all_distances else nan
         self.std_dependency_distance = pstdev(all_distances) if all_distances else nan
-        self.max_dependency_distance = fmean(max(sent, default=0) for sent in distances)
+        sent_maxima = [max(sent) for sent in distances if sent]
+        self.max_dependency_distance = fmean(sent_maxima) if sent_maxima else nan
         self.p_adjacent_dependencies = safe_divide(
             sum(1 for distance in all_distances if distance == 1), len(all_distances), nan
         )
@@ -521,11 +522,13 @@ def is_clause_head(token: Token) -> bool:
 
     Описание:
         Клаузу возглавляет вершина предложения или слово со связью ccomp, advcl, acl,
-        acl:relcl, csubj, csubj:pass или parataxis, кроме полных причастий,
-        деепричастий и инфинитивов при существительном (желание уйти): причастные
+        acl:relcl, csubj или csubj:pass, кроме полных причастий, деепричастий
+        и инфинитивов при существительном (желание уйти): причастные
         и деепричастные обороты считаются отдельно
-        Однородное сказуемое (связь conj от вершины клаузы) образует свою клаузу,
-        если это глагол или у него есть собственное подлежащее
+        Вставная конструкция (parataxis) и однородное сказуемое (conj от вершины
+        клаузы) образуют свою клаузу, только если это глагол или у него есть
+        собственное подлежащее: модели spaCy вешают parataxis и на вводные слова
+        (например, конечно, во-первых), которые клаузами не являются
 
     Аргументы:
         token (Token): Токен
@@ -539,10 +542,27 @@ def is_clause_head(token: Token) -> bool:
         return True
     if is_participle(token) or is_converb(token):
         return False
-    if token.dep_ in CLAUSE_DEPS:
-        return not (token.dep_ == "acl" and is_infinitive(token))
-    if token.dep_ != "conj" or not is_clause_head(token.head):
-        return False
+    if token.dep_ not in CLAUSE_DEPS:
+        return token.dep_ == "conj" and is_clause_head(token.head) and is_predicate(token)
+    if token.dep_ == "parataxis":
+        return is_predicate(token)
+    return not (token.dep_ == "acl" and is_infinitive(token))
+
+
+def is_predicate(token: Token) -> bool:
+    """
+    Проверка, может ли токен быть сказуемым своей клаузы
+
+    Описание:
+        Глагол (VERB, AUX) или слово с собственным подлежащим (nsubj, csubj):
+        именное сказуемое «он умён» проходит, вводное слово «конечно» - нет
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
     return token.pos_ in ("VERB", "AUX") or any(
         base_dep(child) in SUBJECT_DEPS for child in get_children(token)
     )

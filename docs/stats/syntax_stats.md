@@ -48,7 +48,7 @@
 | `c_deps` | dict[str, int] | Распределение слов по синтаксическим отношениям |
 | `mean_dependency_distance` | float | Средняя длина зависимости |
 | `std_dependency_distance` | float | Стандартное отклонение длины зависимости |
-| `max_dependency_distance` | float | Максимальная длина зависимости в предложении |
+| `max_dependency_distance` | float | Максимальная длина зависимости в предложении (по предложениям с зависимостями) |
 | `p_adjacent_dependencies` | float | Доля смежных связей - зависимостей длины 1 |
 | `tree_depth` | float | Глубина дерева зависимостей |
 | `leaves_per_sent` | float | Листьев на предложение |
