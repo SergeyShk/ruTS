@@ -1,6 +1,8 @@
 import threading
 from collections import Counter
+from functools import lru_cache
 from importlib.metadata import version
+from io import BytesIO
 from math import isnan
 
 import gradio as gr
@@ -8,7 +10,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import spacy
-from matplotlib.figure import Figure
+from PIL import Image
+from spacy.tokens import Doc
 
 from ruts import (
     BasicStats,
@@ -108,8 +111,14 @@ EXAMPLES = {
     ),
 }
 
-nlp = spacy.load("ru_core_news_sm", exclude=["ner"])
+ALL_LAYERS = list(HIGHLIGHT_LAYERS_DESC)
+nlp = spacy.load("ru_core_news_sm", exclude=["ner", "lemmatizer"])
 plot_lock = threading.Lock()
+
+
+@lru_cache(maxsize=32)
+def parse(text: str) -> Doc:
+    return nlp(text)
 
 
 def format_value(value: float | int) -> str:
@@ -157,8 +166,9 @@ def morph_tables(ms: MorphStats) -> tuple[pd.DataFrame, pd.DataFrame]:
     return pos_table, pd.DataFrame(rows, columns=["Признак", "Значение", "Слов"])
 
 
-def zipf_plot(words: tuple[str, ...]) -> Figure:
+def zipf_image(words: tuple[str, ...]) -> Image.Image:
     counter = Counter(word for word in words if not is_stopword(word))
+    buffer = BytesIO()
     with plot_lock:
         fig = plt.figure(figsize=(7, 4.5))
         zipf(
@@ -169,54 +179,75 @@ def zipf_plot(words: tuple[str, ...]) -> Figure:
             alpha=1.1,
         )
         fig.tight_layout()
+        fig.savefig(buffer, format="png", dpi=150)
         plt.close(fig)
-    return fig
+    buffer.seek(0)
+    return Image.open(buffer)
 
 
-def render_highlight(doc, layers: list[str]) -> str:
-    return highlight(doc, layers=layers).to_html()
+def render_highlight(text: str, layers: list[str]) -> str:
+    return highlight(parse(text), layers=layers).to_html()
 
 
-def analyze(text: str, layers: list[str]):
+def compute(text: str, layers: list[str]) -> dict:
     text = text.strip()[:MAX_CHARS]
     if not text:
-        raise gr.Error("Вставьте текст для разбора")
-    doc = nlp(text)
-    try:
-        bs = BasicStats(doc)
-        rs = ReadabilityStats(doc)
-        ds = DiversityStats(doc)
-        ms = MorphStats(doc)
-        ss = StyleStats(doc)
-        ps = PhonStats(doc)
-        xs = SyntaxStats(doc)
-    except ValueError as error:
-        raise gr.Error(str(error)) from error
+        raise ValueError("Вставьте текст для разбора")
+    doc = parse(text)
+    bs = BasicStats(doc)
+    rs = ReadabilityStats(doc)
+    ds = DiversityStats(doc)
+    ms = MorphStats(doc)
+    ss = StyleStats(doc)
+    ps = PhonStats(doc)
+    xs = SyntaxStats(doc)
     words = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True).extract(text)
     pos_table, morph_table = morph_tables(ms)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
     enough_words = bs.n_words >= ZIPF_MIN_WORDS
+    return {
+        "text": text,
+        "highlight": highlight(doc, layers=layers).to_html(),
+        "summary": readability_summary(rs),
+        "readability": stats_table(rs.get_stats(), READABILITY_STATS_DESC),
+        "diversity": stats_table(ds.get_stats(), DIVERSITY_STATS_DESC),
+        "pos": pos_table,
+        "morph": morph_table,
+        "syntax": stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
+        "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
+        "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
+        "basic": stats_table(basic, BASIC_STATS_DESC),
+        "zipf": zipf_image(words) if enough_words else None,
+        "enough_words": enough_words,
+    }
+
+
+def analyze(text: str, layers: list[str]):
+    try:
+        result = compute(text, layers)
+    except ValueError as error:
+        raise gr.Error(str(error)) from error
     return (
-        doc,
-        render_highlight(doc, layers),
-        readability_summary(rs),
-        stats_table(rs.get_stats(), READABILITY_STATS_DESC),
-        stats_table(ds.get_stats(), DIVERSITY_STATS_DESC),
-        pos_table,
-        morph_table,
-        stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
-        stats_table(ss.get_stats(), STYLE_STATS_DESC),
-        stats_table(ps.get_stats(), PHON_STATS_DESC),
-        stats_table(basic, BASIC_STATS_DESC),
-        gr.Plot(value=zipf_plot(words) if enough_words else None, visible=enough_words),
-        gr.Markdown(visible=not enough_words),
+        result["text"],
+        result["highlight"],
+        result["summary"],
+        result["readability"],
+        result["diversity"],
+        result["pos"],
+        result["morph"],
+        result["syntax"],
+        result["style"],
+        result["phon"],
+        result["basic"],
+        gr.Image(value=result["zipf"], visible=result["enough_words"]),
+        gr.Markdown(visible=not result["enough_words"]),
     )
 
 
-def rerender(doc, layers: list[str]) -> str:
-    if doc is None:
+def rerender(text: str | None, layers: list[str]) -> str:
+    if not text:
         return ""
-    return render_highlight(doc, layers)
+    return render_highlight(text, layers)
 
 
 HEADER = """
@@ -235,16 +266,21 @@ CSS = """
 .stats { --font-mono: var(--font); }
 """
 
+INITIAL = compute(EXAMPLES["Новость"], ALL_LAYERS)
+
 with gr.Blocks(title="ruTS") as demo:
     gr.Markdown(HEADER)
-    doc_state = gr.State()
-    highlight_output = gr.HTML(label="Подсветка", container=True, padding=True, render=False)
-    summary_output = gr.Markdown(render=False)
+    text_state = gr.State(INITIAL["text"])
+    highlight_output = gr.HTML(
+        INITIAL["highlight"], label="Подсветка", container=True, padding=True, render=False
+    )
+    summary_output = gr.Markdown(INITIAL["summary"], render=False)
     tables = {
-        name: gr.Dataframe(interactive=False, elem_classes="stats", render=False)
+        name: gr.Dataframe(INITIAL[name], interactive=False, elem_classes="stats", render=False)
         for name in ("readability", "diversity", "morph", "syntax", "style", "phon", "basic")
     }
     pos_output = gr.BarPlot(
+        INITIAL["pos"],
         x="Часть речи",
         y="Слов",
         sort="-y",
@@ -253,14 +289,21 @@ with gr.Blocks(title="ruTS") as demo:
         container=False,
         render=False,
     )
-    zipf_output = gr.Plot(label="Закон Ципфа", show_label=False, render=False)
+    zipf_output = gr.Image(
+        INITIAL["zipf"],
+        label="Закон Ципфа",
+        show_label=False,
+        interactive=False,
+        visible=INITIAL["enough_words"],
+        render=False,
+    )
     zipf_note = gr.Markdown(
         f"*График закона Ципфа строится для текстов от {ZIPF_MIN_WORDS} слов.*",
-        visible=False,
+        visible=not INITIAL["enough_words"],
         render=False,
     )
     outputs = [
-        doc_state,
+        text_state,
         highlight_output,
         summary_output,
         tables["readability"],
@@ -278,6 +321,7 @@ with gr.Blocks(title="ruTS") as demo:
     with gr.Row():
         with gr.Column(scale=3):
             text_input = gr.Textbox(
+                INITIAL["text"],
                 lines=9,
                 max_lines=20,
                 max_length=MAX_CHARS,
@@ -286,23 +330,23 @@ with gr.Blocks(title="ruTS") as demo:
                     ",", " "
                 ),
             )
-            gr.Examples(
-                examples=[[text] for text in EXAMPLES.values()],
-                example_labels=list(EXAMPLES),
-                inputs=[text_input],
-                outputs=outputs,
-                fn=lambda text: analyze(text, list(HIGHLIGHT_LAYERS_DESC)),
-                run_on_click=True,
-                cache_examples=False,
-                label="Примеры",
-            )
         with gr.Column(scale=1):
             layers_input = gr.CheckboxGroup(
                 choices=[(name, key) for key, name in HIGHLIGHT_LAYERS_DESC.items()],
-                value=list(HIGHLIGHT_LAYERS_DESC),
+                value=ALL_LAYERS,
                 label="Слои подсветки",
             )
             analyze_button = gr.Button("Разобрать", variant="primary")
+    gr.Examples(
+        examples=[[text, ALL_LAYERS] for text in EXAMPLES.values()],
+        example_labels=list(EXAMPLES),
+        inputs=[text_input, layers_input],
+        outputs=outputs,
+        fn=analyze,
+        run_on_click=True,
+        cache_examples=False,
+        label="Примеры",
+    )
     with gr.Row():
         with gr.Column():
             highlight_output.render()
@@ -328,13 +372,9 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["basic"].render()
     gr.Markdown(FOOTER)
 
-    demo.load(
-        lambda: (EXAMPLES["Новость"], *analyze(EXAMPLES["Новость"], list(HIGHLIGHT_LAYERS_DESC))),
-        outputs=[text_input, *outputs],
-    )
     analyze_button.click(analyze, inputs=[text_input, layers_input], outputs=outputs)
     text_input.submit(analyze, inputs=[text_input, layers_input], outputs=outputs)
-    layers_input.change(rerender, inputs=[doc_state, layers_input], outputs=[highlight_output])
+    layers_input.change(rerender, inputs=[text_state, layers_input], outputs=[highlight_output])
 
 if __name__ == "__main__":
     demo.launch(css=CSS)

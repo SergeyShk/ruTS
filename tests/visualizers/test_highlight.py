@@ -338,6 +338,27 @@ def test_passive(doc):
     ]
 
 
+def test_passive_skips_punctuation():
+    doc = build_doc(
+        [
+            ("Были", True, 2, "aux:pass", "AUX", "VerbForm=Fin"),
+            ("-", True, 2, "punct", "VERB", "Voice=Pass"),
+            (
+                "отремонтированы",
+                False,
+                2,
+                "ROOT",
+                "VERB",
+                "Variant=Short|VerbForm=Part|Voice=Pass",
+            ),
+            (".", False, 2, "punct", "PUNCT", ""),
+        ]
+    )
+    assert doc[1].is_punct
+    ht = highlight(doc, layers=["passive"])
+    assert [doc.text[h.start : h.end] for h in ht.highlights] == ["Были - отремонтированы"]
+
+
 def test_participle_clauses(doc):
     ht = highlight(doc, layers=["participle_clauses"])
     assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [

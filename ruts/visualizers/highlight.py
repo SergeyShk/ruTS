@@ -26,6 +26,7 @@ from ..syntax_stats import (
     is_genitive_modifier,
     is_participle_clause,
     is_passive,
+    is_word,
 )
 from ..utils import count_syllables, is_punctuation, parse_word
 
@@ -649,7 +650,9 @@ def find_passive(doc: Doc) -> list[Highlight]:
     Поиск пассивных глагольных форм
 
     Описание:
-        Форма подсвечивается вместе со вспомогательным глаголом (был продан)
+        Форма подсвечивается вместе со вспомогательным глаголом (был продан);
+        знаки препинания пропускаются, даже если модель пометила их глаголом
+        (тире между подлежащим и сказуемым)
 
     Аргументы:
         doc (Doc): Объект Doc с разбором зависимостей
@@ -659,7 +662,7 @@ def find_passive(doc: Doc) -> list[Highlight]:
     """
     highlights = []
     for token in doc:
-        if is_passive(token):
+        if is_word(token) and is_passive(token):
             auxiliaries = [child for child in token.children if child.dep_ == "aux:pass"]
             start, end = tokens_span([token, *auxiliaries])
             note = "пассив без агенса" if is_agentless(token) else "пассив"
