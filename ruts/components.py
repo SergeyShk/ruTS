@@ -65,6 +65,10 @@ class MorphStatsComponent:
     """
     Класс для компонента морфологических статистик текста
 
+    Описание:
+        Части речи и признаки берутся из разметки модели (token.pos_, token.morph)
+        в терминах Universal Dependencies, в пайплайне без теггера - из pymorphy3
+
     Добавление компонента в пайплайн:
         >>> import ruts
         >>> import spacy
@@ -75,7 +79,7 @@ class MorphStatsComponent:
         >>> doc = nlp("мама мыла раму")
         >>> doc._.morph.get_stats()
         >>> doc._.morph.case
-        ('nomn', 'gent', 'datv')
+        ('Nom', None, 'Acc')
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
