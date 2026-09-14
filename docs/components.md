@@ -52,7 +52,7 @@
 !!! info ""
     **ruts.components.MorphStatsComponent**
 
-Модуль для компонента морфологических статистик текста.
+Модуль для компонента морфологических статистик текста. Части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`) в терминах Universal Dependencies; в пайплайне без теггера используется pymorphy3.
 
 Параметры:
 
@@ -86,7 +86,7 @@
     _Результат_:
 
     ``` bash
-    ('nomn', 'gent', 'datv')
+    ('Nom', None, 'Acc')
     ```
 
 ## ReadabilityStatsComponent

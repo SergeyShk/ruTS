@@ -1,10 +1,23 @@
 from collections import Counter, OrderedDict
+from functools import lru_cache
 
-from spacy.tokens import Doc
+import pymorphy3
+from spacy.tokens import Doc, Token
 
-from .constants import MORPHOLOGY_STATS_DESC
+from .constants import (
+    MORPHOLOGY_FEATURES,
+    MORPHOLOGY_STATS_DESC,
+    OPENCORPORA_TO_UD_GRAMMEMES,
+    OPENCORPORA_TO_UD_POS,
+    OPENCORPORA_VERB_FORMS,
+    PROPER_NOUN_GRAMMEMES,
+    SUBORDINATING_CONJUNCTIONS,
+    UD_PERSONS,
+)
 from .extractors import WordsExtractor
-from .utils import parse_word
+from .utils import get_morph_analyzer, parse_word
+
+VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 
 
 class MorphStats:
@@ -12,10 +25,19 @@ class MorphStats:
     Класс для вычисления морфологических статистик текста
 
     Описание:
-        Для морфологического разбора текста используется библиотека pymorphy3
-        Описание статистик взяты из корпуса OpenCorpora
+        Части речи и грамматические признаки выдаются в терминах Universal Dependencies:
+        pos - NOUN, VERB, ADJ, PRON, DET и другие, case - Nom, Gen, Dat, Acc, Ins, Loc,
+        так же animacy, aspect, gender, mood, number, person, tense, voice и verb_form
+        Для объекта Doc с разметкой частей речи значения берутся из token.pos_
+        и token.morph, то есть с учетом контекста (стали - глагол или существительное);
+        для строки и Doc без разметки используется первый разбор pymorphy3, граммемы
+        OpenCorpora переводятся в UD по таблицам в constants
+        Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
+        которых в русском UD нет; они считаются через pymorphy3 для глаголов
+        и в строке признаков tags записываются как Subcat и Clusivity
 
     Ссылки:
+        https://universaldependencies.org/u/feat/
         https://github.com/no-plagiarism/pymorphy3
         http://opencorpora.org/dict.php?act=gram
 
@@ -24,18 +46,21 @@ class MorphStats:
         >>> text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
         >>> ms = MorphStats(text)
         >>> ms.get_stats()
-        {'animacy': {None: 11},
-        'aspect': {None: 5, 'impf': 1, 'perf': 5},
+        {'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+        'animacy': {None: 11},
+        'aspect': {'Perf': 5, None: 5, 'Imp': 1},
         'case': {None: 11},
         'gender': {None: 11},
-        'involvement': {None: 10, 'excl': 1},
-        'mood': {None: 7, 'impr': 1, 'indc': 3},
-        'number': {None: 7, 'plur': 3, 'sing': 1},
-        'person': {None: 9, '2per': 1, '3per': 1},
-        'pos': {'ADVB': 1, 'CONJ': 4, 'INFN': 2, 'VERB': 4},
-        'tense': {None: 8, 'futr': 1, 'past': 1, 'pres': 1},
-        'transitivity': {None: 5, 'intr': 2, 'tran': 4},
+        'involvement': {'Ex': 1, None: 10},
+        'mood': {'Imp': 1, None: 7, 'Ind': 3},
+        'number': {'Plur': 3, None: 7, 'Sing': 1},
+        'person': {None: 9, '2': 1, '3': 1},
+        'tense': {None: 8, 'Pres': 1, 'Fut': 1, 'Past': 1},
+        'transitivity': {'Intr': 2, 'Tran': 4, None: 5},
+        'verb_form': {'Fin': 4, 'Inf': 2, None: 5},
         'voice': {None: 11}}
+        >>> ms.tags[0]
+        'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
@@ -43,18 +68,19 @@ class MorphStats:
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
-        tags (tuple[str]): Кортеж извлеченных тэгов OpenCorpora
+        tags (tuple[str]): Кортеж строк грамматических признаков в формате CoNLL-U
         pos (tuple[str]): Кортеж значений части речи
         animacy (tuple[str]): Кортеж значений одушевленности
         aspect (tuple[str]): Кортеж значений вида
         case (tuple[str]): Кортеж значений падежа
-        gender (tuple[str]): Кортеж значений пола
+        gender (tuple[str]): Кортеж значений рода
         involvement (tuple[str]): Кортеж значений совместности
         mood (tuple[str]): Кортеж значений наклонения
         number (tuple[str]): Кортеж значений числа
         person (tuple[str]): Кортеж значений лица
         tense (tuple[str]): Кортеж значений времени
         transitivity (tuple[str]): Кортеж значений переходности
+        verb_form (tuple[str]): Кортеж значений формы глагола
         voice (tuple[str]): Кортеж значений залога
 
     Методы:
@@ -68,34 +94,38 @@ class MorphStats:
     """
 
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
+        features: list[dict[str, str | None]]
         if isinstance(source, Doc):
-            text = source.text
-            self.words = tuple(
-                word.text for word in source if not word.is_punct and not word.is_space
-            )
+            tokens = [token for token in source if not token.is_punct and not token.is_space]
+            self.words = tuple(token.text for token in tokens)
+            if source.has_annotation("POS"):
+                features = [token_to_ud(token) for token in tokens]
+            else:
+                features = [word_to_ud(word) for word in self.words]
         elif isinstance(source, str):
-            text = source
             if not words_extractor:
                 words_extractor = WordsExtractor()
-            self.words = words_extractor.extract(text)
+            self.words = words_extractor.extract(source)
+            features = [word_to_ud(word) for word in self.words]
         else:
             raise TypeError("Некорректный источник данных")
         if not self.words:
             raise ValueError("В источнике данных отсутствуют слова")
 
-        self.tags = tuple(parse_word(word).tag for word in self.words)
-        self.pos = tuple(tag.POS for tag in self.tags)
-        self.animacy = tuple(tag.animacy for tag in self.tags)
-        self.aspect = tuple(tag.aspect for tag in self.tags)
-        self.case = tuple(tag.case for tag in self.tags)
-        self.gender = tuple(tag.gender for tag in self.tags)
-        self.involvement = tuple(tag.involvement for tag in self.tags)
-        self.mood = tuple(tag.mood for tag in self.tags)
-        self.number = tuple(tag.number for tag in self.tags)
-        self.person = tuple(tag.person for tag in self.tags)
-        self.tense = tuple(tag.tense for tag in self.tags)
-        self.transitivity = tuple(tag.transitivity for tag in self.tags)
-        self.voice = tuple(tag.voice for tag in self.tags)
+        self.tags = tuple(format_features(word_features) for word_features in features)
+        self.pos = tuple(word_features["pos"] for word_features in features)
+        self.animacy = tuple(word_features["animacy"] for word_features in features)
+        self.aspect = tuple(word_features["aspect"] for word_features in features)
+        self.case = tuple(word_features["case"] for word_features in features)
+        self.gender = tuple(word_features["gender"] for word_features in features)
+        self.involvement = tuple(word_features["involvement"] for word_features in features)
+        self.mood = tuple(word_features["mood"] for word_features in features)
+        self.number = tuple(word_features["number"] for word_features in features)
+        self.person = tuple(word_features["person"] for word_features in features)
+        self.tense = tuple(word_features["tense"] for word_features in features)
+        self.transitivity = tuple(word_features["transitivity"] for word_features in features)
+        self.verb_form = tuple(word_features["verb_form"] for word_features in features)
+        self.voice = tuple(word_features["voice"] for word_features in features)
 
     def get_stats(self, *args: str, filter_none: bool = False) -> dict[str, dict[str, int]]:
         """
@@ -191,3 +221,165 @@ class MorphStats:
                 )
                 raise KeyError(arg + " отсутствует в справочнике морфологических статистик")
         return True
+
+
+def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:
+    """
+    Перевод части речи OpenCorpora в часть речи Universal Dependencies
+
+    Описание:
+        Формы глагола (VERB, INFN, PRTF, PRTS, GRND) сводятся к VERB, прилагательные
+        и компаративы - к ADJ; существительные с пометами имени, фамилии, отчества,
+        топонима или организации - PROPN, но только для словоформ с заглавной буквы:
+        pymorphy3 не учитывает регистр, и первый разбор обычных слов (лев, роза, мороз,
+        улей) тоже несет помету имени; местоименные прилагательные (Apro) - DET,
+        кроме относительного «который» - PRON и числительного «один» (Apro и Anum) -
+        NUM; союзы из SUBORDINATING_CONJUNCTIONS - SCONJ, остальные - CCONJ;
+        предикативы (надо, нельзя) - ADV; числа и римские цифры - NUM, латиница
+        и неизвестные слова - X
+        Без контекста часть речи омонимов и роль союзов (что, как) определяются
+        приблизительно
+
+    Аргументы:
+        tag (OpencorporaTag): Тэг OpenCorpora
+        lemma (str): Лемма слова
+        word (str): Словоформа; без нее имена собственные не выделяются
+
+    Вывод:
+        str|None: Часть речи UD, None если pymorphy3 не определил часть речи
+    """
+    grammemes = tag.grammemes
+    if tag.POS == "NOUN" and PROPER_NOUN_GRAMMEMES & grammemes and word[:1].isupper():
+        return "PROPN"
+    if tag.POS == "ADJF" and "Apro" in grammemes:
+        if "Anum" in grammemes:
+            return "NUM"
+        return "PRON" if lemma == "который" else "DET"
+    if tag.POS == "CONJ" and lemma in SUBORDINATING_CONJUNCTIONS:
+        return "SCONJ"
+    for grammeme in (tag.POS, *grammemes):
+        if grammeme in OPENCORPORA_TO_UD_POS:
+            return OPENCORPORA_TO_UD_POS[grammeme]
+    return None
+
+
+def tag_to_ud(
+    tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = ""
+) -> dict[str, str | None]:
+    """
+    Перевод тэга OpenCorpora в признаки Universal Dependencies
+
+    Описание:
+        Граммемы переводятся по таблице OPENCORPORA_TO_UD_GRAMMEMES: падежи gen1, gen2,
+        acc2, loc1, loc2 - в Gen, Par, Acc, Loc, Loc; лицо 1per, 2per, 3per - в 1, 2, 3;
+        общий род ms-f (сирота, задира), который pymorphy3 не относит к роду, - в Com;
+        форма глагола verb_form выводится из части речи OpenCorpora: VERB - Fin,
+        INFN - Inf, PRTF и PRTS - Part, GRND - Conv
+        Переходность и совместность переводятся в Tran, Intr и In, Ex
+
+    Аргументы:
+        tag (OpencorporaTag): Тэг OpenCorpora
+        lemma (str): Лемма слова
+        word (str): Словоформа; без нее имена собственные не выделяются
+
+    Вывод:
+        dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
+    """
+    features: dict[str, str | None] = {"pos": tag_to_ud_pos(tag, lemma, word)}
+    for stat in MORPHOLOGY_FEATURES:
+        if stat == "verb_form":
+            features[stat] = OPENCORPORA_VERB_FORMS.get(tag.POS or "")
+        else:
+            features[stat] = OPENCORPORA_TO_UD_GRAMMEMES.get(getattr(tag, stat))
+    if "ms-f" in tag.grammemes:
+        features["gender"] = OPENCORPORA_TO_UD_GRAMMEMES["ms-f"]
+    return features
+
+
+def word_to_ud(word: str) -> dict[str, str | None]:
+    """
+    Получение признаков Universal Dependencies слова по первому разбору pymorphy3
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
+    """
+    parse = parse_word(word)
+    return tag_to_ud(parse.tag, parse.normal_form, word)
+
+
+@lru_cache(maxsize=131072)
+def parse_verb(word: str, lemma: str = "") -> pymorphy3.analyzer.Parse | None:
+    """
+    Получение глагольного разбора словоформы pymorphy3
+
+    Описание:
+        Среди всех разборов словоформы выбирается глагольный (VERB, INFN, PRTF, PRTS,
+        GRND) с заданной леммой, а при ее отсутствии - первый глагольный: для «стали»
+        с леммой «стать» это глагол, а не существительное «сталь»
+
+    Аргументы:
+        word (str): Словоформа
+        lemma (str): Лемма, которой отдается предпочтение
+
+    Вывод:
+        Parse|None: Разбор словоформы, None если глагольных разборов нет
+    """
+    parses = [parse for parse in get_morph_analyzer().parse(word) if parse.tag.POS in VERB_POS]
+    if not parses:
+        return None
+    return next((parse for parse in parses if parse.normal_form == lemma), parses[0])
+
+
+def token_to_ud(token: Token) -> dict[str, str | None]:
+    """
+    Получение признаков Universal Dependencies токена spaCy
+
+    Описание:
+        Часть речи и признаки берутся из token.pos_ и token.morph; лицо First, Second,
+        Third моделей ru_core_news переводится в 1, 2, 3
+        Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
+        берутся из глагольного разбора pymorphy3 с леммой spaCy
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
+    """
+    features: dict[str, str | None] = {"pos": token.pos_ or None}
+    for stat, feature in MORPHOLOGY_FEATURES.items():
+        values = token.morph.get(feature, [])
+        features[stat] = values[0] if values else None
+    features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
+    parse = parse_verb(token.text, token.lemma_) if token.pos_ in ("VERB", "AUX") else None
+    tag = parse.tag if parse else None
+    features["transitivity"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.transitivity) if tag else None
+    features["involvement"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.involvement) if tag else None
+    return features
+
+
+def format_features(features: dict[str, str | None]) -> str:
+    """
+    Запись признаков слова строкой в формате CoNLL-U
+
+    Описание:
+        Признаки перечисляются через | в алфавитном порядке названий UD
+        (Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing), часть речи не включается,
+        переходность и совместность записываются как Subcat и Clusivity;
+        для слова без признаков возвращается _
+
+    Аргументы:
+        features (dict[str, str|None]): Признаки по ключам MORPHOLOGY_STATS_DESC
+
+    Вывод:
+        str: Строка признаков
+    """
+    pairs = sorted(
+        (feature, features[stat])
+        for stat, feature in MORPHOLOGY_FEATURES.items()
+        if features.get(stat)
+    )
+    return "|".join(f"{feature}={value}" for feature, value in pairs) or "_"
