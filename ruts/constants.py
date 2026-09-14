@@ -288,6 +288,29 @@ VALENCY_IGNORED_DEPS = frozenset({"cc", "conj", "parataxis", "punct"})
 NOUN_MODIFIER_DEPS = frozenset({"amod", "det", "nmod", "nummod", "acl"})
 PASSIVE_DEPS = frozenset({"nsubj:pass", "csubj:pass", "aux:pass"})
 NEGATION_PARTICLES = frozenset({"не", "ни"})
+COHESION_STATS_DESC = {
+    "noun_overlap_adjacent": "Повтор существительных в соседних предложениях",
+    "noun_overlap_all": "Повтор существительных во всех парах предложений",
+    "argument_overlap_adjacent": "Повтор аргументов в соседних предложениях",
+    "argument_overlap_all": "Повтор аргументов во всех парах предложений",
+    "content_overlap_adjacent": "Повтор знаменательных слов в соседних предложениях",
+    "content_overlap_all": "Повтор знаменательных слов во всех парах предложений",
+    "content_overlap_prop_adjacent": "Доля общих знаменательных слов в соседних предложениях",
+    "content_overlap_prop_all": "Доля общих знаменательных слов во всех парах предложений",
+    "p_pronouns": "Доля местоимений",
+    "pronoun_noun_ratio": "Отношение местоимений к существительным",
+    "p_demonstratives": "Доля указательных местоимений",
+    "p_given": "Доля знаменательных слов, встречавшихся ранее",
+    "tense_repetition": "Повтор времени в соседних предложениях",
+    "aspect_repetition": "Повтор вида в соседних предложениях",
+    "temporal_cohesion": "Темпоральная связность",
+}
+CONTENT_POS = frozenset(
+    {"NOUN", "ADJF", "ADJS", "COMP", "VERB", "INFN", "PRTF", "PRTS", "GRND", "ADVB"}
+)
+DEMONSTRATIVE_LEMMAS = frozenset(
+    {"этот", "это", "тот", "такой", "таковой", "столько", "сей", "оный"}
+)
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10

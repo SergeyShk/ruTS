@@ -1,9 +1,17 @@
 import pytest
 import spacy
 
-from ruts import DiversityStats, PhonStats, ReadabilityStats, StyleStats, SyntaxStats
+from ruts import (
+    CohesionStats,
+    DiversityStats,
+    PhonStats,
+    ReadabilityStats,
+    StyleStats,
+    SyntaxStats,
+)
 from ruts.constants import (
     BASIC_STATS_DESC,
+    COHESION_STATS_DESC,
     DIVERSITY_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
     PHON_STATS_DESC,
@@ -32,6 +40,7 @@ def spacy_nlp():
     spacy_nlp.add_pipe("diversity", last=True)
     spacy_nlp.add_pipe("style", last=True)
     spacy_nlp.add_pipe("phon", last=True)
+    spacy_nlp.add_pipe("cohesion", last=True)
 
     yield spacy_nlp
 
@@ -41,6 +50,7 @@ def spacy_nlp():
     spacy_nlp.remove_pipe("diversity")
     spacy_nlp.remove_pipe("style")
     spacy_nlp.remove_pipe("phon")
+    spacy_nlp.remove_pipe("cohesion")
 
 
 @pytest.fixture(scope="module")
@@ -55,6 +65,7 @@ def test_components_names(spacy_nlp):
     assert spacy_nlp.has_pipe("diversity") is True
     assert spacy_nlp.has_pipe("style") is True
     assert spacy_nlp.has_pipe("phon") is True
+    assert spacy_nlp.has_pipe("cohesion") is True
 
 
 def test_component_basic(spacy_doc):
@@ -102,6 +113,14 @@ def test_component_phon(spacy_doc):
     for key in PHON_STATS_DESC:
         assert hasattr(spacy_doc._.phon, key)
     assert spacy_doc._.phon.get_stats() == PhonStats(spacy_doc).get_stats()
+
+
+def test_component_cohesion(spacy_doc):
+    for key in COHESION_STATS_DESC:
+        assert hasattr(spacy_doc._.cohesion, key)
+    assert spacy_doc._.cohesion.get_stats() == pytest.approx(
+        CohesionStats(spacy_doc).get_stats(), nan_ok=True
+    )
 
 
 def test_component_phon_params(spacy_doc):

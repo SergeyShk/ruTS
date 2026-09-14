@@ -339,3 +339,45 @@
     ``` bash
     4.0
     ```
+
+## CohesionStatsComponent
+
+!!! info ""
+    **ruts.components.CohesionStatsComponent**
+
+Модуль для компонента статистик связности текста. Компоненту нужны только границы предложений: подойдет и модель `ru_core_news_sm`, и пустой пайплайн с `sentencizer`.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `nlp` | Language | `-` | Объект класса Language |
+| `name` | str | `"cohesion"` | Наименование компонента в пайплайне |
+
+Пример использования:
+
+!!! example "Пример"
+
+    _Код_:
+
+    ``` python
+    # Загрузка библиотек
+    import ruts
+    import spacy
+
+    # Загрузка модели spaCy
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Добавление компонента
+    nlp.add_pipe("cohesion", last=True)
+
+    # Доступ к посчитанным статистикам
+    doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул.")
+    doc._.cohesion.noun_overlap_adjacent
+    ```
+
+    _Результат_:
+
+    ``` bash
+    0.5
+    ```

@@ -15,6 +15,7 @@ from spacy.tokens import Doc
 
 from ruts import (
     BasicStats,
+    CohesionStats,
     DiversityStats,
     MorphStats,
     PhonStats,
@@ -25,6 +26,7 @@ from ruts import (
 )
 from ruts.constants import (
     BASIC_STATS_DESC,
+    COHESION_STATS_DESC,
     DIVERSITY_STATS_DESC,
     HIGHLIGHT_LAYERS_DESC,
     MORPHOLOGY_STATS_DESC,
@@ -239,6 +241,7 @@ def compute(text: str, layers: list[str]) -> dict:
     ss = StyleStats(doc)
     ps = PhonStats(doc)
     xs = SyntaxStats(doc)
+    cs = CohesionStats(doc)
     words = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True).extract(text)
     pos_table, morph_table = morph_tables(ms)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
@@ -252,6 +255,7 @@ def compute(text: str, layers: list[str]) -> dict:
         "pos": pos_table,
         "morph": morph_table,
         "syntax": stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
+        "cohesion": stats_table(cs.get_stats(), COHESION_STATS_DESC),
         "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
         "basic": stats_table(basic, BASIC_STATS_DESC),
@@ -274,6 +278,7 @@ def analyze(text: str, layers: list[str]):
         result["pos"],
         result["morph"],
         result["syntax"],
+        result["cohesion"],
         result["style"],
         result["phon"],
         result["basic"],
@@ -292,7 +297,7 @@ HEADER = """
 # ruTS - статистики русского текста
 
 Вставьте текст и получите удобочитаемость, лексическое разнообразие, морфологический и синтаксический
-профиль, SEO-метрики стиля, фоностатистики и подсветку фрагментов, из которых складываются эти числа.
+профиль, связность, SEO-метрики стиля, фоностатистики и подсветку фрагментов, из которых складываются эти числа.
 [GitHub](https://github.com/SergeyShk/ruTS) · [Документация](https://sergeyshk.github.io/ruTS/) ·
 [PyPI](https://pypi.org/project/ruts/)
 """
@@ -315,7 +320,16 @@ with gr.Blocks(title="ruTS") as demo:
     summary_output = gr.Markdown(INITIAL["summary"], render=False)
     tables = {
         name: gr.Dataframe(INITIAL[name], interactive=False, elem_classes="stats", render=False)
-        for name in ("readability", "diversity", "morph", "syntax", "style", "phon", "basic")
+        for name in (
+            "readability",
+            "diversity",
+            "morph",
+            "syntax",
+            "cohesion",
+            "style",
+            "phon",
+            "basic",
+        )
     }
     pos_output = gr.BarPlot(
         INITIAL["pos"],
@@ -349,6 +363,7 @@ with gr.Blocks(title="ruTS") as demo:
         pos_output,
         tables["morph"],
         tables["syntax"],
+        tables["cohesion"],
         tables["style"],
         tables["phon"],
         tables["basic"],
@@ -402,6 +417,8 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["morph"].render()
                 with gr.Tab("Синтаксис"):
                     tables["syntax"].render()
+                with gr.Tab("Связность"):
+                    tables["cohesion"].render()
                 with gr.Tab("Стиль"):
                     tables["style"].render()
                 with gr.Tab("Фоника"):

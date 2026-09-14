@@ -2,6 +2,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
+from .cohesion_stats import CohesionStats
 from .constants import (
     DIVERSITY_LOG_BASE,
     HDD_SAMPLE_SIZE,
@@ -353,4 +354,44 @@ class SyntaxStatsComponent:
         """
         ss = SyntaxStats(doc)
         doc._.set(self.name, ss)
+        return doc
+
+
+@Language.factory("cohesion")
+class CohesionStatsComponent:
+    """
+    Класс для компонента статистик связности текста
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('cohesion', last=True)
+
+    Доступ к извлеченным статистикам:
+        >>> doc = nlp("Кот сидел на окне. Он смотрел на птиц.")
+        >>> doc._.cohesion.get_stats()
+        >>> doc._.cohesion.argument_overlap_adjacent
+        0.0
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+    """
+
+    def __init__(self, nlp: Language, name: str = "cohesion"):
+        self.name = name
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных статистик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        cs = CohesionStats(doc)
+        doc._.set(self.name, cs)
         return doc
