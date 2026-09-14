@@ -297,3 +297,28 @@ MTLD_MIN_LEN = 10
 HDD_SAMPLE_SIZE = 42
 DIVERSITY_LOG_BASE = 10
 BRUNET_W_EXPONENT = 0.172
+HIGHLIGHT_LAYERS_DESC = {
+    "long_sents": "Длинные предложения",
+    "complex_words": "Сложные слова",
+    "stopwords": "Стоп-слова",
+    "passive": "Пассив",
+    "participle_clauses": "Причастные обороты",
+    "converb_clauses": "Деепричастные обороты",
+    "genitive_chains": "Цепочки родительных",
+    "alliteration": "Аллитерация",
+}
+HIGHLIGHT_SYNTAX_LAYERS = frozenset(
+    {"passive", "participle_clauses", "converb_clauses", "genitive_chains"}
+)
+LONG_SENT_WORD_FACTOR = 20
+ALLITERATION_THRESHOLD = 0.001
+ALLITERATION_MIN_WORD_LEN = 3
+ALLITERATION_IGNORED_LETTERS = frozenset("й")
+RU_LETTER_FREQUENCIES = {
+    "о": 0.1097, "е": 0.0845, "а": 0.0801, "и": 0.0735, "н": 0.0670, "т": 0.0626,
+    "с": 0.0547, "р": 0.0473, "в": 0.0454, "л": 0.0440, "к": 0.0349, "м": 0.0321,
+    "д": 0.0298, "п": 0.0281, "у": 0.0262, "я": 0.0201, "ы": 0.0190, "ь": 0.0174,
+    "г": 0.0170, "з": 0.0165, "б": 0.0159, "ч": 0.0144, "й": 0.0121, "х": 0.0097,
+    "ж": 0.0094, "ш": 0.0073, "ю": 0.0064, "ц": 0.0048, "щ": 0.0036, "э": 0.0032,
+    "ф": 0.0026, "ъ": 0.0004, "ё": 0.0004,
+}  # fmt: skip

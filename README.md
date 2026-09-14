@@ -39,7 +39,7 @@
 * **[Фоностатистики](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - классы звуков, кластеры, аллитерация и ассонанс, слоги по правилу восходящей звучности
 * **[Синтаксические статистики](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей по разбору spaCy
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
-* **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов
+* **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов, подсветка текста в стиле Главреда
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
 
 ## Установка
@@ -548,6 +548,32 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   [Закон Ципфа](https://sergeyshk.github.io/ruTS/visualizers/zipf/) (Zipf's law)
 *   [Литературная дактилоскопия](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/) (Literature Fingerprinting)
 *   [Дерево слов](https://sergeyshk.github.io/ruTS/visualizers/word_tree/) (Word Tree)
+*   [Подсветка текста](https://sergeyshk.github.io/ruTS/visualizers/highlight/) по слоям: длинные предложения, сложные слова, стоп-слова, пассив, обороты, цепочки родительных, аллитерации
+
+Подсветка возвращает объект, который отображается в Jupyter как HTML с легендой и всплывающими пояснениями; синтаксические слои требуют `Doc` с разбором зависимостей:
+
+```python
+>>> import spacy
+>>> from ruts.visualizers import highlight
+
+>>> nlp = spacy.load('ru_core_news_sm')
+>>> text = (
+...     "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
+...     "Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента. "
+...     "Участники, представлявшие региональные министерства, не смогли согласовать позиции по вопросам "
+...     "финансирования и распределения ответственности между ведомствами, поскольку каждое из них "
+...     "настаивало на собственной трактовке положений соглашения. "
+...     "Споры стихли, в кулуарах шумно шептались и шушукались, а решение было отложено до следующего заседания."
+... )
+>>> ht = highlight(nlp(text))
+>>> ht.counts
+{'long_sents': 1, 'complex_words': 26, 'stopwords': 17, 'passive': 4, 'participle_clauses': 2, 'converb_clauses': 1, 'genitive_chains': 2, 'alliteration': 1}
+>>> ht  # в Jupyter отобразится подсветка, разметка доступна через ht.to_html()
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SergeyShk/ruTS/master/docs/img/highlight.png" alt="Подсветка текста" width="760">
+</p>
 
 ```python
 >>> from collections import Counter
