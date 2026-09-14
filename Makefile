@@ -93,4 +93,4 @@ demo-login: uv ## Войти в Hugging Face для заливки демо
 	uvx --from huggingface_hub hf auth login
 
 demo-upload: uv ## Залить демо в Space на Hugging Face
-	uvx --from huggingface_hub hf upload $(HF_SPACE) $(DEMO_PATH) . --repo-type space
+	uvx --from huggingface_hub hf upload $(HF_SPACE) $(DEMO_PATH) . --repo-type space --delete "__pycache__/*" --exclude "__pycache__/*"
