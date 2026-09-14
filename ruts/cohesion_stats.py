@@ -3,17 +3,42 @@ from collections.abc import Collection, Sequence
 from itertools import combinations, pairwise
 from math import nan
 from statistics import fmean
+from typing import NamedTuple
 
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Token
 
 from .constants import (
     COHESION_STATS_DESC,
     CONTENT_POS,
+    CONTENT_UD_POS,
     DEMONSTRATIVE_LEMMAS,
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import parse_word, safe_divide
+
+
+class WordInfo(NamedTuple):
+    """
+    Признаки слова, нужные для статистик связности
+
+    Атрибуты:
+        lemma (str): Лемма в нижнем регистре
+        noun (bool): Существительное
+        pronoun (bool): Местоимение
+        argument (bool): Аргумент - существительное или местоимение-существительное
+        content (bool): Знаменательное слово
+        tense (str|None): Время глагольной формы
+        aspect (str|None): Вид глагольной формы
+    """
+
+    lemma: str
+    noun: bool
+    pronoun: bool
+    argument: bool
+    content: bool
+    tense: str | None
+    aspect: str | None
 
 
 class CohesionStats:
@@ -26,13 +51,17 @@ class CohesionStats:
         соседними предложениями и всеми парами предложений, данность (местоимения,
         указательные, повторяющиеся леммы) и темпоральная связность (повтор времени
         и вида глаголов в соседних предложениях)
-        Леммы и части речи берутся из первого разбора pymorphy3, поэтому разбор
-        зависимостей spaCy не требуется; пары предложений сравниваются по леммам,
-        а не словоформам, так как в русском языке повтор слова почти всегда меняет форму
+        Пары предложений сравниваются по леммам, а не словоформам, так как в русском
+        языке повтор слова почти всегда меняет форму
+        Для объекта Doc с разметкой частей речи и лемм леммы, части речи, время и вид
+        берутся из token.lemma_, token.pos_ и token.morph, то есть с учетом контекста
+        (стали - сталь или стать); для строки и Doc без разметки используется первый
+        разбор pymorphy3, разбор зависимостей не требуется
         Знаменательные слова - существительные, прилагательные, глаголы во всех формах
-        и наречия без местоименных (этот, там, тогда) и вводных (конечно) слов;
-        местоимения - местоимения-существительные (он, себя, кто) и местоименные
-        прилагательные (этот, который, мой, весь)
+        и наречия: по pymorphy3 без местоименных (этот, там, тогда) и вводных (конечно)
+        слов, по UD - NOUN, PROPN, ADJ, VERB, ADV; местоимения - местоимения-существительные
+        (он, себя, кто) и местоименные прилагательные (этот, который, мой, весь),
+        по UD - PRON и DET
 
     Ссылки:
         https://doi.org/10.1017/CBO9780511894664 (McNamara и др. 2014, Coh-Metrix)
@@ -108,11 +137,17 @@ class CohesionStats:
         words_extractor: WordsExtractor | None = None,
     ):
         sents: list[tuple[str, ...]]
+        infos: list[list[WordInfo]]
         if isinstance(source, Doc):
-            sents = [
-                tuple(word.text for word in sent if not word.is_punct and not word.is_space)
+            tokens = [
+                [word for word in sent if not word.is_punct and not word.is_space]
                 for sent in source.sents
             ]
+            sents = [tuple(word.text for word in sent) for sent in tokens]
+            if source.has_annotation("POS") and source.has_annotation("LEMMA"):
+                infos = [[token_info(word) for word in sent] for sent in tokens]
+            else:
+                infos = [[word_info(word) for word in sent] for sent in sents]
         elif isinstance(source, str):
             if not sents_extractor:
                 sents_extractor = SentsExtractor()
@@ -121,38 +156,26 @@ class CohesionStats:
             sents = [
                 tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(source)
             ]
+            infos = [[word_info(word) for word in sent] for sent in sents]
         else:
             raise TypeError("Некорректный источник данных")
         self.words = tuple(sent for sent in sents if sent)
         if not self.words:
             raise ValueError("В источнике данных отсутствуют слова")
+        infos = [sent for sent in infos if sent]
         self.n_sents = len(self.words)
         self.n_words = sum(len(sent) for sent in self.words)
 
-        parses = [[parse_word(word) for word in sent] for sent in self.words]
-        self.lemmas = tuple(tuple(parse.normal_form for parse in sent) for sent in parses)
-        nouns = [
-            frozenset(parse.normal_form for parse in sent if parse.tag.POS == "NOUN")
-            for sent in parses
-        ]
-        arguments = [
-            frozenset(parse.normal_form for parse in sent if parse.tag.POS in ("NOUN", "NPRO"))
-            for sent in parses
-        ]
-        content = [
-            [
-                parse.normal_form
-                for word, parse in zip(sent_words, sent_parses, strict=True)
-                if is_content_word(word)
-            ]
-            for sent_words, sent_parses in zip(self.words, parses, strict=True)
-        ]
+        self.lemmas = tuple(tuple(info.lemma for info in sent) for sent in infos)
+        nouns = [frozenset(info.lemma for info in sent if info.noun) for sent in infos]
+        arguments = [frozenset(info.lemma for info in sent if info.argument) for sent in infos]
+        content = [[info.lemma for info in sent if info.content] for sent in infos]
         content_sets = [frozenset(sent) for sent in content]
-        tenses = [[parse.tag.tense for parse in sent if parse.tag.tense] for sent in parses]
-        aspects = [[parse.tag.aspect for parse in sent if parse.tag.aspect] for sent in parses]
+        tenses = [[info.tense for info in sent if info.tense] for sent in infos]
+        aspects = [[info.aspect for info in sent if info.aspect] for sent in infos]
 
-        self.n_nouns = sum(1 for sent in parses for parse in sent if parse.tag.POS == "NOUN")
-        self.n_pronouns = sum(1 for sent in self.words for word in sent if is_pronoun(word))
+        self.n_nouns = sum(1 for sent in infos for info in sent if info.noun)
+        self.n_pronouns = sum(1 for sent in infos for info in sent if info.pronoun)
         self.n_demonstratives = sum(
             1 for sent in self.lemmas for lemma in sent if lemma in DEMONSTRATIVE_LEMMAS
         )
@@ -191,6 +214,62 @@ class CohesionStats:
         stats = self.get_stats()
         for stat, value in COHESION_STATS_DESC.items():
             print(f"{value:58}|{stats.get(stat):^10.2f}")
+
+
+def word_info(word: str) -> WordInfo:
+    """
+    Получение признаков слова по первому разбору pymorphy3
+
+    Описание:
+        Существительное - NOUN, местоимение - NPRO или Apro, аргумент - NOUN или NPRO,
+        знаменательное слово - по is_content_word, время и вид - граммемы глагольной формы
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
+    parse = parse_word(word)
+    tag = parse.tag
+    return WordInfo(
+        lemma=parse.normal_form,
+        noun=tag.POS == "NOUN",
+        pronoun=is_pronoun(word),
+        argument=tag.POS in ("NOUN", "NPRO"),
+        content=is_content_word(word),
+        tense=tag.tense,
+        aspect=tag.aspect,
+    )
+
+
+def token_info(token: Token) -> WordInfo:
+    """
+    Получение признаков токена spaCy по разметке Universal Dependencies
+
+    Описание:
+        Существительное - NOUN или PROPN, местоимение - PRON или DET, аргумент - NOUN,
+        PROPN или PRON, знаменательное слово - NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS),
+        время и вид - признаки Tense и Aspect; лемма приводится к нижнему регистру
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
+    pos = token.pos_
+    tense = token.morph.get("Tense", [])
+    aspect = token.morph.get("Aspect", [])
+    return WordInfo(
+        lemma=token.lemma_.lower(),
+        noun=pos in ("NOUN", "PROPN"),
+        pronoun=pos in ("PRON", "DET"),
+        argument=pos in ("NOUN", "PROPN", "PRON"),
+        content=pos in CONTENT_UD_POS,
+        tense=tense[0] if tense else None,
+        aspect=aspect[0] if aspect else None,
+    )
 
 
 def is_pronoun(word: str) -> bool:

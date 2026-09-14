@@ -432,6 +432,7 @@ COHESION_STATS_DESC = {
 CONTENT_POS = frozenset(
     {"NOUN", "ADJF", "ADJS", "COMP", "VERB", "INFN", "PRTF", "PRTS", "GRND", "ADVB"}
 )
+CONTENT_UD_POS = frozenset({"NOUN", "PROPN", "ADJ", "VERB", "ADV"})
 DEMONSTRATIVE_LEMMAS = frozenset(
     {"этот", "это", "тот", "такой", "таковой", "столько", "сей", "оный"}
 )

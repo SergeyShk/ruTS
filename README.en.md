@@ -508,7 +508,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/syntax_stats/
 
 <br>
 
-The library counts over pymorphy3 lemmas, no dependency parse is needed:
+The library counts over lemmas: for an annotated spaCy `Doc` - the model's lemmas and parts of speech, for a string - the first pymorphy3 parse; no dependency parse is needed:
 
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen

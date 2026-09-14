@@ -5,6 +5,7 @@ import spacy
 
 from ruts import CohesionStats, WordsExtractor
 from ruts.cohesion_stats import (
+    WordInfo,
     calc_overlap,
     calc_proportional_overlap,
     calc_repetition,
@@ -12,6 +13,8 @@ from ruts.cohesion_stats import (
     dominant,
     is_content_word,
     is_pronoun,
+    token_info,
+    word_info,
 )
 from ruts.constants import COHESION_STATS_DESC
 
@@ -24,6 +27,12 @@ text = (
 @pytest.fixture(scope="module")
 def cs():
     return CohesionStats(text)
+
+
+@pytest.fixture(scope="module")
+def nlp():
+    pytest.importorskip("ru_core_news_sm")
+    return spacy.load("ru_core_news_sm")
 
 
 def test_init_value_error():
@@ -44,6 +53,42 @@ def test_init_doc(cs):
     assert doc_cs.words == cs.words
     assert doc_cs.lemmas == cs.lemmas
     assert doc_cs.get_stats() == cs.get_stats()
+
+
+def test_init_doc_model(nlp):
+    doc = nlp("Мы стали ждать поезда. Нож сделан из стали. Эта сталь очень прочна.")
+    cs = CohesionStats(doc)
+    assert cs.lemmas == (
+        ("мы", "стать", "ждать", "поезд"),
+        ("нож", "сделать", "из", "сталь"),
+        ("этот", "сталь", "очень", "прочный"),
+    )
+    assert cs.n_nouns == 4
+    assert cs.n_pronouns == 2
+    assert cs.n_demonstratives == 1
+    assert cs.n_content_words == 9
+    assert cs.n_given == 1
+    assert cs.noun_overlap_adjacent == pytest.approx(1 / 2)
+    assert cs.argument_overlap_all == pytest.approx(1 / 3)
+    assert cs.tense_repetition == 1
+    assert cs.aspect_repetition == 1
+    assert CohesionStats(doc.text).noun_overlap_adjacent == 0
+
+
+def test_word_info():
+    assert word_info("кота") == WordInfo("кот", True, False, True, True, None, None)
+    assert word_info("он") == WordInfo("он", False, True, True, False, None, None)
+    assert word_info("этот") == WordInfo("этот", False, True, False, False, None, None)
+    assert word_info("читал") == WordInfo("читать", False, False, False, True, "past", "impf")
+    assert word_info("на") == WordInfo("на", False, False, False, False, None, None)
+
+
+def test_token_info(nlp):
+    doc = nlp("Иван читает эту книгу.")
+    assert token_info(doc[0]) == WordInfo("иван", True, False, True, True, None, None)
+    assert token_info(doc[1]) == WordInfo("читать", False, False, False, True, "Pres", "Imp")
+    assert token_info(doc[2]) == WordInfo("этот", False, True, False, False, None, None)
+    assert token_info(doc[4]) == WordInfo(".", False, False, False, False, None, None)
 
 
 def test_init_extractors():
