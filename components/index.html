@@ -2002,7 +2002,7 @@
 <div class="admonition info">
 <p><strong>ruts.components.MorphStatsComponent</strong></p>
 </div>
-<p>Модуль для компонента морфологических статистик текста.</p>
+<p>Модуль для компонента морфологических статистик текста. Части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>) в терминах Universal Dependencies; в пайплайне без теггера используется pymorphy3.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -2047,7 +2047,7 @@
 <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">morph</span><span class="o">.</span><span class="n">case</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'nomn'</span>,<span class="w"> </span><span class="s1">'gent'</span>,<span class="w"> </span><span class="s1">'datv'</span><span class="o">)</span>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'Nom'</span>,<span class="w"> </span>None,<span class="w"> </span><span class="s1">'Acc'</span><span class="o">)</span>
 </code></pre></div>
 </div>
 <h2 id="readabilitystatscomponent">ReadabilityStatsComponent<a class="headerlink" href="#readabilitystatscomponent" title="Permanent link">&para;</a></h2>

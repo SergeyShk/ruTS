@@ -1961,7 +1961,79 @@
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления морфологических статистик текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>В модуле реализована возможность использования предварительно созданного объекта класса <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации слов перед вычислением статистик.</p>
-<p>Для морфологического разбора текста используется библиотека <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>. Описание статистик взяты из корпуса <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a>.</p>
+<p>Части речи и грамматические признаки выдаются в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a>: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> и другие, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, так же <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code> и форма глагола <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста: в «мы стали ждать» и «нож из стали» слово «стали» получит <code>VERB</code> и <code>NOUN</code>. Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>, а его граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>.</p>
+<p>Соответствие частей речи OpenCorpora и UD:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">OpenCorpora</th>
+<th style="text-align: left;">UD</th>
+<th style="text-align: left;">Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>NOUN</code></td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code></td>
+<td style="text-align: left;">имена, фамилии, отчества, топонимы и организации по пометам pymorphy3 - <code>PROPN</code>, но только у словоформ с заглавной буквы: pymorphy3 не учитывает регистр и дает помету имени обычным словам (лев, роза, мороз)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ADJF</code>, <code>ADJS</code>, <code>COMP</code></td>
+<td style="text-align: left;"><code>ADJ</code>, <code>DET</code>, <code>PRON</code>, <code>NUM</code></td>
+<td style="text-align: left;">местоименные прилагательные (этот, мой, весь) - <code>DET</code>, «который» - <code>PRON</code>, «один» - <code>NUM</code>; компаратив без контекста считается прилагательным</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>VERB</code>, <code>INFN</code>, <code>PRTF</code>, <code>PRTS</code>, <code>GRND</code></td>
+<td style="text-align: left;"><code>VERB</code></td>
+<td style="text-align: left;">форма записывается в <code>verb_form</code>: <code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>; вспомогательный <code>AUX</code> выделяет только spaCy</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>NUMR</code>, <code>NUMB</code>, <code>ROMN</code></td>
+<td style="text-align: left;"><code>NUM</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ADVB</code>, <code>PRED</code></td>
+<td style="text-align: left;"><code>ADV</code></td>
+<td style="text-align: left;">предикативы (надо, нельзя) - наречия, как в русских корпусах UD</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>NPRO</code></td>
+<td style="text-align: left;"><code>PRON</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PREP</code></td>
+<td style="text-align: left;"><code>ADP</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CONJ</code></td>
+<td style="text-align: left;"><code>CCONJ</code>, <code>SCONJ</code></td>
+<td style="text-align: left;">подчинительные союзы по списку <code>SUBORDINATING_CONJUNCTIONS</code> (что, чтобы, если, когда, хотя, потому)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PRCL</code></td>
+<td style="text-align: left;"><code>PART</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>INTJ</code></td>
+<td style="text-align: left;"><code>INTJ</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>LATN</code>, <code>UNKN</code></td>
+<td style="text-align: left;"><code>X</code></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p>Переходность (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) и совместность (<code>involvement</code>: <code>In</code>, <code>Ex</code>) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>. Для <code>Doc</code> глагольный разбор pymorphy3 выбирается по лемме spaCy, поэтому переходность омонимов тоже зависит от контекста.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Значения признаков для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> всем личным формам и <code>Voice=Mid</code> возвратным глаголам, pymorphy3 определяет залог только у причастий; spaCy выделяет <code>AUX</code> и снимает омонимию по контексту, pymorphy3 берет первый разбор.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Вычисление статистик происходит в момент инициализации объекта класса <code>MorphStats</code>.</p>
@@ -2009,7 +2081,7 @@
 <tr>
 <td style="text-align: center;"><code>tags</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж извлеченных тэгов OpenCorpora</td>
+<td style="text-align: center;">Кортеж строк грамматических признаков в формате CoNLL-U (<code>Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing</code>, <code>_</code> без признаков)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>pos</code></td>
@@ -2034,7 +2106,7 @@
 <tr>
 <td style="text-align: center;"><code>gender</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений пола</td>
+<td style="text-align: center;">Кортеж значений рода</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>involvement</code></td>
@@ -2065,6 +2137,11 @@
 <td style="text-align: center;"><code>transitivity</code></td>
 <td style="text-align: center;">tuple[str]</td>
 <td style="text-align: center;">Кортеж значений переходности</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>verb_form</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Кортеж значений формы глагола</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>voice</code></td>
@@ -2120,10 +2197,10 @@
 <span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'plur'</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="s1">'sing'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'person'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'2per'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'3per'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'pos'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'ADVB'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'CONJ'</span>:<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="s1">'INFN'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'VERB'</span>:<span class="w"> </span><span class="m">4</span><span class="o">}</span>,
-<span class="s1">'tense'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'futr'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'past'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'pres'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}}</span>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Plur'</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="s1">'Sing'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
+<span class="s1">'person'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'2'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'3'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
+<span class="s1">'pos'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'ADV'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'VERB'</span>:<span class="w"> </span><span class="m">6</span><span class="o">}</span>,
+<span class="s1">'tense'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Fut'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Past'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Pres'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}}</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -2168,9 +2245,9 @@
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code>---------------Часть<span class="w"> </span>речи---------------
-Глагол<span class="w"> </span><span class="o">(</span>личная<span class="w"> </span>форма<span class="o">)</span><span class="w">         </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Союз<span class="w">                          </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Глагол<span class="w"> </span><span class="o">(</span>инфинитив<span class="o">)</span><span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
+Глагол<span class="w">                        </span><span class="p">|</span><span class="w">    </span><span class="m">6</span>
+Сочинительный<span class="w"> </span>союз<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
+Подчинительный<span class="w"> </span>союз<span class="w">           </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
 Наречие<span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
 
 -----------------Время------------------
@@ -2228,17 +2305,17 @@
 <span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">((</span><span class="s1">'Постарайтесь'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'INFN'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'любите'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'plur'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'2per'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'pres'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'иначе'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'ADVB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'придется'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'sing'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'3per'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'futr'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'полюбить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'INFN'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получили'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'past'</span><span class="o">}))</span>
+<div class="highlight"><pre><span></span><code><span class="o">((</span><span class="s1">'Постарайтесь'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'получить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'любите'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'2'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Pres'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'иначе'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'ADV'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'придется'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Sing'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'3'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Fut'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'полюбить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
+<span class="o">(</span><span class="s1">'получили'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Past'</span><span class="o">}))</span>
 </code></pre></div>
 </div>
 
