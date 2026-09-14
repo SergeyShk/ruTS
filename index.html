@@ -1371,6 +1371,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Статистики связности
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Статистики связности
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="stats/cohesion_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Модуль вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="stats/cohesion_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Функции вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1867,6 +1981,7 @@
 <li>считать <a href="stats/style_stats/">SEO-метрики стиля</a> текста (тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов)</li>
 <li>считать <a href="stats/phon_stats/">фоностатистики</a> текста (доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги)</li>
 <li>считать <a href="stats/syntax_stats/">синтаксические статистики</a> текста по дереву зависимостей spaCy (длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей)</li>
+<li>считать <a href="stats/cohesion_stats/">статистики связности</a> текста (повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность)</li>
 <li>работать с готовыми текстовыми наборами данных (<a href="datasets/sovchlit/">Советские христоматии по литературе</a>, <a href="datasets/stalinworks/">Полное собрание сочинений И.В. Сталина</a>, <a href="datasets/textsbygrade/">Тексты с метками класса</a>)</li>
 <li>визуализировать текстовые данные (<a href="visualizers/zipf/">Закон Ципфа</a>, <a href="visualizers/fingerprinting/">Литературная дактилоскопия</a>, <a href="visualizers/word_tree/">Дерево слов</a>, <a href="visualizers/highlight/">Подсветка текста</a>)</li>
 <li>создавать <a href="components/">компоненты</a> для встраивания в <a href="https://github.com/explosion/spaCy">spaCy</a></li>
@@ -1928,6 +2043,7 @@
 <li><strong>docs</strong> - документация по проекту</li>
 <li><strong>ruts</strong>:<ul>
 <li>basic_stats.py - базовые текстовые статистики</li>
+<li>cohesion_stats.py - статистики связности текста</li>
 <li>components.py - компоненты spaCy</li>
 <li>constants.py - основные используемые константы</li>
 <li>diversity_stats.py - метрики лексического разнообразия текста</li>

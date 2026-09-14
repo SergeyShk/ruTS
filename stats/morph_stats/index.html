@@ -1423,6 +1423,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Статистики связности
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Статистики связности
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cohesion_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Модуль вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cohesion_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Функции вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1961,7 +2075,7 @@
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления морфологических статистик текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>В модуле реализована возможность использования предварительно созданного объекта класса <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации слов перед вычислением статистик.</p>
-<p>Части речи и грамматические признаки выдаются в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a>: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> и другие, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, так же <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code> и форма глагола <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста: в «мы стали ждать» и «нож из стали» слово «стали» получит <code>VERB</code> и <code>NOUN</code>. Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>, а его граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>.</p>
+<p>Части речи и грамматические признаки выдаются в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a>: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> и другие, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, так же <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code> и форма глагола <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>. Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>, граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>.</p>
 <p>Соответствие частей речи OpenCorpora и UD:</p>
 <table>
 <thead>
@@ -2029,10 +2143,10 @@
 </tr>
 </tbody>
 </table>
-<p>Переходность (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) и совместность (<code>involvement</code>: <code>In</code>, <code>Ex</code>) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>. Для <code>Doc</code> глагольный разбор pymorphy3 выбирается по лемме spaCy, поэтому переходность омонимов тоже зависит от контекста.</p>
+<p>Переходность (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) и совместность (<code>involvement</code>: <code>In</code>, <code>Ex</code>) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов (для <code>Doc</code> - по разбору с леммой spaCy) и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значения признаков для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> всем личным формам и <code>Voice=Mid</code> возвратным глаголам, pymorphy3 определяет залог только у причастий; spaCy выделяет <code>AUX</code> и снимает омонимию по контексту, pymorphy3 берет первый разбор.</p>
+<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> личным формам и <code>Voice=Mid</code> возвратным глаголам, выделяет <code>AUX</code> и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
