@@ -38,7 +38,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Basic statistics](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
 * **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
-* **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features
+* **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains over the spaCy parse
@@ -340,9 +340,10 @@ The library allows extracting the following morphological features:
 *   person
 *   tense
 *   transitivity
+*   verb form
 *   voice
 
-Morphological analysis is made using [pymorphy3](https://github.com/no-plagiarism/pymorphy3). Descriptions of morphological features were borrowed from [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
+Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) parse with OpenCorpora grammemes mapped to UD.
 
 ```python
 >>> from pprint import pprint
@@ -352,27 +353,28 @@ Morphological analysis is made using [pymorphy3](https://github.com/no-plagiaris
 >>> ms = MorphStats(text)
 
 >>> ms.pos
-('VERB', 'INFN', 'CONJ', 'CONJ', 'VERB', 'ADVB', 'VERB', 'INFN', 'CONJ', 'CONJ', 'VERB')
+('VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB')
 
 >>> pprint(ms.get_stats())
 {'animacy': {None: 11},
- 'aspect': {None: 5, 'impf': 1, 'perf': 5},
+ 'aspect': {None: 5, 'Imp': 1, 'Perf': 5},
  'case': {None: 11},
  'gender': {None: 11},
- 'involvement': {None: 10, 'excl': 1},
- 'mood': {None: 7, 'impr': 1, 'indc': 3},
- 'number': {None: 7, 'plur': 3, 'sing': 1},
- 'person': {None: 9, '2per': 1, '3per': 1},
- 'pos': {'ADVB': 1, 'CONJ': 4, 'INFN': 2, 'VERB': 4},
- 'tense': {None: 8, 'futr': 1, 'past': 1, 'pres': 1},
- 'transitivity': {None: 5, 'intr': 2, 'tran': 4},
+ 'involvement': {None: 10, 'Ex': 1},
+ 'mood': {None: 7, 'Imp': 1, 'Ind': 3},
+ 'number': {None: 7, 'Plur': 3, 'Sing': 1},
+ 'person': {None: 9, '2': 1, '3': 1},
+ 'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
+ 'tense': {None: 8, 'Fut': 1, 'Past': 1, 'Pres': 1},
+ 'transitivity': {None: 5, 'Intr': 2, 'Tran': 4},
+ 'verb_form': {None: 5, 'Fin': 4, 'Inf': 2},
  'voice': {None: 11}}
 
 >>> ms.print_stats('pos', 'tense')
 ---------------Часть речи---------------
-Глагол (личная форма)         |    4
-Союз                          |    4
-Глагол (инфинитив)            |    2
+Глагол                        |    6
+Сочинительный союз            |    2
+Подчинительный союз           |    2
 Наречие                       |    1
 
 -----------------Время------------------

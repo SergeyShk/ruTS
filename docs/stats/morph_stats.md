@@ -9,7 +9,28 @@
 
 В модуле реализована возможность использования предварительно созданного объекта класса [`WordsExtractor`](../extractors/words.md) для проведения необходимой токенизации слов перед вычислением статистик.
 
-Для морфологического разбора текста используется библиотека [pymorphy3](https://github.com/no-plagiarism/pymorphy3). Описание статистик взяты из корпуса [OpenCorpora](http://opencorpora.org/dict.php?act=gram).
+Части речи и грамматические признаки выдаются в терминах [Universal Dependencies](https://universaldependencies.org/u/feat/): `pos` - `NOUN`, `VERB`, `ADJ`, `PRON`, `DET` и другие, `case` - `Nom`, `Gen`, `Dat`, `Acc`, `Ins`, `Loc`, так же `animacy`, `aspect`, `gender`, `mood`, `number`, `person`, `tense`, `voice` и форма глагола `verb_form` (`Fin`, `Inf`, `Part`, `Conv`). Для объекта `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`, то есть с учетом контекста: в «мы стали ждать» и «нож из стали» слово «стали» получит `VERB` и `NOUN`. Для строки и `Doc` без разметки используется первый разбор [pymorphy3](https://github.com/no-plagiarism/pymorphy3), а его граммемы [OpenCorpora](http://opencorpora.org/dict.php?act=gram) переводятся в UD по таблицам `OPENCORPORA_TO_UD_POS` и `OPENCORPORA_TO_UD_GRAMMEMES` из `ruts.constants`.
+
+Соответствие частей речи OpenCorpora и UD:
+
+| OpenCorpora | UD | Примечание |
+| :---------- | :- | :--------- |
+| `NOUN` | `NOUN`, `PROPN` | имена, фамилии, отчества, топонимы и организации по пометам pymorphy3 - `PROPN`, но только у словоформ с заглавной буквы: pymorphy3 не учитывает регистр и дает помету имени обычным словам (лев, роза, мороз) |
+| `ADJF`, `ADJS`, `COMP` | `ADJ`, `DET`, `PRON`, `NUM` | местоименные прилагательные (этот, мой, весь) - `DET`, «который» - `PRON`, «один» - `NUM`; компаратив без контекста считается прилагательным |
+| `VERB`, `INFN`, `PRTF`, `PRTS`, `GRND` | `VERB` | форма записывается в `verb_form`: `Fin`, `Inf`, `Part`, `Conv`; вспомогательный `AUX` выделяет только spaCy |
+| `NUMR`, `NUMB`, `ROMN` | `NUM` | |
+| `ADVB`, `PRED` | `ADV` | предикативы (надо, нельзя) - наречия, как в русских корпусах UD |
+| `NPRO` | `PRON` | |
+| `PREP` | `ADP` | |
+| `CONJ` | `CCONJ`, `SCONJ` | подчинительные союзы по списку `SUBORDINATING_CONJUNCTIONS` (что, чтобы, если, когда, хотя, потому) |
+| `PRCL` | `PART` | |
+| `INTJ` | `INTJ` | |
+| `LATN`, `UNKN` | `X` | |
+
+Переходность (`transitivity`: `Tran`, `Intr`) и совместность (`involvement`: `In`, `Ex`) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов и в строке признаков `tags` записываются как `Subcat` и `Clusivity`. Для `Doc` глагольный разбор pymorphy3 выбирается по лемме spaCy, поэтому переходность омонимов тоже зависит от контекста.
+
+!!! note "Примечание"
+    Значения признаков для строки и для `Doc` с разметкой могут отличаться: spaCy проставляет `Voice=Act` всем личным формам и `Voice=Mid` возвратным глаголам, pymorphy3 определяет залог только у причастий; spaCy выделяет `AUX` и снимает омонимию по контексту, pymorphy3 берет первый разбор.
 
 !!! note "Примечание"
     Вычисление статистик происходит в момент инициализации объекта класса `MorphStats`.
@@ -26,18 +47,19 @@
 | Атрибут | Тип | Описание |
 | :-----: | :-: | :------: |
 | `words` | tuple[str] | Кортеж извлеченных слов |
-| `tags` | tuple[str] | Кортеж извлеченных тэгов OpenCorpora |
+| `tags` | tuple[str] | Кортеж строк грамматических признаков в формате CoNLL-U (`Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing`, `_` без признаков) |
 | `pos` | tuple[str] | Кортеж значений части речи |
 | `animacy` | tuple[str] | Кортеж значений одушевленности |
 | `aspect` | tuple[str] | Кортеж значений вида |
 | `case` | tuple[str] | Кортеж значений падежа |
-| `gender` | tuple[str] | Кортеж значений пола |
+| `gender` | tuple[str] | Кортеж значений рода |
 | `involvement` | tuple[str] | Кортеж значений совместности |
 | `mood` | tuple[str] | Кортеж значений наклонения |
 | `number` | tuple[str] | Кортеж значений числа |
 | `person` | tuple[str] | Кортеж значений лица |
 | `tense` | tuple[str] | Кортеж значений времени |
 | `transitivity` | tuple[str] | Кортеж значений переходности |
+| `verb_form` | tuple[str] | Кортеж значений формы глагола |
 | `voice` | tuple[str] | Кортеж значений залога |
 
 ## Методы
@@ -77,10 +99,10 @@
     _Результат_:
 
     ``` bash
-    {'number': {'plur': 3, 'sing': 1},
-    'person': {'2per': 1, '3per': 1},
-    'pos': {'ADVB': 1, 'CONJ': 4, 'INFN': 2, 'VERB': 4},
-    'tense': {'futr': 1, 'past': 1, 'pres': 1}}
+    {'number': {'Plur': 3, 'Sing': 1},
+    'person': {'2': 1, '3': 1},
+    'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
+    'tense': {'Fut': 1, 'Past': 1, 'Pres': 1}}
     ```
 
 ### print_stats
@@ -114,9 +136,9 @@
 
     ``` bash
     ---------------Часть речи---------------
-    Глагол (личная форма)         |    4
-    Союз                          |    4
-    Глагол (инфинитив)            |    2
+    Глагол                        |    6
+    Сочинительный союз            |    2
+    Подчинительный союз           |    2
     Наречие                       |    1
 
     -----------------Время------------------
@@ -163,15 +185,15 @@
     _Результат_:
 
     ``` bash
-    (('Постарайтесь', {'number': 'plur', 'pos': 'VERB'}),
-    ('получить', {'pos': 'INFN'}),
-    ('то', {'pos': 'CONJ'}),
-    ('что', {'pos': 'CONJ'}),
-    ('любите', {'number': 'plur', 'person': '2per', 'pos': 'VERB', 'tense': 'pres'}),
-    ('иначе', {'pos': 'ADVB'}),
-    ('придется', {'number': 'sing', 'person': '3per', 'pos': 'VERB', 'tense': 'futr'}),
-    ('полюбить', {'pos': 'INFN'}),
-    ('то', {'pos': 'CONJ'}),
-    ('что', {'pos': 'CONJ'}),
-    ('получили', {'number': 'plur', 'pos': 'VERB', 'tense': 'past'}))
+    (('Постарайтесь', {'number': 'Plur', 'pos': 'VERB'}),
+    ('получить', {'pos': 'VERB'}),
+    ('то', {'pos': 'CCONJ'}),
+    ('что', {'pos': 'SCONJ'}),
+    ('любите', {'number': 'Plur', 'person': '2', 'pos': 'VERB', 'tense': 'Pres'}),
+    ('иначе', {'pos': 'ADV'}),
+    ('придется', {'number': 'Sing', 'person': '3', 'pos': 'VERB', 'tense': 'Fut'}),
+    ('полюбить', {'pos': 'VERB'}),
+    ('то', {'pos': 'CCONJ'}),
+    ('что', {'pos': 'SCONJ'}),
+    ('получили', {'number': 'Plur', 'pos': 'VERB', 'tense': 'Past'}))
     ```
