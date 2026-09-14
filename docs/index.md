@@ -17,7 +17,7 @@
 *   считать [фоностатистики](stats/phon_stats.md) текста (доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги)
 *   считать [синтаксические статистики](stats/syntax_stats.md) текста по дереву зависимостей spaCy (длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей)
 *   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md))
-*   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md))
+*   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md), [Подсветка текста](visualizers/highlight.md))
 *   создавать [компоненты](components.md) для встраивания в [spaCy](https://github.com/explosion/spaCy)
 
 ## Установка
@@ -104,6 +104,7 @@ pip install ruts
             *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
         *   **visualizers** - инструменты для визуализации текстов:
             *   fingerprinting.py - Литературная дактилоскопия
+            *   highlight.py - Подсветка текста
             *   word_tree.py - Дерево слов
             *   zipf.py - Закон Ципфа
     *   **tests** - тесты, повторяющие структуру пакета

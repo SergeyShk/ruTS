@@ -39,7 +39,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains over the spaCy parse
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
-* **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree
+* **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
 
 ## Installation
@@ -548,6 +548,25 @@ The library allows visualizing text with the help of the following graphs:
 *   [Zipf's law](https://sergeyshk.github.io/ruTS/visualizers/zipf/)
 *   [Literature Fingerprinting](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/)
 *   [Word Tree](https://sergeyshk.github.io/ruTS/visualizers/word_tree/)
+*   [Text highlighting](https://sergeyshk.github.io/ruTS/visualizers/highlight/) by layers: long sentences, complex words, stop words, passive voice, participle and converb clauses, genitive chains, alliteration
+
+Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; syntactic layers require a `Doc` with a dependency parse:
+
+```python
+>>> import spacy
+>>> from ruts.visualizers import highlight
+
+>>> nlp = spacy.load('ru_core_news_sm')
+>>> text = "Проект, подготовленный за неделю, был одобрен советом без обсуждения. Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента."
+>>> ht = highlight(nlp(text))
+>>> ht.counts
+{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 3}
+>>> ht  # rendered as highlighted text in Jupyter, the markup is available via ht.to_html()
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/SergeyShk/ruTS/master/docs/img/highlight.png" alt="Text highlighting" width="760">
+</p>
 
 ```python
 >>> from collections import Counter
