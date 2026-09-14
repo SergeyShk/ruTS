@@ -9,7 +9,7 @@
 
 В модуле реализована возможность использования предварительно созданного объекта класса [`WordsExtractor`](../extractors/words.md) для проведения необходимой токенизации слов перед вычислением статистик.
 
-Части речи и грамматические признаки выдаются в терминах [Universal Dependencies](https://universaldependencies.org/u/feat/): `pos` - `NOUN`, `VERB`, `ADJ`, `PRON`, `DET` и другие, `case` - `Nom`, `Gen`, `Dat`, `Acc`, `Ins`, `Loc`, так же `animacy`, `aspect`, `gender`, `mood`, `number`, `person`, `tense`, `voice` и форма глагола `verb_form` (`Fin`, `Inf`, `Part`, `Conv`). Для объекта `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`, то есть с учетом контекста: в «мы стали ждать» и «нож из стали» слово «стали» получит `VERB` и `NOUN`. Для строки и `Doc` без разметки используется первый разбор [pymorphy3](https://github.com/no-plagiarism/pymorphy3), а его граммемы [OpenCorpora](http://opencorpora.org/dict.php?act=gram) переводятся в UD по таблицам `OPENCORPORA_TO_UD_POS` и `OPENCORPORA_TO_UD_GRAMMEMES` из `ruts.constants`.
+Части речи и грамматические признаки выдаются в терминах [Universal Dependencies](https://universaldependencies.org/u/feat/): `pos` - `NOUN`, `VERB`, `ADJ`, `PRON`, `DET` и другие, `case` - `Nom`, `Gen`, `Dat`, `Acc`, `Ins`, `Loc`, так же `animacy`, `aspect`, `gender`, `mood`, `number`, `person`, `tense`, `voice` и форма глагола `verb_form` (`Fin`, `Inf`, `Part`, `Conv`). Для объекта `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`. Для строки и `Doc` без разметки используется первый разбор [pymorphy3](https://github.com/no-plagiarism/pymorphy3), граммемы [OpenCorpora](http://opencorpora.org/dict.php?act=gram) переводятся в UD по таблицам `OPENCORPORA_TO_UD_POS` и `OPENCORPORA_TO_UD_GRAMMEMES` из `ruts.constants`.
 
 Соответствие частей речи OpenCorpora и UD:
 
@@ -27,10 +27,10 @@
 | `INTJ` | `INTJ` | |
 | `LATN`, `UNKN` | `X` | |
 
-Переходность (`transitivity`: `Tran`, `Intr`) и совместность (`involvement`: `In`, `Ex`) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов и в строке признаков `tags` записываются как `Subcat` и `Clusivity`. Для `Doc` глагольный разбор pymorphy3 выбирается по лемме spaCy, поэтому переходность омонимов тоже зависит от контекста.
+Переходность (`transitivity`: `Tran`, `Intr`) и совместность (`involvement`: `In`, `Ex`) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов (для `Doc` - по разбору с леммой spaCy) и в строке признаков `tags` записываются как `Subcat` и `Clusivity`.
 
 !!! note "Примечание"
-    Значения признаков для строки и для `Doc` с разметкой могут отличаться: spaCy проставляет `Voice=Act` всем личным формам и `Voice=Mid` возвратным глаголам, pymorphy3 определяет залог только у причастий; spaCy выделяет `AUX` и снимает омонимию по контексту, pymorphy3 берет первый разбор.
+    Значения для строки и для `Doc` с разметкой могут отличаться: spaCy проставляет `Voice=Act` личным формам и `Voice=Mid` возвратным глаголам, выделяет `AUX` и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.
 
 !!! note "Примечание"
     Вычисление статистик происходит в момент инициализации объекта класса `MorphStats`.

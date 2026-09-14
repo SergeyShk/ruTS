@@ -6,8 +6,10 @@
 # URL: <https://github.com/SergeyShk/ruTS>
 
 from .basic_stats import BasicStats
+from .cohesion_stats import CohesionStats
 from .components import (
     BasicStatsComponent,
+    CohesionStatsComponent,
     DiversityStatsComponent,
     MorphStatsComponent,
     PhonStatsComponent,
@@ -33,6 +35,8 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 __all__ = [
     "BasicStats",
     "BasicStatsComponent",
+    "CohesionStats",
+    "CohesionStatsComponent",
     "DiversityStats",
     "DiversityStatsComponent",
     "MorphStats",

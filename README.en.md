@@ -42,6 +42,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains over the spaCy parse
+* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -503,6 +504,35 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/syntax_stats/
 </details>
 
 <details>
+<summary><b>Cohesion statistics</b></summary>
+
+<br>
+
+The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a string), no dependency parse is needed:
+
+*   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
+*   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
+*   Temporal cohesion: tense and aspect repetition in adjacent sentences
+
+```python
+>>> from ruts import CohesionStats
+
+>>> text = "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
+>>> cs = CohesionStats(text)
+
+>>> cs.noun_overlap_adjacent, cs.noun_overlap_all
+(0.3333333333333333, 0.5)
+>>> cs.argument_overlap_all, cs.content_overlap_prop_adjacent
+(0.6666666666666666, 0.1111111111111111)
+>>> cs.p_pronouns, cs.p_given, cs.temporal_cohesion
+(0.14285714285714285, 0.2857142857142857, 0.5)
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -609,6 +639,7 @@ Highlighting returns an object rendered in Jupyter as HTML with a legend and hov
 The library allows creating the following classes of spaCy components:
 
 *   `BasicStats`
+*   `CohesionStats`
 *   `DiversityStats`
 *   `MorphStats`
 *   `PhonStats`
@@ -671,6 +702,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 *   **docs** - project documentation
 *   **ruts**:
     *   basic_stats.py - basic text statistics
+    *   cohesion_stats.py - cohesion statistics
     *   components.py - spaCy components
     *   constants.py - main constants
     *   diversity_stats.py - lexical diversity metrics
