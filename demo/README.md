@@ -23,7 +23,8 @@ short_description: Статистики русского текста и под�
 Документация библиотеки: <https://sergeyshk.github.io/ruTS/>. Код демонстрации лежит в папке
 [`demo`](https://github.com/SergeyShk/ruTS/tree/master/demo) репозитория и обновляется при каждом релизе.
 
-Запуск локально:
+Запуск локально из репозитория - `make demo`, заливка в Space - `make demo-login` и `make demo-upload`.
+Без репозитория:
 
 ```bash
 pip install -r demo/requirements.txt
