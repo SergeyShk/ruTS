@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.11.0.dev3"
+version = "0.11.0.dev4"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
