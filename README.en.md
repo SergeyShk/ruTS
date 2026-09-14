@@ -557,10 +557,17 @@ Highlighting returns an object rendered in Jupyter as HTML with a legend and hov
 >>> from ruts.visualizers import highlight
 
 >>> nlp = spacy.load('ru_core_news_sm')
->>> text = "Проект, подготовленный за неделю, был одобрен советом без обсуждения. Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента."
+>>> text = (
+...     "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
+...     "Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента. "
+...     "Участники, представлявшие региональные министерства, не смогли согласовать позиции по вопросам "
+...     "финансирования и распределения ответственности между ведомствами, поскольку каждое из них "
+...     "настаивало на собственной трактовке положений соглашения. "
+...     "Споры стихли, в кулуарах шумно шептались и шушукались, а решение было отложено до следующего заседания."
+... )
 >>> ht = highlight(nlp(text))
 >>> ht.counts
-{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 0}
+{'long_sents': 1, 'complex_words': 26, 'stopwords': 17, 'passive': 4, 'participle_clauses': 2, 'converb_clauses': 1, 'genitive_chains': 2, 'alliteration': 1}
 >>> ht  # rendered as highlighted text in Jupyter, the markup is available via ht.to_html()
 ```
 
