@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pymorphy3
 
-from .constants import DEFAULT_DATA_DIR, PUNCTUATIONS, RU_VOWELS
+from .constants import DEFAULT_DATA_DIR, PUNCTUATIONS, RU_VOWELS, UD_TO_OPENCORPORA_POS
 
 
 @lru_cache(maxsize=1)
@@ -41,6 +41,30 @@ def parse_word(word: str) -> pymorphy3.analyzer.Parse:
         Parse: Разбор словоформы
     """
     return get_morph_analyzer().parse(word)[0]
+
+
+@lru_cache(maxsize=131072)
+def lemmatize(word: str, pos: str = "") -> str:
+    """
+    Лемматизация словоформы pymorphy3 с учетом части речи Universal Dependencies
+
+    Описание:
+        Среди разборов словоформы выбирается первый, часть речи которого соответствует
+        заданной части речи UD по таблице UD_TO_OPENCORPORA_POS, как делает
+        лемматизатор spaCy для русского языка: «стали» с NOUN - сталь, с VERB - стать
+        Без части речи или без подходящего разбора берется первый разбор
+
+    Аргументы:
+        word (str): Словоформа
+        pos (str): Часть речи UD
+
+    Вывод:
+        str: Лемма
+    """
+    parses = get_morph_analyzer().parse(word)
+    allowed = UD_TO_OPENCORPORA_POS.get(pos, frozenset())
+    parse = next((parse for parse in parses if parse.tag.POS in allowed), parses[0])
+    return str(parse.normal_form)
 
 
 def is_punctuation(token: str) -> bool:

@@ -5,6 +5,7 @@ from math import nan
 from statistics import fmean
 from typing import NamedTuple
 
+import numpy as np
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -15,7 +16,7 @@ from .constants import (
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import parse_word, safe_divide
+from .utils import lemmatize, parse_word, safe_divide
 
 
 class WordInfo(NamedTuple):
@@ -25,7 +26,8 @@ class WordInfo(NamedTuple):
     Атрибуты:
         lemma (str): Лемма в нижнем регистре
         noun (bool): Существительное
-        pronoun (bool): Местоимение
+        pronoun (bool): Местоимение, включая указательные
+        demonstrative (bool): Указательное местоимение
         argument (bool): Аргумент - существительное или местоимение-существительное
         content (bool): Знаменательное слово
         tense (str|None): Время глагольной формы
@@ -35,10 +37,28 @@ class WordInfo(NamedTuple):
     lemma: str
     noun: bool
     pronoun: bool
+    demonstrative: bool
     argument: bool
     content: bool
     tense: str | None
     aspect: str | None
+
+
+class Overlap(NamedTuple):
+    """
+    Повторы элементов между предложениями
+
+    Атрибуты:
+        adjacent (float): Доля пар соседних предложений с общим элементом
+        all (float): Доля всех пар предложений с общим элементом
+        prop_adjacent (float): Средний коэффициент Дайса по парам соседних предложений
+        prop_all (float): Средний коэффициент Дайса по всем парам предложений
+    """
+
+    adjacent: float
+    all: float
+    prop_adjacent: float
+    prop_all: float
 
 
 class CohesionStats:
@@ -61,7 +81,12 @@ class CohesionStats:
         и наречия: по pymorphy3 без местоименных (этот, там, тогда) и вводных (конечно)
         слов, по UD - NOUN, PROPN, ADJ, VERB, ADV; местоимения - местоимения-существительные
         (он, себя, кто) и местоименные прилагательные (этот, который, мой, весь),
-        по UD - PRON и DET
+        по UD - PRON и DET, а также слова с леммой из DEMONSTRATIVE_LEMMAS (это, столько),
+        которые pymorphy3 и модели spaCy относят к частицам и наречиям
+        Если в Doc есть части речи, но нет лемм (пайплайн без лемматизатора), лемма
+        берется из разбора pymorphy3 с той же частью речи (lemmatize)
+        Повторы по всем парам предложений считаются за один проход по парам,
+        квадратичный по числу предложений
 
     Ссылки:
         https://doi.org/10.1017/CBO9780511894664 (McNamara и др. 2014, Coh-Metrix)
@@ -144,7 +169,7 @@ class CohesionStats:
                 for sent in source.sents
             ]
             sents = [tuple(word.text for word in sent) for sent in tokens]
-            if source.has_annotation("POS") and source.has_annotation("LEMMA"):
+            if source.has_annotation("POS"):
                 infos = [[token_info(word) for word in sent] for sent in tokens]
             else:
                 infos = [[word_info(word) for word in sent] for sent in sents]
@@ -176,20 +201,21 @@ class CohesionStats:
 
         self.n_nouns = sum(1 for sent in infos for info in sent if info.noun)
         self.n_pronouns = sum(1 for sent in infos for info in sent if info.pronoun)
-        self.n_demonstratives = sum(
-            1 for sent in self.lemmas for lemma in sent if lemma in DEMONSTRATIVE_LEMMAS
-        )
+        self.n_demonstratives = sum(1 for sent in infos for info in sent if info.demonstrative)
         self.n_content_words = sum(len(sent) for sent in content)
         self.n_given = count_given(content)
 
-        self.noun_overlap_adjacent = calc_overlap(nouns)
-        self.noun_overlap_all = calc_overlap(nouns, adjacent=False)
-        self.argument_overlap_adjacent = calc_overlap(arguments)
-        self.argument_overlap_all = calc_overlap(arguments, adjacent=False)
-        self.content_overlap_adjacent = calc_overlap(content_sets)
-        self.content_overlap_all = calc_overlap(content_sets, adjacent=False)
-        self.content_overlap_prop_adjacent = calc_proportional_overlap(content_sets)
-        self.content_overlap_prop_all = calc_proportional_overlap(content_sets, adjacent=False)
+        noun_overlap = calc_overlaps(nouns)
+        argument_overlap = calc_overlaps(arguments)
+        content_overlap = calc_overlaps(content_sets)
+        self.noun_overlap_adjacent = noun_overlap.adjacent
+        self.noun_overlap_all = noun_overlap.all
+        self.argument_overlap_adjacent = argument_overlap.adjacent
+        self.argument_overlap_all = argument_overlap.all
+        self.content_overlap_adjacent = content_overlap.adjacent
+        self.content_overlap_all = content_overlap.all
+        self.content_overlap_prop_adjacent = content_overlap.prop_adjacent
+        self.content_overlap_prop_all = content_overlap.prop_all
         self.p_pronouns = self.n_pronouns / self.n_words
         self.pronoun_noun_ratio = safe_divide(self.n_pronouns, self.n_nouns, nan)
         self.p_demonstratives = self.n_demonstratives / self.n_words
@@ -221,8 +247,10 @@ def word_info(word: str) -> WordInfo:
     Получение признаков слова по первому разбору pymorphy3
 
     Описание:
-        Существительное - NOUN, местоимение - NPRO или Apro, аргумент - NOUN или NPRO,
-        знаменательное слово - по is_content_word, время и вид - граммемы глагольной формы
+        Существительное - NOUN, местоимение - NPRO, Apro или лемма из DEMONSTRATIVE_LEMMAS,
+        аргумент - NOUN или NPRO, знаменательное слово - по is_content_word, кроме
+        указательных (столько - наречие для pymorphy3), время и вид - граммемы
+        глагольной формы
 
     Аргументы:
         word (str): Слово
@@ -232,12 +260,14 @@ def word_info(word: str) -> WordInfo:
     """
     parse = parse_word(word)
     tag = parse.tag
+    demonstrative = parse.normal_form in DEMONSTRATIVE_LEMMAS
     return WordInfo(
         lemma=parse.normal_form,
         noun=tag.POS == "NOUN",
-        pronoun=is_pronoun(word),
+        pronoun=demonstrative or is_pronoun(word),
+        demonstrative=demonstrative,
         argument=tag.POS in ("NOUN", "NPRO"),
-        content=is_content_word(word),
+        content=not demonstrative and is_content_word(word),
         tense=tag.tense,
         aspect=tag.aspect,
     )
@@ -248,9 +278,12 @@ def token_info(token: Token) -> WordInfo:
     Получение признаков токена spaCy по разметке Universal Dependencies
 
     Описание:
-        Существительное - NOUN или PROPN, местоимение - PRON или DET, аргумент - NOUN,
-        PROPN или PRON, знаменательное слово - NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS),
-        время и вид - признаки Tense и Aspect; лемма приводится к нижнему регистру
+        Существительное - NOUN или PROPN, местоимение - PRON, DET или лемма
+        из DEMONSTRATIVE_LEMMAS, аргумент - NOUN, PROPN или PRON, знаменательное слово -
+        NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS), кроме указательных, время и вид -
+        признаки Tense и Aspect
+        Лемма берется из token.lemma_ в нижнем регистре, а если лемматизатора
+        в пайплайне нет - из разбора pymorphy3 с частью речи токена (lemmatize)
 
     Аргументы:
         token (Token): Токен
@@ -259,14 +292,17 @@ def token_info(token: Token) -> WordInfo:
         WordInfo: Признаки слова
     """
     pos = token.pos_
+    lemma = token.lemma_.lower() if token.lemma_ else lemmatize(token.text, pos)
     tense = token.morph.get("Tense", [])
     aspect = token.morph.get("Aspect", [])
+    demonstrative = lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
-        lemma=token.lemma_.lower(),
+        lemma=lemma,
         noun=pos in ("NOUN", "PROPN"),
-        pronoun=pos in ("PRON", "DET"),
+        pronoun=demonstrative or pos in ("PRON", "DET"),
+        demonstrative=demonstrative,
         argument=pos in ("NOUN", "PROPN", "PRON"),
-        content=pos in CONTENT_UD_POS,
+        content=not demonstrative and pos in CONTENT_UD_POS,
         tense=tense[0] if tense else None,
         aspect=aspect[0] if aspect else None,
     )
@@ -326,10 +362,13 @@ def calc_overlap(sets: Sequence[Collection[str]], adjacent: bool = True) -> floa
     Вывод:
         float: Доля пар с общим элементом, nan для текста короче двух предложений
     """
-    pairs = list(pairwise(sets) if adjacent else combinations(sets, 2))
-    if not pairs:
+    frozen = [frozenset(elements) for elements in sets]
+    n_sents = len(frozen)
+    if n_sents < 2:
         return nan
-    return sum(1 for first, second in pairs if not set(first).isdisjoint(second)) / len(pairs)
+    pairs = pairwise(frozen) if adjacent else combinations(frozen, 2)
+    n_pairs = n_sents - 1 if adjacent else n_sents * (n_sents - 1) // 2
+    return sum(1 for first, second in pairs if not first.isdisjoint(second)) / n_pairs
 
 
 def calc_proportional_overlap(sets: Sequence[Collection[str]], adjacent: bool = True) -> float:
@@ -348,13 +387,122 @@ def calc_proportional_overlap(sets: Sequence[Collection[str]], adjacent: bool = 
     Вывод:
         float: Средняя доля общих элементов, nan для текста короче двух предложений
     """
-    pairs = list(pairwise(sets) if adjacent else combinations(sets, 2))
-    if not pairs:
+    frozen = [frozenset(elements) for elements in sets]
+    n_sents = len(frozen)
+    if n_sents < 2:
         return nan
-    return fmean(
-        safe_divide(2 * len(set(first) & set(second)), len(first) + len(second))
-        for first, second in pairs
+    pairs = pairwise(frozen) if adjacent else combinations(frozen, 2)
+    n_pairs = n_sents - 1 if adjacent else n_sents * (n_sents - 1) // 2
+    return sum(dice(first, second) for first, second in pairs) / n_pairs
+
+
+def dice(first: frozenset[str], second: frozenset[str]) -> float:
+    """
+    Вычисление коэффициента Дайса двух множеств
+
+    Аргументы:
+        first (frozenset[str]): Первое множество
+        second (frozenset[str]): Второе множество
+
+    Вывод:
+        float: Коэффициент 2·|A ∩ B| / (|A| + |B|), 0 для двух пустых множеств
+    """
+    return safe_divide(2 * len(first & second), len(first) + len(second))
+
+
+def calc_overlaps(sets: Sequence[Collection[str]]) -> Overlap:
+    """
+    Вычисление бинарного и пропорционального повторов по соседним и всем парам предложений
+
+    Описание:
+        Дает те же значения, что calc_overlap и calc_proportional_overlap, но без перебора
+        всех пар предложений: класс CohesionStats считает так все повторы
+        Соседние пары обходятся напрямую; число всех пар с общим элементом считается
+        по битовым маскам вхождений элементов в предложения, а сумма коэффициентов
+        Дайса по всем парам - по гистограммам длин предложений для каждого элемента,
+        так что время растет линейно с числом вхождений, а не квадратично
+        с числом предложений
+
+    Аргументы:
+        sets (list[set[str]]): Множества элементов каждого предложения
+
+    Вывод:
+        Overlap: Доли пар с общим элементом и средние коэффициенты Дайса,
+            nan для текста короче двух предложений
+    """
+    frozen = [frozenset(elements) for elements in sets]
+    n_sents = len(frozen)
+    if n_sents < 2:
+        return Overlap(nan, nan, nan, nan)
+    n_all = n_sents * (n_sents - 1) // 2
+    return Overlap(
+        sum(1 for first, second in pairwise(frozen) if not first.isdisjoint(second))
+        / (n_sents - 1),
+        _count_sharing_pairs(frozen) / n_all,
+        sum(dice(first, second) for first, second in pairwise(frozen)) / (n_sents - 1),
+        _sum_dice(frozen) / n_all,
     )
+
+
+def _count_sharing_pairs(sets: Sequence[frozenset[str]], block_size: int = 4096) -> int:
+    """
+    Число пар предложений с общим элементом по битовым маскам вхождений
+
+    Описание:
+        Предложения обрабатываются блоками: для каждого элемента строится маска
+        предложений блока, где он встречается, объединение масок элементов предложения
+        i дает все предложения блока, с которыми оно связано, и остается посчитать
+        биты правее i; память ограничена размером блока
+    """
+    total = 0
+    for start in range(0, len(sets), block_size):
+        end = min(start + block_size, len(sets))
+        masks: dict[str, int] = {}
+        for j in range(start, end):
+            bit = 1 << (j - start)
+            for element in sets[j]:
+                masks[element] = masks.get(element, 0) | bit
+        for i in range(end):
+            union = 0
+            for element in sets[i]:
+                union |= masks.get(element, 0)
+            if i >= start:
+                union >>= i - start + 1
+            total += union.bit_count()
+    return total
+
+
+def _sum_dice(sets: Sequence[frozenset[str]]) -> float:
+    """
+    Сумма коэффициентов Дайса по всем парам предложений по гистограммам длин
+
+    Описание:
+        Пара предложений длин k и l с общим элементом дает 2/(k + l) за каждый общий
+        элемент, поэтому для каждого элемента достаточно знать, сколько содержащих его
+        предложений имеют каждую длину: сумма по парам внутри элемента равна
+        (h·W·h - h·diag(W)) / 2, где h - гистограмма длин, W[k, l] = 2/(k + l)
+        Элементы из одного предложения пар не образуют и пропускаются
+    """
+    sizes = sorted({len(elements) for elements in sets if elements})
+    columns = {size: column for column, size in enumerate(sizes)}
+    postings: dict[str, list[int]] = {}
+    for elements in sets:
+        if not elements:
+            continue
+        column = columns[len(elements)]
+        for element in elements:
+            postings.setdefault(element, []).append(column)
+    rows = [row for row in postings.values() if len(row) > 1]
+    if not rows:
+        return 0.0
+    histograms = np.zeros((len(rows), len(sizes)))
+    for index, row in enumerate(rows):
+        np.add.at(histograms[index], row, 1)
+    lengths = np.array(sizes, dtype=float)
+    weights = 2 / (lengths[:, None] + lengths[None, :])
+    full = np.einsum("ik,kl,il->", histograms, weights, histograms)
+    diagonal = (histograms * np.diag(weights)).sum()
+    return float((full - diagonal) / 2)
 
 
 def count_given(sents: Sequence[Sequence[str]]) -> int:

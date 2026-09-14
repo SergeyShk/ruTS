@@ -320,6 +320,22 @@ SUBORDINATING_CONJUNCTIONS = frozenset(
     }
 )
 UD_PERSONS = {"First": "1", "Second": "2", "Third": "3"}
+UD_TO_OPENCORPORA_POS = {
+    "NOUN": frozenset({"NOUN"}),
+    "PROPN": frozenset({"NOUN"}),
+    "ADJ": frozenset({"ADJF", "ADJS", "COMP"}),
+    "ADV": frozenset({"ADVB", "PRED", "COMP"}),
+    "VERB": frozenset({"VERB", "INFN", "PRTF", "PRTS", "GRND"}),
+    "AUX": frozenset({"VERB", "INFN"}),
+    "PRON": frozenset({"NPRO", "ADJF"}),
+    "DET": frozenset({"ADJF"}),
+    "NUM": frozenset({"NUMR", "ADJF"}),
+    "ADP": frozenset({"PREP"}),
+    "CCONJ": frozenset({"CONJ"}),
+    "SCONJ": frozenset({"CONJ"}),
+    "PART": frozenset({"PRCL"}),
+    "INTJ": frozenset({"INTJ"}),
+}
 DIVERSITY_STATS_DESC = {
     "ttr": "Type-Token Ratio (TTR)",
     "rttr": "Root Type-Token Ratio (RTTR)",

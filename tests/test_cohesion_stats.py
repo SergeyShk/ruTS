@@ -1,3 +1,4 @@
+import random
 from math import isnan
 
 import pytest
@@ -5,11 +6,14 @@ import spacy
 
 from ruts import CohesionStats, WordsExtractor
 from ruts.cohesion_stats import (
+    Overlap,
     WordInfo,
     calc_overlap,
+    calc_overlaps,
     calc_proportional_overlap,
     calc_repetition,
     count_given,
+    dice,
     dominant,
     is_content_word,
     is_pronoun,
@@ -17,6 +21,7 @@ from ruts.cohesion_stats import (
     word_info,
 )
 from ruts.constants import COHESION_STATS_DESC
+from ruts.utils import lemmatize
 
 text = (
     "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. "
@@ -76,19 +81,52 @@ def test_init_doc_model(nlp):
 
 
 def test_word_info():
-    assert word_info("кота") == WordInfo("кот", True, False, True, True, None, None)
-    assert word_info("он") == WordInfo("он", False, True, True, False, None, None)
-    assert word_info("этот") == WordInfo("этот", False, True, False, False, None, None)
-    assert word_info("читал") == WordInfo("читать", False, False, False, True, "past", "impf")
-    assert word_info("на") == WordInfo("на", False, False, False, False, None, None)
+    assert word_info("кота") == WordInfo("кот", True, False, False, True, True, None, None)
+    assert word_info("он") == WordInfo("он", False, True, False, True, False, None, None)
+    assert word_info("этот") == WordInfo("этот", False, True, True, False, False, None, None)
+    assert word_info("это") == WordInfo("это", False, True, True, False, False, None, None)
+    assert word_info("столько") == WordInfo("столько", False, True, True, False, False, None, None)
+    assert word_info("читал") == WordInfo(
+        "читать", False, False, False, False, True, "past", "impf"
+    )
+    assert word_info("на") == WordInfo("на", False, False, False, False, False, None, None)
 
 
 def test_token_info(nlp):
     doc = nlp("Иван читает эту книгу.")
-    assert token_info(doc[0]) == WordInfo("иван", True, False, True, True, None, None)
-    assert token_info(doc[1]) == WordInfo("читать", False, False, False, True, "Pres", "Imp")
-    assert token_info(doc[2]) == WordInfo("этот", False, True, False, False, None, None)
-    assert token_info(doc[4]) == WordInfo(".", False, False, False, False, None, None)
+    assert token_info(doc[0]) == WordInfo("иван", True, False, False, True, True, None, None)
+    assert token_info(doc[1]) == WordInfo(
+        "читать", False, False, False, False, True, "Pres", "Imp"
+    )
+    assert token_info(doc[2]) == WordInfo("этот", False, True, True, False, False, None, None)
+    assert token_info(doc[4]) == WordInfo(".", False, False, False, False, False, None, None)
+
+
+def test_init_doc_without_lemmatizer(nlp):
+    tagger_nlp = spacy.load("ru_core_news_sm", exclude=["lemmatizer", "ner"])
+    text = "Мы стали ждать поезда. Нож сделан из стали. Эта сталь очень прочна."
+    doc = tagger_nlp(text)
+    assert not doc.has_annotation("LEMMA")
+    cs = CohesionStats(doc)
+    assert cs.lemmas[1] == ("нож", "сделать", "из", "сталь")
+    assert cs.noun_overlap_adjacent == pytest.approx(1 / 2)
+    assert cs.get_stats() == pytest.approx(CohesionStats(nlp(text)).get_stats(), nan_ok=True)
+
+
+def test_lemmatize():
+    assert lemmatize("стали", "NOUN") == "сталь"
+    assert lemmatize("стали", "VERB") == "стать"
+    assert lemmatize("стали") == "стать"
+    assert lemmatize("стали", "ADP") == "стать"
+    assert lemmatize("Москву", "PROPN") == "москва"
+    assert lemmatize("лучше", "ADV") == "хороший"
+
+
+def test_demonstratives():
+    cs = CohesionStats("Это кот. Столько котов!")
+    assert cs.n_pronouns == 2
+    assert cs.n_demonstratives == 2
+    assert cs.p_demonstratives <= cs.p_pronouns
 
 
 def test_init_extractors():
@@ -227,6 +265,7 @@ def test_calc_overlap():
     assert calc_overlap(sets) == pytest.approx(1 / 3)
     assert calc_overlap(sets, adjacent=False) == pytest.approx(2 / 6)
     assert calc_overlap([{"a"}, set()]) == 0
+    assert calc_overlap([["a", "a"], ["a"]]) == 1
     assert isnan(calc_overlap([{"a"}]))
     assert isnan(calc_overlap([]))
 
@@ -237,8 +276,59 @@ def test_calc_proportional_overlap():
     assert calc_proportional_overlap(sets, adjacent=False) == pytest.approx(
         (1 / 2 + 2 / 3 + 0 + 2 / 3 + 0 + 0) / 6
     )
-    assert calc_proportional_overlap([["a", "a"], ["a"]]) == pytest.approx(2 / 3)
+    assert calc_proportional_overlap([["a", "a"], ["a"]]) == 1
     assert isnan(calc_proportional_overlap([{"a"}]))
+
+
+def test_dice():
+    assert dice(frozenset("ab"), frozenset("bc")) == pytest.approx(1 / 2)
+    assert dice(frozenset("ab"), frozenset()) == 0
+    assert dice(frozenset(), frozenset()) == 0
+
+
+@pytest.mark.parametrize(
+    "sets",
+    [
+        [{"a", "b"}, {"b", "c"}, {"d"}, {"a"}],
+        [{"a", "b"}, {"b", "c"}, {"b"}, set()],
+        [set(), {"a"}, set(), {"a", "b"}, {"b"}],
+        [{"a"}, {"a"}],
+    ],
+)
+def test_calc_overlaps(sets):
+    overlap = calc_overlaps(sets)
+    assert isinstance(overlap, Overlap)
+    assert overlap == pytest.approx(
+        (
+            calc_overlap(sets),
+            calc_overlap(sets, adjacent=False),
+            calc_proportional_overlap(sets),
+            calc_proportional_overlap(sets, adjacent=False),
+        )
+    )
+
+
+def test_calc_overlaps_random():
+    rng = random.Random(7)
+    sets = [
+        {rng.randrange(40) for _ in range(rng.randrange(6))} for _ in range(rng.randrange(2, 300))
+    ]
+    sets = [{str(element) for element in elements} for elements in sets]
+    assert calc_overlaps(sets) == pytest.approx(
+        (
+            calc_overlap(sets),
+            calc_overlap(sets, adjacent=False),
+            calc_proportional_overlap(sets),
+            calc_proportional_overlap(sets, adjacent=False),
+        )
+    )
+    long_sets = [{"a"} if i % 2 else {"b"} for i in range(5000)]
+    assert calc_overlaps(long_sets).all == pytest.approx(2 * (2500 * 2499 / 2) / (5000 * 4999 / 2))
+
+
+def test_calc_overlaps_short():
+    assert all(isnan(value) for value in calc_overlaps([{"a"}]))
+    assert all(isnan(value) for value in calc_overlaps([]))
 
 
 def test_count_given():
