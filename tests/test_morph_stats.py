@@ -215,6 +215,24 @@ def test_init_doc_context(nlp):
     assert MorphStats(doc.text).pos[-1] == "VERB"
 
 
+def test_proper_nouns_by_case():
+    ms = MorphStats("лев лежит на полу, мороз крепчает, один улей и два цветка")
+    assert ms.pos == (
+        "NOUN",
+        "VERB",
+        "ADP",
+        "NOUN",
+        "NOUN",
+        "VERB",
+        "NUM",
+        "NOUN",
+        "CCONJ",
+        "NUM",
+        "NOUN",
+    )
+    assert MorphStats("Лев Толстой").pos == ("PROPN", "PROPN")
+
+
 def test_init_doc_verbs(nlp):
     ms = MorphStats(nlp("Идите домой. Он умылся и был готов."))
     assert ms.pos == ("VERB", "ADV", "PRON", "VERB", "CCONJ", "AUX", "ADJ")
@@ -231,6 +249,11 @@ def test_init_doc_verbs(nlp):
         ("Иван", "PROPN"),
         ("Петров", "PROPN"),
         ("Москва", "PROPN"),
+        ("лев", "NOUN"),
+        ("Лев", "PROPN"),
+        ("мороз", "NOUN"),
+        ("роза", "NOUN"),
+        ("улей", "NOUN"),
         ("красивый", "ADJ"),
         ("красив", "ADJ"),
         ("лучше", "ADJ"),
@@ -248,6 +271,8 @@ def test_init_doc_verbs(nlp):
         ("мой", "DET"),
         ("весь", "DET"),
         ("три", "NUM"),
+        ("один", "NUM"),
+        ("одна", "NUM"),
         ("2020", "NUM"),
         ("III", "NUM"),
         ("в", "ADP"),
@@ -305,6 +330,11 @@ def test_tag_to_ud_pos_lemma():
     tag = make_tag("ADJF,Subx,Apro,Anph masc,sing,nomn")
     assert tag_to_ud_pos(tag, "который") == "PRON"
     assert tag_to_ud_pos(tag, "этот") == "DET"
+    assert tag_to_ud_pos(make_tag("ADJF,Apro,Anum masc,sing,nomn"), "один") == "NUM"
+    tag = make_tag("NOUN,anim,masc,Name sing,nomn")
+    assert tag_to_ud_pos(tag, "лев", "Лев") == "PROPN"
+    assert tag_to_ud_pos(tag, "лев", "лев") == "NOUN"
+    assert tag_to_ud_pos(tag, "лев") == "NOUN"
     tag = make_tag("CONJ")
     assert tag_to_ud_pos(tag, "что") == "SCONJ"
     assert tag_to_ud_pos(tag, "и") == "CCONJ"

@@ -223,31 +223,37 @@ class MorphStats:
         return True
 
 
-def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> str | None:
+def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:
     """
     Перевод части речи OpenCorpora в часть речи Universal Dependencies
 
     Описание:
         Формы глагола (VERB, INFN, PRTF, PRTS, GRND) сводятся к VERB, прилагательные
         и компаративы - к ADJ; существительные с пометами имени, фамилии, отчества,
-        топонима или организации - PROPN; местоименные прилагательные (Apro) - DET,
-        кроме относительного «который» - PRON; союзы из SUBORDINATING_CONJUNCTIONS -
-        SCONJ, остальные - CCONJ; предикативы (надо, нельзя) - ADV; числа и римские
-        цифры - NUM, латиница и неизвестные слова - X
+        топонима или организации - PROPN, но только для словоформ с заглавной буквы:
+        pymorphy3 не учитывает регистр, и первый разбор обычных слов (лев, роза, мороз,
+        улей) тоже несет помету имени; местоименные прилагательные (Apro) - DET,
+        кроме относительного «который» - PRON и числительного «один» (Apro и Anum) -
+        NUM; союзы из SUBORDINATING_CONJUNCTIONS - SCONJ, остальные - CCONJ;
+        предикативы (надо, нельзя) - ADV; числа и римские цифры - NUM, латиница
+        и неизвестные слова - X
         Без контекста часть речи омонимов и роль союзов (что, как) определяются
         приблизительно
 
     Аргументы:
         tag (OpencorporaTag): Тэг OpenCorpora
         lemma (str): Лемма слова
+        word (str): Словоформа; без нее имена собственные не выделяются
 
     Вывод:
         str|None: Часть речи UD, None если pymorphy3 не определил часть речи
     """
     grammemes = tag.grammemes
-    if tag.POS == "NOUN" and PROPER_NOUN_GRAMMEMES & grammemes:
+    if tag.POS == "NOUN" and PROPER_NOUN_GRAMMEMES & grammemes and word[:1].isupper():
         return "PROPN"
     if tag.POS == "ADJF" and "Apro" in grammemes:
+        if "Anum" in grammemes:
+            return "NUM"
         return "PRON" if lemma == "который" else "DET"
     if tag.POS == "CONJ" and lemma in SUBORDINATING_CONJUNCTIONS:
         return "SCONJ"
@@ -257,7 +263,9 @@ def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> str | Non
     return None
 
 
-def tag_to_ud(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[str, str | None]:
+def tag_to_ud(
+    tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = ""
+) -> dict[str, str | None]:
     """
     Перевод тэга OpenCorpora в признаки Universal Dependencies
 
@@ -272,11 +280,12 @@ def tag_to_ud(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[str, str
     Аргументы:
         tag (OpencorporaTag): Тэг OpenCorpora
         lemma (str): Лемма слова
+        word (str): Словоформа; без нее имена собственные не выделяются
 
     Вывод:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
-    features: dict[str, str | None] = {"pos": tag_to_ud_pos(tag, lemma)}
+    features: dict[str, str | None] = {"pos": tag_to_ud_pos(tag, lemma, word)}
     for stat in MORPHOLOGY_FEATURES:
         if stat == "verb_form":
             features[stat] = OPENCORPORA_VERB_FORMS.get(tag.POS or "")
@@ -298,7 +307,7 @@ def word_to_ud(word: str) -> dict[str, str | None]:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
     parse = parse_word(word)
-    return tag_to_ud(parse.tag, parse.normal_form)
+    return tag_to_ud(parse.tag, parse.normal_form, word)
 
 
 @lru_cache(maxsize=131072)
