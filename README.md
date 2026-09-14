@@ -560,7 +560,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> text = "Проект, подготовленный за неделю, был одобрен советом без обсуждения. Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента."
 >>> ht = highlight(nlp(text))
 >>> ht.counts
-{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 3}
+{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 0}
 >>> ht  # в Jupyter отобразится подсветка, разметка доступна через ht.to_html()
 ```
 

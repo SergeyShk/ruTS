@@ -27,7 +27,7 @@ from ..syntax_stats import (
     is_participle_clause,
     is_passive,
 )
-from ..utils import count_syllables, is_punctuation
+from ..utils import count_syllables, is_punctuation, parse_word
 
 CSS = """\
 .ruts-highlight { line-height: 1.7; }
@@ -362,7 +362,8 @@ def get_doc_sents(doc: Doc) -> list[Sent]:
     Извлечение предложений с позициями и числом слов из объекта Doc
 
     Описание:
-        Пробельные токены в конце предложения не входят в его позиции
+        Пробельные токены в начале и конце предложения не входят в его позиции:
+        sentencizer ставит границу на перенос строки после точки
 
     Аргументы:
         doc (Doc): Объект Doc с границами предложений
@@ -374,8 +375,9 @@ def get_doc_sents(doc: Doc) -> list[Sent]:
     for sent in doc.sents:
         tokens = [token for token in sent if not token.is_space]
         if tokens:
+            start = min(token.idx for token in tokens)
             end = max(token.idx + len(token) for token in tokens)
-            sents.append(Sent(sent.start_char, end, len(get_words(sent))))
+            sents.append(Sent(start, end, len(get_words(sent))))
     return sents
 
 
@@ -469,6 +471,57 @@ def find_stopwords(
     return [Highlight(word.start, word.end, "stopwords", "стоп-слово") for word in matches]
 
 
+def group_words_by_sents(words: Sequence[Word], sents: Sequence[Sent]) -> list[list[Word]]:
+    """
+    Группировка слов по предложениям
+
+    Описание:
+        Слова и предложения упорядочены по позиции, поэтому достаточно одного прохода;
+        слово относится к предложению по позиции первого символа, слова вне
+        предложений пропускаются
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+        sents (list[Sent]): Предложения с позициями
+
+    Вывод:
+        list[list[Word]]: Слова каждого предложения
+    """
+    groups: list[list[Word]] = [[] for _ in sents]
+    index = 0
+    for word in words:
+        while index < len(sents) and sents[index].end <= word.start:
+            index += 1
+        if index < len(sents) and sents[index].start <= word.start:
+            groups[index].append(word)
+    return groups
+
+
+def get_stem(word: str) -> str:
+    """
+    Получение основы словоформы
+
+    Описание:
+        Основа - общая начальная часть словоформы и ее леммы по pymorphy3:
+        крупных → крупн, руках → рук, шуршат → шурша, камыши → камыш
+        Для супплетивных форм (шла → идти, люди → человек) общая часть короче
+        двух букв, и основой считается вся словоформа
+
+    Аргументы:
+        word (str): Словоформа в нижнем регистре
+
+    Вывод:
+        str: Основа словоформы
+    """
+    lemma = parse_word(word).normal_form
+    length = 0
+    for letter, lemma_letter in zip(word, lemma, strict=False):
+        if letter != lemma_letter:
+            break
+        length += 1
+    return word[:length] if length >= 2 else word
+
+
 def calc_alliteration_runs(
     text: Sequence[str], threshold: float = ALLITERATION_THRESHOLD
 ) -> list[tuple[int, int, str]]:
@@ -476,20 +529,26 @@ def calc_alliteration_runs(
     Поиск повторов согласной в соседних словах
 
     Описание:
-        Повтор - цепочка из двух и более соседних слов, в каждом из которых есть одна
-        и та же согласная буква; слова короче трех букв (предлоги, союзы, частицы,
-        местоимения он, их) и слова без гласных (аббревиатуры) цепочку не прерывают
-        и не продолжают: по полю плыл - повтор п в двух словах
-        Буква й не учитывается: она стоит в основном в окончаниях прилагательных
-        и причастий, согласованных с существительным (подготовленный рабочей группой),
-        и повторяется в соседних словах по грамматике, а не по звучанию
+        Повтор - цепочка из двух и более соседних слов, в основе каждого из которых
+        есть одна и та же согласная буква; слова короче трех букв (предлоги, союзы,
+        частицы, местоимения он, их) и слова без гласных (аббревиатуры) цепочку
+        не прерывают и не продолжают: по полю плыл - повтор п в двух словах
+        Согласная ищется в основе слова (функция get_stem), а не в окончании:
+        окончания согласуются с соседними словами и повторяются по грамматике,
+        а не по звучанию - этих крупных, своим целям и нуждам, в других губерниях
+        Буква й не учитывается и в основе, так как в именительном падеже она входит
+        в лемму прилагательного (красивый молодой)
         Вероятность цепочки при независимом распределении букв - произведение по словам
-        вероятностей встретить согласную хотя бы раз среди букв слова, 1 - (1 - f)^n,
-        где f - частота согласной в русских текстах, n - число букв в слове;
+        вероятностей встретить согласную хотя бы раз среди букв основы, 1 - (1 - f)^n,
+        где f - частота согласной в русских текстах, n - число букв в основе;
         цепочка считается аллитерацией, если вероятность ниже порога
-        Так два соседних 6-буквенных слова с ш дают 0.002, а цепочка из четырех
-        10-буквенных слов с н - 0.06: повтор редкой согласной заметен уже в двух словах,
-        повтор частой в длинных словах ожидаем и аллитерацией не считается
+        На каждой позиции проверяется около двадцати согласных, поэтому порог
+        по умолчанию строгий: на прозе при 0.001 подсвечено около 5% слов,
+        при 0.01 - около 20%, в основном случайные совпадения частых букв
+        Так три соседних 5-буквенных основы с ш дают 0.00005, две - 0.0013,
+        а цепочка из четырех 8-буквенных основ с т - 0.04: повтор редкой согласной
+        заметен в двух-трех словах, повтор частой в длинных словах ожидаем
+        и аллитерацией не считается
         Индекс аллитерации PhonStats измеряет сгруппированность повторов во всем тексте,
         здесь ищутся их места
 
@@ -510,20 +569,21 @@ def calc_alliteration_runs(
         len(word) < ALLITERATION_MIN_WORD_LEN or not any(letter in VOWELS for letter in word)
         for word in letters
     ]
+    stems = [[letter for letter in get_stem(word) if letter in LETTERS] for word in words]
     runs = []
     for consonant in sorted(CONSONANTS - ALLITERATION_IGNORED_LETTERS):
         frequency = RU_LETTER_FREQUENCIES[consonant]
         start = None
         stop = 0
         probability = 1.0
-        for i, word in enumerate(letters):
+        for i, stem in enumerate(stems):
             if transparent[i]:
                 continue
-            if consonant in word:
+            if consonant in stem:
                 if start is None:
                     start, probability = i, 1.0
                 stop = i + 1
-                probability *= 1 - (1 - frequency) ** len(word)
+                probability *= 1 - (1 - frequency) ** len(stem)
             elif start is not None:
                 if stop - start >= 2 and probability < threshold:
                     runs.append((start, stop, consonant))
@@ -553,12 +613,7 @@ def find_alliteration(
     Вывод:
         list[Highlight]: Фрагменты слоя alliteration
     """
-    if sents is None:
-        groups = [list(words)]
-    else:
-        groups = [
-            [word for word in words if sent.start <= word.start < sent.end] for sent in sents
-        ]
+    groups = [list(words)] if sents is None else group_words_by_sents(words, sents)
     highlights = []
     for group in groups:
         for start, stop, consonant in calc_alliteration_runs(

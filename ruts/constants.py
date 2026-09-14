@@ -311,7 +311,7 @@ HIGHLIGHT_SYNTAX_LAYERS = frozenset(
     {"passive", "participle_clauses", "converb_clauses", "genitive_chains"}
 )
 LONG_SENT_WORD_FACTOR = 20
-ALLITERATION_THRESHOLD = 0.01
+ALLITERATION_THRESHOLD = 0.001
 ALLITERATION_MIN_WORD_LEN = 3
 ALLITERATION_IGNORED_LETTERS = frozenset("й")
 RU_LETTER_FREQUENCIES = {

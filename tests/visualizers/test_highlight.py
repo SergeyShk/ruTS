@@ -5,13 +5,16 @@ from spacy.tokens import Doc
 from ruts.constants import HIGHLIGHT_LAYERS_DESC
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
+    Sent,
     calc_alliteration_runs,
     find_alliteration,
     find_complex_words,
     find_long_sents,
     find_stopwords,
+    get_stem,
     get_text_sents,
     get_text_words,
+    group_words_by_sents,
     plural,
     split_segments,
 )
@@ -167,6 +170,29 @@ def test_get_text_sents():
     assert [(s.start, s.end, s.n_words) for s in sents] == [(0, 19, 2), (21, 40, 2), (42, 49, 1)]
 
 
+def test_group_words_by_sents():
+    source = "Первое предложение.  Второе\nпредложение!\n\nТретье."
+    words = get_text_words(source)
+    groups = group_words_by_sents(words, get_text_sents(source, words))
+    assert [[word.text for word in group] for group in groups] == [
+        ["Первое", "предложение"],
+        ["Второе", "предложение"],
+        ["Третье"],
+    ]
+    assert group_words_by_sents(words, [Sent(21, 40, 2)]) == [words[2:4]]
+
+
+def test_doc_sents_whitespace_start():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    doc = nlp("Дом продан.\n\nЧуть слышно шуршат камыши.")
+    ht = highlight(doc, layers=["long_sents"], long_sent_word_factor=2)
+    assert [doc.text[h.start : h.end] for h in ht.highlights] == [
+        "Дом продан.",
+        "Чуть слышно шуршат камыши.",
+    ]
+
+
 def test_get_text_sents_no_words():
     assert get_text_sents("...", []) == [(0, 3, 0)]
 
@@ -252,11 +278,12 @@ def test_alliteration(ht):
 
 
 def test_alliteration_within_sentence():
-    source = "Шуршат камыши. Шепчут они."
-    assert [h.start for h in highlight(source, layers=["alliteration"]).highlights] == [0]
+    source = "Чуть слышно, бесшумно шуршат камыши. Шепчут они."
+    ht = highlight(source, layers=["alliteration"])
+    assert [source[h.start : h.end] for h in ht.highlights] == ["слышно, бесшумно шуршат камыши"]
     words = get_text_words(source)
     assert [source[h.start : h.end] for h in find_alliteration(words, sents=None)] == [
-        "Шуршат камыши. Шепчут"
+        "слышно, бесшумно шуршат камыши. Шепчут"
     ]
 
 
@@ -265,7 +292,8 @@ def test_alliteration_threshold():
     assert highlight(source, layers=["alliteration"]).highlights == ()
     ht = highlight(source, layers=["alliteration"], alliteration_threshold=0.05)
     assert [(source[h.start : h.end], h.note) for h in ht.highlights] == [
-        ("Полночной порою", "аллитерация на «п»")
+        ("Полночной порою", "аллитерация на «п»"),
+        ("болотной глуши", "аллитерация на «л»"),
     ]
 
 
@@ -273,19 +301,32 @@ def test_calc_alliteration_runs():
     assert calc_alliteration_runs(["Чуть", "слышно", "бесшумно", "шуршат", "камыши"]) == [
         (1, 5, "ш")
     ]
-    assert calc_alliteration_runs(["Клары", "украл", "кораллы"]) == [(0, 3, "к")]
-    assert calc_alliteration_runs(["баба", "и", "била"]) == [(0, 3, "б")]
+    assert calc_alliteration_runs(["Карл", "у", "Клары", "украл", "кораллы"]) == [(0, 5, "к")]
+    assert calc_alliteration_runs(["лицом", "к", "лицу"]) == [(0, 3, "ц")]
+    assert calc_alliteration_runs(["баба", "и", "била"]) == []
+    assert calc_alliteration_runs(["баба", "и", "била"], threshold=0.01) == [(0, 3, "б")]
     assert calc_alliteration_runs(["в", "двенадцать", "миллиардов", "рублей", "в", "год"]) == []
     assert calc_alliteration_runs(["полнота", "значений", "словарного", "состава", "языка"]) == []
     assert calc_alliteration_runs(["Шла", "Саша", "по", "шоссе"]) == [(0, 4, "ш")]
     assert calc_alliteration_runs(["подготовленный", "рабочей", "группой"]) == []
+    assert calc_alliteration_runs(["этих", "крупных"], threshold=0.05) == []
+    assert calc_alliteration_runs(["своим", "целям", "и", "нуждам"], threshold=0.05) == []
     assert calc_alliteration_runs(["шуршат"]) == []
     assert calc_alliteration_runs([]) == []
 
 
 def test_calc_alliteration_runs_several_consonants():
-    runs = calc_alliteration_runs(["Карл", "у", "Клары", "украл", "кораллы"])
-    assert runs == [(0, 5, "к"), (0, 5, "л"), (0, 5, "р")]
+    runs = calc_alliteration_runs(["Карл", "у", "Клары", "украл", "кораллы"], threshold=0.01)
+    assert runs == [(0, 5, "к"), (0, 5, "р")]
+
+
+def test_get_stem():
+    assert get_stem("крупных") == "крупны"
+    assert get_stem("руках") == "рука"
+    assert get_stem("камыши") == "камыш"
+    assert get_stem("подготовленный") == "подготов"
+    assert get_stem("шла") == "шла"
+    assert get_stem("люди") == "люди"
 
 
 def test_passive(doc):

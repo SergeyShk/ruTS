@@ -560,7 +560,7 @@ Highlighting returns an object rendered in Jupyter as HTML with a legend and hov
 >>> text = "Проект, подготовленный за неделю, был одобрен советом без обсуждения. Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента."
 >>> ht = highlight(nlp(text))
 >>> ht.counts
-{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 3}
+{'long_sents': 0, 'complex_words': 7, 'stopwords': 4, 'passive': 3, 'participle_clauses': 1, 'converb_clauses': 1, 'genitive_chains': 1, 'alliteration': 0}
 >>> ht  # rendered as highlighted text in Jupyter, the markup is available via ht.to_html()
 ```
 
