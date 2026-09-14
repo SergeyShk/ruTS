@@ -3,6 +3,7 @@
 APP_PATH := ruts
 TESTS_PATH := tests
 DEMO_PATH := demo
+DEMO_BUILD := build/demo
 HF_SPACE := SergeyShk/ruTS
 
 help: ## Показать список команд
@@ -92,5 +93,8 @@ demo: deps ## Запустить демо локально
 demo-login: uv ## Войти в Hugging Face для заливки демо
 	uvx --from huggingface_hub hf auth login
 
-demo-upload: uv ## Залить демо в Space на Hugging Face
-	uvx --from huggingface_hub hf upload $(HF_SPACE) $(DEMO_PATH) . --repo-type space
+demo-upload: uv ## Залить демо в Space на Hugging Face с ruts из текущего коммита
+	rm -rf $(DEMO_BUILD) && mkdir -p $(DEMO_BUILD)
+	cp $(DEMO_PATH)/app.py $(DEMO_PATH)/README.md $(DEMO_BUILD)/
+	sed "s|@master$$|@$$(git rev-parse HEAD)|" $(DEMO_PATH)/requirements.txt > $(DEMO_BUILD)/requirements.txt
+	uvx --from huggingface_hub hf upload $(HF_SPACE) $(DEMO_BUILD) . --repo-type space --delete "__pycache__/*"

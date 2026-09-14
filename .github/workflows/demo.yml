@@ -16,6 +16,9 @@ jobs:
         uses: actions/checkout@v7
       - name: Setup uv
         uses: astral-sh/setup-uv@v10.0.1
+      - name: Pin ruts to the current commit
+        if: github.event_name != 'release'
+        run: sed -i 's|@master$|@${{ github.sha }}|' demo/requirements.txt
       - name: Pin ruts to the released version
         if: github.event_name == 'release'
         run: |
@@ -28,4 +31,4 @@ jobs:
       - name: Upload demo to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: uvx --from huggingface_hub hf upload SergeyShk/ruTS demo . --repo-type space --commit-message "Update demo to ${{ github.ref_name }}"
+        run: uvx --from huggingface_hub hf upload SergeyShk/ruTS demo . --repo-type space --delete "__pycache__/*" --exclude "__pycache__/*" --commit-message "Update demo to ${{ github.ref_name }}"
