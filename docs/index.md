@@ -6,6 +6,8 @@
 
 Работать можно как с обычными строками, так и с готовыми `Doc`-объектами [spaCy](https://github.com/explosion/spaCy) - каждая статистика доступна и как отдельный класс, и как компонент пайплайна spaCy.
 
+Попробовать без установки можно в [демо на Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): вставьте текст и получите класс удобочитаемости, метрики, графики и подсветку фрагментов.
+
 ## Возможности
 
 *   создавать токенизаторы [слов](extractors/words.md) и [предложений](extractors/sentences.md)
@@ -108,3 +110,4 @@ pip install ruts
             *   word_tree.py - Дерево слов
             *   zipf.py - Закон Ципфа
     *   **tests** - тесты, повторяющие структуру пакета
+    *   **demo** - демонстрация на Gradio для Hugging Face Spaces

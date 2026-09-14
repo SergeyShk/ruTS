@@ -26,6 +26,7 @@ from ..syntax_stats import (
     is_genitive_modifier,
     is_participle_clause,
     is_passive,
+    is_word,
 )
 from ..utils import count_syllables, is_punctuation, parse_word
 
@@ -35,7 +36,7 @@ CSS = """\
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-hl-long_sents, .ruts-hl-complex_words, .ruts-hl-stopwords, .ruts-hl-passive { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
 .ruts-hl-complex_words { background: #fed7aa; }
 .ruts-hl-stopwords { background: #bae6fd; }
@@ -649,7 +650,9 @@ def find_passive(doc: Doc) -> list[Highlight]:
     Поиск пассивных глагольных форм
 
     Описание:
-        Форма подсвечивается вместе со вспомогательным глаголом (был продан)
+        Форма подсвечивается вместе со вспомогательным глаголом (был продан);
+        знаки препинания пропускаются, даже если модель пометила их глаголом
+        (тире между подлежащим и сказуемым)
 
     Аргументы:
         doc (Doc): Объект Doc с разбором зависимостей
@@ -659,7 +662,7 @@ def find_passive(doc: Doc) -> list[Highlight]:
     """
     highlights = []
     for token in doc:
-        if is_passive(token):
+        if is_word(token) and is_passive(token):
             auxiliaries = [child for child in token.children if child.dep_ == "aux:pass"]
             start, end = tokens_span([token, *auxiliaries])
             note = "пассив без агенса" if is_agentless(token) else "пассив"

@@ -1,0 +1,4 @@
+ruts @ git+https://github.com/SergeyShk/ruTS@master
+gradio>=6.27,<7
+spacy>=3.8,<3.9
+https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl

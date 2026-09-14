@@ -1,7 +1,9 @@
-.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy
+.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy demo demo-login demo-upload
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
+DEMO_PATH := demo
+HF_SPACE := SergeyShk/ruTS
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
@@ -29,15 +31,15 @@ lint: ruff mypy ## Запустить все проверки кода
 
 ruff: deps ## Проверить и отформатировать код с помощью ruff
 ifeq ($(MODE), ci)
-	uv run ruff check $(APP_PATH) $(TESTS_PATH)
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) --check
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --check
 else
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) --fix
-	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --fix
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
 endif
 
 format: deps ## Отформатировать код
-	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
 
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy
@@ -83,3 +85,12 @@ docs-serve: deps ## Запустить сервер документации
 
 docs-deploy: deps ## Задеплоить документацию
 	uv run mkdocs gh-deploy
+
+demo: deps ## Запустить демо локально
+	uv run --with "gradio>=6.27,<7" python $(DEMO_PATH)/app.py
+
+demo-login: uv ## Войти в Hugging Face для заливки демо
+	uvx --from huggingface_hub hf auth login
+
+demo-upload: uv ## Залить демо в Space на Hugging Face
+	uvx --from huggingface_hub hf upload $(HF_SPACE) $(DEMO_PATH) . --repo-type space
