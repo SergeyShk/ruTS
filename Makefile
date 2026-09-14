@@ -2,6 +2,7 @@
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
+DEMO_PATH := demo
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
@@ -29,15 +30,15 @@ lint: ruff mypy ## Запустить все проверки кода
 
 ruff: deps ## Проверить и отформатировать код с помощью ruff
 ifeq ($(MODE), ci)
-	uv run ruff check $(APP_PATH) $(TESTS_PATH)
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) --check
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --check
 else
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) --fix
-	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --fix
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
 endif
 
 format: deps ## Отформатировать код
-	uv run ruff format $(APP_PATH) $(TESTS_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
 
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy

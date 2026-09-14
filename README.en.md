@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://sergeyshk.github.io/ruTS/">Documentation</a> ·
+  <a href="https://huggingface.co/spaces/SergeyShk/ruTS">Demo</a> ·
   <a href="https://pypi.org/project/ruts/">PyPI</a> ·
   <a href="https://github.com/SergeyShk/ruTS/blob/master/README.md">Русский</a>
 </p>
@@ -22,6 +23,7 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
   <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="License"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Downloads">
+  <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-demo-blue" alt="Demo on Hugging Face Spaces"></a>
 </p>
 
 ---
@@ -29,6 +31,8 @@
 **ruTS** computes for Russian texts what usually requires assembling several separate tools: basic statistics, readability and lexical diversity metrics, morphological features. The main functions are based on the [textacy](https://github.com/chartbeat-labs/textacy) statistics adapted to the Russian language.
 
 The library works both with raw strings and with `Doc` objects of [spaCy](https://github.com/explosion/spaCy) - every statistic is available both as a standalone class and as a spaCy pipeline component.
+
+Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): paste a text and get the readability grade, metrics, plots and highlighted fragments.
 
 * **[Object extraction](https://sergeyshk.github.io/ruTS/extractors/words/)** - configurable word and sentence tokenizers
 * **[Basic statistics](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions

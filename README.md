@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://sergeyshk.github.io/ruTS/">Документация</a> ·
+  <a href="https://huggingface.co/spaces/SergeyShk/ruTS">Демо</a> ·
   <a href="https://pypi.org/project/ruts/">PyPI</a> ·
   <a href="https://github.com/SergeyShk/ruTS/blob/master/README.en.md">English</a>
 </p>
@@ -22,6 +23,7 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
   <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="Лицензия"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Загрузки">
+  <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-демо-blue" alt="Демо на Hugging Face Spaces"></a>
 </p>
 
 ---
@@ -29,6 +31,8 @@
 **ruTS** считает по русскому тексту то, для чего обычно приходится собирать несколько разрозненных инструментов: базовые статистики, метрики удобочитаемости и лексического разнообразия, морфологические признаки. Функционал основан на адаптированных для русского языка статистиках библиотеки [textacy](https://github.com/chartbeat-labs/textacy).
 
 Работать можно как с обычными строками, так и с готовыми `Doc`-объектами [spaCy](https://github.com/explosion/spaCy) - каждая статистика доступна и как отдельный класс, и как компонент пайплайна spaCy.
+
+Попробовать без установки можно в [демо на Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): вставьте текст и получите класс удобочитаемости, метрики, графики и подсветку фрагментов.
 
 * **[Извлечение объектов](https://sergeyshk.github.io/ruTS/extractors/words/)** - настраиваемые токенизаторы слов и предложений
 * **[Базовые статистики](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - количество слов, предложений, слогов, знаков препинания и их распределения

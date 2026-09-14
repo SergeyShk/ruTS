@@ -35,7 +35,7 @@ CSS = """\
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-hl-long_sents, .ruts-hl-complex_words, .ruts-hl-stopwords, .ruts-hl-passive { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
 .ruts-hl-complex_words { background: #fed7aa; }
 .ruts-hl-stopwords { background: #bae6fd; }
