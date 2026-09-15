@@ -1495,6 +1495,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Коннекторы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#word_info" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2170,6 +2181,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Коннекторы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#word_info" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2376,6 +2398,51 @@
 </tr>
 </tbody>
 </table>
+<h2 id="find_connectors">Коннекторы<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.cohesion_stats.find_connectors()</strong>, <strong>ruts.cohesion_stats.load_connectors()</strong>, <strong>ruts.cohesion_stats.Connector</strong></p>
+</div>
+<p>Поиск коннекторов в предложении по словоформам в нижнем регистре без буквы ё: в каждой позиции берется самый длинный («и всё же» не распадается на «и»), найденные не пересекаются; шаблоны индексируются по первому слову, поэтому поиск линеен по числу слов. Дефис и точка внутри коннектора могут быть отделены токенизатором («Во», «первых» у spaCy, «т», «е» у <code>WordsExtractor</code>) - такие варианты учитываются, границы вхождения при этом считаются по словам источника. Словарь <code>load_connectors</code> читает <code>ruts/resources/connectors.tsv</code> - 318 коннекторов с классом из <code>CONNECTOR_CLASSES</code> и типом из <code>CONNECTOR_TYPES</code>, составленных по классификации Криони, Никина и Филипповой (2008) со сверкой по списку маркеров <a href="https://rstreebank.ru/markersFull">Ru-RSTreebank</a>, базе <a href="https://ruslinkers.github.io/">Рускон</a> и списку причинных маркеров Тольдовой и др. (2018). Однословные «и», «а», «но» входят в словарь, как в Coh-Metrix и TAACO; «что» и «как» коннекторами не считаются. Результат - список именованных кортежей <code>Connector(sent, start, end, text, cls, kind)</code>. Класс <code>CohesionStats</code> считает по вхождениям плотность коннекторов на 1000 слов - общую, по классам и по типам.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>words</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Слова предложения</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors</code></td>
+<td style="text-align: center;">dict[str, tuple[str, str]]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Словарь коннекторов - класс и тип по коннектору</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>sent_index</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>0</code></td>
+<td style="text-align: center;">Номер предложения для записи во вхождения</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_connectors</span>
+
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Затем"</span><span class="p">,</span> <span class="s2">"иными"</span><span class="p">,</span> <span class="s2">"словами"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"уснул"</span><span class="p">])</span>
+<span class="c1"># [Connector(sent=0, start=0, end=1, text='затем', cls='temporal', kind='primary'),</span>
+<span class="c1">#  Connector(sent=0, start=1, end=3, text='иными словами', cls='reformulative', kind='secondary')]</span>
+</code></pre></div>
+</div>
 <h2 id="word_info">Признаки слова<a class="headerlink" href="#word_info" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.word_info()</strong>, <strong>ruts.cohesion_stats.token_info()</strong>, <strong>ruts.cohesion_stats.WordInfo</strong></p>

@@ -2195,7 +2195,7 @@
 <p><strong>ruts.cohesion_stats.CohesionStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления статистик связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы существительных, аргументов (существительных и местоимений) и знаменательных слов между соседними предложениями и всеми парами предложений; данность - доля местоимений, отношение местоимений к существительным, доля указательных и доля знаменательных слов, уже встречавшихся в тексте; темпоральная связность - повтор времени и вида глаголов в соседних предложениях. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Модуль для вычисления статистик связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы существительных, аргументов (существительных и местоимений) и знаменательных слов между соседними предложениями и всеми парами предложений; данность - доля местоимений, отношение местоимений к существительным, доля указательных и доля знаменательных слов, уже встречавшихся в тексте; темпоральная связность - повтор времени и вида глаголов в соседних предложениях; плотность коннекторов по классам и типам на 1000 слов. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Пары предложений сравниваются по леммам. Для объекта <code>Doc</code> с разметкой частей речи леммы, части речи, время и вид берутся из <code>token.lemma_</code>, <code>token.pos_</code> и <code>token.morph</code>; без лемм (пайплайн без лемматизатора) лемма берется из разбора pymorphy3 с той же частью речи (<code>ruts.utils.lemmatize</code>). Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>.</p>
 <table>
 <thead>
@@ -2239,6 +2239,54 @@
 </tbody>
 </table>
 <p>Показатели повторов лежат в пределах от 0 до 1; для текста из одного предложения они равны <code>nan</code>, как и темпоральная связность текста без глаголов в соседних предложениях. Повторы по всем парам считаются без перебора пар, см. <a href="../cohesion_stats_funcs/#calc_overlaps"><code>calc_overlaps</code></a>.</p>
+<p>Коннекторы ищутся по словоформам в каждом предложении по словарю <code>ruts/resources/connectors.tsv</code> (318 единиц, см. <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); свой словарь передается параметром <code>connectors</code>. Классы по Криони, Никину и Филипповой (2008):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Класс</th>
+<th style="text-align: left;">Ключ</th>
+<th style="text-align: left;">Примеры</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Причинные (включая следственные и целевые)</td>
+<td style="text-align: left;"><code>causal</code></td>
+<td style="text-align: left;">потому что, поэтому, в результате, чтобы, таким образом</td>
+</tr>
+<tr>
+<td style="text-align: left;">Противительные</td>
+<td style="text-align: left;"><code>adversative</code></td>
+<td style="text-align: left;">но, однако, зато, с другой стороны, в то же время</td>
+</tr>
+<tr>
+<td style="text-align: left;">Уступительные</td>
+<td style="text-align: left;"><code>concessive</code></td>
+<td style="text-align: left;">хотя, несмотря на, тем не менее, и всё же, в любом случае</td>
+</tr>
+<tr>
+<td style="text-align: left;">Временные</td>
+<td style="text-align: left;"><code>temporal</code></td>
+<td style="text-align: left;">когда, затем, после того как, тем временем, в дальнейшем</td>
+</tr>
+<tr>
+<td style="text-align: left;">Аддитивные</td>
+<td style="text-align: left;"><code>additive</code></td>
+<td style="text-align: left;">и, также, кроме того, более того, например, во-первых</td>
+</tr>
+<tr>
+<td style="text-align: left;">Условные</td>
+<td style="text-align: left;"><code>conditional</code></td>
+<td style="text-align: left;">если, в случае если, при условии что, в противном случае</td>
+</tr>
+<tr>
+<td style="text-align: left;">Переформулирующие</td>
+<td style="text-align: left;"><code>reformulative</code></td>
+<td style="text-align: left;">то есть, иными словами, в общем, подводя итог</td>
+</tr>
+</tbody>
+</table>
+<p>Тип коннектора: первичные - союзы, наречия и частицы (потому что, однако, затем), вторичные - лексикализованные обороты с существительными и глаголами (в результате этого, с другой стороны, иными словами).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Вычисление статистик происходит в момент инициализации объекта класса <code>CohesionStats</code>.</p>
@@ -2271,6 +2319,12 @@
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Инструмент для извлечения слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors</code></td>
+<td style="text-align: center;">dict[str, tuple[str, str]]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Словарь коннекторов - класс и тип по коннектору; если не задан, используется словарь из <code>resources</code></td>
 </tr>
 </tbody>
 </table>
@@ -2328,6 +2382,21 @@
 <td style="text-align: center;"><code>n_given</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;">Количество знаменательных слов, лемма которых встречалась ранее</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_connectors</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Количество коннекторов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connector_spans</code></td>
+<td style="text-align: center;">tuple[Connector]</td>
+<td style="text-align: center;">Кортеж вхождений коннекторов: номер предложения, границы, коннектор, класс, тип</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>c_connectors</code></td>
+<td style="text-align: center;">dict[str, int]</td>
+<td style="text-align: center;">Распределение вхождений по коннекторам</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>noun_overlap_adjacent</code></td>
@@ -2404,6 +2473,56 @@
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Среднее повтора времени и вида</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>connectors</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_causal</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Причинных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_adversative</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Противительных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_concessive</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Уступительных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_temporal</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Временных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_additive</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Аддитивных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_conditional</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Условных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_reformulative</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Переформулирующих коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_primary</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Первичных коннекторов на 1000 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_secondary</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Вторичных коннекторов на 1000 слов</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
@@ -2441,7 +2560,17 @@
 <span class="s1">'p_given'</span>:<span class="w"> </span><span class="m">0</span>.2857142857142857,
 <span class="s1">'tense_repetition'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
 <span class="s1">'aspect_repetition'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'temporal_cohesion'</span>:<span class="w"> </span><span class="m">0</span>.5<span class="o">}</span>
+<span class="s1">'temporal_cohesion'</span>:<span class="w"> </span><span class="m">0</span>.5,
+<span class="s1">'connectors'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
+<span class="s1">'connectors_causal'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_adversative'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_concessive'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_temporal'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_additive'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
+<span class="s1">'connectors_conditional'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_reformulative'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_primary'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
+<span class="s1">'connectors_secondary'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
 </code></pre></div>
 </div>
 <p>Слова, леммы и счетчики доступны как атрибуты:</p>
@@ -2451,6 +2580,8 @@
 <span class="c1"># ('он', 'смотреть', 'на', 'птица')</span>
 <span class="n">cs</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_pronouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_content_words</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_given</span>
 <span class="c1"># (6, 3, 14, 4)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">connector_spans</span>
+<span class="c1"># (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -2481,6 +2612,16 @@
 Повтор<span class="w"> </span>времени<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
 Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
 Темпоральная<span class="w"> </span>связность<span class="w">                                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                  </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Временных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Аддитивных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Условных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Переформулирующих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Первичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Вторичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
 
