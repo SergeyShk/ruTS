@@ -2239,6 +2239,7 @@
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления основных текстовых статистик. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>В модуле реализована возможность использования предварительно созданных объектов классов <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации предложений и слов перед вычислением статистик.</p>
+<p>Для объекта <code>Doc</code> слова берутся из токенов (дефисные слова, разрезанные spaCy на части, склеиваются), предложения - из разметки; без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) предложения извлекаются <code>SentsExtractor</code> из текста.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Вычисление статистик происходит в момент инициализации объекта класса <code>BasicStats</code>.</p>

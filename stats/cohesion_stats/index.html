@@ -2196,7 +2196,7 @@
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления статистик связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы существительных, аргументов (существительных и местоимений) и знаменательных слов между соседними предложениями и всеми парами предложений; данность - доля местоимений, отношение местоимений к существительным, доля указательных и доля знаменательных слов, уже встречавшихся в тексте; темпоральная связность - повтор времени и вида глаголов в соседних предложениях; плотность коннекторов по классам и типам на 1000 слов. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Пары предложений сравниваются по леммам. Для объекта <code>Doc</code> с разметкой частей речи леммы, части речи, время и вид берутся из <code>token.lemma_</code>, <code>token.pos_</code> и <code>token.morph</code>; без лемм (пайплайн без лемматизатора) лемма берется из разбора pymorphy3 с той же частью речи (<code>ruts.utils.lemmatize</code>). Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>.</p>
+<p>Пары предложений сравниваются по леммам. Для объекта <code>Doc</code> с разметкой частей речи части речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, лемма - из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>): лемматизатор моделей <code>ru_core_news</code> возвращает словоформу для <code>AUX</code> и при расхождении признаков теггера и pymorphy3 (были, них, стихли). Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>. Слова <code>Doc</code> берутся из токенов (дефисные слова, разрезанные spaCy на части, склеиваются); <code>Doc</code> без границ предложений разбивается на предложения <code>SentsExtractor</code> по тексту, слово относится к предложению по позиции первого токена.</p>
 <table>
 <thead>
 <tr>
@@ -2239,7 +2239,7 @@
 </tbody>
 </table>
 <p>Показатели повторов лежат в пределах от 0 до 1; для текста из одного предложения они равны <code>nan</code>, как и темпоральная связность текста без глаголов в соседних предложениях. Повторы по всем парам считаются без перебора пар, см. <a href="../cohesion_stats_funcs/#calc_overlaps"><code>calc_overlaps</code></a>.</p>
-<p>Коннекторы ищутся по словоформам в каждом предложении по словарю <code>ruts/resources/connectors.tsv</code> (318 единиц, см. <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); свой словарь передается параметром <code>connectors</code>. Классы по Криони, Никину и Филипповой (2008):</p>
+<p>Коннекторы ищутся по словоформам в каждом предложении по словарю <code>ruts/resources/connectors.tsv</code> (317 единиц, см. <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); свой словарь передается параметром <code>connectors</code>. Однословный коннектор засчитывается только при части речи из <code>CONNECTOR_POS</code> (союз, частица, наречие, предлог, междометие) или из <code>CONNECTOR_POS_EXTRA</code> для отдельных слов (словом, главное, допустим, точнее): «раз» как существительное и «значит» как глагол не считаются. Часть речи берется из разметки <code>Doc</code>; без разметки слово проходит, если подходящая часть речи есть хотя бы в одном разборе pymorphy3 (<code>connector_pos</code>): у «раз» первый разбор - существительное, союз только в следующих. Классы по Криони, Никину и Филипповой (2008):</p>
 <table>
 <thead>
 <tr>
@@ -2553,7 +2553,7 @@
 <span class="s1">'content_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
 <span class="s1">'content_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.5,
 <span class="s1">'content_overlap_prop_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.1111111111111111,
-<span class="s1">'content_overlap_prop_all'</span>:<span class="w"> </span><span class="m">0</span>.1865079365079365,
+<span class="s1">'content_overlap_prop_all'</span>:<span class="w"> </span><span class="m">0</span>.18650793650793648,
 <span class="s1">'p_pronouns'</span>:<span class="w"> </span><span class="m">0</span>.14285714285714285,
 <span class="s1">'pronoun_noun_ratio'</span>:<span class="w"> </span><span class="m">0</span>.5,
 <span class="s1">'p_demonstratives'</span>:<span class="w"> </span><span class="m">0</span>.047619047619047616,

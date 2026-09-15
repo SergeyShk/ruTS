@@ -2400,9 +2400,9 @@
 </table>
 <h2 id="find_connectors">Коннекторы<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.cohesion_stats.find_connectors()</strong>, <strong>ruts.cohesion_stats.load_connectors()</strong>, <strong>ruts.cohesion_stats.Connector</strong></p>
+<p><strong>ruts.cohesion_stats.find_connectors()</strong>, <strong>ruts.cohesion_stats.load_connectors()</strong>, <strong>ruts.cohesion_stats.Connector</strong>, <strong>ruts.cohesion_stats.connector_pos()</strong></p>
 </div>
-<p>Поиск коннекторов в предложении по словоформам в нижнем регистре без буквы ё: в каждой позиции берется самый длинный («и всё же» не распадается на «и»), найденные не пересекаются; шаблоны индексируются по первому слову, поэтому поиск линеен по числу слов. Дефис и точка внутри коннектора могут быть отделены токенизатором («Во», «первых» у spaCy, «т», «е» у <code>WordsExtractor</code>) - такие варианты учитываются, границы вхождения при этом считаются по словам источника. Словарь <code>load_connectors</code> читает <code>ruts/resources/connectors.tsv</code> - 318 коннекторов с классом из <code>CONNECTOR_CLASSES</code> и типом из <code>CONNECTOR_TYPES</code>, составленных по классификации Криони, Никина и Филипповой (2008) со сверкой по списку маркеров <a href="https://rstreebank.ru/markersFull">Ru-RSTreebank</a>, базе <a href="https://ruslinkers.github.io/">Рускон</a> и списку причинных маркеров Тольдовой и др. (2018). Однословные «и», «а», «но» входят в словарь, как в Coh-Metrix и TAACO; «что» и «как» коннекторами не считаются. Результат - список именованных кортежей <code>Connector(sent, start, end, text, cls, kind)</code>. Класс <code>CohesionStats</code> считает по вхождениям плотность коннекторов на 1000 слов - общую, по классам и по типам.</p>
+<p>Поиск коннекторов в предложении по словоформам в нижнем регистре без буквы ё: в каждой позиции берется самый длинный («и всё же» не распадается на «и»), найденные не пересекаются; шаблоны индексируются по первому слову, поэтому поиск линеен по числу слов. Дефис и точка внутри коннектора могут быть отделены токенизатором («Во», «первых» у spaCy, «т», «е» у <code>WordsExtractor</code>) - такие варианты учитываются, границы вхождения при этом считаются по словам источника. Словарь <code>load_connectors</code> читает <code>ruts/resources/connectors.tsv</code> - 317 коннекторов с классом из <code>CONNECTOR_CLASSES</code> и типом из <code>CONNECTOR_TYPES</code>, составленных по классификации Криони, Никина и Филипповой (2008) со сверкой по списку маркеров <a href="https://rstreebank.ru/markersFull">Ru-RSTreebank</a>, базе <a href="https://ruslinkers.github.io/">Рускон</a> и списку причинных маркеров Тольдовой и др. (2018). Однословные «и», «а», «но» входят в словарь, как в Coh-Metrix и TAACO; «что» и «как» коннекторами не считаются. Если переданы части речи UD (<code>pos</code>), однословный коннектор засчитывается только при части речи из <code>CONNECTOR_POS</code> (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) или из <code>CONNECTOR_POS_EXTRA</code> для этого слова (словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>); часть речи <code>None</code> не проверяется. Для строки часть речи дает <code>connector_pos</code> - первый разбор pymorphy3 с подходящей частью речи, иначе первый разбор. Результат - список именованных кортежей <code>Connector(sent, start, end, text, cls, kind)</code>. Класс <code>CohesionStats</code> считает по вхождениям плотность коннекторов на 1000 слов - общую, по классам и по типам.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -2432,6 +2432,12 @@
 <td style="text-align: center;"><code>0</code></td>
 <td style="text-align: center;">Номер предложения для записи во вхождения</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>pos</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Части речи UD слов предложения; без них части речи не проверяются</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition example">
@@ -2447,7 +2453,7 @@
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.word_info()</strong>, <strong>ruts.cohesion_stats.token_info()</strong>, <strong>ruts.cohesion_stats.WordInfo</strong></p>
 </div>
-<p>Получение признаков слова для статистик связности - именованного кортежа <code>WordInfo</code>: лемма, существительное, местоимение, указательное, аргумент, знаменательное слово, время и вид. <code>word_info</code> берет их из первого разбора pymorphy3, <code>token_info</code> - из разметки spaCy (<code>token.lemma_</code>, <code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>); у токена без леммы она берется из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>).</p>
+<p>Получение признаков слова для статистик связности - именованного кортежа <code>WordInfo</code>: лемма, существительное, местоимение, указательное, аргумент, знаменательное слово, время и вид. <code>word_info</code> берет их из первого разбора pymorphy3, <code>token_info</code> - из разметки spaCy (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), а лемму - из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>: лемматизатор моделей <code>ru_core_news</code> возвращает словоформу для <code>AUX</code> и при расхождении признаков теггера и pymorphy3 (были, них, стихли). Дефисное слово из нескольких токенов <code>Doc</code> (жили-были, назовите-ка) получает признаки по разбору pymorphy3 склеенного текста, переведенному в UD, так что время и вид сравнимы с разметкой остальных слов.</p>
 <p>Параметры:</p>
 <table>
 <thead>
