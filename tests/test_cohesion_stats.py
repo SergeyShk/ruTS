@@ -23,11 +23,12 @@ from ruts.cohesion_stats import (
     load_connectors,
     split_doc_units,
     token_info,
+    unit_info,
     unit_text,
     word_info,
 )
 from ruts.constants import COHESION_STATS_DESC, CONNECTOR_CLASSES, CONNECTOR_TYPES
-from ruts.utils import lemmatize
+from ruts.utils import iter_doc_units, lemmatize
 
 text = (
     "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. "
@@ -480,6 +481,21 @@ def test_connectors_pos(nlp):
         Connector(0, 1, 2, "т.е.", "reformulative", "primary"),
     ]
     assert find_connectors(["кот"], {"кот": ("additive", "secondary")}, pos=["NOUN"]) == []
+
+
+def test_hyphenated_verb_doc(nlp):
+    doc = nlp("Жили-были дед и баба. Они жили долго. Назовите-ка их, говорить-то легко.")
+    cs = CohesionStats(doc)
+    assert cs.words[0] == ("Жили-были", "дед", "и", "баба")
+    assert cs.lemmas[0][0] == lemmatize("Жили-были", "VERB")
+    assert cs.tense_repetition == 1.0
+    assert cs.aspect_repetition == 0.5
+    units = list(iter_doc_units(doc))
+    assert unit_info(units[0]) == WordInfo(
+        lemmatize("Жили-были", "VERB"), False, False, False, False, True, "Past", "Imp"
+    )
+    assert unit_info(units[1]) == token_info(doc[3])
+    assert (unit_info(units[7]).tense, unit_info(units[7]).aspect) == (None, "Perf")
 
 
 def test_doc_without_sents(nlp):

@@ -22,7 +22,7 @@ from .constants import (
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import tag_to_ud_pos
+from .morph_stats import tag_to_ud_pos, word_to_ud
 from .utils import (
     get_morph_analyzer,
     iter_doc_units,
@@ -557,10 +557,30 @@ def token_info(token: Token) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    pos = token.pos_
-    lemma = lemmatize(token.text, pos)
     tense = token.morph.get("Tense", [])
     aspect = token.morph.get("Aspect", [])
+    return ud_info(
+        token.text, token.pos_, tense[0] if tense else None, aspect[0] if aspect else None
+    )
+
+
+def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordInfo:
+    """
+    Получение признаков слова по части речи и признакам Universal Dependencies
+
+    Описание:
+        Как в token_info: лемма - из разбора pymorphy3 с частью речи (lemmatize)
+
+    Аргументы:
+        word (str): Слово
+        pos (str): Часть речи UD
+        tense (str): Время UD
+        aspect (str): Вид UD
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
+    lemma = lemmatize(word, pos)
     demonstrative = lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
         lemma=lemma,
@@ -569,8 +589,8 @@ def token_info(token: Token) -> WordInfo:
         demonstrative=demonstrative,
         argument=pos in ("NOUN", "PROPN", "PRON"),
         content=not demonstrative and pos in CONTENT_UD_POS,
-        tense=tense[0] if tense else None,
-        aspect=aspect[0] if aspect else None,
+        tense=tense,
+        aspect=aspect,
     )
 
 
@@ -645,7 +665,8 @@ def unit_info(unit: Sequence[Token]) -> WordInfo:
 
     Описание:
         Обычное слово - по разметке токена (token_info), дефисное слово из нескольких
-        токенов - по разбору pymorphy3 склеенного текста (word_info)
+        токенов - по разбору pymorphy3 склеенного текста, переведенному в UD
+        (word_to_ud), чтобы время и вид сравнивались с разметкой остальных слов
 
     Аргументы:
         unit (list[Token]): Токены слова
@@ -653,7 +674,11 @@ def unit_info(unit: Sequence[Token]) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    return token_info(unit[0]) if len(unit) == 1 else word_info(unit_text(unit))
+    if len(unit) == 1:
+        return token_info(unit[0])
+    text = unit_text(unit)
+    features = word_to_ud(text)
+    return ud_info(text, features["pos"] or "", features["tense"], features["aspect"])
 
 
 def is_pronoun(word: str) -> bool:
