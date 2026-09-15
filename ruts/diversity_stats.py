@@ -20,7 +20,7 @@ from .constants import (
     MTLD_TTR_THRESHOLD,
 )
 from .extractors import WordsExtractor
-from .utils import safe_divide
+from .utils import iter_doc_words, safe_divide
 
 Calculator = Callable[[Sequence[str]], float]
 
@@ -149,9 +149,7 @@ class DiversityStats:
     ):
         if isinstance(source, Doc):
             text = source.text
-            self.words = tuple(
-                word.lower_ for word in source if not word.is_punct and not word.is_space
-            )
+            self.words = tuple(word.lower() for _, _, word in iter_doc_words(source))
         elif isinstance(source, str):
             text = source
             if not words_extractor:

@@ -111,6 +111,7 @@ class FreqDict(Dataset):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self._filepath = self.data_dir.joinpath(FILENAME)
+        self._checked = False
 
     @property
     def filepath(self) -> str | None:
@@ -249,7 +250,7 @@ class FreqDict(Dataset):
         Вывод:
             dict[str, Entry]: Статьи, части речи одной леммы склеены
         """
-        self.check_data()
+        self._ensure_data()
         return load_entries(self._filepath)
 
     @property
@@ -257,8 +258,20 @@ class FreqDict(Dataset):
         """
         Минимальная частота в словаре
         """
-        self.check_data()
+        self._ensure_data()
         return load_min_ipm(self._filepath)
+
+    def _ensure_data(self) -> None:
+        """
+        Однократная проверка наличия файла словаря перед чтением
+
+        Описание:
+            Результат первой успешной проверки запоминается, чтобы lookup и ipm
+            не обращались к файловой системе на каждое слово
+        """
+        if not self._checked:
+            self.check_data()
+            self._checked = True
 
     def lookup(self, lemma: str) -> Entry | None:
         """

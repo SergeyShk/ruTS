@@ -171,6 +171,7 @@ def test_find_phrases():
     assert find_phrases(["кот", "дом"], ["дом", ""]) == [(1, 2)]
     assert find_phrases([], phrases) == []
     assert find_phrases(["связи", "с"], ["в связи с"]) == []
+    assert find_phrases(["в", "связи"], ["в связи с", "в"]) == [(0, 1)]
 
 
 def test_iter_doc_words():

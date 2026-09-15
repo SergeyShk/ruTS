@@ -16,7 +16,7 @@ from .constants import (
     RU_VOWELS,
 )
 from .extractors import WordsExtractor
-from .utils import safe_divide
+from .utils import iter_doc_words, safe_divide
 
 VOWELS = frozenset(letter.lower() for letter in RU_VOWELS)
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
@@ -109,9 +109,7 @@ class PhonStats:
     ):
         if isinstance(source, Doc):
             text = source.text
-            words = tuple(
-                word.lower_ for word in source if not word.is_punct and not word.is_space
-            )
+            words = tuple(word.lower() for _, _, word in iter_doc_words(source))
         elif isinstance(source, str):
             text = source
             if not words_extractor:

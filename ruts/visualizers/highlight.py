@@ -26,6 +26,7 @@ from ..constants import (
     RU_LETTER_FREQUENCIES,
 )
 from ..lexical_stats import get_rank
+from ..morph_stats import word_pos
 from ..phon_stats import CONSONANTS, LETTERS, VOWELS
 from ..style_stats import is_parenthetical, is_stopword
 from ..syntax_stats import (
@@ -668,7 +669,9 @@ def find_connector_highlights(
 
     Описание:
         Коннекторы ищутся внутри каждого предложения (find_connectors), без границ
-        предложений - по всему тексту; в подсказке класс и тип коннектора
+        предложений - по всему тексту; однословные коннекторы проверяются по части
+        речи pymorphy3 (раз, значит как существительное и глагол не считаются);
+        в подсказке класс и тип коннектора
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -680,7 +683,9 @@ def find_connector_highlights(
     groups = group_words_by_sents(words, sents) if sents else [list(words)]
     highlights = []
     for group in groups:
-        for connector in find_connectors([word.text for word in group]):
+        texts = [word.text for word in group]
+        pos = [word_pos(word.text) for word in group]
+        for connector in find_connectors(texts, sent_index=0, pos=pos):
             note = (
                 f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
                 f"{CONNECTOR_TYPES[connector.kind]}"

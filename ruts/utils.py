@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import pymorphy3
-from spacy.tokens import Doc, Span
+from spacy.tokens import Doc, Span, Token
 
 from .constants import (
     DEFAULT_DATA_DIR,
@@ -117,6 +117,8 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
     Описание:
         Слова и словосочетания сравниваются в нижнем регистре без буквы ё; в каждой
         позиции выбирается самое длинное словосочетание, найденные не пересекаются
+        Словосочетания индексируются по первому слову, так что в каждой позиции
+        сравниваются только начинающиеся с этого слова
 
     Аргументы:
         words (list[str]): Слова текста
@@ -131,42 +133,40 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         key=len,
         reverse=True,
     )
-    if not patterns:
-        return []
+    by_first: dict[str, list[tuple[str, ...]]] = {}
+    for pattern in patterns:
+        by_first.setdefault(pattern[0], []).append(pattern)
     normalized = [normalize_yo(word) for word in words]
-    max_len = len(patterns[0])
     spans = []
     position = 0
     while position < len(normalized):
-        window = tuple(normalized[position : position + max_len])
-        for pattern in patterns:
-            if window[: len(pattern)] == pattern:
-                spans.append((position, position + len(pattern)))
-                position += len(pattern)
+        for pattern in by_first.get(normalized[position], ()):
+            end = position + len(pattern)
+            if tuple(normalized[position:end]) == pattern:
+                spans.append((position, end))
+                position = end
                 break
         else:
             position += 1
     return spans
 
 
-def iter_doc_words(source: Doc | Span) -> Iterator[tuple[int, int, str]]:
+def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:
     """
-    Извлечение слов с позициями из объекта Doc или Span
+    Извлечение слов из объекта Doc или Span в виде списков токенов
 
     Описание:
         Знаки препинания и пробельные токены пропускаются. Слова с дефисом (во-первых,
         по-видимому, кое-как), которые токенизатор spaCy режет на части и дефис,
-        склеиваются обратно, если между частями нет пробелов; так слово совпадает
-        с токеном razdel для строки
+        склеиваются обратно, если между частями нет пробелов, - razdel в основном
+        оставляет такие слова целыми; обычное слово - список из одного токена
 
     Аргументы:
         source (Doc|Span): Объект Doc или Span
 
     Вывод:
-        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
-            символом и текст каждого слова
+        generator[list[Token]]: Токены каждого слова
     """
-    text = source.doc.text
     tokens = list(source)
     index = 0
     while index < len(tokens):
@@ -184,9 +184,27 @@ def iter_doc_words(source: Doc | Span) -> Iterator[tuple[int, int, str]]:
             and not tokens[last + 2].is_space
         ):
             last += 2
-        start, end = token.idx, tokens[last].idx + len(tokens[last])
-        yield start, end, text[start:end]
+        yield tokens[index : last + 1]
         index = last + 1
+
+
+def iter_doc_words(source: Doc | Span) -> Iterator[tuple[int, int, str]]:
+    """
+    Извлечение слов с позициями из объекта Doc или Span
+
+    Описание:
+        Слова собираются из токенов iter_doc_units, текст дефисного слова - из текстов
+        его частей, между которыми нет пробелов
+
+    Аргументы:
+        source (Doc|Span): Объект Doc или Span
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого слова
+    """
+    for unit in iter_doc_units(source):
+        yield unit[0].idx, unit[-1].idx + len(unit[-1]), "".join(token.text for token in unit)
 
 
 def is_punctuation(token: str) -> bool:

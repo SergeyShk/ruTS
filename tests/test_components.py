@@ -23,6 +23,7 @@ from ruts.constants import (
     SYNTAX_STATS_DESC,
 )
 from ruts.datasets import FreqDict
+from ruts.utils import iter_doc_words
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -170,10 +171,15 @@ def test_component_diversity_params(spacy_doc):
 
 def test_components_filter_punctuation(spacy_doc):
     n_tokens = sum(1 for token in spacy_doc if not token.is_punct and not token.is_space)
-    assert n_tokens < len(spacy_doc)
-    assert spacy_doc._.basic.n_words == n_tokens
-    assert len(spacy_doc._.diversity.words) == n_tokens
-    assert len(spacy_doc._.morph.words) == n_tokens
+    n_words = sum(1 for _ in iter_doc_words(spacy_doc))
+    assert n_words < n_tokens < len(spacy_doc)
+    assert spacy_doc._.basic.n_words == n_words
+    assert len(spacy_doc._.diversity.words) == n_words
+    assert len(spacy_doc._.morph.words) == n_words
+    assert len(spacy_doc._.style.words) == n_words
+    assert len(spacy_doc._.phon.words) == n_words
+    assert spacy_doc._.cohesion.n_words == n_words
+    assert "какого-либо" in spacy_doc._.diversity.words
     assert not any(word in PUNCTUATIONS for word in spacy_doc._.diversity.words)
 
 

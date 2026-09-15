@@ -15,7 +15,7 @@ from .constants import (
     UD_PERSONS,
 )
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer, parse_word
+from .utils import get_morph_analyzer, iter_doc_units, parse_word
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 
@@ -31,7 +31,8 @@ class MorphStats:
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, то есть с учетом контекста (стали - глагол или существительное);
         для строки и Doc без разметки используется первый разбор pymorphy3, граммемы
-        OpenCorpora переводятся в UD по таблицам в constants
+        OpenCorpora переводятся в UD по таблицам в constants. Дефисные слова,
+        разрезанные spaCy (во-первых), склеиваются и разбираются pymorphy3
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
         которых в русском UD нет; они считаются через pymorphy3 для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
@@ -96,10 +97,13 @@ class MorphStats:
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         features: list[dict[str, str | None]]
         if isinstance(source, Doc):
-            tokens = [token for token in source if not token.is_punct and not token.is_space]
-            self.words = tuple(token.text for token in tokens)
+            units = list(iter_doc_units(source))
+            self.words = tuple("".join(token.text for token in unit) for unit in units)
             if source.has_annotation("POS"):
-                features = [token_to_ud(token) for token in tokens]
+                features = [
+                    token_to_ud(unit[0]) if len(unit) == 1 else word_to_ud(word)
+                    for unit, word in zip(units, self.words, strict=True)
+                ]
             else:
                 features = [word_to_ud(word) for word in self.words]
         elif isinstance(source, str):
@@ -294,6 +298,24 @@ def tag_to_ud(
     if "ms-f" in tag.grammemes:
         features["gender"] = OPENCORPORA_TO_UD_GRAMMEMES["ms-f"]
     return features
+
+
+@lru_cache(maxsize=131072)
+def word_pos(word: str) -> str | None:
+    """
+    Часть речи Universal Dependencies слова по первому разбору pymorphy3
+
+    Описание:
+        Результаты кэшируются по словоформе
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        str|None: Часть речи UD
+    """
+    parse = parse_word(word)
+    return tag_to_ud_pos(parse.tag, parse.normal_form, word)
 
 
 def word_to_ud(word: str) -> dict[str, str | None]:
