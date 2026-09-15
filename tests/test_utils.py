@@ -10,6 +10,7 @@ from ruts.utils import (
     find_phrases,
     is_punctuation,
     is_verbal_noun,
+    iter_doc_words,
     normalize_yo,
     parse_word,
     safe_divide,
@@ -170,3 +171,17 @@ def test_find_phrases():
     assert find_phrases(["кот", "дом"], ["дом", ""]) == [(1, 2)]
     assert find_phrases([], phrases) == []
     assert find_phrases(["связи", "с"], ["в связи с"]) == []
+
+
+def test_iter_doc_words():
+    import spacy
+
+    doc = spacy.blank("ru")("Во-первых, кот -\nсобака - дом-музей, кое-как-нибудь.")
+    assert list(iter_doc_words(doc)) == [
+        (0, 9, "Во-первых"),
+        (11, 14, "кот"),
+        (17, 23, "собака"),
+        (26, 35, "дом-музей"),
+        (37, 51, "кое-как-нибудь"),
+    ]
+    assert list(iter_doc_words(spacy.blank("ru")("- . ,"))) == []

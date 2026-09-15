@@ -23,6 +23,7 @@ from ruts.visualizers.highlight import (
     find_split_predicate_highlights,
     find_stopwords,
     find_verbal_nouns,
+    get_doc_sents,
     get_stem,
     get_text_sents,
     get_text_words,
@@ -649,7 +650,24 @@ def test_split_predicates(nlp):
 
 def test_new_layers_doc_matches_text(nlp):
     doc = nlp(officialese_text)
-    for layer in ("rare_words", "verbal_nouns", "compound_prepositions", "cliches", "connectors"):
+    for layer in (
+        "rare_words",
+        "verbal_nouns",
+        "compound_prepositions",
+        "cliches",
+        "parentheticals",
+        "connectors",
+    ):
         assert [f.rstrip(".") for f, _ in fragments(doc, layer)] == [
             f.rstrip(".") for f, _ in fragments(officialese_text, layer)
         ]
+
+
+def test_hyphenated_words_doc(nlp):
+    source = "Во-первых, кот спит. По-видимому, он устал. Конечно, это так."
+    doc = nlp(source)
+    expected = ["Во-первых", "По-видимому", "Конечно"]
+    assert [f for f, _ in fragments(doc, "parentheticals")] == expected
+    assert [f for f, _ in fragments(source, "parentheticals")] == expected
+    assert "Во" not in [f for f, _ in fragments(doc, "stopwords")]
+    assert [sent.n_words for sent in get_doc_sents(doc)] == [3, 3, 3]

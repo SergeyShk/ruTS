@@ -5,11 +5,12 @@ import unicodedata
 import urllib.parse
 import urllib.request
 import zipfile
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Iterator, Sequence
 from functools import lru_cache
 from pathlib import Path
 
 import pymorphy3
+from spacy.tokens import Doc, Span
 
 from .constants import (
     DEFAULT_DATA_DIR,
@@ -146,6 +147,46 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         else:
             position += 1
     return spans
+
+
+def iter_doc_words(source: Doc | Span) -> Iterator[tuple[int, int, str]]:
+    """
+    Извлечение слов с позициями из объекта Doc или Span
+
+    Описание:
+        Знаки препинания и пробельные токены пропускаются. Слова с дефисом (во-первых,
+        по-видимому, кое-как), которые токенизатор spaCy режет на части и дефис,
+        склеиваются обратно, если между частями нет пробелов; так слово совпадает
+        с токеном razdel для строки
+
+    Аргументы:
+        source (Doc|Span): Объект Doc или Span
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого слова
+    """
+    text = source.doc.text
+    tokens = list(source)
+    index = 0
+    while index < len(tokens):
+        token = tokens[index]
+        if token.is_punct or token.is_space:
+            index += 1
+            continue
+        last = index
+        while (
+            last + 2 < len(tokens)
+            and tokens[last + 1].text == "-"
+            and not tokens[last].whitespace_
+            and not tokens[last + 1].whitespace_
+            and not tokens[last + 2].is_punct
+            and not tokens[last + 2].is_space
+        ):
+            last += 2
+        start, end = token.idx, tokens[last].idx + len(tokens[last])
+        yield start, end, text[start:end]
+        index = last + 1
 
 
 def is_punctuation(token: str) -> bool:

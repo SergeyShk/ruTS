@@ -44,6 +44,7 @@ from ..utils import (
     find_phrases,
     is_punctuation,
     is_verbal_noun,
+    iter_doc_words,
     normalize_yo,
     parse_word,
 )
@@ -143,7 +144,7 @@ class HighlightedText:
         {'long_sents': 0, 'complex_words': 4, 'cliches': 0}
         >>> ht = highlight(text, layers="all")
         >>> ht.counts
-        {'long_sents': 0, 'complex_words': 4, 'rare_words': 0, 'verbal_nouns': 3, 'compound_prepositions': 0, 'cliches': 0, 'stopwords': 0, 'parentheticals': 0, 'connectors': 0, 'alliteration': 1}
+        {'long_sents': 0, 'complex_words': 4, 'rare_words': 2, 'verbal_nouns': 2, 'compound_prepositions': 0, 'cliches': 0, 'stopwords': 0, 'parentheticals': 0, 'connectors': 0, 'alliteration': 1}
         >>> ht.highlights[0]
         Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»')
         >>> highlight(text, layers="alliteration").to_html(legend=False, css=False)
@@ -189,9 +190,7 @@ class HighlightedText:
     ):
         if isinstance(source, Doc):
             self.text = source.text
-            words = [
-                Word(token.idx, token.idx + len(token), token.text) for token in get_words(source)
-            ]
+            words = [Word(start, end, text) for start, end, text in iter_doc_words(source)]
             sents = get_doc_sents(source) if source.has_annotation("SENT_START") else None
             doc = source if source.has_annotation("DEP") else None
         elif isinstance(source, str):
@@ -422,7 +421,8 @@ def get_doc_sents(doc: Doc) -> list[Sent]:
 
     Описание:
         Пробельные токены в начале и конце предложения не входят в его позиции:
-        sentencizer ставит границу на перенос строки после точки
+        sentencizer ставит границу на перенос строки после точки; слова считаются
+        как в iter_doc_words, дефисные слова - одним словом
 
     Аргументы:
         doc (Doc): Объект Doc с границами предложений
@@ -436,7 +436,7 @@ def get_doc_sents(doc: Doc) -> list[Sent]:
         if tokens:
             start = min(token.idx for token in tokens)
             end = max(token.idx + len(token) for token in tokens)
-            sents.append(Sent(start, end, len(get_words(sent))))
+            sents.append(Sent(start, end, sum(1 for _ in iter_doc_words(sent))))
     return sents
 
 

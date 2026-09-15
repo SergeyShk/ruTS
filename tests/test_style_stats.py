@@ -32,6 +32,12 @@ riddle = (
 
 
 @pytest.fixture(scope="module")
+def nlp():
+    pytest.importorskip("ru_core_news_sm")
+    return spacy.load("ru_core_news_sm")
+
+
+@pytest.fixture(scope="module")
 def ss():
     return StyleStats(text)
 
@@ -231,3 +237,14 @@ def test_print_stats(capsys, ss):
     ss.print_stats()
     captured = capsys.readouterr()
     assert captured.out.count("|") == len(STYLE_STATS_DESC) + 1
+
+
+def test_hyphenated_words_doc(nlp):
+    source = "Во-первых, кот спит. По-видимому, он устал."
+    doc = nlp(source)
+    assert StyleStats(doc).words == ("во-первых", "кот", "спит", "по-видимому", "он", "устал")
+    assert (
+        StyleStats(doc).parentheticals
+        == StyleStats(source).parentheticals
+        == pytest.approx(200 / 6)
+    )

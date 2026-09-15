@@ -15,7 +15,7 @@ from .constants import (
     STYLE_STATS_DESC,
 )
 from .extractors import WordsExtractor
-from .utils import find_phrases, is_verbal_noun, parse_word, safe_divide
+from .utils import find_phrases, is_verbal_noun, iter_doc_words, parse_word, safe_divide
 
 
 class StyleStats:
@@ -31,6 +31,8 @@ class StyleStats:
         предлоги, вводные слова, штампы - по спискам из constants
         Слова по умолчанию извлекаются в нижнем регистре без лемматизации; для расчета
         SEO-метрик по леммам передайте WordsExtractor(use_lexemes=True, lowercase=True)
+        Из Doc слова берутся без знаков препинания, дефисные слова (во-первых), которые
+        spaCy режет на части, склеиваются (iter_doc_words)
         Маркеры канцелярита считаются по словоформам без фильтрации (forms)
         независимо от переданного экстрактора
 
@@ -102,9 +104,7 @@ class StyleStats:
         cliches: Sequence[str] | None = None,
     ):
         if isinstance(source, Doc):
-            self.words = tuple(
-                word.lower_ for word in source if not word.is_punct and not word.is_space
-            )
+            self.words = tuple(text.lower() for _, _, text in iter_doc_words(source))
             self.forms = self.words
         elif isinstance(source, str):
             if not words_extractor:
