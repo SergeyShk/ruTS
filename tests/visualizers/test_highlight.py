@@ -11,6 +11,7 @@ from ruts.constants import (
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
     Sent,
+    Word,
     calc_alliteration_runs,
     find_alliteration,
     find_cliches,
@@ -24,6 +25,7 @@ from ruts.visualizers.highlight import (
     find_stopwords,
     find_verbal_nouns,
     get_doc_sents,
+    get_doc_words,
     get_stem,
     get_text_sents,
     get_text_words,
@@ -635,6 +637,31 @@ def test_connectors():
     ]
     assert [h.note for h in find_connector_highlights(get_text_words("и всё же"), None)] == [
         "коннектор «и всё же»: уступительные, первичные"
+    ]
+
+
+def test_connectors_pos(nlp):
+    source = "Раз он пришёл, значит, всё хорошо. В тот раз это значит много."
+    assert [h.note for h in highlight(source, "connectors").highlights] == [
+        "коннектор «раз»: условные, первичные",
+        "коннектор «значит»: причинные, первичные",
+        "коннектор «раз»: условные, первичные",
+        "коннектор «значит»: причинные, первичные",
+    ]
+    doc = nlp(source)
+    words = get_doc_words(doc)
+    assert words[:2] == [Word(0, 3, "Раз", "SCONJ"), Word(4, 6, "он", "PRON")]
+    assert [word.pos for word in get_doc_words(spacy.blank("ru")(source))] == [None] * 12
+    assert [h.note for h in highlight(doc, "connectors").highlights] == [
+        "коннектор «раз»: условные, первичные",
+        "коннектор «значит»: причинные, первичные",
+    ]
+    words = [Word(0, 3, "Раз", "NOUN"), Word(4, 10, "значит", "VERB"), Word(11, 14, "кот")]
+    assert find_connector_highlights(words, None) == []
+    words = [Word(0, 3, "Раз", "SCONJ"), Word(4, 10, "значит"), Word(11, 14, "кот")]
+    assert [h.note for h in find_connector_highlights(words, None)] == [
+        "коннектор «раз»: условные, первичные",
+        "коннектор «значит»: причинные, первичные",
     ]
 
 

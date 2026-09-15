@@ -300,24 +300,6 @@ def tag_to_ud(
     return features
 
 
-@lru_cache(maxsize=131072)
-def word_pos(word: str) -> str | None:
-    """
-    Часть речи Universal Dependencies слова по первому разбору pymorphy3
-
-    Описание:
-        Результаты кэшируются по словоформе
-
-    Аргументы:
-        word (str): Слово
-
-    Вывод:
-        str|None: Часть речи UD
-    """
-    parse = parse_word(word)
-    return tag_to_ud_pos(parse.tag, parse.normal_form, word)
-
-
 def word_to_ud(word: str) -> dict[str, str | None]:
     """
     Получение признаков Universal Dependencies слова по первому разбору pymorphy3

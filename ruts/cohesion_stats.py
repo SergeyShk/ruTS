@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Collection, Mapping, Sequence
-from functools import cache
+from functools import cache, lru_cache
 from itertools import combinations, pairwise
 from math import nan
 from statistics import fmean
@@ -22,8 +22,15 @@ from .constants import (
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import word_pos
-from .utils import iter_doc_units, lemmatize, normalize_yo, parse_word, safe_divide
+from .morph_stats import tag_to_ud_pos
+from .utils import (
+    get_morph_analyzer,
+    iter_doc_units,
+    lemmatize,
+    normalize_yo,
+    parse_word,
+    safe_divide,
+)
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -106,9 +113,10 @@ class CohesionStats:
         части речи, время и вид берутся из token.pos_ и token.morph, лемма - из разбора
         pymorphy3 с частью речи токена (lemmatize): лемматизатор моделей ru_core_news
         возвращает словоформу для AUX и при расхождении признаков (были, них, стихли);
-        для строки и Doc без разметки - из первого разбора pymorphy3. Doc без границ
-        предложений разбивается на предложения и слова как строка; дефисные слова,
-        разрезанные spaCy, склеиваются (iter_doc_units)
+        для строки и Doc без разметки - из первого разбора pymorphy3. Слова Doc
+        берутся из токенов, дефисные слова, разрезанные spaCy, склеиваются
+        (iter_doc_units); Doc без границ предложений разбивается на предложения
+        через sents_extractor по тексту (split_doc_units)
         Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
         по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
         и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями
@@ -118,9 +126,10 @@ class CohesionStats:
         или вторичные (лексикализованные обороты); плотность считается на 1000 слов
         Однословный коннектор засчитывается только при части речи из CONNECTOR_POS
         (союз, частица, наречие, предлог, междометие) или из CONNECTOR_POS_EXTRA
-        для отдельных слов (словом, главное, допустим, точнее) - по разметке Doc
-        или по pymorphy3 для строки, так «раз» и «значит» как существительное
-        и глагол не считаются
+        для отдельных слов (словом, главное, допустим, точнее) - по разметке Doc,
+        так «раз» и «значит» как существительное и глагол не считаются; без разметки
+        слово проходит, если подходящая часть речи есть хотя бы в одном разборе
+        pymorphy3 (connector_pos)
         и не считаются знаменательными в обоих случаях
 
     Ссылки:
@@ -227,26 +236,28 @@ class CohesionStats:
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
-        if isinstance(source, Doc) and source.has_annotation("SENT_START"):
-            units = [list(iter_doc_units(sent)) for sent in source.sents]
+        if isinstance(source, Doc):
+            if source.has_annotation("SENT_START"):
+                units = [list(iter_doc_units(sent)) for sent in source.sents]
+            else:
+                units = split_doc_units(source, sents_extractor or SentsExtractor())
             sents = [tuple(unit_text(unit) for unit in sent) for sent in units]
             if source.has_annotation("POS"):
                 infos = [[unit_info(unit) for unit in sent] for sent in units]
                 pos = [[unit_pos(unit) for unit in sent] for sent in units]
             else:
                 infos = [[word_info(word) for word in sent] for sent in sents]
-                pos = [[word_pos(word) for word in sent] for sent in sents]
-        elif isinstance(source, str | Doc):
-            text = source if isinstance(source, str) else source.text
+                pos = [[connector_pos(word) for word in sent] for sent in sents]
+        elif isinstance(source, str):
             if not sents_extractor:
                 sents_extractor = SentsExtractor()
             if not words_extractor:
                 words_extractor = WordsExtractor()
             sents = [
-                tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(text)
+                tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(source)
             ]
             infos = [[word_info(word) for word in sent] for sent in sents]
-            pos = [[word_pos(word) for word in sent] for sent in sents]
+            pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:
             raise TypeError("Некорректный источник данных")
         self.words = tuple(sent for sent in sents if sent)
@@ -437,6 +448,31 @@ def _is_connector_pos(word: str, pos: str | None) -> bool:
     return pos is None or pos in CONNECTOR_POS or pos in CONNECTOR_POS_EXTRA.get(word, frozenset())
 
 
+@lru_cache(maxsize=131072)
+def connector_pos(word: str) -> str | None:
+    """
+    Часть речи UD слова по pymorphy3 для проверки коннектора
+
+    Описание:
+        Из разборов pymorphy3 берется первый с частью речи, подходящей коннектору
+        (CONNECTOR_POS или CONNECTOR_POS_EXTRA для этого слова), иначе часть речи
+        первого разбора: у «раз» и «отчего» первый разбор - существительное
+        и прилагательное, союз только в следующих. Результаты кэшируются по словоформе
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        str|None: Часть речи UD
+    """
+    normalized = normalize_yo(word)
+    poses = [
+        tag_to_ud_pos(parse.tag, parse.normal_form, word)
+        for parse in get_morph_analyzer().parse(word)
+    ]
+    return next((pos for pos in poses if _is_connector_pos(normalized, pos)), poses[0])
+
+
 def find_connectors(
     words: Sequence[str],
     connectors: Mapping[str, tuple[str, str]] | None = None,
@@ -551,13 +587,46 @@ def unit_text(unit: Sequence[Token]) -> str:
     return "".join(token.text for token in unit)
 
 
+def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[list[Token]]]:
+    """
+    Разбиение слов объекта Doc без границ предложений по предложениям
+
+    Описание:
+        Предложения извлекаются sents_extractor из текста и находятся в нем
+        по порядку; слово относится к последнему предложению, начавшемуся не позже
+        его первого токена, так что ни одно слово не теряется
+
+    Аргументы:
+        source (Doc): Объект Doc
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
+
+    Вывод:
+        list[list[list[Token]]]: Токены каждого слова каждого предложения
+    """
+    text = source.text
+    starts = []
+    cursor = 0
+    for sent in sents_extractor.extract(text):
+        start = text.find(sent, cursor)
+        if start != -1:
+            starts.append(start)
+            cursor = start + len(sent)
+    units: list[list[list[Token]]] = [[] for _ in starts] or [[]]
+    index = 0
+    for unit in iter_doc_units(source):
+        while index + 1 < len(starts) and starts[index + 1] <= unit[0].idx:
+            index += 1
+        units[index].append(unit)
+    return units
+
+
 def unit_pos(unit: Sequence[Token]) -> str | None:
     """
     Часть речи UD слова из токенов iter_doc_units
 
     Описание:
         Обычное слово - по разметке токена, дефисное слово из нескольких токенов -
-        по разбору pymorphy3 склеенного текста
+        по разбору pymorphy3 склеенного текста (connector_pos)
 
     Аргументы:
         unit (list[Token]): Токены слова
@@ -567,7 +636,7 @@ def unit_pos(unit: Sequence[Token]) -> str | None:
     """
     if len(unit) == 1:
         return unit[0].pos_ or None
-    return word_pos(unit_text(unit))
+    return connector_pos(unit_text(unit))
 
 
 def unit_info(unit: Sequence[Token]) -> WordInfo:

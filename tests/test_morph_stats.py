@@ -11,7 +11,6 @@ from ruts.morph_stats import (
     tag_to_ud,
     tag_to_ud_pos,
     token_to_ud,
-    word_pos,
     word_to_ud,
 )
 from ruts.utils import get_morph_analyzer
@@ -287,7 +286,6 @@ def test_init_doc_verbs(nlp):
 )
 def test_word_to_ud_pos(word, expected):
     assert word_to_ud(word)["pos"] == expected
-    assert word_pos(word) == expected
 
 
 @pytest.mark.parametrize(

@@ -4,7 +4,7 @@ from math import isnan
 import pytest
 import spacy
 
-from ruts import CohesionStats, WordsExtractor
+from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
 from ruts.cohesion_stats import (
     Connector,
     Overlap,
@@ -13,6 +13,7 @@ from ruts.cohesion_stats import (
     calc_overlaps,
     calc_proportional_overlap,
     calc_repetition,
+    connector_pos,
     count_given,
     dice,
     dominant,
@@ -20,7 +21,9 @@ from ruts.cohesion_stats import (
     is_content_word,
     is_pronoun,
     load_connectors,
+    split_doc_units,
     token_info,
+    unit_text,
     word_info,
 )
 from ruts.constants import COHESION_STATS_DESC, CONNECTOR_CLASSES, CONNECTOR_TYPES
@@ -449,11 +452,20 @@ def test_connectors_pos(nlp):
         "пусть",
     ]
     assert [connector.text for connector in CohesionStats(text).connector_spans] == [
+        "раз",
         "значит",
+        "раз",
         "значит",
         "словом",
         "пусть",
     ]
+    assert connector_pos("раз") == "ADV"
+    assert connector_pos("Отчего") == "CCONJ"
+    assert connector_pos("кот") == "NOUN"
+    assert connector_pos("т.е.") == "X"
+    for connector in load_connectors():
+        if " " not in connector:
+            assert find_connectors([connector], pos=[connector_pos(connector)]), connector
     assert find_connectors(["раз", "значит"]) == [
         Connector(0, 0, 1, "раз", "conditional", "primary"),
         Connector(0, 1, 2, "значит", "causal", "primary"),
@@ -468,6 +480,28 @@ def test_connectors_pos(nlp):
         Connector(0, 1, 2, "т.е.", "reformulative", "primary"),
     ]
     assert find_connectors(["кот"], {"кот": ("additive", "secondary")}, pos=["NOUN"]) == []
+
+
+def test_doc_without_sents(nlp):
+    text = "Раз он пришёл, значит, всё хорошо. Кое-как птицы улетели, т.е. исчезли."
+    doc = nlp(text)
+    tagged = spacy.load("ru_core_news_sm", exclude=["parser"])(text)
+    assert not tagged.has_annotation("SENT_START") and tagged.has_annotation("POS")
+    cs = CohesionStats(tagged)
+    assert cs.words == CohesionStats(doc).words
+    assert cs.n_words == BasicStats(tagged).n_words == 11
+    assert cs.lemmas == CohesionStats(doc).lemmas
+    assert [connector.text for connector in cs.connector_spans] == ["раз", "значит", "т.е."]
+    blank = spacy.blank("ru")(text)
+    assert CohesionStats(blank).words == cs.words
+    assert CohesionStats(blank).n_words == 11
+    units = split_doc_units(blank, SentsExtractor())
+    assert [[unit_text(unit) for unit in sent] for sent in units] == [
+        list(sent) for sent in cs.words
+    ]
+    extractor = SentsExtractor(tokenizer=lambda text: ("нет такого предложения",))
+    assert len(split_doc_units(blank, extractor)) == 1
+    assert len(split_doc_units(blank, extractor)[0]) == 11
 
 
 def test_find_connectors():
