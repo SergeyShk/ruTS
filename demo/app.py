@@ -160,7 +160,7 @@ freq_dict = FreqDict()
 if not freq_dict.filepath:
     try:
         freq_dict.download()
-    except RuntimeError as error:
+    except (RuntimeError, OSError) as error:
         print(f"Частотный словарь недоступен: {error}")
 plot_lock = threading.Lock()
 

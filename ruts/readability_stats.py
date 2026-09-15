@@ -14,6 +14,7 @@ from .constants import (
     READABILITY_STATS_DESC,
     READING_SPEED_NORMS,
     READING_SPEED_WPM,
+    SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
 )
@@ -282,18 +283,38 @@ class ReadabilityStats:
             self.bs.n_letters, self.bs.n_words, self.bs.n_sents, *SIS_GRADE_STAGES[stage]
         )
 
-    def sis_grade_by_freq(self, mean_ipm: float) -> float:
+    def sis_grade_by_freq(self, mean_ipm: float, stage: str | None = None) -> float:
         """
         Вычисление формулы Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
 
         Аргументы:
             mean_ipm (float): Средняя частотность знаменательных слов текста по словарю
                 Ляшевской и Шарова (FREQ2), например LexicalStats(text).mean_ipm_content
+            stage (str): Ступень обучения (2-4, 5-7, 8-11); если не задана,
+                используется общая формула
 
         Вывод:
             float: Значение формулы
+
+        Исключения:
+            ValueError: Если указана неизвестная ступень обучения
         """
-        return calc_sis_grade_freq(self.bs.n_letters, self.bs.n_words, self.bs.n_sents, mean_ipm)
+        if stage is None:
+            return calc_sis_grade_freq(
+                self.bs.n_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
+            )
+        if stage not in SIS_GRADE_FREQ_STAGES:
+            raise ValueError(
+                f"Неизвестная ступень обучения: {stage}. "
+                f"Доступные ступени: {tuple(SIS_GRADE_FREQ_STAGES)}"
+            )
+        return calc_sis_grade_freq(
+            self.bs.n_letters,
+            self.bs.n_words,
+            self.bs.n_sents,
+            mean_ipm,
+            *SIS_GRADE_FREQ_STAGES[stage],
+        )
 
     def get_stats(self) -> dict[str, float]:
         """
@@ -627,6 +648,8 @@ def calc_sis_grade_freq(
         В статье значения FREQ2 лежат в пределах 200-1000, что соответствует средней
         частотности знаменательных слов (LexicalStats.mean_ipm_content): среднее
         по всем словам с учетом союзов и предлогов в разы больше
+        Коэффициенты по умолчанию соответствуют общей формуле, коэффициенты для ступеней
+        обучения (2-4, 5-7 и 8-11 классы) заданы в справочнике SIS_GRADE_FREQ_STAGES
         На наборе TextsByGrade формула с частотностью дает ту же корреляцию с классом,
         что и формула без нее (ρ Спирмена 0.76 против 0.77), как и в статье
 

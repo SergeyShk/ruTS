@@ -1,10 +1,13 @@
+import hashlib
 import tempfile
+import zipfile
 from pathlib import Path
 
 import pytest
 
 from ruts.datasets import FreqDict
-from ruts.datasets.freq2011 import FILENAME, Entry
+from ruts.datasets import freq2011 as freq2011_module
+from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, sha256
 
 ROWS = (
     ("а", "conj", 8198.0, 100, 97, 32332),
@@ -111,3 +114,66 @@ def test_ipm_and_contains(dataset):
     assert "Ещё" in dataset
     assert "собака" not in dataset
     assert 5 not in dataset
+
+
+def make_archive(path: Path, content: bytes | None = None) -> Path:
+    archive = path / ARCHIVE
+    if content is not None:
+        archive.write_bytes(content)
+        return archive
+    csv_dir = path / "src"
+    write_dict(csv_dir)
+    with zipfile.ZipFile(archive, "w") as zip_file:
+        zip_file.write(csv_dir / FILENAME, FILENAME)
+        zip_file.writestr("freqrnc_readme.txt", "readme")
+    return archive
+
+
+def test_entries_cached(dataset):
+    other = FreqDict(data_dir=dataset.data_dir)
+    assert other.entries is dataset.entries
+    assert load_entries(dataset._filepath) is dataset.entries
+
+
+def test_download_corrupted(tmp_path, monkeypatch):
+    def fake_download(url, filename, dirpath, force):
+        return str(make_archive(Path(dirpath), b"<html>not an archive</html>"))
+
+    monkeypatch.setattr(freq2011_module, "download_file", fake_download)
+    dataset = FreqDict(data_dir=tmp_path)
+    with pytest.raises(RuntimeError):
+        dataset.download()
+    assert not (tmp_path / ARCHIVE).exists()
+    assert dataset.filepath is None
+
+
+def test_download_extracts_existing_archive(tmp_path, monkeypatch):
+    archive = make_archive(tmp_path)
+    monkeypatch.setattr(freq2011_module, "ARCHIVE_SHA256", sha256(archive))
+    monkeypatch.setattr(freq2011_module, "download_file", lambda **kwargs: "")
+    dataset = FreqDict(data_dir=tmp_path)
+    assert dataset.filepath is None
+    dataset.download()
+    assert dataset.filepath is not None
+    assert len(dataset) == 9
+    dataset.download()
+    assert dataset.lookup("кот").ipm == 40.3
+
+
+def test_download_force_reloads(tmp_path, monkeypatch):
+    archive = make_archive(tmp_path)
+    monkeypatch.setattr(freq2011_module, "ARCHIVE_SHA256", sha256(archive))
+    monkeypatch.setattr(freq2011_module, "download_file", lambda **kwargs: str(archive))
+    dataset = FreqDict(data_dir=tmp_path)
+    dataset.download()
+    before = dataset.entries
+    dataset.download(force=True)
+    assert dataset.entries == before
+    assert dataset.entries is not before
+
+
+def test_sha256(tmp_path):
+    path = tmp_path / "file.txt"
+    path.write_bytes(b"ruts")
+    assert sha256(path) == hashlib.sha256(b"ruts").hexdigest()
+    assert sha256(tmp_path / "missing") == ""

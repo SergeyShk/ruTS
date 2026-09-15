@@ -111,6 +111,11 @@ SIS_GRADE_STAGES: dict[str, tuple[float, float, float]] = {
     "5-7": (-5.29, 0.20, 1.34),
     "8-11": (-3.26, 0.21, 1.35),
 }
+SIS_GRADE_FREQ_STAGES: dict[str, tuple[float, float, float, float]] = {
+    "2-4": (-1.21, 0.2, 0.56, -0.0025),
+    "5-7": (-5.18, 0.17, 1.35, -0.00043),
+    "8-11": (1.3, 0.23, 0.88, -0.0035),
+}
 MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
     "pos": {
         "name": "Часть речи",

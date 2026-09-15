@@ -6,7 +6,7 @@ import spacy
 from ruts import LexicalStats, WordsExtractor
 from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
-from ruts.lexical_stats import calc_surprisal, get_rank, load_top_lemmas
+from ruts.lexical_stats import calc_surprisal, get_rank, is_number, load_top_lemmas
 from tests.datasets.test_freq2011 import write_dict
 
 text = "Кот сидел на окне и смотрел на птиц"
@@ -111,6 +111,19 @@ def test_rare_words(freq_dict):
     assert ls.p_beyond_top10000 == pytest.approx(1 / 4)
     assert isnan(ls.mean_ipm_content)
     assert ls.surprisal > LexicalStats(text, freq_dict=freq_dict).surprisal
+
+
+def test_numbers(freq_dict):
+    ls = LexicalStats("В 2020 году 5 котов и 3-й кот", freq_dict=freq_dict)
+    assert ls.words == ("В", "году", "котов", "и", "кот")
+    assert ls.n_words == 5
+    assert ls.coverage == pytest.approx(3 / 5)
+    doc = spacy.blank("ru")("В 2020 году 5 котов и 3-й кот")
+    assert LexicalStats(doc, freq_dict=freq_dict).words == ls.words
+    with pytest.raises(ValueError):
+        LexicalStats("2020 5.5 3-й", freq_dict=freq_dict)
+    assert is_number("2020") and is_number("5,5") and is_number("3-й")
+    assert not is_number("кот") and not is_number("5-миллионный")
 
 
 def test_without_dict(tmp_path):

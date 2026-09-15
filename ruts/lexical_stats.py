@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from .cohesion_stats import WordInfo, token_info, word_info
 from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
-from .extractors import WordsExtractor
+from .extractors import NUMBER_PATTERN, WordsExtractor
 from .utils import normalize_yo, safe_divide
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
@@ -26,6 +26,8 @@ class LexicalStats:
         сюрпризал и перплексия по униграммной модели словаря, лексическая плотность
         Леммы для Doc с разметкой частей речи берутся из token.lemma_ и token.pos_,
         для строки и Doc без разметки - из первого разбора pymorphy3
+        Числа (2020, 5.5, 3-й) словами не считаются: в словаре и списке их нет,
+        и они выглядели бы как самые редкие слова текста
         Метрики по частотному словарю требуют загруженного FreqDict, полосы
         и лексическая плотность считаются без него
 
@@ -105,7 +107,11 @@ class LexicalStats:
     ):
         infos: list[WordInfo]
         if isinstance(source, Doc):
-            tokens = [word for word in source if not word.is_punct and not word.is_space]
+            tokens = [
+                word
+                for word in source
+                if not word.is_punct and not word.is_space and not is_number(word.text)
+            ]
             self.words = tuple(word.text for word in tokens)
             if source.has_annotation("POS"):
                 infos = [token_info(word) for word in tokens]
@@ -114,7 +120,9 @@ class LexicalStats:
         elif isinstance(source, str):
             if not words_extractor:
                 words_extractor = WordsExtractor()
-            self.words = words_extractor.extract(source)
+            self.words = tuple(
+                word for word in words_extractor.extract(source) if not is_number(word)
+            )
             infos = [word_info(word) for word in self.words]
         else:
             raise TypeError("Некорректный источник данных")
@@ -228,6 +236,19 @@ class LexicalStats:
         stats = self.get_stats()
         for stat, value in LEXICAL_STATS_DESC.items():
             print(f"{value:58}|{stats.get(stat):^10.2f}")
+
+
+def is_number(word: str) -> bool:
+    """
+    Проверка, является ли слово числом по шаблону NUMBER_PATTERN
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return NUMBER_PATTERN.fullmatch(word.lower()) is not None
 
 
 def _mean(values: Sequence[float]) -> float:

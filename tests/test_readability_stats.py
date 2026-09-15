@@ -5,6 +5,7 @@ from ruts.constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
 )
 from ruts.readability_stats import (
@@ -145,6 +146,13 @@ def test_sis_grade_by_freq(rs):
         calc_sis_grade_freq(rs.bs.n_letters, rs.bs.n_words, rs.bs.n_sents, 500)
     )
     assert rs.sis_grade_by_freq(0) > rs.sis_grade_by_freq(1000)
+    for stage, coefficients in SIS_GRADE_FREQ_STAGES.items():
+        assert rs.sis_grade_by_freq(500, stage) == pytest.approx(
+            calc_sis_grade_freq(rs.bs.n_letters, rs.bs.n_words, rs.bs.n_sents, 500, *coefficients)
+        )
+    assert rs.sis_grade_by_freq(500, "2-4") != rs.sis_grade_by_freq(500)
+    with pytest.raises(ValueError):
+        rs.sis_grade_by_freq(500, "12")
 
 
 def test_sis_grade_by_stage_error(rs):

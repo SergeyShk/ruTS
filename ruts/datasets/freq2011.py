@@ -1,6 +1,7 @@
 import csv
+import hashlib
 from collections.abc import Generator
-from functools import cached_property
+from functools import cache
 from itertools import islice
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -21,7 +22,10 @@ META = {
     ),
 }
 DOWNLOAD_URL = "http://dict.ruslang.ru/Freq2011.zip"
+ARCHIVE = "Freq2011.zip"
+ARCHIVE_SHA256 = "1ae2950966c34c52355e4d5cb91f1cc715f1d50774af71cdf4319223130c7c6e"
 FILENAME = "freqrnc2011.csv"
+FILENAME_SHA256 = "a3742a5656a54e4ae164e8030769c4242e2ad8f5d73660d8614153e2f3c44f94"
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("dicts")
 
 
@@ -59,6 +63,9 @@ class FreqDict(Dataset):
         Для поиска леммы с несколькими частями речи (а - союз, частица, междометие)
         склеиваются: ipm суммируется, R, D и число текстов берутся максимальные;
         лемма приводится к нижнему регистру, ё заменяется на е, как в словаре
+        Разобранный словарь кэшируется по пути к файлу и читается один раз на процесс;
+        загруженный архив сверяется с контрольной суммой SHA-256 - файл на сайте
+        не менялся с 2013 года
 
     Ссылки:
         http://dict.ruslang.ru/freq.php
@@ -138,19 +145,34 @@ class FreqDict(Dataset):
         """
         Загрузка словаря из сети и извлечение файла
 
+        Описание:
+            Загруженный архив сверяется с контрольной суммой SHA-256; поврежденный
+            или подмененный файл удаляется, чтобы повторная загрузка не пропускалась
+            Если архив уже есть, а файл словаря нет, архив извлекается заново
+
         Аргументы:
             force (bool): Загрузить словарь, даже если он уже загружен
+
+        Исключения:
+            RuntimeError: Если не удалось загрузить файл или он не прошел проверку
         """
+        archive = self.data_dir.joinpath(ARCHIVE)
         filepath = download_file(
             url=DOWNLOAD_URL,
-            filename="Freq2011.zip",
+            filename=ARCHIVE,
             dirpath=self.data_dir,
             force=force,
         )
-        if filepath:
-            extract_archive(filepath, self.data_dir)
+        if filepath or not self._filepath.is_file():
+            if sha256(archive) != ARCHIVE_SHA256:
+                archive.unlink(missing_ok=True)
+                raise RuntimeError(
+                    f"Файл {archive} не прошел проверку контрольной суммы и удален, "
+                    "повторите загрузку"
+                )
+            extract_archive(archive, self.data_dir)
         self.check_data()
-        self.__dict__.pop("entries", None)
+        load_entries.cache_clear()
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
@@ -218,7 +240,7 @@ class FreqDict(Dataset):
         for record in self.get_records(pos, min_ipm, limit):
             yield record["lemma"]
 
-    @cached_property
+    @property
     def entries(self) -> dict[str, Entry]:
         """
         Справочник статей словаря по нормализованной лемме
@@ -226,31 +248,10 @@ class FreqDict(Dataset):
         Вывод:
             dict[str, Entry]: Статьи, части речи одной леммы склеены
         """
-        entries: dict[str, Entry] = {}
-        for record in self:
-            key = normalize_yo(record["lemma"])
-            entry = entries.get(key)
-            if entry is None:
-                entries[key] = Entry(
-                    key,
-                    (record["pos"],),
-                    record["ipm"],
-                    record["range"],
-                    record["dispersion"],
-                    record["docs"],
-                )
-            else:
-                entries[key] = Entry(
-                    key,
-                    (*entry.pos, record["pos"]),
-                    round(entry.ipm + record["ipm"], 2),
-                    max(entry.range, record["range"]),
-                    max(entry.dispersion, record["dispersion"]),
-                    max(entry.docs, record["docs"]),
-                )
-        return entries
+        self.check_data()
+        return load_entries(self._filepath)
 
-    @cached_property
+    @property
     def min_ipm(self) -> float:
         """
         Минимальная частота в словаре
@@ -287,3 +288,58 @@ class FreqDict(Dataset):
 
     def __contains__(self, lemma: object) -> bool:
         return isinstance(lemma, str) and normalize_yo(lemma) in self.entries
+
+
+def sha256(path: Path) -> str:
+    """
+    Вычисление контрольной суммы SHA-256 файла
+
+    Аргументы:
+        path (Path): Путь к файлу
+
+    Вывод:
+        str: Контрольная сумма в шестнадцатеричном виде, пустая строка для отсутствующего файла
+    """
+    if not path.is_file():
+        return ""
+    with path.open("rb") as file:
+        return hashlib.file_digest(file, "sha256").hexdigest()
+
+
+@cache
+def load_entries(filepath: Path) -> dict[str, Entry]:
+    """
+    Разбор файла словаря в справочник статей по нормализованной лемме
+
+    Описание:
+        Результат кэшируется по пути к файлу, поэтому все экземпляры FreqDict
+        с одной директорией используют один разобранный словарь; кэш сбрасывается
+        при повторной загрузке
+
+    Аргументы:
+        filepath (Path): Путь к файлу словаря
+
+    Вывод:
+        dict[str, Entry]: Статьи, части речи одной леммы склеены
+    """
+    entries: dict[str, Entry] = {}
+    with filepath.open(encoding="utf-8", newline="") as file:
+        reader = csv.reader(file, delimiter="\t")
+        next(reader)
+        for lemma, pos, ipm, range_, dispersion, docs in reader:
+            key = normalize_yo(lemma)
+            entry = entries.get(key)
+            if entry is None:
+                entries[key] = Entry(
+                    key, (pos,), float(ipm), int(range_), int(dispersion), int(docs)
+                )
+            else:
+                entries[key] = Entry(
+                    key,
+                    (*entry.pos, pos),
+                    round(entry.ipm + float(ipm), 2),
+                    max(entry.range, int(range_)),
+                    max(entry.dispersion, int(dispersion)),
+                    max(entry.docs, int(docs)),
+                )
+    return entries
