@@ -2193,12 +2193,13 @@
 <p><strong>ruts.visualizers.highlight()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Подсветка фрагментов текста, по которым считаются статистики библиотеки, в стиле сервисов <a href="https://glvrd.ru/">Главред</a> и <a href="https://turgenev.ashmanov.com/">Тургенев</a>: длинные предложения, сложные слова, стоп-слова, пассив, причастные и деепричастные обороты, цепочки родительных падежей, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Подсветка фрагментов текста, по которым считаются статистики библиотеки, в стиле сервисов <a href="https://glvrd.ru/">Главред</a> и <a href="https://turgenev.ashmanov.com/">Тургенев</a>: длинные предложения, сложные и редкие слова, пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отглагольные существительные, производные предлоги, штампы, стоп-слова, вводные слова, коннекторы, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Функция возвращает объект <code>HighlightedText</code>, который в Jupyter отображается как HTML со стилями и легендой; метод <code>to_html</code> возвращает ту же разметку для документации и веб-приложений. Фрагменты хранятся в атрибуте <code>highlights</code> и доступны для собственной отрисовки.</p>
 <p>Слои подсветки:</p>
 <table>
 <thead>
 <tr>
+<th style="text-align: left;">Группа</th>
 <th style="text-align: center;">Слой</th>
 <th style="text-align: center;">Что отмечает</th>
 <th style="text-align: center;">Статистика</th>
@@ -2206,48 +2207,98 @@
 </thead>
 <tbody>
 <tr>
+<td style="text-align: left;">Читаемость</td>
 <td style="text-align: center;"><code>long_sents</code></td>
 <td style="text-align: center;">Предложения с числом слов не меньше <code>long_sent_word_factor</code></td>
 <td style="text-align: center;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;"></td>
 <td style="text-align: center;"><code>complex_words</code></td>
 <td style="text-align: center;">Слова с числом слогов не меньше <code>complex_syl_factor</code></td>
 <td style="text-align: center;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">Стоп-слова по части речи или переданному списку - «вода» текста</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>rare_words</code></td>
+<td style="text-align: center;">Слова с леммой вне вшитого списка топ-10000; числа, латиница, сокращения и стоп-слова не подсвечиваются</td>
+<td style="text-align: center;"><a href="../../stats/lexical_stats/">LexicalStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;">Синтаксис</td>
 <td style="text-align: center;"><code>passive</code></td>
 <td style="text-align: center;">Пассивные глагольные формы вместе со вспомогательным глаголом</td>
 <td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;"></td>
 <td style="text-align: center;"><code>participle_clauses</code></td>
 <td style="text-align: center;">Причастные обороты</td>
 <td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;"></td>
 <td style="text-align: center;"><code>converb_clauses</code></td>
 <td style="text-align: center;">Деепричастные обороты</td>
 <td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;"></td>
 <td style="text-align: center;"><code>genitive_chains</code></td>
 <td style="text-align: center;">Цепочки родительных падежей вместе с управляющим словом</td>
 <td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>split_predicates</code></td>
+<td style="text-align: center;">Расщепленные сказуемые от глагола до именной части</td>
+<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;">Канцелярит</td>
+<td style="text-align: center;"><code>verbal_nouns</code></td>
+<td style="text-align: center;">Отглагольные существительные</td>
+<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>compound_prepositions</code></td>
+<td style="text-align: center;">Производные предлоги по списку <code>COMPOUND_PREPOSITIONS</code></td>
+<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>cliches</code></td>
+<td style="text-align: center;">Штампы по списку <code>OFFICIALESE_CLICHES</code> или параметру <code>cliches</code></td>
+<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;">Стиль</td>
+<td style="text-align: center;"><code>stopwords</code></td>
+<td style="text-align: center;">Стоп-слова по части речи или переданному списку - «вода» текста</td>
+<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>parentheticals</code></td>
+<td style="text-align: center;">Вводные слова и обороты</td>
+<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"></td>
+<td style="text-align: center;"><code>connectors</code></td>
+<td style="text-align: center;">Коннекторы, в подсказке класс и тип</td>
+<td style="text-align: center;"><a href="../../stats/cohesion_stats/">CohesionStats</a></td>
+</tr>
+<tr>
+<td style="text-align: left;">Фоника</td>
 <td style="text-align: center;"><code>alliteration</code></td>
 <td style="text-align: center;">Повторы согласной в соседних словах, маловероятные при частотах букв русского языка</td>
 <td style="text-align: center;"><a href="../../stats/phon_stats/">PhonStats</a></td>
 </tr>
 </tbody>
 </table>
-<p>Слои <code>passive</code>, <code>participle_clauses</code>, <code>converb_clauses</code> и <code>genitive_chains</code> считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>); слой <code>long_sents</code> для <code>Doc</code> требует границ предложений. По умолчанию включаются все слои, доступные источнику.</p>
+<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>); слой <code>long_sents</code> для <code>Doc</code> требует границ предложений. По умолчанию включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code> - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; <code>layers="all"</code> включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Аллитерация ищется внутри предложения как цепочка из двух и более соседних слов, в основе каждого из которых есть одна и та же согласная буква. Основа - общая начальная часть словоформы и ее леммы по pymorphy3 (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>): окончания согласуются с соседними словами и повторяют согласные по грамматике, а не по звучанию (<em>этих крупных</em>, <em>своим целям и нуждам</em>). Вероятность цепочки при независимом распределении букв - произведение по словам вероятностей встретить согласную среди букв основы, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, где <span class="arithmatex">\(f\)</span> - <a href="https://ru.wikipedia.org/wiki/Частотность">частота согласной</a> в русских текстах, <span class="arithmatex">\(n\)</span> - число букв основы; цепочка подсвечивается, если вероятность ниже порога <code>alliteration_threshold</code>. На каждой позиции проверяется около двадцати согласных, поэтому порог строгий: на прозе при 0.001 подсвечено около 5% слов, при 0.01 - около 20%, в основном случайные совпадения частых букв. Повтор редкой согласной (<em>слышно, бесшумно шуршат камыши</em>) заметен в двух-трех словах, повтор частой в длинных словах ожидаем и не подсвечивается. Слова короче трех букв и слова без гласных цепочку не прерывают и не продолжают, буква <em>й</em> не учитывается, так как в именительном падеже входит в лемму прилагательного. Индекс аллитерации <a href="../../stats/phon_stats/">PhonStats</a> измеряет сгруппированность повторов во всем тексте, подсветка показывает их места.</p>
@@ -2271,9 +2322,9 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>layers</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/str</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Слои подсветки; если не заданы, включаются все доступные источнику</td>
+<td style="text-align: center;">Слои подсветки; если не заданы, включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code>, доступные источнику; <code>"all"</code> - все доступные</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>long_sent_word_factor</code></td>
@@ -2292,6 +2343,12 @@
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Список стоп-слов; если не задан, стоп-слова определяются по части речи с помощью pymorphy3</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>cliches</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Список штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>alliteration_threshold</code></td>
@@ -2382,15 +2439,22 @@
     <span class="s2">"до следующего заседания."</span>
 <span class="p">)</span>
 
-<span class="c1"># Подсветка текста</span>
+<span class="c1"># Подсветка текста слоями по умолчанию</span>
 <span class="n">ht</span> <span class="o">=</span> <span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">ht</span><span class="o">.</span><span class="n">counts</span>
-<span class="c1"># {'long_sents': 1, 'complex_words': 26, 'stopwords': 17, 'passive': 4, 'participle_clauses': 2,</span>
-<span class="c1">#  'converb_clauses': 1, 'genitive_chains': 2, 'alliteration': 1}</span>
+<span class="c1"># {'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2,</span>
+<span class="c1">#  'split_predicates': 0, 'cliches': 1}</span>
 
 <span class="n">ht</span><span class="o">.</span><span class="n">highlights</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-<span class="c1"># (Highlight(start=8, end=32, layer='participle_clauses', note='причастный оборот, 3 слова'),</span>
-<span class="c1">#  Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'))</span>
+<span class="c1"># (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),</span>
+<span class="c1">#  Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))</span>
+
+<span class="c1"># Все слои</span>
+<span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">layers</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
+<span class="c1"># {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,</span>
+<span class="c1">#  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,</span>
+<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 17, 'parentheticals': 0,</span>
+<span class="c1">#  'connectors': 4, 'alliteration': 1}</span>
 
 <span class="c1"># Отображение в Jupyter или сохранение разметки</span>
 <span class="n">ht</span>
@@ -2403,18 +2467,25 @@
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-hl-long_sents, .ruts-hl-complex_words, .ruts-hl-stopwords, .ruts-hl-passive { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
 .ruts-hl-complex_words { background: #fed7aa; }
-.ruts-hl-stopwords { background: #bae6fd; }
+.ruts-hl-rare_words { background: #e5e7eb; }
 .ruts-hl-passive { background: #fecaca; }
+.ruts-hl-verbal_nouns { background: #e9d5ff; }
+.ruts-hl-compound_prepositions { background: #a7f3d0; }
+.ruts-hl-cliches { background: #fbcfe8; }
+.ruts-hl-stopwords { background: #bae6fd; }
+.ruts-hl-parentheticals { background: #d9f99d; }
 .ruts-hl-participle_clauses { border-bottom: 2px solid #7c3aed; }
 .ruts-hl-converb_clauses { border-bottom: 2px solid #0d9488; }
 .ruts-hl-genitive_chains { border-bottom: 2px solid #b45309; }
+.ruts-hl-split_predicates { border-bottom: 2px solid #dc2626; }
+.ruts-hl-connectors { border-bottom: 2px dashed #2563eb; }
 .ruts-hl-alliteration { text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: #db2777; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-</style><div class="ruts-highlight-legend"><span><span class="ruts-hl ruts-hl-long_sents">Длинные предложения</span><span class="ruts-highlight-count">1</span></span><span><span class="ruts-hl ruts-hl-complex_words">Сложные слова</span><span class="ruts-highlight-count">26</span></span><span><span class="ruts-hl ruts-hl-stopwords">Стоп-слова</span><span class="ruts-highlight-count">17</span></span><span><span class="ruts-hl ruts-hl-passive">Пассив</span><span class="ruts-highlight-count">4</span></span><span><span class="ruts-hl ruts-hl-participle_clauses">Причастные обороты</span><span class="ruts-highlight-count">2</span></span><span><span class="ruts-hl ruts-hl-converb_clauses">Деепричастные обороты</span><span class="ruts-highlight-count">1</span></span><span><span class="ruts-hl ruts-hl-genitive_chains">Цепочки родительных</span><span class="ruts-highlight-count">2</span></span><span><span class="ruts-hl ruts-hl-alliteration">Аллитерация</span><span class="ruts-highlight-count">1</span></span></div><div class="ruts-highlight-text">Проект, <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive ruts-hl-participle_clauses" title="сложное слово, 5 слогов; пассив без агенса; причастный оборот, 3 слова">подготовленный</span><span class="ruts-hl ruts-hl-participle_clauses" title="причастный оборот, 3 слова"> </span><span class="ruts-hl ruts-hl-stopwords ruts-hl-participle_clauses" title="стоп-слово; причастный оборот, 3 слова">за</span><span class="ruts-hl ruts-hl-participle_clauses" title="причастный оборот, 3 слова"> неделю</span>, <span class="ruts-hl ruts-hl-passive" title="пассив">был одобрен</span> советом <span class="ruts-hl ruts-hl-stopwords" title="стоп-слово">без</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">обсуждения</span>. <span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">Повышение</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">эффективности</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 6 слогов; цепочка из 3 родительных">использования</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> бюджетных средств</span> <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">обсуждалось</span>, <span class="ruts-hl ruts-hl-stopwords ruts-hl-converb_clauses" title="стоп-слово; деепричастный оборот, 5 слов">не</span><span class="ruts-hl ruts-hl-converb_clauses" title="деепричастный оборот, 5 слов"> выходя </span><span class="ruts-hl ruts-hl-stopwords ruts-hl-converb_clauses" title="стоп-слово; деепричастный оборот, 5 слов">за</span><span class="ruts-hl ruts-hl-converb_clauses" title="деепричастный оборот, 5 слов"> рамки </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-converb_clauses" title="сложное слово, 4 слога; деепричастный оборот, 5 слов">регламента</span>. <span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">Участники</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-participle_clauses" title="длинное предложение, 26 слов; сложное слово, 5 слогов; причастный оборот, 3 слова">представлявшие</span><span class="ruts-hl ruts-hl-long_sents ruts-hl-participle_clauses" title="длинное предложение, 26 слов; причастный оборот, 3 слова"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-participle_clauses" title="длинное предложение, 26 слов; сложное слово, 6 слогов; причастный оборот, 3 слова">региональные</span><span class="ruts-hl ruts-hl-long_sents ruts-hl-participle_clauses" title="длинное предложение, 26 слов; причастный оборот, 3 слова"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-participle_clauses" title="длинное предложение, 26 слов; сложное слово, 4 слога; причастный оборот, 3 слова">министерства</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">не</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> смогли </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">согласовать</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">позиции</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">по</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> вопросам </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 7 слогов">финансирования</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">и</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 6 слогов">распределения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">ответственности</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">между</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">ведомствами</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">поскольку</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">каждое</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">из</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">них</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">настаивало</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-stopwords" title="длинное предложение, 26 слов; стоп-слово">на</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> собственной </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных">трактовке </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 4 слога; цепочка из 2 родительных">положений</span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 5 слогов; цепочка из 2 родительных">соглашения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">.</span> Споры стихли, <span class="ruts-hl ruts-hl-stopwords" title="стоп-слово">в</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">кулуарах</span> <span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">шумно шептались </span><span class="ruts-hl ruts-hl-stopwords ruts-hl-alliteration" title="стоп-слово; аллитерация на «ш»">и</span><span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-alliteration" title="сложное слово, 4 слога; аллитерация на «ш»">шушукались</span><span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">, </span><span class="ruts-hl ruts-hl-stopwords ruts-hl-alliteration" title="стоп-слово; аллитерация на «ш»">а</span><span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-alliteration" title="сложное слово, 4 слога; аллитерация на «ш»">решение</span> <span class="ruts-hl ruts-hl-passive" title="пассив без агенса">было </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">отложено</span> <span class="ruts-hl ruts-hl-stopwords" title="стоп-слово">до</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">следующего</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">заседания</span>.</div></div>
+</style><div class="ruts-highlight-legend"><span><span class="ruts-hl ruts-hl-long_sents">Длинные предложения</span><span class="ruts-highlight-count">1</span></span><span><span class="ruts-hl ruts-hl-complex_words">Сложные слова</span><span class="ruts-highlight-count">26</span></span><span><span class="ruts-hl ruts-hl-passive">Пассив</span><span class="ruts-highlight-count">4</span></span><span><span class="ruts-hl ruts-hl-genitive_chains">Цепочки родительных</span><span class="ruts-highlight-count">2</span></span><span><span class="ruts-hl ruts-hl-split_predicates">Расщеплённые сказуемые</span><span class="ruts-highlight-count">0</span></span><span><span class="ruts-hl ruts-hl-cliches">Штампы</span><span class="ruts-highlight-count">1</span></span></div><div class="ruts-highlight-text">Проект, <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 5 слогов; пассив без агенса">подготовленный</span> за неделю, <span class="ruts-hl ruts-hl-passive" title="пассив">был одобрен</span> советом без <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">обсуждения</span>. <span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">Повышение</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">эффективности</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 6 слогов; цепочка из 3 родительных">использования</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> бюджетных средств</span> <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">обсуждалось</span>, не выходя за рамки <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">регламента</span>. <span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">Участники</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">представлявшие</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 6 слогов">региональные</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">министерства</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, не смогли </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">согласовать</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">позиции</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-cliches" title="длинное предложение, 26 слов; штамп: «по вопросам»">по вопросам</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 7 слогов">финансирования</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> и </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 6 слогов">распределения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">ответственности</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> между </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">ведомствами</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, поскольку каждое из них </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">настаивало</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> на собственной </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных">трактовке </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 4 слога; цепочка из 2 родительных">положений</span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 5 слогов; цепочка из 2 родительных">соглашения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">.</span> Споры стихли, в <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">кулуарах</span> шумно шептались и <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">шушукались</span>, а <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">решение</span> <span class="ruts-hl ruts-hl-passive" title="пассив без агенса">было </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">отложено</span> до <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">следующего</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">заседания</span>.</div></div>
 
-<p>Подсветка по строке без модели spaCy включает четыре слоя: длинные предложения, сложные слова, стоп-слова и аллитерации.</p>
+<p>Подсветка по строке без модели spaCy включает все слои, кроме синтаксических: по умолчанию длинные предложения, сложные слова и штампы.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">highlight</span>
