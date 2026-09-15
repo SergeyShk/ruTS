@@ -369,11 +369,13 @@ def test_print_stats(cs, capsys):
 
 connectors_text = (
     "Кот сидел на окне, потому что ждал птиц. Однако птицы улетели, и всё же кот не ушёл. "
-    "Затем, иными словами, он уснул. Если бы птицы вернулись, кот проснулся бы."
+    "Затем, иными словами, он уснул. Если бы птицы вернулись, кот проснулся бы. "
+    "Во-первых, из-за этого он голоден."
 )
-# 29 слов: потому что (причинный, первичный), однако (противительный, первичный),
+# 34 слова: потому что (причинный, первичный), однако (противительный, первичный),
 # и всё же (уступительный, первичный), затем (временной, первичный),
-# иными словами (переформулирующий, вторичный), если бы (условный, первичный)
+# иными словами (переформулирующий, вторичный), если бы (условный, первичный),
+# во-первых (аддитивный, первичный), из-за этого (причинный, вторичный)
 
 
 def test_connectors_dictionary():
@@ -389,7 +391,7 @@ def test_connectors_dictionary():
 
 def test_connectors():
     cs = CohesionStats(connectors_text)
-    assert cs.n_words == 29
+    assert cs.n_words == 34
     assert [connector.text for connector in cs.connector_spans] == [
         "потому что",
         "однако",
@@ -397,22 +399,44 @@ def test_connectors():
         "затем",
         "иными словами",
         "если бы",
+        "во-первых",
+        "из-за этого",
     ]
     assert cs.connector_spans[0] == Connector(0, 4, 6, "потому что", "causal", "primary")
     assert cs.connector_spans[2] == Connector(1, 3, 6, "и всё же", "concessive", "primary")
-    assert cs.n_connectors == 6
+    assert cs.connector_spans[6] == Connector(4, 0, 1, "во-первых", "additive", "primary")
+    assert cs.connector_spans[7] == Connector(4, 1, 3, "из-за этого", "causal", "secondary")
+    assert cs.n_connectors == 8
     assert cs.c_connectors["и всё же"] == 1
-    assert cs.connectors == pytest.approx(6 / 29 * 1000)
-    for cls in ("causal", "adversative", "concessive", "temporal", "reformulative", "conditional"):
-        assert getattr(cs, f"connectors_{cls}") == pytest.approx(1 / 29 * 1000)
-    assert cs.connectors_additive == 0
-    assert cs.connectors_primary == pytest.approx(5 / 29 * 1000)
-    assert cs.connectors_secondary == pytest.approx(1 / 29 * 1000)
+    assert cs.connectors == pytest.approx(8 / 34 * 1000)
+    assert cs.connectors_causal == pytest.approx(2 / 34 * 1000)
+    assert cs.connectors_additive == pytest.approx(1 / 34 * 1000)
+    for cls in ("adversative", "concessive", "temporal", "reformulative", "conditional"):
+        assert getattr(cs, f"connectors_{cls}") == pytest.approx(1 / 34 * 1000)
+    assert cs.connectors_primary == pytest.approx(6 / 34 * 1000)
+    assert cs.connectors_secondary == pytest.approx(2 / 34 * 1000)
 
 
 def test_connectors_doc(nlp):
     doc = nlp(connectors_text)
-    assert CohesionStats(doc).connector_spans == CohesionStats(connectors_text).connector_spans
+    doc_cs = CohesionStats(doc)
+    assert [connector.text for connector in doc_cs.connector_spans] == [
+        connector.text for connector in CohesionStats(connectors_text).connector_spans
+    ]
+    assert doc_cs.words[4] == ("Во", "первых", "из", "за", "этого", "он", "голоден")
+    assert doc_cs.connector_spans[6] == Connector(4, 0, 2, "во-первых", "additive", "primary")
+    assert doc_cs.connector_spans[7] == Connector(4, 2, 5, "из-за этого", "causal", "secondary")
+
+
+def test_connectors_hyphens_and_dots(nlp):
+    text = "Из-за этого мы опоздали, т.е. пришли позже. Всё-таки успели."
+    expected = ["из-за этого", "т.е.", "позже", "всё-таки"]
+    assert [connector.text for connector in CohesionStats(text).connector_spans] == expected
+    assert [connector.text for connector in CohesionStats(nlp(text)).connector_spans] == expected
+    assert find_connectors(["во", "первых"]) == [
+        Connector(0, 0, 2, "во-первых", "additive", "primary")
+    ]
+    assert find_connectors(["т", "е"]) == [Connector(0, 0, 2, "т.е.", "reformulative", "primary")]
 
 
 def test_find_connectors():
@@ -435,12 +459,19 @@ def test_find_connectors_custom():
     ]
     cs = CohesionStats(connectors_text, connectors=custom)
     assert cs.n_connectors == 4
-    assert cs.connectors_additive == pytest.approx(3 / 29 * 1000)
+    assert cs.connectors_additive == pytest.approx(3 / 34 * 1000)
     assert CohesionStats(connectors_text, connectors={}).n_connectors == 0
     with pytest.raises(ValueError):
         find_connectors(["кот"], {"кот": ("noun", "primary")})
     with pytest.raises(ValueError):
         find_connectors(["кот"], {"кот": ("causal", "tertiary")})
+    assert find_connectors(["он", "ушёл", "однако"], {"однако ": ("adversative", "primary")}) == [
+        Connector(0, 2, 3, "однако ", "adversative", "primary")
+    ]
+    assert find_connectors(["потому", "что"], {"потому  что": ("causal", "primary")}) == [
+        Connector(0, 0, 2, "потому  что", "causal", "primary")
+    ]
+    assert find_connectors(["кот"], {"": ("causal", "primary"), " ": ("causal", "primary")}) == []
 
 
 def test_connectors_single_sentence_words(cs):

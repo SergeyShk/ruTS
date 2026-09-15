@@ -20,7 +20,7 @@ from .constants import (
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import find_phrases, lemmatize, normalize_yo, parse_word, safe_divide
+from .utils import lemmatize, normalize_yo, parse_word, safe_divide
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -276,10 +276,11 @@ class CohesionStats:
         self.aspect_repetition = calc_repetition(aspects)
         self.temporal_cohesion = fmean((self.tense_repetition, self.aspect_repetition))
 
+        index = _normalize_connectors() if connectors is None else _normalize(connectors)
         self.connector_spans = tuple(
             connector
-            for index, sent in enumerate(self.words)
-            for connector in find_connectors(sent, connectors, sent_index=index)
+            for sent_index, sent in enumerate(self.words)
+            for connector in _find(sent, index, sent_index)
         )
         self.n_connectors = len(self.connector_spans)
         self.c_connectors = dict(
@@ -340,18 +341,70 @@ def load_connectors() -> dict[str, tuple[str, str]]:
     return connectors
 
 
-def _normalize(connectors: Mapping[str, tuple[str, str]]) -> dict[str, tuple[str, str, str]]:
-    normalized = {}
+class ConnectorIndex(NamedTuple):
+    """
+    Индекс словаря коннекторов для поиска
+
+    Атрибуты:
+        entries (dict[str, tuple[str, str, str]]): Коннектор, класс и тип по нормализованному ключу
+        by_first (dict[str, tuple[tuple[str, ...], ...]]): Шаблоны по первому слову,
+            от длинных к коротким
+    """
+
+    entries: dict[str, tuple[str, str, str]]
+    by_first: dict[str, tuple[tuple[str, ...], ...]]
+
+
+def _normalize(connectors: Mapping[str, tuple[str, str]]) -> ConnectorIndex:
+    """
+    Построение индекса словаря коннекторов
+
+    Описание:
+        Ключ - словоформы в нижнем регистре без буквы ё через один пробел; для
+        коннекторов с дефисом или точкой (во-первых, из-за, т.е.) добавляется ключ
+        с пробелами вместо них, так как spaCy отделяет дефис, а WordsExtractor - точку;
+        шаблоны группируются по первому слову
+    """
+    entries: dict[str, tuple[str, str, str]] = {}
+    patterns: dict[str, list[tuple[str, ...]]] = {}
     for connector, (cls, kind) in connectors.items():
         if cls not in CONNECTOR_CLASSES or kind not in CONNECTOR_TYPES:
             raise ValueError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
-        normalized[normalize_yo(connector)] = (connector, cls, kind)
-    return normalized
+        key = " ".join(normalize_yo(connector).split())
+        split = " ".join(key.replace("-", " ").replace(".", " ").split())
+        for variant in {key, split}:
+            if not variant:
+                continue
+            entries[variant] = (connector, cls, kind)
+            pattern = tuple(variant.split())
+            patterns.setdefault(pattern[0], []).append(pattern)
+    by_first = {
+        first: tuple(sorted(set(group), key=len, reverse=True))
+        for first, group in patterns.items()
+    }
+    return ConnectorIndex(entries, by_first)
 
 
 @cache
-def _normalize_connectors() -> dict[str, tuple[str, str, str]]:
+def _normalize_connectors() -> ConnectorIndex:
     return _normalize(load_connectors())
+
+
+def _find(words: Sequence[str], index: ConnectorIndex, sent_index: int) -> list[Connector]:
+    normalized = [normalize_yo(word) for word in words]
+    found = []
+    position = 0
+    while position < len(normalized):
+        for pattern in index.by_first.get(normalized[position], ()):
+            end = position + len(pattern)
+            if tuple(normalized[position:end]) == pattern:
+                text, cls, kind = index.entries[" ".join(pattern)]
+                found.append(Connector(sent_index, position, end, text, cls, kind))
+                position = end
+                break
+        else:
+            position += 1
+    return found
 
 
 def find_connectors(
@@ -363,9 +416,10 @@ def find_connectors(
     Поиск коннекторов в предложении
 
     Описание:
-        Коннекторы ищутся по словоформам в нижнем регистре без буквы ё (find_phrases):
-        в каждой позиции берется самый длинный («и все же» не распадается на «и»),
-        найденные не пересекаются
+        Коннекторы ищутся по словоформам в нижнем регистре без буквы ё: в каждой
+        позиции берется самый длинный («и все же» не распадается на «и»), найденные
+        не пересекаются; дефис и точка внутри коннектора (во-первых, т.е.) могут
+        быть отделены токенизатором
 
     Аргументы:
         words (list[str]): Слова предложения
@@ -379,12 +433,8 @@ def find_connectors(
     Исключения:
         ValueError: Если в словаре встречается неизвестный класс или тип
     """
-    normalized = _normalize_connectors() if connectors is None else _normalize(connectors)
-    found = []
-    for start, end in find_phrases(words, normalized):
-        text, cls, kind = normalized[" ".join(normalize_yo(word) for word in words[start:end])]
-        found.append(Connector(sent_index, start, end, text, cls, kind))
-    return found
+    index = _normalize_connectors() if connectors is None else _normalize(connectors)
+    return _find(words, index, sent_index)
 
 
 def word_info(word: str) -> WordInfo:
