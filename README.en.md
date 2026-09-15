@@ -39,9 +39,9 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
-* **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, verbal nouns, compound prepositions, parentheticals and clichés
+* **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
-* **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates over the spaCy parse
+* **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
@@ -402,7 +402,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Spam score
 *   Naturalness by Zipf's law
 *   Keyword and phrase density
-*   Verbal nouns, compound prepositions, parentheticals and clichés
+*   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
 
 The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content are detected by part of speech with pymorphy3 or passed as a list.
 
@@ -491,7 +491,7 @@ The library counts over the spaCy dependency tree (a model with a parser is requ
 *   Coordination chains, clauses and subordinate clauses
 *   Noun phrase modifiers and genitive chains
 *   Participial and adverbial participial clauses, passive voice, infinitives and negations
-*   Split predicates ("осуществлять проверку") and the noun-to-verb ratio
+*   Syntactic officialese markers: split predicates ("осуществлять проверку"), noun-to-verb ratio
 
 ```python
 >>> import spacy
