@@ -8,7 +8,7 @@ from typing import NamedTuple
 from razdel import sentenize, tokenize
 from spacy.tokens import Doc, Token
 
-from ..cohesion_stats import find_connectors
+from ..cohesion_stats import connector_pos, find_connectors, unit_pos, unit_text
 from ..constants import (
     ALLITERATION_IGNORED_LETTERS,
     ALLITERATION_MIN_WORD_LEN,
@@ -44,6 +44,7 @@ from ..utils import (
     find_phrases,
     is_punctuation,
     is_verbal_noun,
+    iter_doc_units,
     iter_doc_words,
     normalize_yo,
     parse_word,
@@ -79,6 +80,7 @@ class Word(NamedTuple):
     start: int
     end: int
     text: str
+    pos: str | None = None
 
 
 class Sent(NamedTuple):
@@ -190,7 +192,7 @@ class HighlightedText:
     ):
         if isinstance(source, Doc):
             self.text = source.text
-            words = [Word(start, end, text) for start, end, text in iter_doc_words(source)]
+            words = get_doc_words(source)
             sents = get_doc_sents(source) if source.has_annotation("SENT_START") else None
             doc = source if source.has_annotation("DEP") else None
         elif isinstance(source, str):
@@ -413,6 +415,32 @@ def get_text_sents(text: str, words: Sequence[Word]) -> list[Sent]:
             index += 1
         sents.append(Sent(sent.start, sent.stop, n_words))
     return sents
+
+
+def get_doc_words(doc: Doc) -> list[Word]:
+    """
+    Извлечение слов с позициями из объекта Doc
+
+    Описание:
+        Слова как в iter_doc_words, дефисные слова - одним словом; при разметке
+        частей речи слово получает часть речи UD (unit_pos)
+
+    Аргументы:
+        doc (Doc): Объект Doc
+
+    Вывод:
+        list[Word]: Список слов с позициями
+    """
+    tagged = doc.has_annotation("POS")
+    return [
+        Word(
+            unit[0].idx,
+            unit[-1].idx + len(unit[-1]),
+            unit_text(unit),
+            unit_pos(unit) if tagged else None,
+        )
+        for unit in iter_doc_units(doc)
+    ]
 
 
 def get_doc_sents(doc: Doc) -> list[Sent]:
@@ -668,7 +696,10 @@ def find_connector_highlights(
 
     Описание:
         Коннекторы ищутся внутри каждого предложения (find_connectors), без границ
-        предложений - по всему тексту; в подсказке класс и тип коннектора
+        предложений - по всему тексту; однословные коннекторы проверяются по части
+        речи слова из разметки Doc, а без нее - по pymorphy3 (connector_pos), так
+        «раз» и «значит» как существительное и глагол не считаются; в подсказке
+        класс и тип коннектора
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -680,7 +711,9 @@ def find_connector_highlights(
     groups = group_words_by_sents(words, sents) if sents else [list(words)]
     highlights = []
     for group in groups:
-        for connector in find_connectors([word.text for word in group]):
+        texts = [word.text for word in group]
+        pos = [word.pos or connector_pos(word.text) for word in group]
+        for connector in find_connectors(texts, sent_index=0, pos=pos):
             note = (
                 f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
                 f"{CONNECTOR_TYPES[connector.kind]}"

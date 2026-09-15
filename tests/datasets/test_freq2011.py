@@ -137,6 +137,21 @@ def test_entries_cached(dataset):
     assert load_min_ipm.cache_info().hits >= 1
 
 
+def test_check_data_once(tmp_path, monkeypatch):
+    write_dict(tmp_path)
+    dataset = FreqDict(data_dir=tmp_path)
+    calls = []
+    original = dataset.check_data
+    monkeypatch.setattr(dataset, "check_data", lambda: calls.append(1) or original())
+    with pytest.raises(OSError):
+        _ = FreqDict(data_dir=tmp_path / "missing").entries
+    assert dataset.ipm("кот") == 40.3
+    assert dataset.lookup("окно") is not None
+    assert dataset.min_ipm == 4.1
+    assert "кот" in dataset
+    assert calls == [1]
+
+
 def test_download_corrupted(tmp_path, monkeypatch):
     def fake_download(url, filename, dirpath, force):
         return str(make_archive(Path(dirpath), b"<html>not an archive</html>"))

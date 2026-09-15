@@ -26,7 +26,7 @@
 | | `cliches` | Штампы по списку `OFFICIALESE_CLICHES` или параметру `cliches` | [StyleStats](../stats/style_stats.md) |
 | Стиль | `stopwords` | Стоп-слова по части речи или переданному списку - «вода» текста | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Вводные слова и обороты | [StyleStats](../stats/style_stats.md) |
-| | `connectors` | Коннекторы, в подсказке класс и тип | [CohesionStats](../stats/cohesion_stats.md) |
+| | `connectors` | Коннекторы по части речи из разметки `Doc` или pymorphy3, в подсказке класс и тип | [CohesionStats](../stats/cohesion_stats.md) |
 | Фоника | `alliteration` | Повторы согласной в соседних словах, маловероятные при частотах букв русского языка | [PhonStats](../stats/phon_stats.md) |
 
 Группы заданы в `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта `Doc` с разбором зависимостей (модели `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`); слой `long_sents` для `Doc` требует границ предложений. По умолчанию включаются слои `HIGHLIGHT_DEFAULT_LAYERS` - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; `layers="all"` включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.

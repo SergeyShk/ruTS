@@ -754,8 +754,9 @@ def get_lemma(token: Token) -> str:
     Получение леммы токена в нижнем регистре
 
     Описание:
-        Лемма spaCy, а без лемматизатора в пайплайне - разбор pymorphy3
-        с частью речи токена (lemmatize)
+        Разбор pymorphy3 с частью речи токена (lemmatize), а не token.lemma_:
+        лемматизатор моделей ru_core_news возвращает словоформу для AUX
+        и при расхождении признаков теггера и pymorphy3 (были, них, стихли)
 
     Аргументы:
         token (Token): Токен
@@ -763,7 +764,7 @@ def get_lemma(token: Token) -> str:
     Вывод:
         str: Лемма
     """
-    return token.lemma_.lower() if token.lemma_ else lemmatize(token.text, token.pos_)
+    return lemmatize(token.text, token.pos_)
 
 
 def is_light_verb(token: Token) -> bool:

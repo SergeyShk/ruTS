@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Collection, Mapping, Sequence
-from functools import cache
+from functools import cache, lru_cache
 from itertools import combinations, pairwise
 from math import nan
 from statistics import fmean
@@ -12,6 +12,8 @@ from spacy.tokens import Doc, Token
 from .constants import (
     COHESION_STATS_DESC,
     CONNECTOR_CLASSES,
+    CONNECTOR_POS,
+    CONNECTOR_POS_EXTRA,
     CONNECTOR_TYPES,
     CONTENT_POS,
     CONTENT_UD_POS,
@@ -20,7 +22,15 @@ from .constants import (
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import lemmatize, normalize_yo, parse_word, safe_divide
+from .morph_stats import tag_to_ud_pos, word_to_ud
+from .utils import (
+    get_morph_analyzer,
+    iter_doc_units,
+    lemmatize,
+    normalize_yo,
+    parse_word,
+    safe_divide,
+)
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -100,9 +110,13 @@ class CohesionStats:
         указательные, повторяющиеся леммы) и темпоральная связность (повтор времени
         и вида глаголов в соседних предложениях)
         Пары предложений сравниваются по леммам. Для Doc с разметкой частей речи
-        леммы, части речи, время и вид берутся из token.lemma_, token.pos_
-        и token.morph (без лемм - из разбора pymorphy3 с частью речи токена),
-        для строки и Doc без разметки - из первого разбора pymorphy3
+        части речи, время и вид берутся из token.pos_ и token.morph, лемма - из разбора
+        pymorphy3 с частью речи токена (lemmatize): лемматизатор моделей ru_core_news
+        возвращает словоформу для AUX и при расхождении признаков (были, них, стихли);
+        для строки и Doc без разметки - из первого разбора pymorphy3. Слова Doc
+        берутся из токенов, дефисные слова, разрезанные spaCy, склеиваются
+        (iter_doc_units); Doc без границ предложений разбивается на предложения
+        через sents_extractor по тексту (split_doc_units)
         Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
         по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
         и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями
@@ -110,6 +124,12 @@ class CohesionStats:
         в каждом предложении по словарю resources/connectors.tsv с классами
         по Криони, Никину и Филипповой (2008) и типом - первичные (союзы и наречия)
         или вторичные (лексикализованные обороты); плотность считается на 1000 слов
+        Однословный коннектор засчитывается только при части речи из CONNECTOR_POS
+        (союз, частица, наречие, предлог, междометие) или из CONNECTOR_POS_EXTRA
+        для отдельных слов (словом, главное, допустим, точнее) - по разметке Doc,
+        так «раз» и «значит» как существительное и глагол не считаются; без разметки
+        слово проходит, если подходящая часть речи есть хотя бы в одном разборе
+        pymorphy3 (connector_pos)
         и не считаются знаменательными в обоих случаях
 
     Ссылки:
@@ -128,7 +148,7 @@ class CohesionStats:
         'content_overlap_adjacent': 0.3333333333333333,
         'content_overlap_all': 0.5,
         'content_overlap_prop_adjacent': 0.1111111111111111,
-        'content_overlap_prop_all': 0.1865079365079365,
+        'content_overlap_prop_all': 0.18650793650793648,
         'p_pronouns': 0.14285714285714285,
         'pronoun_noun_ratio': 0.5,
         'p_demonstratives': 0.047619047619047616,
@@ -215,16 +235,19 @@ class CohesionStats:
     ):
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
+        pos: list[list[str | None]]
         if isinstance(source, Doc):
-            tokens = [
-                [word for word in sent if not word.is_punct and not word.is_space]
-                for sent in source.sents
-            ]
-            sents = [tuple(word.text for word in sent) for sent in tokens]
+            if source.has_annotation("SENT_START"):
+                units = [list(iter_doc_units(sent)) for sent in source.sents]
+            else:
+                units = split_doc_units(source, sents_extractor or SentsExtractor())
+            sents = [tuple(unit_text(unit) for unit in sent) for sent in units]
             if source.has_annotation("POS"):
-                infos = [[token_info(word) for word in sent] for sent in tokens]
+                infos = [[unit_info(unit) for unit in sent] for sent in units]
+                pos = [[unit_pos(unit) for unit in sent] for sent in units]
             else:
                 infos = [[word_info(word) for word in sent] for sent in sents]
+                pos = [[connector_pos(word) for word in sent] for sent in sents]
         elif isinstance(source, str):
             if not sents_extractor:
                 sents_extractor = SentsExtractor()
@@ -234,6 +257,7 @@ class CohesionStats:
                 tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(source)
             ]
             infos = [[word_info(word) for word in sent] for sent in sents]
+            pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:
             raise TypeError("Некорректный источник данных")
         self.words = tuple(sent for sent in sents if sent)
@@ -277,10 +301,11 @@ class CohesionStats:
         self.temporal_cohesion = fmean((self.tense_repetition, self.aspect_repetition))
 
         index = _normalize_connectors() if connectors is None else _normalize(connectors)
+        pos = [sent for sent in pos if sent]
         self.connector_spans = tuple(
             connector
-            for sent_index, sent in enumerate(self.words)
-            for connector in _find(sent, index, sent_index)
+            for sent_index, (sent, sent_pos) in enumerate(zip(self.words, pos, strict=True))
+            for connector in _find(sent, index, sent_index, sent_pos)
         )
         self.n_connectors = len(self.connector_spans)
         self.c_connectors = dict(
@@ -325,7 +350,7 @@ def load_connectors() -> dict[str, tuple[str, str]]:
 
     Описание:
         Файл resources/connectors.tsv: коннектор, класс из CONNECTOR_CLASSES
-        и тип из CONNECTOR_TYPES; 318 коннекторов по классификации Криони, Никина
+        и тип из CONNECTOR_TYPES; 317 коннекторов по классификации Криони, Никина
         и Филипповой (2008) со сверкой по маркерам Ru-RSTreebank, базе Рускон
         и списку причинных маркеров Тольдовой и др. (2018)
 
@@ -390,27 +415,69 @@ def _normalize_connectors() -> ConnectorIndex:
     return _normalize(load_connectors())
 
 
-def _find(words: Sequence[str], index: ConnectorIndex, sent_index: int) -> list[Connector]:
+def _find(
+    words: Sequence[str],
+    index: ConnectorIndex,
+    sent_index: int,
+    pos: Sequence[str | None] | None = None,
+) -> list[Connector]:
     normalized = [normalize_yo(word) for word in words]
     found = []
     position = 0
     while position < len(normalized):
         for pattern in index.by_first.get(normalized[position], ()):
             end = position + len(pattern)
-            if tuple(normalized[position:end]) == pattern:
-                text, cls, kind = index.entries[" ".join(pattern)]
-                found.append(Connector(sent_index, position, end, text, cls, kind))
-                position = end
-                break
+            if tuple(normalized[position:end]) != pattern:
+                continue
+            if (
+                len(pattern) == 1
+                and pos is not None
+                and not _is_connector_pos(pattern[0], pos[position])
+            ):
+                continue
+            text, cls, kind = index.entries[" ".join(pattern)]
+            found.append(Connector(sent_index, position, end, text, cls, kind))
+            position = end
+            break
         else:
             position += 1
     return found
+
+
+def _is_connector_pos(word: str, pos: str | None) -> bool:
+    return pos is None or pos in CONNECTOR_POS or pos in CONNECTOR_POS_EXTRA.get(word, frozenset())
+
+
+@lru_cache(maxsize=131072)
+def connector_pos(word: str) -> str | None:
+    """
+    Часть речи UD слова по pymorphy3 для проверки коннектора
+
+    Описание:
+        Из разборов pymorphy3 берется первый с частью речи, подходящей коннектору
+        (CONNECTOR_POS или CONNECTOR_POS_EXTRA для этого слова), иначе часть речи
+        первого разбора: у «раз» и «отчего» первый разбор - существительное
+        и прилагательное, союз только в следующих. Результаты кэшируются по словоформе
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        str|None: Часть речи UD
+    """
+    normalized = normalize_yo(word)
+    poses = [
+        tag_to_ud_pos(parse.tag, parse.normal_form, word)
+        for parse in get_morph_analyzer().parse(word)
+    ]
+    return next((pos for pos in poses if _is_connector_pos(normalized, pos)), poses[0])
 
 
 def find_connectors(
     words: Sequence[str],
     connectors: Mapping[str, tuple[str, str]] | None = None,
     sent_index: int = 0,
+    pos: Sequence[str | None] | None = None,
 ) -> list[Connector]:
     """
     Поиск коннекторов в предложении
@@ -419,13 +486,16 @@ def find_connectors(
         Коннекторы ищутся по словоформам в нижнем регистре без буквы ё: в каждой
         позиции берется самый длинный («и все же» не распадается на «и»), найденные
         не пересекаются; дефис и точка внутри коннектора (во-первых, т.е.) могут
-        быть отделены токенизатором
+        быть отделены токенизатором. Если переданы части речи UD, однословный
+        коннектор засчитывается только при части речи из CONNECTOR_POS или
+        из CONNECTOR_POS_EXTRA для этого слова
 
     Аргументы:
         words (list[str]): Слова предложения
         connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
             по коннектору; если не задан, используется словарь из resources
         sent_index (int): Номер предложения для записи во вхождения
+        pos (list[str]): Части речи UD слов предложения; без них части речи не проверяются
 
     Вывод:
         list[Connector]: Вхождения коннекторов в порядке слов
@@ -434,7 +504,7 @@ def find_connectors(
         ValueError: Если в словаре встречается неизвестный класс или тип
     """
     index = _normalize_connectors() if connectors is None else _normalize(connectors)
-    return _find(words, index, sent_index)
+    return _find(words, index, sent_index, pos)
 
 
 def word_info(word: str) -> WordInfo:
@@ -477,8 +547,9 @@ def token_info(token: Token) -> WordInfo:
         из DEMONSTRATIVE_LEMMAS, аргумент - NOUN, PROPN или PRON, знаменательное слово -
         NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS), кроме указательных, время и вид -
         признаки Tense и Aspect
-        Лемма берется из token.lemma_ в нижнем регистре, а если лемматизатора
-        в пайплайне нет - из разбора pymorphy3 с частью речи токена (lemmatize)
+        Лемма берется из разбора pymorphy3 с частью речи токена (lemmatize), а не
+        из token.lemma_: лемматизатор моделей ru_core_news возвращает словоформу
+        для AUX и при расхождении признаков теггера и pymorphy3 (были, них, стихли)
 
     Аргументы:
         token (Token): Токен
@@ -486,10 +557,30 @@ def token_info(token: Token) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    pos = token.pos_
-    lemma = token.lemma_.lower() if token.lemma_ else lemmatize(token.text, pos)
     tense = token.morph.get("Tense", [])
     aspect = token.morph.get("Aspect", [])
+    return ud_info(
+        token.text, token.pos_, tense[0] if tense else None, aspect[0] if aspect else None
+    )
+
+
+def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordInfo:
+    """
+    Получение признаков слова по части речи и признакам Universal Dependencies
+
+    Описание:
+        Как в token_info: лемма - из разбора pymorphy3 с частью речи (lemmatize)
+
+    Аргументы:
+        word (str): Слово
+        pos (str): Часть речи UD
+        tense (str): Время UD
+        aspect (str): Вид UD
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
+    lemma = lemmatize(word, pos)
     demonstrative = lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
         lemma=lemma,
@@ -498,9 +589,96 @@ def token_info(token: Token) -> WordInfo:
         demonstrative=demonstrative,
         argument=pos in ("NOUN", "PROPN", "PRON"),
         content=not demonstrative and pos in CONTENT_UD_POS,
-        tense=tense[0] if tense else None,
-        aspect=aspect[0] if aspect else None,
+        tense=tense,
+        aspect=aspect,
     )
+
+
+def unit_text(unit: Sequence[Token]) -> str:
+    """
+    Текст слова из токенов iter_doc_units
+
+    Аргументы:
+        unit (list[Token]): Токены слова
+
+    Вывод:
+        str: Текст слова
+    """
+    return "".join(token.text for token in unit)
+
+
+def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[list[Token]]]:
+    """
+    Разбиение слов объекта Doc без границ предложений по предложениям
+
+    Описание:
+        Предложения извлекаются sents_extractor из текста и находятся в нем
+        по порядку; слово относится к последнему предложению, начавшемуся не позже
+        его первого токена, так что ни одно слово не теряется
+
+    Аргументы:
+        source (Doc): Объект Doc
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
+
+    Вывод:
+        list[list[list[Token]]]: Токены каждого слова каждого предложения
+    """
+    text = source.text
+    starts = []
+    cursor = 0
+    for sent in sents_extractor.extract(text):
+        start = text.find(sent, cursor)
+        if start != -1:
+            starts.append(start)
+            cursor = start + len(sent)
+    units: list[list[list[Token]]] = [[] for _ in starts] or [[]]
+    index = 0
+    for unit in iter_doc_units(source):
+        while index + 1 < len(starts) and starts[index + 1] <= unit[0].idx:
+            index += 1
+        units[index].append(unit)
+    return units
+
+
+def unit_pos(unit: Sequence[Token]) -> str | None:
+    """
+    Часть речи UD слова из токенов iter_doc_units
+
+    Описание:
+        Обычное слово - по разметке токена, дефисное слово из нескольких токенов -
+        по разбору pymorphy3 склеенного текста (connector_pos)
+
+    Аргументы:
+        unit (list[Token]): Токены слова
+
+    Вывод:
+        str|None: Часть речи UD
+    """
+    if len(unit) == 1:
+        return unit[0].pos_ or None
+    return connector_pos(unit_text(unit))
+
+
+def unit_info(unit: Sequence[Token]) -> WordInfo:
+    """
+    Получение признаков слова из токенов iter_doc_units
+
+    Описание:
+        Обычное слово - по разметке токена (token_info), дефисное слово из нескольких
+        токенов - по разбору pymorphy3 склеенного текста, переведенному в UD
+        (word_to_ud), чтобы время и вид сравнивались с разметкой остальных слов
+
+    Аргументы:
+        unit (list[Token]): Токены слова
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
+    if len(unit) == 1:
+        return token_info(unit[0])
+    text = unit_text(unit)
+    features = word_to_ud(text)
+    return ud_info(text, features["pos"] or "", features["tense"], features["aspect"])
 
 
 def is_pronoun(word: str) -> bool:

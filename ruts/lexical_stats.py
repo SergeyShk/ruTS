@@ -5,11 +5,11 @@ from statistics import fmean
 
 from spacy.tokens import Doc
 
-from .cohesion_stats import WordInfo, token_info, word_info
+from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
 from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import normalize_yo, safe_divide
+from .utils import iter_doc_units, normalize_yo, safe_divide
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 
@@ -24,8 +24,9 @@ class LexicalStats:
         и дисперсия лемм по частотному словарю Ляшевской и Шарова (FreqDict), доля
         слов из частотных полос топ-1000, 2000, 5000 и 10000 по вшитому списку Шарова,
         сюрпризал и перплексия по униграммной модели словаря, лексическая плотность
-        Леммы для Doc с разметкой частей речи берутся из token.lemma_ и token.pos_,
-        для строки и Doc без разметки - из первого разбора pymorphy3
+        Леммы для Doc с разметкой частей речи берутся из разбора pymorphy3 с частью
+        речи токена, для строки и Doc без разметки - из первого разбора pymorphy3;
+        дефисные слова, разрезанные spaCy, склеиваются (iter_doc_units)
         Числа (2020, 5.5, 3-й) словами не считаются: в словаре и списке их нет,
         и они выглядели бы как самые редкие слова текста
         Метрики по частотному словарю требуют загруженного FreqDict, полосы
@@ -107,14 +108,10 @@ class LexicalStats:
     ):
         infos: list[WordInfo]
         if isinstance(source, Doc):
-            tokens = [
-                word
-                for word in source
-                if not word.is_punct and not word.is_space and not is_number(word.text)
-            ]
-            self.words = tuple(word.text for word in tokens)
+            units = [unit for unit in iter_doc_units(source) if not is_number(unit_text(unit))]
+            self.words = tuple(unit_text(unit) for unit in units)
             if source.has_annotation("POS"):
-                infos = [token_info(word) for word in tokens]
+                infos = [unit_info(unit) for unit in units]
             else:
                 infos = [word_info(word) for word in self.words]
         elif isinstance(source, str):

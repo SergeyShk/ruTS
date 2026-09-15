@@ -524,7 +524,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
 *   Temporal cohesion: tense and aspect repetition in adjacent sentences
-*   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative) and type, by an own dictionary of 318 connectives
+*   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative) and type, by an own dictionary of 317 connectives
 
 ```python
 >>> from ruts import CohesionStats

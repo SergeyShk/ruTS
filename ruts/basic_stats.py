@@ -12,7 +12,7 @@ from .constants import (
     SPACES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import count_syllables
+from .utils import count_syllables, iter_doc_words
 
 
 class BasicStats:
@@ -41,7 +41,9 @@ class BasicStats:
         'n_words': 9}
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc): Источник данных (строка или объект Doc); для Doc слова
+            берутся из токенов (дефисные слова склеиваются), предложения - из разметки,
+            без границ предложений - через sents_extractor
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
         normalize (bool): Вычислять нормализованные статистики
@@ -97,8 +99,11 @@ class BasicStats:
         sents: Iterable[Span] | Iterable[str]
         if isinstance(source, Doc):
             text = source.text
-            sents = source.sents
-            words = tuple(word.text for word in source if not word.is_punct and not word.is_space)
+            if source.has_annotation("SENT_START"):
+                sents = source.sents
+            else:
+                sents = (sents_extractor or SentsExtractor()).extract(text)
+            words = tuple(word for _, _, word in iter_doc_words(source))
         elif isinstance(source, str):
             text = source
             if not sents_extractor:
