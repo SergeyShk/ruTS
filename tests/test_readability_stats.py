@@ -16,6 +16,7 @@ from ruts.readability_stats import (
     calc_reading_time,
     calc_rix,
     calc_sis_grade,
+    calc_sis_grade_freq,
     flesch_reading_easy_to_grade,
     grade_to_age,
 )
@@ -134,6 +135,16 @@ def test_sis_grade_by_stage(rs, stage, expected):
     assert rs.sis_grade_by_stage(stage) == pytest.approx(
         calc_sis_grade(rs.bs.n_letters, rs.bs.n_words, rs.bs.n_sents, *SIS_GRADE_STAGES[stage])
     )
+
+
+def test_sis_grade_by_freq(rs):
+    assert calc_sis_grade_freq(65, 15, 1, 500) == pytest.approx(
+        -14.46 + 0.58 * 15 + 2.15 * 65 / 15 - 1.3
+    )
+    assert rs.sis_grade_by_freq(500) == pytest.approx(
+        calc_sis_grade_freq(rs.bs.n_letters, rs.bs.n_words, rs.bs.n_sents, 500)
+    )
+    assert rs.sis_grade_by_freq(0) > rs.sis_grade_by_freq(1000)
 
 
 def test_sis_grade_by_stage_error(rs):

@@ -43,6 +43,7 @@
 * **[Фоностатистики](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - классы звуков, кластеры, аллитерация и ассонанс, слоги по правилу восходящей звучности
 * **[Синтаксические статистики](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей, расщеплённые сказуемые и другие маркеры канцелярита по разбору spaCy
 * **[Статистики связности](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность
+* **[Статистики лексической сложности](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов, подсветка текста в стиле Главреда
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -543,6 +544,38 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
+<summary><b>Статистики лексической сложности</b></summary>
+
+<br>
+
+Насколько слова текста редки относительно языка (lexical sophistication по образцу TAALES):
+
+*   Средняя частотность, диапазон и дисперсия лемм по частотному словарю Ляшевской и Шарова (загружается один раз: `FreqDict().download()`)
+*   Доли слов из частотных полос топ-1000, 2000, 5000 и 10000 по вшитому списку Шарова - работают без словаря
+*   Сюрпризал и перплексия по униграммной модели словаря, покрытие словарём, лексическая плотность
+*   Формула Соловьёва, Иванова, Солнышкиной с частотностью - `ReadabilityStats.sis_grade_by_freq`
+
+```python
+>>> from ruts import LexicalStats
+>>> from ruts.datasets import FreqDict
+
+>>> FreqDict().download()
+>>> ls = LexicalStats("Кот сидел на окне и смотрел на птиц")
+
+>>> ls.mean_ipm_content, ls.mean_log_ipm, ls.surprisal
+(324.18, 3.0674194359404705, 9.74182176626998)
+>>> ls.p_top1000, ls.p_top10000, ls.lexical_density
+(0.75, 1.0, 0.625)
+
+>>> LexicalStats("Фелинолог пребывал на подоконнике").p_beyond_top10000
+0.25
+```
+
+Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/lexical_stats/).
+
+</details>
+
+<details>
 <summary><b>Наборы данных</b></summary>
 
 <br>
@@ -551,6 +584,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 
 *   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/datasets/sovchlit/) - советские хрестоматии по литературе
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - полное собрание сочинений И.В. Сталина
+*   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - частотный словарь Ляшевской и Шарова: 52 138 лемм с ipm, диапазоном и дисперсией по НКРЯ
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - тексты с метками класса проекта Plain Russian Language (CC0), на которых проверяются формулы удобочитаемости
 
 Существует возможность работать как с чистыми текстами (без заголовочной информации), так и с записями, а также фильтровать их по различным критериям.
@@ -651,6 +685,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   `BasicStats`
 *   `CohesionStats`
 *   `DiversityStats`
+*   `LexicalStats`
 *   `MorphStats`
 *   `PhonStats`
 *   `ReadabilityStats`
@@ -717,6 +752,7 @@ uv run pre-commit install
     *   constants.py - основные используемые константы
     *   diversity_stats.py - метрики лексического разнообразия текста
     *   extractors.py - инструменты для извлечения объектов из текста
+    *   lexical_stats.py - статистики лексической сложности текста
     *   morph_stats.py - морфологические статистики
     *   phon_stats.py - фоностатистики текста
     *   readability_stats.py - метрики удобочитаемости текста
@@ -725,9 +761,11 @@ uv run pre-commit install
     *   utils.py - вспомогательные инструменты
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных
+        *   freq2011.py - частотный словарь Ляшевской и Шарова
         *   sov_chrest_lit.py - советские хрестоматии по литературе
         *   stalin_works.py - полное собрание сочинений И.В. Сталина
         *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
+    *   **resources** - вшитые лексические ресурсы (список самых частых лемм)
     *   **visualizers** - инструменты для визуализации текстов:
         *   fingerprinting.py - Литературная дактилоскопия
         *   word_tree.py - Дерево слов

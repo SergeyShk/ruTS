@@ -4,6 +4,7 @@ import spacy
 from ruts import (
     CohesionStats,
     DiversityStats,
+    LexicalStats,
     PhonStats,
     ReadabilityStats,
     StyleStats,
@@ -13,6 +14,7 @@ from ruts.constants import (
     BASIC_STATS_DESC,
     COHESION_STATS_DESC,
     DIVERSITY_STATS_DESC,
+    LEXICAL_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
     PHON_STATS_DESC,
     PUNCTUATIONS,
@@ -20,6 +22,7 @@ from ruts.constants import (
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
 )
+from ruts.datasets import FreqDict
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -191,6 +194,21 @@ def test_component_syntax(parsed_nlp):
     for key in SYNTAX_STATS_DESC:
         assert hasattr(doc._.syntax, key)
     assert doc._.syntax.get_stats() == SyntaxStats(doc).get_stats()
+
+
+def test_component_lexical(tmp_path):
+    from tests.datasets.test_freq2011 import write_dict
+
+    write_dict(tmp_path)
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("lexical", config={"data_dir": str(tmp_path)})
+    doc = nlp(text)
+    for key in LEXICAL_STATS_DESC:
+        assert hasattr(doc._.lexical, key)
+    assert doc._.lexical.get_stats() == pytest.approx(
+        LexicalStats(doc, freq_dict=FreqDict(data_dir=tmp_path)).get_stats(), nan_ok=True
+    )
+    assert doc._.lexical.freq_dict.data_dir == tmp_path.resolve()
 
 
 def test_component_syntax_requires_parser():

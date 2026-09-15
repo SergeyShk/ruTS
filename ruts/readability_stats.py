@@ -82,6 +82,7 @@ class ReadabilityStats:
 
     Методы:
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
+        sis_grade_by_freq: Формула Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
         describe_grade: Класс школы и возраст читателя для сводного класса или отдельной формулы
         reading_time_by_speed: Время чтения при заданной скорости
         reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
@@ -280,6 +281,19 @@ class ReadabilityStats:
         return calc_sis_grade(
             self.bs.n_letters, self.bs.n_words, self.bs.n_sents, *SIS_GRADE_STAGES[stage]
         )
+
+    def sis_grade_by_freq(self, mean_ipm: float) -> float:
+        """
+        Вычисление формулы Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
+
+        Аргументы:
+            mean_ipm (float): Средняя частотность знаменательных слов текста по словарю
+                Ляшевской и Шарова (FREQ2), например LexicalStats(text).mean_ipm_content
+
+        Вывод:
+            float: Значение формулы
+        """
+        return calc_sis_grade_freq(self.bs.n_letters, self.bs.n_words, self.bs.n_sents, mean_ipm)
 
     def get_stats(self) -> dict[str, float]:
         """
@@ -592,6 +606,47 @@ def calc_sis_grade(
         float: Значение формулы
     """
     return a + (b * n_words / n_sents) + (c * n_letters / n_words)
+
+
+def calc_sis_grade_freq(
+    n_letters: int,
+    n_words: int,
+    n_sents: int,
+    mean_ipm: float,
+    a: float = -14.46,
+    b: float = 0.58,
+    c: float = 2.15,
+    d: float = -0.0026,
+) -> float:
+    """
+    Вычисление формулы Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
+
+    Описание:
+        Вариант общей формулы с четвертым признаком FREQ2 - средней частотностью слов
+        текста (ipm) по словарю Ляшевской и Шарова: чем чаще слова, тем ниже класс
+        В статье значения FREQ2 лежат в пределах 200-1000, что соответствует средней
+        частотности знаменательных слов (LexicalStats.mean_ipm_content): среднее
+        по всем словам с учетом союзов и предлогов в разы больше
+        На наборе TextsByGrade формула с частотностью дает ту же корреляцию с классом,
+        что и формула без нее (ρ Спирмена 0.76 против 0.77), как и в статье
+
+    Ссылки:
+        http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf
+
+    Аргументы:
+        n_letters (int): Количество букв
+        n_words (int): Количество слов
+        n_sents (int): Количество предложений
+        mean_ipm (float): Средняя частотность слов (ipm)
+        a (float): Коэффициент a (свободный член)
+        b (float): Коэффициент b (при средней длине предложения в словах)
+        c (float): Коэффициент c (при средней длине слова в буквах)
+        d (float): Коэффициент d (при средней частотности)
+
+    Вывод:
+        float: Значение формулы
+    """
+    return a + (b * n_words / n_sents) + (c * n_letters / n_words) + d * mean_ipm
 
 
 def calc_matskovsky_index(
