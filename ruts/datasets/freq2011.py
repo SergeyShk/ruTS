@@ -173,6 +173,7 @@ class FreqDict(Dataset):
             extract_archive(archive, self.data_dir)
         self.check_data()
         load_entries.cache_clear()
+        load_min_ipm.cache_clear()
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
@@ -256,7 +257,8 @@ class FreqDict(Dataset):
         """
         Минимальная частота в словаре
         """
-        return min(entry.ipm for entry in self.entries.values())
+        self.check_data()
+        return load_min_ipm(self._filepath)
 
     def lookup(self, lemma: str) -> Entry | None:
         """
@@ -343,3 +345,22 @@ def load_entries(filepath: Path) -> dict[str, Entry]:
                     max(entry.docs, int(docs)),
                 )
     return entries
+
+
+@cache
+def load_min_ipm(filepath: Path) -> float:
+    """
+    Минимальная частота в файле словаря
+
+    Описание:
+        Считается один раз по разобранному словарю и кэшируется по пути к файлу,
+        как load_entries; используется как частота слов вне словаря при расчете
+        сюрпризала
+
+    Аргументы:
+        filepath (Path): Путь к файлу словаря
+
+    Вывод:
+        float: Минимальная частота
+    """
+    return min(entry.ipm for entry in load_entries(filepath).values())

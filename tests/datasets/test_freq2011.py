@@ -7,7 +7,7 @@ import pytest
 
 from ruts.datasets import FreqDict
 from ruts.datasets import freq2011 as freq2011_module
-from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, sha256
+from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm, sha256
 
 ROWS = (
     ("а", "conj", 8198.0, 100, 97, 32332),
@@ -133,6 +133,8 @@ def test_entries_cached(dataset):
     other = FreqDict(data_dir=dataset.data_dir)
     assert other.entries is dataset.entries
     assert load_entries(dataset._filepath) is dataset.entries
+    assert dataset.min_ipm == 4.1
+    assert load_min_ipm.cache_info().hits >= 1
 
 
 def test_download_corrupted(tmp_path, monkeypatch):
@@ -167,9 +169,11 @@ def test_download_force_reloads(tmp_path, monkeypatch):
     dataset = FreqDict(data_dir=tmp_path)
     dataset.download()
     before = dataset.entries
+    assert dataset.min_ipm == 4.1
     dataset.download(force=True)
     assert dataset.entries == before
     assert dataset.entries is not before
+    assert load_min_ipm.cache_info().currsize == 0 or dataset.min_ipm == 4.1
 
 
 def test_sha256(tmp_path):

@@ -193,7 +193,7 @@ class LexicalStats:
     def mean_dispersion(self) -> float:
         return _mean([entry.dispersion for entry in self.entries if entry])
 
-    @property
+    @cached_property
     def surprisal(self) -> float:
         return calc_surprisal(self.lemmas, self.freq_dict)
 
