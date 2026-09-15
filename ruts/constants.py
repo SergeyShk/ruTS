@@ -758,7 +758,27 @@ COHESION_STATS_DESC = {
     "tense_repetition": "Повтор времени в соседних предложениях",
     "aspect_repetition": "Повтор вида в соседних предложениях",
     "temporal_cohesion": "Темпоральная связность",
+    "connectors": "Коннекторов на 1000 слов",
+    "connectors_causal": "Причинных коннекторов на 1000 слов",
+    "connectors_adversative": "Противительных коннекторов на 1000 слов",
+    "connectors_concessive": "Уступительных коннекторов на 1000 слов",
+    "connectors_temporal": "Временных коннекторов на 1000 слов",
+    "connectors_additive": "Аддитивных коннекторов на 1000 слов",
+    "connectors_conditional": "Условных коннекторов на 1000 слов",
+    "connectors_reformulative": "Переформулирующих коннекторов на 1000 слов",
+    "connectors_primary": "Первичных коннекторов на 1000 слов",
+    "connectors_secondary": "Вторичных коннекторов на 1000 слов",
 }
+CONNECTOR_CLASSES = {
+    "causal": "причинные",
+    "adversative": "противительные",
+    "concessive": "уступительные",
+    "temporal": "временные",
+    "additive": "аддитивные",
+    "conditional": "условные",
+    "reformulative": "переформулирующие",
+}
+CONNECTOR_TYPES = {"primary": "первичные", "secondary": "вторичные"}
 CONTENT_POS = frozenset(
     {"NOUN", "ADJF", "ADJS", "COMP", "VERB", "INFN", "PRTF", "PRTS", "GRND", "ADVB"}
 )

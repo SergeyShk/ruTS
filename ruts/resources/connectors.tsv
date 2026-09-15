@@ -1,0 +1,319 @@
+connector	class	type
+потому что	causal	primary
+так как	causal	primary
+поскольку	causal	primary
+ибо	causal	primary
+ведь	causal	primary
+поэтому	causal	primary
+потому	causal	primary
+оттого	causal	primary
+оттого что	causal	primary
+затем что	causal	primary
+следовательно	causal	primary
+значит	causal	primary
+итак	causal	primary
+стало быть	causal	primary
+так что	causal	primary
+а потому	causal	primary
+а значит	causal	primary
+тем самым	causal	primary
+отсюда	causal	primary
+посему	causal	primary
+чтобы	causal	primary
+чтоб	causal	primary
+дабы	causal	primary
+благодаря	causal	primary
+вследствие	causal	primary
+ввиду	causal	primary
+из-за	causal	primary
+ради	causal	primary
+отчего	causal	primary
+тем более что	causal	primary
+не случайно	causal	primary
+как следствие	causal	secondary
+как результат	causal	secondary
+в результате	causal	secondary
+в результате этого	causal	secondary
+в результате чего	causal	secondary
+в итоге	causal	secondary
+в силу этого	causal	secondary
+в силу того что	causal	secondary
+в связи с этим	causal	secondary
+в связи с чем	causal	secondary
+в связи с тем что	causal	secondary
+в этой связи	causal	secondary
+по этой причине	causal	secondary
+по этим причинам	causal	secondary
+по причине	causal	secondary
+по причине того что	causal	secondary
+по той причине что	causal	secondary
+благодаря этому	causal	secondary
+благодаря тому что	causal	secondary
+благодаря чему	causal	secondary
+из-за этого	causal	secondary
+из-за того что	causal	secondary
+вследствие этого	causal	secondary
+вследствие того что	causal	secondary
+вследствие чего	causal	secondary
+ввиду этого	causal	secondary
+ввиду того что	causal	secondary
+дело в том что	causal	secondary
+вот почему	causal	secondary
+это значит что	causal	secondary
+это означает что	causal	secondary
+а это значит	causal	secondary
+таким образом	causal	secondary
+для этого	causal	secondary
+для того чтобы	causal	secondary
+с тем чтобы	causal	secondary
+с целью	causal	secondary
+в целях	causal	secondary
+с этой целью	causal	secondary
+ради этого	causal	secondary
+ради того чтобы	causal	secondary
+отсюда следует что	causal	secondary
+из этого следует что	causal	secondary
+это приводит к тому что	causal	secondary
+это привело к тому что	causal	secondary
+объясняется это тем что	causal	secondary
+объясняется тем что	causal	secondary
+но	adversative	primary
+а	adversative	primary
+однако	adversative	primary
+зато	adversative	primary
+впрочем	adversative	primary
+напротив	adversative	primary
+наоборот	adversative	primary
+иначе	adversative	primary
+тогда как	adversative	primary
+между тем	adversative	primary
+между тем как	adversative	primary
+а вот	adversative	primary
+но вот	adversative	primary
+отнюдь	adversative	primary
+с другой стороны	adversative	secondary
+с одной стороны	adversative	secondary
+в отличие от	adversative	secondary
+в отличие от этого	adversative	secondary
+в противоположность этому	adversative	secondary
+в то же время	adversative	secondary
+вместе с тем	adversative	secondary
+на самом деле	adversative	secondary
+в действительности	adversative	secondary
+в свою очередь	adversative	secondary
+хотя	concessive	primary
+хоть	concessive	primary
+пусть	concessive	primary
+пускай	concessive	primary
+несмотря на	concessive	primary
+невзирая на	concessive	primary
+вопреки	concessive	primary
+тем не менее	concessive	primary
+всё же	concessive	primary
+всё-таки	concessive	primary
+всё равно	concessive	primary
+правда	concessive	primary
+хотя бы	concessive	primary
+пусть даже	concessive	primary
+даже если	concessive	primary
+даже когда	concessive	primary
+как бы ни	concessive	primary
+что бы ни	concessive	primary
+сколько ни	concessive	primary
+хотя и	concessive	primary
+пусть и	concessive	primary
+и всё же	concessive	primary
+и всё-таки	concessive	primary
+и тем не менее	concessive	primary
+несмотря на это	concessive	secondary
+несмотря на то что	concessive	secondary
+невзирая на это	concessive	secondary
+невзирая на то что	concessive	secondary
+вопреки этому	concessive	secondary
+вопреки тому что	concessive	secondary
+как ни странно	concessive	secondary
+при всём том	concessive	secondary
+при всём этом	concessive	secondary
+во всяком случае	concessive	secondary
+так или иначе	concessive	secondary
+в любом случае	concessive	secondary
+как бы то ни было	concessive	secondary
+как бы там ни было	concessive	secondary
+независимо от этого	concessive	secondary
+независимо от того что	concessive	secondary
+когда	temporal	primary
+пока	temporal	primary
+пока не	temporal	primary
+едва	temporal	primary
+как только	temporal	primary
+лишь только	temporal	primary
+затем	temporal	primary
+потом	temporal	primary
+далее	temporal	primary
+после	temporal	primary
+сначала	temporal	primary
+сперва	temporal	primary
+вначале	temporal	primary
+наконец	temporal	primary
+тогда	temporal	primary
+теперь	temporal	primary
+ныне	temporal	primary
+раньше	temporal	primary
+ранее	temporal	primary
+прежде	temporal	primary
+позже	temporal	primary
+позднее	temporal	primary
+впоследствии	temporal	primary
+одновременно	temporal	primary
+тем временем	temporal	primary
+прежде чем	temporal	primary
+перед тем как	temporal	primary
+после того как	temporal	primary
+с тех пор как	temporal	primary
+до тех пор пока	temporal	primary
+по мере того как	temporal	primary
+в то время как	temporal	primary
+как вдруг	temporal	primary
+вскоре	temporal	primary
+спустя	temporal	primary
+накануне	temporal	primary
+в это время	temporal	secondary
+в это же время	temporal	secondary
+в тот момент когда	temporal	secondary
+в момент когда	temporal	secondary
+до этого	temporal	secondary
+после этого	temporal	secondary
+вслед за этим	temporal	secondary
+вслед за тем	temporal	secondary
+с тех пор	temporal	secondary
+до сих пор	temporal	secondary
+до того как	temporal	secondary
+к тому времени	temporal	secondary
+к этому времени	temporal	secondary
+в дальнейшем	temporal	secondary
+в конце концов	temporal	secondary
+в конечном счёте	temporal	secondary
+в конечном итоге	temporal	secondary
+с этого момента	temporal	secondary
+с того времени	temporal	secondary
+до того момента	temporal	secondary
+в настоящее время	temporal	secondary
+на данный момент	temporal	secondary
+в то время	temporal	secondary
+и	additive	primary
+также	additive	primary
+тоже	additive	primary
+ещё	additive	primary
+причём	additive	primary
+притом	additive	primary
+вдобавок	additive	primary
+а также	additive	primary
+как и	additive	primary
+равно как и	additive	primary
+включая	additive	primary
+во-первых	additive	primary
+во-вторых	additive	primary
+в-третьих	additive	primary
+в-четвёртых	additive	primary
+в-пятых	additive	primary
+ещё и	additive	primary
+и ещё	additive	primary
+плюс	additive	primary
+опять же	additive	primary
+опять-таки	additive	primary
+заодно	additive	primary
+при этом	additive	primary
+к тому же	additive	secondary
+кроме того	additive	secondary
+более того	additive	secondary
+сверх того	additive	secondary
+помимо этого	additive	secondary
+помимо того	additive	secondary
+наряду с этим	additive	secondary
+в дополнение к этому	additive	secondary
+вдобавок к этому	additive	secondary
+в том числе	additive	secondary
+в частности	additive	secondary
+например	additive	secondary
+к примеру	additive	secondary
+в первую очередь	additive	secondary
+прежде всего	additive	secondary
+в этом отношении	additive	secondary
+в этом плане	additive	secondary
+что касается	additive	secondary
+если	conditional	primary
+ежели	conditional	primary
+коли	conditional	primary
+кабы	conditional	primary
+раз	conditional	primary
+если бы	conditional	primary
+если не	conditional	primary
+лишь если	conditional	primary
+только если	conditional	primary
+если только	conditional	primary
+если же	conditional	primary
+в случае	conditional	secondary
+в случае если	conditional	secondary
+в случае чего	conditional	secondary
+при условии	conditional	secondary
+при условии что	conditional	secondary
+при том условии что	conditional	secondary
+при этом условии	conditional	secondary
+в противном случае	conditional	secondary
+в ином случае	conditional	secondary
+в этом случае	conditional	secondary
+в таком случае	conditional	secondary
+допустим	conditional	secondary
+положим	conditional	secondary
+предположим	conditional	secondary
+при таких обстоятельствах	conditional	secondary
+при этих обстоятельствах	conditional	secondary
+при определённых условиях	conditional	secondary
+при необходимости	conditional	secondary
+независимо от того	conditional	secondary
+то есть	reformulative	primary
+т.е.	reformulative	primary
+а именно	reformulative	primary
+именно	reformulative	primary
+вернее	reformulative	primary
+точнее	reformulative	primary
+скорее	reformulative	primary
+словом	reformulative	primary
+короче	reformulative	primary
+собственно	reformulative	primary
+иначе говоря	reformulative	secondary
+иными словами	reformulative	secondary
+другими словами	reformulative	secondary
+попросту говоря	reformulative	secondary
+проще говоря	reformulative	secondary
+короче говоря	reformulative	secondary
+одним словом	reformulative	secondary
+вернее сказать	reformulative	secondary
+точнее говоря	reformulative	secondary
+так сказать	reformulative	secondary
+в общем	reformulative	secondary
+в целом	reformulative	secondary
+в сущности	reformulative	secondary
+по сути	reformulative	secondary
+по сути дела	reformulative	secondary
+по существу	reformulative	secondary
+в принципе	reformulative	secondary
+собственно говоря	reformulative	secondary
+грубо говоря	reformulative	secondary
+строго говоря	reformulative	secondary
+если можно так выразиться	reformulative	secondary
+что называется	reformulative	secondary
+как говорится	reformulative	secondary
+в двух словах	reformulative	secondary
+подводя итог	reformulative	secondary
+подытоживая	reformulative	secondary
+резюмируя	reformulative	secondary
+обобщая	reformulative	secondary
+в заключение	reformulative	secondary
+в общем и целом	reformulative	secondary
+главное	reformulative	secondary
+самое главное	reformulative	secondary
+что важнее	reformulative	secondary
+важно отметить	reformulative	secondary
+следует отметить	reformulative	secondary
+стоит отметить	reformulative	secondary
