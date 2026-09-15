@@ -9,9 +9,13 @@ from ruts.style_stats import (
     calc_academic_nausea,
     calc_classic_nausea,
     calc_keyword_density,
+    calc_parentheticals,
+    calc_phrase_density,
     calc_spam,
+    calc_verbal_nouns,
     calc_water,
     calc_zipf_naturalness,
+    is_parenthetical,
     is_stopword,
 )
 
@@ -149,6 +153,70 @@ def test_keyword_density(ss):
         "лексических значений": pytest.approx(100 / 61),
     }
     assert ss.keyword_density() == {}
+
+
+officialese = (
+    "В целях повышения качества обслуживания, как правило, в кратчайшие сроки "
+    "проводится проверка. Конечно, за счёт этого имеет место рост издержек."
+)
+
+
+@pytest.fixture(scope="module")
+def os():
+    return StyleStats(officialese)
+
+
+def test_verbal_nouns(os):
+    assert os.verbal_nouns == pytest.approx(2 / 11 * 100)
+    assert calc_verbal_nouns(["повышение", "качества", "производство", "кот"]) == 50
+    assert isnan(calc_verbal_nouns(["и", "в"]))
+
+
+def test_compound_prepositions(os):
+    assert len(os.words) == 20
+    assert os.compound_prepositions == pytest.approx(2 / 20 * 100)
+    assert calc_phrase_density(["в", "целях", "и", "путем"], ["в целях", "путём"]) == 50
+
+
+def test_parentheticals(os):
+    assert os.parentheticals == pytest.approx(2 / 20 * 100)
+    assert calc_parentheticals(["как", "правило", "конечно", "кот"]) == 50
+    assert calc_parentheticals(["кот"]) == 0
+
+
+def test_cliches(os):
+    assert os.cliches == pytest.approx(2 / 20 * 100)
+    assert StyleStats(officialese, cliches=["имеет место"]).cliches == pytest.approx(1 / 20 * 100)
+    assert StyleStats(officialese, cliches=[]).cliches == 0
+    assert StyleStats("кот дом", cliches=["", " ", "имеет место"]).cliches == 0
+
+
+def test_officialese_extractor_independent(os):
+    lexemes = StyleStats(
+        officialese, words_extractor=WordsExtractor(use_lexemes=True, lowercase=True)
+    )
+    filtered = StyleStats(
+        officialese, words_extractor=WordsExtractor(stopwords=["в", "с", "за"], lowercase=True)
+    )
+    for stats in (lexemes, filtered):
+        assert stats.forms == os.forms
+        assert stats.words != os.words
+        for key in ("verbal_nouns", "compound_prepositions", "parentheticals", "cliches"):
+            assert getattr(stats, key) == pytest.approx(getattr(os, key))
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [("конечно", True), ("например", True), ("впрочем", True), ("кот", False), ("и", False)],
+)
+def test_is_parenthetical(word, expected):
+    assert is_parenthetical(word) is expected
+
+
+def test_officialese_doc(os):
+    nlp = spacy.blank("ru")
+    doc_os = StyleStats(nlp(officialese))
+    assert doc_os.get_stats() == os.get_stats()
 
 
 def test_get_stats(ss):

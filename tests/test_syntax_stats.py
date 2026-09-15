@@ -14,16 +14,21 @@ from ruts.syntax_stats import (
     calc_tree_depth,
     calc_valency,
     count_noun_modifiers,
+    find_split_predicates,
+    get_lemma,
     is_agentless,
     is_clause_head,
     is_converb_clause,
     is_finite_verb,
     is_genitive_modifier,
+    is_light_verb,
     is_negation,
     is_participle,
     is_participle_clause,
     is_passive,
     is_predicate,
+    is_reflexive,
+    is_split_predicate_noun,
     is_subordinate_clause_head,
     subtree_len,
 )
@@ -235,6 +240,98 @@ def test_constructions(ss):
     assert ss.p_agentless_passive == pytest.approx(2 / 3)
     assert ss.infinitives_per_sent == pytest.approx(1 / 5)
     assert ss.negations_per_sent == pytest.approx(3 / 5)
+    assert ss.split_predicates_per_sent == 0
+    assert ss.split_predicates == ()
+    assert ss.noun_verb_ratio == pytest.approx(8 / 9)
+
+
+def test_split_predicates():
+    doc = build_doc(
+        [
+            (
+                "Комиссия осуществляет проверку документов и оказывает помощь .",
+                [1, 1, 1, 2, 5, 1, 5, 1],
+                ["nsubj", "ROOT", "obj", "nmod", "cc", "conj", "obj", "punct"],
+                ["NOUN", "VERB", "NOUN", "NOUN", "CCONJ", "VERB", "NOUN", "PUNCT"],
+                [
+                    "Case=Nom",
+                    "VerbForm=Fin",
+                    "Case=Acc",
+                    "Case=Gen",
+                    "",
+                    "VerbForm=Fin",
+                    "Case=Acc",
+                    "",
+                ],
+            ),
+            (
+                "Было принято решение уехать .",
+                [1, 1, 1, 1, 1],
+                ["aux:pass", "ROOT", "nsubj:pass", "xcomp", "punct"],
+                ["AUX", "VERB", "NOUN", "VERB", "PUNCT"],
+                [
+                    "VerbForm=Fin",
+                    "Variant=Short|VerbForm=Part|Voice=Pass",
+                    "Case=Nom",
+                    "VerbForm=Inf",
+                    "",
+                ],
+            ),
+            (
+                "Он читает книгу и проводит время .",
+                [1, 1, 1, 4, 1, 4, 1],
+                ["nsubj", "ROOT", "obj", "cc", "conj", "obj", "punct"],
+                ["PRON", "VERB", "NOUN", "CCONJ", "VERB", "NOUN", "PUNCT"],
+                ["Case=Nom", "VerbForm=Fin", "Case=Acc", "", "VerbForm=Fin", "Case=Acc", ""],
+            ),
+            (
+                "Проверка проведена комиссией в присутствии руководства .",
+                [1, 1, 1, 4, 1, 4, 1],
+                ["nsubj:pass", "ROOT", "obl:agent", "case", "obl", "nmod", "punct"],
+                ["NOUN", "VERB", "NOUN", "ADP", "NOUN", "NOUN", "PUNCT"],
+                [
+                    "Case=Nom",
+                    "Variant=Short|VerbForm=Part|Voice=Pass",
+                    "Case=Ins",
+                    "",
+                    "Case=Loc",
+                    "Case=Gen",
+                    "",
+                ],
+            ),
+            (
+                "Работа проводится отделом .",
+                [1, 1, 1, 1],
+                ["nsubj", "ROOT", "obl", "punct"],
+                ["NOUN", "VERB", "NOUN", "PUNCT"],
+                ["Case=Nom", "VerbForm=Fin|Voice=Mid", "Case=Ins", ""],
+            ),
+        ]
+    )
+    pairs = find_split_predicates(doc)
+    assert [(verb.text, noun.text) for verb, noun in pairs] == [
+        ("осуществляет", "проверку"),
+        ("оказывает", "помощь"),
+        ("принято", "решение"),
+        ("проведена", "Проверка"),
+        ("проводится", "Работа"),
+    ]
+    assert is_light_verb(doc[1]) and is_light_verb(doc[5]) and not is_light_verb(doc[14])
+    assert is_split_predicate_noun(doc[2]) and is_split_predicate_noun(doc[6])
+    assert not is_split_predicate_noun(doc[3]) and not is_split_predicate_noun(doc[15])
+    assert get_lemma(doc[2]) == "проверка"
+    assert get_lemma(doc[1]) == "осуществлять"
+    ss = SyntaxStats(doc)
+    assert ss.n_split_predicates == 5
+    assert ss.split_predicates == (
+        "осуществляет проверку",
+        "оказывает помощь",
+        "принято решение",
+        "проведена Проверка",
+        "проводится Работа",
+    )
+    assert ss.split_predicates_per_sent == 1
+    assert ss.noun_verb_ratio == pytest.approx(13 / 8)
 
 
 def test_single_word_sentence():
@@ -438,6 +535,51 @@ def test_model_parataxis(nlp):
     )
     assert ss.n_clauses == 3
     assert isnan(ss.p_agentless_passive)
+
+
+def test_model_split_predicates(nlp):
+    doc = nlp(
+        "Комиссия осуществляет проверку документов и оказывает содействие участникам. "
+        "Было принято решение о проведении консультаций. Он читает книгу."
+    )
+    ss = SyntaxStats(doc)
+    assert ss.split_predicates == (
+        "осуществляет проверку",
+        "оказывает содействие",
+        "принято решение",
+    )
+    assert ss.split_predicates_per_sent == 1
+    assert ss.noun_verb_ratio == pytest.approx(9 / 4)
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Проверка проводится комиссией.", [("проводится", "Проверка")]),
+        ("Меры принимаются руководством.", [("принимаются", "Меры")]),
+        ("Контроль осуществляется ежедневно.", [("осуществляется", "Контроль")]),
+        ("Работа ведётся постоянно.", [("ведётся", "Работа")]),
+        (
+            "Проверка была проведена инспекцией в присутствии руководства.",
+            [("проведена", "Проверка")],
+        ),
+        ("Решение принято комиссией с учетом замечаний.", [("принято", "Решение")]),
+        ("Он сделал шаг вперед при поддержке друзей.", [("сделал", "шаг")]),
+        ("Помощь была оказана вовремя.", [("оказана", "Помощь")]),
+        ("Ошибка получилась случайно.", []),
+        ("Кот имеет хвост.", []),
+    ],
+)
+def test_model_split_predicates_cases(nlp, text, expected):
+    assert [(verb.text, noun.text) for verb, noun in find_split_predicates(nlp(text))] == expected
+
+
+def test_is_reflexive(nlp):
+    doc = nlp("Проверка проводится, решение принято, кот спит.")
+    assert is_reflexive(doc[1])
+    assert is_reflexive(doc[4])
+    assert not is_reflexive(doc[7])
+    assert not is_reflexive(doc[0])
 
 
 def test_model_constructions(nlp):
