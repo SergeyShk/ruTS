@@ -42,7 +42,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
-* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion
+* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
@@ -524,6 +524,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
 *   Temporal cohesion: tense and aspect repetition in adjacent sentences
+*   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative) and type, by an own dictionary of 318 connectives
 
 ```python
 >>> from ruts import CohesionStats
@@ -537,6 +538,10 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 (0.6666666666666666, 0.1111111111111111)
 >>> cs.p_pronouns, cs.p_given, cs.temporal_cohesion
 (0.14285714285714285, 0.2857142857142857, 0.5)
+
+>>> cs = CohesionStats("Кот ждал птиц, потому что был голоден. Однако птицы улетели, и всё же кот не ушёл.")
+>>> cs.connectors_causal, cs.connectors_adversative, cs.connectors_concessive
+(62.5, 62.5, 62.5)
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/).
@@ -765,7 +770,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   sov_chrest_lit.py - soviet reading-books for literature classes
         *   stalin_works.py - the collected works of Stalin
         *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
-    *   **resources** - embedded lexical resources (the most frequent lemmas list)
+    *   **resources** - embedded lexical resources (the most frequent lemmas list, the connectives dictionary)
     *   **visualizers** - tools for text visualization:
         *   fingerprinting.py - Literature Fingerprinting
         *   word_tree.py - Word Tree

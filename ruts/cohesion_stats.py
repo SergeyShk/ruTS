@@ -1,5 +1,6 @@
 from collections import Counter
-from collections.abc import Collection, Sequence
+from collections.abc import Collection, Mapping, Sequence
+from functools import cache
 from itertools import combinations, pairwise
 from math import nan
 from statistics import fmean
@@ -10,13 +11,18 @@ from spacy.tokens import Doc, Token
 
 from .constants import (
     COHESION_STATS_DESC,
+    CONNECTOR_CLASSES,
+    CONNECTOR_TYPES,
     CONTENT_POS,
     CONTENT_UD_POS,
     DEMONSTRATIVE_LEMMAS,
+    RESOURCES_DIR,
     STOPWORD_GRAMMEMES,
 )
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import lemmatize, parse_word, safe_divide
+from .utils import lemmatize, normalize_yo, parse_word, safe_divide
+
+CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
 
 class WordInfo(NamedTuple):
@@ -61,6 +67,28 @@ class Overlap(NamedTuple):
     prop_all: float
 
 
+class Connector(NamedTuple):
+    """
+    Вхождение коннектора в текст
+
+    Атрибуты:
+        sent (int): Номер предложения
+        start (int): Позиция первого слова коннектора в предложении
+        end (int): Позиция за последним словом коннектора
+        text (str): Коннектор в словарной форме
+        cls (str): Класс коннектора (causal, adversative, concessive, temporal,
+            additive, conditional, reformulative)
+        kind (str): Тип коннектора (primary, secondary)
+    """
+
+    sent: int
+    start: int
+    end: int
+    text: str
+    cls: str
+    kind: str
+
+
 class CohesionStats:
     """
     Класс для вычисления статистик связности текста
@@ -78,6 +106,10 @@ class CohesionStats:
         Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
         по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
         и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями
+        Коннекторы (потому что, однако, затем, иными словами) ищутся по словоформам
+        в каждом предложении по словарю resources/connectors.tsv с классами
+        по Криони, Никину и Филипповой (2008) и типом - первичные (союзы и наречия)
+        или вторичные (лексикализованные обороты); плотность считается на 1000 слов
         и не считаются знаменательными в обоих случаях
 
     Ссылки:
@@ -103,14 +135,28 @@ class CohesionStats:
         'p_given': 0.2857142857142857,
         'tense_repetition': 0.6666666666666666,
         'aspect_repetition': 0.3333333333333333,
-        'temporal_cohesion': 0.5}
+        'temporal_cohesion': 0.5,
+        'connectors': 47.61904761904762,
+        'connectors_causal': 0.0,
+        'connectors_adversative': 0.0,
+        'connectors_concessive': 0.0,
+        'connectors_temporal': 0.0,
+        'connectors_additive': 47.61904761904762,
+        'connectors_conditional': 0.0,
+        'connectors_reformulative': 0.0,
+        'connectors_primary': 47.61904761904762,
+        'connectors_secondary': 0.0}
         >>> cs.lemmas[1]
         ('он', 'смотреть', 'на', 'птица')
+        >>> cs.connector_spans
+        (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
+        connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
+            по коннектору; если не задан, используется словарь из resources
 
     Атрибуты:
         words (tuple[tuple[str, ...], ...]): Кортеж слов каждого предложения
@@ -122,6 +168,9 @@ class CohesionStats:
         n_demonstratives (int): Количество указательных местоимений
         n_content_words (int): Количество знаменательных слов
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
+        n_connectors (int): Количество коннекторов
+        connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
+        c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
         noun_overlap_all (float): Доля всех пар предложений с общим существительным
         argument_overlap_adjacent (float): Доля пар соседних предложений с общим существительным или местоимением
@@ -137,6 +186,16 @@ class CohesionStats:
         tense_repetition (float): Доля пар соседних предложений с одинаковым преобладающим временем
         aspect_repetition (float): Доля пар соседних предложений с одинаковым преобладающим видом
         temporal_cohesion (float): Среднее повтора времени и вида
+        connectors (float): Коннекторов на 1000 слов
+        connectors_causal (float): Причинных коннекторов на 1000 слов
+        connectors_adversative (float): Противительных коннекторов на 1000 слов
+        connectors_concessive (float): Уступительных коннекторов на 1000 слов
+        connectors_temporal (float): Временных коннекторов на 1000 слов
+        connectors_additive (float): Аддитивных коннекторов на 1000 слов
+        connectors_conditional (float): Условных коннекторов на 1000 слов
+        connectors_reformulative (float): Переформулирующих коннекторов на 1000 слов
+        connectors_primary (float): Первичных коннекторов на 1000 слов
+        connectors_secondary (float): Вторичных коннекторов на 1000 слов
 
     Методы:
         get_stats: Получение вычисленных статистик связности текста
@@ -152,6 +211,7 @@ class CohesionStats:
         source: str | Doc,
         sents_extractor: SentsExtractor | None = None,
         words_extractor: WordsExtractor | None = None,
+        connectors: Mapping[str, tuple[str, str]] | None = None,
     ):
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
@@ -216,6 +276,30 @@ class CohesionStats:
         self.aspect_repetition = calc_repetition(aspects)
         self.temporal_cohesion = fmean((self.tense_repetition, self.aspect_repetition))
 
+        index = _normalize_connectors() if connectors is None else _normalize(connectors)
+        self.connector_spans = tuple(
+            connector
+            for sent_index, sent in enumerate(self.words)
+            for connector in _find(sent, index, sent_index)
+        )
+        self.n_connectors = len(self.connector_spans)
+        self.c_connectors = dict(
+            sorted(Counter(connector.text for connector in self.connector_spans).items())
+        )
+        per_1000 = 1000 / self.n_words
+        classes = Counter(connector.cls for connector in self.connector_spans)
+        kinds = Counter(connector.kind for connector in self.connector_spans)
+        self.connectors = self.n_connectors * per_1000
+        self.connectors_causal = classes["causal"] * per_1000
+        self.connectors_adversative = classes["adversative"] * per_1000
+        self.connectors_concessive = classes["concessive"] * per_1000
+        self.connectors_temporal = classes["temporal"] * per_1000
+        self.connectors_additive = classes["additive"] * per_1000
+        self.connectors_conditional = classes["conditional"] * per_1000
+        self.connectors_reformulative = classes["reformulative"] * per_1000
+        self.connectors_primary = kinds["primary"] * per_1000
+        self.connectors_secondary = kinds["secondary"] * per_1000
+
     def get_stats(self) -> dict[str, float]:
         """
         Получение вычисленных статистик связности текста
@@ -232,6 +316,125 @@ class CohesionStats:
         stats = self.get_stats()
         for stat, value in COHESION_STATS_DESC.items():
             print(f"{value:58}|{stats.get(stat):^10.2f}")
+
+
+@cache
+def load_connectors() -> dict[str, tuple[str, str]]:
+    """
+    Загрузка словаря коннекторов
+
+    Описание:
+        Файл resources/connectors.tsv: коннектор, класс из CONNECTOR_CLASSES
+        и тип из CONNECTOR_TYPES; 318 коннекторов по классификации Криони, Никина
+        и Филипповой (2008) со сверкой по маркерам Ru-RSTreebank, базе Рускон
+        и списку причинных маркеров Тольдовой и др. (2018)
+
+    Вывод:
+        dict[str, tuple[str, str]]: Класс и тип по коннектору
+    """
+    connectors: dict[str, tuple[str, str]] = {}
+    with CONNECTORS_FILE.open(encoding="utf-8") as file:
+        next(file)
+        for line in file:
+            connector, cls, kind = line.rstrip("\n").split("\t")
+            connectors[connector] = (cls, kind)
+    return connectors
+
+
+class ConnectorIndex(NamedTuple):
+    """
+    Индекс словаря коннекторов для поиска
+
+    Атрибуты:
+        entries (dict[str, tuple[str, str, str]]): Коннектор, класс и тип по нормализованному ключу
+        by_first (dict[str, tuple[tuple[str, ...], ...]]): Шаблоны по первому слову,
+            от длинных к коротким
+    """
+
+    entries: dict[str, tuple[str, str, str]]
+    by_first: dict[str, tuple[tuple[str, ...], ...]]
+
+
+def _normalize(connectors: Mapping[str, tuple[str, str]]) -> ConnectorIndex:
+    """
+    Построение индекса словаря коннекторов
+
+    Описание:
+        Ключ - словоформы в нижнем регистре без буквы ё через один пробел; для
+        коннекторов с дефисом или точкой (во-первых, из-за, т.е.) добавляется ключ
+        с пробелами вместо них, так как spaCy отделяет дефис, а WordsExtractor - точку;
+        шаблоны группируются по первому слову
+    """
+    entries: dict[str, tuple[str, str, str]] = {}
+    patterns: dict[str, list[tuple[str, ...]]] = {}
+    for connector, (cls, kind) in connectors.items():
+        if cls not in CONNECTOR_CLASSES or kind not in CONNECTOR_TYPES:
+            raise ValueError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
+        key = " ".join(normalize_yo(connector).split())
+        split = " ".join(key.replace("-", " ").replace(".", " ").split())
+        for variant in {key, split}:
+            if not variant:
+                continue
+            entries[variant] = (connector, cls, kind)
+            pattern = tuple(variant.split())
+            patterns.setdefault(pattern[0], []).append(pattern)
+    by_first = {
+        first: tuple(sorted(set(group), key=len, reverse=True))
+        for first, group in patterns.items()
+    }
+    return ConnectorIndex(entries, by_first)
+
+
+@cache
+def _normalize_connectors() -> ConnectorIndex:
+    return _normalize(load_connectors())
+
+
+def _find(words: Sequence[str], index: ConnectorIndex, sent_index: int) -> list[Connector]:
+    normalized = [normalize_yo(word) for word in words]
+    found = []
+    position = 0
+    while position < len(normalized):
+        for pattern in index.by_first.get(normalized[position], ()):
+            end = position + len(pattern)
+            if tuple(normalized[position:end]) == pattern:
+                text, cls, kind = index.entries[" ".join(pattern)]
+                found.append(Connector(sent_index, position, end, text, cls, kind))
+                position = end
+                break
+        else:
+            position += 1
+    return found
+
+
+def find_connectors(
+    words: Sequence[str],
+    connectors: Mapping[str, tuple[str, str]] | None = None,
+    sent_index: int = 0,
+) -> list[Connector]:
+    """
+    Поиск коннекторов в предложении
+
+    Описание:
+        Коннекторы ищутся по словоформам в нижнем регистре без буквы ё: в каждой
+        позиции берется самый длинный («и все же» не распадается на «и»), найденные
+        не пересекаются; дефис и точка внутри коннектора (во-первых, т.е.) могут
+        быть отделены токенизатором
+
+    Аргументы:
+        words (list[str]): Слова предложения
+        connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
+            по коннектору; если не задан, используется словарь из resources
+        sent_index (int): Номер предложения для записи во вхождения
+
+    Вывод:
+        list[Connector]: Вхождения коннекторов в порядке слов
+
+    Исключения:
+        ValueError: Если в словаре встречается неизвестный класс или тип
+    """
+    index = _normalize_connectors() if connectors is None else _normalize(connectors)
+    return _find(words, index, sent_index)
 
 
 def word_info(word: str) -> WordInfo:
