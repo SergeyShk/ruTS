@@ -29,6 +29,8 @@ from ruts.constants import (
     BASIC_STATS_DESC,
     COHESION_STATS_DESC,
     DIVERSITY_STATS_DESC,
+    HIGHLIGHT_DEFAULT_LAYERS,
+    HIGHLIGHT_LAYER_GROUPS,
     HIGHLIGHT_LAYERS_DESC,
     LEXICAL_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
@@ -154,7 +156,11 @@ EXAMPLES = {
     ),
 }
 
-ALL_LAYERS = list(HIGHLIGHT_LAYERS_DESC)
+DEFAULT_LAYERS = list(HIGHLIGHT_DEFAULT_LAYERS)
+DEFAULT_GROUP_LAYERS = [
+    [layer for layer in group if layer in HIGHLIGHT_DEFAULT_LAYERS]
+    for group in HIGHLIGHT_LAYER_GROUPS.values()
+]
 nlp = spacy.load("ru_core_news_sm", exclude=["ner", "lemmatizer"])
 freq_dict = FreqDict()
 if not freq_dict.filepath:
@@ -287,9 +293,9 @@ def compute(text: str, layers: list[str]) -> dict:
     }
 
 
-def analyze(text: str, layers: list[str]):
+def analyze(text: str, *groups: list[str]):
     try:
-        result = compute(text, layers)
+        result = compute(text, [layer for group in groups for layer in group])
     except ValueError as error:
         raise gr.Error(str(error)) from error
     return (
@@ -311,10 +317,10 @@ def analyze(text: str, layers: list[str]):
     )
 
 
-def rerender(text: str | None, layers: list[str]) -> str:
+def rerender(text: str | None, *groups: list[str]) -> str:
     if not text:
         return ""
-    return render_highlight(text, layers)
+    return render_highlight(text, [layer for group in groups for layer in group])
 
 
 HEADER = """
@@ -333,7 +339,7 @@ CSS = """
 .stats { --font-mono: var(--font); }
 """
 
-INITIAL = compute(EXAMPLES["Новость"], ALL_LAYERS)
+INITIAL = compute(EXAMPLES["Новость"], DEFAULT_LAYERS)
 
 with gr.Blocks(title="ruTS") as demo:
     gr.Markdown(HEADER)
@@ -410,16 +416,19 @@ with gr.Blocks(title="ruTS") as demo:
                 ),
             )
         with gr.Column(scale=1):
-            layers_input = gr.CheckboxGroup(
-                choices=[(name, key) for key, name in HIGHLIGHT_LAYERS_DESC.items()],
-                value=ALL_LAYERS,
-                label="Слои подсветки",
-            )
+            layer_inputs = [
+                gr.CheckboxGroup(
+                    choices=[(HIGHLIGHT_LAYERS_DESC[layer], layer) for layer in group],
+                    value=[layer for layer in group if layer in HIGHLIGHT_DEFAULT_LAYERS],
+                    label=f"Подсветка: {name.lower()}",
+                )
+                for name, group in HIGHLIGHT_LAYER_GROUPS.items()
+            ]
             analyze_button = gr.Button("Разобрать", variant="primary")
     gr.Examples(
-        examples=[[text, ALL_LAYERS] for text in EXAMPLES.values()],
+        examples=[[text, *DEFAULT_GROUP_LAYERS] for text in EXAMPLES.values()],
         example_labels=list(EXAMPLES),
-        inputs=[text_input, layers_input],
+        inputs=[text_input, *layer_inputs],
         outputs=outputs,
         fn=analyze,
         run_on_click=True,
@@ -455,9 +464,12 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["basic"].render()
     gr.Markdown(FOOTER)
 
-    analyze_button.click(analyze, inputs=[text_input, layers_input], outputs=outputs)
-    text_input.submit(analyze, inputs=[text_input, layers_input], outputs=outputs)
-    layers_input.change(rerender, inputs=[text_state, layers_input], outputs=[highlight_output])
+    analyze_button.click(analyze, inputs=[text_input, *layer_inputs], outputs=outputs)
+    text_input.submit(analyze, inputs=[text_input, *layer_inputs], outputs=outputs)
+    for layer_input in layer_inputs:
+        layer_input.change(
+            rerender, inputs=[text_state, *layer_inputs], outputs=[highlight_output]
+        )
 
 if __name__ == "__main__":
     demo.launch(css=CSS)

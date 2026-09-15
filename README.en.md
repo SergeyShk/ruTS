@@ -633,9 +633,9 @@ The library allows visualizing text with the help of the following graphs:
 *   [Zipf's law](https://sergeyshk.github.io/ruTS/visualizers/zipf/)
 *   [Literature Fingerprinting](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/)
 *   [Word Tree](https://sergeyshk.github.io/ruTS/visualizers/word_tree/)
-*   [Text highlighting](https://sergeyshk.github.io/ruTS/visualizers/highlight/) by layers: long sentences, complex words, stop words, passive voice, participle and converb clauses, genitive chains, alliteration
+*   [Text highlighting](https://sergeyshk.github.io/ruTS/visualizers/highlight/) by 15 layers in five groups: readability (long sentences, complex and rare words), syntax (passive voice, participial clauses, genitive chains, split predicates), officialese (verbal nouns, compound prepositions, clichés), style (stop words, parentheticals, connectives), phonics (alliteration)
 
-Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; syntactic layers require a `Doc` with a dependency parse:
+Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
 
 ```python
 >>> import spacy
@@ -652,7 +652,9 @@ Highlighting returns an object rendered in Jupyter as HTML with a legend and hov
 ... )
 >>> ht = highlight(nlp(text))
 >>> ht.counts
-{'long_sents': 1, 'complex_words': 26, 'stopwords': 17, 'passive': 4, 'participle_clauses': 2, 'converb_clauses': 1, 'genitive_chains': 2, 'alliteration': 1}
+{'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2, 'split_predicates': 0, 'cliches': 1}
+>>> highlight(nlp(text), layers=["verbal_nouns", "connectors", "rare_words"]).counts
+{'rare_words': 3, 'verbal_nouns': 10, 'connectors': 4}
 >>> ht  # rendered as highlighted text in Jupyter, the markup is available via ht.to_html()
 ```
 

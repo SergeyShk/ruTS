@@ -2,15 +2,27 @@ import pytest
 import spacy
 from spacy.tokens import Doc
 
-from ruts.constants import HIGHLIGHT_LAYERS_DESC
+from ruts.constants import (
+    HIGHLIGHT_DEFAULT_LAYERS,
+    HIGHLIGHT_LAYER_GROUPS,
+    HIGHLIGHT_LAYERS_DESC,
+    HIGHLIGHT_SYNTAX_LAYERS,
+)
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
     Sent,
     calc_alliteration_runs,
     find_alliteration,
+    find_cliches,
     find_complex_words,
+    find_compound_prepositions,
+    find_connector_highlights,
     find_long_sents,
+    find_parentheticals,
+    find_rare_words,
+    find_split_predicate_highlights,
     find_stopwords,
+    find_verbal_nouns,
     get_stem,
     get_text_sents,
     get_text_words,
@@ -78,7 +90,7 @@ def nlp():
 
 @pytest.fixture(scope="module")
 def ht():
-    return highlight(text)
+    return highlight(text, layers=["long_sents", "complex_words", "stopwords", "alliteration"])
 
 
 def test_init_value_error():
@@ -106,17 +118,33 @@ def test_highlight_returns_highlighted_text(ht):
     assert all(isinstance(h, Highlight) for h in ht.highlights)
 
 
-def test_layers_default_str(ht):
-    assert ht.layers == ("long_sents", "complex_words", "stopwords", "alliteration")
+def test_layers_default_str():
+    assert highlight(text).layers == ("long_sents", "complex_words", "cliches")
+    assert highlight(text, layers="all").layers == tuple(
+        layer for layer in HIGHLIGHT_LAYERS_DESC if layer not in HIGHLIGHT_SYNTAX_LAYERS
+    )
 
 
 def test_layers_default_doc(doc):
-    assert highlight(doc).layers == tuple(HIGHLIGHT_LAYERS_DESC)
+    assert highlight(doc).layers == HIGHLIGHT_DEFAULT_LAYERS
+    assert highlight(doc, layers="all").layers == tuple(HIGHLIGHT_LAYERS_DESC)
 
 
 def test_layers_default_blank_doc():
     blank = spacy.blank("ru")(text)
-    assert highlight(blank).layers == ("complex_words", "stopwords", "alliteration")
+    assert highlight(blank).layers == ("complex_words", "cliches")
+    assert "long_sents" not in highlight(blank, layers="all").layers
+
+
+def test_layer_groups():
+    grouped = [layer for group in HIGHLIGHT_LAYER_GROUPS.values() for layer in group]
+    assert sorted(grouped) == sorted(HIGHLIGHT_LAYERS_DESC)
+    assert len(grouped) == len(set(grouped)) == 15
+    assert set(HIGHLIGHT_DEFAULT_LAYERS) < set(HIGHLIGHT_LAYERS_DESC)
+    assert 5 <= len(HIGHLIGHT_DEFAULT_LAYERS) <= 6
+    assert HIGHLIGHT_LAYER_GROUPS["Синтаксис"] == tuple(
+        layer for layer in HIGHLIGHT_LAYERS_DESC if layer in HIGHLIGHT_SYNTAX_LAYERS
+    )
 
 
 def test_layers_selection(doc):
@@ -148,6 +176,21 @@ def test_counts(ht):
         "alliteration": 1,
     }
     assert list(ht.counts) == list(ht.layers)
+
+
+def test_counts_all_layers():
+    assert highlight(text, layers="all").counts == {
+        "long_sents": 0,
+        "complex_words": 4,
+        "rare_words": 2,
+        "verbal_nouns": 2,
+        "compound_prepositions": 0,
+        "cliches": 0,
+        "stopwords": 0,
+        "parentheticals": 0,
+        "connectors": 0,
+        "alliteration": 1,
+    }
 
 
 def test_highlights_sorted(ht):
@@ -475,7 +518,7 @@ def test_to_html_title_escaping():
 
 
 def test_to_html_nested_classes(doc):
-    html = highlight(doc).to_html(legend=False, css=False)
+    html = highlight(doc, layers="all").to_html(legend=False, css=False)
     assert (
         '<span class="ruts-hl ruts-hl-complex_words ruts-hl-passive ruts-hl-participle_clauses" '
         'title="сложное слово, 4 слога; пассив; причастный оборот, 5 слов">построенный</span>'
@@ -488,7 +531,7 @@ def test_to_html_nested_classes(doc):
 
 def test_parsed_doc(nlp):
     doc = nlp("Дом, построенный рабочими, был продан.\n\nЧуть слышно, бесшумно шуршат камыши.")
-    ht = highlight(doc, long_sent_word_factor=5)
+    ht = highlight(doc, layers="all", long_sent_word_factor=5)
     assert ht.layers == tuple(HIGHLIGHT_LAYERS_DESC)
     assert [doc.text[h.start : h.end] for h in ht.highlights if h.layer == "long_sents"] == [
         "Дом, построенный рабочими, был продан.",
@@ -500,3 +543,113 @@ def test_parsed_doc(nlp):
         doc.text[h.start : h.end] for h in ht.highlights if h.layer == "alliteration"
     ]
     assert "&#10;&#10;" in ht.to_html()
+
+
+officialese_text = (
+    "Во-первых, в целях повышения качества комиссия осуществляет плановую проверку. "
+    "Однако, как правило, на сегодняшний день фелинолог, т.е. специалист по кошкам, не привлекается."
+)
+
+
+def fragments(source, layer, **kwargs):
+    ht = highlight(source, layers=[layer], **kwargs)
+    text = ht.text
+    return [(text[h.start : h.end], h.note) for h in ht.highlights]
+
+
+def test_rare_words():
+    assert fragments(officialese_text, "rare_words") == [
+        ("фелинолог", "редкое слово: вне топ-10000"),
+        ("привлекается", "редкое слово: вне топ-10000"),
+    ]
+    assert fragments("USA 2020 и т.е. кот", "rare_words") == []
+    assert find_rare_words(get_text_words("Фелинолог")) == [
+        Highlight(0, 9, "rare_words", "редкое слово: вне топ-10000")
+    ]
+
+
+def test_verbal_nouns():
+    assert fragments(officialese_text, "verbal_nouns") == [
+        ("повышения", "отглагольное существительное")
+    ]
+    assert find_verbal_nouns(get_text_words("здание")) == [
+        Highlight(0, 6, "verbal_nouns", "отглагольное существительное")
+    ]
+    assert find_verbal_nouns(get_text_words("качество кот")) == []
+
+
+def test_compound_prepositions():
+    assert fragments(officialese_text, "compound_prepositions") == [
+        ("в целях", "производный предлог: «в целях»")
+    ]
+    words = get_text_words("Путём проверки и за счёт этого")
+    assert [h.start for h in find_compound_prepositions(words)] == [0, 17]
+    assert [h.note for h in find_compound_prepositions(words)] == [
+        "производный предлог: «путем»",
+        "производный предлог: «за счет»",
+    ]
+
+
+def test_cliches():
+    assert fragments(officialese_text, "cliches") == [
+        ("на сегодняшний день", "штамп: «на сегодняшний день»")
+    ]
+    assert fragments(officialese_text, "cliches", cliches=["как правило"]) == [
+        ("как правило", "штамп: «как правило»")
+    ]
+    assert fragments(officialese_text, "cliches", cliches=[]) == []
+    assert find_cliches(get_text_words("имеет место быть"), None) == [
+        Highlight(0, 16, "cliches", "штамп: «имеет место быть»")
+    ]
+
+
+def test_parentheticals():
+    assert fragments(officialese_text, "parentheticals") == [
+        ("Во-первых", "вводное слово"),
+        ("Однако", "вводное слово"),
+        ("как правило", "вводный оборот: «как правило»"),
+    ]
+    words = get_text_words("Конечно, таким образом, кот")
+    assert [h.note for h in find_parentheticals(words)] == [
+        "вводное слово",
+        "вводный оборот: «таким образом»",
+    ]
+
+
+def test_connectors():
+    assert fragments(officialese_text, "connectors") == [
+        ("Во-первых", "коннектор «во-первых»: аддитивные, первичные"),
+        ("в целях", "коннектор «в целях»: причинные, вторичные"),
+        ("Однако", "коннектор «однако»: противительные, первичные"),
+        ("т.е", "коннектор «т.е.»: переформулирующие, первичные"),
+    ]
+    source = "Он ушёл, потому. Что делать"
+    words = get_text_words(source)
+    sents = get_text_sents(source, words)
+    assert find_connector_highlights(words, sents) == [
+        Highlight(9, 15, "connectors", "коннектор «потому»: причинные, первичные")
+    ]
+    assert [h.note for h in find_connector_highlights(words, None)] == [
+        "коннектор «потому что»: причинные, первичные"
+    ]
+    assert [h.note for h in find_connector_highlights(get_text_words("и всё же"), None)] == [
+        "коннектор «и всё же»: уступительные, первичные"
+    ]
+
+
+def test_split_predicates(nlp):
+    doc = nlp(officialese_text)
+    assert fragments(doc, "split_predicates") == [
+        ("осуществляет плановую проверку", "расщепленное сказуемое: осуществлять проверка")
+    ]
+    assert find_split_predicate_highlights(nlp("Кот спит.")) == []
+    with pytest.raises(ValueError, match="split_predicates"):
+        highlight(officialese_text, layers=["split_predicates"])
+
+
+def test_new_layers_doc_matches_text(nlp):
+    doc = nlp(officialese_text)
+    for layer in ("rare_words", "verbal_nouns", "compound_prepositions", "cliches", "connectors"):
+        assert [f.rstrip(".") for f, _ in fragments(doc, layer)] == [
+            f.rstrip(".") for f, _ in fragments(officialese_text, layer)
+        ]

@@ -1,4 +1,5 @@
 import html
+import re
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass
 from itertools import pairwise
@@ -7,19 +8,29 @@ from typing import NamedTuple
 from razdel import sentenize, tokenize
 from spacy.tokens import Doc, Token
 
+from ..cohesion_stats import find_connectors
 from ..constants import (
     ALLITERATION_IGNORED_LETTERS,
     ALLITERATION_MIN_WORD_LEN,
     ALLITERATION_THRESHOLD,
     COMPLEX_SYL_FACTOR,
+    COMPOUND_PREPOSITIONS,
+    CONNECTOR_CLASSES,
+    CONNECTOR_TYPES,
+    HIGHLIGHT_DEFAULT_LAYERS,
     HIGHLIGHT_LAYERS_DESC,
     HIGHLIGHT_SYNTAX_LAYERS,
     LONG_SENT_WORD_FACTOR,
+    OFFICIALESE_CLICHES,
+    PARENTHETICALS,
     RU_LETTER_FREQUENCIES,
 )
+from ..lexical_stats import get_rank
 from ..phon_stats import CONSONANTS, LETTERS, VOWELS
-from ..style_stats import is_stopword
+from ..style_stats import is_parenthetical, is_stopword
 from ..syntax_stats import (
+    find_split_predicates,
+    get_lemma,
     get_words,
     is_agentless,
     is_converb_clause,
@@ -28,22 +39,37 @@ from ..syntax_stats import (
     is_passive,
     is_word,
 )
-from ..utils import count_syllables, is_punctuation, parse_word
+from ..utils import (
+    count_syllables,
+    find_phrases,
+    is_punctuation,
+    is_verbal_noun,
+    normalize_yo,
+    parse_word,
+)
 
+RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
 CSS = """\
 .ruts-highlight { line-height: 1.7; }
 .ruts-highlight-legend { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin-bottom: 0.8em; font-size: 0.9em; }
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
 .ruts-hl-complex_words { background: #fed7aa; }
-.ruts-hl-stopwords { background: #bae6fd; }
+.ruts-hl-rare_words { background: #e5e7eb; }
 .ruts-hl-passive { background: #fecaca; }
+.ruts-hl-verbal_nouns { background: #e9d5ff; }
+.ruts-hl-compound_prepositions { background: #a7f3d0; }
+.ruts-hl-cliches { background: #fbcfe8; }
+.ruts-hl-stopwords { background: #bae6fd; }
+.ruts-hl-parentheticals { background: #d9f99d; }
 .ruts-hl-participle_clauses { border-bottom: 2px solid #7c3aed; }
 .ruts-hl-converb_clauses { border-bottom: 2px solid #0d9488; }
 .ruts-hl-genitive_chains { border-bottom: 2px solid #b45309; }
+.ruts-hl-split_predicates { border-bottom: 2px solid #dc2626; }
+.ruts-hl-connectors { border-bottom: 2px dashed #2563eb; }
 .ruts-hl-alliteration { text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: #db2777; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 """
 
@@ -86,15 +112,25 @@ class HighlightedText:
         Каждый слой отмечает фрагменты, по которым считаются статистики библиотеки:
             long_sents - предложения с числом слов не меньше long_sent_word_factor (BasicStats, ReadabilityStats)
             complex_words - слова с числом слогов не меньше complex_syl_factor (BasicStats, ReadabilityStats)
-            stopwords - стоп-слова по части речи или переданному списку, «вода» текста (StyleStats)
+            rare_words - слова с леммой вне вшитого списка топ-10000 (LexicalStats)
             passive - пассивные глагольные формы вместе со вспомогательным глаголом (SyntaxStats)
             participle_clauses - причастные обороты (SyntaxStats)
             converb_clauses - деепричастные обороты (SyntaxStats)
             genitive_chains - цепочки родительных падежей с управляющим словом (SyntaxStats)
+            split_predicates - расщепленные сказуемые от глагола до именной части (SyntaxStats)
+            verbal_nouns - отглагольные существительные (StyleStats)
+            compound_prepositions - производные предлоги (StyleStats)
+            cliches - штампы по списку OFFICIALESE_CLICHES или переданному (StyleStats)
+            stopwords - стоп-слова по части речи или переданному списку, «вода» текста (StyleStats)
+            parentheticals - вводные слова и обороты (StyleStats)
+            connectors - коннекторы с классом и типом в подсказке (CohesionStats)
             alliteration - повторы согласной в соседних словах, маловероятные при частотах букв русского языка (PhonStats)
-        Слои passive, participle_clauses, converb_clauses и genitive_chains считаются по дереву
-        зависимостей и доступны только для объекта Doc с разбором зависимостей; слой long_sents
-        для Doc требует границ предложений. По умолчанию включаются все слои, доступные источнику
+        Слои сгруппированы в HIGHLIGHT_LAYER_GROUPS: читаемость, синтаксис, канцелярит,
+        стиль, фоника. Синтаксические слои считаются по дереву зависимостей и доступны
+        только для объекта Doc с разбором зависимостей; слой long_sents для Doc требует
+        границ предложений. По умолчанию включаются слои HIGHLIGHT_DEFAULT_LAYERS
+        (длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные
+        сказуемые, штампы), доступные источнику; layers="all" включает все доступные
         Результат отображается в Jupyter как HTML со стилями и легендой, метод to_html
         возвращает ту же разметку для документации и веб-приложений; фрагменты разных слоев
         могут пересекаться, при отрисовке текст режется на отрезки с набором классов CSS
@@ -104,19 +140,24 @@ class HighlightedText:
         >>> text = "Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."
         >>> ht = highlight(text)
         >>> ht.counts
-        {'long_sents': 0, 'complex_words': 4, 'stopwords': 0, 'alliteration': 1}
+        {'long_sents': 0, 'complex_words': 4, 'cliches': 0}
+        >>> ht = highlight(text, layers="all")
+        >>> ht.counts
+        {'long_sents': 0, 'complex_words': 4, 'rare_words': 0, 'verbal_nouns': 3, 'compound_prepositions': 0, 'cliches': 0, 'stopwords': 0, 'parentheticals': 0, 'connectors': 0, 'alliteration': 1}
         >>> ht.highlights[0]
         Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»')
-        >>> ht.to_html(legend=False, css=False)
+        >>> highlight(text, layers="alliteration").to_html(legend=False, css=False)
         '<div class="ruts-highlight"><div class="ruts-highlight-text">Чуть <span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">слышно, бесшумно шуршат камыши</span>. ...'
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        layers (list[str]): Слои подсветки; если не заданы, включаются все доступные источнику
+        layers (list[str]|str): Слои подсветки; если не заданы, включаются слои
+            HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список стоп-слов; если не задан, стоп-слова определяются
             по части речи с помощью pymorphy3
+        cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
 
@@ -139,10 +180,11 @@ class HighlightedText:
     def __init__(
         self,
         source: str | Doc,
-        layers: Sequence[str] | None = None,
+        layers: Sequence[str] | str | None = None,
         long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         stopwords: Sequence[str] | None = None,
+        cliches: Sequence[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
         if isinstance(source, Doc):
@@ -178,12 +220,19 @@ class HighlightedText:
         finders: dict[str, Callable[[], list[Highlight]]] = {
             "long_sents": lambda: find_long_sents(sents or [], long_sent_word_factor),
             "complex_words": lambda: find_complex_words(words, complex_syl_factor),
+            "rare_words": lambda: find_rare_words(words),
             "stopwords": lambda: find_stopwords(words, stopwords),
+            "verbal_nouns": lambda: find_verbal_nouns(words),
+            "compound_prepositions": lambda: find_compound_prepositions(words),
+            "cliches": lambda: find_cliches(words, cliches),
+            "parentheticals": lambda: find_parentheticals(words),
+            "connectors": lambda: find_connector_highlights(words, sents),
             "alliteration": lambda: find_alliteration(words, alliteration_threshold, sents),
             "passive": lambda: find_passive(doc) if doc else [],
             "participle_clauses": lambda: find_participle_clauses(doc) if doc else [],
             "converb_clauses": lambda: find_converb_clauses(doc) if doc else [],
             "genitive_chains": lambda: find_genitive_chains(doc) if doc else [],
+            "split_predicates": lambda: find_split_predicate_highlights(doc) if doc else [],
         }
         highlights = [h for layer in self.layers for h in finders[layer]()]
         self.highlights = tuple(sorted(highlights, key=lambda h: (h.start, -h.end)))
@@ -244,27 +293,32 @@ class HighlightedText:
 
 def highlight(
     source: str | Doc,
-    layers: Sequence[str] | None = None,
+    layers: Sequence[str] | str | None = None,
     long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
     complex_syl_factor: int = COMPLEX_SYL_FACTOR,
     stopwords: Sequence[str] | None = None,
+    cliches: Sequence[str] | None = None,
     alliteration_threshold: float = ALLITERATION_THRESHOLD,
 ) -> HighlightedText:
     """
     Подсветка текста по слоям в стиле Главреда и Тургенева
 
     Описание:
-        Слои: long_sents, complex_words, stopwords, passive, participle_clauses,
-        converb_clauses, genitive_chains, alliteration; синтаксические слои доступны
-        только для объекта Doc с разбором зависимостей, подробнее в классе HighlightedText
+        Слои из HIGHLIGHT_LAYERS_DESC: длинные предложения, сложные и редкие слова,
+        пассив, обороты, цепочки родительных, расщепленные сказуемые, отглагольные
+        существительные, производные предлоги, штампы, стоп-слова, вводные слова,
+        коннекторы, аллитерация; синтаксические слои доступны только для объекта Doc
+        с разбором зависимостей, подробнее в классе HighlightedText
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        layers (list[str]): Слои подсветки; если не заданы, включаются все доступные источнику
+        layers (list[str]|str): Слои подсветки; если не заданы, включаются слои
+            HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список стоп-слов; если не задан, стоп-слова определяются
             по части речи с помощью pymorphy3
+        cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
 
@@ -277,16 +331,18 @@ def highlight(
         long_sent_word_factor=long_sent_word_factor,
         complex_syl_factor=complex_syl_factor,
         stopwords=stopwords,
+        cliches=cliches,
         alliteration_threshold=alliteration_threshold,
     )
 
 
-def select_layers(layers: Sequence[str] | None, available: Sequence[str]) -> tuple[str, ...]:
+def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) -> tuple[str, ...]:
     """
     Выбор слоев подсветки
 
     Аргументы:
-        layers (list[str]): Запрошенные слои; если не заданы, берутся все доступные
+        layers (list[str]|str): Запрошенные слои; если не заданы, берутся слои
+            HIGHLIGHT_DEFAULT_LAYERS из доступных, "all" - все доступные
         available (list[str]): Слои, доступные источнику данных
 
     Вывод:
@@ -296,6 +352,8 @@ def select_layers(layers: Sequence[str] | None, available: Sequence[str]) -> tup
         ValueError: Если задан неизвестный или недоступный источнику слой
     """
     if layers is None:
+        return tuple(layer for layer in HIGHLIGHT_DEFAULT_LAYERS if layer in available)
+    if layers == "all":
         return tuple(available)
     if isinstance(layers, str):
         layers = [layers]
@@ -470,6 +528,169 @@ def find_stopwords(
     else:
         matches = [word for word in words if is_stopword(word.text.lower())]
     return [Highlight(word.start, word.end, "stopwords", "стоп-слово") for word in matches]
+
+
+def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
+    """
+    Поиск редких слов
+
+    Описание:
+        Слова, лемма которых (первый разбор pymorphy3) отсутствует во вшитом списке
+        10 000 самых частых лемм (get_rank), как в доле p_beyond_top10000 класса
+        LexicalStats; учитываются только слова из русских букв длиной от двух букв,
+        числа, латиница, сокращения (т.е.) и стоп-слова (во-первых) не подсвечиваются
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя rare_words
+    """
+    return [
+        Highlight(word.start, word.end, "rare_words", "редкое слово: вне топ-10000")
+        for word in words
+        if RUSSIAN_WORD.fullmatch(word.text)
+        and not is_stopword(word.text.lower())
+        and get_rank(parse_word(word.text).normal_form) is None
+    ]
+
+
+def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
+    """
+    Поиск отглагольных существительных
+
+    Описание:
+        Существительные по первому разбору pymorphy3 с отглагольной леммой
+        (is_verbal_noun), как в доле verbal_nouns класса StyleStats
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя verbal_nouns
+    """
+    highlights = []
+    for word in words:
+        parse = parse_word(word.text)
+        if parse.tag.POS == "NOUN" and is_verbal_noun(parse.normal_form):
+            note = "отглагольное существительное"
+            highlights.append(Highlight(word.start, word.end, "verbal_nouns", note))
+    return highlights
+
+
+def find_phrase_highlights(
+    words: Sequence[Word], phrases: Iterable[str], layer: str, label: str
+) -> list[Highlight]:
+    """
+    Поиск словосочетаний из списка
+
+    Описание:
+        Словосочетания ищутся по словоформам (find_phrases), фрагмент покрывает
+        слова от первого до последнего вместе со знаками между ними; в подсказке -
+        словарная форма словосочетания
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+        phrases (list[str]): Словосочетания через пробел
+        layer (str): Слой подсветки
+        label (str): Подпись фрагмента в подсказке
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя
+    """
+    forms = {" ".join(normalize_yo(phrase).split()): phrase for phrase in phrases}
+    texts = [word.text for word in words]
+    highlights = []
+    for start, end in find_phrases(texts, forms):
+        phrase = forms[" ".join(normalize_yo(word) for word in texts[start:end])]
+        note = f"{label}: «{phrase}»"
+        highlights.append(Highlight(words[start].start, words[end - 1].end, layer, note))
+    return highlights
+
+
+def find_compound_prepositions(words: Sequence[Word]) -> list[Highlight]:
+    """
+    Поиск производных предлогов по списку COMPOUND_PREPOSITIONS
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя compound_prepositions
+    """
+    return find_phrase_highlights(
+        words, COMPOUND_PREPOSITIONS, "compound_prepositions", "производный предлог"
+    )
+
+
+def find_cliches(words: Sequence[Word], cliches: Sequence[str] | None = None) -> list[Highlight]:
+    """
+    Поиск штампов
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+        cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя cliches
+    """
+    phrases = OFFICIALESE_CLICHES if cliches is None else cliches
+    return find_phrase_highlights(words, phrases, "cliches", "штамп")
+
+
+def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
+    """
+    Поиск вводных слов
+
+    Описание:
+        Вводные обороты из PARENTHETICALS и одиночные вводные слова по граммеме Prnt
+        pymorphy3 (is_parenthetical) вне найденных оборотов, как в calc_parentheticals
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя parentheticals
+    """
+    highlights = find_phrase_highlights(words, PARENTHETICALS, "parentheticals", "вводный оборот")
+    covered = {position for h in highlights for position in range(h.start, h.end)}
+    for word in words:
+        if word.start not in covered and is_parenthetical(word.text):
+            highlights.append(Highlight(word.start, word.end, "parentheticals", "вводное слово"))
+    return sorted(highlights, key=lambda h: h.start)
+
+
+def find_connector_highlights(
+    words: Sequence[Word], sents: Sequence[Sent] | None
+) -> list[Highlight]:
+    """
+    Поиск коннекторов
+
+    Описание:
+        Коннекторы ищутся внутри каждого предложения (find_connectors), без границ
+        предложений - по всему тексту; в подсказке класс и тип коннектора
+
+    Аргументы:
+        words (list[Word]): Слова с позициями
+        sents (list[Sent]): Предложения с позициями; None, если границы неизвестны
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя connectors
+    """
+    groups = group_words_by_sents(words, sents) if sents else [list(words)]
+    highlights = []
+    for group in groups:
+        for connector in find_connectors([word.text for word in group]):
+            note = (
+                f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
+                f"{CONNECTOR_TYPES[connector.kind]}"
+            )
+            highlights.append(
+                Highlight(
+                    group[connector.start].start, group[connector.end - 1].end, "connectors", note
+                )
+            )
+    return highlights
 
 
 def group_words_by_sents(words: Sequence[Word], sents: Sequence[Sent]) -> list[list[Word]]:
@@ -707,6 +928,28 @@ def find_converb_clauses(doc: Doc) -> list[Highlight]:
             n_words = len(get_words(token.subtree))
             note = f"деепричастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "converb_clauses", note))
+    return highlights
+
+
+def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
+    """
+    Поиск расщепленных сказуемых
+
+    Описание:
+        Пары легкий глагол - именная часть из find_split_predicates; фрагмент покрывает
+        слова от первого до последнего из пары (осуществляет плановую проверку)
+
+    Аргументы:
+        doc (Doc): Объект Doc с разбором зависимостей
+
+    Вывод:
+        list[Highlight]: Фрагменты слоя split_predicates
+    """
+    highlights = []
+    for verb, noun in find_split_predicates(doc):
+        start, end = tokens_span([verb, noun])
+        note = f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}"
+        highlights.append(Highlight(start, end, "split_predicates", note))
     return highlights
 
 
