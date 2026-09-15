@@ -7,15 +7,19 @@ from spacy.tokens import Doc, Token
 
 from .constants import (
     CLAUSE_DEPS,
+    LIGHT_VERBS,
     NEGATION_PARTICLES,
     NOUN_MODIFIER_DEPS,
     PASSIVE_DEPS,
+    SPLIT_PREDICATE_NOUNS,
     SUBJECT_DEPS,
     SUBORDINATE_CLAUSE_DEPS,
     SYNTAX_STATS_DESC,
     VALENCY_IGNORED_DEPS,
 )
-from .utils import safe_divide
+from .utils import is_verbal_noun, lemmatize, normalize_yo, safe_divide
+
+SPLIT_PREDICATE_DEPS = frozenset({"obj", "iobj", "obl", "nmod", "nsubj:pass"})
 
 
 class SyntaxStats:
@@ -32,7 +36,9 @@ class SyntaxStats:
         число листьев и поддеревьев, узлов на лист) усредняются по предложениям,
         конструкции нормируются на число предложений, пассив и модификаторы - на число
         глаголов и существительных
-        Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018)
+        Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018);
+        расщепленные сказуемые (осуществлять проверку) и отношение существительных
+        к глаголам - маркеры канцелярита, лексические маркеры считает StyleStats
 
     Ссылки:
         https://universaldependencies.org/u/dep/
@@ -70,7 +76,9 @@ class SyntaxStats:
         'p_passive': 0.4,
         'p_agentless_passive': 0.5,
         'infinitives_per_sent': 0.0,
-        'negations_per_sent': 0.5}
+        'negations_per_sent': 0.5,
+        'split_predicates_per_sent': 0.0,
+        'noun_verb_ratio': 1.0}
         >>> ss.c_children
         {0: 9, 1: 2, 2: 5, 3: 1}
 
@@ -95,6 +103,8 @@ class SyntaxStats:
         n_agentless_passive (int): Количество пассивных форм без агенса
         n_infinitives (int): Количество инфинитивов
         n_negations (int): Количество отрицательных частиц
+        n_split_predicates (int): Количество расщепленных сказуемых
+        split_predicates (tuple[str]): Кортеж расщепленных сказуемых (глагол и существительное)
         c_children (dict[int, int]): Распределение слов по числу зависимых слов
         c_deps (dict[str, int]): Распределение слов по синтаксическим отношениям
         mean_dependency_distance (float): Средняя длина зависимости
@@ -123,6 +133,8 @@ class SyntaxStats:
         p_agentless_passive (float): Доля форм без агенса среди пассивных
         infinitives_per_sent (float): Инфинитивов на предложение
         negations_per_sent (float): Отрицательных частиц на предложение
+        split_predicates_per_sent (float): Расщепленных сказуемых на предложение
+        noun_verb_ratio (float): Отношение числа существительных к числу глагольных форм
 
     Методы:
         get_stats: Получение вычисленных синтаксических статистик текста
@@ -177,6 +189,11 @@ class SyntaxStats:
         self.n_agentless_passive = sum(1 for token in passive if is_agentless(token))
         self.n_infinitives = sum(1 for token in words if is_infinitive(token))
         self.n_negations = sum(1 for token in words if is_negation(token))
+        split_predicates = find_split_predicates(words)
+        self.n_split_predicates = len(split_predicates)
+        self.split_predicates = tuple(
+            f"{verb.text} {noun.text}" for verb, noun in split_predicates
+        )
 
         self.mean_dependency_distance = fmean(all_distances) if all_distances else nan
         self.std_dependency_distance = pstdev(all_distances) if all_distances else nan
@@ -213,6 +230,8 @@ class SyntaxStats:
         self.p_agentless_passive = safe_divide(self.n_agentless_passive, self.n_passive, nan)
         self.infinitives_per_sent = self.n_infinitives / self.n_sents
         self.negations_per_sent = self.n_negations / self.n_sents
+        self.split_predicates_per_sent = self.n_split_predicates / self.n_sents
+        self.noun_verb_ratio = safe_divide(self.n_nouns, self.n_verbs, nan)
 
     def get_stats(self) -> dict[str, float]:
         """
@@ -727,3 +746,85 @@ def is_agentless(token: Token) -> bool:
         bool: Результат проверки
     """
     return is_passive(token) and not any(child.dep_ == "obl:agent" for child in token.children)
+
+
+def get_lemma(token: Token) -> str:
+    """
+    Получение леммы токена в нижнем регистре
+
+    Описание:
+        Лемма spaCy, а без лемматизатора в пайплайне - разбор pymorphy3
+        с частью речи токена (lemmatize)
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        str: Лемма
+    """
+    return token.lemma_.lower() if token.lemma_ else lemmatize(token.text, token.pos_)
+
+
+def is_light_verb(token: Token) -> bool:
+    """
+    Проверка, является ли токен легким глаголом
+
+    Описание:
+        Глагол с леммой из LIGHT_VERBS (осуществлять, производить, проводить,
+        обеспечивать, оказывать, принимать, иметь), который в расщепленном сказуемом
+        несет только грамматическое значение
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return token.pos_ == "VERB" and normalize_yo(get_lemma(token)) in LIGHT_VERBS
+
+
+def is_split_predicate_noun(token: Token) -> bool:
+    """
+    Проверка, может ли токен быть именной частью расщепленного сказуемого
+
+    Описание:
+        Существительное с отглагольной леммой (is_verbal_noun: проверка, участие,
+        реализация) или с леммой из SPLIT_PREDICATE_NOUNS (роль, работа, помощь, мера)
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    if token.pos_ != "NOUN":
+        return False
+    lemma = normalize_yo(get_lemma(token))
+    return is_verbal_noun(lemma) or lemma in SPLIT_PREDICATE_NOUNS
+
+
+def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
+    """
+    Поиск расщепленных сказуемых
+
+    Описание:
+        Легкий глагол (is_light_verb) с зависимым obj, iobj, obl, nmod или nsubj:pass
+        (в пассиве: принято решение) - именной частью (is_split_predicate_noun):
+        осуществлять проверку, оказать помощь, принять участие, вести борьбу;
+        при однородных именных частях (оказывать помощь и поддержку) считается
+        только первая, вторая присоединена как conj
+
+    Аргументы:
+        tokens (Doc|Span|list[Token]): Последовательность токенов
+
+    Вывод:
+        list[tuple[Token, Token]]: Пары глагол - существительное в порядке слов
+    """
+    return [
+        (token, child)
+        for token in get_words(tokens)
+        if is_light_verb(token)
+        for child in get_children(token)
+        if (base_dep(child) in SPLIT_PREDICATE_DEPS or child.dep_ in SPLIT_PREDICATE_DEPS)
+        and is_split_predicate_noun(child)
+    ]

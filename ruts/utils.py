@@ -5,12 +5,19 @@ import unicodedata
 import urllib.parse
 import urllib.request
 import zipfile
+from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from pathlib import Path
 
 import pymorphy3
 
-from .constants import DEFAULT_DATA_DIR, PUNCTUATIONS, RU_VOWELS, UD_TO_OPENCORPORA_POS
+from .constants import (
+    DEFAULT_DATA_DIR,
+    PUNCTUATIONS,
+    RU_VOWELS,
+    UD_TO_OPENCORPORA_POS,
+    VERBAL_NOUN_SUFFIXES,
+)
 
 
 @lru_cache(maxsize=1)
@@ -65,6 +72,73 @@ def lemmatize(word: str, pos: str = "") -> str:
     allowed = UD_TO_OPENCORPORA_POS.get(pos, frozenset())
     parse = next((parse for parse in parses if parse.tag.POS in allowed), parses[0])
     return str(parse.normal_form)
+
+
+def is_verbal_noun(lemma: str) -> bool:
+    """
+    Проверка, является ли лемма отглагольным существительным по суффиксу
+
+    Описание:
+        Суффиксы из VERBAL_NOUN_SUFFIXES: -ние, -нье, -тие, -тье, -ствие, -ция, -ство
+        (повышение, участие, содействие, реализация, производство); эвристика
+        захватывает и неотглагольные слова с теми же суффиксами (здание, качество)
+
+    Аргументы:
+        lemma (str): Лемма существительного
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return normalize_yo(lemma).endswith(VERBAL_NOUN_SUFFIXES)
+
+
+def normalize_yo(word: str) -> str:
+    """
+    Замена буквы ё на е в нижнем регистре
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        str: Слово без буквы ё
+    """
+    return word.lower().replace("ё", "е")
+
+
+def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int, int]]:
+    """
+    Поиск словосочетаний в последовательности слов
+
+    Описание:
+        Слова и словосочетания сравниваются в нижнем регистре без буквы ё; в каждой
+        позиции выбирается самое длинное словосочетание, найденные не пересекаются
+
+    Аргументы:
+        words (list[str]): Слова текста
+        phrases (list[str]): Словосочетания через пробел
+
+    Вывод:
+        list[tuple[int, int]]: Границы найденных словосочетаний как срезы words
+    """
+    patterns = sorted(
+        {tuple(normalize_yo(phrase).split()) for phrase in phrases}, key=len, reverse=True
+    )
+    if not patterns:
+        return []
+    normalized = [normalize_yo(word) for word in words]
+    max_len = len(patterns[0])
+    spans = []
+    position = 0
+    while position < len(normalized):
+        window = tuple(normalized[position : position + max_len])
+        for pattern in patterns:
+            if window[: len(pattern)] == pattern:
+                spans.append((position, position + len(pattern)))
+                position += len(pattern)
+                break
+        else:
+            position += 1
+    return spans
 
 
 def is_punctuation(token: str) -> bool:

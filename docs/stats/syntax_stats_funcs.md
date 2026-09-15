@@ -173,10 +173,23 @@
 | :------: | :-: | :----------: | :------: |
 | `token` | Token | `-` | Токен |
 
+## Расщепленные сказуемые { #find_split_predicates }
+
+!!! info ""
+    **ruts.syntax_stats.find_split_predicates()**, **ruts.syntax_stats.is_light_verb()**, **ruts.syntax_stats.is_split_predicate_noun()**
+
+Поиск расщепленных сказуемых - маркера канцелярита: легкий глагол с леммой из `LIGHT_VERBS` (осуществлять, производить, проводить, обеспечивать, оказывать, принимать, иметь) с зависимым `obj`, `iobj`, `obl`, `nmod` или `nsubj:pass` - существительным с отглагольной леммой (`ruts.utils.is_verbal_noun`) или леммой из `SPLIT_PREDICATE_NOUNS` (роль, работа, помощь, мера): осуществлять проверку, оказать помощь, принять участие, принято решение. Лемма берется из `token.lemma_`, без лемматизатора - из разбора pymorphy3 с частью речи токена (`get_lemma`). Класс `SyntaxStats` считает расщепленные сказуемые на предложение (`split_predicates_per_sent`) и хранит найденные пары в `split_predicates`; отношение существительных к глагольным формам (`noun_verb_ratio`) считается по счетчикам класса.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `tokens` | Doc/Span/list[Token] | `-` | Последовательность токенов |
+
 ## Вспомогательные функции { #helpers }
 
 !!! info ""
-    **ruts.syntax_stats.is_word()**, **ruts.syntax_stats.get_words()**, **ruts.syntax_stats.is_root()**, **ruts.syntax_stats.base_dep()**, **ruts.syntax_stats.get_children()**, **ruts.syntax_stats.has_feature()**
+    **ruts.syntax_stats.is_word()**, **ruts.syntax_stats.get_words()**, **ruts.syntax_stats.is_root()**, **ruts.syntax_stats.base_dep()**, **ruts.syntax_stats.get_children()**, **ruts.syntax_stats.has_feature()**, **ruts.syntax_stats.get_lemma()**
 
 | Функция | Описание |
 | :------ | :------- |
@@ -186,3 +199,4 @@
 | `base_dep(token)` | Базовое отношение без подтипа: `acl:relcl` → `acl` |
 | `get_children(token)` | Список зависимых слов токена |
 | `has_feature(token, field, value)` | У токена есть морфологический признак `field` со значением `value` |
+| `get_lemma(token)` | Лемма токена в нижнем регистре, без лемматизатора - из pymorphy3 по части речи |

@@ -5,9 +5,17 @@ from math import nan, sqrt
 
 from spacy.tokens import Doc
 
-from .constants import NAUSEA_TOP_N, STOPWORD_GRAMMEMES, STOPWORD_POS, STYLE_STATS_DESC
+from .constants import (
+    COMPOUND_PREPOSITIONS,
+    NAUSEA_TOP_N,
+    OFFICIALESE_CLICHES,
+    PARENTHETICALS,
+    STOPWORD_GRAMMEMES,
+    STOPWORD_POS,
+    STYLE_STATS_DESC,
+)
 from .extractors import WordsExtractor
-from .utils import parse_word, safe_divide
+from .utils import find_phrases, is_verbal_noun, parse_word, safe_divide
 
 
 class StyleStats:
@@ -15,10 +23,14 @@ class StyleStats:
     Класс для вычисления SEO-метрик стиля и качества текста
 
     Описание:
-        Метрики повторяют показатели сервисов Advego и Text.ru: тошнота, водность,
+        SEO-метрики повторяют показатели сервисов Advego и Text.ru: тошнота, водность,
         заспамленность, естественность распределения слов по закону Ципфа и плотность
         ключевых слов. Точные формулы сервисов не опубликованы, поэтому реализованы
         общепринятые определения, они описаны в докстрингах функций
+        Лексические маркеры канцелярита: доля отглагольных существительных, плотность
+        производных предлогов, вводных слов и штампов по спискам из constants;
+        синтаксические маркеры (пассив, обороты, цепочки родительных, расщепленные
+        сказуемые) считает SyntaxStats
         Слова по умолчанию извлекаются в нижнем регистре без лемматизации; для расчета
         по леммам передайте WordsExtractor(use_lexemes=True, lowercase=True)
 
@@ -31,9 +43,23 @@ class StyleStats:
         'academic_nausea': 93.33333333333333,
         'water': 46.666666666666664,
         'spam': 26.666666666666668,
-        'zipf_naturalness': 33.333333333333336}
+        'zipf_naturalness': 33.333333333333336,
+        'verbal_nouns': 0.0,
+        'compound_prepositions': 0.0,
+        'parentheticals': 0.0,
+        'cliches': 0.0}
         >>> ss.keyword_density("когда", "нет а")
         {'когда': 20.0, 'нет а': 13.333333333333334}
+        >>> StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка").get_stats()
+        {'classic_nausea': 1.4142135623730951,
+        'academic_nausea': 100.0,
+        'water': 27.272727272727273,
+        'spam': 9.090909090909092,
+        'zipf_naturalness': 100.0,
+        'verbal_nouns': 33.33333333333333,
+        'compound_prepositions': 9.090909090909092,
+        'parentheticals': 9.090909090909092,
+        'cliches': 9.090909090909092}
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
@@ -41,6 +67,7 @@ class StyleStats:
         stopwords (list[str]): Список стоп-слов для водности; если не задан, стоп-слова
             определяются по части речи с помощью pymorphy3
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
+        cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
@@ -49,6 +76,10 @@ class StyleStats:
         water (float): Водность в процентах
         spam (float): Заспамленность в процентах
         zipf_naturalness (float): Естественность по Ципфу в процентах
+        verbal_nouns (float): Доля отглагольных существительных среди существительных в процентах
+        compound_prepositions (float): Производных предлогов на 100 слов
+        parentheticals (float): Вводных слов на 100 слов
+        cliches (float): Штампов на 100 слов
 
     Методы:
         keyword_density: Плотность ключевых слов и фраз
@@ -67,6 +98,7 @@ class StyleStats:
         words_extractor: WordsExtractor | None = None,
         stopwords: Sequence[str] | None = None,
         top_n: int = NAUSEA_TOP_N,
+        cliches: Sequence[str] | None = None,
     ):
         if isinstance(source, Doc):
             text = source.text
@@ -86,6 +118,7 @@ class StyleStats:
             raise ValueError("Количество самых частых слов должно быть больше 0")
         self.stopwords = tuple(stopwords) if stopwords is not None else None
         self.top_n = top_n
+        self.cliches_list = tuple(cliches) if cliches is not None else OFFICIALESE_CLICHES
 
     @property
     def classic_nausea(self) -> float:
@@ -106,6 +139,22 @@ class StyleStats:
     @property
     def zipf_naturalness(self) -> float:
         return calc_zipf_naturalness(self.words, self.top_n)
+
+    @property
+    def verbal_nouns(self) -> float:
+        return calc_verbal_nouns(self.words)
+
+    @property
+    def compound_prepositions(self) -> float:
+        return calc_phrase_density(self.words, COMPOUND_PREPOSITIONS)
+
+    @property
+    def parentheticals(self) -> float:
+        return calc_parentheticals(self.words)
+
+    @property
+    def cliches(self) -> float:
+        return calc_phrase_density(self.words, self.cliches_list)
 
     def keyword_density(self, *keywords: str) -> dict[str, float]:
         """
@@ -130,11 +179,11 @@ class StyleStats:
 
     def print_stats(self):
         """Отображение вычисленных метрик стиля текста с описанием на экран"""
-        print(f"{'Метрика':^35}|{'Значение':^10}")
-        print("-" * 45)
+        print(f"{'Метрика':^50}|{'Значение':^10}")
+        print("-" * 60)
         stats = self.get_stats()
         for stat, value in STYLE_STATS_DESC.items():
-            print(f"{value:35}|{stats.get(stat):^10.2f}")
+            print(f"{value:50}|{stats.get(stat):^10.2f}")
 
 
 @lru_cache(maxsize=65536)
@@ -333,3 +382,79 @@ def calc_keyword_density(text: Sequence[str], keywords: Sequence[str]) -> dict[s
         count = sum(1 for i in range(n_words - size + 1) if lowered[i : i + size] == parts)
         density[keyword] = safe_divide(100 * count, n_words)
     return density
+
+
+def is_parenthetical(word: str) -> bool:
+    """
+    Проверка, является ли слово вводным по разметке pymorphy3 (граммема Prnt)
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return "Prnt" in parse_word(word).tag.grammemes
+
+
+def calc_verbal_nouns(text: Sequence[str]) -> float:
+    """
+    Вычисление доли отглагольных существительных
+
+    Описание:
+        Доля существительных (по первому разбору pymorphy3), лемма которых
+        оканчивается на суффикс из VERBAL_NOUN_SUFFIXES (is_verbal_noun), в процентах
+        от всех существительных; nan для текста без существительных
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Доля в процентах
+    """
+    nouns = [parse for parse in map(parse_word, text) if parse.tag.POS == "NOUN"]
+    verbal = sum(1 for parse in nouns if is_verbal_noun(parse.normal_form))
+    return safe_divide(verbal, len(nouns), nan) * 100
+
+
+def calc_phrase_density(text: Sequence[str], phrases: Sequence[str]) -> float:
+    """
+    Вычисление плотности словосочетаний из списка
+
+    Описание:
+        Число вхождений словосочетаний (find_phrases) на 100 слов; используется для
+        производных предлогов (COMPOUND_PREPOSITIONS) и штампов (OFFICIALESE_CLICHES)
+
+    Аргументы:
+        text (list[str]): Список слов
+        phrases (list[str]): Словосочетания через пробел
+
+    Вывод:
+        float: Вхождений на 100 слов
+    """
+    return safe_divide(len(find_phrases(text, phrases)), len(text)) * 100
+
+
+def calc_parentheticals(text: Sequence[str]) -> float:
+    """
+    Вычисление плотности вводных слов
+
+    Описание:
+        Вводные словосочетания из PARENTHETICALS (таким образом, как правило) плюс
+        одиночные вводные слова по граммеме Prnt pymorphy3 (конечно, например, впрочем)
+        вне найденных словосочетаний, на 100 слов
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        float: Вводных слов на 100 слов
+    """
+    spans = find_phrases(text, PARENTHETICALS)
+    covered = {position for start, end in spans for position in range(start, end)}
+    singles = sum(
+        1
+        for position, word in enumerate(text)
+        if position not in covered and is_parenthetical(word)
+    )
+    return safe_divide(len(spans) + singles, len(text)) * 100

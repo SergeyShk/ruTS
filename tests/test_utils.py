@@ -7,7 +7,10 @@ import pytest
 from ruts.utils import (
     download_file,
     extract_archive,
+    find_phrases,
     is_punctuation,
+    is_verbal_noun,
+    normalize_yo,
     parse_word,
     safe_divide,
     to_path,
@@ -128,3 +131,37 @@ def test_parse_word_cached():
     assert parse_word("рублей").tag.POS == "NOUN"
     assert parse_word.cache_info().hits == 1
     assert parse_word.cache_info().misses == 1
+
+
+@pytest.mark.parametrize(
+    ("lemma", "expected"),
+    [
+        ("повышение", True),
+        ("Участие", True),
+        ("реализация", True),
+        ("производство", True),
+        ("содействие", True),
+        ("житьё", True),
+        ("здание", True),
+        ("кот", False),
+        ("проверка", False),
+        ("ние", True),
+        ("", False),
+    ],
+)
+def test_is_verbal_noun(lemma, expected):
+    assert is_verbal_noun(lemma) is expected
+
+
+def test_normalize_yo():
+    assert normalize_yo("Учёт") == "учет"
+    assert normalize_yo("путем") == "путем"
+
+
+def test_find_phrases():
+    words = ["В", "целях", "повышения", "в", "связи", "с", "этим", "путём", "проверки", "в"]
+    phrases = ["в целях", "в связи с", "путем", "в связи", "в"]
+    assert find_phrases(words, phrases) == [(0, 2), (3, 6), (7, 8), (9, 10)]
+    assert find_phrases(words, []) == []
+    assert find_phrases([], phrases) == []
+    assert find_phrases(["связи", "с"], ["в связи с"]) == []
