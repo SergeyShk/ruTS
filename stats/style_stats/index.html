@@ -2077,6 +2077,7 @@
 <h2 id="_1">Описание<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления SEO-метрик стиля и качества текста, повторяющих показатели сервисов <a href="https://advego.com/text/seo/">Advego</a> и <a href="https://text.ru/seo">Text.ru</a>: тошнота, водность, заспамленность, естественность распределения слов по закону Ципфа и плотность ключевых слов. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Точные формулы сервисов не опубликованы, поэтому реализованы общепринятые определения; они описаны в разделе <a href="../style_stats_funcs/">функций</a>. Слова по умолчанию извлекаются в нижнем регистре без лемматизации, поэтому формы одного слова считаются разными словами, как в Advego. Для расчета по леммам передайте объект <a href="../../extractors/words/"><code>WordsExtractor</code></a> с параметрами <code>use_lexemes=True</code> и <code>lowercase=True</code>.</p>
+<p>Лексические маркеры канцелярита: отглагольные существительные, производные предлоги, вводные слова, штампы - по спискам <code>COMPOUND_PREPOSITIONS</code>, <code>PARENTHETICALS</code> и <code>OFFICIALESE_CLICHES</code> из <code>ruts.constants</code>. Считаются по словоформам без фильтрации (<code>forms</code>) независимо от переданного экстрактора.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>StyleStats</code>. Нормы сервисов рассчитаны на тексты в несколько сотен слов, на коротких текстах значения тошноты и заспамленности неинформативны.</p>
@@ -2116,6 +2117,12 @@
 <td style="text-align: center;"><code>10</code></td>
 <td style="text-align: center;">Количество самых частых слов для академической тошноты и естественности по Ципфу</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>cliches</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Список штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
@@ -2132,6 +2139,11 @@
 <td style="text-align: center;"><code>words</code></td>
 <td style="text-align: center;">tuple[str]</td>
 <td style="text-align: center;">Кортеж извлеченных слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>forms</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Кортеж словоформ в нижнем регистре без фильтрации, по ним считаются маркеры канцелярита</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>classic_nausea</code></td>
@@ -2157,6 +2169,26 @@
 <td style="text-align: center;"><code>zipf_naturalness</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Естественность по Ципфу в процентах</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>verbal_nouns</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Доля отглагольных существительных среди существительных в процентах</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>compound_prepositions</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Производных предлогов на 100 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>parentheticals</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Вводных слов на 100 слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>cliches</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Штампов на 100 слов</td>
 </tr>
 </tbody>
 </table>
@@ -2243,7 +2275,11 @@
 <span class="s1">'academic_nausea'</span>:<span class="w"> </span><span class="m">93</span>.33333333333333,
 <span class="s1">'water'</span>:<span class="w"> </span><span class="m">46</span>.666666666666664,
 <span class="s1">'spam'</span>:<span class="w"> </span><span class="m">26</span>.666666666666668,
-<span class="s1">'zipf_naturalness'</span>:<span class="w"> </span><span class="m">33</span>.333333333333336<span class="o">}</span>
+<span class="s1">'zipf_naturalness'</span>:<span class="w"> </span><span class="m">33</span>.333333333333336,
+<span class="s1">'verbal_nouns'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'compound_prepositions'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'parentheticals'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'cliches'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -2257,13 +2293,17 @@
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">              </span>Метрика<span class="w">              </span><span class="p">|</span><span class="w"> </span>Значение
----------------------------------------------
-Классическая<span class="w"> </span>тошнота<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.73
-Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">          </span><span class="p">|</span><span class="w">  </span><span class="m">93</span>.33
-Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">46</span>.67
-Заспамленность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                 </span><span class="p">|</span><span class="w">  </span><span class="m">26</span>.67
-Естественность<span class="w"> </span>по<span class="w"> </span>Ципфу<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">        </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
+<div class="highlight"><pre><span></span><code><span class="w">                     </span>Метрика<span class="w">                      </span><span class="p">|</span><span class="w"> </span>Значение
+------------------------------------------------------------
+Классическая<span class="w"> </span>тошнота<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.73
+Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                         </span><span class="p">|</span><span class="w">  </span><span class="m">93</span>.33
+Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">  </span><span class="m">46</span>.67
+Заспамленность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">  </span><span class="m">26</span>.67
+Естественность<span class="w"> </span>по<span class="w"> </span>Ципфу<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
+Отглагольные<span class="w"> </span>существительные<span class="w"> </span><span class="o">(</span>%<span class="w"> </span>существительных<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Производные<span class="w"> </span>предлоги<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Вводные<span class="w"> </span>слова<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Штампы<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
 

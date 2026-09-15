@@ -1174,6 +1174,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#calc_verbal_nouns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отглагольные существительные
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_phrase_density" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Плотность словосочетаний
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_parentheticals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вводные слова
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2038,6 +2071,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#calc_verbal_nouns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отглагольные существительные
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_phrase_density" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Плотность словосочетаний
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_parentheticals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вводные слова
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2284,6 +2350,84 @@
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Ключевые слова или фразы</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_verbal_nouns">Отглагольные существительные<a class="headerlink" href="#calc_verbal_nouns" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.style_stats.calc_verbal_nouns()</strong></p>
+</div>
+<p>Вычисление доли существительных (по первому разбору pymorphy3), лемма которых оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; функция <code>ruts.utils.is_verbal_noun</code>), в процентах от всех существительных; <code>nan</code> для текста без существительных. Суффикс -ство в список не входит: он в основном не отглагольный (правительство, общество, средство). Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание).</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_phrase_density">Плотность словосочетаний<a class="headerlink" href="#calc_phrase_density" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.style_stats.calc_phrase_density()</strong></p>
+</div>
+<p>Вычисление числа вхождений словосочетаний из списка на 100 слов. Словосочетания ищутся по словоформам в нижнем регистре без буквы ё (<code>ruts.utils.find_phrases</code>): в каждой позиции берется самое длинное, найденные не пересекаются, пустые пропускаются. Класс <code>StyleStats</code> считает так производные предлоги по списку <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет, путем, посредством) и штампы по списку <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, имеет место, в кратчайшие сроки, должным образом) или из параметра <code>cliches</code>; в списках только неизменяемые словосочетания. Расчет идет по словоформам без фильтрации (<code>forms</code>), так как при лемматизации или фильтрации стоп-слов словосочетания распадаются.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>phrases</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Словосочетания через пробел</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_parentheticals">Вводные слова<a class="headerlink" href="#calc_parentheticals" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
+</div>
+<p>Вычисление числа вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) плюс одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical</code>) вне найденных словосочетаний.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
 </tr>
 </tbody>
 </table>

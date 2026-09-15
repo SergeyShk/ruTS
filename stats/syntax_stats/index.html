@@ -2053,7 +2053,7 @@
 <p><strong>ruts.syntax_stats.SyntaxStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления синтаксических статистик текста по дереву зависимостей: длин зависимостей, глубины и формы дерева, сочинительных цепочек, клауз, модификаторов именной группы, цепочек родительных падежей, причастных и деепричастных оборотов, пассива, инфинитивов и отрицаний. Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018), где они были проверены на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелируют с классом учебника на уровне 0.88-0.93.</p>
+<p>Модуль для вычисления синтаксических статистик текста по дереву зависимостей: длин зависимостей, глубины и формы дерева, сочинительных цепочек, клауз, модификаторов именной группы, цепочек родительных падежей, причастных и деепричастных оборотов, пассива, инфинитивов, отрицаний, расщепленных сказуемых и отношения существительных к глаголам. Синтаксические маркеры канцелярита: пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отношение существительных к глаголам. Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018), где они были проверены на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелируют с классом учебника на уровне 0.88-0.93.</p>
 <p>Статистики считаются по разметке <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a>, поэтому источником данных может быть только объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с разбором зависимостей - из моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> или <code>ru_core_news_lg</code>. Знаки препинания и пробельные токены не учитываются: узлами дерева считаются слова, длины зависимостей измеряются по позициям слов.</p>
 <p>Показатели предложения (максимальная длина зависимости, глубина дерева, число листьев и поддеревьев, узлов на лист) усредняются по предложениям; конструкции (клаузы, цепочки, обороты, инфинитивы, отрицания) нормируются на число предложений; пассив и модификаторы - на число глагольных форм и существительных. Значения, которые не определены для текста (средняя длина оборота при отсутствии оборотов, доля пассива при отсутствии глаголов), равны <code>nan</code>.</p>
 <div class="admonition note">
@@ -2177,6 +2177,16 @@
 <td style="text-align: center;"><code>n_negations</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;">Количество отрицательных частиц</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_split_predicates</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Количество расщепленных сказуемых</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>split_predicates</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Кортеж расщепленных сказуемых (глагол и существительное)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c_children</code></td>
@@ -2318,6 +2328,16 @@
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Отрицательных частиц на предложение</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>split_predicates_per_sent</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Расщепленных сказуемых на предложение</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>noun_verb_ratio</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Отношение числа существительных к числу глагольных форм</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition note">
@@ -2368,7 +2388,9 @@
 <span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.4,
 <span class="s1">'p_agentless_passive'</span>:<span class="w"> </span><span class="m">0</span>.5,
 <span class="s1">'infinitives_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'negations_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5<span class="o">}</span>
+<span class="s1">'negations_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
+<span class="s1">'split_predicates_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'noun_verb_ratio'</span>:<span class="w"> </span><span class="m">1</span>.0<span class="o">}</span>
 </code></pre></div>
 </div>
 <p>Счетчики и распределения доступны как атрибуты:</p>
@@ -2421,6 +2443,8 @@
 Доля<span class="w"> </span>безагентного<span class="w"> </span>пассива<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
 Инфинитивов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 Отрицаний<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Расщеплённых<span class="w"> </span>сказуемых<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Отношение<span class="w"> </span>существительных<span class="w"> </span>к<span class="w"> </span>глаголам<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
 </code></pre></div>
 </div>
 
