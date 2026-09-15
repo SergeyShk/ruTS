@@ -32,7 +32,10 @@ class StyleStats:
         синтаксические маркеры (пассив, обороты, цепочки родительных, расщепленные
         сказуемые) считает SyntaxStats
         Слова по умолчанию извлекаются в нижнем регистре без лемматизации; для расчета
-        по леммам передайте WordsExtractor(use_lexemes=True, lowercase=True)
+        SEO-метрик по леммам передайте WordsExtractor(use_lexemes=True, lowercase=True)
+        Маркеры канцелярита считаются по словоформам без фильтрации (forms)
+        независимо от переданного экстрактора, так как словосочетания из списков
+        заданы словоформами и включают предлоги
 
     Пример использования:
         >>> from ruts import StyleStats
@@ -56,7 +59,7 @@ class StyleStats:
         'water': 27.272727272727273,
         'spam': 9.090909090909092,
         'zipf_naturalness': 100.0,
-        'verbal_nouns': 33.33333333333333,
+        'verbal_nouns': 16.666666666666664,
         'compound_prepositions': 9.090909090909092,
         'parentheticals': 9.090909090909092,
         'cliches': 9.090909090909092}
@@ -71,6 +74,7 @@ class StyleStats:
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
+        forms (tuple[str]): Кортеж словоформ в нижнем регистре без фильтрации
         classic_nausea (float): Классическая тошнота
         academic_nausea (float): Академическая тошнота в процентах
         water (float): Водность в процентах
@@ -101,15 +105,18 @@ class StyleStats:
         cliches: Sequence[str] | None = None,
     ):
         if isinstance(source, Doc):
-            text = source.text
             self.words = tuple(
                 word.lower_ for word in source if not word.is_punct and not word.is_space
             )
+            self.forms = self.words
         elif isinstance(source, str):
-            text = source
             if not words_extractor:
                 words_extractor = WordsExtractor(lowercase=True)
-            self.words = words_extractor.extract(text)
+                self.words = words_extractor.extract(source)
+                self.forms = self.words
+            else:
+                self.words = words_extractor.extract(source)
+                self.forms = WordsExtractor(lowercase=True).extract(source)
         else:
             raise TypeError("Некорректный источник данных")
         if not self.words:
@@ -142,19 +149,19 @@ class StyleStats:
 
     @property
     def verbal_nouns(self) -> float:
-        return calc_verbal_nouns(self.words)
+        return calc_verbal_nouns(self.forms)
 
     @property
     def compound_prepositions(self) -> float:
-        return calc_phrase_density(self.words, COMPOUND_PREPOSITIONS)
+        return calc_phrase_density(self.forms, COMPOUND_PREPOSITIONS)
 
     @property
     def parentheticals(self) -> float:
-        return calc_parentheticals(self.words)
+        return calc_parentheticals(self.forms)
 
     @property
     def cliches(self) -> float:
-        return calc_phrase_density(self.words, self.cliches_list)
+        return calc_phrase_density(self.forms, self.cliches_list)
 
     def keyword_density(self, *keywords: str) -> dict[str, float]:
         """

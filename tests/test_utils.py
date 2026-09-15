@@ -140,9 +140,12 @@ def test_parse_word_cached():
         ("Участие", True),
         ("реализация", True),
         ("производство", True),
+        ("руководство", True),
         ("содействие", True),
         ("житьё", True),
         ("здание", True),
+        ("качество", False),
+        ("правительство", False),
         ("кот", False),
         ("проверка", False),
         ("ние", True),
@@ -163,5 +166,7 @@ def test_find_phrases():
     phrases = ["в целях", "в связи с", "путем", "в связи", "в"]
     assert find_phrases(words, phrases) == [(0, 2), (3, 6), (7, 8), (9, 10)]
     assert find_phrases(words, []) == []
+    assert find_phrases(words, ["", "  "]) == []
+    assert find_phrases(["кот", "дом"], ["дом", ""]) == [(1, 2)]
     assert find_phrases([], phrases) == []
     assert find_phrases(["связи", "с"], ["в связи с"]) == []

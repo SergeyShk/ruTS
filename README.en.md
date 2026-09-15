@@ -429,7 +429,7 @@ The exact formulas of the services are not published, so the commonly accepted d
 
 >>> ss = StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка")
 >>> ss.verbal_nouns, ss.compound_prepositions, ss.parentheticals, ss.cliches
-(33.33333333333333, 9.090909090909092, 9.090909090909092, 9.090909090909092)
+(16.666666666666664, 9.090909090909092, 9.090909090909092, 9.090909090909092)
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/stats/style_stats/).

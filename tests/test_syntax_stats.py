@@ -27,6 +27,7 @@ from ruts.syntax_stats import (
     is_participle_clause,
     is_passive,
     is_predicate,
+    is_reflexive,
     is_split_predicate_noun,
     is_subordinate_clause_head,
     subtree_len,
@@ -283,6 +284,28 @@ def test_split_predicates():
                 ["PRON", "VERB", "NOUN", "CCONJ", "VERB", "NOUN", "PUNCT"],
                 ["Case=Nom", "VerbForm=Fin", "Case=Acc", "", "VerbForm=Fin", "Case=Acc", ""],
             ),
+            (
+                "Проверка проведена комиссией в присутствии руководства .",
+                [1, 1, 1, 4, 1, 4, 1],
+                ["nsubj:pass", "ROOT", "obl:agent", "case", "obl", "nmod", "punct"],
+                ["NOUN", "VERB", "NOUN", "ADP", "NOUN", "NOUN", "PUNCT"],
+                [
+                    "Case=Nom",
+                    "Variant=Short|VerbForm=Part|Voice=Pass",
+                    "Case=Ins",
+                    "",
+                    "Case=Loc",
+                    "Case=Gen",
+                    "",
+                ],
+            ),
+            (
+                "Работа проводится отделом .",
+                [1, 1, 1, 1],
+                ["nsubj", "ROOT", "obl", "punct"],
+                ["NOUN", "VERB", "NOUN", "PUNCT"],
+                ["Case=Nom", "VerbForm=Fin|Voice=Mid", "Case=Ins", ""],
+            ),
         ]
     )
     pairs = find_split_predicates(doc)
@@ -290,6 +313,8 @@ def test_split_predicates():
         ("осуществляет", "проверку"),
         ("оказывает", "помощь"),
         ("принято", "решение"),
+        ("проведена", "Проверка"),
+        ("проводится", "Работа"),
     ]
     assert is_light_verb(doc[1]) and is_light_verb(doc[5]) and not is_light_verb(doc[14])
     assert is_split_predicate_noun(doc[2]) and is_split_predicate_noun(doc[6])
@@ -297,10 +322,16 @@ def test_split_predicates():
     assert get_lemma(doc[2]) == "проверка"
     assert get_lemma(doc[1]) == "осуществлять"
     ss = SyntaxStats(doc)
-    assert ss.n_split_predicates == 3
-    assert ss.split_predicates == ("осуществляет проверку", "оказывает помощь", "принято решение")
+    assert ss.n_split_predicates == 5
+    assert ss.split_predicates == (
+        "осуществляет проверку",
+        "оказывает помощь",
+        "принято решение",
+        "проведена Проверка",
+        "проводится Работа",
+    )
     assert ss.split_predicates_per_sent == 1
-    assert ss.noun_verb_ratio == pytest.approx(7 / 6)
+    assert ss.noun_verb_ratio == pytest.approx(13 / 8)
 
 
 def test_single_word_sentence():
@@ -519,6 +550,36 @@ def test_model_split_predicates(nlp):
     )
     assert ss.split_predicates_per_sent == 1
     assert ss.noun_verb_ratio == pytest.approx(9 / 4)
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Проверка проводится комиссией.", [("проводится", "Проверка")]),
+        ("Меры принимаются руководством.", [("принимаются", "Меры")]),
+        ("Контроль осуществляется ежедневно.", [("осуществляется", "Контроль")]),
+        ("Работа ведётся постоянно.", [("ведётся", "Работа")]),
+        (
+            "Проверка была проведена инспекцией в присутствии руководства.",
+            [("проведена", "Проверка")],
+        ),
+        ("Решение принято комиссией с учетом замечаний.", [("принято", "Решение")]),
+        ("Он сделал шаг вперед при поддержке друзей.", [("сделал", "шаг")]),
+        ("Помощь была оказана вовремя.", [("оказана", "Помощь")]),
+        ("Ошибка получилась случайно.", []),
+        ("Кот имеет хвост.", []),
+    ],
+)
+def test_model_split_predicates_cases(nlp, text, expected):
+    assert [(verb.text, noun.text) for verb, noun in find_split_predicates(nlp(text))] == expected
+
+
+def test_is_reflexive(nlp):
+    doc = nlp("Проверка проводится, решение принято, кот спит.")
+    assert is_reflexive(doc[1])
+    assert is_reflexive(doc[4])
+    assert not is_reflexive(doc[7])
+    assert not is_reflexive(doc[0])
 
 
 def test_model_constructions(nlp):

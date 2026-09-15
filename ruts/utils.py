@@ -16,6 +16,7 @@ from .constants import (
     PUNCTUATIONS,
     RU_VOWELS,
     UD_TO_OPENCORPORA_POS,
+    VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
 
@@ -79,9 +80,11 @@ def is_verbal_noun(lemma: str) -> bool:
     Проверка, является ли лемма отглагольным существительным по суффиксу
 
     Описание:
-        Суффиксы из VERBAL_NOUN_SUFFIXES: -ние, -нье, -тие, -тье, -ствие, -ция, -ство
-        (повышение, участие, содействие, реализация, производство); эвристика
-        захватывает и неотглагольные слова с теми же суффиксами (здание, качество)
+        Суффиксы из VERBAL_NOUN_SUFFIXES: -ние, -нье, -тие, -тье, -ствие, -ция
+        (повышение, участие, содействие, реализация) или лемма из VERBAL_NOUN_LEMMAS
+        (производство, руководство, строительство); суффикс -ство в список не входит,
+        так как в основном не отглагольный (правительство, общество, средство)
+        Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание)
 
     Аргументы:
         lemma (str): Лемма существительного
@@ -89,7 +92,8 @@ def is_verbal_noun(lemma: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return normalize_yo(lemma).endswith(VERBAL_NOUN_SUFFIXES)
+    lemma = normalize_yo(lemma)
+    return lemma.endswith(VERBAL_NOUN_SUFFIXES) or lemma in VERBAL_NOUN_LEMMAS
 
 
 def normalize_yo(word: str) -> str:
@@ -118,10 +122,13 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         phrases (list[str]): Словосочетания через пробел
 
     Вывод:
-        list[tuple[int, int]]: Границы найденных словосочетаний как срезы words
+        list[tuple[int, int]]: Границы найденных словосочетаний как срезы words;
+            пустые словосочетания пропускаются
     """
     patterns = sorted(
-        {tuple(normalize_yo(phrase).split()) for phrase in phrases}, key=len, reverse=True
+        {pattern for phrase in phrases if (pattern := tuple(normalize_yo(phrase).split()))},
+        key=len,
+        reverse=True,
     )
     if not patterns:
         return []

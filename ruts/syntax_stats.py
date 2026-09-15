@@ -19,7 +19,7 @@ from .constants import (
 )
 from .utils import is_verbal_noun, lemmatize, normalize_yo, safe_divide
 
-SPLIT_PREDICATE_DEPS = frozenset({"obj", "iobj", "obl", "nmod", "nsubj:pass"})
+SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
 
 class SyntaxStats:
@@ -772,7 +772,11 @@ def is_light_verb(token: Token) -> bool:
     Описание:
         Глагол с леммой из LIGHT_VERBS (осуществлять, производить, проводить,
         обеспечивать, оказывать, принимать, иметь), который в расщепленном сказуемом
-        несет только грамматическое значение
+        несет только грамматическое значение; возвратный пассив (проводиться,
+        приниматься, вестись) входит в список отдельными леммами, так как у части
+        возвратных форм другое значение (получиться, оказаться). Кроме леммы spaCy
+        проверяется лемма pymorphy3: лемматизатор модели оставляет часть форм
+        без изменений (ведётся)
 
     Аргументы:
         token (Token): Токен
@@ -780,7 +784,34 @@ def is_light_verb(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return token.pos_ == "VERB" and normalize_yo(get_lemma(token)) in LIGHT_VERBS
+    if token.pos_ != "VERB":
+        return False
+    lemmas = {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
+    return not lemmas.isdisjoint(LIGHT_VERBS)
+
+
+def is_reflexive(token: Token) -> bool:
+    """
+    Проверка, является ли токен возвратным или пассивным глаголом
+
+    Описание:
+        Лемма на -ся или -сь либо залог Voice=Mid или Voice=Pass: у возвратного
+        пассива (проверка проводится) именная часть расщепленного сказуемого -
+        подлежащее nsubj
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    if token.pos_ != "VERB":
+        return False
+    return (
+        get_lemma(token).endswith(("ся", "сь"))
+        or has_feature(token, "Voice", "Mid")
+        or has_feature(token, "Voice", "Pass")
+    )
 
 
 def is_split_predicate_noun(token: Token) -> bool:
@@ -808,11 +839,14 @@ def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
     Поиск расщепленных сказуемых
 
     Описание:
-        Легкий глагол (is_light_verb) с зависимым obj, iobj, obl, nmod или nsubj:pass
-        (в пассиве: принято решение) - именной частью (is_split_predicate_noun):
-        осуществлять проверку, оказать помощь, принять участие, вести борьбу;
-        при однородных именных частях (оказывать помощь и поддержку) считается
-        только первая, вторая присоединена как conj
+        Легкий глагол (is_light_verb) с зависимой именной частью
+        (is_split_predicate_noun): осуществлять проверку, оказать помощь, принять
+        участие, проводится проверка, принято решение
+        У глагола берется не больше одной именной части, в порядке предпочтения
+        obj, nsubj:pass, nsubj (только у возвратного или пассивного глагола:
+        проверка проводится), iobj, nmod, obl; предложные обстоятельства (obl
+        с зависимым case) и агенс пассива (obl:agent, творительный obl при пассивном
+        или возвратном глаголе) не учитываются
 
     Аргументы:
         tokens (Doc|Span|list[Token]): Последовательность токенов
@@ -820,11 +854,38 @@ def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
     Вывод:
         list[tuple[Token, Token]]: Пары глагол - существительное в порядке слов
     """
-    return [
-        (token, child)
-        for token in get_words(tokens)
-        if is_light_verb(token)
-        for child in get_children(token)
-        if (base_dep(child) in SPLIT_PREDICATE_DEPS or child.dep_ in SPLIT_PREDICATE_DEPS)
-        and is_split_predicate_noun(child)
-    ]
+    pairs = []
+    for token in get_words(tokens):
+        if not is_light_verb(token):
+            continue
+        candidates = [
+            child
+            for child in get_children(token)
+            if is_split_predicate_noun(child) and _is_nominal_part(child, token)
+        ]
+        if candidates:
+            pairs.append((token, min(candidates, key=_nominal_part_rank)))
+    return pairs
+
+
+def _nominal_part_dep(child: Token) -> str:
+    return child.dep_ if child.dep_ == "nsubj:pass" else base_dep(child)
+
+
+def _is_nominal_part(child: Token, verb: Token) -> bool:
+    dep = _nominal_part_dep(child)
+    if dep not in SPLIT_PREDICATE_DEPS:
+        return False
+    if dep == "nsubj":
+        return is_reflexive(verb)
+    if dep != "obl":
+        return True
+    if child.dep_ == "obl:agent" or any(
+        grandchild.dep_ == "case" for grandchild in child.children
+    ):
+        return False
+    return not (is_reflexive(verb) and has_feature(child, "Case", "Ins"))
+
+
+def _nominal_part_rank(child: Token) -> int:
+    return SPLIT_PREDICATE_DEPS.index(_nominal_part_dep(child))

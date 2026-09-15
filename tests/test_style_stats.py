@@ -167,8 +167,8 @@ def os():
 
 
 def test_verbal_nouns(os):
-    assert os.verbal_nouns == pytest.approx(3 / 11 * 100)
-    assert calc_verbal_nouns(["повышение", "качества", "кот"]) == pytest.approx(200 / 3)
+    assert os.verbal_nouns == pytest.approx(2 / 11 * 100)
+    assert calc_verbal_nouns(["повышение", "качества", "производство", "кот"]) == 50
     assert isnan(calc_verbal_nouns(["и", "в"]))
 
 
@@ -188,6 +188,21 @@ def test_cliches(os):
     assert os.cliches == pytest.approx(2 / 20 * 100)
     assert StyleStats(officialese, cliches=["имеет место"]).cliches == pytest.approx(1 / 20 * 100)
     assert StyleStats(officialese, cliches=[]).cliches == 0
+    assert StyleStats("кот дом", cliches=["", " ", "имеет место"]).cliches == 0
+
+
+def test_officialese_extractor_independent(os):
+    lexemes = StyleStats(
+        officialese, words_extractor=WordsExtractor(use_lexemes=True, lowercase=True)
+    )
+    filtered = StyleStats(
+        officialese, words_extractor=WordsExtractor(stopwords=["в", "с", "за"], lowercase=True)
+    )
+    for stats in (lexemes, filtered):
+        assert stats.forms == os.forms
+        assert stats.words != os.words
+        for key in ("verbal_nouns", "compound_prepositions", "parentheticals", "cliches"):
+            assert getattr(stats, key) == pytest.approx(getattr(os, key))
 
 
 @pytest.mark.parametrize(
