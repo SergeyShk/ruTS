@@ -798,15 +798,43 @@ BRUNET_W_EXPONENT = 0.172
 HIGHLIGHT_LAYERS_DESC = {
     "long_sents": "Длинные предложения",
     "complex_words": "Сложные слова",
-    "stopwords": "Стоп-слова",
+    "rare_words": "Редкие слова",
     "passive": "Пассив",
     "participle_clauses": "Причастные обороты",
     "converb_clauses": "Деепричастные обороты",
     "genitive_chains": "Цепочки родительных",
+    "split_predicates": "Расщеплённые сказуемые",
+    "verbal_nouns": "Отглагольные существительные",
+    "compound_prepositions": "Производные предлоги",
+    "cliches": "Штампы",
+    "stopwords": "Стоп-слова",
+    "parentheticals": "Вводные слова",
+    "connectors": "Коннекторы",
     "alliteration": "Аллитерация",
 }
+HIGHLIGHT_LAYER_GROUPS = {
+    "Читаемость": ("long_sents", "complex_words", "rare_words"),
+    "Синтаксис": (
+        "passive",
+        "participle_clauses",
+        "converb_clauses",
+        "genitive_chains",
+        "split_predicates",
+    ),
+    "Канцелярит": ("verbal_nouns", "compound_prepositions", "cliches"),
+    "Стиль": ("stopwords", "parentheticals", "connectors"),
+    "Фоника": ("alliteration",),
+}
+HIGHLIGHT_DEFAULT_LAYERS = (
+    "long_sents",
+    "complex_words",
+    "passive",
+    "genitive_chains",
+    "split_predicates",
+    "cliches",
+)
 HIGHLIGHT_SYNTAX_LAYERS = frozenset(
-    {"passive", "participle_clauses", "converb_clauses", "genitive_chains"}
+    {"passive", "participle_clauses", "converb_clauses", "genitive_chains", "split_predicates"}
 )
 LONG_SENT_WORD_FACTOR = 20
 ALLITERATION_THRESHOLD = 0.001

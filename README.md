@@ -633,9 +633,9 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   [Закон Ципфа](https://sergeyshk.github.io/ruTS/visualizers/zipf/) (Zipf's law)
 *   [Литературная дактилоскопия](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/) (Literature Fingerprinting)
 *   [Дерево слов](https://sergeyshk.github.io/ruTS/visualizers/word_tree/) (Word Tree)
-*   [Подсветка текста](https://sergeyshk.github.io/ruTS/visualizers/highlight/) по слоям: длинные предложения, сложные слова, стоп-слова, пассив, обороты, цепочки родительных, аллитерации
+*   [Подсветка текста](https://sergeyshk.github.io/ruTS/visualizers/highlight/) по 15 слоям в пяти группах: читаемость (длинные предложения, сложные и редкие слова), синтаксис (пассив, обороты, цепочки родительных, расщеплённые сказуемые), канцелярит (отглагольные существительные, производные предлоги, штампы), стиль (стоп-слова, вводные слова, коннекторы), фоника (аллитерации)
 
-Подсветка возвращает объект, который отображается в Jupyter как HTML с легендой и всплывающими пояснениями; синтаксические слои требуют `Doc` с разбором зависимостей:
+Подсветка возвращает объект, который отображается в Jupyter как HTML с легендой и всплывающими пояснениями; по умолчанию включены шесть слоёв, `layers="all"` включает все; синтаксические слои требуют `Doc` с разбором зависимостей:
 
 ```python
 >>> import spacy
@@ -652,7 +652,9 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 ... )
 >>> ht = highlight(nlp(text))
 >>> ht.counts
-{'long_sents': 1, 'complex_words': 26, 'stopwords': 17, 'passive': 4, 'participle_clauses': 2, 'converb_clauses': 1, 'genitive_chains': 2, 'alliteration': 1}
+{'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2, 'split_predicates': 0, 'cliches': 1}
+>>> highlight(nlp(text), layers=["verbal_nouns", "connectors", "rare_words"]).counts
+{'rare_words': 3, 'verbal_nouns': 10, 'connectors': 4}
 >>> ht  # в Jupyter отобразится подсветка, разметка доступна через ht.to_html()
 ```
 
