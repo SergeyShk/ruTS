@@ -930,6 +930,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#calc_sis_grade_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной с частотностью
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1621,6 +1632,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Статистики лексической сложности
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Статистики лексической сложности
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lexical_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Модуль вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lexical_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Функции вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1749,6 +1874,34 @@
     
   
     Тексты с метками класса
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/freq2011/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Частотный словарь Ляшевской и Шарова
   
 
     
@@ -2131,6 +2284,17 @@
     <span class="md-ellipsis">
       
         Формула Соловьёва, Иванова, Солнышкиной
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_sis_grade_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной с частотностью
       
     </span>
   </a>
@@ -2905,6 +3069,111 @@ a+b\times\frac{\textrm{Количество слов}}{\textrm{Количест�
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>2.45</code></td>
 <td style="text-align: center;">Коэффициент c (при средней длине слова)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_sis_grade_freq">Формула Соловьёва, Иванова, Солнышкиной с частотностью<a class="headerlink" href="#calc_sis_grade_freq" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.calc_sis_grade_freq()</strong></p>
+</div>
+<p>Вычисление варианта общей формулы с четвертым признаком FREQ2 - средней частотностью слов текста по словарю Ляшевской и Шарова (<a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a>, таблица 7): чем чаще слова, тем ниже класс. В статье значения FREQ2 лежат в пределах 200-1000, что соответствует средней частотности знаменательных слов (<code>LexicalStats.mean_ipm_content</code>); среднее по всем словам с учетом союзов и предлогов в разы больше. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> формула с частотностью дает ту же корреляцию с классом, что и формула без нее (ρ Спирмена 0.76 против 0.77), как и в статье.</p>
+<p>Коэффициенты по умолчанию соответствуют общей формуле, коэффициенты ступеней обучения из той же таблицы доступны в справочнике <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code> и через параметр <code>stage</code> метода <a href="../readability_stats/#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th>Ступень</th>
+<th>a</th>
+<th>b</th>
+<th>c</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2-4 классы</td>
+<td><code>-1.21</code></td>
+<td><code>0.2</code></td>
+<td><code>0.56</code></td>
+<td><code>-0.0025</code></td>
+</tr>
+<tr>
+<td>5-7 классы</td>
+<td><code>-5.18</code></td>
+<td><code>0.17</code></td>
+<td><code>1.35</code></td>
+<td><code>-0.00043</code></td>
+</tr>
+<tr>
+<td>8-11 классы</td>
+<td><code>1.3</code></td>
+<td><code>0.23</code></td>
+<td><code>0.88</code></td>
+<td><code>-0.0035</code></td>
+</tr>
+</tbody>
+</table>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a+b\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+c\times\frac{\textrm{Количество букв}}{\textrm{Количество слов}}+d\times\textrm{FREQ2}
+\]</div>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_letters</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество букв</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>mean_ipm</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Средняя частотность знаменательных слов (ipm)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>a</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-14.46</code></td>
+<td style="text-align: center;">Коэффициент a (свободный член)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>b</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.58</code></td>
+<td style="text-align: center;">Коэффициент b (при средней длине предложения)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>c</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>2.15</code></td>
+<td style="text-align: center;">Коэффициент c (при средней длине слова)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>d</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-0.0026</code></td>
+<td style="text-align: center;">Коэффициент d (при средней частотности)</td>
 </tr>
 </tbody>
 </table>

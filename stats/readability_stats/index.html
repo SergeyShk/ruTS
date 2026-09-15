@@ -925,6 +925,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#sis_grade_by_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sis_grade_by_freq
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#get_stats" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1594,6 +1605,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Статистики лексической сложности
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Статистики лексической сложности
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lexical_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Модуль вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lexical_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Функции вычисления статистик
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1722,6 +1847,34 @@
     
   
     Тексты с метками класса
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../datasets/freq2011/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Частотный словарь Ляшевской и Шарова
   
 
     
@@ -2127,6 +2280,17 @@
     <span class="md-ellipsis">
       
         sis_grade_by_stage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sis_grade_by_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sis_grade_by_freq
       
     </span>
   </a>
@@ -2548,6 +2712,43 @@
 </tr>
 </tbody>
 </table>
+<h3 id="sis_grade_by_freq">sis_grade_by_freq<a class="headerlink" href="#sis_grade_by_freq" title="Permanent link">&para;</a></h3>
+<p>Возвращает значение формулы Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов: <code>−14.46 + 0.58·ASL + 2.15·AWL − 0.0026·FREQ2</code>, где FREQ2 - средняя частотность знаменательных слов текста по словарю Ляшевской и Шарова, атрибут <a href="../lexical_stats/"><code>mean_ipm_content</code></a> класса <code>LexicalStats</code>. Коэффициенты ступеней обучения - в справочнике <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>mean_ipm</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Средняя частотность знаменательных слов (ipm)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>stage</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Ступень обучения (<code>2-4</code>, <code>5-7</code>, <code>8-11</code>); без нее - общая формула</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexicalStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул."</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">sis_grade</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">sis_grade_by_freq</span><span class="p">(</span><span class="n">LexicalStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">mean_ipm_content</span><span class="p">)</span>
+<span class="c1"># (-4.625384615384615, -3.106298290598293)</span>
+</code></pre></div>
+</div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
 <p>Возвращает справочник с вычисленными метриками удобочитаемости текста.</p>
 <p>Рассмотрим пример вычисления метрик удобочитаемости текста:</p>
