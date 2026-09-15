@@ -17,6 +17,7 @@ from ruts import (
     BasicStats,
     CohesionStats,
     DiversityStats,
+    LexicalStats,
     MorphStats,
     PhonStats,
     ReadabilityStats,
@@ -29,12 +30,14 @@ from ruts.constants import (
     COHESION_STATS_DESC,
     DIVERSITY_STATS_DESC,
     HIGHLIGHT_LAYERS_DESC,
+    LEXICAL_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
     PHON_STATS_DESC,
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
 )
+from ruts.datasets import FreqDict
 from ruts.style_stats import is_stopword
 from ruts.visualizers import highlight, zipf
 
@@ -153,6 +156,12 @@ EXAMPLES = {
 
 ALL_LAYERS = list(HIGHLIGHT_LAYERS_DESC)
 nlp = spacy.load("ru_core_news_sm", exclude=["ner", "lemmatizer"])
+freq_dict = FreqDict()
+if not freq_dict.filepath:
+    try:
+        freq_dict.download()
+    except (RuntimeError, OSError) as error:
+        print(f"Частотный словарь недоступен: {error}")
 plot_lock = threading.Lock()
 
 
@@ -188,6 +197,18 @@ def readability_summary(rs: ReadabilityStats) -> str:
         f"индекс удобочитаемости Флеша - **{rs.flesch_reading_easy:.0f}**, "
         f"время чтения - **{format_reading_time(rs.reading_time)}**."
     )
+
+
+def lexical_table(ls: LexicalStats) -> pd.DataFrame:
+    if freq_dict.filepath:
+        return stats_table(ls.get_stats(), LEXICAL_STATS_DESC)
+    bands = {
+        key: getattr(ls, key)
+        for key in LEXICAL_STATS_DESC
+        if key.startswith(("p_top", "p_beyond"))
+    }
+    bands["lexical_density"] = ls.lexical_density
+    return stats_table(bands, LEXICAL_STATS_DESC)
 
 
 def morph_tables(ms: MorphStats) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -242,6 +263,7 @@ def compute(text: str, layers: list[str]) -> dict:
     ps = PhonStats(doc)
     xs = SyntaxStats(doc)
     cs = CohesionStats(doc)
+    ls = LexicalStats(doc, freq_dict=freq_dict)
     words = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True).extract(text)
     pos_table, morph_table = morph_tables(ms)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
@@ -256,6 +278,7 @@ def compute(text: str, layers: list[str]) -> dict:
         "morph": morph_table,
         "syntax": stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
         "cohesion": stats_table(cs.get_stats(), COHESION_STATS_DESC),
+        "lexical": lexical_table(ls),
         "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
         "basic": stats_table(basic, BASIC_STATS_DESC),
@@ -279,6 +302,7 @@ def analyze(text: str, layers: list[str]):
         result["morph"],
         result["syntax"],
         result["cohesion"],
+        result["lexical"],
         result["style"],
         result["phon"],
         result["basic"],
@@ -297,7 +321,7 @@ HEADER = """
 # ruTS - статистики русского текста
 
 Вставьте текст и получите удобочитаемость, лексическое разнообразие, морфологический и синтаксический
-профиль, связность, SEO-метрики стиля, фоностатистики и подсветку фрагментов, из которых складываются эти числа.
+профиль, связность, частотность слов, SEO-метрики стиля, фоностатистики и подсветку фрагментов, из которых складываются эти числа.
 [GitHub](https://github.com/SergeyShk/ruTS) · [Документация](https://sergeyshk.github.io/ruTS/) ·
 [PyPI](https://pypi.org/project/ruts/)
 """
@@ -326,6 +350,7 @@ with gr.Blocks(title="ruTS") as demo:
             "morph",
             "syntax",
             "cohesion",
+            "lexical",
             "style",
             "phon",
             "basic",
@@ -364,6 +389,7 @@ with gr.Blocks(title="ruTS") as demo:
         tables["morph"],
         tables["syntax"],
         tables["cohesion"],
+        tables["lexical"],
         tables["style"],
         tables["phon"],
         tables["basic"],
@@ -419,6 +445,8 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["syntax"].render()
                 with gr.Tab("Связность"):
                     tables["cohesion"].render()
+                with gr.Tab("Частотность"):
+                    tables["lexical"].render()
                 with gr.Tab("Стиль"):
                     tables["style"].render()
                 with gr.Tab("Фоника"):

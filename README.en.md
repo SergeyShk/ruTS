@@ -43,6 +43,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion
+* **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -543,6 +544,38 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/cohesion_stat
 </details>
 
 <details>
+<summary><b>Lexical sophistication statistics</b></summary>
+
+<br>
+
+How rare the words of a text are relative to the language (lexical sophistication in the spirit of TAALES):
+
+*   Mean frequency, range and dispersion of lemmas by the Lyashevskaya-Sharoff frequency dictionary (downloaded once: `FreqDict().download()`)
+*   Shares of words from the top-1000, 2000, 5000 and 10000 frequency bands by the embedded Sharoff list - work without the dictionary
+*   Surprisal and perplexity under the dictionary unigram model, dictionary coverage, lexical density
+*   The Solovyev-Ivanov-Solnyshkina formula with frequency - `ReadabilityStats.sis_grade_by_freq`
+
+```python
+>>> from ruts import LexicalStats
+>>> from ruts.datasets import FreqDict
+
+>>> FreqDict().download()
+>>> ls = LexicalStats("Кот сидел на окне и смотрел на птиц")
+
+>>> ls.mean_ipm_content, ls.mean_log_ipm, ls.surprisal
+(324.18, 3.0674194359404705, 9.74182176626998)
+>>> ls.p_top1000, ls.p_top10000, ls.lexical_density
+(0.75, 1.0, 0.625)
+
+>>> LexicalStats("Фелинолог пребывал на подоконнике").p_beyond_top10000
+0.25
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/stats/lexical_stats/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -551,6 +584,7 @@ The library allows working with a number of preprocessed datasets:
 
 *   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/datasets/sovchlit/) - soviet reading-books for literature classes
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - the collected works of Stalin
+*   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - the Lyashevskaya-Sharoff frequency dictionary: 52,138 lemmas with ipm, range and dispersion over the Russian National Corpus
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
@@ -651,6 +685,7 @@ The library allows creating the following classes of spaCy components:
 *   `BasicStats`
 *   `CohesionStats`
 *   `DiversityStats`
+*   `LexicalStats`
 *   `MorphStats`
 *   `PhonStats`
 *   `ReadabilityStats`
@@ -717,6 +752,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   constants.py - main constants
     *   diversity_stats.py - lexical diversity metrics
     *   extractors.py - tools for object extraction from a text
+    *   lexical_stats.py - lexical sophistication statistics
     *   morph_stats.py - morphological statistics
     *   phon_stats.py - phonostatistics
     *   readability_stats.py - readability metrics
@@ -725,9 +761,11 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   utils.py - helper tools
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets
+        *   freq2011.py - the Lyashevskaya-Sharoff frequency dictionary
         *   sov_chrest_lit.py - soviet reading-books for literature classes
         *   stalin_works.py - the collected works of Stalin
         *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
+    *   **resources** - embedded lexical resources (the most frequent lemmas list)
     *   **visualizers** - tools for text visualization:
         *   fingerprinting.py - Literature Fingerprinting
         *   word_tree.py - Word Tree

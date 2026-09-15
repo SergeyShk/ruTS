@@ -12,7 +12,9 @@ from .constants import (
     NAUSEA_TOP_N,
     PHON_WINDOW_LEN,
 )
+from .datasets.freq2011 import FreqDict
 from .diversity_stats import DiversityStats
+from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
 from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
@@ -398,4 +400,50 @@ class CohesionStatsComponent:
         """
         cs = CohesionStats(doc)
         doc._.set(self.name, cs)
+        return doc
+
+
+@Language.factory("lexical")
+class LexicalStatsComponent:
+    """
+    Класс для компонента статистик лексической сложности текста
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('lexical', last=True)
+
+    Словарь из другой директории:
+        >>> nlp.add_pipe('lexical', config={'data_dir': '/path/to/dicts'}, last=True)
+
+    Доступ к извлеченным статистикам:
+        >>> doc = nlp("Кот сидел на окне и смотрел на птиц")
+        >>> doc._.lexical.get_stats()
+        >>> doc._.lexical.p_top1000
+        0.75
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+        data_dir (str): Путь к директории с частотным словарем; если не задан,
+            используется директория по умолчанию
+    """
+
+    def __init__(self, nlp: Language, name: str = "lexical", data_dir: str | None = None):
+        self.name = name
+        self.freq_dict = FreqDict(data_dir) if data_dir else FreqDict()
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных статистик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        ls = LexicalStats(doc, freq_dict=self.freq_dict)
+        doc._.set(self.name, ls)
         return doc

@@ -9,6 +9,7 @@ class MorphologyStatDesc(TypedDict):
 
 
 DEFAULT_DATA_DIR = Path(__file__).parent.parent.resolve() / "ruts_data"
+RESOURCES_DIR = Path(__file__).parent.resolve() / "resources"
 RU_VOWELS = ["а", "е", "и", "у", "о", "я", "ё", "э", "ю", "ы"]
 RU_VOWELS += list(map(str.upper, RU_VOWELS))
 RU_CONSONANTS_LOW = ["к", "п", "с", "т", "ф", "х", "ц", "ч", "ш", "щ"]
@@ -109,6 +110,11 @@ SIS_GRADE_STAGES: dict[str, tuple[float, float, float]] = {
     "2-4": (-2.59, 0.17, 0.61),
     "5-7": (-5.29, 0.20, 1.34),
     "8-11": (-3.26, 0.21, 1.35),
+}
+SIS_GRADE_FREQ_STAGES: dict[str, tuple[float, float, float, float]] = {
+    "2-4": (-1.21, 0.2, 0.56, -0.0025),
+    "5-7": (-5.18, 0.17, 1.35, -0.00043),
+    "8-11": (1.3, 0.23, 0.88, -0.0035),
 }
 MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
     "pos": {
@@ -718,6 +724,24 @@ VALENCY_IGNORED_DEPS = frozenset({"cc", "conj", "parataxis", "punct"})
 NOUN_MODIFIER_DEPS = frozenset({"amod", "det", "nmod", "nummod", "acl"})
 PASSIVE_DEPS = frozenset({"nsubj:pass", "csubj:pass", "aux:pass"})
 NEGATION_PARTICLES = frozenset({"не", "ни"})
+LEXICAL_STATS_DESC = {
+    "coverage": "Доля слов, найденных в частотном словаре",
+    "mean_ipm": "Средняя частотность (ipm)",
+    "mean_ipm_content": "Средняя частотность знаменательных слов (ipm)",
+    "mean_log_ipm": "Средняя логарифмическая частотность (lg ipm)",
+    "mean_log_ipm_content": "Средняя логарифмическая частотность знаменательных слов",
+    "mean_range": "Средний диапазон (R)",
+    "mean_dispersion": "Средняя дисперсия (D)",
+    "surprisal": "Средний сюрпризал (бит)",
+    "perplexity": "Униграммная перплексия",
+    "p_top1000": "Доля слов из топ-1000",
+    "p_top2000": "Доля слов из топ-2000",
+    "p_top5000": "Доля слов из топ-5000",
+    "p_top10000": "Доля слов из топ-10000",
+    "p_beyond_top10000": "Доля слов вне топ-10000",
+    "lexical_density": "Лексическая плотность",
+}
+FREQUENCY_BANDS = (1000, 2000, 5000, 10000)
 COHESION_STATS_DESC = {
     "noun_overlap_adjacent": "Повтор существительных в соседних предложениях",
     "noun_overlap_all": "Повтор существительных во всех парах предложений",
