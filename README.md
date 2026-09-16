@@ -34,7 +34,7 @@
 
 Попробовать без установки можно в [демо на Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): вставьте текст и получите класс удобочитаемости, метрики, графики и подсветку фрагментов.
 
-* **[Извлечение объектов](https://sergeyshk.github.io/ruTS/extractors/words/)** - настраиваемые токенизаторы слов и предложений
+* **[Извлечение объектов](https://sergeyshk.github.io/ruTS/extractors/words/)** - настраиваемые токенизаторы слов, предложений и символьных N-грамм
 * **[Базовые статистики](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - количество слов, предложений, слогов, знаков препинания и их распределения
 * **[Метрики удобочитаемости](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - тест Флеша-Кинкайда, индекс SMOG, LIX и другие, с коэффициентами для русского языка
 * **[Метрики лексического разнообразия](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR и его вариации, MTLD, HD-D, индексы Симпсона и Юла, энтропия, законы Ципфа и Хипса
@@ -44,7 +44,7 @@
 * **[Синтаксические статистики](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей, расщеплённые сказуемые и другие маркеры канцелярита по разбору spaCy
 * **[Статистики связности](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам
 * **[Статистики лексической сложности](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность
-* **[Корпусные меры](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - ключевые слова относительно эталонного корпуса или частотного словаря, коллокации, дисперсия слов, конкорданс KWIC
+* **[Корпусные меры](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - ключевые слова относительно эталонного корпуса или частотного словаря, коллокации, дисперсия слов, конкорданс KWIC, стилометрия: дельта Барроуза, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов, подсветка текста в стиле Главреда
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -104,12 +104,12 @@ python -m spacy download ru_core_news_sm
 
 ### Извлечение объектов
 
-Библиотека позволяет создавать свои инструменты для извлечения предложений и слов из текста, которые затем можно использовать при вычислении статистик.
+Библиотека позволяет создавать свои инструменты для извлечения предложений, слов и символьных N-грамм из текста, которые затем можно использовать при вычислении статистик и в стилометрии.
 
 ```python
 >>> import re
 >>> from nltk.corpus import stopwords
->>> from ruts import SentsExtractor, WordsExtractor
+>>> from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
 
 >>> text = "Не имей 100 рублей, а имей 100 друзей"
 
@@ -123,9 +123,15 @@ python -m spacy download ru_core_news_sm
 
 >>> we.get_most_common(3)
 [('иметь', 2), ('рубль', 1), ('друг', 1)]
+
+>>> ce = CharNgramsExtractor(n=3, lowercase=True)
+>>> ce.extract(text)[:5]
+('не ', 'е и', ' им', 'име', 'мей')
+>>> ce.get_most_common(2)
+[(' им', 2), ('име', 2)]
 ```
 
-Подробнее - в документации: [слова](https://sergeyshk.github.io/ruTS/extractors/words/), [предложения](https://sergeyshk.github.io/ruTS/extractors/sentences/).
+Подробнее - в документации: [слова](https://sergeyshk.github.io/ruTS/extractors/words/), [предложения](https://sergeyshk.github.io/ruTS/extractors/sentences/), [символьные N-граммы](https://sergeyshk.github.io/ruTS/extractors/char_ngrams/).
 
 <details>
 <summary><b>Базовые статистики</b></summary>
@@ -592,10 +598,11 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   Коллокации в окне по logDice, MI, MI³, t-score, Dice, G², NPMI, минимальной чувствительности; сочетаемость одного слова
 *   Дисперсия слов по частям текста: DP Гриса, D Жюйана, D2 Кэрролла, S Розенгрена, дивергенция Кульбака-Лейблера
 *   Конкорданс KWIC по словоформе или лемме; подгонка закона Ципфа-Мандельброта - `fit_zipf_mandelbrot` в `ruts.diversity_stats`
+*   Стилометрия: дельта Барроуза с вариантами (квадратичная, Эдера, косинусная) по словам или символьным N-граммам, Zeta с логарифмической Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов
 
 ```python
 >>> from ruts import WordsExtractor
->>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic
+>>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic, delta, zeta
 
 >>> we = WordsExtractor(use_lexemes=True, lowercase=True)
 >>> text = "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. Завтра кот снова будет сидеть на окне и смотреть на птиц."
@@ -612,9 +619,18 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
         сидел на  окне  и смотрел
         уснул на  окне  . Завтра кот
        сидеть на  окне  и смотреть
+
+>>> both = we.extract("Кот и собака дремали на окне. Завтра кот будет смотреть на птиц, а собака - спать на полу.")
+>>> delta({"кот": target, "собака": reference, "кот и собака": both}, n_mfw=10).round(2)
+               кот  собака  кот и собака
+кот           0.00    1.74          0.96
+собака        1.74    0.00          1.11
+кот и собака  0.96    1.11          0.00
+>>> [(z.word, round(z.zeta, 2)) for z in zeta(target, reference, segment_size=5, top_n=2)]
+[('на', 0.67), ('кот', 0.6)]
 ```
 
-Подробнее - в [документации](https://sergeyshk.github.io/ruTS/corpus/keyness/).
+Подробнее - в документации: [корпусные меры](https://sergeyshk.github.io/ruTS/corpus/keyness/), [стилометрия](https://sergeyshk.github.io/ruTS/corpus/stylometry/).
 
 </details>
 
@@ -809,6 +825,7 @@ uv run pre-commit install
         *   dispersion.py - дисперсия слов по частям текста
         *   keyness.py - ключевые слова относительно эталонного корпуса
         *   kwic.py - конкорданс KWIC
+        *   stylometry.py - дельта Барроуза, Zeta и другие меры стилометрии
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных
         *   freq2011.py - частотный словарь Ляшевской и Шарова

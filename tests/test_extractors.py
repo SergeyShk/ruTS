@@ -4,7 +4,7 @@ import pytest
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 
-from ruts import SentsExtractor, WordsExtractor
+from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
 
 
 @pytest.fixture(scope="module")
@@ -173,3 +173,49 @@ class TestWordsExtractor:
         we = WordsExtractor()
         we.extract(text)
         assert we.get_most_common(1) == [("значений", 3)]
+
+
+class TestCharNgramsExtractor:
+    text = "Кот сидел  на окне,\nа пёс - на полу."
+
+    def test_extract(self):
+        ce = CharNgramsExtractor()
+        ngrams = ce.extract(self.text)
+        assert ngrams[:8] == ("Ко", "от", "т ", " с", "си", "ид", "де", "ел")
+        assert len(ngrams) == 34
+        assert ce.ngrams == ngrams
+        assert CharNgramsExtractor(n=1).extract("кот") == ("к", "о", "т")
+        assert CharNgramsExtractor(n=4).extract("кот") == ()
+        assert CharNgramsExtractor().extract("") == ()
+
+    def test_lowercase(self):
+        ce = CharNgramsExtractor(n=3, lowercase=True)
+        assert ce.extract(self.text)[:6] == ("кот", "от ", "т с", " си", "сид", "иде")
+        assert ce.get_most_common(2) == [(" на", 2), ("на ", 2)]
+
+    def test_within_words(self):
+        ce = CharNgramsExtractor(n=3, lowercase=True, within_words=True)
+        assert ce.extract(self.text) == (
+            "кот",
+            "сид",
+            "иде",
+            "дел",
+            "окн",
+            "кне",
+            "пёс",
+            "пол",
+            "олу",
+        )
+        assert CharNgramsExtractor(n=4, within_words=True).extract("Кот на окне") == ("окне",)
+        ce = CharNgramsExtractor(n=2, within_words=True, tokenizer=re.compile(r"[\s,.-]+"))
+        assert ce.extract("Кот - пёс") == ("Ко", "от", "пё", "ёс")
+        ce = CharNgramsExtractor(n=2, within_words=True, tokenizer=wordpunct_tokenize)
+        assert ce.extract("Кот, пёс") == ("Ко", "от", "пё", "ёс")
+
+    def test_errors(self):
+        with pytest.raises(ValueError):
+            CharNgramsExtractor(n=0)
+        with pytest.raises(ValueError):
+            CharNgramsExtractor().get_most_common(0)
+        with pytest.raises(TypeError):
+            CharNgramsExtractor(within_words=True, tokenizer=42).extract(self.text)

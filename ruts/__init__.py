@@ -19,7 +19,7 @@ from .components import (
     SyntaxStatsComponent,
 )
 from .diversity_stats import DiversityStats
-from .extractors import SentsExtractor, WordsExtractor
+from .extractors import CharNgramsExtractor, SentsExtractor, WordsExtractor
 from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
 from .phon_stats import PhonStats
@@ -37,6 +37,7 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 __all__ = [
     "BasicStats",
     "BasicStatsComponent",
+    "CharNgramsExtractor",
     "CohesionStats",
     "CohesionStatsComponent",
     "DiversityStats",
