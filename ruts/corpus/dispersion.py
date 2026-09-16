@@ -70,12 +70,17 @@ def dispersion(
     total = Counter(words)
     targets = [word] if word is not None else [w for w, f in total.most_common() if f >= min_freq]
     vocabulary = {target: index for index, target in enumerate(targets)}
-    matrix = np.zeros((len(targets), len(sizes)))
-    ids = np.fromiter((vocabulary.get(w, -1) for w in words), dtype=int, count=len(words))
-    part_ids = np.repeat(np.arange(len(sizes)), sizes)
+    ids = np.fromiter((vocabulary.get(w, -1) for w in words), dtype=np.int64, count=len(words))
+    part_ids = np.repeat(np.arange(len(sizes), dtype=np.int64), sizes)
     known = ids >= 0
-    np.add.at(matrix, (ids[known], part_ids[known]), 1)
-    measures = _matrix_measures(matrix, np.asarray(sizes, dtype=float))
+    cells, counts = np.unique(ids[known] * len(sizes) + part_ids[known], return_counts=True)
+    measures = _cell_measures(
+        cells // len(sizes),
+        cells % len(sizes),
+        counts.astype(float),
+        len(targets),
+        np.asarray(sizes, dtype=float),
+    )
     return [
         Dispersion(target, int(total[target]), *(float(column[index]) for column in measures))
         for index, target in enumerate(targets)
@@ -93,31 +98,51 @@ def _sizes(n_words: int, parts: int | Sequence[int]) -> list[int]:
     return sizes
 
 
-def _matrix_measures(matrix: np.ndarray, sizes: np.ndarray) -> tuple[np.ndarray, ...]:
+def _cell_measures(
+    rows: np.ndarray, cols: np.ndarray, values: np.ndarray, n_words: int, sizes: np.ndarray
+) -> tuple[np.ndarray, ...]:
     """
-    Меры дисперсии для матрицы «слово × часть» с частотами по частям
+    Меры дисперсии для всех слов по ненулевым ячейкам матрицы «слово × часть»
 
     Описание:
         Векторный расчет тех же мер, что calc_dp, calc_dp_norm, calc_juilland_d,
-        calc_carroll_d2, calc_rosengren_s и calc_kl_divergence, для всех слов сразу;
-        строки с нулевой частотой дают nan
+        calc_carroll_d2, calc_rosengren_s и calc_kl_divergence, по разреженному
+        представлению: rows и cols - номера слова и части ненулевой ячейки, values -
+        частота в ней; память линейна по числу ячеек, а не слов на части. Нулевые
+        ячейки дают в DP слагаемое s_i, в энтропии, дивергенции и S Розенгрена ноль,
+        среднее и дисперсия для D Жюйана считаются по суммам и суммам квадратов;
+        слова с нулевой частотой дают nan
+
+    Аргументы:
+        rows (ndarray): Номера слов ненулевых ячеек
+        cols (ndarray): Номера частей ненулевых ячеек
+        values (ndarray): Частоты в ячейках
+        n_words (int): Число слов
+        sizes (ndarray): Размеры частей
+
+    Вывод:
+        tuple[ndarray, ...]: Массивы DP, DP_norm, D, D2, S и дивергенции по словам
     """
     shares = sizes / sizes.sum()
     n_parts = len(sizes)
-    totals = matrix.sum(axis=1)
+    cell_shares = shares[cols]
+
+    def by_word(weights: np.ndarray) -> np.ndarray:
+        return np.bincount(rows, weights=weights, minlength=n_words)
+
+    totals = by_word(values)
+    proportions = values / totals[rows]
+    dp = 0.5 * (1 + by_word(np.abs(proportions - cell_shares) - cell_shares))
+    dp_norm = dp / (1 - shares.min())
+    relative = values / sizes[cols]
+    mean = by_word(relative) / n_parts
+    variance = np.maximum(by_word(relative**2) / n_parts - mean**2, 0)
     with np.errstate(divide="ignore", invalid="ignore"):
-        proportions = matrix / totals[:, None]
-        dp = 0.5 * np.abs(proportions - shares).sum(axis=1)
-        dp_norm = dp / (1 - shares.min())
-        relative = matrix / sizes
-        juilland = 1 - relative.std(axis=1) / relative.mean(axis=1) / sqrt(n_parts - 1)
-        probabilities = relative / relative.sum(axis=1)[:, None]
-        entropy = -np.where(probabilities > 0, probabilities * np.log2(probabilities), 0).sum(
-            axis=1
-        )
-        carroll = entropy / log2(n_parts)
-        rosengren = np.sqrt(shares * matrix).sum(axis=1) ** 2 / totals
-        kl = np.where(proportions > 0, proportions * np.log2(proportions / shares), 0).sum(axis=1)
+        juilland = 1 - np.sqrt(variance) / mean / sqrt(n_parts - 1)
+        probabilities = relative / (mean * n_parts)[rows]
+        carroll = -by_word(probabilities * np.log2(probabilities)) / log2(n_parts)
+        rosengren = by_word(np.sqrt(cell_shares * values)) ** 2 / totals
+        kl = by_word(proportions * np.log2(proportions / cell_shares))
     empty = totals == 0
     return tuple(
         np.where(empty, nan, measure)
