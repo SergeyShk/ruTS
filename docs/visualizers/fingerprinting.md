@@ -20,7 +20,9 @@
 | `x_size` | int | `800` | Ширина области для визуализации |
 | `y_size` | int | `600` | Высота области для визуализации |
 | `cmap` | str | `'PuOr'` | Цветовая карта |
-| `is_return` | str | `True` | Возвращать объект Figure |
+| `ax` | Axes | `None` | Оси matplotlib для графика; если не заданы, создается фигура 15×10 |
+
+Функция возвращает оси `Axes` с визуализацией; фигура доступна как `ax.figure`.
 
 ## Пример использования
 
@@ -48,7 +50,7 @@
         words.append(words_extractor.extract(text))
 
     # Построение графика
-    fingerprinting(words, metric=calc_simpson_index, x_size=1000, y_size=800, is_return=False)
+    fingerprinting(words, metric=calc_simpson_index, x_size=1000, y_size=800)
     ```
 
     _Результат_:

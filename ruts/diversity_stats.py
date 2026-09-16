@@ -1,5 +1,5 @@
 from collections import Counter
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from functools import partial
 from math import inf, log, log2, nan, sqrt
 from typing import NamedTuple
@@ -1229,7 +1229,7 @@ class ZipfMandelbrot(NamedTuple):
     r2: float
 
 
-def fit_zipf_mandelbrot(text: Sequence[str]) -> ZipfMandelbrot:
+def fit_zipf_mandelbrot(text: Sequence[str] | Mapping[str, int]) -> ZipfMandelbrot:
     """
     Подгонка закона Ципфа-Мандельброта к распределению частот
 
@@ -1245,7 +1245,7 @@ def fit_zipf_mandelbrot(text: Sequence[str]) -> ZipfMandelbrot:
         https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law
 
     Аргументы:
-        text (list[str]): Список слов
+        text (list[str]|Counter): Список слов или справочник частот
 
     Вывод:
         ZipfMandelbrot: Параметры закона, nan для текстов из менее чем трех лексем
@@ -1276,6 +1276,70 @@ def fit_zipf_mandelbrot(text: Sequence[str]) -> ZipfMandelbrot:
     return ZipfMandelbrot(float(np.exp(log_c)), float(q), float(s), r2)
 
 
+class HeapsFit(NamedTuple):
+    """
+    Параметры закона Хипса V(N) = K · N^β
+
+    Атрибуты:
+        k (float): Коэффициент K
+        beta (float): Показатель β
+        r2 (float): Коэффициент детерминации подгонки в логарифмических координатах
+    """
+
+    k: float
+    beta: float
+    r2: float
+
+
+def fit_heaps(text: Sequence[str]) -> HeapsFit:
+    """
+    Подгонка закона Хипса к кривой роста словаря
+
+    Описание:
+        Закон V(N) = K · N^β, где V - размер словаря после N слов текста; параметры
+        подбираются линейной регрессией логарифма размера словаря по логарифму
+        длины текста вдоль кривой роста, как в calc_heaps_beta, который дает
+        только показатель β. Зависит от порядка слов
+
+    Ссылки:
+        https://en.wikipedia.org/wiki/Heaps'_law
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        HeapsFit: Параметры закона, nan для текстов короче двух слов
+    """
+    n_words = len(text)
+    if n_words < 2:
+        return HeapsFit(nan, nan, nan)
+    growth = np.log(vocabulary_growth(text))
+    lengths = np.log(np.arange(1, n_words + 1))
+    slope, intercept = np.polyfit(lengths, growth, 1)
+    residual = float(((growth - (intercept + slope * lengths)) ** 2).sum())
+    total = float(((growth - growth.mean()) ** 2).sum())
+    r2 = 1 - residual / total if total else nan
+    return HeapsFit(float(np.exp(intercept)), float(slope), r2)
+
+
+def vocabulary_growth(text: Sequence[str]) -> list[int]:
+    """
+    Вычисление кривой роста словаря
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        list[int]: Размер словаря после каждого слова текста
+    """
+    seen: set[str] = set()
+    growth = []
+    for word in text:
+        seen.add(word)
+        growth.append(len(seen))
+    return growth
+
+
 def calc_heaps_beta(text: Sequence[str]) -> float:
     """
     Вычисление показателя закона Хипса
@@ -1297,17 +1361,7 @@ def calc_heaps_beta(text: Sequence[str]) -> float:
     Вывод:
         float: Значение показателя, nan для текстов короче двух слов
     """
-    n_words = len(text)
-    if n_words < 2:
-        return nan
-    seen: set[str] = set()
-    growth = []
-    for word in text:
-        seen.add(word)
-        growth.append(len(seen))
-    lengths = np.arange(1, n_words + 1)
-    slope = np.polyfit(np.log(lengths), np.log(growth), 1)[0]
-    return float(slope)
+    return fit_heaps(text).beta
 
 
 def calc_windowed(

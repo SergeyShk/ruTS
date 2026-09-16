@@ -51,6 +51,10 @@ nav:
         - Литературная дактилоскопия: visualizers/fingerprinting.md
         - Дерево слов: visualizers/word_tree.md
         - Подсветка текста: visualizers/highlight.md
+        - Корпусные графики: visualizers/corpus.md
+        - Стилометрические графики: visualizers/stylometry.md
+        - Рост словаря и спектр частот: visualizers/vocabulary.md
+        - Длины предложений: visualizers/sentences.md
     - Компоненты:
         - Компоненты: components.md
 

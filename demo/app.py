@@ -42,12 +42,14 @@ from ruts.constants import (
 from ruts.corpus import collocations, keyness
 from ruts.datasets import FreqDict
 from ruts.style_stats import is_stopword
-from ruts.visualizers import highlight, zipf
+from ruts.visualizers import highlight, sentence_lengths_plot, zipf
 
 matplotlib.use("Agg")
 
 MAX_CHARS = 20_000
 ZIPF_WORDS = 100
+SENTENCES_MIN = 5
+SENTENCES_WINDOW = 5
 ZIPF_MIN_WORDS = 100
 KEYWORDS_TOP_N = 15
 COLLOCATION_WINDOW = 3
@@ -282,23 +284,36 @@ def morph_tables(ms: MorphStats) -> tuple[pd.DataFrame, pd.DataFrame]:
     return pos_table, pd.DataFrame(rows, columns=["Признак", "Значение", "Слов"])
 
 
+def figure_image(fig: plt.Figure) -> Image.Image:
+    buffer = BytesIO()
+    fig.tight_layout()
+    fig.savefig(buffer, format="png", dpi=150)
+    plt.close(fig)
+    buffer.seek(0)
+    return Image.open(buffer)
+
+
 def zipf_image(words: tuple[str, ...]) -> Image.Image:
     counter = Counter(word for word in words if not is_stopword(word))
-    buffer = BytesIO()
     with plot_lock:
-        fig = plt.figure(figsize=(7, 4.5))
+        fig, ax = plt.subplots(figsize=(7, 4.5))
         zipf(
             counter,
             num_words=min(ZIPF_WORDS, len(counter)),
             num_labels=6,
             show_theory=True,
             alpha=1.1,
+            show_fit=True,
+            ax=ax,
         )
-        fig.tight_layout()
-        fig.savefig(buffer, format="png", dpi=150)
-        plt.close(fig)
-    buffer.seek(0)
-    return Image.open(buffer)
+        return figure_image(fig)
+
+
+def sentences_image(doc: Doc) -> Image.Image:
+    with plot_lock:
+        fig, ax = plt.subplots(figsize=(7, 3.5))
+        sentence_lengths_plot(doc, window=SENTENCES_WINDOW, ax=ax)
+        return figure_image(fig)
 
 
 def render_highlight(text: str, layers: list[str]) -> str:
@@ -323,6 +338,7 @@ def compute(text: str, layers: list[str]) -> dict:
     pos_table, morph_table = morph_tables(ms)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
     enough_words = bs.n_words >= ZIPF_MIN_WORDS
+    enough_sents = bs.n_sents >= SENTENCES_MIN
     return {
         "text": text,
         "highlight": highlight(doc, layers=layers).to_html(),
@@ -341,6 +357,8 @@ def compute(text: str, layers: list[str]) -> dict:
         "collocations": collocations_table(words),
         "zipf": zipf_image(words) if enough_words else None,
         "enough_words": enough_words,
+        "sentences": sentences_image(doc) if enough_sents else None,
+        "enough_sents": enough_sents,
     }
 
 
@@ -367,6 +385,7 @@ def analyze(text: str, *groups: list[str]):
         result["collocations"],
         gr.Image(value=result["zipf"], visible=result["enough_words"]),
         gr.Markdown(visible=not result["enough_words"]),
+        gr.Image(value=result["sentences"], visible=result["enough_sents"]),
     )
 
 
@@ -440,6 +459,14 @@ with gr.Blocks(title="ruTS") as demo:
         visible=not INITIAL["enough_words"],
         render=False,
     )
+    sentences_output = gr.Image(
+        INITIAL["sentences"],
+        label="Длины предложений",
+        show_label=False,
+        interactive=False,
+        visible=INITIAL["enough_sents"],
+        render=False,
+    )
     outputs = [
         text_state,
         highlight_output,
@@ -458,6 +485,7 @@ with gr.Blocks(title="ruTS") as demo:
         tables["collocations"],
         zipf_output,
         zipf_note,
+        sentences_output,
     ]
 
     with gr.Row():
@@ -497,6 +525,7 @@ with gr.Blocks(title="ruTS") as demo:
             highlight_output.render()
             zipf_output.render()
             zipf_note.render()
+            sentences_output.render()
         with gr.Column():
             summary_output.render()
             with gr.Tabs():

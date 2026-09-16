@@ -1,10 +1,13 @@
 from collections import Counter
 
+import matplotlib
 import matplotlib.pyplot as plt
 import pytest
-from matplotlib.lines import Line2D
+from matplotlib.axes import Axes
 
 from ruts.visualizers import zipf, zipf_theory
+
+matplotlib.use("Agg")
 
 
 @pytest.fixture(scope="module")
@@ -13,12 +16,13 @@ def tokens():
 
 
 def test_zipf_theory():
-    plt.cla()
-    plot = zipf_theory(10, 5, 1.0)[0]
-    assert isinstance(plot, Line2D)
-    assert plot._label == "Теоретический закон"
-    assert plot.get_linewidth() == 2
-    assert plot.get_color() == "r"
+    ax = zipf_theory(10, 5, 1.0)
+    assert isinstance(ax, Axes)
+    line = ax.get_lines()[0]
+    assert line.get_label() == "Теоретический закон"
+    assert line.get_linewidth() == 2
+    assert line.get_color() == "r"
+    plt.close("all")
 
 
 def test_zipf_type_error():
@@ -27,43 +31,59 @@ def test_zipf_type_error():
 
 
 def test_zipf(tokens):
-    plt.cla()
-    plot = zipf(tokens)
-    assert isinstance(plot, Line2D)
-    assert plot._label == "Экспериментальный закон"
-    assert plot.axes.title.get_text() == "Закон Ципфа"
-    assert plot.axes.title.get_position() == (0.5, 1.0)
+    ax = zipf(tokens)
+    assert isinstance(ax, Axes)
+    line = ax.get_lines()[0]
+    assert line.get_label() == "Экспериментальный закон"
+    assert ax.get_title() == "Закон Ципфа"
+    assert ax.get_xscale() == "log"
+    assert len(ax.get_lines()) == 1
+    plt.close("all")
 
 
 def test_zipf_num_words(tokens):
-    plt.cla()
-    plot = zipf(tokens, num_words=2)
-    assert len(plot.get_data()[0]) == 2
+    ax = zipf(tokens, num_words=2)
+    assert len(ax.get_lines()[0].get_data()[0]) == 2
+    plt.close("all")
 
 
 def test_zipf_log(tokens):
-    plt.cla()
-    plot = zipf(tokens, log=False)
-    assert plot.axes.get_xscale() == "linear"
-    assert plot.axes.get_yscale() == "linear"
+    ax = zipf(tokens, log=False)
+    assert ax.get_xscale() == "linear"
+    assert ax.get_yscale() == "linear"
+    plt.close("all")
 
 
 def test_zipf_num_labels(tokens):
-    plt.cla()
-    plot = zipf(tokens, num_labels=1)
-    assert plot.axes.get_children()[1].get_text() == " а"
-    assert plot.axes.get_children()[1].get_position() == (1, 100)
+    ax = zipf(tokens, num_labels=1)
+    assert ax.texts[0].get_text() == " а"
+    assert ax.texts[0].get_position() == (1, 100)
+    assert len(ax.texts) == 1
+    plt.close("all")
 
 
 def test_zipf_show_theory(tokens):
-    plt.cla()
-    plot = zipf(tokens, show_theory=True)[0]
-    assert plot.axes.get_children()[0]._label == "Экспериментальный закон"
-    assert plot.axes.get_children()[11]._label == "Теоретический закон"
+    ax = zipf(tokens, show_theory=True)
+    labels = [line.get_label() for line in ax.get_lines()]
+    assert labels == ["Экспериментальный закон", "Теоретический закон"]
+    assert ax.get_legend() is not None
+    plt.close("all")
 
 
-def test_zipf_with_theory(tokens):
-    plt.cla()
-    plot = zipf(tokens, show_theory=True)
-    assert len(plot) == 1
-    assert all(isinstance(p, Line2D) for p in plot)
+def test_zipf_show_fit():
+    ax = zipf(Counter({"а": 12, "б": 6, "в": 4, "г": 3}), show_fit=True, show_theory=True)
+    labels = [line.get_label() for line in ax.get_lines()]
+    assert labels[:2] == ["Экспериментальный закон", "Теоретический закон"]
+    assert labels[2] == "Ципф-Мандельброт: q=0.00, s=1.00"
+    assert ax.get_lines()[2].get_ydata()[0] == pytest.approx(12, rel=1e-3)
+    assert len(zipf(Counter({"а": 2, "б": 1}), show_fit=True).get_lines()) == 1
+    plt.close("all")
+
+
+def test_zipf_ax(tokens):
+    _, (left, right) = plt.subplots(1, 2)
+    assert zipf(tokens, ax=left) is left
+    assert zipf_theory(10, 5, ax=right) is right
+    assert len(left.get_lines()) == 1
+    assert len(right.get_lines()) == 1
+    plt.close("all")
