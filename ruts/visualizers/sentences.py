@@ -1,4 +1,5 @@
-from collections.abc import Sequence
+from collections.abc import Iterable
+from numbers import Integral
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,7 +11,7 @@ from ..utils import iter_doc_words
 
 
 def sentence_lengths_plot(
-    source: str | Doc | Sequence[int],
+    source: str | Doc | Iterable[int],
     window: int = 10,
     inset: bool = True,
     ax: Axes | None = None,
@@ -25,7 +26,8 @@ def sentence_lengths_plot(
         предложений, готовый список длин используется как есть
 
     Аргументы:
-        source (str|Doc|list[int]): Текст, объект Doc или длины предложений
+        source (str|Doc|Iterable[int]): Текст, объект Doc или длины предложений
+            (список, массив numpy, Series)
         window (int): Окно скользящего среднего в предложениях
         inset (bool): Показывать врезку с гистограммой
         ax (Axes): Оси для графика; если не заданы, создается новая фигура
@@ -68,12 +70,13 @@ def sentence_lengths_plot(
     return ax
 
 
-def sentence_lengths(source: str | Doc | Sequence[int]) -> list[int]:
+def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
     """
     Извлечение длин предложений в словах
 
     Аргументы:
-        source (str|Doc|list[int]): Текст, объект Doc или готовые длины
+        source (str|Doc|Iterable[int]): Текст, объект Doc или готовые длины -
+            любая последовательность целых чисел, в том числе массив numpy и Series
 
     Вывод:
         list[int]: Длины предложений по порядку; предложения без слов пропускаются
@@ -90,6 +93,8 @@ def sentence_lengths(source: str | Doc | Sequence[int]) -> list[int]:
             lengths = [sum(1 for _ in iter_doc_words(sent)) for sent in source.sents]
             return [length for length in lengths if length]
         return sentence_lengths(source.text)
-    if isinstance(source, Sequence) and all(isinstance(length, int) for length in source):
-        return [int(length) for length in source]
+    if isinstance(source, Iterable):
+        lengths = list(source)
+        if all(isinstance(length, Integral) for length in lengths):
+            return [int(length) for length in lengths]
     raise TypeError("Некорректный источник данных")

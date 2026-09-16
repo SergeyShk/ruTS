@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Sequence
-from math import isnan
+from math import isfinite, isnan, log2, nan
 
 import matplotlib.pyplot as plt
 from graphviz import Graph
@@ -58,32 +58,41 @@ def keyness_plot(
     negative: Sequence[Keyword] = (),
     top_n: int = 20,
     labels: tuple[str, str] = ("целевой корпус", "эталонный корпус"),
+    field: str = "score",
+    log: bool = False,
     ax: Axes | None = None,
 ) -> Axes:
     """
     Построение диаграммы ключевых слов
 
     Описание:
-        Расходящиеся горизонтальные столбцы значений score (quanteda
-        textplot_keyness): положительные ключевые слова вправо, отрицательные -
-        влево; по top_n слов с каждой стороны, слова с неопределенной мерой
-        пропускаются
+        Расходящиеся горизонтальные столбцы (quanteda textplot_keyness): слова
+        из positive вправо, из negative - влево, длина столбца - модуль значения
+        поля field (score, g2, log_ratio), так что сторона задается списком, а не
+        знаком меры; по top_n слов с каждой стороны, слова с неопределенным
+        или бесконечным значением пропускаются. Для отношения шансов
+        (score от 0 до бесконечности, единица - шансы равны) задайте log=True:
+        откладывается модуль log2 значения, симметричный относительно единицы
 
     Аргументы:
         positive (list[Keyword]): Положительные ключевые слова (keyness)
         negative (list[Keyword]): Отрицательные ключевые слова (keyness с positive=False)
         top_n (int): Количество слов с каждой стороны
         labels (tuple[str, str]): Подписи легенды для целевого и эталонного корпусов
+        field (str): Поле Keyword, значения которого откладываются
+        log (bool): Откладывать log2 значения - для отношения шансов
         ax (Axes): Оси для графика; если не заданы, создается новая фигура
 
     Вывод:
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если ключевых слов нет
+        ValueError: Если ключевых слов нет или поле неизвестно
     """
-    top = [keyword for keyword in positive if not isnan(keyword.score)][:top_n]
-    bottom = [keyword for keyword in negative if not isnan(keyword.score)][:top_n]
+    if field not in Keyword._fields[1:]:
+        raise ValueError(f"Неизвестное поле ключевого слова: {field}")
+    top = _bars(positive, field, log, 1)[:top_n]
+    bottom = _bars(negative, field, log, -1)[:top_n]
     keywords = top + bottom[::-1]
     if not keywords:
         raw = list(positive) + list(negative)
@@ -94,11 +103,11 @@ def keyness_plot(
         _, ax = plt.subplots(figsize=(8, 0.3 * len(keywords) + 1.5))
     rows = range(len(keywords))
     colors = ["tab:blue"] * len(top) + ["tab:red"] * len(bottom)
-    ax.barh(rows, [keyword.score for keyword in keywords], color=colors)
-    ax.set_yticks(rows, labels=[keyword.word for keyword in keywords])
+    ax.barh(rows, [value for _, value in keywords], color=colors)
+    ax.set_yticks(rows, labels=[keyword.word for keyword, _ in keywords])
     ax.invert_yaxis()
     ax.axvline(0, color="black", linewidth=0.8)
-    ax.set_xlabel("Ключевость")
+    ax.set_xlabel(f"|log2({field})|" if log else f"|{field}|")
     ax.set_title("Ключевые слова")
     handles = [Patch(color="tab:blue")]
     legend_labels = [labels[0]]
@@ -107,6 +116,19 @@ def keyness_plot(
         legend_labels.append(labels[1])
     ax.legend(handles, legend_labels)
     return ax
+
+
+def _bars(
+    keywords: Sequence[Keyword], field: str, log: bool, sign: int
+) -> list[tuple[Keyword, float]]:
+    bars = []
+    for keyword in keywords:
+        value = float(getattr(keyword, field))
+        if log:
+            value = log2(value) if value > 0 else nan
+        if isfinite(value):
+            bars.append((keyword, sign * abs(value)))
+    return bars
 
 
 def collocation_network(collocations: Sequence[Collocation], top_n: int | None = None) -> Graph:

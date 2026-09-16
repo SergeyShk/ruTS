@@ -1,5 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import pytest
 import spacy
 from matplotlib.axes import Axes
@@ -18,9 +20,15 @@ def test_sentence_lengths():
     nlp.add_pipe("sentencizer")
     assert sentence_lengths(nlp(text)) == [4, 7, 2, 7]
     assert sentence_lengths([3, 5, 2]) == [3, 5, 2]
+    assert sentence_lengths(np.array([3, 5, 2])) == [3, 5, 2]
+    assert sentence_lengths(pd.Series([3, 5, 2])) == [3, 5, 2]
+    assert sentence_lengths((np.int64(3), np.int32(5))) == [3, 5]
+    assert sentence_lengths(iter([3, 5])) == [3, 5]
     assert sentence_lengths("") == []
     with pytest.raises(TypeError):
         sentence_lengths(["кот", "спал"])
+    with pytest.raises(TypeError):
+        sentence_lengths([3.5, 2])
     with pytest.raises(TypeError):
         sentence_lengths(42)
 

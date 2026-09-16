@@ -1,4 +1,4 @@
-from math import nan
+from math import inf, log2, nan
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -43,18 +43,43 @@ def test_keyness_plot():
     assert labels[3:] == [keyword.word for keyword in negative[:3]][::-1]
     widths = [patch.get_width() for patch in ax.patches]
     assert widths[:3] == [keyword.score for keyword in positive[:3]]
+    assert widths[3:] == [keyword.score for keyword in negative[:3]][::-1]
     assert all(width < 0 for width in widths[3:])
     assert [text.get_text() for text in ax.get_legend().get_texts()] == ["кот", "собака"]
     assert ax.get_title() == "Ключевые слова"
+    assert ax.get_xlabel() == "|score|"
     ax = keyness_plot(positive)
     assert len(ax.patches) == len(positive)
     assert [text.get_text() for text in ax.get_legend().get_texts()] == ["целевой корпус"]
     undefined = [Keyword("а", 1, 0, 1.0, 0.0, 1.0, 0.5, 1.0, nan)]
-    assert len(keyness_plot(positive + undefined).patches) == len(positive)
+    infinite = [Keyword("б", 1, 0, 1.0, 0.0, 1.0, 0.5, 1.0, inf)]
+    assert len(keyness_plot(positive + undefined + infinite).patches) == len(positive)
     with pytest.raises(ValueError):
         keyness_plot([])
     with pytest.raises(ValueError):
         keyness_plot(undefined)
+    with pytest.raises(ValueError):
+        keyness_plot(positive, field="word")
+    plt.close("all")
+
+
+def test_keyness_plot_sides():
+    positive = keyness(target, reference, measure="odds_ratio")
+    negative = keyness(target, reference, measure="odds_ratio", positive=False)
+    ax = keyness_plot(positive, negative, top_n=2, log=True)
+    widths = [patch.get_width() for patch in ax.patches]
+    assert widths[:2] == [pytest.approx(abs(log2(keyword.score))) for keyword in positive[:2]]
+    assert (
+        widths[2:] == [pytest.approx(-abs(log2(keyword.score))) for keyword in negative[:2]][::-1]
+    )
+    assert ax.get_xlabel() == "|log2(score)|"
+    ax = keyness_plot(positive, negative, top_n=2, field="log_ratio")
+    widths = [patch.get_width() for patch in ax.patches]
+    assert widths[:2] == [abs(keyword.log_ratio) for keyword in positive[:2]]
+    assert all(width < 0 for width in widths[2:])
+    weak = [Keyword("а", 1, 0, 1.0, 0.0, 1.0, 0.5, 1.0, -2.0)]
+    assert keyness_plot(weak, weak).patches[0].get_width() == 2.0
+    assert keyness_plot(weak, weak).patches[1].get_width() == -2.0
     plt.close("all")
 
 
