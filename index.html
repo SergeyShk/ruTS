@@ -2013,6 +2013,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasets/poetrycorpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Корпус русской поэзии
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasets/russianliterature/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Русская классическая литература
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2483,7 +2539,7 @@
 <li>считать <a href="stats/cohesion_stats/">статистики связности</a> текста (повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам)</li>
 <li>считать <a href="stats/lexical_stats/">статистики лексической сложности</a> текста (частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность)</li>
 <li>считать корпусные меры (<a href="corpus/keyness/">ключевые слова</a> относительно эталонного корпуса или частотного словаря, <a href="corpus/collocations/">коллокации</a>, <a href="corpus/dispersion/">дисперсию слов</a> по частям текста, <a href="corpus/kwic/">конкорданс KWIC</a>) и меры <a href="corpus/stylometry/">стилометрии</a> (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов)</li>
-<li>работать с готовыми текстовыми наборами данных (<a href="datasets/sovchlit/">Советские христоматии по литературе</a>, <a href="datasets/stalinworks/">Полное собрание сочинений И.В. Сталина</a>, <a href="datasets/textsbygrade/">Тексты с метками класса</a>, <a href="datasets/freq2011/">Частотный словарь Ляшевской и Шарова</a>)</li>
+<li>работать с готовыми текстовыми наборами данных (<a href="datasets/sovchlit/">Советские христоматии по литературе</a>, <a href="datasets/stalinworks/">Полное собрание сочинений И.В. Сталина</a>, <a href="datasets/textsbygrade/">Тексты с метками класса</a>, <a href="datasets/freq2011/">Частотный словарь Ляшевской и Шарова</a>, <a href="datasets/poetrycorpus/">Корпус русской поэзии</a>, <a href="datasets/russianliterature/">Русская классическая литература</a>)</li>
 <li>визуализировать текстовые данные (<a href="visualizers/zipf/">Закон Ципфа</a>, <a href="visualizers/fingerprinting/">Литературная дактилоскопия</a>, <a href="visualizers/word_tree/">Дерево слов</a>, <a href="visualizers/highlight/">Подсветка текста</a>, <a href="visualizers/corpus/">корпусные</a> и <a href="visualizers/stylometry/">стилометрические</a> графики, <a href="visualizers/vocabulary/">рост словаря и спектр частот</a>, <a href="visualizers/sentences/">длины предложений</a>)</li>
 <li>создавать <a href="components/">компоненты</a> для встраивания в <a href="https://github.com/explosion/spaCy">spaCy</a></li>
 </ul>
@@ -2567,6 +2623,8 @@
 <li><strong>datasets</strong> - наборы данных:<ul>
 <li>dataset.py - базовый класс для работы с наборами данных</li>
 <li>freq2011.py - частотный словарь Ляшевской и Шарова</li>
+<li>poetry_corpus.py - корпус русской поэзии PoetryCorpus</li>
+<li>russian_literature.py - собрание русской классической литературы RusLit</li>
 <li>sov_chrest_lit.py - советские хрестоматии по литературе</li>
 <li>stalin_works.py - полное собрание сочинений И.В. Сталина</li>
 <li>texts_by_grade.py - тексты с метками класса проекта Plain Russian Language</li>
