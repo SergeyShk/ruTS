@@ -1,4 +1,5 @@
 import hashlib
+import shutil
 import tempfile
 import zipfile
 from pathlib import Path
@@ -16,11 +17,12 @@ from ruts.datasets.russian_literature import (
     load_years,
     parse_years,
     read_text,
+    strip_header,
 )
 from ruts.utils import sha256
 
 TEXTS = {
-    "prose/Chekhov/Агафья.txt": "Агафья. Рассказ о деревне.",
+    "prose/Chekhov/Агафья.txt": "Антон Чехов\nАГАФЬЯ\nАгафья. Рассказ о деревне.",
     "prose/Chekhov/Альбом.txt": "Альбом. Короткий рассказ.",
     "poems/Pushkin/19 октября.txt": "Роняет лес багряный свой убор.",
     "poems/Pushkin/Борис Годунов.txt": "Драма в стихах о смутном времени.",
@@ -141,6 +143,35 @@ def test_filters(dataset):
         _ = list(dataset.get_texts(min_len=5, max_len=1))
 
 
+def test_strip_header():
+    author, title = "Фёдор Достоевский", "Ёлка и свадьба"
+    assert strip_header("Федор Достоевский\nЕлка и свадьба\n\nТекст", author, title) == "Текст"
+    assert (
+        strip_header("Федор Михайлович Достоевский. Елка и свадьба\nТекст", author, title)
+        == "Текст"
+    )
+    assert strip_header("Ф.М.Достоевский\n\n  ЕЛКА И СВАДЬБА.\nТекст", author, title) == "Текст"
+    assert strip_header("Ф. Достоевский\nТекст", author, title) == "Текст"
+    assert strip_header("Достоевский Федор\n«Ёлка и свадьба»\nТекст", author, title) == "Текст"
+    assert (
+        strip_header(
+            "Горький Максим\nМещане\n\n М.Горький \nМещане \nТекст", "Максим Горький", "Мещане"
+        )
+        == "Текст"
+    )
+    assert strip_header("Антон Чехов. Палата No 6\nТекст", "Антон Чехов", "Палата №6") == (
+        "Антон Чехов. Палата No 6\nТекст"
+    )
+    assert strip_header("Александр Пушкин и его время\nТекст", "Александр Пушкин", "Другое") == (
+        "Александр Пушкин и его время\nТекст"
+    )
+    assert strip_header("Иван Тургенев\nДругое название\nТекст", "Иван Тургенев", "Ася") == (
+        "Другое название\nТекст"
+    )
+    assert strip_header("Текст без заголовка", author, title) == "Текст без заголовка"
+    assert strip_header("", author, title) == ""
+
+
 def test_helpers(tmp_path):
     assert parse_years("1825") == (1825, 1825)
     assert parse_years(" 1824-1825 ") == (1824, 1825)
@@ -192,6 +223,18 @@ def test_download_extracts(tmp_path, monkeypatch):
         "Борис Годунов",
     ]
     assert len(list(dataset)) == len(TEXTS)
+    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: "")
+    dataset.download()
+    assert len(list(dataset)) == len(TEXTS)
+    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: str(archive))
+    dataset.download(force=True)
+    assert sorted(path.name for path in dataset._dirpath.iterdir()) == [
+        "poems",
+        "prose",
+        "publicism",
+    ]
+    assert len(list(dataset)) == len(TEXTS)
+    shutil.rmtree(dataset._dirpath / "poems")
     monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: "")
     dataset.download()
     assert len(list(dataset)) == len(TEXTS)

@@ -1,11 +1,12 @@
 import re
+import shutil
 from collections.abc import Callable, Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
-from ..utils import download_file, extract_archive, sha256, to_path
+from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
 from .dataset import Dataset
 
 # Фильтр - предикат над записью набора данных
@@ -51,7 +52,10 @@ class RussianLiterature(Dataset):
         Тургенев, Блок, Лермонтов - 269 текстов, от рассказов до романов), поэзия
         (Пушкин, Лермонтов, Некрасов, Блок - 78 текстов) и публицистика (Толстой -
         26 текстов); 39 млн символов. Год написания взят из файлов info.csv
-        собрания, у 28 произведений его нет
+        собрания, у 28 произведений его нет. Заголовок с именем автора
+        и названием в начале файла срезается (strip_header) - у 288 текстов;
+        у 8 фамилия автора остается в первых строках в других формах заголовка
+        или посвящениях, что важно для атрибуции авторства
         Тексты в общественном достоянии (на Kaggle - лицензия PDDL), собраны
         с сайтов LitLib, Wikisource и Ilibrary; набор загружается из репозитория
         (закрепленный коммит) и сверяется с контрольной суммой SHA-256. Подходит
@@ -142,8 +146,9 @@ class RussianLiterature(Dataset):
         Описание:
             Архив репозитория по закрепленному коммиту сверяется с контрольной
             суммой SHA-256; поврежденный или подмененный файл удаляется, чтобы
-            повторная загрузка не пропускалась. Если архив уже есть, а директории
-            набора нет, архив извлекается заново
+            повторная загрузка не пропускалась. Если архив уже есть, а какой-то
+            из папок жанров нет, архив извлекается заново; прежняя директория
+            набора перед извлечением удаляется
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
@@ -154,13 +159,15 @@ class RussianLiterature(Dataset):
         filepath = download_file(
             url=DOWNLOAD_URL, filename=ARCHIVE, dirpath=self.data_dir, force=force
         )
-        if filepath or not self._dirpath.is_dir():
+        missing = any(not self._dirpath.joinpath(genre).is_dir() for genre in self.genres)
+        if filepath or missing:
             if sha256(self._filepath) != ARCHIVE_SHA256:
                 self._filepath.unlink(missing_ok=True)
                 raise RuntimeError(
                     f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
                     "повторите загрузку"
                 )
+            shutil.rmtree(self._dirpath, ignore_errors=True)
             extract_archive(self._filepath, self.data_dir)
         self.check_data()
 
@@ -247,7 +254,7 @@ class RussianLiterature(Dataset):
                         "title": filepath.stem,
                         "year_from": year_from,
                         "year_to": year_to,
-                        "text": read_text(filepath),
+                        "text": strip_header(read_text(filepath), author, filepath.stem),
                         "file": filepath,
                     }
 
@@ -371,6 +378,58 @@ def parse_years(value: str) -> tuple[int | None, int | None]:
         return None, None
     first = int(match.group(1))
     return first, int(match.group(2)) if match.group(2) else first
+
+
+def strip_header(text: str, author: str, title: str) -> str:
+    """
+    Удаление заголовка с автором и названием из начала текста
+
+    Описание:
+        Файлы собрания часто начинаются с имени автора и названия: «Александр
+        Пушкин» и «19 ОКТЯБРЯ» на отдельных строках, «Валерий Брюсов. Бемоль»
+        одной строкой, автор с отчеством («Валерий Яковлевич Брюсов»), инициалами
+        («В.Я. Брюсов», «Л.Н.Толстой», «М. Горький») или фамилией впереди («Горький
+        Максим»). Для атрибуции авторства это утечка, поэтому
+        заголовок срезается, когда первая строка - имя автора записи в одной
+        из этих форм (само по себе или с названием записи после точки), а следующая
+        непустая строка при совпадении с названием тоже отбрасывается; повторенный
+        заголовок срезается еще раз; сравнение без учета регистра и буквы ё.
+        Заголовки в других формах остаются в тексте
+
+    Аргументы:
+        text (str): Текст файла
+        author (str): Автор записи в виде «Имя Фамилия»
+        title (str): Название записи
+
+    Вывод:
+        str: Текст без заголовка
+    """
+    lines = text.split("\n")
+    name, surname = normalize_yo(author).split()[0], normalize_yo(author).split()[-1]
+    given = rf"(?:{re.escape(name)}(?:\s+[^\W\d_]+)?|{re.escape(name[0])}\.\s*(?:[^\W\d_]\.)?)"
+    header = re.compile(
+        rf"^\s*(?:{given}\s*{re.escape(surname)}|{re.escape(surname)}\s+{given})"
+        rf"\.?(?:\s+(?P<title>.+?))?\s*$"
+    )
+    while lines:
+        match = header.match(normalize_yo(lines[0]))
+        if not match:
+            break
+        remainder = _title_key(match.group("title") or "")
+        if remainder and remainder != _title_key(title):
+            break
+        lines = lines[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+        if lines and _title_key(lines[0]) == _title_key(title):
+            lines = lines[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+    return "\n".join(lines).strip()
+
+
+def _title_key(value: str) -> str:
+    return normalize_yo(value.strip().strip('"«»').strip().rstrip(".?!…"))
 
 
 def read_text(filepath: str | Path) -> str:

@@ -327,7 +327,10 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     Описание:
         Архив ZIP извлекается через ZipFile.extractall: shutil.unpack_archive в части
         версий Python пропускает файлы, в имени которых есть две точки подряд
-        («Ма-аленькая!....txt»), а не только компоненты пути «..»
+        («Ма-аленькая!....txt»), а не только компоненты пути «..». Если корень
+        архива отличается от имени архива без расширений, он переименовывается,
+        а прежняя директория с этим именем удаляется, иначе повторное извлечение
+        положило бы копию внутрь нее
 
     Аргументы:
         archive_file (str|Path): Путь к файлу архива
@@ -361,7 +364,10 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     while (stem := Path(dest_basename).stem) != dest_basename:
         dest_basename = stem
     if src_basename != dest_basename:
-        return str(shutil.move(extract_path / src_basename, extract_path / dest_basename))
+        destination = extract_path / dest_basename
+        if destination.is_dir():
+            shutil.rmtree(destination)
+        return str(shutil.move(extract_path / src_basename, destination))
     return str(extract_path / src_basename)
 
 
