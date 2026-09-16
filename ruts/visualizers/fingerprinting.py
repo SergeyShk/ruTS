@@ -3,7 +3,7 @@ from types import FunctionType
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 
 from ..diversity_stats import calc_ttr
@@ -16,8 +16,8 @@ def fingerprinting(
     x_size: int = 800,
     y_size: int = 600,
     cmap: str = "PuOr",
-    is_return: bool = True,
-) -> Figure | None:
+    ax: Axes | None = None,
+) -> Axes:
     """
     Визуализация литературной дактилоскопии (Literature Fingerprinting)
 
@@ -31,10 +31,10 @@ def fingerprinting(
         x_size (int): Ширина области для визуализации
         y_size (int): Высота области для визуализации
         cmap (str): Цветовая карта
-        is_return (bool): Возвращать объект Figure
+        ax (Axes): Оси для графика; если не заданы, создается фигура 15×10
 
     Вывод:
-        fig (Figure|None): Визуализация литературной дактилоскопии либо None при is_return=False
+        Axes: Оси с визуализацией литературной дактилоскопии
 
     Исключения:
         TypeError: Если передаваемое значение не является списком списков
@@ -61,14 +61,14 @@ def fingerprinting(
         segments.append(metric_func(final_segment))
         metrics[i] = segments
 
-    fig = plt.figure(figsize=(15, 10))
-    ax = fig.add_subplot(111)
+    if ax is None:
+        _, ax = plt.subplots(figsize=(15, 10))
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     cmaps = plt.get_cmap(cmap)
     cmap_list = [cmaps(i) for i in range(cmaps.N)]
     cx = ax.imshow(cmap_list, interpolation="nearest", cmap=cmap, visible=None)
-    fig.colorbar(cx)
+    ax.figure.colorbar(cx, ax=ax)
     x = -x_size + 30
     y = y_size - 50
     max_metric = max([max(v) for k, v in metrics.items()])
@@ -107,9 +107,7 @@ def fingerprinting(
             y -= tam_quad
         x += (n_cols * tam_quad) + margin
         y += n_rows * tam_quad
-    plt.xlim(-x_size, x_size)
-    plt.ylim(-y_size, y_size)
-    plt.title("Литературная дактилоскопия")
-    if is_return:
-        return fig
-    return None
+    ax.set_xlim(-x_size, x_size)
+    ax.set_ylim(-y_size, y_size)
+    ax.set_title("Литературная дактилоскопия")
+    return ax

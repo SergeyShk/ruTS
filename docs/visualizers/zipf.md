@@ -21,6 +21,10 @@
 | `log` | bool | `True` | Использовать логарифмическую шкалу |
 | `show_theory` | bool | `False` | Отображать график теоретического Закону Ципфа |
 | `alpha` | float | `1.5` | Коэффициент α теоретического Закона Ципфа |
+| `show_fit` | bool | `False` | Отображать кривую подгонки закона Ципфа-Мандельброта $f(r) = C / (r + q)^s$ по [`fit_zipf_mandelbrot`](../stats/diversity_stats_funcs.md#fit_zipf_mandelbrot) |
+| `ax` | Axes | `None` | Оси matplotlib для графика; если не заданы, создается новая фигура |
+
+Функция возвращает оси `Axes` с графиком; `zipf_theory(size, num_ranks, alpha, ax)` строит только теоретическую кривую.
 
 ## Пример использования
 
@@ -48,7 +52,8 @@
     tokens_with_count = Counter(we.extract(text))
 
     # Построение графика
-    zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
+    ax = zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
+    ax.figure.savefig("zipf.png")
     ```
 
     _Результат_:

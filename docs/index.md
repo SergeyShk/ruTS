@@ -22,7 +22,7 @@
 *   считать [статистики лексической сложности](stats/lexical_stats.md) текста (частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность)
 *   считать корпусные меры ([ключевые слова](corpus/keyness.md) относительно эталонного корпуса или частотного словаря, [коллокации](corpus/collocations.md), [дисперсию слов](corpus/dispersion.md) по частям текста, [конкорданс KWIC](corpus/kwic.md)) и меры [стилометрии](corpus/stylometry.md) (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов)
 *   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md), [Частотный словарь Ляшевской и Шарова](datasets/freq2011.md))
-*   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md), [Подсветка текста](visualizers/highlight.md))
+*   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md), [Подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md))
 *   создавать [компоненты](components.md) для встраивания в [spaCy](https://github.com/explosion/spaCy)
 
 ## Установка
@@ -118,8 +118,12 @@ pip install ruts
             *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language
         *   **resources** - вшитые лексические ресурсы (список самых частых лемм, словарь коннекторов)
         *   **visualizers** - инструменты для визуализации текстов:
+            *   corpus.py - Лексическая дисперсия, ключевые слова, сеть коллокаций
             *   fingerprinting.py - Литературная дактилоскопия
             *   highlight.py - Подсветка текста
+            *   sentences.py - Длины предложений
+            *   stylometry.py - Дендрограмма, главные компоненты, шкалирование, кривые Менденхолла
+            *   vocabulary.py - Закон Хипса и спектр частот
             *   word_tree.py - Дерево слов
             *   zipf.py - Закон Ципфа
     *   **tests** - тесты, повторяющие структуру пакета

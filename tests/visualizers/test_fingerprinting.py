@@ -1,9 +1,12 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import pytest
-from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 
 from ruts.diversity_stats import calc_simpson_index
 from ruts.visualizers import fingerprinting
+
+matplotlib.use("Agg")
 
 
 @pytest.fixture(scope="module")
@@ -17,24 +20,26 @@ def test_fingerprinting_type_error():
 
 
 def test_fingerprinting(texts):
-    plt.cla()
-    plot = fingerprinting(texts, x_size=600, y_size=500)
-    assert isinstance(plot, Figure)
-    assert len(plot.axes) == 2
-    assert plot.axes[0].title.get_text() == "Литературная дактилоскопия"
-    assert plot.axes[0].title.get_position() == (0.5, 1.0)
-    assert plot.axes[1]._label == "<colorbar>"
-    assert plot.axes[0].get_xlim() == (-600.0, 600.0)
-    assert plot.axes[0].get_ylim() == (-500.0, 500.0)
+    ax = fingerprinting(texts, x_size=600, y_size=500)
+    assert isinstance(ax, Axes)
+    assert len(ax.figure.axes) == 2
+    assert ax.get_title() == "Литературная дактилоскопия"
+    assert ax.figure.axes[1].get_label() == "<colorbar>"
+    assert ax.get_xlim() == (-600.0, 600.0)
+    assert ax.get_ylim() == (-500.0, 500.0)
+    assert len(ax.patches) == 2
+    plt.close("all")
 
 
-def test_fingerprinting_is_return(texts):
-    plt.cla()
-    plot = fingerprinting(texts, is_return=False)
-    assert plot is None
+def test_fingerprinting_ax(texts):
+    _, given = plt.subplots()
+    ax = fingerprinting(texts, ax=given)
+    assert ax is given
+    assert len(ax.figure.axes) == 2
+    plt.close("all")
 
 
 def test_fingerprinting_metric(texts):
-    plt.cla()
-    plot = fingerprinting(texts, metric=calc_simpson_index)
-    assert isinstance(plot, Figure)
+    ax = fingerprinting(texts, metric=calc_simpson_index)
+    assert isinstance(ax, Axes)
+    plt.close("all")

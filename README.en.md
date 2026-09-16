@@ -46,7 +46,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
 * **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
-* **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
+* **[Visualizations](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
 
 ## Installation
@@ -688,8 +688,11 @@ The library allows visualizing text with the help of the following graphs:
 *   [Literature Fingerprinting](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/)
 *   [Word Tree](https://sergeyshk.github.io/ruTS/visualizers/word_tree/)
 *   [Text highlighting](https://sergeyshk.github.io/ruTS/visualizers/highlight/) by 15 layers in five groups: readability (long sentences, complex and rare words), syntax (passive voice, participial clauses, genitive chains, split predicates), officialese (verbal nouns, compound prepositions, clichés), style (stop words, parentheticals, connectives), phonics (alliteration)
+*   [Corpus plots](https://sergeyshk.github.io/ruTS/visualizers/corpus/): lexical dispersion, keyness chart, collocation network
+*   [Stylometry plots](https://sergeyshk.github.io/ruTS/visualizers/stylometry/): dendrogram, principal components and multidimensional scaling by Delta, Mendenhall curves
+*   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/visualizers/sentences/) with a moving average
 
-Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
+Matplotlib plots accept `ax` and return `Axes`, so they can be laid out on one figure. Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
 
 ```python
 >>> import spacy
@@ -834,7 +837,12 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
     *   **resources** - embedded lexical resources (the most frequent lemmas list, the connectives dictionary)
     *   **visualizers** - tools for text visualization:
+        *   corpus.py - lexical dispersion, keyness chart, collocation network
         *   fingerprinting.py - Literature Fingerprinting
+        *   highlight.py - text highlighting
+        *   sentences.py - sentence lengths
+        *   stylometry.py - dendrogram, principal components, scaling, Mendenhall curves
+        *   vocabulary.py - Heaps's law and frequency spectrum
         *   word_tree.py - Word Tree
         *   zipf.py - Zipf's law
 *   **tests** - tests mirroring the package structure
