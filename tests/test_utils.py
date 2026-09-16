@@ -175,6 +175,23 @@ def test_find_phrases():
     assert find_phrases(["в", "связи"], ["в связи с", "в"]) == [(0, 1)]
 
 
+def test_extract_archive_dotted_names(tmp_path):
+    import zipfile
+
+    archive = tmp_path / "dotted.zip"
+    with zipfile.ZipFile(archive, "w") as zip_file:
+        zip_file.writestr("dotted-abc/README.md", "readme")
+        zip_file.writestr("dotted-abc/a/Ма-аленькая!....txt", "текст")
+        zip_file.writestr("dotted-abc/a/обычный.txt", "текст")
+    extracted = Path(extract_archive(archive, tmp_path))
+    assert extracted == tmp_path / "dotted"
+    assert sorted(path.name for path in extracted.joinpath("a").iterdir()) == [
+        "Ма-аленькая!....txt",
+        "обычный.txt",
+    ]
+    assert extracted.joinpath("a", "Ма-аленькая!....txt").read_text(encoding="utf-8") == "текст"
+
+
 def test_iter_text_words():
     assert list(iter_text_words("Во-первых, кот - т.е. «зверь»!")) == [
         (0, 9, "Во-первых"),

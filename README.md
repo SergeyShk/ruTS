@@ -646,7 +646,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - частотный словарь Ляшевской и Шарова: 52 138 лемм с ipm, диапазоном и дисперсией по НКРЯ
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - тексты с метками класса проекта Plain Russian Language (CC0), на которых проверяются формулы удобочитаемости
 *   [poetry_corpus](https://sergeyshk.github.io/ruTS/datasets/poetrycorpus/) - корпус русской поэзии PoetryCorpus Ильи Гусева: 16 694 стихотворения 195 авторов с годами и темами (Apache-2.0)
-*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - собрание русской классической литературы RusLit: 355 произведений 12 авторов в трёх жанрах с годами написания (общественное достояние)
+*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - собрание русской классической литературы RusLit: 373 произведения 12 авторов в трёх жанрах с годами написания (общественное достояние)
 
 Существует возможность работать как с чистыми текстами (без заголовочной информации), так и с записями, а также фильтровать их по различным критериям.
 

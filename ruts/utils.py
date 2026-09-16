@@ -324,6 +324,11 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     """
     Извлечение файлов из архива в формате ZIP или TAR
 
+    Описание:
+        Архив ZIP извлекается через ZipFile.extractall: shutil.unpack_archive в части
+        версий Python пропускает файлы, в имени которых есть две точки подряд
+        («Ма-аленькая!....txt»), а не только компоненты пути «..»
+
     Аргументы:
         archive_file (str|Path): Путь к файлу архива
         extract_dir (str|Path): Путь к директории для извлеченных файлов
@@ -341,8 +346,8 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
         return str(extract_path)
     print(f"Извлечение файлов из архива {archive_path}...")
     if is_zip:
-        shutil.unpack_archive(archive_path, extract_dir=extract_path)
         with zipfile.ZipFile(archive_path, mode="r") as zip_file:
+            zip_file.extractall(extract_path)
             members = zip_file.namelist()
     else:
         shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")

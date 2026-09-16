@@ -69,7 +69,7 @@ def test_download(network_dataset):
     network_dataset.download()
     assert sha256(network_dataset._filepath) == ARCHIVE_SHA256
     records = list(network_dataset)
-    assert len(records) == 355
+    assert len(records) == 373
     assert {record["author"] for record in records} == set(AUTHORS.values())
 
 

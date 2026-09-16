@@ -646,7 +646,7 @@ The library allows working with a number of preprocessed datasets:
 *   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - the Lyashevskaya-Sharoff frequency dictionary: 52,138 lemmas with ipm, range and dispersion over the Russian National Corpus
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
 *   [poetry_corpus](https://sergeyshk.github.io/ruTS/datasets/poetrycorpus/) - Ilya Gusev's PoetryCorpus: 16,694 poems by 195 authors with years and themes (Apache-2.0)
-*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - the RusLit collection of Russian classics: 355 works by 12 authors in three genres with years (public domain)
+*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - the RusLit collection of Russian classics: 373 works by 12 authors in three genres with years (public domain)
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
