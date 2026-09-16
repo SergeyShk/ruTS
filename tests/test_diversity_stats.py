@@ -38,6 +38,7 @@ from ruts.diversity_stats import (
     calc_yule_i,
     calc_yule_k,
     calc_zipf_alpha,
+    fit_zipf_mandelbrot,
 )
 
 text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота\
@@ -324,6 +325,27 @@ def test_zipf_alpha(ds):
     assert calc_zipf_alpha(words) == pytest.approx(1.0)
     assert ds.zipf_alpha == pytest.approx(0.17143058908533987)
     assert isnan(calc_zipf_alpha(["слово"]))
+
+
+def test_fit_zipf_mandelbrot(ds):
+    words = ["а"] * 12 + ["б"] * 6 + ["в"] * 4 + ["г"] * 3
+    fit = fit_zipf_mandelbrot(words)
+    assert fit.c == pytest.approx(12, rel=1e-3)
+    assert fit.q == pytest.approx(0, abs=1e-3)
+    assert fit.s == pytest.approx(1, rel=1e-3)
+    assert fit.r2 == pytest.approx(1)
+    # частоты 1000 / (r + 2)^1.5 на рангах 1-40, округленные до целых
+    frequencies = [round(1000 / (rank + 2) ** 1.5) for rank in range(1, 41)]
+    words = [f"слово{rank}" for rank, freq in enumerate(frequencies) for _ in range(freq)]
+    fit = fit_zipf_mandelbrot(words)
+    assert fit.c == pytest.approx(1000, rel=0.1)
+    assert fit.q == pytest.approx(2, rel=0.1)
+    assert fit.s == pytest.approx(1.5, rel=0.05)
+    assert fit.r2 > 0.99
+    fit = fit_zipf_mandelbrot(ds.words)
+    assert fit.q >= 0 and fit.s > 0 and 0 < fit.r2 <= 1
+    assert all(isnan(value) for value in fit_zipf_mandelbrot(["а", "б"]))
+    assert all(isnan(value) for value in fit_zipf_mandelbrot([]))
 
 
 def test_heaps_beta(ds):

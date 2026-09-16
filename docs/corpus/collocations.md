@@ -1,0 +1,73 @@
+# Коллокации
+
+!!! info ""
+    **ruts.corpus.collocations()**, **ruts.corpus.Collocation**
+
+## Описание
+
+Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем ожидалось бы при независимости: устойчивые сочетания («точка зрения», «рабочий класс»), терминология, сочетаемость слова. Меры ассоциации те же, что в [Sketch Engine](https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf) и [`nltk.metrics.association`](https://www.nltk.org/api/nltk.metrics.association.html).
+
+Пары слов считаются упорядоченными, как в NLTK: правое слово встречается не дальше `window` слов после левого, каждая пара позиций учитывается один раз; `window=1` дает биграммы. В меру частота пары делится на размер окна (Church и Hanks 1990, так же в NLTK), чтобы ожидаемая частота не зависела от окна, а Dice и минимальная чувствительность не превышали единицы; в поле `freq_pair` записывается частота без деления. Параметр `node` оставляет пары с заданным словом слева или справа - сочетаемость одного слова.
+
+Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне [`WordsExtractor`](../extractors/words.md); для устойчивых сочетаний обычно берут леммы, для служебных конструкций - словоформы.
+
+## Меры
+
+Для пары с частотами слов $f_a$, $f_b$, частотой пары $f_{ab}$ и числом слов $N$:
+
+| Мера | Ключ | Формула | Описание |
+| :--- | :--- | :------ | :------- |
+| Взаимная информация | `mi` | $\log_2 \frac{f_{ab} N}{f_a f_b}$ | Church и Hanks (1990); завышает редкие пары |
+| MI³ | `mi3` | $\log_2 \frac{f_{ab}^3 N}{f_a f_b}$ | Oakes (1998); отдает предпочтение частым парам |
+| t-критерий | `t_score` | $\frac{f_{ab} - f_a f_b / N}{\sqrt{f_{ab}}}$ | Church и др. (1991); отдает предпочтение частым парам |
+| Коэффициент Дайса | `dice` | $\frac{2 f_{ab}}{f_a + f_b}$ | не зависит от размера текста |
+| logDice | `logdice` | $14 + \log_2 \frac{2 f_{ab}}{f_a + f_b}$ | [Rychlý (2008)](https://www.sketchengine.eu/glossary/logdice/); не зависит от размера текста, максимум 14, ниже нуля - слабая связь; мера по умолчанию, как в Sketch Engine |
+| Логарифм правдоподобия | `log_likelihood` | $G^2 = 2 \sum O \ln \frac{O}{E}$ | Dunning (1993); по таблице сопряженности 2×2 |
+| NPMI | `npmi` | $\frac{MI}{-\log_2 (f_{ab} / N)}$ | Bouma (2009); от −1 до 1, единица - слова встречаются только вместе |
+| Минимальная чувствительность | `min_sensitivity` | $\min(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b})$ | Pedersen (1998); от 0 до 1 |
+
+Меры доступны как функции `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi`, `calc_min_sensitivity` с аргументами `(freq_a, freq_b, freq_ab, n)`; названия и описания - в `ruts.constants.COLLOCATION_MEASURES`.
+
+## Параметры
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `words` | list[str] | `-` | Слова текста по порядку |
+| `window` | int | `5` | Наибольшее расстояние между словами пары |
+| `measure` | str | `logdice` | Мера из `COLLOCATION_MEASURES` |
+| `min_freq` | int | `2` | Минимальная частота пары |
+| `node` | str | `None` | Слово, сочетаемость которого нужна; `None` - все пары |
+| `top_n` | int | `None` | Количество коллокаций; `None` - все |
+
+## Результат
+
+Список именованных кортежей `Collocation` по убыванию меры и частоты пары (при равенстве - по алфавиту); `pd.DataFrame(found)` дает таблицу.
+
+| Поле | Тип | Описание |
+| :--: | :-: | :------- |
+| `left` | str | Левое слово |
+| `right` | str | Правое слово, встречается в окне после левого |
+| `freq_left` | int | Частота левого слова |
+| `freq_right` | int | Частота правого слова |
+| `freq_pair` | int | Частота совместной встречаемости |
+| `score` | float | Значение выбранной меры |
+
+## Пример
+
+!!! example "Пример"
+
+    ``` python
+    from ruts import WordsExtractor
+    from ruts.corpus import collocations
+
+    words = WordsExtractor(use_lexemes=True, lowercase=True).extract(
+        "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "
+        "Завтра кот снова будет сидеть на окне и смотреть на птиц."
+    )
+
+    collocations(words, window=2, top_n=1)
+    # [Collocation(left='птица', right='улететь', freq_left=3, freq_right=1, freq_pair=2, score=13.0)]
+
+    [(c.left, c.right, round(c.score, 2)) for c in collocations(words, window=1, node="кот", min_freq=1, measure="mi")[:2]]
+    # [('завтра', 'кот', 3.12), ('кот', 'снова', 3.12)]
+    ```
