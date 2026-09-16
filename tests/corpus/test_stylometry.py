@@ -98,6 +98,8 @@ def test_delta_errors():
         frequency_table({"А": corpus["А"], "Б": []})
     with pytest.raises(ValueError):
         frequency_table(corpus, culling=2)
+    with pytest.raises(ValueError):
+        delta({"А": ["а"], "Б": ["б"]}, culling=1.0)
 
 
 def test_zeta():
@@ -165,13 +167,17 @@ def test_function_words_profile():
     assert profile["ADP"] == pytest.approx(3 / 15)
     assert profile["CCONJ"] == pytest.approx(2 / 15)
     assert profile["PRON"] == 0
-    profile = function_words_profile(["Он", "не", "знал", ",", "что", "это", "тот"])
-    assert profile["PRON"] == pytest.approx(1 / 7)
-    assert profile["PART"] == pytest.approx(2 / 7)
-    assert profile["SCONJ"] == pytest.approx(1 / 7)
-    assert profile["DET"] == pytest.approx(1 / 7)
+    words = ["Он", "не", "знал", ",", "что", "-", "это", "тот"]
+    profile = function_words_profile(words)
+    assert profile["PRON"] == pytest.approx(1 / 6)
+    assert profile["PART"] == pytest.approx(2 / 6)
+    assert profile["SCONJ"] == pytest.approx(1 / 6)
+    assert profile["DET"] == pytest.approx(1 / 6)
+    assert function_words_profile(spacy.blank("ru")(" ".join(words))) == profile
     doc = spacy.blank("ru")(texts["А"])
     assert function_words_profile(doc) == function_words_profile(corpus["А"])
+    with pytest.raises(ValueError):
+        function_words_profile([",", "-"])
     with pytest.raises(ValueError):
         function_words_profile([])
 

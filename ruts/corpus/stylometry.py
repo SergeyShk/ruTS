@@ -10,7 +10,7 @@ from spacy.tokens import Doc
 
 from ..constants import DELTA_VARIANTS, FUNCTION_UD_POS
 from ..morph_stats import tag_to_ud_pos
-from ..utils import iter_doc_units, parse_word
+from ..utils import is_punctuation, iter_doc_units, parse_word
 
 ZERO_SEGMENTS = 0.5
 
@@ -45,7 +45,9 @@ def frequency_table(
         по убыванию средней относительной частоты по текстам, при равенстве -
         по алфавиту; значение - частота единицы в тексте, деленная на его длину.
         Отсев (culling) оставляет единицы, встречающиеся хотя бы в заданной доле
-        текстов, как в stylo; n_mfw - число самых частых единиц
+        текстов, как в stylo; n_mfw - число самых частых единиц. Средние
+        и доли текстов считаются по счетчикам текстов, таблица собирается только
+        для отобранных единиц: память растет как тексты × n_mfw, а не тексты × словарь
 
     Аргументы:
         corpus (dict[str, list[str]]): Единицы текстов по именам текстов
@@ -56,7 +58,8 @@ def frequency_table(
         DataFrame: Таблица относительных частот
 
     Исключения:
-        ValueError: Если корпус пуст или в нем есть пустой текст
+        ValueError: Если корпус пуст, в нем есть пустой текст или после отсева
+            не осталось единиц
     """
     if not corpus:
         raise ValueError("В корпусе нет текстов")
@@ -68,12 +71,22 @@ def frequency_table(
         name: {unit: count / len(units) for unit, count in Counter(units).items()}
         for name, units in corpus.items()
     }
-    table = pd.DataFrame.from_dict(rows, orient="index").reindex(list(corpus)).fillna(0.0)
-    if culling:
-        table = table.loc[:, (table > 0).mean(axis=0) >= culling]
-    order = sorted(table.columns, key=lambda unit: (-table[unit].mean(), unit))
-    table = table[order[:n_mfw] if n_mfw else order]
-    return table
+    means: Counter[str] = Counter()
+    documents: Counter[str] = Counter()
+    for row in rows.values():
+        means.update(row)
+        documents.update(row.keys())
+    n_texts = len(rows)
+    selected = sorted(
+        (unit for unit in means if documents[unit] / n_texts >= culling),
+        key=lambda unit: (-means[unit] / n_texts, unit),
+    )
+    if n_mfw:
+        selected = selected[:n_mfw]
+    if not selected:
+        raise ValueError("После отсева не осталось единиц")
+    columns = {unit: [row.get(unit, 0.0) for row in rows.values()] for unit in selected}
+    return pd.DataFrame(columns, index=list(rows))
 
 
 def z_scores(table: pd.DataFrame) -> pd.DataFrame:
@@ -327,7 +340,8 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
     Описание:
         Доли предлогов, сочинительных и подчинительных союзов, частиц, местоимений,
         детерминативов и междометий (FUNCTION_UD_POS) среди слов текста; по первому
-        разбору pymorphy3 для списка слов и по разметке для Doc с частями речи.
+        разбору pymorphy3 для списка слов и по разметке для Doc с частями речи,
+        знаки препинания в обоих случаях не считаются словами.
         Служебные слова не зависят от темы текста, поэтому их профиль -
         классический признак авторства
 
@@ -348,7 +362,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
             for unit in units
         ]
     else:
-        tags = [_word_pos(word) for word in source]
+        tags = [_word_pos(word) for word in source if not is_punctuation(word)]
     if not tags:
         raise ValueError("В источнике данных отсутствуют слова")
     counts = Counter(tags)
