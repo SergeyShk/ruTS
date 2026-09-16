@@ -39,6 +39,7 @@ from ruts.constants import (
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
 )
+from ruts.corpus import collocations, keyness
 from ruts.datasets import FreqDict
 from ruts.style_stats import is_stopword
 from ruts.visualizers import highlight, zipf
@@ -48,6 +49,14 @@ matplotlib.use("Agg")
 MAX_CHARS = 20_000
 ZIPF_WORDS = 100
 ZIPF_MIN_WORDS = 100
+KEYWORDS_TOP_N = 15
+COLLOCATION_WINDOW = 3
+KEYWORDS_NOTE = (
+    "Ключевые слова - леммы, которые в тексте встречаются заметно чаще, чем в частотном "
+    "словаре Ляшевской и Шарова (G² - значимость, Log Ratio - во сколько раз чаще в двоичном "
+    "логарифме). Коллокации - пары знаменательных лемм на расстоянии до трех слов, встретившиеся "
+    "хотя бы дважды, по logDice; в коротком тексте их может не быть."
+)
 POS_SHORT = {
     "NOUN": "сущ.",
     "PROPN": "имя собств.",
@@ -217,6 +226,46 @@ def lexical_table(ls: LexicalStats) -> pd.DataFrame:
     return stats_table(bands, LEXICAL_STATS_DESC)
 
 
+def keywords_table(lemmas: tuple[str, ...]) -> pd.DataFrame:
+    columns = ["Лемма", "В тексте", "ipm в тексте", "ipm в словаре", "G²", "Log Ratio"]
+    if not freq_dict.filepath or not lemmas:
+        return pd.DataFrame(columns=columns)
+    keywords = keyness(lemmas, freq_dict, min_freq=2, top_n=KEYWORDS_TOP_N)
+    return pd.DataFrame(
+        [
+            (
+                keyword.word,
+                keyword.freq_target,
+                round(keyword.ipm_target),
+                round(keyword.ipm_reference, 1),
+                round(keyword.g2, 1),
+                round(keyword.log_ratio, 2),
+            )
+            for keyword in keywords
+        ],
+        columns=columns,
+    )
+
+
+def collocations_table(words: tuple[str, ...]) -> pd.DataFrame:
+    found = [
+        collocation
+        for collocation in collocations(words, window=COLLOCATION_WINDOW, min_freq=2)
+        if not is_stopword(collocation.left) and not is_stopword(collocation.right)
+    ]
+    return pd.DataFrame(
+        [
+            (
+                f"{collocation.left} … {collocation.right}",
+                collocation.freq_pair,
+                round(collocation.score, 2),
+            )
+            for collocation in found[:KEYWORDS_TOP_N]
+        ],
+        columns=["Пара", "Вместе", "logDice"],
+    )
+
+
 def morph_tables(ms: MorphStats) -> tuple[pd.DataFrame, pd.DataFrame]:
     stats = ms.get_stats(filter_none=True)
     pos = sorted(stats["pos"].items(), key=lambda item: -item[1])
@@ -288,6 +337,8 @@ def compute(text: str, layers: list[str]) -> dict:
         "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
         "basic": stats_table(basic, BASIC_STATS_DESC),
+        "keywords": keywords_table(words),
+        "collocations": collocations_table(words),
         "zipf": zipf_image(words) if enough_words else None,
         "enough_words": enough_words,
     }
@@ -312,6 +363,8 @@ def analyze(text: str, *groups: list[str]):
         result["style"],
         result["phon"],
         result["basic"],
+        result["keywords"],
+        result["collocations"],
         gr.Image(value=result["zipf"], visible=result["enough_words"]),
         gr.Markdown(visible=not result["enough_words"]),
     )
@@ -327,7 +380,7 @@ HEADER = """
 # ruTS - статистики русского текста
 
 Вставьте текст и получите удобочитаемость, лексическое разнообразие, морфологический и синтаксический
-профиль, связность, частотность слов, SEO-метрики стиля, фоностатистики и подсветку фрагментов, из которых складываются эти числа.
+профиль, связность, частотность слов, SEO-метрики стиля, фоностатистики, ключевые слова и коллокации, а также подсветку фрагментов, из которых складываются эти числа.
 [GitHub](https://github.com/SergeyShk/ruTS) · [Документация](https://sergeyshk.github.io/ruTS/) ·
 [PyPI](https://pypi.org/project/ruts/)
 """
@@ -360,6 +413,8 @@ with gr.Blocks(title="ruTS") as demo:
             "style",
             "phon",
             "basic",
+            "keywords",
+            "collocations",
         )
     }
     pos_output = gr.BarPlot(
@@ -399,6 +454,8 @@ with gr.Blocks(title="ruTS") as demo:
         tables["style"],
         tables["phon"],
         tables["basic"],
+        tables["keywords"],
+        tables["collocations"],
         zipf_output,
         zipf_note,
     ]
@@ -462,6 +519,10 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["phon"].render()
                 with gr.Tab("Базовые"):
                     tables["basic"].render()
+                with gr.Tab("Ключевые слова"):
+                    gr.Markdown(KEYWORDS_NOTE)
+                    tables["keywords"].render()
+                    tables["collocations"].render()
     gr.Markdown(FOOTER)
 
     analyze_button.click(analyze, inputs=[text_input, *layer_inputs], outputs=outputs)

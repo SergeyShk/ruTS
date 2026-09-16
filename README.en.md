@@ -44,6 +44,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
+* **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -581,6 +582,43 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/stats/lexical_stats
 </details>
 
 <details>
+<summary><b>Corpus measures</b></summary>
+
+<br>
+
+Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpackage, results are lists of named tuples (`pd.DataFrame(result)` gives a table):
+
+*   Keywords relative to a reference corpus or the Lyashevskaya-Sharoff frequency dictionary: G² with p-value, Log Ratio, %DIFF, BIC, ELL, odds ratio
+*   Collocations within a window by logDice, MI, MI³, t-score, Dice, G², NPMI, minimum sensitivity; collocates of a single word
+*   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
+*   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
+
+```python
+>>> from ruts import WordsExtractor
+>>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic
+
+>>> we = WordsExtractor(use_lexemes=True, lowercase=True)
+>>> text = "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. Завтра кот снова будет сидеть на окне и смотреть на птиц."
+>>> target = we.extract(text)
+>>> reference = we.extract("Собака лежала на полу и дремала. Потом собака ела и снова дремала. Завтра собака будет гулять.")
+
+>>> [(k.word, round(k.g2, 2), round(k.log_ratio, 2)) for k in keyness(target, reference, top_n=2)]
+[('кот', 2.88, 1.88), ('окно', 2.88, 1.88)]
+>>> [(c.left, c.right, c.freq_pair, round(c.score, 2)) for c in collocations(target, window=2, top_n=2)]
+[('птица', 'улететь', 2, 13.0), ('и', 'смотреть', 2, 12.68)]
+>>> [(d.word, round(d.dp, 2)) for d in dispersion(target, parts=3, min_freq=3)][:3]
+[('на', 0.15), ('кот', 0.32), ('окно', 0.03)]
+>>> print_kwic(kwic(text, "окно", by_lemma=True, window=2), width=16)
+        сидел на  окне  и смотрел
+        уснул на  окне  . Завтра кот
+       сидеть на  окне  и смотреть
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/corpus/keyness/).
+
+</details>
+
+<details>
 <summary><b>Datasets</b></summary>
 
 <br>
@@ -766,6 +804,11 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   style_stats.py - SEO style metrics
     *   syntax_stats.py - syntactic statistics
     *   utils.py - helper tools
+    *   **corpus** - corpus measures:
+        *   collocations.py - collocations and association measures
+        *   dispersion.py - word dispersion across text parts
+        *   keyness.py - keywords relative to a reference corpus
+        *   kwic.py - KWIC concordance
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets
         *   freq2011.py - the Lyashevskaya-Sharoff frequency dictionary

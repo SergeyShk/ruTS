@@ -44,6 +44,7 @@
 * **[Синтаксические статистики](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей, расщеплённые сказуемые и другие маркеры канцелярита по разбору spaCy
 * **[Статистики связности](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам
 * **[Статистики лексической сложности](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность
+* **[Корпусные меры](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - ключевые слова относительно эталонного корпуса или частотного словаря, коллокации, дисперсия слов, конкорданс KWIC
 * **[Наборы данных](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - готовые предобработанные корпуса с фильтрацией
 * **[Визуализация](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - закон Ципфа, литературная дактилоскопия, дерево слов, подсветка текста в стиле Главреда
 * **[Компоненты spaCy](https://sergeyshk.github.io/ruTS/components/)** - встраивание любой статистики в пайплайн
@@ -581,6 +582,43 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
+<summary><b>Корпусные меры</b></summary>
+
+<br>
+
+Инструменты корпусной лингвистики над списками слов - функции подпакета `ruts.corpus`, результаты - списки именованных кортежей (`pd.DataFrame(result)` даёт таблицу):
+
+*   Ключевые слова относительно эталонного корпуса или частотного словаря Ляшевской и Шарова: G² с p-значением, Log Ratio, %DIFF, BIC, ELL, отношение шансов
+*   Коллокации в окне по logDice, MI, MI³, t-score, Dice, G², NPMI, минимальной чувствительности; сочетаемость одного слова
+*   Дисперсия слов по частям текста: DP Гриса, D Жюйана, D2 Кэрролла, S Розенгрена, дивергенция Кульбака-Лейблера
+*   Конкорданс KWIC по словоформе или лемме; подгонка закона Ципфа-Мандельброта - `fit_zipf_mandelbrot` в `ruts.diversity_stats`
+
+```python
+>>> from ruts import WordsExtractor
+>>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic
+
+>>> we = WordsExtractor(use_lexemes=True, lowercase=True)
+>>> text = "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. Завтра кот снова будет сидеть на окне и смотреть на птиц."
+>>> target = we.extract(text)
+>>> reference = we.extract("Собака лежала на полу и дремала. Потом собака ела и снова дремала. Завтра собака будет гулять.")
+
+>>> [(k.word, round(k.g2, 2), round(k.log_ratio, 2)) for k in keyness(target, reference, top_n=2)]
+[('кот', 2.88, 1.88), ('окно', 2.88, 1.88)]
+>>> [(c.left, c.right, c.freq_pair, round(c.score, 2)) for c in collocations(target, window=2, top_n=2)]
+[('птица', 'улететь', 2, 13.0), ('и', 'смотреть', 2, 12.68)]
+>>> [(d.word, round(d.dp, 2)) for d in dispersion(target, parts=3, min_freq=3)][:3]
+[('на', 0.15), ('кот', 0.32), ('окно', 0.03)]
+>>> print_kwic(kwic(text, "окно", by_lemma=True, window=2), width=16)
+        сидел на  окне  и смотрел
+        уснул на  окне  . Завтра кот
+       сидеть на  окне  и смотреть
+```
+
+Подробнее - в [документации](https://sergeyshk.github.io/ruTS/corpus/keyness/).
+
+</details>
+
+<details>
 <summary><b>Наборы данных</b></summary>
 
 <br>
@@ -766,6 +804,11 @@ uv run pre-commit install
     *   style_stats.py - SEO-метрики стиля текста
     *   syntax_stats.py - синтаксические статистики текста
     *   utils.py - вспомогательные инструменты
+    *   **corpus** - корпусные меры:
+        *   collocations.py - коллокации и меры ассоциации
+        *   dispersion.py - дисперсия слов по частям текста
+        *   keyness.py - ключевые слова относительно эталонного корпуса
+        *   kwic.py - конкорданс KWIC
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных
         *   freq2011.py - частотный словарь Ляшевской и Шарова

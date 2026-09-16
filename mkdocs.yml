@@ -34,6 +34,11 @@ nav:
         - Статистики лексической сложности:
           - Модуль вычисления статистик: stats/lexical_stats.md
           - Функции вычисления статистик: stats/lexical_stats_funcs.md
+    - Корпусные меры:
+        - Ключевые слова: corpus/keyness.md
+        - Коллокации: corpus/collocations.md
+        - Дисперсия слов: corpus/dispersion.md
+        - Конкорданс KWIC: corpus/kwic.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md

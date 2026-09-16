@@ -10,6 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import pymorphy3
+from razdel import tokenize
 from spacy.tokens import Doc, Span, Token
 
 from .constants import (
@@ -149,6 +150,25 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         else:
             position += 1
     return spans
+
+
+def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
+    """
+    Извлечение слов с позициями из строки
+
+    Описание:
+        Токенизация razdel, знаки препинания отбрасываются как в WordsExtractor
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого слова
+    """
+    for token in tokenize(text):
+        if not is_punctuation(token.text):
+            yield token.start, token.stop, token.text
 
 
 def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:

@@ -11,6 +11,7 @@ from ruts.utils import (
     is_punctuation,
     is_verbal_noun,
     iter_doc_words,
+    iter_text_words,
     normalize_yo,
     parse_word,
     safe_divide,
@@ -172,6 +173,17 @@ def test_find_phrases():
     assert find_phrases([], phrases) == []
     assert find_phrases(["связи", "с"], ["в связи с"]) == []
     assert find_phrases(["в", "связи"], ["в связи с", "в"]) == [(0, 1)]
+
+
+def test_iter_text_words():
+    assert list(iter_text_words("Во-первых, кот - т.е. «зверь»!")) == [
+        (0, 9, "Во-первых"),
+        (11, 14, "кот"),
+        (17, 18, "т"),
+        (19, 20, "е"),
+        (23, 28, "зверь"),
+    ]
+    assert list(iter_text_words("")) == []
 
 
 def test_iter_doc_words():

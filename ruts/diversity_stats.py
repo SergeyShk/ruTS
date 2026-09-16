@@ -6,6 +6,7 @@ from typing import NamedTuple
 
 import numpy as np
 from nltk import FreqDist
+from scipy.optimize import curve_fit
 from scipy.special import comb
 from scipy.stats import t as student_t
 from spacy.tokens import Doc
@@ -1209,6 +1210,70 @@ def calc_zipf_alpha(text: Sequence[str]) -> float:
     ranks = np.arange(1, len(frequencies) + 1)
     slope = np.polyfit(np.log(ranks), np.log(frequencies), 1)[0]
     return float(-slope)
+
+
+class ZipfMandelbrot(NamedTuple):
+    """
+    Параметры закона Ципфа-Мандельброта f(r) = C / (r + q)^s
+
+    Атрибуты:
+        c (float): Масштаб C
+        q (float): Сдвиг ранга q
+        s (float): Показатель s
+        r2 (float): Коэффициент детерминации подгонки в логарифмических координатах
+    """
+
+    c: float
+    q: float
+    s: float
+    r2: float
+
+
+def fit_zipf_mandelbrot(text: Sequence[str]) -> ZipfMandelbrot:
+    """
+    Подгонка закона Ципфа-Мандельброта к распределению частот
+
+    Описание:
+        Закон f(r) = C / (r + q)^s, где r - ранг лексемы по частоте; при q = 0
+        сводится к закону Ципфа со показателем s. Параметры подбираются методом
+        наименьших квадратов в логарифмических координатах
+        (scipy.optimize.curve_fit) с начальным приближением C = f(1), q = 1, s = 1
+        и ограничениями q ≥ 0, s ≥ 0; сдвиг q описывает выполаживание кривой
+        на самых частых словах
+
+    Ссылки:
+        https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        ZipfMandelbrot: Параметры закона, nan для текстов из менее чем трех лексем
+            или если подгонка не сошлась
+    """
+    frequencies = np.array(sorted(Counter(text).values(), reverse=True), dtype=float)
+    if len(frequencies) < 3:
+        return ZipfMandelbrot(nan, nan, nan, nan)
+    ranks = np.arange(1, len(frequencies) + 1, dtype=float)
+    log_frequencies = np.log(frequencies)
+
+    def model(rank: np.ndarray, log_c: float, q: float, s: float) -> np.ndarray:
+        return log_c - s * np.log(rank + q)
+
+    try:
+        (log_c, q, s), _ = curve_fit(
+            model,
+            ranks,
+            log_frequencies,
+            p0=(log_frequencies[0], 1.0, 1.0),
+            bounds=([-np.inf, 0.0, 0.0], [np.inf, np.inf, np.inf]),
+        )
+    except (RuntimeError, ValueError):
+        return ZipfMandelbrot(nan, nan, nan, nan)
+    residual = float(((log_frequencies - model(ranks, log_c, q, s)) ** 2).sum())
+    total = float(((log_frequencies - log_frequencies.mean()) ** 2).sum())
+    r2 = 1 - residual / total if total else nan
+    return ZipfMandelbrot(float(np.exp(log_c)), float(q), float(s), r2)
 
 
 def calc_heaps_beta(text: Sequence[str]) -> float:

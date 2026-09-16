@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from itertools import pairwise
 from typing import NamedTuple
 
-from razdel import sentenize, tokenize
+from razdel import sentenize
 from spacy.tokens import Doc, Token
 
 from ..cohesion_stats import connector_pos, find_connectors, unit_pos, unit_text
@@ -42,10 +42,10 @@ from ..syntax_stats import (
 from ..utils import (
     count_syllables,
     find_phrases,
-    is_punctuation,
     is_verbal_noun,
     iter_doc_units,
     iter_doc_words,
+    iter_text_words,
     normalize_yo,
     parse_word,
 )
@@ -384,11 +384,7 @@ def get_text_words(text: str) -> list[Word]:
     Вывод:
         list[Word]: Список слов с позициями
     """
-    return [
-        Word(token.start, token.stop, token.text)
-        for token in tokenize(text)
-        if not is_punctuation(token.text)
-    ]
+    return [Word(start, end, text) for start, end, text in iter_text_words(text)]
 
 
 def get_text_sents(text: str, words: Sequence[Word]) -> list[Sent]:
