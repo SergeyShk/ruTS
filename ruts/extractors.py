@@ -253,3 +253,102 @@ class WordsExtractor(Extractor):
                 "_".join(self.words[i : i + n]) for i in range(len(self.words) - n + 1)
             )
         return ngrams
+
+
+class CharNgramsExtractor(Extractor):
+    """
+    Класс для извлечения символьных N-грамм из текста
+
+    Пример использования:
+        >>> from ruts import CharNgramsExtractor
+        >>> text = "Кот сидел  на окне, а пёс - на полу."
+        >>> ce = CharNgramsExtractor(n=3, lowercase=True)
+        >>> ce.extract(text)[:6]
+        ('кот', 'от ', 'т с', ' си', 'сид', 'иде')
+        >>> ce.get_most_common(2)
+        [(' на', 2), ('на ', 2)]
+        >>> CharNgramsExtractor(n=3, lowercase=True, within_words=True).extract(text)
+        ('кот', 'сид', 'иде', 'дел', 'окн', 'кне', 'пёс', 'пол', 'олу')
+
+    Описание:
+        N-граммы берутся окном по строке, пробельные символы предварительно
+        схлопываются в один пробел, знаки препинания сохраняются (Stamatatos 2009);
+        при within_words N-граммы не пересекают границ слов: текст режется
+        токенизатором на слова, знаки препинания отбрасываются, слова короче N
+        N-грамм не дают. Символьные N-граммы - признак для стилометрии
+        (ruts.corpus.delta)
+
+    Аргументы:
+        n (int): Длина N-граммы в символах
+        lowercase (bool): Конвертировать текст в нижний регистр
+        within_words (bool): Брать N-граммы только внутри слов
+        tokenizer (pattern|callable): Токенизатор слов для within_words
+            или регулярное выражение
+
+    Методы:
+        extract: Извлечение N-грамм из текста
+        get_most_common: Получение счетчика топ-N-грамм
+
+    Исключения:
+        ValueError: Если длина N-граммы меньше единицы
+    """
+
+    def __init__(
+        self,
+        n: int = 2,
+        lowercase: bool = False,
+        within_words: bool = False,
+        tokenizer: Tokenizer | None = None,
+    ) -> None:
+        super().__init__(tokenizer)
+        if n < 1:
+            raise ValueError("Длина N-граммы должна быть больше 0")
+        self.n = n
+        self.lowercase = lowercase
+        self.within_words = within_words
+        self.ngrams: tuple[str, ...] = ()
+        if not self.tokenizer:
+            self.tokenizer = lambda text: (word.text for word in tokenize(text))
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        """
+        Извлечение символьных N-грамм из текста
+
+        Аргументы:
+            text (str): Строка текста
+
+        Вывод:
+            ngrams (tuple[str]): Кортеж извлеченных N-грамм
+
+        Исключения:
+            TypeError: Если некорректно задан токенизатор
+        """
+        if self.lowercase:
+            text = text.lower()
+        if self.within_words:
+            units = [word for word in self._tokenize(text) if not is_punctuation(word)]
+        else:
+            units = [" ".join(text.split())]
+        self.ngrams = tuple(
+            unit[index : index + self.n]
+            for unit in units
+            for index in range(len(unit) - self.n + 1)
+        )
+        return self.ngrams
+
+    def get_most_common(self, n: int = 10) -> list[tuple[Any, int]]:
+        """
+        Получение счетчика топ-N-грамм
+
+        Аргументы:
+            n (int): Количество N-грамм
+
+        Вывод:
+            List: Список топ-N-грамм
+
+        Исключения:
+            ValueError: Если указанное количество N-грамм меньше 0
+        """
+        if n < 1:
+            raise ValueError("Количество N-грамм должно быть больше 0")
+        return Counter(self.ngrams).most_common(n)

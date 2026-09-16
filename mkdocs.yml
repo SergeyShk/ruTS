@@ -10,6 +10,7 @@ nav:
     - Извлечение объектов:
       - Извлечение предложений: extractors/sentences.md
       - Извлечение слов: extractors/words.md
+      - Извлечение символьных N-грамм: extractors/char_ngrams.md
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
         - Метрики удобочитаемости:
@@ -39,6 +40,7 @@ nav:
         - Коллокации: corpus/collocations.md
         - Дисперсия слов: corpus/dispersion.md
         - Конкорданс KWIC: corpus/kwic.md
+        - Стилометрия: corpus/stylometry.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md

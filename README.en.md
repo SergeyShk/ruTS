@@ -34,7 +34,7 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 
 Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): paste a text and get the readability grade, metrics, plots and highlighted fragments.
 
-* **[Object extraction](https://sergeyshk.github.io/ruTS/extractors/words/)** - configurable word and sentence tokenizers
+* **[Object extraction](https://sergeyshk.github.io/ruTS/extractors/words/)** - configurable word, sentence and character n-gram tokenizers
 * **[Basic statistics](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
 * **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
@@ -44,7 +44,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
-* **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance
+* **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
@@ -104,12 +104,12 @@ python -m spacy download ru_core_news_sm
 
 ### Object extraction
 
-The library allows creating your own tools for sentence and word extraction from a text, which can be further employed for counting statistics.
+The library allows creating your own tools for sentence, word and character n-gram extraction from a text, which can be further employed for counting statistics and in stylometry.
 
 ```python
 >>> import re
 >>> from nltk.corpus import stopwords
->>> from ruts import SentsExtractor, WordsExtractor
+>>> from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
 
 >>> text = "Не имей 100 рублей, а имей 100 друзей"
 
@@ -123,9 +123,15 @@ The library allows creating your own tools for sentence and word extraction from
 
 >>> we.get_most_common(3)
 [('иметь', 2), ('рубль', 1), ('друг', 1)]
+
+>>> ce = CharNgramsExtractor(n=3, lowercase=True)
+>>> ce.extract(text)[:5]
+('не ', 'е и', ' им', 'име', 'мей')
+>>> ce.get_most_common(2)
+[(' им', 2), ('име', 2)]
 ```
 
-See the docs for [words](https://sergeyshk.github.io/ruTS/extractors/words/) and [sentences](https://sergeyshk.github.io/ruTS/extractors/sentences/).
+See the docs for [words](https://sergeyshk.github.io/ruTS/extractors/words/), [sentences](https://sergeyshk.github.io/ruTS/extractors/sentences/) and [character n-grams](https://sergeyshk.github.io/ruTS/extractors/char_ngrams/).
 
 <details>
 <summary><b>Basic statistics</b></summary>
@@ -592,10 +598,11 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Collocations within a window by logDice, MI, MI³, t-score, Dice, G², NPMI, minimum sensitivity; collocates of a single word
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
+*   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
 
 ```python
 >>> from ruts import WordsExtractor
->>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic
+>>> from ruts.corpus import keyness, collocations, dispersion, kwic, print_kwic, delta, zeta
 
 >>> we = WordsExtractor(use_lexemes=True, lowercase=True)
 >>> text = "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. Завтра кот снова будет сидеть на окне и смотреть на птиц."
@@ -612,9 +619,18 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
         сидел на  окне  и смотрел
         уснул на  окне  . Завтра кот
        сидеть на  окне  и смотреть
+
+>>> both = we.extract("Кот и собака дремали на окне. Завтра кот будет смотреть на птиц, а собака - спать на полу.")
+>>> delta({"кот": target, "собака": reference, "кот и собака": both}, n_mfw=10).round(2)
+               кот  собака  кот и собака
+кот           0.00    1.74          0.96
+собака        1.74    0.00          1.11
+кот и собака  0.96    1.11          0.00
+>>> [(z.word, round(z.zeta, 2)) for z in zeta(target, reference, segment_size=5, top_n=2)]
+[('на', 0.67), ('кот', 0.6)]
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/corpus/keyness/).
+More in the docs: [corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/), [stylometry](https://sergeyshk.github.io/ruTS/corpus/stylometry/).
 
 </details>
 
@@ -809,6 +825,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   dispersion.py - word dispersion across text parts
         *   keyness.py - keywords relative to a reference corpus
         *   kwic.py - KWIC concordance
+        *   stylometry.py - Burrows's Delta, Zeta and other stylometry measures
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets
         *   freq2011.py - the Lyashevskaya-Sharoff frequency dictionary
