@@ -46,6 +46,8 @@ nav:
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
         - Тексты с метками класса: datasets/textsbygrade.md
         - Частотный словарь Ляшевской и Шарова: datasets/freq2011.md
+        - Корпус русской поэзии: datasets/poetrycorpus.md
+        - Русская классическая литература: datasets/russianliterature.md
     - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md

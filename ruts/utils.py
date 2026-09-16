@@ -1,3 +1,4 @@
+import hashlib
 import os
 import shutil
 import tarfile
@@ -323,6 +324,14 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     """
     Извлечение файлов из архива в формате ZIP или TAR
 
+    Описание:
+        Архив ZIP извлекается через ZipFile.extractall: shutil.unpack_archive в части
+        версий Python пропускает файлы, в имени которых есть две точки подряд
+        («Ма-аленькая!....txt»), а не только компоненты пути «..». Если корень
+        архива отличается от имени архива без расширений, он переименовывается,
+        а прежняя директория с этим именем удаляется, иначе повторное извлечение
+        положило бы копию внутрь нее
+
     Аргументы:
         archive_file (str|Path): Путь к файлу архива
         extract_dir (str|Path): Путь к директории для извлеченных файлов
@@ -340,8 +349,8 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
         return str(extract_path)
     print(f"Извлечение файлов из архива {archive_path}...")
     if is_zip:
-        shutil.unpack_archive(archive_path, extract_dir=extract_path)
         with zipfile.ZipFile(archive_path, mode="r") as zip_file:
+            zip_file.extractall(extract_path)
             members = zip_file.namelist()
     else:
         shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
@@ -355,8 +364,27 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     while (stem := Path(dest_basename).stem) != dest_basename:
         dest_basename = stem
     if src_basename != dest_basename:
-        return str(shutil.move(extract_path / src_basename, extract_path / dest_basename))
+        destination = extract_path / dest_basename
+        if destination.is_dir():
+            shutil.rmtree(destination)
+        return str(shutil.move(extract_path / src_basename, destination))
     return str(extract_path / src_basename)
+
+
+def sha256(path: Path) -> str:
+    """
+    Вычисление контрольной суммы SHA-256 файла
+
+    Аргументы:
+        path (Path): Путь к файлу
+
+    Вывод:
+        str: Контрольная сумма в шестнадцатеричном виде, пустая строка для отсутствующего файла
+    """
+    if not path.is_file():
+        return ""
+    with path.open("rb") as file:
+        return hashlib.file_digest(file, "sha256").hexdigest()
 
 
 def safe_divide(num: float | int, den: float | int, default: float | int = 0) -> float:

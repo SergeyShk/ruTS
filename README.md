@@ -645,6 +645,8 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - полное собрание сочинений И.В. Сталина
 *   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - частотный словарь Ляшевской и Шарова: 52 138 лемм с ipm, диапазоном и дисперсией по НКРЯ
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - тексты с метками класса проекта Plain Russian Language (CC0), на которых проверяются формулы удобочитаемости
+*   [poetry_corpus](https://sergeyshk.github.io/ruTS/datasets/poetrycorpus/) - корпус русской поэзии PoetryCorpus Ильи Гусева: 16 694 стихотворения 195 авторов с годами и темами (Apache-2.0)
+*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - собрание русской классической литературы RusLit: 373 произведения 12 авторов в трёх жанрах с годами написания (общественное достояние)
 
 Существует возможность работать как с чистыми текстами (без заголовочной информации), так и с записями, а также фильтровать их по различным критериям.
 
@@ -673,7 +675,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
  'year': 1963}
 ```
 
-Набор данных скачивается методом `download()` и кэшируется локально, повторный вызов ничего не качает; до загрузки `get_texts()` и `get_records()` поднимают `OSError` с подсказкой.
+Набор данных скачивается методом `download()` и кэшируется локально, повторный вызов ничего не качает; до загрузки `get_texts()` и `get_records()` поднимают `OSError` с подсказкой. Корпус поэзии и классическая литература загружаются с первоисточников по закреплённым коммитам с проверкой SHA-256.
 
 </details>
 
@@ -832,6 +834,8 @@ uv run pre-commit install
     *   **datasets** - наборы данных:
         *   dataset.py - базовый класс для работы с наборами данных
         *   freq2011.py - частотный словарь Ляшевской и Шарова
+        *   poetry_corpus.py - корпус русской поэзии PoetryCorpus
+        *   russian_literature.py - собрание русской классической литературы RusLit
         *   sov_chrest_lit.py - советские хрестоматии по литературе
         *   stalin_works.py - полное собрание сочинений И.В. Сталина
         *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language

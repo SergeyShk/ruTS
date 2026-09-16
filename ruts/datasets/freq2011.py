@@ -1,5 +1,4 @@
 import csv
-import hashlib
 from collections.abc import Generator
 from functools import cache
 from itertools import islice
@@ -7,7 +6,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from ..constants import DEFAULT_DATA_DIR
-from ..utils import download_file, extract_archive, normalize_yo, to_path
+from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
 from .dataset import Dataset
 
 NAME = "freq2011"
@@ -304,22 +303,6 @@ class FreqDict(Dataset):
 
     def __contains__(self, lemma: object) -> bool:
         return isinstance(lemma, str) and normalize_yo(lemma) in self.entries
-
-
-def sha256(path: Path) -> str:
-    """
-    Вычисление контрольной суммы SHA-256 файла
-
-    Аргументы:
-        path (Path): Путь к файлу
-
-    Вывод:
-        str: Контрольная сумма в шестнадцатеричном виде, пустая строка для отсутствующего файла
-    """
-    if not path.is_file():
-        return ""
-    with path.open("rb") as file:
-        return hashlib.file_digest(file, "sha256").hexdigest()
 
 
 @cache
