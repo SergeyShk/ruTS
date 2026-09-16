@@ -45,7 +45,9 @@ def collocations(
         по частотам слов, частоте пары и числу слов N; в меру частота пары делится
         на размер окна (Church и Hanks 1990, так же в NLTK), чтобы ожидаемая частота
         не зависела от окна, а Dice и минимальная чувствительность не превышали
-        единицы; в freq_pair записывается частота без деления
+        единицы; в freq_pair записывается частота без деления. Поэтому при window > 1
+        шкала Dice-мер сдвинута: пара, всегда стоящая рядом, получает logDice
+        14 − log2(window) (13 при окне 2, 11.68 при 5), а не 14, как для биграмм
         Слова сравниваются как есть: регистр и лемматизация - на стороне извлечения
 
     Ссылки:
@@ -191,7 +193,9 @@ def calc_logdice(freq_a: int, freq_b: int, freq_ab: float, n: int) -> float:
 
     Описание:
         14 + log2(2 · f_ab / (f_a + f_b)) по Rychlý (2008); не зависит от размера
-        текста, максимум 14, значения ниже нуля - слабая связь
+        текста, максимум 14, значения ниже нуля - слабая связь. В collocations
+        частота пары для окна больше единицы делится на размер окна, и максимум
+        становится 14 − log2(window)
 
     Ссылки:
         https://www.sketchengine.eu/glossary/logdice/
@@ -226,8 +230,10 @@ def calc_log_likelihood(freq_a: int, freq_b: int, freq_ab: float, n: int) -> flo
         n (int): Число слов в тексте
 
     Вывод:
-        float: G²
+        float: G², nan если одно из слов занимает весь текст
     """
+    if freq_a >= n or freq_b >= n:
+        return nan
     observed = (freq_ab, freq_a - freq_ab, freq_b - freq_ab, n - freq_a - freq_b + freq_ab)
     expected = (
         freq_a * freq_b / n,

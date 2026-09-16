@@ -47,6 +47,14 @@ def test_kwic_doc():
     ]
 
 
+def test_kwic_doc_pos():
+    pytest.importorskip("ru_core_news_sm")
+    doc = spacy.load("ru_core_news_sm")("Из стали делают ножи, а мы стали друзьями.")
+    assert [line.keyword for line in kwic(doc, "сталь", by_lemma=True)] == ["стали"]
+    assert [line.start for line in kwic(doc, "стать", by_lemma=True)] == [27]
+    assert len(kwic(doc.text, "стать", by_lemma=True)) == 2
+
+
 def test_kwic_errors():
     with pytest.raises(TypeError):
         kwic(["кот"], "кот")

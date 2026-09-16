@@ -1,8 +1,9 @@
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from math import inf, isnan, log, log2, nan
-from typing import NamedTuple
+from typing import Any, NamedTuple
 
+import numpy as np
 from scipy.stats import chi2 as chi2_distribution
 
 from ..constants import KEYNESS_MEASURES
@@ -101,7 +102,7 @@ def keyness(
     if not size_target or not size_reference:
         raise ValueError("В источнике данных отсутствуют слова")
     calc = MEASURES[measure]
-    keywords = []
+    rows = []
     words = set(counts_target) | set(counts_reference)
     for word in words:
         a = counts_target.get(word, 0)
@@ -112,20 +113,23 @@ def keyness(
             continue
         if (a if positive else b) < min_freq:
             continue
-        g2 = calc_log_likelihood(a, b, size_target, size_reference)
-        keywords.append(
-            Keyword(
+        rows.append(
+            (
                 word,
                 int(a),
                 b,
                 ipm_target,
                 ipm_reference,
-                g2,
-                calc_p_value(g2),
+                calc_log_likelihood(a, b, size_target, size_reference),
                 calc_log_ratio(a, b, size_target, size_reference),
                 calc(a, b, size_target, size_reference),
             )
         )
+    p_values = calc_p_value(np.array([row[5] for row in rows]))
+    keywords = [
+        Keyword(*row[:6], float(p_value), *row[6:])
+        for row, p_value in zip(rows, p_values, strict=True)
+    ]
     sign = -1 if positive else 1
     keywords.sort(
         key=lambda keyword: (
@@ -195,17 +199,19 @@ def _xlog(observed: float, expected: float) -> float:
     return observed * log(observed / expected) if observed else 0.0
 
 
-def calc_p_value(g2: float) -> float:
+def calc_p_value(g2: float | np.ndarray) -> Any:
     """
     Вычисление p-значения по величине G² или хи-квадрат
 
     Аргументы:
-        g2 (float): Значение G² или хи-квадрат (знак не учитывается)
+        g2 (float|ndarray): Значение G² или хи-квадрат (знак не учитывается)
+            или массив значений
 
     Вывод:
-        float: p-значение по распределению хи-квадрат с одной степенью свободы
+        float|ndarray: p-значение по распределению хи-квадрат с одной степенью свободы
     """
-    return float(chi2_distribution.sf(abs(g2), 1))
+    p_value = chi2_distribution.sf(np.abs(g2), 1)
+    return float(p_value) if np.isscalar(g2) else p_value
 
 
 def calc_chi2(a: float, b: float, c: float, d: float) -> float:
@@ -342,13 +348,16 @@ def calc_odds_ratio(a: float, b: float, c: float, d: float) -> float:
         d (float): Объем эталонного корпуса
 
     Вывод:
-        float: Отношение шансов, inf если слово занимает весь эталонный корпус
+        float: Отношение шансов; inf, если слово занимает весь целевой корпус,
+            0, если весь эталонный, nan, если оба
     """
     a, b = _adjust(a, b)
-    if b >= d:
-        return inf
+    if a >= c and b >= d:
+        return nan
     if a >= c:
         return inf
+    if b >= d:
+        return 0.0
     return (a / (c - a)) / (b / (d - b))
 
 

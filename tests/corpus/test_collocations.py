@@ -42,7 +42,8 @@ def test_measures():
     for calc in (calc_mi, calc_mi3, calc_t_score, calc_logdice, calc_npmi):
         assert isnan(calc(3, 3, 0, 12))
     assert isnan(calc_npmi(12, 12, 12, 12))
-    assert calc_log_likelihood(12, 12, 12, 12) == 0
+    assert isnan(calc_log_likelihood(12, 12, 12, 12))
+    assert isnan(calc_log_likelihood(12, 3, 2, 12))
 
 
 def test_collocations():
@@ -71,6 +72,7 @@ def test_collocations():
         ("спал", "на"),
     ]
     assert collocations(["кот"], window=3) == []
+    assert isnan(collocations(["а"] * 5, window=1, measure="log_likelihood", min_freq=1)[0].score)
 
 
 @pytest.mark.parametrize("window", [1, 2, 5])

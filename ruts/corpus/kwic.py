@@ -3,7 +3,8 @@ from typing import NamedTuple
 
 from spacy.tokens import Doc
 
-from ..utils import iter_doc_words, iter_text_words, lemmatize, normalize_yo
+from ..cohesion_stats import unit_text
+from ..utils import iter_doc_units, iter_text_words, lemmatize, normalize_yo
 
 
 class Concordance(NamedTuple):
@@ -38,7 +39,10 @@ def kwic(
     Описание:
         Ищутся вхождения слова или словосочетания (слова через пробел) среди слов
         текста: по словоформе без учета регистра и буквы ё, с учетом регистра
-        или по лемме pymorphy3 («кота» находится по «кот»). Контекст - window слов
+        или по лемме pymorphy3 («кота» находится по «кот»); для Doc с разметкой
+        частей речи лемма слова берется с частью речи токена (lemmatize), так
+        «стали» находится по «сталь» или «стать» в зависимости от разметки,
+        ключевое слово лемматизируется без части речи. Контекст - window слов
         слева и справа, как они записаны в тексте, со знаками препинания между ними,
         пробельные символы схлопываются в один пробел; вхождения не пересекаются
 
@@ -58,10 +62,14 @@ def kwic(
     """
     if isinstance(source, Doc):
         text = source.text
-        words = list(iter_doc_words(source))
+        tagged = source.has_annotation("POS")
+        units = list(iter_doc_units(source))
+        words = [(unit[0].idx, unit[-1].idx + len(unit[-1]), unit_text(unit)) for unit in units]
+        pos = [unit[0].pos_ if tagged and len(unit) == 1 else "" for unit in units]
     elif isinstance(source, str):
         text = source
         words = list(iter_text_words(source))
+        pos = [""] * len(words)
     else:
         raise TypeError("Некорректный источник данных")
     pattern = keyword.split()
@@ -69,7 +77,10 @@ def kwic(
         raise ValueError("Ключевое слово не задано")
     if window < 0:
         raise ValueError("Окно не может быть отрицательным")
-    normalized = [_normalize(word, by_lemma, ignore_case) for _, _, word in words]
+    normalized = [
+        _normalize(word, by_lemma, ignore_case, word_pos)
+        for (_, _, word), word_pos in zip(words, pos, strict=True)
+    ]
     target = [_normalize(word, by_lemma, ignore_case) for word in pattern]
     found = []
     index = 0
@@ -91,9 +102,9 @@ def kwic(
     return found
 
 
-def _normalize(word: str, by_lemma: bool, ignore_case: bool) -> str:
+def _normalize(word: str, by_lemma: bool, ignore_case: bool, pos: str = "") -> str:
     if by_lemma:
-        return normalize_yo(lemmatize(word))
+        return normalize_yo(lemmatize(word, pos))
     return normalize_yo(word) if ignore_case else word
 
 

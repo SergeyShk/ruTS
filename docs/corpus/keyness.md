@@ -25,7 +25,7 @@
 | Log Ratio | `log_ratio` | $\log_2 \frac{NF_a}{NF_b}$ | [Hardie (2014)](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/); единица - слово вдвое чаще в целевом корпусе |
 | BIC | `bic` | $G^2 - \ln N$ | Wilson (2013); выше 2 - положительное свидетельство различия, выше 6 - сильное, выше 10 - очень сильное |
 | ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper и Rayson (2007); размер эффекта для $G^2$ от 0 до 1, `nan` при минимальной ожидаемой частоте не больше единицы |
-| Отношение шансов | `odds_ratio` | $\frac{a / (c - a)}{b / (d - b)}$ | единица - шансы равны |
+| Отношение шансов | `odds_ratio` | $\frac{a / (c - a)}{b / (d - b)}$ | единица - шансы равны; `inf`, если слово занимает весь целевой корпус, 0 - если весь эталонный |
 
 Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение $G^2$ считается по распределению хи-квадрат с одной степенью свободы (`calc_p_value`). Меры доступны как функции `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` с аргументами `(a, b, c, d)`; названия и описания - в `ruts.constants.KEYNESS_MEASURES`.
 

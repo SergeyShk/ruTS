@@ -24,7 +24,7 @@
 | S Розенгрена | `rosengren_s` | $\frac{(\sum \sqrt{s_i v_i})^2}{f}$ | 1 - пропорционально, стремится к $1/n$ при сосредоточении в одной из равных частей; Rosengren (1971) |
 | Дивергенция Кульбака-Лейблера | `kl_divergence` | $\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}$ | в битах; 0 - пропорционально, растет при сосредоточении в малых частях; Gries (2020) |
 
-Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей; названия - в `ruts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`.
+Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей; названия - в `ruts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`. Функция `dispersion` считает те же меры для всех слов сразу по матрице «слово × часть»: 500 тысяч слов и 20 тысяч лексем - десятые доли секунды.
 
 ## Параметры
 

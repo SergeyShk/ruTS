@@ -1,6 +1,7 @@
 from collections import Counter
 from math import inf, isnan, log
 
+import numpy as np
 import pytest
 
 from ruts.constants import G2_CRITICAL_VALUES, KEYNESS_MEASURES
@@ -59,7 +60,9 @@ def test_measures():
     assert isnan(calc_ell(1, 0, 1000, 2000))
     assert calc_odds_ratio(10, 5, 1000, 2000) == pytest.approx((10 / 990) / (5 / 1995))
     assert calc_odds_ratio(10, 10, 10, 20) == inf
-    assert calc_odds_ratio(10, 20, 20, 20) == inf
+    assert calc_odds_ratio(10, 20, 20, 20) == 0
+    assert isnan(calc_odds_ratio(20, 20, 20, 20))
+    assert keyness(["а", "б"], ["а"], positive=False, measure="odds_ratio")[0].score == 0
     assert calc_p_value(3.84) == pytest.approx(0.05, abs=0.001)
     for p, critical in G2_CRITICAL_VALUES.items():
         assert calc_p_value(critical) == pytest.approx(p, rel=0.01)
@@ -140,6 +143,17 @@ def test_keyness_freq_dict(freq_dict):
     assert [keyword.word for keyword in negative][:2] == ["и", "на"]
     assert keyness({"ещё": 2, "Ещё": 1}, freq_dict)[0].freq_target == 3
     assert keyness(["ещё"], freq_dict)[0].ipm_reference == pytest.approx(2409.4)
+
+
+def test_p_values():
+    keywords = keyness(target, reference)
+    assert [keyword.p_value for keyword in keywords] == [
+        pytest.approx(calc_p_value(keyword.g2)) for keyword in keywords
+    ]
+    assert list(calc_p_value(np.array([3.84, -6.63]))) == [
+        pytest.approx(0.05, abs=0.001),
+        pytest.approx(0.01, abs=0.001),
+    ]
 
 
 def test_keyness_errors():
