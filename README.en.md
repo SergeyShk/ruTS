@@ -46,7 +46,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
 * **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
 * **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
-* **[Visualization](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
+* **[Visualizations](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
 * **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
 
 ## Installation
