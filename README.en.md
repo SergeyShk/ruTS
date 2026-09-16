@@ -645,6 +645,8 @@ The library allows working with a number of preprocessed datasets:
 *   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - the collected works of Stalin
 *   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - the Lyashevskaya-Sharoff frequency dictionary: 52,138 lemmas with ipm, range and dispersion over the Russian National Corpus
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
+*   [poetry_corpus](https://sergeyshk.github.io/ruTS/datasets/poetrycorpus/) - Ilya Gusev's PoetryCorpus: 16,694 poems by 195 authors with years and themes (Apache-2.0)
+*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - the RusLit collection of Russian classics: 355 works by 12 authors in three genres with years (public domain)
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
@@ -673,7 +675,7 @@ One can work solely with texts (without title info) or texts with metadata. Ther
  'year': 1963}
 ```
 
-A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `OSError` with a hint.
+A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `OSError` with a hint. The poetry corpus and the classics collection are downloaded from their original sources at pinned commits with SHA-256 verification.
 
 </details>
 
@@ -832,6 +834,8 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   **datasets** - datasets:
         *   dataset.py - base class for working with datasets
         *   freq2011.py - the Lyashevskaya-Sharoff frequency dictionary
+        *   poetry_corpus.py - Ilya Gusev's PoetryCorpus
+        *   russian_literature.py - the RusLit collection of Russian classics
         *   sov_chrest_lit.py - soviet reading-books for literature classes
         *   stalin_works.py - the collected works of Stalin
         *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project

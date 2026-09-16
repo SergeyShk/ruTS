@@ -21,7 +21,7 @@
 *   считать [статистики связности](stats/cohesion_stats.md) текста (повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам)
 *   считать [статистики лексической сложности](stats/lexical_stats.md) текста (частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность)
 *   считать корпусные меры ([ключевые слова](corpus/keyness.md) относительно эталонного корпуса или частотного словаря, [коллокации](corpus/collocations.md), [дисперсию слов](corpus/dispersion.md) по частям текста, [конкорданс KWIC](corpus/kwic.md)) и меры [стилометрии](corpus/stylometry.md) (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов)
-*   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md), [Частотный словарь Ляшевской и Шарова](datasets/freq2011.md))
+*   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md), [Частотный словарь Ляшевской и Шарова](datasets/freq2011.md), [Корпус русской поэзии](datasets/poetrycorpus.md), [Русская классическая литература](datasets/russianliterature.md))
 *   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md), [Подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md))
 *   создавать [компоненты](components.md) для встраивания в [spaCy](https://github.com/explosion/spaCy)
 
@@ -113,6 +113,8 @@ pip install ruts
         *   **datasets** - наборы данных:
             *   dataset.py - базовый класс для работы с наборами данных
             *   freq2011.py - частотный словарь Ляшевской и Шарова
+            *   poetry_corpus.py - корпус русской поэзии PoetryCorpus
+            *   russian_literature.py - собрание русской классической литературы RusLit
             *   sov_chrest_lit.py - советские хрестоматии по литературе
             *   stalin_works.py - полное собрание сочинений И.В. Сталина
             *   texts_by_grade.py - тексты с метками класса проекта Plain Russian Language

@@ -7,7 +7,8 @@ import pytest
 
 from ruts.datasets import FreqDict
 from ruts.datasets import freq2011 as freq2011_module
-from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm, sha256
+from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm
+from ruts.utils import sha256
 
 ROWS = (
     ("а", "conj", 8198.0, 100, 97, 32332),
