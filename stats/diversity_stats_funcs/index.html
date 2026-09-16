@@ -2538,6 +2538,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/corpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Корпусные графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/stylometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Стилометрические графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/vocabulary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Рост словаря и спектр частот
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/sentences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Длины предложений
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4157,9 +4269,9 @@ H = -\sum_k p_k \log_2 p_k
 </div>
 <h2 id="heaps_beta">Показатель закона Хипса<a class="headerlink" href="#heaps_beta" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.diversity_stats.calc_heaps_beta()</strong></p>
+<p><strong>ruts.diversity_stats.calc_heaps_beta()</strong>, <strong>ruts.diversity_stats.fit_heaps()</strong>, <strong>ruts.diversity_stats.vocabulary_growth()</strong></p>
 </div>
-<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span>, описывающего рост словаря с ростом длины текста. Оценивается линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста словаря. Для естественных текстов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6.</p>
+<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span>, описывающего рост словаря с ростом длины текста. Оценивается линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста словаря (<code>vocabulary_growth</code> - размер словаря после каждого слова). Для естественных текстов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6. <code>fit_heaps</code> возвращает именованный кортеж <code>HeapsFit</code> с обоими параметрами <code>k</code>, <code>beta</code> и коэффициентом детерминации <code>r2</code>; по нему строится график <a href="../../visualizers/vocabulary/">закона Хипса</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Значение зависит от порядка слов и требует от нескольких сотен слов. Для текстов короче двух слов функция возвращает <code>nan</code>.</p>

@@ -2184,6 +2184,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../corpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Корпусные графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stylometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Стилометрические графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vocabulary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Рост словаря и спектр частот
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sentences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Длины предложений
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2412,8 +2524,21 @@
 <td style="text-align: center;"><code>1.5</code></td>
 <td style="text-align: center;">Коэффициент α теоретического Закона Ципфа</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>show_fit</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Отображать кривую подгонки закона Ципфа-Мандельброта <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> по <a href="../../stats/diversity_stats_funcs/#fit_zipf_mandelbrot"><code>fit_zipf_mandelbrot</code></a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>ax</code></td>
+<td style="text-align: center;">Axes</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Оси matplotlib для графика; если не заданы, создается новая фигура</td>
+</tr>
 </tbody>
 </table>
+<p>Функция возвращает оси <code>Axes</code> с графиком; <code>zipf_theory(size, num_ranks, alpha, ax)</code> строит только теоретическую кривую.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">
@@ -2436,7 +2561,8 @@
 <span class="n">tokens_with_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
-<span class="n">zipf</span><span class="p">(</span><span class="n">tokens_with_count</span><span class="p">,</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_theory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">zipf</span><span class="p">(</span><span class="n">tokens_with_count</span><span class="p">,</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_theory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">"zipf.png"</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <p><img alt="ruts" class="center" src="../../img/zipf.png" /></p>

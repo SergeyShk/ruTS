@@ -2184,6 +2184,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../corpus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Корпусные графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stylometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Стилометрические графики
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vocabulary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Рост словаря и спектр частот
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sentences/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Длины предложений
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2413,13 +2525,14 @@
 <td style="text-align: center;">Цветовая карта</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>is_return</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Возвращать объект Figure</td>
+<td style="text-align: center;"><code>ax</code></td>
+<td style="text-align: center;">Axes</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Оси matplotlib для графика; если не заданы, создается фигура 15×10</td>
 </tr>
 </tbody>
 </table>
+<p>Функция возвращает оси <code>Axes</code> с визуализацией; фигура доступна как <code>ax.figure</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">
@@ -2442,7 +2555,7 @@
     <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">words_extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
-<span class="n">fingerprinting</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">calc_simpson_index</span><span class="p">,</span> <span class="n">x_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">y_size</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">is_return</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fingerprinting</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">calc_simpson_index</span><span class="p">,</span> <span class="n">x_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">y_size</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <p><img alt="ruts" class="center" src="../../img/fingerprinting.png" /></p>
