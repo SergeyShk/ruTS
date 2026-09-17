@@ -1,3 +1,4 @@
+import re
 from collections import Counter
 from collections.abc import Iterable
 
@@ -7,12 +8,34 @@ from .constants import (
     BASIC_STATS_DESC,
     COMPLEX_SYL_FACTOR,
     LONG_WORD_LETTER_FACTOR,
+    PUNCTUATION_TYPES,
     PUNCTUATIONS,
     RU_LETTERS,
     SPACES,
 )
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables, iter_doc_words
+
+ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}")
+PUNCTUATION_CHARS = {
+    ",": "comma",
+    ".": "period",
+    "?": "question",
+    "!": "exclamation",
+    ":": "colon",
+    ";": "semicolon",
+    "—": "dash",
+    "–": "dash",
+    "-": "hyphen",
+    "«": "angle_quotes",
+    "»": "angle_quotes",
+    '"': "straight_quotes",
+    "„": "straight_quotes",
+    "“": "straight_quotes",
+    "”": "straight_quotes",
+    "(": "parentheses",
+    ")": "parentheses",
+}
 
 
 class BasicStats:
@@ -66,6 +89,7 @@ class BasicStats:
         n_spaces (int): Количество пробелов
         n_syllables (int): Количество слогов
         n_punctuations (int): Количество знаков препинания
+        c_punctuations (dict[str, int]): Распределение знаков препинания по типам
         p_unique_words (float): Нормализованное количество уникальных слов
         p_long_words (float): Нормализованное количество длинных слов
         p_complex_words (float): Нормализованное количество сложных слов
@@ -138,6 +162,7 @@ class BasicStats:
         self.n_spaces = sum(1 for char in text if char in SPACES)
         self.n_syllables = sum(syllables_per_word)
         self.n_punctuations = sum(1 for char in text if char in PUNCTUATIONS)
+        self.c_punctuations = count_punctuations(text)
 
         if normalize:
             self.p_unique_words = self.n_unique_words / self.n_words
@@ -189,3 +214,60 @@ class BasicStats:
         print("-" * 30)
         for stat, value in BASIC_STATS_DESC.items():
             print(f"{value:20}|{self.get_stats().get(stat):^10}")
+
+
+def count_punctuations(text: str) -> dict[str, int]:
+    """
+    Подсчет знаков препинания по типам
+
+    Описание:
+        Типы из PUNCTUATION_TYPES: запятые, точки, вопросительные и восклицательные
+        знаки, многоточия (символ … или три и более точек считаются одним знаком,
+        их точки в точки не входят), двоеточия, точки с запятой, тире (— и –),
+        дефисы, кавычки-ёлочки «», прямые кавычки и лапки „“”, скобки и прочие
+        знаки из PUNCTUATIONS
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        dict[str, int]: Число знаков каждого типа в порядке PUNCTUATION_TYPES
+    """
+    counts = dict.fromkeys(PUNCTUATION_TYPES, 0)
+    counts["ellipsis"] = len(ELLIPSIS_PATTERN.findall(text))
+    for char in ELLIPSIS_PATTERN.sub("", text):
+        if char in PUNCTUATION_CHARS:
+            counts[PUNCTUATION_CHARS[char]] += 1
+        elif char in PUNCTUATIONS:
+            counts["other"] += 1
+    return counts
+
+
+def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, float]:
+    """
+    Вычисление профиля пунктуации - частот знаков по типам на 1000 слов
+
+    Описание:
+        Частоты типов из PUNCTUATION_TYPES (count_punctuations) на 1000 слов и доля
+        буквы ё среди букв е и ё (yo_share) - пишет ли автор ё. Профиль - редакторский
+        и стилометрический признак; он зависит от оформления текста (типографские
+        кавычки и тире, буква ё) и легко подделывается, поэтому его стоит смотреть
+        отдельно от лингвистических признаков
+
+    Аргументы:
+        text (str): Строка текста
+        n_words (int): Число слов; если не задано, слова извлекаются WordsExtractor
+
+    Вывод:
+        dict[str, float]: Частоты типов на 1000 слов и yo_share; nan без слов
+            или без букв е и ё
+    """
+    if n_words is None:
+        n_words = len(WordsExtractor().extract(text))
+    counts = count_punctuations(text)
+    profile = {
+        kind: count / n_words * 1000 if n_words else float("nan") for kind, count in counts.items()
+    }
+    n_ye = sum(1 for char in text.lower() if char in "её")
+    profile["yo_share"] = text.lower().count("ё") / n_ye if n_ye else float("nan")
+    return profile

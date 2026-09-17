@@ -44,6 +44,7 @@
 | `n_spaces` | int | Количество пробелов |
 | `n_syllables` | int | Количество слогов |
 | `n_punctuations` | int | Количество знаков препинания |
+| `c_punctuations` | dict[str, int] | Распределение знаков препинания по типам |
 | `p_unique_words` | float | Нормализованное количество уникальных слов |
 | `p_long_words` | float | Нормализованное количество длинных слов |
 | `p_complex_words` | float | Нормализованное количество сложных слов |
@@ -108,6 +109,7 @@
 
     ``` bash
     {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+    'c_punctuations': {'comma': 1, 'period': 0, 'question': 0, 'exclamation': 0, 'ellipsis': 0, 'colon': 1, 'semicolon': 0, 'dash': 0, 'hyphen': 0, 'angle_quotes': 0, 'straight_quotes': 0, 'parentheses': 0, 'other': 0},
     'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
     'n_chars': 55,
     'n_complex_words': 2,
@@ -172,3 +174,25 @@
 
 !!! warning "Предупреждение"
     Метод не отображает атрибуты нормализованных статистик `p_*`.
+
+## Профиль пунктуации { #punctuation }
+
+!!! info ""
+    **ruts.basic_stats.count_punctuations()**, **ruts.basic_stats.punctuation_profile()**
+
+`count_punctuations(text)` считает знаки препинания по типам из `PUNCTUATION_TYPES` - это же распределение лежит в атрибуте `c_punctuations`: запятые, точки, вопросительные и восклицательные знаки, многоточия (символ `…` или три и более точек - один знак, его точки в точки не входят), двоеточия, точки с запятой, тире (`—` и `–`), дефисы, кавычки-ёлочки `«»`, прямые кавычки и лапки `"„“”`, скобки и прочие знаки из `PUNCTUATIONS`. `punctuation_profile(text, n_words=None)` переводит их в частоты на 1000 слов и добавляет `yo_share` - долю буквы ё среди букв е и ё, то есть пишет ли автор ё.
+
+Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. [сравнение корпусов](../corpus/compare.md)). Он зависит от оформления текста - типографских кавычек и тире, буквы ё - и легко подделывается, поэтому его стоит смотреть отдельно от лингвистических признаков.
+
+!!! example "Пример"
+
+    ``` python
+    from ruts.basic_stats import count_punctuations, punctuation_profile
+
+    text = "Кот — «зверь»... Пёс, конечно, - друг; а кот (тот, что ещё жив) — нет!"
+    {kind: count for kind, count in count_punctuations(text).items() if count}
+    # {'comma': 3, 'exclamation': 1, 'ellipsis': 1, 'semicolon': 1, 'dash': 2, 'hyphen': 1, 'angle_quotes': 2, 'parentheses': 2}
+
+    round(punctuation_profile(text)["dash"], 1), round(punctuation_profile(text)["yo_share"], 2)
+    # (166.7, 0.33)
+    ```

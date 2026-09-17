@@ -41,6 +41,7 @@ nav:
         - Дисперсия слов: corpus/dispersion.md
         - Конкорданс KWIC: corpus/kwic.md
         - Стилометрия: corpus/stylometry.md
+        - Сравнение корпусов: corpus/compare.md
     - Наборы данных:
         - Советские христоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
