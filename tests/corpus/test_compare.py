@@ -36,11 +36,18 @@ def test_split_windows():
         "смотрел на птиц, а птицы",
         "улетели. Кот уснул. Завтра он",
         "снова будет сидеть на окне",
-        "и смотреть на птиц",
+        "и смотреть на птиц.",
     ]
-    assert split_windows(text, None) == [text.rstrip(".")]
-    assert split_windows(text, 100) == [text.rstrip(".")]
+    assert split_windows(text, None) == [text]
+    assert split_windows(text, 100) == [text]
+    assert split_windows(" \n" + text + "\n ", None) == [text]
     assert len(split_windows(text, 8)) == 3
+    assert split_windows("Кто там?! Никого… Ушли!!!", None) == ["Кто там?! Никого… Ушли!!!"]
+    assert split_windows("Кто там?! Никого… Ушли, все ушли!!! Вот так.", 3) == [
+        "Кто там?! Никого…",
+        "Ушли, все ушли!!!",
+        "Вот так.",
+    ]
     assert split_windows("", 5) == []
     assert split_windows("... !!!", 5) == []
     with pytest.raises(ValueError):
@@ -54,6 +61,10 @@ def test_text_features():
     assert features["basic_words_per_sent"] == 6.0
     assert features["basic_letters_per_word"] == pytest.approx(4.0, rel=0.2)
     assert features["morph_pos_NOUN"] == pytest.approx(7 / 24)
+    assert features["morph_pos_INTJ"] == 0.0
+    assert features["morph_case_Voc"] == 0.0
+    assert isnan(text_features("Кот, пёс, дом.")["morph_tense_Past"])
+    assert sum(1 for key in features if key.startswith("morph_")) == 55
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"
     ] == (pytest.approx(1.0))
@@ -88,7 +99,7 @@ def test_corpus_features():
     assert "morph_pos_NOUN" in table.columns
     assert table.dtypes.eq(float).all()
     custom = corpus_features([text], window=None, features=lambda t: {"length": len(t)})
-    assert custom.loc[(0, 0), "length"] == len(text.rstrip("."))
+    assert custom.loc[(0, 0), "length"] == len(text)
     assert corpus_features([text, "..."], window=None).shape[0] == 1
     with pytest.raises(ValueError):
         corpus_features(["...", ""])
@@ -124,6 +135,16 @@ def test_compare_corpora():
     assert np.isfinite(result.drop(columns=["p_holm"]).dropna()).all().all()
     undefined = result[result["cliff_delta"].isna()]
     assert list(undefined.index) == list(result.index[-len(undefined) :])
+
+
+def test_compare_corpora_rare_values():
+    a = ["Ах, кот спал. Ох, пёс ел. Эх, дождь шёл. Кот встал."] * 3
+    b = ["Кот спал. Пёс ел. Дождь шёл. Кот встал. Пёс лёг."] * 3
+    row = compare_corpora(a, b, window=None, n_bootstrap=10).loc["morph_pos_INTJ"]
+    assert row["mean_A"] == pytest.approx(3 / 11)
+    assert row["mean_B"] == 0.0
+    assert row["cliff_delta"] == 1.0
+    assert (row["n_A"], row["n_B"]) == (3, 3)
 
 
 def test_compare_corpora_options():

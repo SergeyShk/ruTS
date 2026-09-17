@@ -114,8 +114,8 @@ def test_c_punctuations(bs):
         "ellipsis": 0,
         "colon": 1,
         "semicolon": 1,
-        "dash": 0,
-        "hyphen": 2,
+        "dash": 1,
+        "hyphen": 1,
         "angle_quotes": 0,
         "straight_quotes": 0,
         "parentheses": 2,
@@ -126,9 +126,7 @@ def test_c_punctuations(bs):
 
 
 def test_count_punctuations():
-    text = (
-        'Кот — «зверь»... Пёс, конечно, - друг; а „кот“ (тот, что жив) – нет! Так ли? "Да". № 5…'
-    )
+    text = 'Кот — «зверь»... Пёс, конечно, - друг; а „кто-то“ (тот, что жив) – нет! Так ли? "Да". № 5…'
     counts = count_punctuations(text)
     assert counts == {
         "comma": 3,
@@ -138,7 +136,7 @@ def test_count_punctuations():
         "ellipsis": 2,
         "colon": 0,
         "semicolon": 1,
-        "dash": 2,
+        "dash": 3,
         "hyphen": 1,
         "angle_quotes": 2,
         "straight_quotes": 4,
@@ -150,6 +148,25 @@ def test_count_punctuations():
         "ellipsis": 2,
     }
     assert count_punctuations("") == dict.fromkeys(PUNCTUATION_TYPES, 0)
+
+
+def test_count_punctuations_ellipsis_after_marks():
+    counts = count_punctuations("Кто там?.. Никого!.. Ушли... Да?.")
+    assert (counts["question"], counts["exclamation"], counts["ellipsis"], counts["period"]) == (
+        2,
+        1,
+        3,
+        1,
+    )
+
+
+def test_count_punctuations_spaced_hyphen_as_dash():
+    counts = count_punctuations("- Ушли, - сказал он.\n- Да-да, - ответил кто-то - и всё.\n-")
+    assert (counts["dash"], counts["hyphen"]) == (6, 2)
+    counts = count_punctuations("Как я молод - и страх мне неведом.")
+    assert (counts["dash"], counts["hyphen"]) == (1, 0)
+    assert count_punctuations("какого-либо")["hyphen"] == 1
+    assert count_punctuations("дом -\nмузей")["dash"] == 1
 
 
 def test_punctuation_profile():

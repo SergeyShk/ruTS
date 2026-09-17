@@ -16,7 +16,8 @@ from .constants import (
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables, iter_doc_words
 
-ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}")
+ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
+DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)
 PUNCTUATION_CHARS = {
     ",": "comma",
     ".": "period",
@@ -222,10 +223,13 @@ def count_punctuations(text: str) -> dict[str, int]:
 
     Описание:
         Типы из PUNCTUATION_TYPES: запятые, точки, вопросительные и восклицательные
-        знаки, многоточия (символ … или три и более точек считаются одним знаком,
-        их точки в точки не входят), двоеточия, точки с запятой, тире (— и –),
-        дефисы, кавычки-ёлочки «», прямые кавычки и лапки „“”, скобки и прочие
-        знаки из PUNCTUATIONS
+        знаки, многоточия (символ …, три и более точек или две точки после ? и !
+        считаются одним знаком, их точки в точки не входят: «Кто там?..» - вопрос
+        и многоточие), двоеточия, точки с запятой, тире (— и –, а также дефис
+        с пробелами по сторонам или в начале строки, которым тире набирают
+        в текстовых корпусах: «- Ушли, - сказал он»), дефисы между буквами,
+        кавычки-ёлочки «», прямые кавычки и лапки „“”, скобки и прочие знаки
+        из PUNCTUATIONS
 
     Аргументы:
         text (str): Строка текста
@@ -235,7 +239,9 @@ def count_punctuations(text: str) -> dict[str, int]:
     """
     counts = dict.fromkeys(PUNCTUATION_TYPES, 0)
     counts["ellipsis"] = len(ELLIPSIS_PATTERN.findall(text))
-    for char in ELLIPSIS_PATTERN.sub("", text):
+    rest = ELLIPSIS_PATTERN.sub("", text)
+    counts["dash"] = len(DASH_PATTERN.findall(rest))
+    for char in DASH_PATTERN.sub("", rest):
         if char in PUNCTUATION_CHARS:
             counts[PUNCTUATION_CHARS[char]] += 1
         elif char in PUNCTUATIONS:

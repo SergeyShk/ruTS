@@ -7,6 +7,7 @@ import pandas as pd
 from scipy.stats import mannwhitneyu
 
 from ..basic_stats import BasicStats, punctuation_profile
+from ..constants import MORPHOLOGY_STATS_DESC
 from ..diversity_stats import DiversityStats
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
@@ -42,8 +43,10 @@ def split_windows(text: str, window: int | None = 1000) -> list[str]:
     Описание:
         Число окон - округленное отношение числа слов к размеру окна, не меньше
         одного, части равные, как сегменты в zeta: короткие тексты не теряются,
-        хвост не отбрасывается. Окно - исходный текст от первого до последнего
-        символа своих слов, знаки препинания между словами сохраняются
+        хвост не отбрасывается. Окно - исходный текст от первого символа своего
+        первого слова до начала следующего окна (последнее - до конца текста)
+        без пробелов по краям, поэтому знаки препинания после последнего слова
+        окна и в конце текста остаются в окнах
 
     Аргументы:
         text (str): Строка текста
@@ -61,11 +64,12 @@ def split_windows(text: str, window: int | None = 1000) -> list[str]:
     if not words:
         return []
     n_windows = 1 if window is None else max(1, round(len(words) / window))
+    chunks = np.array_split(np.arange(len(words)), n_windows)
     windows = []
-    for chunk in np.array_split(np.arange(len(words)), n_windows):
+    for index, chunk in enumerate(chunks):
         start = words[chunk[0]][0]
-        end = words[chunk[-1]][1]
-        windows.append(text[start:end])
+        end = words[chunks[index + 1][0]][0] if index + 1 < len(chunks) else len(text)
+        windows.append(text[start:end].strip())
     return windows
 
 
@@ -80,8 +84,11 @@ def text_features(text: str) -> dict[str, float]:
         (BasicStats); readability_ - все формулы удобочитаемости, сводный класс
         и время чтения (ReadabilityStats); diversity_ - все меры лексического
         разнообразия (DiversityStats); morph_ - доли частей речи от числа слов
-        и доли значений внутри каждого морфологического признака, например
-        morph_pos_NOUN и morph_case_Gen (MorphStats по pymorphy3); sents_ - средняя
+        и доли значений внутри каждого морфологического признака по полному
+        словарю значений MORPHOLOGY_STATS_DESC, например morph_pos_NOUN
+        и morph_case_Gen: не встретившееся значение дает 0, отсутствующий
+        в окне признак целиком (нет глаголов - нет времени) - nan (MorphStats
+        по pymorphy3); sents_ - средняя
         длина предложения в словах, ее стандартное отклонение, коэффициент
         вариации и автокорреляция соседних длин - ритм текста; punct_ - частоты
         знаков по типам на 1000 слов и доля буквы ё (punctuation_profile)
@@ -119,10 +126,14 @@ def text_features(text: str) -> dict[str, float]:
         features[f"diversity_{key}"] = float(score)
     morph = MorphStats(text)
     n_words = len(morph.words)
-    for category, counts in morph.get_stats(filter_none=True).items():
+    stats = morph.get_stats(filter_none=True)
+    for category, desc in MORPHOLOGY_STATS_DESC.items():
+        counts = stats.get(category, {})
         denominator = n_words if category == "pos" else sum(counts.values())
-        for label, count in counts.items():
-            features[f"morph_{category}_{label}"] = count / denominator if denominator else nan
+        for label in desc["values"]:
+            features[f"morph_{category}_{label}"] = (
+                counts.get(label, 0) / denominator if denominator else nan
+            )
     features.update(sentence_rhythm(sentence_lengths(text)))
     features.update(
         (f"punct_{key}", float(value))
