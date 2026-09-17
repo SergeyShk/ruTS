@@ -875,6 +875,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#punctuation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Профиль пунктуации
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1907,6 +1918,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../corpus/compare/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Сравнение корпусов
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2625,6 +2664,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#punctuation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Профиль пунктуации
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2792,6 +2842,11 @@
 <td style="text-align: center;">Количество знаков препинания</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>c_punctuations</code></td>
+<td style="text-align: center;">dict[str, int]</td>
+<td style="text-align: center;">Распределение знаков препинания по типам</td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>p_unique_words</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Нормализованное количество уникальных слов</td>
@@ -2907,6 +2962,7 @@
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'c_letters'</span>:<span class="w"> </span><span class="o">{</span><span class="m">1</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">4</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">10</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>,
+<span class="s1">'c_punctuations'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'comma'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'period'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'question'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'exclamation'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'ellipsis'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'colon'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'semicolon'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'dash'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'hyphen'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'angle_quotes'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'straight_quotes'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'parentheses'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'other'</span>:<span class="w"> </span><span class="m">0</span><span class="o">}</span>,
 <span class="s1">'c_syllables'</span>:<span class="w"> </span><span class="o">{</span><span class="m">1</span>:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="m">2</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">4</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>,
 <span class="s1">'n_chars'</span>:<span class="w"> </span><span class="m">55</span>,
 <span class="s1">'n_complex_words'</span>:<span class="w"> </span><span class="m">2</span>,
@@ -2964,6 +3020,24 @@
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Метод не отображает атрибуты нормализованных статистик <code>p_*</code>.</p>
+</div>
+<h2 id="punctuation">Профиль пунктуации<a class="headerlink" href="#punctuation" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>
+</div>
+<p><code>count_punctuations(text)</code> считает знаки препинания по типам из <code>PUNCTUATION_TYPES</code> - это же распределение лежит в атрибуте <code>c_punctuations</code>: запятые, точки, вопросительные и восклицательные знаки, многоточия (символ <code>…</code>, три и более точек или две точки после <code>?</code> и <code>!</code> - один знак, его точки в точки не входят: «Кто там?..» - вопрос и многоточие), двоеточия, точки с запятой, тире (<code>—</code> и <code>–</code>, а также дефис с пробелами по сторонам или в начале строки, которым тире набирают в текстовых корпусах: «- Ушли, - сказал он»), дефисы между буквами («кто-то»), кавычки-ёлочки <code>«»</code>, прямые кавычки и лапки <code>"„“”</code>, скобки и прочие знаки из <code>PUNCTUATIONS</code>. <code>punctuation_profile(text, n_words=None)</code> переводит их в частоты на 1000 слов и добавляет <code>yo_share</code> - долю буквы ё среди букв е и ё, то есть пишет ли автор ё.</p>
+<p>Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. <a href="../../corpus/compare/">сравнение корпусов</a>). Он зависит от оформления текста - типографских кавычек и тире, буквы ё - и легко подделывается, поэтому его стоит смотреть отдельно от лингвистических признаков.</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span><span class="p">,</span> <span class="n">punctuation_profile</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот — «зверь»... Пёс, конечно, - друг; а кто-то (тот, что ещё жив) — нет!"</span>
+<span class="p">{</span><span class="n">kind</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span><span class="p">}</span>
+<span class="c1"># {'comma': 3, 'exclamation': 1, 'ellipsis': 1, 'semicolon': 1, 'dash': 3, 'hyphen': 1, 'angle_quotes': 2, 'parentheses': 2}</span>
+
+<span class="nb">round</span><span class="p">(</span><span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="s2">"dash"</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="s2">"yo_share"</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1"># (250.0, 0.33)</span>
+</code></pre></div>
 </div>
 
 
