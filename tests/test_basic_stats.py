@@ -1,7 +1,10 @@
+from math import isnan
+
 import pytest
 
 from ruts import BasicStats
-from ruts.constants import BASIC_STATS_DESC
+from ruts.basic_stats import count_punctuations, punctuation_profile
+from ruts.constants import BASIC_STATS_DESC, PUNCTUATION_TYPES
 
 
 @pytest.fixture(scope="module")
@@ -100,6 +103,83 @@ def test_n_words(bs):
 
 def test_n_punctuations(bs):
     assert bs.n_punctuations == 12
+
+
+def test_c_punctuations(bs):
+    assert bs.c_punctuations == {
+        "comma": 4,
+        "period": 2,
+        "question": 0,
+        "exclamation": 0,
+        "ellipsis": 0,
+        "colon": 1,
+        "semicolon": 1,
+        "dash": 1,
+        "hyphen": 1,
+        "angle_quotes": 0,
+        "straight_quotes": 0,
+        "parentheses": 2,
+        "other": 0,
+    }
+    assert sum(bs.c_punctuations.values()) == bs.n_punctuations
+    assert list(bs.c_punctuations) == list(PUNCTUATION_TYPES)
+
+
+def test_count_punctuations():
+    text = 'Кот — «зверь»... Пёс, конечно, - друг; а „кто-то“ (тот, что жив) – нет! Так ли? "Да". № 5…'
+    counts = count_punctuations(text)
+    assert counts == {
+        "comma": 3,
+        "period": 1,
+        "question": 1,
+        "exclamation": 1,
+        "ellipsis": 2,
+        "colon": 0,
+        "semicolon": 1,
+        "dash": 3,
+        "hyphen": 1,
+        "angle_quotes": 2,
+        "straight_quotes": 4,
+        "parentheses": 2,
+        "other": 1,
+    }
+    assert count_punctuations("Привет.... Пока....... Да") == {
+        **dict.fromkeys(PUNCTUATION_TYPES, 0),
+        "ellipsis": 2,
+    }
+    assert count_punctuations("") == dict.fromkeys(PUNCTUATION_TYPES, 0)
+
+
+def test_count_punctuations_ellipsis_after_marks():
+    counts = count_punctuations("Кто там?.. Никого!.. Ушли... Да?.")
+    assert (counts["question"], counts["exclamation"], counts["ellipsis"], counts["period"]) == (
+        2,
+        1,
+        3,
+        1,
+    )
+
+
+def test_count_punctuations_spaced_hyphen_as_dash():
+    counts = count_punctuations("- Ушли, - сказал он.\n- Да-да, - ответил кто-то - и всё.\n-")
+    assert (counts["dash"], counts["hyphen"]) == (6, 2)
+    counts = count_punctuations("Как я молод - и страх мне неведом.")
+    assert (counts["dash"], counts["hyphen"]) == (1, 0)
+    assert count_punctuations("какого-либо")["hyphen"] == 1
+    assert count_punctuations("дом -\nмузей")["dash"] == 1
+
+
+def test_punctuation_profile():
+    profile = punctuation_profile("Ёж, ещё ёж — и еще еж!")
+    assert profile["comma"] == pytest.approx(1 / 6 * 1000)
+    assert profile["dash"] == pytest.approx(1 / 6 * 1000)
+    assert profile["exclamation"] == pytest.approx(1 / 6 * 1000)
+    assert profile["period"] == 0
+    assert profile["yo_share"] == pytest.approx(3 / 7)
+    assert punctuation_profile("Ёж, ёж", n_words=4)["comma"] == 250
+    assert isnan(punctuation_profile("Кот и пёс")["yo_share"]) is False
+    assert isnan(punctuation_profile("Кот и дом")["yo_share"])
+    assert all(isnan(value) for value in punctuation_profile("...").values())
 
 
 def test_p_unique_words(bs):
