@@ -21,7 +21,7 @@
 | `by_lemma` | bool | `False` | Сравнивать леммы, а не словоформы |
 | `ignore_case` | bool | `True` | Не учитывать регистр и букву ё при сравнении словоформ |
 
-`format_kwic(concordances, width=40)` и `print_kwic(concordances, width=40)`: `width` - ширина контекста в символах.
+`format_kwic(concordances, width=40)` и `print_kwic(concordances, width=40)`: `width` - ширина контекста в символах, не меньше единицы; переносы строк внутри ключевого словосочетания заменяются пробелами.
 
 ## Результат
 

@@ -20,14 +20,14 @@
 | Мера | Ключ | Формула | Описание |
 | :--- | :--- | :------ | :------- |
 | Логарифм правдоподобия | `log_likelihood` | $G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})$, $E_1 = \frac{c\,(a+b)}{N}$, $E_2 = \frac{d\,(a+b)}{N}$ | [Rayson и Garside (2000)](https://ucrel.lancs.ac.uk/llwizard.html); критические значения `G2_CRITICAL_VALUES`: 3.84 для p < 0.05, 6.63 для p < 0.01, 10.83 для p < 0.001, 15.13 для p < 0.0001 |
-| Хи-квадрат | `chi2` | $\chi^2 = \frac{N\,(|a(d-b) - b(c-a)| - N/2)^2}{(a+b)(N-a-b)\,c\,d}$ | с поправкой Йейтса по таблице сопряженности 2×2 |
+| Хи-квадрат | `chi2` | $\chi^2 = \frac{N\,\max(|a(d-b) - b(c-a)| - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}$ | с поправкой Йейтса по таблице сопряженности 2×2; если поправка больше разности, статистика равна нулю |
 | %DIFF | `diff` | $\frac{NF_a - NF_b}{NF_b} \cdot 100$ | [Gabrielatos и Marchi (2011)](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf); $NF$ - частота на миллион слов |
 | Log Ratio | `log_ratio` | $\log_2 \frac{NF_a}{NF_b}$ | [Hardie (2014)](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/); единица - слово вдвое чаще в целевом корпусе |
 | BIC | `bic` | $G^2 - \ln N$ | Wilson (2013); выше 2 - положительное свидетельство различия, выше 6 - сильное, выше 10 - очень сильное |
-| ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper и Rayson (2007); размер эффекта для $G^2$ от 0 до 1, `nan` при минимальной ожидаемой частоте не больше единицы |
+| ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper и Rayson (2007); размер эффекта для $G^2$ от 0 до 1, `nan` при минимальной ожидаемой частоте меньше $e$ - тогда $\ln \min(E_1, E_2) < 1$ и мера выходит за единицу |
 | Отношение шансов | `odds_ratio` | $\frac{a / (c - a)}{b / (d - b)}$ | единица - шансы равны; `inf`, если слово занимает весь целевой корпус, 0 - если весь эталонный |
 
-Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение $G^2$ считается по распределению хи-квадрат с одной степенью свободы (`calc_p_value`). Меры доступны как функции `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` с аргументами `(a, b, c, d)`; названия и описания - в `ruts.constants.KEYNESS_MEASURES`.
+Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение $G^2$ считается по распределению хи-квадрат с одной степенью свободы (`calc_p_value`). Меры доступны как функции `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` с аргументами `(a, b, c, d)` из модуля `ruts.corpus.keyness` (`from ruts.corpus.keyness import calc_log_likelihood`; имя `ruts.corpus.keyness` в пакете занято одноименной функцией, поэтому импорт модуля целиком не работает); названия и описания - в `ruts.constants.KEYNESS_MEASURES`.
 
 ## Параметры
 

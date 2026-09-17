@@ -43,6 +43,8 @@ def test_measures():
         assert isnan(calc(3, 3, 0, 12))
     assert isnan(calc_npmi(12, 12, 12, 12))
     assert isnan(calc_log_likelihood(12, 12, 12, 12))
+    assert calc_log_likelihood(5, 5, 4, 6) == pytest.approx(0.40271027101377704)
+    assert isnan(calc_log_likelihood(5, 5, 4 / 2 * 3, 6))
     assert isnan(calc_log_likelihood(12, 3, 2, 12))
 
 
@@ -112,3 +114,13 @@ def test_collocations_errors():
         collocations(words, measure="pmi")
     with pytest.raises(ValueError):
         collocations(words, window=0)
+    with pytest.raises(ValueError):
+        collocations(words, top_n=0)
+    scores = []
+    for window in (1, 2, 3):
+        found = collocations(
+            ["а"] * 5 + ["б"], window=window, measure="log_likelihood", min_freq=1
+        )
+        scores.append(next(c.score for c in found if c.left == c.right == "а"))
+    assert scores[0] == pytest.approx(0.40271027101377704)
+    assert all(isnan(score) for score in scores[1:])

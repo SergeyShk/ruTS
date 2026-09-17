@@ -28,13 +28,13 @@ def dendrogram_plot(distances: pd.DataFrame, method: str = "ward", ax: Axes | No
         Axes: Оси с дендрограммой
 
     Исключения:
-        ValueError: Если текстов меньше двух
+        ValueError: Если матрица не квадратная, текстов меньше двух или есть
+            бесконечные расстояния
     """
-    if len(distances) < 2:
-        raise ValueError("Для дендрограммы нужно не меньше двух текстов")
+    values = _distance_matrix(distances, "дендрограммы")
     if ax is None:
         _, ax = plt.subplots(figsize=(8, 0.4 * len(distances) + 1.5))
-    condensed = squareform(distances.to_numpy(dtype=float), checks=False)
+    condensed = squareform(values, checks=False)
     dendrogram(
         linkage(condensed, method=method), labels=list(distances.index), orientation="right", ax=ax
     )
@@ -68,10 +68,10 @@ def pca_plot(
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если текстов меньше двух
+        ValueError: Если текстов меньше трех
     """
-    if len(corpus) < 2:
-        raise ValueError("Для главных компонент нужно не меньше двух текстов")
+    if len(corpus) < 3:
+        raise ValueError("Для главных компонент нужно не меньше трех текстов")
     scores = z_scores(frequency_table(corpus, n_mfw, culling))
     values = scores.to_numpy(dtype=float)
     left, singular, _ = np.linalg.svd(values, full_matrices=False)
@@ -111,11 +111,10 @@ def mds_plot(distances: pd.DataFrame, ax: Axes | None = None) -> Axes:
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если текстов меньше двух
+        ValueError: Если матрица не квадратная, текстов меньше двух или есть
+            бесконечные расстояния
     """
-    if len(distances) < 2:
-        raise ValueError("Для шкалирования нужно не меньше двух текстов")
-    squared = distances.to_numpy(dtype=float) ** 2
+    squared = _distance_matrix(distances, "шкалирования") ** 2
     n_texts = len(squared)
     centering = np.eye(n_texts) - np.ones((n_texts, n_texts)) / n_texts
     gram = -0.5 * centering @ squared @ centering
@@ -133,6 +132,15 @@ def mds_plot(distances: pd.DataFrame, ax: Axes | None = None) -> Axes:
     ax.set_ylabel("Измерение 2")
     ax.set_title("Многомерное шкалирование")
     return ax
+
+
+def _distance_matrix(distances: pd.DataFrame, purpose: str) -> np.ndarray:
+    values = np.asarray(distances.to_numpy(dtype=float), dtype=float)
+    if values.ndim != 2 or values.shape[0] != values.shape[1] or len(values) < 2:
+        raise ValueError(f"Для {purpose} нужна квадратная матрица не меньше чем из двух текстов")
+    if not np.isfinite(values).all():
+        raise ValueError(f"Для {purpose} все расстояния должны быть конечными")
+    return values
 
 
 def mendenhall_plot(corpus: Mapping[str, Sequence[str]], ax: Axes | None = None) -> Axes:
@@ -155,10 +163,10 @@ def mendenhall_plot(corpus: Mapping[str, Sequence[str]], ax: Axes | None = None)
     """
     if not corpus:
         raise ValueError("В корпусе нет текстов")
+    curves = {name: mendenhall_curve(words) for name, words in corpus.items()}
     if ax is None:
         _, ax = plt.subplots()
-    for name, words in corpus.items():
-        curve = mendenhall_curve(words)
+    for name, curve in curves.items():
         ax.plot(list(curve), list(curve.values()), marker=".", label=str(name))
     ax.set_xlabel("Длина слова, символов")
     ax.set_ylabel("Доля слов")

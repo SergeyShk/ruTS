@@ -24,7 +24,9 @@
     from ruts.syntax_stats import calc_dependency_distances
 
     nlp = spacy.load("ru_core_news_sm")
-    calc_dependency_distances(nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."))
+    calc_dependency_distances(
+        nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
+    )
     # [5, 1, 1, 1, 1, 1, 2]
     ```
 

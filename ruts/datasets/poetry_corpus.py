@@ -33,7 +33,8 @@ class PoetryCorpus(Dataset):
 
     Описание:
         16 694 стихотворения 195 авторов XVIII-XX веков (13 млн символов), собранные
-        Ильей Гусевым для библиотеки rupo: автор, название или первая строка, годы
+        Ильей Гусевым для библиотеки rupo: автор, название (у 512 стихотворений
+        в источнике его нет - подставляется первая строка с многоточием), годы
         написания (есть у 12 857 стихотворений) и темы (20 тем, размечены
         3 904 стихотворения: о любви, военные, о дружбе, детские, о животных,
         о природе, патриотические, посвящения и другие)
@@ -60,11 +61,11 @@ class PoetryCorpus(Dataset):
         >>> for i in pc.get_records(author='Лермонтов', theme='О любви', limit=1):
         >>>     print(i)
         {'author': 'Михаил Лермонтов',
-        'title': 'Нищий',
+        'title': 'Благодарю!',
         'themes': ('О любви',),
         'year_from': 1830,
         'year_to': 1830,
-        'text': 'У врат обители святой...'}
+        'text': 'Благодарю!.. Вчера мое признанье...'}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных
@@ -135,7 +136,8 @@ class PoetryCorpus(Dataset):
         Описание:
             Файл корпуса загружается из репозитория по закрепленному коммиту
             и сверяется с контрольной суммой SHA-256; поврежденный или подмененный
-            файл удаляется, чтобы повторная загрузка не пропускалась
+            файл (например, после оборванной загрузки) удаляется и загружается
+            заново в том же вызове
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
@@ -146,10 +148,13 @@ class PoetryCorpus(Dataset):
         download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=force)
         if self._filepath.is_file() and sha256(self._filepath) != FILE_SHA256:
             self._filepath.unlink()
-            raise RuntimeError(
-                f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
-                "повторите загрузку"
-            )
+            download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=True)
+            if sha256(self._filepath) != FILE_SHA256:
+                self._filepath.unlink(missing_ok=True)
+                raise RuntimeError(
+                    f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
+                    "повторите загрузку"
+                )
         self.check_data()
 
     def get_texts(
@@ -311,7 +316,9 @@ def load_records(filepath: str | Path) -> Generator[dict[str, Any], None, None]:
     Описание:
         Файл - XML с элементами item внутри корневого items: author, name, themes
         (вложенные item), date_from, date_to, text; вложенные item тем отличаются
-        от стихотворений по глубине
+        от стихотворений по глубине. У 512 стихотворений название в источнике
+        пустое - тогда title собирается из первой строки текста с многоточием,
+        как названы безымянные стихотворения в самом корпусе
 
     Аргументы:
         filepath (str|Path): Путь к файлу корпуса
@@ -332,7 +339,8 @@ def load_records(filepath: str | Path) -> Generator[dict[str, Any], None, None]:
             if element.tag == "item" and depth == 1:
                 yield {
                     "author": (element.findtext("author") or "").strip(),
-                    "title": (element.findtext("name") or "").strip(),
+                    "title": (element.findtext("name") or "").strip()
+                    or _first_line(element.findtext("text") or ""),
                     "themes": tuple(
                         (theme.text or "").strip() for theme in element.findall("themes/item")
                     ),
@@ -342,7 +350,15 @@ def load_records(filepath: str | Path) -> Generator[dict[str, Any], None, None]:
                 }
                 element.clear()
     except ET.ParseError as e:
-        raise ValueError("Не удалось извлечь записи из файла") from e
+        raise ValueError(
+            "Не удалось извлечь записи из файла, загрузите его заново: "
+            ">>> PoetryCorpus().download(force=True)"
+        ) from e
+
+
+def _first_line(text: str) -> str:
+    first = next((line.strip() for line in text.splitlines() if line.strip()), "")
+    return first.rstrip(".,;:!?…-") + "..." if first else ""
 
 
 def _year(value: str | None) -> int | None:

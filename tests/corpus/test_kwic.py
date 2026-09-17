@@ -36,6 +36,9 @@ def test_kwic():
     assert kwic("Кот:\n\n  «сидел» тихо", "сидел", window=1) == [
         Concordance(9, 14, "Кот: «", "сидел", "» тихо")
     ]
+    assert kwic("кот\n\tсидел на окне", "кот сидел", window=1) == [
+        Concordance(0, 10, "", "кот сидел", "на")
+    ]
 
 
 def test_kwic_doc():
@@ -74,5 +77,9 @@ def test_format_kwic(capsys):
         "Потому что  кот   спал",
     ]
     assert format_kwic([]) == ""
+    assert format_kwic(kwic("кот\nсидел", "кот сидел"), width=1).split("\n") == ["   кот сидел  "]
+    for width in (0, -1):
+        with pytest.raises(ValueError):
+            format_kwic(lines, width=width)
     print_kwic(lines, width=10)
     assert capsys.readouterr().out == formatted + "\n"

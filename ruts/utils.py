@@ -357,7 +357,9 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
         with tarfile.open(archive_path, mode="r") as tar_file:
             members = tar_file.getnames()
     src_basename = os.path.commonpath(members)
-    if not src_basename:
+    if src_basename and not (extract_path / src_basename).is_dir():
+        src_basename = str(Path(src_basename).parent)
+    if not src_basename or src_basename == ".":
         return str(extract_path)
     # Отбрасываем все расширения: stalin_works.tar.xz -> stalin_works
     dest_basename = archive_path.name

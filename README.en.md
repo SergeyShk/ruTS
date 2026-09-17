@@ -91,7 +91,11 @@ python -m spacy download ru_core_news_sm
  'n_letters': 45,
  'n_spaces': 8,
  'n_syllables': 18,
- 'n_punctuations': 2}
+ 'n_punctuations': 2,
+ 'c_punctuations': {'comma': 1, 'period': 0, 'question': 0, 'exclamation': 0,
+                    'ellipsis': 0, 'colon': 1, 'semicolon': 0, 'dash': 0,
+                    'hyphen': 0, 'angle_quotes': 0, 'straight_quotes': 0,
+                    'parentheses': 0, 'other': 0}}
 
 >>> ReadabilityStats(text).flesch_reading_easy
 74.93500000000003
@@ -599,7 +603,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: about 100 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 130 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor
@@ -664,14 +668,14 @@ One can work solely with texts (without title info) or texts with metadata. Ther
 
 >>> for record in sc.get_records(max_len=100, category='Весна', limit=1):
 ...     pprint(record)
-{'author': 'Е. Трутнева',
+{'author': 'С. Маршак',
  'book': 'Родная речь. Книга для чтения в I классе начальной школы',
  'category': 'Весна',
- 'file': PosixPath('.../ruts_data/texts/sov_chrest_lit/grade_1/155'),
+ 'file': PosixPath('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
  'grade': 1,
- 'subject': 'Дождик',
- 'text': 'Дождик, дождик, поливай, будет хлеба каравай!\n'
-         'Дождик, дождик, припусти, дай гороху подрасти!',
+ 'subject': 'Март',
+ 'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
+         'Зайчик бегает по парте и по карте на стене.',
  'type': 'Стихотворение',
  'year': 1963}
 ```
@@ -681,7 +685,7 @@ A dataset is downloaded by the `download()` method and cached locally, a repeate
 </details>
 
 <details>
-<summary><b>Visualization</b></summary>
+<summary><b>Visualizations</b></summary>
 
 <br>
 

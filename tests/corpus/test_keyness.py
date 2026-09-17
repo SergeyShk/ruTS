@@ -58,6 +58,8 @@ def test_measures():
         calc_log_likelihood(10, 5, 1000, 2000) / (3000 * log(5))
     )
     assert isnan(calc_ell(1, 0, 1000, 2000))
+    assert isnan(calc_ell(5, 0, 1000, 2000))
+    assert not isnan(calc_ell(9, 0, 1000, 2000))
     assert calc_odds_ratio(10, 5, 1000, 2000) == pytest.approx((10 / 990) / (5 / 1995))
     assert calc_odds_ratio(10, 10, 10, 20) == inf
     assert calc_odds_ratio(10, 20, 20, 20) == 0
@@ -122,8 +124,13 @@ def test_keyness_measures():
         if measure != "ell":
             assert keywords[0].word == "кот"
     keywords = keyness(target, reference, measure="ell")
-    assert keywords[0].word == "на"
-    assert all(isnan(keyword.score) for keyword in keywords[1:])
+    assert all(isnan(keyword.score) for keyword in keywords)
+    assert [keyword.word for keyword in keywords[:2]] == ["кот", "на"]
+    assert keyness(["а"] * 30 + ["б"] * 30, ["а"] * 5 + ["б"] * 55, measure="ell")[0].score == (
+        pytest.approx(calc_ell(30, 5, 60, 60))
+    )
+    assert 0 < calc_ell(30, 5, 60, 60) < 1
+    assert isnan(calc_ell(4, 0, 4, 2))
     assert [keyword.word for keyword in keyness(target, reference, measure="odds_ratio")[:1]] == [
         "кот"
     ]
@@ -163,3 +170,7 @@ def test_keyness_errors():
         keyness([], reference)
     with pytest.raises(ValueError):
         keyness(target, {})
+    with pytest.raises(ValueError):
+        keyness(target, reference, top_n=0)
+    with pytest.raises(ValueError):
+        keyness(target, reference, top_n=-1)

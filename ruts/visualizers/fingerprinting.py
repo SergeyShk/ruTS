@@ -21,6 +21,13 @@ def fingerprinting(
     """
     Визуализация литературной дактилоскопии (Literature Fingerprinting)
 
+    Описание:
+        Каждый текст режется на сегменты по segment_len слов со скользящим шагом
+        в десятую часть сегмента, для сегмента считается метрика лексического
+        разнообразия, квадраты раскрашиваются по ее значению относительно
+        наибольшего конечного; сегменты с неопределенной метрикой (nan
+        на слишком коротких для нее сегментах) рисуются как нулевые
+
     Ссылки:
         https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf
 
@@ -71,7 +78,8 @@ def fingerprinting(
     ax.figure.colorbar(cx, ax=ax)
     x = -x_size + 30
     y = y_size - 50
-    max_metric = max([max(v) for k, v in metrics.items()])
+    finite = [value for segments in metrics.values() for value in segments if np.isfinite(value)]
+    max_metric = max(finite) if finite else 1.0
     n_cols = 0
     n_rows = 0
     for segments in metrics.values():
@@ -83,7 +91,7 @@ def fingerprinting(
         for i in range(n_rows):
             for j in range(n_cols):
                 if pos <= (n_segments - 1):
-                    b[i][j] = segments[pos]
+                    b[i][j] = segments[pos] if np.isfinite(segments[pos]) else 0
                     pos += 1
                 else:
                     b[i][j] = 0

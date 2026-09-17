@@ -4,10 +4,10 @@ from numbers import Integral
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
+from razdel import sentenize
 from spacy.tokens import Doc
 
-from ..extractors import SentsExtractor, WordsExtractor
-from ..utils import iter_doc_words
+from ..utils import iter_doc_words, iter_text_words
 
 
 def sentence_lengths_plot(
@@ -22,8 +22,9 @@ def sentence_lengths_plot(
     Описание:
         Длина каждого предложения в словах по порядку текста, скользящее среднее
         по окну из window предложений и врезка с гистограммой длин - ритм текста;
-        предложения строки извлекаются razdel, объекта Doc - по границам
-        предложений, готовый список длин используется как есть
+        предложения и слова строки извлекаются razdel (слова относятся
+        к предложению по позиции), объекта Doc - по границам предложений,
+        готовый список длин используется как есть
 
     Аргументы:
         source (str|Doc|Iterable[int]): Текст, объект Doc или длины предложений
@@ -85,8 +86,15 @@ def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
         TypeError: Если источник данных некорректен
     """
     if isinstance(source, str):
-        words = WordsExtractor()
-        lengths = [len(words.extract(sent)) for sent in SentsExtractor().extract(source)]
+        starts = [start for start, _, _ in iter_text_words(source)]
+        lengths = []
+        index = 0
+        for sent in sentenize(source):
+            count = 0
+            while index < len(starts) and starts[index] < sent.stop:
+                count += starts[index] >= sent.start
+                index += 1
+            lengths.append(count)
         return [length for length in lengths if length]
     if isinstance(source, Doc):
         if source.has_annotation("SENT_START"):

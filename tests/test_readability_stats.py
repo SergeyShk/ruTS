@@ -1,6 +1,6 @@
 import pytest
 
-from ruts import ReadabilityStats, SentsExtractor
+from ruts import BasicStats, ReadabilityStats, SentsExtractor
 from ruts.constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
@@ -54,6 +54,14 @@ def test_init_no_sents_error():
 def test_init_preset_error():
     with pytest.raises(ValueError):
         ReadabilityStats(text, preset="unknown")
+
+
+def test_init_basic_stats(rs):
+    basic = BasicStats(text)
+    from_basic = ReadabilityStats(basic, preset="fiction")
+    assert from_basic.bs is basic
+    assert from_basic.preset == "fiction"
+    assert ReadabilityStats(basic).get_stats() == rs.get_stats()
 
 
 def test_default_preset(rs):

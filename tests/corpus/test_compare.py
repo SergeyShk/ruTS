@@ -43,6 +43,26 @@ def test_split_windows():
     assert split_windows(" \n" + text + "\n ", None) == [text]
     assert len(split_windows(text, 8)) == 3
     assert split_windows("Кто там?! Никого… Ушли!!!", None) == ["Кто там?! Никого… Ушли!!!"]
+    assert split_windows("— Ушли, — сказал он. — Все ушли.", None) == [
+        "— Ушли, — сказал он. — Все ушли."
+    ]
+    assert split_windows("(Кот) спал. «Пёс» ел.", 2) == ["(Кот) спал.", "«Пёс» ел."]
+    assert split_windows("— Ушли, — сказал он. — Все ушли.", 3) == [
+        "— Ушли, — сказал он.",
+        "— Все ушли.",
+    ]
+    assert split_windows("«Кот» спал.\n(Пёс) ел!", 2) == ["«Кот» спал.", "(Пёс) ел!"]
+    assert (
+        text_features("— Ушли, — сказал он.")["punct_dash"]
+        == (corpus_features(["— Ушли, — сказал он."], None)["punct_dash"].iloc[0])
+    )
+    assert [len(chunk.split()) for chunk in split_windows(" ".join(["а"] * 1500), 1000)] == [
+        750,
+        750,
+    ]
+    assert len(split_windows(" ".join(["а"] * 2500), 1000)) == 3
+    assert len(split_windows(" ".join(["а"] * 3500), 1000)) == 4
+    assert len(split_windows(" ".join(["а"] * 1499), 1000)) == 1
     assert split_windows("Кто там?! Никого… Ушли, все ушли!!! Вот так.", 3) == [
         "Кто там?! Никого…",
         "Ушли, все ушли!!!",

@@ -1,3 +1,4 @@
+import warnings
 from collections import Counter
 from collections.abc import Callable, Mapping, Sequence
 from functools import partial
@@ -6,7 +7,7 @@ from typing import NamedTuple
 
 import numpy as np
 from nltk import FreqDist
-from scipy.optimize import curve_fit
+from scipy.optimize import OptimizeWarning, curve_fit
 from scipy.special import comb
 from scipy.stats import t as student_t
 from spacy.tokens import Doc
@@ -1248,11 +1249,14 @@ def fit_zipf_mandelbrot(text: Sequence[str] | Mapping[str, int]) -> ZipfMandelbr
         text (list[str]|Counter): Список слов или справочник частот
 
     Вывод:
-        ZipfMandelbrot: Параметры закона, nan для текстов из менее чем трех лексем
-            или если подгонка не сошлась
+        ZipfMandelbrot: Параметры закона, nan для текстов из менее чем трех лексем,
+            при одинаковых частотах всех лексем или если подгонка не сошлась
     """
-    frequencies = np.array(sorted(Counter(text).values(), reverse=True), dtype=float)
-    if len(frequencies) < 3:
+    frequencies = np.array(
+        sorted((count for count in Counter(text).values() if count > 0), reverse=True),
+        dtype=float,
+    )
+    if len(frequencies) < 3 or frequencies[0] == frequencies[-1]:
         return ZipfMandelbrot(nan, nan, nan, nan)
     ranks = np.arange(1, len(frequencies) + 1, dtype=float)
     log_frequencies = np.log(frequencies)
@@ -1261,19 +1265,20 @@ def fit_zipf_mandelbrot(text: Sequence[str] | Mapping[str, int]) -> ZipfMandelbr
         return log_c - s * np.log(rank + q)
 
     try:
-        (log_c, q, s), _ = curve_fit(
-            model,
-            ranks,
-            log_frequencies,
-            p0=(log_frequencies[0], 1.0, 1.0),
-            bounds=([-np.inf, 0.0, 0.0], [np.inf, np.inf, np.inf]),
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", OptimizeWarning)
+            (log_c, q, s), _ = curve_fit(
+                model,
+                ranks,
+                log_frequencies,
+                p0=(log_frequencies[0], 1.0, 1.0),
+                bounds=([-np.inf, 0.0, 0.0], [np.inf, np.inf, np.inf]),
+            )
     except (RuntimeError, ValueError):
         return ZipfMandelbrot(nan, nan, nan, nan)
     residual = float(((log_frequencies - model(ranks, log_c, q, s)) ** 2).sum())
     total = float(((log_frequencies - log_frequencies.mean()) ** 2).sum())
-    r2 = 1 - residual / total if total else nan
-    return ZipfMandelbrot(float(np.exp(log_c)), float(q), float(s), r2)
+    return ZipfMandelbrot(float(np.exp(log_c)), float(q), float(s), 1 - residual / total)
 
 
 class HeapsFit(NamedTuple):
@@ -1350,7 +1355,10 @@ def calc_heaps_beta(text: Sequence[str]) -> float:
         Оценивается линейной регрессией логарифма размера словаря по логарифму
         длины текста вдоль кривой роста словаря; зависит от порядка слов
         и требует от нескольких сотен слов
-        Для естественных текстов β лежит в пределах 0.4-0.6
+        На корпусах в миллионы слов β лежит в пределах 0.4-0.6; регрессия
+        по всей кривой роста отдельного текста дает больше (0.6-0.9),
+        так как в начале текста почти каждое слово новое, поэтому значения
+        сравнимы только между текстами близкой длины
 
     Ссылки:
         https://en.wikipedia.org/wiki/Heaps'_law

@@ -1,3 +1,5 @@
+import warnings
+from collections import Counter
 from math import e, inf, isnan, log, log2, log10, nan, sqrt
 
 import pytest
@@ -346,6 +348,13 @@ def test_fit_zipf_mandelbrot(ds):
     assert fit.q >= 0 and fit.s > 0 and 0 < fit.r2 <= 1
     assert all(isnan(value) for value in fit_zipf_mandelbrot(["а", "б"]))
     assert all(isnan(value) for value in fit_zipf_mandelbrot([]))
+    assert all(isnan(value) for value in fit_zipf_mandelbrot([f"w{i % 10}" for i in range(70)]))
+    assert all(isnan(value) for value in fit_zipf_mandelbrot([f"w{i % 10}" for i in range(30)]))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        fit_zipf_mandelbrot(["а", "б", "в"])
+        fit = fit_zipf_mandelbrot(Counter({"а": 12, "б": 6, "в": 4, "г": 0}))
+    assert fit.s == pytest.approx(1, rel=1e-3)
 
 
 def test_heaps_beta(ds):
