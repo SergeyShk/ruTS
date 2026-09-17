@@ -57,7 +57,8 @@ class ReadabilityStats:
         '1-3-й класс (6-8 лет)'
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|BasicStats): Источник данных - строка, объект Doc или готовый
+            объект BasicStats, чтобы не считать базовые статистики повторно
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
         preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
@@ -97,7 +98,7 @@ class ReadabilityStats:
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | BasicStats,
         sents_extractor: SentsExtractor | None = None,
         words_extractor: WordsExtractor | None = None,
         preset: str = "plainrussian",
@@ -109,7 +110,10 @@ class ReadabilityStats:
             )
         self.preset = preset
         self.coefficients = dict(READABILITY_PRESETS[preset])
-        self.bs = BasicStats(source, sents_extractor, words_extractor)
+        if isinstance(source, BasicStats):
+            self.bs = source
+        else:
+            self.bs = BasicStats(source, sents_extractor, words_extractor)
         if not self.bs.n_sents:
             raise ValueError("В источнике данных отсутствуют предложения")
 

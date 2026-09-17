@@ -51,6 +51,14 @@ def test_keyness_plot():
     ax = keyness_plot(positive)
     assert len(ax.patches) == len(positive)
     assert [text.get_text() for text in ax.get_legend().get_texts()] == ["целевой корпус"]
+    ax = keyness_plot([], negative, top_n=2)
+    assert len(ax.patches) == 2
+    assert [text.get_text() for text in ax.get_legend().get_texts()] == ["эталонный корпус"]
+    plt.close("all")
+    for top_n in (0, -1):
+        with pytest.raises(ValueError):
+            keyness_plot(positive, negative, top_n=top_n)
+    assert plt.get_fignums() == []
     undefined = [Keyword("а", 1, 0, 1.0, 0.0, 1.0, 0.5, 1.0, nan)]
     infinite = [Keyword("б", 1, 0, 1.0, 0.0, 1.0, 0.5, 1.0, inf)]
     assert len(keyness_plot(positive + undefined + infinite).patches) == len(positive)
@@ -98,3 +106,6 @@ def test_collocation_network():
     assert '"а" [fontsize=17]' in single.source
     with pytest.raises(ValueError):
         collocation_network([])
+    for top_n in (0, -1):
+        with pytest.raises(ValueError):
+            collocation_network(found, top_n=top_n)

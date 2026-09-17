@@ -3,7 +3,6 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
-from scipy import special
 
 from ..diversity_stats import fit_zipf_mandelbrot
 
@@ -29,7 +28,7 @@ def zipf(
 
     Аргументы:
         counter (Counter): Справочник частотности слов
-        num_words (int): Количество самых частотных слов
+        num_words (int): Количество самых частотных слов; не больше размера справочника
         num_labels (int): Количество слов, отображаемых на графике
         log (bool): Использовать логарифмическую шкалу
         show_theory (bool): Отображать график теоретического Закона Ципфа
@@ -42,17 +41,17 @@ def zipf(
 
     Исключения:
         TypeError: Если передаваемое значение не является объектом Counter
+        ValueError: Если справочник пуст
     """
     if not isinstance(counter, Counter):
         raise TypeError("Справочник частотности слов должен быть объектом Counter")
+    if not counter:
+        raise ValueError("В источнике данных отсутствуют слова")
     if ax is None:
         _, ax = plt.subplots()
     top_frequency = counter.most_common(1)[0][1]
-    if num_words:
-        frequencies_by_token = dict(counter.most_common(num_words))
-    else:
-        frequencies_by_token = dict(counter)
-        num_words = len(counter)
+    num_words = min(num_words, len(counter)) if num_words else len(counter)
+    frequencies_by_token = dict(counter.most_common(num_words))
     counts = np.array(tuple(frequencies_by_token.values()))
     tokens = np.array(tuple(frequencies_by_token.keys()))
     ranks = np.arange(1, counts.size + 1)
@@ -61,7 +60,12 @@ def zipf(
     plot = ax.loglog if log else ax.plot
     plot(ranks, frequencies, marker=".", label="Экспериментальный закон")
     if num_labels > 0:
-        for n in list(np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)):
+        positions = (
+            np.logspace(-0.5, np.log10(len(counts) - 1), num_labels).astype(int)
+            if len(counts) > 1
+            else np.zeros(1, dtype=int)
+        )
+        for n in np.unique(positions):
             ax.text(
                 ranks[n],
                 frequencies[n],
@@ -101,12 +105,22 @@ def zipf_theory(size: int, num_ranks: int, alpha: float = 1.5, ax: Axes | None =
         alpha (float): Коэффициент α
         ax (Axes): Оси для графика; если не заданы, создается новая фигура
 
+    Описание:
+        Частота ранга r пропорциональна r^(-α), кривая нормирована так, что частота
+        первого ранга равна size
+
     Вывод:
         Axes: Оси с графиком теоретического Закона Ципфа
+
+    Исключения:
+        ValueError: Если число ранков меньше единицы или показатель не больше нуля
     """
+    if num_ranks < 1:
+        raise ValueError("Количество ранков должно быть больше 0")
+    if alpha <= 0:
+        raise ValueError("Показатель α должен быть больше 0")
     if ax is None:
         _, ax = plt.subplots()
     x = np.arange(1, num_ranks + 1)
-    y = x ** (-alpha) / special.zetac(alpha)
-    ax.plot(x, y / max(y) * size, linewidth=2, color="r", label="Теоретический закон")
+    ax.plot(x, size * x ** (-alpha), linewidth=2, color="r", label="Теоретический закон")
     return ax

@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from math import log2
+from math import floor, log2
 from typing import NamedTuple
 
 import numpy as np
@@ -58,8 +58,8 @@ def frequency_table(
         DataFrame: Таблица относительных частот
 
     Исключения:
-        ValueError: Если корпус пуст, в нем есть пустой текст или после отсева
-            не осталось единиц
+        ValueError: Если корпус пуст, в нем есть пустой текст, n_mfw меньше
+            единицы или после отсева не осталось единиц
     """
     if not corpus:
         raise ValueError("В корпусе нет текстов")
@@ -67,6 +67,8 @@ def frequency_table(
         raise ValueError("В корпусе есть текст без единиц")
     if not 0 <= culling <= 1:
         raise ValueError("Доля текстов для отсева должна быть в пределах от 0 до 1")
+    if n_mfw is not None and n_mfw < 1:
+        raise ValueError("Число самых частых единиц должно быть больше 0")
     rows = {
         name: {unit: count / len(units) for unit, count in Counter(units).items()}
         for name, units in corpus.items()
@@ -127,7 +129,9 @@ def delta(
         единицы (dist.eder); cosine - косинусное 1 − cos (Smith и Aldridge 2011,
         Evert и др. 2015, dist.wurzburg)
         Единицами могут быть словоформы в нижнем регистре (обычный выбор
-        для дельты) или символьные N-граммы (CharNgramsExtractor)
+        для дельты) или символьные N-граммы (CharNgramsExtractor). Текстов нужно
+        не меньше трех: на двух z-оценки вырождаются в ±1/√2, и расстояния не
+        зависят от частот; для одинаковых текстов косинусное расстояние равно 0
 
     Ссылки:
         https://aclanthology.org/W15-0709.pdf
@@ -143,12 +147,13 @@ def delta(
         DataFrame: Симметричная матрица расстояний с именами текстов
 
     Исключения:
-        ValueError: Если вариант неизвестен или текстов меньше двух
+        ValueError: Если вариант неизвестен, текстов меньше трех или n_mfw
+            меньше единицы
     """
     if variant not in DELTA_VARIANTS:
         raise ValueError(f"Неизвестный вариант дельты: {variant}")
-    if len(corpus) < 2:
-        raise ValueError("Для расстояний нужно не меньше двух текстов")
+    if len(corpus) < 3:
+        raise ValueError("Для расстояний нужно не меньше трех текстов")
     scores = z_scores(frequency_table(corpus, n_mfw, culling))
     n_units = scores.shape[1]
     values = scores.to_numpy()
@@ -160,7 +165,7 @@ def delta(
         weights = (n_units - np.arange(1, n_units + 1) + 2) / n_units
         distances = pdist(values * weights, "cityblock")
     else:
-        distances = pdist(values, "cosine")
+        distances = np.nan_to_num(pdist(values, "cosine"), nan=0.0)
     return pd.DataFrame(squareform(distances), index=scores.index, columns=scores.index)
 
 
@@ -175,8 +180,9 @@ def zeta(
 
     Описание:
         Каждый текст обоих корпусов делится на сегменты примерно по segment_size
-        слов (число сегментов - округленное отношение длины к размеру, не меньше
-        одного), для слова считается доля сегментов каждого корпуса, где оно
+        слов (число сегментов - отношение длины к размеру, округленное вверх
+        от половины, не меньше одного), для слова считается доля сегментов
+        каждого корпуса, где оно
         встречается (DP). Zeta = DP_target − DP_comparison от −1 до 1 (Burrows
         2007, Craig и Kinney 2009 в записи stylo; классическая Zeta Крейга
         DP_target + (1 − DP_comparison) больше на единицу), логарифмическая
@@ -200,10 +206,13 @@ def zeta(
             логарифмической Zeta и по алфавиту
 
     Исключения:
-        ValueError: Если размер сегмента меньше единицы или один из корпусов пуст
+        ValueError: Если размер сегмента или top_n меньше единицы или один
+            из корпусов пуст
     """
     if segment_size < 1:
         raise ValueError("Размер сегмента должен быть больше 0")
+    if top_n is not None and top_n < 1:
+        raise ValueError("Количество слов должно быть больше 0")
     presence_target, n_target = _segment_presence(target, segment_size)
     presence_comparison, n_comparison = _segment_presence(comparison, segment_size)
     if not n_target or not n_comparison:
@@ -234,7 +243,7 @@ def _segment_presence(
         if not text:
             continue
         for segment in np.array_split(
-            np.asarray(text, dtype=object), max(1, round(len(text) / segment_size))
+            np.asarray(text, dtype=object), max(1, floor(len(text) / segment_size + 0.5))
         ):
             presence.update(set(segment.tolist()))
             n_segments += 1
@@ -263,8 +272,10 @@ def kilgarriff_chi2(words_a: Sequence[str], words_b: Sequence[str], n_mfw: int =
         float: Значение хи-квадрат
 
     Исключения:
-        ValueError: Если один из корпусов пуст
+        ValueError: Если один из корпусов пуст или n_mfw меньше единицы
     """
+    if n_mfw < 1:
+        raise ValueError("Число самых частых слов должно быть больше 0")
     counts_a = Counter(words_a)
     counts_b = Counter(words_b)
     size_a = sum(counts_a.values())

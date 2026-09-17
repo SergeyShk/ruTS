@@ -30,7 +30,7 @@ TEXTS = {
     "publicism/Tolstoy/Не могу молчать.txt": "Статья о смертной казни.",
 }
 INFOS = {
-    "prose/Chekhov/info.csv": "name,year\nАгафья,1886\nАльбом,1885\nНет файла,1887\n",
+    "prose/Chekhov/info.csv": "name,year\nАгафья,1886\nАЛЬБОМ,1885\nНет файла,1887\n",
     "poems/Pushkin/info.csv": 'name,year\n19 октября,1825\n"Борис Годунов",1824-1825\n',
     "publicism/Tolstoy/info.csv": "name,year\nНе могу молчать,без даты\n",
 }
@@ -109,6 +109,7 @@ def test_records(dataset):
         "text": "Агафья. Рассказ о деревне.",
         "file": dataset._dirpath / "prose/Chekhov/Агафья.txt",
     }
+    assert (records[1]["year_from"], records[1]["year_to"]) == (1885, 1885)
     assert (records[2]["year_from"], records[2]["year_to"]) == (None, None)
     assert (records[4]["year_from"], records[4]["year_to"]) == (1824, 1825)
     assert records[5]["text"] == "Поэма."
@@ -209,9 +210,18 @@ def make_archive(path: Path) -> Path:
 def test_download_extracts(tmp_path, monkeypatch):
     dataset = RussianLiterature(data_dir=tmp_path)
     archive = make_archive(tmp_path)
-    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: str(archive))
+    calls = []
+
+    def fake_download(**kwargs):
+        calls.append(kwargs["force"])
+        if not archive.exists():
+            make_archive(tmp_path)
+        return str(archive)
+
+    monkeypatch.setattr(russian_literature_module, "download_file", fake_download)
     with pytest.raises(RuntimeError):
         dataset.download()
+    assert calls == [False, True]
     assert dataset.filepath is None
     archive = make_archive(tmp_path)
     monkeypatch.setattr(russian_literature_module, "ARCHIVE_SHA256", sha256(archive))
@@ -237,6 +247,27 @@ def test_download_extracts(tmp_path, monkeypatch):
     shutil.rmtree(dataset._dirpath / "poems")
     monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: "")
     dataset.download()
+    assert len(list(dataset)) == len(TEXTS)
+
+
+def test_download_retries_corrupted_archive(tmp_path, monkeypatch):
+    dataset = RussianLiterature(data_dir=tmp_path)
+    (tmp_path / "good").mkdir()
+    good = make_archive(tmp_path / "good").read_bytes()
+    archive = tmp_path / ARCHIVE
+    calls = []
+
+    def fake_download(**kwargs):
+        calls.append(kwargs["force"])
+        archive.write_bytes(good[:100] if len(calls) == 1 else good)
+        return str(archive)
+
+    monkeypatch.setattr(russian_literature_module, "download_file", fake_download)
+    monkeypatch.setattr(
+        russian_literature_module, "ARCHIVE_SHA256", sha256(tmp_path / "good" / ARCHIVE)
+    )
+    dataset.download()
+    assert calls == [False, True]
     assert len(list(dataset)) == len(TEXTS)
 
 

@@ -28,9 +28,14 @@ def test_dendrogram_plot():
     assert len(ax.collections) >= 2
     _, given = plt.subplots()
     assert dendrogram_plot(distances, method="average", ax=given) is given
+    plt.close("all")
     with pytest.raises(ValueError):
         dendrogram_plot(distances.iloc[:1, :1])
-    plt.close("all")
+    with pytest.raises(ValueError):
+        dendrogram_plot(distances.iloc[:2, :3])
+    with pytest.raises(ValueError):
+        dendrogram_plot(distances.replace(0.0, np.nan))
+    assert len(plt.get_fignums()) == 0
 
 
 def test_pca_plot():
@@ -42,9 +47,8 @@ def test_pca_plot():
     assert np.allclose(offsets.mean(axis=0), 0, atol=1e-9)
     assert ax.get_xlabel().startswith("Компонента 1 (")
     assert ax.get_ylabel().startswith("Компонента 2 (")
-    ax = pca_plot({name: corpus[name] for name in ("А", "Б")}, n_mfw=10)
-    assert ax.get_ylabel() == "Компонента 2 (0.0%)"
-    assert np.allclose(ax.collections[0].get_offsets()[:, 1], 0)
+    with pytest.raises(ValueError):
+        pca_plot({name: corpus[name] for name in ("А", "Б")}, n_mfw=10)
     ax = pca_plot(corpus, n_mfw=1)
     assert ax.get_xlabel() == "Компонента 1 (100.0%)"
     assert np.allclose(ax.collections[0].get_offsets()[:, 1], 0)
@@ -65,6 +69,8 @@ def test_mds_plot():
     assert ax.get_title() == "Многомерное шкалирование"
     with pytest.raises(ValueError):
         mds_plot(distances.iloc[:1, :1])
+    with pytest.raises(ValueError):
+        mds_plot(distances.replace(0.0, np.inf))
     plt.close("all")
 
 
@@ -88,3 +94,6 @@ def test_mendenhall_plot():
     with pytest.raises(ValueError):
         mendenhall_plot({})
     plt.close("all")
+    with pytest.raises(ValueError):
+        mendenhall_plot({"А": []})
+    assert len(plt.get_fignums()) == 0

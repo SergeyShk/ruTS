@@ -67,12 +67,14 @@ def collocations(
             по алфавиту
 
     Исключения:
-        ValueError: Если мера неизвестна или окно меньше единицы
+        ValueError: Если мера неизвестна, окно или top_n меньше единицы
     """
     if measure not in COLLOCATION_MEASURES:
         raise ValueError(f"Неизвестная мера ассоциации: {measure}")
     if window < 1:
         raise ValueError("Окно должно быть не меньше единицы")
+    if top_n is not None and top_n < 1:
+        raise ValueError("Количество коллокаций должно быть больше 0")
     calc = MEASURES[measure]
     n_words = len(words)
     frequencies = Counter(words)
@@ -230,11 +232,15 @@ def calc_log_likelihood(freq_a: int, freq_b: int, freq_ab: float, n: int) -> flo
         n (int): Число слов в тексте
 
     Вывод:
-        float: G², nan если одно из слов занимает весь текст
+        float: G², nan если одно из слов занимает весь текст или таблица
+            вырождена (пара слова с самим собой в окне больше единицы дает
+            отрицательную ячейку)
     """
     if freq_a >= n or freq_b >= n:
         return nan
     observed = (freq_ab, freq_a - freq_ab, freq_b - freq_ab, n - freq_a - freq_b + freq_ab)
+    if min(observed) < 0:
+        return nan
     expected = (
         freq_a * freq_b / n,
         freq_a * (n - freq_b) / n,

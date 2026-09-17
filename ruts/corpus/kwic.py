@@ -43,8 +43,9 @@ def kwic(
         частей речи лемма слова берется с частью речи токена (lemmatize), так
         «стали» находится по «сталь» или «стать» в зависимости от разметки,
         ключевое слово лемматизируется без части речи. Контекст - window слов
-        слева и справа, как они записаны в тексте, со знаками препинания между ними,
-        пробельные символы схлопываются в один пробел; вхождения не пересекаются
+        слева и справа, как они записаны в тексте, со знаками препинания между ними;
+        пробельные символы в контекстах и во вхождении схлопываются в один пробел;
+        вхождения не пересекаются
 
     Аргументы:
         source (str|Doc): Текст или объект Doc
@@ -95,7 +96,11 @@ def kwic(
         right = text[end : words[min(last + window, len(words) - 1)][1]] if window else ""
         found.append(
             Concordance(
-                start, end, " ".join(left.split()), text[start:end], " ".join(right.split())
+                start,
+                end,
+                " ".join(left.split()),
+                " ".join(text[start:end].split()),
+                " ".join(right.split()),
             )
         )
         index = last + 1
@@ -122,7 +127,12 @@ def format_kwic(concordances: Sequence[Concordance], width: int = 40) -> str:
 
     Вывод:
         str: Конкорданс в виде текста
+
+    Исключения:
+        ValueError: Если ширина контекста меньше единицы
     """
+    if width < 1:
+        raise ValueError("Ширина контекста должна быть больше 0")
     keyword_width = max((len(line.keyword) for line in concordances), default=0)
     return "\n".join(
         f"{line.left[-width:]:>{width}}  {line.keyword:<{keyword_width}}  {line.right[:width]}"

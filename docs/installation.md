@@ -27,6 +27,9 @@ pip install ruts
 
 В результате будет установлена релизная версия библиотеки и все зависимости.
 
+!!! warning "Graphviz"
+    Пакет `graphviz` из зависимостей - только обертка: для отрисовки [дерева слов](visualizers/word_tree.md) и [сети коллокаций](visualizers/corpus.md#collocation_network) нужны исполняемые файлы [Graphviz](https://graphviz.org/download/) (`brew install graphviz`, `apt install graphviz`, `conda install graphviz`), иначе `render()` и показ графа в Jupyter завершатся ошибкой `ExecutableNotFound`. Остальному функционалу они не нужны.
+
 !!! note "Примечание"
     С подробным руководством по работе с менеджером пакетов `pip` можно ознакомиться на [сайте разработчика](https://pip.pypa.io/en/stable/).
 

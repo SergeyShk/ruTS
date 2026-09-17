@@ -1,6 +1,6 @@
 from collections import Counter
 from collections.abc import Mapping, Sequence
-from math import inf, isnan, log, log2, nan
+from math import e, inf, isnan, log, log2, nan
 from typing import Any, NamedTuple
 
 import numpy as np
@@ -84,10 +84,13 @@ def keyness(
             по убыванию частоты и по алфавиту; слова с неопределенной мерой в конце
 
     Исключения:
-        ValueError: Если мера неизвестна или один из корпусов пуст
+        ValueError: Если мера неизвестна, top_n меньше единицы или один
+            из корпусов пуст
     """
     if measure not in KEYNESS_MEASURES:
         raise ValueError(f"Неизвестная мера ключевости: {measure}")
+    if top_n is not None and top_n < 1:
+        raise ValueError("Количество ключевых слов должно быть больше 0")
     if isinstance(reference, FreqDict):
         counts_target = _count(target, normalize=True)
         size_reference = float(CORPUS_SIZE)
@@ -324,11 +327,12 @@ def calc_ell(a: float, b: float, c: float, d: float) -> float:
         d (float): Объем эталонного корпуса
 
     Вывод:
-        float: ELL со знаком, nan при минимальной ожидаемой частоте не больше единицы
+        float: ELL со знаком, nan при минимальной ожидаемой частоте меньше e -
+            там знаменатель меньше N и ELL выходит за пределы от 0 до 1
     """
     total = a + b
     expected_min = min(c, d) * total / (c + d)
-    if expected_min <= 1:
+    if expected_min < e:
         return nan
     return calc_log_likelihood(a, b, c, d) / ((c + d) * log(expected_min))
 

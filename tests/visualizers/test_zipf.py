@@ -2,6 +2,7 @@ from collections import Counter
 
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 import pytest
 from matplotlib.axes import Axes
 
@@ -22,6 +23,26 @@ def test_zipf_theory():
     assert line.get_label() == "Теоретический закон"
     assert line.get_linewidth() == 2
     assert line.get_color() == "r"
+    assert list(line.get_xdata()) == [1, 2, 3, 4, 5]
+    assert list(line.get_ydata()) == pytest.approx([10, 5, 10 / 3, 2.5, 2])
+    assert np.isfinite(zipf_theory(10, 5, 1.5).get_lines()[0].get_ydata()).all()
+    plt.close("all")
+    for num_ranks, alpha in ((0, 1.0), (5, 0.0), (5, -1.0)):
+        with pytest.raises(ValueError):
+            zipf_theory(10, num_ranks, alpha)
+    assert plt.get_fignums() == []
+
+
+def test_zipf_empty_and_overflow(tokens):
+    plt.close("all")
+    with pytest.raises(ValueError):
+        zipf(Counter())
+    assert plt.get_fignums() == []
+    ax = zipf(tokens, num_words=100, num_labels=100, show_theory=True)
+    assert all(len(line.get_xdata()) == 4 for line in ax.get_lines())
+    assert len(ax.texts) == 4
+    single = zipf(Counter({"а": 3}), num_labels=5)
+    assert len(single.texts) == 1
     plt.close("all")
 
 

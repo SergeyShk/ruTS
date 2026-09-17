@@ -175,6 +175,22 @@ def test_find_phrases():
     assert find_phrases(["в", "связи"], ["в связи с", "в"]) == [(0, 1)]
 
 
+def test_extract_archive_single_file(tmp_path):
+    import zipfile
+
+    nested = tmp_path / "nested.zip"
+    with zipfile.ZipFile(nested, "w") as zip_file:
+        zip_file.writestr("corpus-abc/corpus.xml", "<items />")
+    extracted = Path(extract_archive(nested, tmp_path))
+    assert extracted == tmp_path / "nested"
+    assert (extracted / "corpus.xml").read_text() == "<items />"
+    flat = tmp_path / "flat.zip"
+    with zipfile.ZipFile(flat, "w") as zip_file:
+        zip_file.writestr("corpus.xml", "<items />")
+    assert extract_archive(flat, tmp_path / "flat") == str(tmp_path / "flat")
+    assert (tmp_path / "flat" / "corpus.xml").read_text() == "<items />"
+
+
 def test_extract_archive_dotted_names(tmp_path):
     import zipfile
 

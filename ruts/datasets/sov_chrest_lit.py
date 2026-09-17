@@ -56,14 +56,14 @@ class SovChLit(Dataset):
     Итерация по набору данных:
         >>> for i in svc.get_records(max_len=100, category='Весна', limit=1):
         >>>     print(i)
-        {'author': 'Е. Трутнева',
+        {'author': 'С. Маршак',
         'book': 'Родная речь. Книга для чтения в I классе начальной школы',
         'category': 'Весна',
-        'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/155'),
+        'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/114'),
         'grade': 1,
-        'subject': 'Дождик',
-        'text': 'Дождик, дождик, поливай, будет хлеба каравай!\n'
-                'Дождик, дождик, припусти, дай гороху подрасти!',
+        'subject': 'Март',
+        'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
+                'Зайчик бегает по парте и по карте на стене.',
         'type': 'Стихотворение',
         'year': 1963}
 

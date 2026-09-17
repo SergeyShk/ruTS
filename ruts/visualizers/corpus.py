@@ -87,10 +87,12 @@ def keyness_plot(
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если ключевых слов нет или поле неизвестно
+        ValueError: Если ключевых слов нет, поле неизвестно или top_n меньше единицы
     """
     if field not in Keyword._fields[1:]:
         raise ValueError(f"Неизвестное поле ключевого слова: {field}")
+    if top_n < 1:
+        raise ValueError("Количество слов должно быть больше 0")
     top = _bars(positive, field, log, 1)[:top_n]
     bottom = _bars(negative, field, log, -1)[:top_n]
     keywords = top + bottom[::-1]
@@ -109,8 +111,11 @@ def keyness_plot(
     ax.axvline(0, color="black", linewidth=0.8)
     ax.set_xlabel(f"|log2({field})|" if log else f"|{field}|")
     ax.set_title("Ключевые слова")
-    handles = [Patch(color="tab:blue")]
-    legend_labels = [labels[0]]
+    handles = []
+    legend_labels = []
+    if top:
+        handles.append(Patch(color="tab:blue"))
+        legend_labels.append(labels[0])
     if bottom:
         handles.append(Patch(color="tab:red"))
         legend_labels.append(labels[1])
@@ -148,8 +153,10 @@ def collocation_network(collocations: Sequence[Collocation], top_n: int | None =
         Graph: Граф graphviz
 
     Исключения:
-        ValueError: Если коллокаций нет
+        ValueError: Если коллокаций нет или top_n меньше единицы
     """
+    if top_n is not None and top_n < 1:
+        raise ValueError("Количество пар должно быть больше 0")
     pairs = list(collocations)[:top_n] if top_n else list(collocations)
     if not pairs:
         raise ValueError("В источнике данных отсутствуют коллокации")

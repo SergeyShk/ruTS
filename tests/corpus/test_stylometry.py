@@ -80,6 +80,14 @@ def test_delta():
     assert set(DELTA_VARIANTS) == {"burrows", "quadratic", "eder", "cosine"}
 
 
+def test_delta_identical_texts():
+    same = {"А": corpus["А"], "Б": corpus["А"], "В": corpus["Б"]}
+    distances = delta(same, n_mfw=5, variant="cosine")
+    assert abs(distances.loc["А", "Б"]) < 1e-12
+    assert distances.loc["А", "В"] > 0
+    assert abs(delta(same, n_mfw=5).loc["А", "Б"]) < 1e-12
+
+
 def test_delta_char_ngrams():
     ngrams = CharNgramsExtractor(n=2, lowercase=True)
     distances = delta({name: ngrams.extract(text) for name, text in texts.items()}, n_mfw=20)
@@ -91,7 +99,11 @@ def test_delta_errors():
     with pytest.raises(ValueError):
         delta(corpus, variant="manhattan")
     with pytest.raises(ValueError):
-        delta({"А": corpus["А"]})
+        delta({"А": corpus["А"], "Б": corpus["Б"]})
+    with pytest.raises(ValueError):
+        delta(corpus, n_mfw=0)
+    with pytest.raises(ValueError):
+        frequency_table(corpus, n_mfw=-1)
     with pytest.raises(ValueError):
         frequency_table({})
     with pytest.raises(ValueError):
@@ -116,6 +128,9 @@ def test_zeta():
         -1
     ].zeta == pytest.approx(-2 / 3)
     assert zeta([corpus["А"], []], corpus["Б"], segment_size=5) == scores
+    assert zeta(["а"] * 2500, ["б"] * 100, segment_size=1000)[0].dp_target == 1.0
+    scores = zeta(["а"] * 2500 + ["б"], ["б"] * 100, segment_size=1000)
+    assert next(score for score in scores if score.word == "б").dp_target == pytest.approx(1 / 3)
 
 
 def test_zeta_errors():
@@ -125,6 +140,8 @@ def test_zeta_errors():
         zeta([], corpus["Б"])
     with pytest.raises(ValueError):
         zeta(corpus["А"], [[]])
+    with pytest.raises(ValueError):
+        zeta(corpus["А"], corpus["Б"], top_n=0)
 
 
 def test_kilgarriff_chi2():
@@ -139,6 +156,8 @@ def test_kilgarriff_chi2():
     assert kilgarriff_chi2(words_a, words_b) > kilgarriff_chi2(words_a, words_b, n_mfw=2)
     with pytest.raises(ValueError):
         kilgarriff_chi2([], words_b)
+    with pytest.raises(ValueError):
+        kilgarriff_chi2(words_a, words_b, n_mfw=0)
 
 
 def test_mendenhall():

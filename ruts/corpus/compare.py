@@ -1,5 +1,6 @@
 from collections.abc import Callable, Mapping, Sequence
-from math import isnan, nan, sqrt
+from itertools import pairwise
+from math import floor, isnan, nan, sqrt
 from typing import Any
 
 import numpy as np
@@ -9,6 +10,7 @@ from scipy.stats import mannwhitneyu
 from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC
 from ..diversity_stats import DiversityStats
+from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
 from ..utils import iter_text_words
@@ -17,6 +19,7 @@ from ..visualizers.sentences import sentence_lengths
 Features = Callable[[str], Mapping[str, float]]
 Values = Sequence[float] | np.ndarray[Any, Any]
 
+OPENING_MARKS = frozenset('«"„“‘([{—–-')
 COMPARISON_COLUMNS = (
     "mean_a",
     "mean_b",
@@ -41,12 +44,16 @@ def split_windows(text: str, window: int | None = 1000) -> list[str]:
     Разбиение текста на окна по словам
 
     Описание:
-        Число окон - округленное отношение числа слов к размеру окна, не меньше
-        одного, части равные, как сегменты в zeta: короткие тексты не теряются,
-        хвост не отбрасывается. Окно - исходный текст от первого символа своего
-        первого слова до начала следующего окна (последнее - до конца текста)
-        без пробелов по краям, поэтому знаки препинания после последнего слова
-        окна и в конце текста остаются в окнах
+        Число окон - отношение числа слов к размеру окна, округленное вверх
+        от половины (2500 слов при окне 1000 - три окна), не меньше одного,
+        части равные, как сегменты в zeta: короткие тексты не теряются, хвост
+        не отбрасывается. Первое окно начинается с первого непробельного символа
+        текста, граница между окнами проходит перед первым словом следующего окна
+        и открывающими знаками перед ним (OPENING_MARKS: кавычки, скобки, тире),
+        последнее окно длится до конца текста; пробелы по краям окон убираются,
+        так что знаки препинания перед первым словом, после последнего слова окна
+        и в конце текста остаются в окнах; при window=None окно - весь текст
+        без пробелов по краям
 
     Аргументы:
         text (str): Строка текста
@@ -63,14 +70,19 @@ def split_windows(text: str, window: int | None = 1000) -> list[str]:
     words = list(iter_text_words(text))
     if not words:
         return []
-    n_windows = 1 if window is None else max(1, round(len(words) / window))
+    n_windows = 1 if window is None else max(1, floor(len(words) / window + 0.5))
     chunks = np.array_split(np.arange(len(words)), n_windows)
-    windows = []
-    for index, chunk in enumerate(chunks):
-        start = words[chunk[0]][0]
-        end = words[chunks[index + 1][0]][0] if index + 1 < len(chunks) else len(text)
-        windows.append(text[start:end].strip())
-    return windows
+    boundaries = [0]
+    for chunk in chunks[1:]:
+        boundary = words[chunk[0]][0]
+        previous_end = words[chunk[0] - 1][1]
+        while boundary > previous_end and (
+            text[boundary - 1].isspace() or text[boundary - 1] in OPENING_MARKS
+        ):
+            boundary -= 1
+        boundaries.append(boundary)
+    boundaries.append(len(text))
+    return [text[start:end].strip() for start, end in pairwise(boundaries)]
 
 
 def text_features(text: str) -> dict[str, float]:
@@ -92,7 +104,10 @@ def text_features(text: str) -> dict[str, float]:
         длина предложения в словах, ее стандартное отклонение, коэффициент
         вариации и автокорреляция соседних длин - ритм текста; punct_ - частоты
         знаков по типам на 1000 слов и доля буквы ё (punctuation_profile)
-        На окно в 1000 слов уходит около 0.1 с, большая часть - разбор pymorphy3
+        Слова и предложения извлекаются по одному разу и передаются во все
+        классы, базовые статистики считаются один раз (ReadabilityStats получает
+        готовый BasicStats); на окно в 1000 слов уходит около 0.1 с, большая
+        часть - разбор pymorphy3
 
     Аргументы:
         text (str): Строка текста
@@ -103,7 +118,9 @@ def text_features(text: str) -> dict[str, float]:
     Исключения:
         ValueError: Если в тексте нет слов
     """
-    basic = BasicStats(text, normalize=True)
+    sents = _CachedSentsExtractor()
+    words = _CachedWordsExtractor()
+    basic = BasicStats(text, sents, words, normalize=True)
     features: dict[str, float] = {}
     for key in (
         "p_unique_words",
@@ -120,11 +137,11 @@ def text_features(text: str) -> dict[str, float]:
     features["basic_letters_per_word"] = basic.n_letters / basic.n_words
     features["basic_syllables_per_word"] = basic.n_syllables / basic.n_words
     features["basic_words_per_sent"] = basic.n_words / basic.n_sents if basic.n_sents else nan
-    for key, score in ReadabilityStats(text).get_stats().items():
+    for key, score in ReadabilityStats(basic).get_stats().items():
         features[f"readability_{key}"] = float(score)
-    for key, score in DiversityStats(text).get_stats().items():
+    for key, score in DiversityStats(text, words_extractor=words).get_stats().items():
         features[f"diversity_{key}"] = float(score)
-    morph = MorphStats(text)
+    morph = MorphStats(text, words_extractor=words)
     n_words = len(morph.words)
     stats = morph.get_stats(filter_none=True)
     for category, desc in MORPHOLOGY_STATS_DESC.items():
@@ -140,6 +157,30 @@ def text_features(text: str) -> dict[str, float]:
         for key, value in punctuation_profile(text, basic.n_words).items()
     )
     return features
+
+
+class _CachedWordsExtractor(WordsExtractor):
+    def __init__(self) -> None:
+        super().__init__()
+        self._text: str | None = None
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        if text != self._text:
+            self._text = text
+            super().extract(text)
+        return self.words
+
+
+class _CachedSentsExtractor(SentsExtractor):
+    def __init__(self) -> None:
+        super().__init__()
+        self._text: str | None = None
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        if text != self._text:
+            self._text = text
+            super().extract(text)
+        return self.sents
 
 
 def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:

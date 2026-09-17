@@ -145,8 +145,9 @@ class RussianLiterature(Dataset):
 
         Описание:
             Архив репозитория по закрепленному коммиту сверяется с контрольной
-            суммой SHA-256; поврежденный или подмененный файл удаляется, чтобы
-            повторная загрузка не пропускалась. Если архив уже есть, а какой-то
+            суммой SHA-256; поврежденный или подмененный файл (например, после
+            оборванной загрузки) удаляется и загружается заново в том же вызове.
+            Если архив уже есть, а какой-то
             из папок жанров нет, архив извлекается заново; прежняя директория
             набора перед извлечением удаляется
 
@@ -163,10 +164,15 @@ class RussianLiterature(Dataset):
         if filepath or missing:
             if sha256(self._filepath) != ARCHIVE_SHA256:
                 self._filepath.unlink(missing_ok=True)
-                raise RuntimeError(
-                    f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
-                    "повторите загрузку"
+                download_file(
+                    url=DOWNLOAD_URL, filename=ARCHIVE, dirpath=self.data_dir, force=True
                 )
+                if sha256(self._filepath) != ARCHIVE_SHA256:
+                    self._filepath.unlink(missing_ok=True)
+                    raise RuntimeError(
+                        f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
+                        "повторите загрузку"
+                    )
             shutil.rmtree(self._dirpath, ignore_errors=True)
             extract_archive(self._filepath, self.data_dir)
         self.check_data()
@@ -234,7 +240,8 @@ class RussianLiterature(Dataset):
 
         Описание:
             Жанры в порядке GENRES, внутри - папки авторов и файлы по алфавиту;
-            тексты читаются по одному
+            тексты читаются по одному, год ищется в info.csv по названию файла
+            без учета регистра и буквы ё («Алёша горшок» и «Алёша Горшок»)
 
         Вывод:
             generator[dict[str, object]]: Генератор записей
@@ -244,10 +251,13 @@ class RussianLiterature(Dataset):
             for author_dir in sorted(
                 path for path in self._dirpath.joinpath(genre).iterdir() if path.is_dir()
             ):
-                years = load_years(author_dir.joinpath("info.csv"))
+                years = {
+                    _title_key(title): value
+                    for title, value in load_years(author_dir.joinpath("info.csv")).items()
+                }
                 author = self.authors.get(author_dir.name, author_dir.name)
                 for filepath in sorted(author_dir.glob("*.txt")):
-                    year_from, year_to = years.get(filepath.stem, (None, None))
+                    year_from, year_to = years.get(_title_key(filepath.stem), (None, None))
                     yield {
                         "genre": genre,
                         "author": author,

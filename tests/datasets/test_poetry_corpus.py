@@ -123,20 +123,52 @@ def test_load_records_error(tmp_path):
         _ = list(load_records(tmp_path / FILENAME))
 
 
+def test_load_records_without_title(tmp_path):
+    write_corpus(
+        tmp_path,
+        "<items><item><author>А</author><name /><date_from /><date_to /><themes />"
+        "<text>\n\nДень прошел, и ночь!..\nВторая строка.</text></item>"
+        "<item><author>Б</author><text /></item></items>",
+    )
+    records = list(load_records(tmp_path / FILENAME))
+    assert records[0]["title"] == "День прошел, и ночь..."
+    assert records[0]["text"] == "День прошел, и ночь!..\nВторая строка."
+    assert records[1]["title"] == ""
+
+
 def test_download_checks_sha(tmp_path, monkeypatch):
     dataset = PoetryCorpus(data_dir=tmp_path)
+    calls = []
 
     def fake_download(**kwargs):
+        calls.append(kwargs["force"])
         write_corpus(tmp_path)
         return str(dataset._filepath)
 
     monkeypatch.setattr(poetry_corpus_module, "download_file", fake_download)
     with pytest.raises(RuntimeError):
         dataset.download()
+    assert calls == [False, True]
     assert dataset.filepath is None
     monkeypatch.setattr(poetry_corpus_module, "FILE_SHA256", sha256_of(XML))
     dataset.download()
     assert dataset.filepath is not None
+    assert len(list(dataset)) == 3
+
+
+def test_download_retries_corrupted_file(tmp_path, monkeypatch):
+    dataset = PoetryCorpus(data_dir=tmp_path)
+    calls = []
+
+    def fake_download(**kwargs):
+        calls.append(kwargs["force"])
+        write_corpus(tmp_path, XML[:100] if len(calls) == 1 else XML)
+        return str(dataset._filepath)
+
+    monkeypatch.setattr(poetry_corpus_module, "download_file", fake_download)
+    monkeypatch.setattr(poetry_corpus_module, "FILE_SHA256", sha256_of(XML))
+    dataset.download()
+    assert calls == [False, True]
     assert len(list(dataset)) == 3
 
 
