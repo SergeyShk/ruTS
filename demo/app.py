@@ -409,6 +409,9 @@ FOOTER = (
 CSS = """
 .ruts-highlight { font-size: 1.05em; }
 .stats { --font-mono: var(--font); }
+#text-input, #text-input > label { display: flex; flex-direction: column; }
+#text-input > label, #text-input .input-container { flex: 1 1 auto; }
+#text-input .input-container { align-items: stretch; }
 """
 
 INITIAL = compute(EXAMPLES["Новость"], DEFAULT_LAYERS)
@@ -488,14 +491,15 @@ with gr.Blocks(title="ruTS") as demo:
         sentences_output,
     ]
 
-    with gr.Row():
+    with gr.Row(equal_height=True):
         with gr.Column(scale=3):
             text_input = gr.Textbox(
                 INITIAL["text"],
                 lines=9,
-                max_lines=20,
+                max_lines=9,
                 max_length=MAX_CHARS,
                 label="Текст",
+                elem_id="text-input",
                 placeholder=f"Вставьте текст на русском языке, до {MAX_CHARS:,} символов".replace(
                     ",", " "
                 ),

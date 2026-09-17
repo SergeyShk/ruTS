@@ -685,7 +685,7 @@ A dataset is downloaded by the `download()` method and cached locally, a repeate
 </details>
 
 <details>
-<summary><b>Visualization</b></summary>
+<summary><b>Visualizations</b></summary>
 
 <br>
 

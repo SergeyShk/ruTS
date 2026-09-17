@@ -685,7 +685,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 </details>
 
 <details>
-<summary><b>Визуализация</b></summary>
+<summary><b>Визуализации</b></summary>
 
 <br>
 
