@@ -2580,7 +2580,7 @@
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Два графика о распределении слов текста, дополняющие <a href="../zipf/">закон Ципфа</a>: рост словаря с длиной текста по закону Хипса и спектр частот - сколько лексем встречается ровно один, два, три раза. Оба графика есть в zipfR (<code>plot.vgc</code>, <code>plot.spc</code>). Функции принимают оси <code>ax</code> и возвращают <code>Axes</code>.</p>
 <h2 id="heaps_plot">Закон Хипса<a class="headerlink" href="#heaps_plot" title="Permanent link">&para;</a></h2>
-<p>Размер словаря <span class="arithmatex">\(V\)</span> после каждого слова текста и кривая подгонки <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> по <a href="../../stats/diversity_stats_funcs/#heaps_beta"><code>fit_heaps</code></a> с параметрами в легенде. Для естественных текстов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6; кривая зависит от порядка слов.</p>
+<p>Размер словаря <span class="arithmatex">\(V\)</span> после каждого слова текста и кривая подгонки <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> по <a href="../../stats/diversity_stats_funcs/#heaps_beta"><code>fit_heaps</code></a> с параметрами в легенде. На корпусах в миллионы слов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6, по всей кривой роста отдельного текста получается больше (0.6-0.9), так как в начале текста почти каждое слово новое; кривая зависит от порядка слов.</p>
 <table>
 <thead>
 <tr>

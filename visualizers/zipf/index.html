@@ -2606,7 +2606,7 @@
 <td style="text-align: center;"><code>alpha</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.5</code></td>
-<td style="text-align: center;">Коэффициент α теоретического Закона Ципфа</td>
+<td style="text-align: center;">Коэффициент α теоретического Закона Ципфа, больше нуля</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>show_fit</code></td>
@@ -2622,7 +2622,7 @@
 </tr>
 </tbody>
 </table>
-<p>Функция возвращает оси <code>Axes</code> с графиком; <code>zipf_theory(size, num_ranks, alpha, ax)</code> строит только теоретическую кривую.</p>
+<p>Функция возвращает оси <code>Axes</code> с графиком; <code>num_words</code> больше числа лексем не удлиняет кривые за пределы данных, пустой справочник - <code>ValueError</code>. <code>zipf_theory(size, num_ranks, alpha, ax)</code> строит только теоретическую кривую <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> для рангов от 1 до <code>num_ranks</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">

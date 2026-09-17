@@ -2625,7 +2625,7 @@
 <tr>
 <td style="text-align: left;">Хи-квадрат</td>
 <td style="text-align: left;"><code>chi2</code></td>
-<td style="text-align: left;">$\chi^2 = \frac{N\,(</td>
+<td style="text-align: left;">$\chi^2 = \frac{N\,\max(</td>
 <td style="text-align: left;">a(d-b) - b(c-a)</td>
 </tr>
 <tr>
@@ -2650,7 +2650,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnson, Culpeper и Rayson (2007); размер эффекта для <span class="arithmatex">\(G^2\)</span> от 0 до 1, <code>nan</code> при минимальной ожидаемой частоте не больше единицы</td>
+<td style="text-align: left;">Johnson, Culpeper и Rayson (2007); размер эффекта для <span class="arithmatex">\(G^2\)</span> от 0 до 1, <code>nan</code> при минимальной ожидаемой частоте меньше <span class="arithmatex">\(e\)</span> - тогда <span class="arithmatex">\(\ln \min(E_1, E_2) &lt; 1\)</span> и мера выходит за единицу</td>
 </tr>
 <tr>
 <td style="text-align: left;">Отношение шансов</td>
@@ -2660,7 +2660,7 @@
 </tr>
 </tbody>
 </table>
-<p>Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> считается по распределению хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Меры доступны как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> с аргументами <code>(a, b, c, d)</code>; названия и описания - в <code>ruts.constants.KEYNESS_MEASURES</code>.</p>
+<p>Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> считается по распределению хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Меры доступны как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> с аргументами <code>(a, b, c, d)</code> из модуля <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>; имя <code>ruts.corpus.keyness</code> в пакете занято одноименной функцией, поэтому импорт модуля целиком не работает); названия и описания - в <code>ruts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

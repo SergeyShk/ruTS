@@ -2828,7 +2828,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_dependency_distances</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">))</span>
+<span class="n">calc_dependency_distances</span><span class="p">(</span>
+    <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="c1"># [5, 1, 1, 1, 1, 1, 2]</span>
 </code></pre></div>
 </div>

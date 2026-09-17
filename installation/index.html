@@ -2572,6 +2572,10 @@
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ruts
 </code></pre></div>
 <p>В результате будет установлена релизная версия библиотеки и все зависимости.</p>
+<div class="admonition warning">
+<p class="admonition-title">Graphviz</p>
+<p>Пакет <code>graphviz</code> из зависимостей - только обертка: для отрисовки <a href="../visualizers/word_tree/">дерева слов</a> и <a href="../visualizers/corpus/#collocation_network">сети коллокаций</a> нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a> (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), иначе <code>render()</code> и показ графа в Jupyter завершатся ошибкой <code>ExecutableNotFound</code>. Остальному функционалу они не нужны.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>С подробным руководством по работе с менеджером пакетов <code>pip</code> можно ознакомиться на <a href="https://pip.pypa.io/en/stable/">сайте разработчика</a>.</p>

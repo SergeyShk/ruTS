@@ -2665,7 +2665,7 @@
 </tr>
 </tbody>
 </table>
-<p>Меры доступны как функции <code>calc_mi</code>, <code>calc_mi3</code>, <code>calc_t_score</code>, <code>calc_dice</code>, <code>calc_logdice</code>, <code>calc_log_likelihood</code>, <code>calc_npmi</code>, <code>calc_min_sensitivity</code> с аргументами <code>(freq_a, freq_b, freq_ab, n)</code>; названия и описания - в <code>ruts.constants.COLLOCATION_MEASURES</code>.</p>
+<p>Меры доступны как функции <code>calc_mi</code>, <code>calc_mi3</code>, <code>calc_t_score</code>, <code>calc_dice</code>, <code>calc_logdice</code>, <code>calc_log_likelihood</code>, <code>calc_npmi</code>, <code>calc_min_sensitivity</code> с аргументами <code>(freq_a, freq_b, freq_ab, n)</code> из модуля <code>ruts.corpus.collocations</code> (<code>from ruts.corpus.collocations import calc_logdice</code>); названия и описания - в <code>ruts.constants.COLLOCATION_MEASURES</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2772,7 +2772,10 @@
 <span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># [Collocation(left='птица', right='улететь', freq_left=3, freq_right=1, freq_pair=2, score=13.0)]</span>
 
-<span class="p">[(</span><span class="n">c</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">"mi"</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]]</span>
+<span class="p">[</span>
+    <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">"mi"</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="p">]</span>
 <span class="c1"># [('завтра', 'кот', 3.12), ('кот', 'снова', 3.12)]</span>
 </code></pre></div>
 </div>
