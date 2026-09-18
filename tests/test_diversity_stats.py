@@ -1,14 +1,17 @@
+import random
 import warnings
 from collections import Counter
-from math import e, inf, isnan, log, log2, log10, nan, sqrt
+from math import e, inf, isnan, log, log2, log10, nan, nextafter, sqrt
 
 import pytest
 import spacy
 
-from ruts import DiversityStats
+from ruts import DiversityStats, diversity_stats
 from ruts.constants import DIVERSITY_STATS_DESC
 from ruts.diversity_stats import (
     WindowStats,
+    _max_types,
+    _mtld_factor_lengths,
     calc_alpha2,
     calc_baayen_p,
     calc_brunet_w,
@@ -202,6 +205,79 @@ def test_mtldw(ds):
     assert isnan(ds.mtldw)
     assert calc_mtldw(riddle) == 13.25
     assert calc_mtldw(riddle) != calc_mamtld(riddle)
+
+
+def mtld_factor_lengths_by_sets(text, threshold, min_len, wrap):
+    # прямой перебор с множеством лексем на каждый старт - эталон для блочного расчета
+    n_words = len(text)
+    source = tuple(text) + tuple(text) if wrap else tuple(text)
+    lengths = []
+    for start in range(n_words):
+        types = set()
+        end = start + n_words if wrap else n_words
+        for pos in range(start, end):
+            types.add(source[pos])
+            factor_len = pos - start + 1
+            if len(types) / factor_len <= threshold and factor_len >= min_len:
+                lengths.append(factor_len)
+                break
+    return lengths
+
+
+@pytest.mark.parametrize("wrap", [False, True])
+@pytest.mark.parametrize(
+    "threshold, min_len",
+    [(0.72, 10), (0.72, 0), (0.5, 3), (0.9, 1), (0.66, 25), (1.0, 5), (1 / 3, 2)],
+)
+def test_mtld_factor_lengths_match_sets(wrap, threshold, min_len, monkeypatch):
+    # блок в 16 стартов: те же тексты проходят через несколько блоков с переносом счетчиков
+    monkeypatch.setattr(diversity_stats, "MTLD_BLOCK_SIZE", 16)
+    rng = random.Random(0)
+    for _ in range(60):
+        n_words = rng.randint(0, 200)
+        vocabulary = rng.randint(1, 60)
+        words = [f"w{rng.randint(0, vocabulary)}" for _ in range(n_words)]
+        assert _mtld_factor_lengths(words, threshold, min_len, wrap) == (
+            mtld_factor_lengths_by_sets(words, threshold, min_len, wrap)
+        )
+    assert _mtld_factor_lengths(riddle, 0.72, 10, wrap) == (
+        mtld_factor_lengths_by_sets(riddle, 0.72, 10, wrap)
+    )
+
+
+def test_mtld_factor_lengths_blocks():
+    rng = random.Random(1)
+    words = [f"w{rng.randint(0, 40)}" for _ in range(2 * diversity_stats.MTLD_BLOCK_SIZE + 100)]
+    for wrap in (False, True):
+        assert _mtld_factor_lengths(words, 0.72, 10, wrap) == (
+            mtld_factor_lengths_by_sets(words, 0.72, 10, wrap)
+        )
+
+
+def test_mtld_factor_lengths_edges():
+    assert _mtld_factor_lengths([], 0.72, 10, wrap=True) == []
+    assert _mtld_factor_lengths(["а"], 0.72, 1, wrap=False) == []
+    assert _mtld_factor_lengths(["а"], 1.0, 1, wrap=False) == [1]
+    assert _mtld_factor_lengths(["а", "а"], 0.5, 1, wrap=False) == [2]
+    assert _mtld_factor_lengths(["а", "б"], 0.5, 1, wrap=True) == []
+    assert _mtld_factor_lengths(["а"] * 100, 0.72, 10, wrap=False) == [10] * 91
+    unique = [str(i) for i in range(100)]
+    assert _mtld_factor_lengths(unique, 0.72, 10, wrap=True) == []
+    assert isnan(calc_mamtld(unique)) and isnan(calc_mtldw(unique))
+    assert calc_mtldw(["а"] * 500) == 10.0
+
+
+@pytest.mark.parametrize(
+    "threshold", [0.72, 0.5, 1 / 3, 0.66, 0.75, 1.0, 0.1, 0.29, 0.58, nextafter(0.1, 0)]
+)
+def test_max_types(threshold):
+    # 0.29 и 0.58: floor(threshold · length) занижен на единицу (100, 200);
+    # nextafter(0.1, 0): произведение округляется вверх, floor завышен (50, 90, 100)
+    allowed = _max_types(threshold, 300)
+    assert allowed[0] == -1
+    for length in range(1, 301):
+        assert allowed[length] / length <= threshold
+        assert allowed[length] == length or (allowed[length] + 1) / length > threshold
 
 
 def test_hdd(ds):

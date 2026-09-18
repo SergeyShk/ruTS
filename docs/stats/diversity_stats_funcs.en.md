@@ -249,6 +249,8 @@ A moving-window modification of MTLD (koRpus MTLD-MA): a factor starts at every 
 !!! warning "Warning"
     If no factor completes, the function returns `nan`. The metric is unstable on short texts.
 
+Factors from all starts are computed from the array of previous word occurrences in blocks of starts with numpy rather than by rebuilding sets of lexemes (`_mtld_factor_lengths`): the number of lexemes on a stretch equals the number of positions whose previous occurrence lies before the start of the stretch. On 340 thousand words MA-MTLD takes 0.7 s, MTLD-W 0.4 s; the values coincide with the direct enumeration.
+
 Parameters:
 
 | Parameter | Type | Default | Description |

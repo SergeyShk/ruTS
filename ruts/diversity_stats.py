@@ -7,6 +7,7 @@ from typing import NamedTuple
 
 import numpy as np
 from nltk import FreqDist
+from numpy.lib.stride_tricks import sliding_window_view
 from scipy.optimize import OptimizeWarning, curve_fit
 from scipy.special import comb
 from scipy.stats import t as student_t
@@ -676,23 +677,82 @@ def calc_mtld(
     return (forward + backward) / 2
 
 
+MTLD_BLOCK_SIZE = 4096
+MTLD_WINDOW_LEN = 32
+
+
+def _previous_positions(text: Sequence[str], wrap: bool) -> np.ndarray:
+    """Позиция предыдущего вхождения слова для каждой позиции текста (-1 без вхождения)"""
+    ids: dict[str, int] = {}
+    codes = np.fromiter(
+        (ids.setdefault(word, len(ids)) for word in text), dtype=np.int64, count=len(text)
+    )
+    if wrap:
+        codes = np.concatenate([codes, codes])
+    order = np.argsort(codes, kind="stable")
+    previous = np.full(codes.size, -1, dtype=np.int64)
+    same = codes[order[1:]] == codes[order[:-1]]
+    previous[order[1:][same]] = order[:-1][same]
+    return previous
+
+
+def _max_types(threshold: float, max_len: int) -> np.ndarray:
+    """Наибольшее число лексем, при котором TTR фактора каждой длины не выше порога"""
+    lengths = np.arange(1, max_len + 1)
+    allowed = np.floor(threshold * lengths).astype(np.int64)
+    while np.any(higher := (allowed + 1) / lengths <= threshold):
+        allowed[higher] += 1
+    while np.any(lower := allowed / lengths > threshold):
+        allowed[lower] -= 1
+    return np.concatenate([[-1], allowed])
+
+
 def _mtld_factor_lengths(
     text: Sequence[str], threshold: float, min_len: int, wrap: bool
 ) -> list[int]:
-    """Длины первых факторов MTLD, начинающихся с каждой позиции текста"""
+    """
+    Длины первых факторов MTLD, начинающихся с каждой позиции текста
+
+    Описание:
+        Число лексем на отрезке [start, pos] равно числу позиций отрезка, предыдущее
+        вхождение слова в которых лежит раньше start, поэтому вместо множества лексем
+        на каждый старт хватает одного массива предыдущих вхождений. Старты
+        обрабатываются блоками: для блока берется матрица «старт × смещение» шириной
+        в окно, факторы, не закрывшиеся в окне, продолжаются в следующем. Порог
+        сравнивается в целых числах: для каждой длины фактора заранее найдено
+        наибольшее число лексем с TTR не выше порога по той же формуле, что
+        в _count_mtld_factors, поэтому значения совпадают с прямым перебором
+    """
     n_words = len(text)
-    source = tuple(text) + tuple(text) if wrap else tuple(text)
-    lengths = []
-    for start in range(n_words):
-        types: set[str] = set()
-        end = start + n_words if wrap else n_words
-        for pos in range(start, end):
-            types.add(source[pos])
-            factor_len = pos - start + 1
-            if len(types) / factor_len <= threshold and factor_len >= min_len:
-                lengths.append(factor_len)
-                break
-    return lengths
+    if not n_words:
+        return []
+    previous = _previous_positions(text, wrap)
+    padded = np.concatenate([previous, np.full(MTLD_WINDOW_LEN, previous.size)])
+    windows = sliding_window_view(padded, MTLD_WINDOW_LEN)
+    max_types = _max_types(threshold, n_words + MTLD_WINDOW_LEN)
+    lengths = np.zeros(n_words, dtype=np.int64)
+    for block_start in range(0, n_words, MTLD_BLOCK_SIZE):
+        pending = np.arange(block_start, min(block_start + MTLD_BLOCK_SIZE, n_words))
+        limits = np.full_like(pending, n_words) if wrap else n_words - pending
+        counts = np.zeros(pending.size, dtype=np.int32)
+        offset = 0
+        while pending.size:
+            types = np.cumsum(windows[pending + offset] < pending[:, None], axis=1, dtype=np.int32)
+            types += counts[:, None]
+            factor_lens = offset + np.arange(1, MTLD_WINDOW_LEN + 1)
+            closed = types <= max_types[factor_lens]
+            if min_len > offset + 1:
+                closed[:, : min_len - offset - 1] = False
+            if offset + MTLD_WINDOW_LEN > limits.min():
+                closed &= factor_lens[None, :] <= limits[:, None]
+            hit = closed.any(axis=1)
+            lengths[pending[hit]] = factor_lens[closed[hit].argmax(axis=1)]
+            remaining = ~hit & (offset + MTLD_WINDOW_LEN < limits)
+            pending = pending[remaining]
+            limits = limits[remaining]
+            counts = types[remaining, -1]
+            offset += MTLD_WINDOW_LEN
+    return [int(length) for length in lengths[lengths > 0]]
 
 
 def calc_mamtld(
