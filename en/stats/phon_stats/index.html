@@ -2731,6 +2731,7 @@
 </tbody>
 </table>
 <p>Words are divided into syllables by the rising sonority rule (Avanesov), see the <a href="../phon_stats_funcs/#syllabify"><code>syllabify</code></a> function.</p>
+<p>Syllables, CV patterns, clusters and hiatuses are computed once per word form and cached, the rest is aggregated over a counter of word forms, the alliteration and assonance indices - over a single word × letter matrix with numpy, so the time grows linearly with text length and on a corpus is dominated by tokenization.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The statistics are computed when the <code>PhonStats</code> object is initialized.</p>
