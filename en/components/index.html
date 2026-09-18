@@ -2741,7 +2741,11 @@
 <p>A set of modules for building <a href="https://github.com/explosion/spaCy">spaCy</a> components. Each module is a class with two implemented methods: <code>__init__</code> (adds a new extension to the pipeline on initialization) and <code>__call__</code> (takes a <code>Doc</code> object and returns its modified version).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Detailed information on developing custom spaCy components is available in the corresponding section of the <a href="https://spacy.io/usage/processing-pipelines#custom-components">documentation</a>.</p>
+<p>Detailed information on developing custom spaCy components is available in the corresponding section of the <a href="https://spacy.io/usage/processing-pipelines#custom-components">documentation</a>. The examples below use the <code>ru_core_news_sm</code> model, which is installed separately: <code>python -m spacy download ru_core_news_sm</code> (see <a href="../installation/">installation</a>).</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Serialization</p>
+<p>The components store a statistics object in <code>doc._.&lt;name&gt;</code>, which spaCy cannot serialize: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> and <code>nlp.pipe(..., n_process&gt;1)</code> with such components fail. To save a document, exclude the user data (<code>doc.to_bytes(exclude=["user_data"])</code>) or store <code>doc._.&lt;name&gt;.get_stats()</code> separately; for multiprocessing compute the statistics in the main process after <code>nlp.pipe</code> without the ruTS components.</p>
 </div>
 <h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
 <div class="admonition info">

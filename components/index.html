@@ -2741,7 +2741,11 @@
 <p>Набор модулей для создания компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>. Каждый модуль представляет собой класс с двумя реализованными методами: <code>__init__</code> (добавляет новое расширение в пайплайн при инициализации) и <code>__call__</code> (принимает объект класса <code>Doc</code> и возвращает его модифицированную версию).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Подробную информацию о разработке пользовательских компонентов для spaCy можно узнать в соответствующем разделе <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации</a>.</p>
+<p>Подробную информацию о разработке пользовательских компонентов для spaCy можно узнать в соответствующем разделе <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации</a>. Примеры ниже используют модель <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Сериализация</p>
+<p>Компоненты кладут в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code> без компонентов ruTS.</p>
 </div>
 <h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
