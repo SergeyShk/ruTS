@@ -491,6 +491,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Исключения и логирование
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../authors/" class="md-nav__link">
         
   
@@ -2751,7 +2779,7 @@
 <p>Статья <code>Entry</code> - именованный кортеж с полями <code>lemma</code>, <code>pos</code> (кортеж частей речи), <code>ipm</code>, <code>range</code>, <code>dispersion</code>, <code>docs</code>.</p>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="download">download<a class="headerlink" href="#download" title="Permanent link">&para;</a></h3>
-<p>Выполняет загрузку словаря из сети и извлечение файла. Загруженный архив сверяется с контрольной суммой SHA-256 (файл на сайте не менялся с 2013 года); поврежденный или подмененный файл удаляется с ошибкой <code>RuntimeError</code>, чтобы повторная загрузка не пропускалась. Если архив уже есть, а файл словаря нет, архив извлекается заново.</p>
+<p>Выполняет загрузку словаря из сети и извлечение файла. Загруженный архив сверяется с контрольной суммой SHA-256 (файл на сайте не менялся с 2013 года); поврежденный или подмененный файл удаляется с ошибкой <code>DownloadError</code>, чтобы повторная загрузка не пропускалась. Если архив уже есть, а файл словаря нет, архив извлекается заново.</p>
 <p>Параметры:</p>
 <table>
 <thead>

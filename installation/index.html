@@ -14,7 +14,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../authors/">
+        <link rel="next" href="../exceptions/">
       
       
         
@@ -564,6 +564,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Исключения и логирование
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2575,6 +2603,13 @@
 <div class="admonition warning">
 <p class="admonition-title">Graphviz</p>
 <p>Пакет <code>graphviz</code> из зависимостей - только обертка: для отрисовки <a href="../visualizers/word_tree/">дерева слов</a> и <a href="../visualizers/corpus/#collocation_network">сети коллокаций</a> нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a> (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), иначе <code>render()</code> и показ графа в Jupyter завершатся ошибкой <code>ExecutableNotFound</code>. Остальному функционалу они не нужны.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Быстрый морфологический разбор</p>
+<p>Для корпусов ставьте библиотеку с extra <code>fast</code>:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"ruts[fast]"</span>
+</code></pre></div>
+<p>Оно добавляет C-расширение <a href="https://github.com/pymorphy2-fork/DAWG">DAWG2</a> для pymorphy3 (только CPython, колеса есть для Linux, macOS и Windows): разбор словоформ ускоряется примерно в 5 раз (175 против 34 тысяч словоформ в секунду), <code>MorphStats</code> на тексте в 70 тысяч слов - на треть, потому что разбор кэшируется по словоформе и остальное время уходит на подсчет. Без extra библиотека работает так же, только медленнее.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>

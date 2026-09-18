@@ -491,6 +491,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Исключения и логирование
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../authors/" class="md-nav__link">
         
   
@@ -2673,7 +2701,7 @@
 <tr>
 <td style="text-align: left;"><a href="../../datasets/freq2011/"><code>FreqDict</code></a> - словарь Ляшевской и Шарова, 52 138 лемм с ipm, R, D</td>
 <td style="text-align: left;"><code>coverage</code>, <code>mean_ipm*</code>, <code>mean_log_ipm*</code>, <code>mean_range</code>, <code>mean_dispersion</code>, <code>surprisal</code>, <code>perplexity</code></td>
-<td style="text-align: left;">загружается один раз командой <code>FreqDict().download()</code>; без словаря обращение к этим метрикам и <code>get_stats</code> вызывает <code>OSError</code></td>
+<td style="text-align: left;">загружается один раз командой <code>FreqDict().download()</code>; без словаря обращение к этим метрикам и <code>get_stats</code> вызывает <code>DatasetNotFoundError</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Вшитый список 10 000 самых частых лемм интернет-корпуса Лидского университета (С. А. Шаров, зеркало <a href="https://github.com/hingston/russian">hingston/russian</a>, CC BY 2.5)</td>
