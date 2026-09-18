@@ -32,6 +32,8 @@ jobs:
   test:
     name: test (${{ matrix.python-version }}${{ matrix.os != 'ubuntu-latest' && format(', {0}', matrix.os) || '' }})
     runs-on: ${{ matrix.os }}
+    env:
+      NLTK_DATA: ${{ runner.temp }}/nltk_data
     strategy:
       fail-fast: false
       matrix:
@@ -58,10 +60,10 @@ jobs:
       - name: Cache NLTK data
         uses: actions/cache@v6
         with:
-          path: ~/nltk_data
-          key: nltk-punkt-stopwords-v1
+          path: ${{ env.NLTK_DATA }}
+          key: nltk-punkt-stopwords-${{ runner.os }}-v1
       - name: Download NLTK data
-        run: uv run python -m nltk.downloader punkt punkt_tab stopwords
+        run: uv run python -m nltk.downloader -d "${{ env.NLTK_DATA }}" punkt punkt_tab stopwords
       - name: Run tests
         run: uv run pytest --cov ruts --cov-fail-under 90 --cov-report xml
       - name: Send report
