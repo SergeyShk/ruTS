@@ -90,25 +90,19 @@ extra:
       link: https://www.linkedin.com/in/kouki91/
 
 extra_css:
-  - css/mermaid.css
   - css/extra.css
 
 extra_javascript:
   - js/config.js
-  - js/mermaid.min.js
-  - js/mathjax/tex-svg.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js
 
 markdown_extensions:
   - toc:
       permalink: True
   - attr_list
   - admonition
-  - codehilite
+  - pymdownx.highlight
   - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: True

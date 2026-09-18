@@ -24,8 +24,8 @@ jobs:
         run: uv sync --locked --all-groups
       - name: Ruff
         run: |
-          uv run ruff check ruts tests demo
-          uv run ruff format ruts tests demo --check
+          uv run ruff check ruts tests demo conftest.py
+          uv run ruff format ruts tests demo conftest.py --check
       - name: Mypy
         run: uv run mypy
 

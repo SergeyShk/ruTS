@@ -796,7 +796,7 @@ cd ruTS
 
 make deps        # create the environment and install dependencies
 make nltk-data   # download the NLTK data required by the tests
-make test        # run the tests
+make test        # run the tests and docstring examples (doctest)
 make lint        # ruff + mypy
 ```
 

@@ -88,7 +88,7 @@ class FreqDict(Dataset):
 
     Итерация по словарю:
         >>> for record in fd.get_records(pos='s', min_ipm=2700, limit=2):
-        >>>     print(record)
+        ...     print(record)
         {'lemma': 'год', 'pos': 's', 'ipm': 3727.5, 'range': 100, 'dispersion': 94, 'docs': 29477}
         {'lemma': 'человек', 'pos': 's', 'ipm': 2723.0, 'range': 100, 'dispersion': 97, 'docs': 20423}
 

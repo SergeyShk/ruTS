@@ -159,8 +159,9 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-addopts = "-v --strict-markers --strict-config"
-testpaths = ["tests"]
+addopts = "-v --strict-markers --strict-config --doctest-modules"
+testpaths = ["tests", "ruts"]
+doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 markers = [
     "network: тест ходит в сеть; отключается через -m 'not network'",
 ]

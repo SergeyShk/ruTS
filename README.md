@@ -796,7 +796,7 @@ cd ruTS
 
 make deps        # создать окружение и установить зависимости
 make nltk-data   # загрузить данные NLTK, нужные для тестов
-make test        # запустить тесты
+make test        # запустить тесты и примеры из докстрингов (doctest)
 make lint        # ruff + mypy
 ```
 

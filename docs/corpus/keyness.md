@@ -20,7 +20,7 @@
 | Мера | Ключ | Формула | Описание |
 | :--- | :--- | :------ | :------- |
 | Логарифм правдоподобия | `log_likelihood` | $G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})$, $E_1 = \frac{c\,(a+b)}{N}$, $E_2 = \frac{d\,(a+b)}{N}$ | [Rayson и Garside (2000)](https://ucrel.lancs.ac.uk/llwizard.html); критические значения `G2_CRITICAL_VALUES`: 3.84 для p < 0.05, 6.63 для p < 0.01, 10.83 для p < 0.001, 15.13 для p < 0.0001 |
-| Хи-квадрат | `chi2` | $\chi^2 = \frac{N\,\max(|a(d-b) - b(c-a)| - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}$ | с поправкой Йейтса по таблице сопряженности 2×2; если поправка больше разности, статистика равна нулю |
+| Хи-квадрат | `chi2` | $\chi^2 = \frac{N\,\max(\lvert a(d-b) - b(c-a) \rvert - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}$ | с поправкой Йейтса по таблице сопряженности 2×2; если поправка больше разности, статистика равна нулю |
 | %DIFF | `diff` | $\frac{NF_a - NF_b}{NF_b} \cdot 100$ | [Gabrielatos и Marchi (2011)](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf); $NF$ - частота на миллион слов |
 | Log Ratio | `log_ratio` | $\log_2 \frac{NF_a}{NF_b}$ | [Hardie (2014)](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/); единица - слово вдвое чаще в целевом корпусе |
 | BIC | `bic` | $G^2 - \ln N$ | Wilson (2013); выше 2 - положительное свидетельство различия, выше 6 - сильное, выше 10 - очень сильное |
