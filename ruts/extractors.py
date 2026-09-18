@@ -128,7 +128,7 @@ class WordsExtractor(Extractor):
         >>> from ruts import WordsExtractor
         >>> text = "Не имей 100 рублей, а имей 100 друзей"
         >>> we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'),
-        >>>                     filter_nums=True, ngram_range=(1, 2))
+        ...                     filter_nums=True, ngram_range=(1, 2))
         >>> we.extract(text)
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 

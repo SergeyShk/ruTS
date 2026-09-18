@@ -31,15 +31,15 @@ lint: ruff mypy ## Запустить все проверки кода
 
 ruff: deps ## Проверить и отформатировать код с помощью ruff
 ifeq ($(MODE), ci)
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --check
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py --check
 else
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) --fix
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py --fix
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
 endif
 
 format: deps ## Отформатировать код
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH)
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
 
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy

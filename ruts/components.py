@@ -33,10 +33,10 @@ class BasicStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('basic', last=True)
+        <ruts.components.BasicStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.basic.get_stats()
         >>> doc._.basic.c_letters
         {4: 3}
 
@@ -77,10 +77,10 @@ class MorphStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('morph', last=True)
+        <ruts.components.MorphStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.morph.get_stats()
         >>> doc._.morph.case
         ('Nom', None, 'Acc')
 
@@ -117,13 +117,14 @@ class ReadabilityStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('readability', last=True)
+        <ruts.components.ReadabilityStatsComponent object at 0x...>
 
     Выбор пресета коэффициентов:
-        >>> nlp.add_pipe('readability', config={'preset': 'fiction'}, last=True)
+        >>> nlp.add_pipe('readability', name='readability_fiction', config={'preset': 'fiction'}, last=True)
+        <ruts.components.ReadabilityStatsComponent object at 0x...>
 
     Доступ к извлеченным метрикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.readability.get_stats()
         >>> doc._.readability.flesch_reading_easy
         82.735
 
@@ -162,13 +163,14 @@ class DiversityStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('diversity', last=True)
+        <ruts.components.DiversityStatsComponent object at 0x...>
 
     Настройка окон, порогов и основания логарифма:
-        >>> nlp.add_pipe('diversity', config={'window_len': 100, 'log_base': 2.718281828459045}, last=True)
+        >>> nlp.add_pipe('diversity', name='diversity_ln', config={'window_len': 100, 'log_base': 2.718281828459045}, last=True)
+        <ruts.components.DiversityStatsComponent object at 0x...>
 
     Доступ к извлеченным метрикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.diversity.get_stats()
         >>> doc._.diversity.rttr
         1.7320508075688774
 
@@ -231,13 +233,14 @@ class StyleStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('style', last=True)
+        <ruts.components.StyleStatsComponent object at 0x...>
 
     Настройка списка стоп-слов и количества самых частых слов:
-        >>> nlp.add_pipe('style', config={'stopwords': ['и', 'в', 'не'], 'top_n': 5}, last=True)
+        >>> nlp.add_pipe('style', name='style_short', config={'stopwords': ['и', 'в', 'не'], 'top_n': 5}, last=True)
+        <ruts.components.StyleStatsComponent object at 0x...>
 
     Доступ к извлеченным метрикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.style.get_stats()
         >>> doc._.style.water
         0.0
 
@@ -284,13 +287,14 @@ class PhonStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('phon', last=True)
+        <ruts.components.PhonStatsComponent object at 0x...>
 
     Настройка окна для аллитерации и ассонанса:
-        >>> nlp.add_pipe('phon', config={'window_len': 5}, last=True)
+        >>> nlp.add_pipe('phon', name='phon_windowed', config={'window_len': 5}, last=True)
+        <ruts.components.PhonStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.phon.get_stats()
         >>> doc._.phon.p_open_syllables
         1.0
 
@@ -333,10 +337,10 @@ class SyntaxStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('syntax', last=True)
+        <ruts.components.SyntaxStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("мама мыла раму")
-        >>> doc._.syntax.get_stats()
         >>> doc._.syntax.tree_depth
         1.0
 
@@ -373,10 +377,10 @@ class CohesionStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('cohesion', last=True)
+        <ruts.components.CohesionStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("Кот сидел на окне. Он смотрел на птиц.")
-        >>> doc._.cohesion.get_stats()
         >>> doc._.cohesion.argument_overlap_adjacent
         0.0
 
@@ -413,13 +417,14 @@ class LexicalStatsComponent:
         >>> import spacy
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe('lexical', last=True)
+        <ruts.components.LexicalStatsComponent object at 0x...>
 
     Словарь из другой директории:
-        >>> nlp.add_pipe('lexical', config={'data_dir': '/path/to/dicts'}, last=True)
+        >>> nlp.add_pipe('lexical', name='lexical_dicts', config={'data_dir': '/path/to/dicts'}, last=True)
+        <ruts.components.LexicalStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
         >>> doc = nlp("Кот сидел на окне и смотрел на птиц")
-        >>> doc._.lexical.get_stats()
         >>> doc._.lexical.p_top1000
         0.75
 

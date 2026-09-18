@@ -72,33 +72,27 @@ class StalinWorks(Dataset):
 
     Примеры использования:
     Информация о наборе данных:
+        >>> from pprint import pprint
         >>> from ruts.datasets import StalinWorks
         >>> sw = StalinWorks()
-        >>> sw.info
-        {'description': 'Полное собрание сочинений И.В. Сталина',
-        'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
-        'Наименование': 'stalin_works'}
+        >>> pprint(sw.info)
+        {'author': 'Шкарин С.С.',
+         'description': 'Полное собрание сочинений И.В. Сталина',
+         'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
+         'Наименование': 'stalin_works'}
 
     Итерация по набору данных:
-        >>> for i in sw.get_records(year=1937, text_type='Письмо', limit=1):
-        >>>     print(i)
-        {'file': PosixPath('../ruTS/ruts_data/texts/stalin_works/volume_14/59'),
-        'is_translation': False,
-        'source': 'Книга "Иосиф Сталин в объятиях семьи"',
-        'subject': 'Письмо матери 10 марта 1937 года',
-        'text': 'Маме – моей привет!\n'
-                'Как живет, как чувствует себя мама – моя? Передают, что ты здорова и '
-                'бодра. Правда это? Если это правда, то я бесконечно рад этому. Наш '
-                'род, видимо, крепкий род.\n'
-                'Я здоров.\n'
-                'Мои дети тоже чувствуют себя хорошо.\n'
-                'Желаю здоровья, живи долгие годы, мама – моя.\n'
-                'Твой Coco.\n'
-                '10.\xa0III.37\xa0г.',
-        'topic': '',
-        'type': 'Письмо',
-        'volume': 14,
-        'year': 1937}
+        >>> for record in sw.get_records(year=1937, text_type='Письмо', limit=1):
+        ...     pprint(record)
+        {'file': PosixPath('.../ruts_data/texts/stalin_works/volume_14/59'),
+         'is_translation': False,
+         'source': 'Книга "Иосиф Сталин в объятиях семьи"',
+         'subject': 'Письмо матери 10 марта 1937 года',
+         'text': 'Маме – моей привет!...',
+         'topic': '',
+         'type': 'Письмо',
+         'volume': 14,
+         'year': 1937}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных

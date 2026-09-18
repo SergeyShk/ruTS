@@ -49,24 +49,25 @@ class PoetryCorpus(Dataset):
 
     Примеры использования:
     Информация о наборе данных:
+        >>> from pprint import pprint
         >>> from ruts.datasets import PoetryCorpus
         >>> pc = PoetryCorpus()
-        >>> pc.info
-        {'Наименование': 'poetry_corpus',
-        'author': 'Гусев И.О.',
-        'description': 'Корпус русской поэзии PoetryCorpus',
-        'license': 'Apache-2.0',
-        'url': 'https://github.com/IlyaGusev/PoetryCorpus'}
+        >>> pprint(pc.info)
+        {'author': 'Гусев И.О.',
+         'description': 'Корпус русской поэзии PoetryCorpus',
+         'license': 'Apache-2.0',
+         'url': 'https://github.com/IlyaGusev/PoetryCorpus',
+         'Наименование': 'poetry_corpus'}
 
     Итерация по набору данных:
-        >>> for i in pc.get_records(author='Лермонтов', theme='О любви', limit=1):
-        >>>     print(i)
+        >>> for record in pc.get_records(author='Лермонтов', theme='О любви', limit=1):
+        ...     pprint(record)
         {'author': 'Михаил Лермонтов',
-        'title': 'Благодарю!',
-        'themes': ('О любви',),
-        'year_from': 1830,
-        'year_to': 1830,
-        'text': 'Благодарю!.. Вчера мое признанье...'}
+         'text': 'Благодарю!.. Вчера мое признанье...',
+         'themes': ('О любви',),
+         'title': 'Благодарю!',
+         'year_from': 1830,
+         'year_to': 1830}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных

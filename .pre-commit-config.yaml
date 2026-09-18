@@ -5,9 +5,7 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^docs/js/
       - id: end-of-file-fixer
-        exclude: ^docs/js/
       - id: check-yaml
         exclude: ^mkdocs\.yml$
       - id: check-toml

@@ -68,25 +68,26 @@ class RussianLiterature(Dataset):
 
     Примеры использования:
     Информация о наборе данных:
+        >>> from pprint import pprint
         >>> from ruts.datasets import RussianLiterature
         >>> rl = RussianLiterature()
-        >>> rl.info
-        {'Наименование': 'russian_literature',
-        'author': 'd0rj',
-        'description': 'Собрание русской классической литературы RusLit',
-        'license': 'Общественное достояние (PDDL)',
-        'url': 'https://github.com/d0rj/RusLit'}
+        >>> pprint(rl.info)
+        {'author': 'd0rj',
+         'description': 'Собрание русской классической литературы RusLit',
+         'license': 'Общественное достояние (PDDL)',
+         'url': 'https://github.com/d0rj/RusLit',
+         'Наименование': 'russian_literature'}
 
     Итерация по набору данных:
-        >>> for i in rl.get_records(genre='poems', author='Пушкин', limit=1):
-        >>>     print(i)
-        {'genre': 'poems',
-        'author': 'Александр Пушкин',
-        'title': '19 октября',
-        'year_from': 1825,
-        'year_to': 1825,
-        'text': 'Роняет лес багряный свой убор...',
-        'file': PosixPath('../ruTS/ruts_data/texts/russian_literature/poems/Pushkin/19 октября.txt')}
+        >>> for record in rl.get_records(genre='poems', author='Пушкин', limit=1):
+        ...     pprint(record)
+        {'author': 'Александр Пушкин',
+         'file': PosixPath('.../ruts_data/texts/russian_literature/poems/Pushkin/19 октября.txt'),
+         'genre': 'poems',
+         'text': 'Роняет лес багряный свой убор,...',
+         'title': '19 октября',
+         'year_from': 1825,
+         'year_to': 1825}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных

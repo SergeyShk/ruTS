@@ -47,26 +47,28 @@ class SovChLit(Dataset):
 
     Примеры использования:
     Информация о наборе данных:
+        >>> from pprint import pprint
         >>> from ruts.datasets import SovChLit
         >>> svc = SovChLit()
-        >>> svc.info
-        {'description': 'Корпус советских хрестоматий по литературе',
-        'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
-        'Наименование': 'sov_chrest_lit'}
+        >>> pprint(svc.info)
+        {'author': 'Шкарин С.С.',
+         'description': 'Корпус советских хрестоматий по литературе',
+         'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
+         'Наименование': 'sov_chrest_lit'}
 
     Итерация по набору данных:
-        >>> for i in svc.get_records(max_len=100, category='Весна', limit=1):
-        >>>     print(i)
+        >>> for record in svc.get_records(max_len=100, category='Весна', limit=1):
+        ...     pprint(record)
         {'author': 'С. Маршак',
-        'book': 'Родная речь. Книга для чтения в I классе начальной школы',
-        'category': 'Весна',
-        'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/114'),
-        'grade': 1,
-        'subject': 'Март',
-        'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
-                'Зайчик бегает по парте и по карте на стене.',
-        'type': 'Стихотворение',
-        'year': 1963}
+         'book': 'Родная речь. Книга для чтения в I классе начальной школы',
+         'category': 'Весна',
+         'file': PosixPath('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
+         'grade': 1,
+         'subject': 'Март',
+         'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\\n'
+                 'Зайчик бегает по парте и по карте на стене.',
+         'type': 'Стихотворение',
+         'year': 1963}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных

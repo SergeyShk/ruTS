@@ -47,23 +47,24 @@ class TextsByGrade(Dataset):
 
     Примеры использования:
     Информация о наборе данных:
+        >>> from pprint import pprint
         >>> from ruts.datasets import TextsByGrade
         >>> tbg = TextsByGrade()
-        >>> tbg.info
-        {'Наименование': 'texts_by_grade',
-        'author': 'Бегтин И.В.',
-        'description': 'Тексты с метками класса проекта Plain Russian Language',
-        'license': 'CC0 1.0',
-        'url': 'https://github.com/infoculture/plainrussian'}
+        >>> pprint(tbg.info)
+        {'author': 'Бегтин И.В.',
+         'description': 'Тексты с метками класса проекта Plain Russian Language',
+         'license': 'CC0 1.0',
+         'url': 'https://github.com/infoculture/plainrussian',
+         'Наименование': 'texts_by_grade'}
 
     Итерация по набору данных:
-        >>> for i in tbg.get_records(grade=1, subject='Ряба'):
-        >>>     print(i)
-        {'file': PosixPath('../ruTS/ruts_data/texts/texts_by_grade/grade_1/9'),
-        'grade': 1,
-        'source': 'http://skazki.org.ru/tales/yaichko/',
-        'text': 'Жил себе дед да баба, у них была курочка Ряба...',
-        'subject': 'Курочка Ряба'}
+        >>> for record in tbg.get_records(grade=1, subject='Ряба'):
+        ...     pprint(record)
+        {'file': PosixPath('.../ruts_data/texts/texts_by_grade/grade_1/9'),
+         'grade': 1,
+         'source': 'http://skazki.org.ru/tales/yaichko/',
+         'subject': 'Курочка Ряба',
+         'text': 'Жил себе дед да баба, у них была курочка Ряба...'}
 
     Аргументы:
         data_dir (str): Путь к директории с набором данных

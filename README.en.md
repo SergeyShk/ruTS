@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://sergeyshk.github.io/ruTS/">Documentation</a> ·
+  <a href="https://sergeyshk.github.io/ruTS/en/">Documentation</a> ·
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS">Demo</a> ·
   <a href="https://pypi.org/project/ruts/">PyPI</a> ·
   <a href="https://github.com/SergeyShk/ruTS/blob/master/README.md">Русский</a>
@@ -34,20 +34,20 @@ The library works both with raw strings and with `Doc` objects of [spaCy](https:
 
 Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): paste a text and get the readability grade, metrics, plots and highlighted fragments.
 
-* **[Object extraction](https://sergeyshk.github.io/ruTS/extractors/words/)** - configurable word, sentence and character n-gram tokenizers
-* **[Basic statistics](https://sergeyshk.github.io/ruTS/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
-* **[Readability metrics](https://sergeyshk.github.io/ruTS/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
-* **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
-* **[Morphological statistics](https://sergeyshk.github.io/ruTS/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
-* **[SEO style metrics](https://sergeyshk.github.io/ruTS/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
-* **[Phonostatistics](https://sergeyshk.github.io/ruTS/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
-* **[Syntactic statistics](https://sergeyshk.github.io/ruTS/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
-* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
-* **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
-* **[Corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile; corpus comparison across all features with effect sizes
-* **[Datasets](https://sergeyshk.github.io/ruTS/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
-* **[Visualizations](https://sergeyshk.github.io/ruTS/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
-* **[spaCy components](https://sergeyshk.github.io/ruTS/components/)** - plug any statistic into a pipeline
+* **[Object extraction](https://sergeyshk.github.io/ruTS/en/extractors/words/)** - configurable word, sentence and character n-gram tokenizers
+* **[Basic statistics](https://sergeyshk.github.io/ruTS/en/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
+* **[Readability metrics](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
+* **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/en/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
+* **[Morphological statistics](https://sergeyshk.github.io/ruTS/en/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
+* **[SEO style metrics](https://sergeyshk.github.io/ruTS/en/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
+* **[Phonostatistics](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
+* **[Syntactic statistics](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
+* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
+* **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
+* **[Corpus measures](https://sergeyshk.github.io/ruTS/en/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile; corpus comparison across all features with effect sizes
+* **[Datasets](https://sergeyshk.github.io/ruTS/en/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
+* **[Visualizations](https://sergeyshk.github.io/ruTS/en/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
+* **[spaCy components](https://sergeyshk.github.io/ruTS/en/components/)** - plug any statistic into a pipeline
 
 ## Installation
 
@@ -137,7 +137,7 @@ The library allows creating your own tools for sentence, word and character n-gr
 [(' им', 2), ('име', 2)]
 ```
 
-See the docs for [words](https://sergeyshk.github.io/ruTS/extractors/words/), [sentences](https://sergeyshk.github.io/ruTS/extractors/sentences/) and [character n-grams](https://sergeyshk.github.io/ruTS/extractors/char_ngrams/).
+See the docs for [words](https://sergeyshk.github.io/ruTS/en/extractors/words/), [sentences](https://sergeyshk.github.io/ruTS/en/extractors/sentences/) and [character n-grams](https://sergeyshk.github.io/ruTS/en/extractors/char_ngrams/).
 
 <details>
 <summary><b>Basic statistics</b></summary>
@@ -186,7 +186,7 @@ Any statistic can be printed in a readable form:
 Знаки препинания    |    2
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/basic_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/basic_stats/).
 
 </details>
 
@@ -256,7 +256,7 @@ Coefficients of the formulas adapted for Russian are selected by the `preset` ar
 '1-3-й класс (6-8 лет)'
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/readability_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/).
 
 </details>
 
@@ -332,7 +332,7 @@ Windows, thresholds and the logarithm base are parameters of `DiversityStats`; a
 WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180167025, upper=1.220176848649964, n_windows=3)
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/diversity_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/diversity_stats/).
 
 </details>
 
@@ -400,7 +400,7 @@ Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/
 
 Individual words can be analysed with decoded features via `ms.explain_text(filter_none=True)`.
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/morph_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/morph_stats/).
 
 </details>
 
@@ -446,7 +446,7 @@ The exact formulas of the services are not published, so the commonly accepted d
 (16.666666666666664, 9.090909090909092, 9.090909090909092, 9.090909090909092)
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/style_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/style_stats/).
 
 </details>
 
@@ -490,7 +490,7 @@ The library counts by letters, without devoicing or stress:
 ['здра', 'вствуй', 'те']
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/phon_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/).
 
 </details>
 
@@ -523,7 +523,7 @@ The library counts over the spaCy dependency tree (a model with a parser is requ
 (0.5, 0.5, 0.4)
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/syntax_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/).
 
 </details>
 
@@ -557,7 +557,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 (62.5, 62.5, 62.5)
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/cohesion_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/).
 
 </details>
 
@@ -589,7 +589,7 @@ How rare the words of a text are relative to the language (lexical sophisticatio
 0.25
 ```
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/stats/lexical_stats/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/).
 
 </details>
 
@@ -637,7 +637,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 [('на', 0.67), ('кот', 0.6)]
 ```
 
-More in the docs: [corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyness/), [stylometry](https://sergeyshk.github.io/ruTS/corpus/stylometry/).
+More in the docs: [corpus measures](https://sergeyshk.github.io/ruTS/en/corpus/keyness/), [stylometry](https://sergeyshk.github.io/ruTS/en/corpus/stylometry/).
 
 </details>
 
@@ -648,12 +648,12 @@ More in the docs: [corpus measures](https://sergeyshk.github.io/ruTS/corpus/keyn
 
 The library allows working with a number of preprocessed datasets:
 
-*   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/datasets/sovchlit/) - soviet reading-books for literature classes
-*   [stalin_works](https://sergeyshk.github.io/ruTS/datasets/stalinworks/) - the collected works of Stalin
-*   [freq2011](https://sergeyshk.github.io/ruTS/datasets/freq2011/) - the Lyashevskaya-Sharoff frequency dictionary: 52,138 lemmas with ipm, range and dispersion over the Russian National Corpus
-*   [texts_by_grade](https://sergeyshk.github.io/ruTS/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
-*   [poetry_corpus](https://sergeyshk.github.io/ruTS/datasets/poetrycorpus/) - Ilya Gusev's PoetryCorpus: 16,694 poems by 195 authors with years and themes (Apache-2.0)
-*   [russian_literature](https://sergeyshk.github.io/ruTS/datasets/russianliterature/) - the RusLit collection of Russian classics: 373 works by 12 authors in three genres with years (public domain)
+*   [sov_chrest_lit](https://sergeyshk.github.io/ruTS/en/datasets/sovchlit/) - soviet reading-books for literature classes
+*   [stalin_works](https://sergeyshk.github.io/ruTS/en/datasets/stalinworks/) - the collected works of Stalin
+*   [freq2011](https://sergeyshk.github.io/ruTS/en/datasets/freq2011/) - the Lyashevskaya-Sharoff frequency dictionary: 52,138 lemmas with ipm, range and dispersion over the Russian National Corpus
+*   [texts_by_grade](https://sergeyshk.github.io/ruTS/en/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
+*   [poetry_corpus](https://sergeyshk.github.io/ruTS/en/datasets/poetrycorpus/) - Ilya Gusev's PoetryCorpus: 16,694 poems by 195 authors with years and themes (Apache-2.0)
+*   [russian_literature](https://sergeyshk.github.io/ruTS/en/datasets/russianliterature/) - the RusLit collection of Russian classics: 373 works by 12 authors in three genres with years (public domain)
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
@@ -693,13 +693,13 @@ A dataset is downloaded by the `download()` method and cached locally, a repeate
 
 The library allows visualizing text with the help of the following graphs:
 
-*   [Zipf's law](https://sergeyshk.github.io/ruTS/visualizers/zipf/)
-*   [Literature Fingerprinting](https://sergeyshk.github.io/ruTS/visualizers/fingerprinting/)
-*   [Word Tree](https://sergeyshk.github.io/ruTS/visualizers/word_tree/)
-*   [Text highlighting](https://sergeyshk.github.io/ruTS/visualizers/highlight/) by 15 layers in five groups: readability (long sentences, complex and rare words), syntax (passive voice, participial clauses, genitive chains, split predicates), officialese (verbal nouns, compound prepositions, clichés), style (stop words, parentheticals, connectives), phonics (alliteration)
-*   [Corpus plots](https://sergeyshk.github.io/ruTS/visualizers/corpus/): lexical dispersion, keyness chart, collocation network
-*   [Stylometry plots](https://sergeyshk.github.io/ruTS/visualizers/stylometry/): dendrogram, principal components and multidimensional scaling by Delta, Mendenhall curves
-*   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/visualizers/sentences/) with a moving average
+*   [Zipf's law](https://sergeyshk.github.io/ruTS/en/visualizers/zipf/)
+*   [Literature Fingerprinting](https://sergeyshk.github.io/ruTS/en/visualizers/fingerprinting/)
+*   [Word Tree](https://sergeyshk.github.io/ruTS/en/visualizers/word_tree/)
+*   [Text highlighting](https://sergeyshk.github.io/ruTS/en/visualizers/highlight/) by 15 layers in five groups: readability (long sentences, complex and rare words), syntax (passive voice, participial clauses, genitive chains, split predicates), officialese (verbal nouns, compound prepositions, clichés), style (stop words, parentheticals, connectives), phonics (alliteration)
+*   [Corpus plots](https://sergeyshk.github.io/ruTS/en/visualizers/corpus/): lexical dispersion, keyness chart, collocation network
+*   [Stylometry plots](https://sergeyshk.github.io/ruTS/en/visualizers/stylometry/): dendrogram, principal components and multidimensional scaling by Delta, Mendenhall curves
+*   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/en/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/en/visualizers/sentences/) with a moving average
 
 Matplotlib plots accept `ax` and return `Axes`, so they can be laid out on one figure. Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
 
@@ -782,7 +782,7 @@ The library allows creating the following classes of spaCy components:
 
 The values match the example above: punctuation and whitespace tokens of spaCy are filtered out when counting.
 
-More in the [documentation](https://sergeyshk.github.io/ruTS/components/).
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/components/).
 
 </details>
 
@@ -796,11 +796,13 @@ cd ruTS
 
 make deps        # create the environment and install dependencies
 make nltk-data   # download the NLTK data required by the tests
-make test        # run the tests
+make test        # run the tests and docstring examples (doctest)
 make lint        # ruff + mypy
 ```
 
 Run `make help` for the full list of commands.
+
+The documentation is bilingual: Russian pages are `docs/*.md`, English ones are `docs/*.en.md` next to them ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); when editing a page, update both versions.
 
 The installed version is `ruts.__version__`. All exceptions inherit `ruts.RutsError` and one of the built-in classes (`SourceError` and `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), so `except ValueError` keeps working. Messages about downloading and extracting datasets go to the `ruts` logger (`logging.getLogger("ruts")`) and are silent by default.
 

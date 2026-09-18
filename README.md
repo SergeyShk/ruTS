@@ -796,11 +796,13 @@ cd ruTS
 
 make deps        # создать окружение и установить зависимости
 make nltk-data   # загрузить данные NLTK, нужные для тестов
-make test        # запустить тесты
+make test        # запустить тесты и примеры из докстрингов (doctest)
 make lint        # ruff + mypy
 ```
 
 Полный список команд - `make help`.
+
+Документация двуязычная: русские страницы `docs/*.md`, английские - `docs/*.en.md` рядом с ними ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); при правке страницы обновляйте обе версии.
 
 Версия установленной библиотеки - `ruts.__version__`. Все исключения наследуют `ruts.RutsError` и один из встроенных классов (`SourceError` и `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), так что `except ValueError` продолжает работать. Сообщения о загрузке и извлечении наборов данных идут в логгер `ruts` (`logging.getLogger("ruts")`), по умолчанию они не выводятся.
 

@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.13.0.dev1"
+version = "0.13.0.dev2"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -86,7 +86,12 @@ fast = ["pymorphy3[fast]>=2.0.4"]
 [dependency-groups]
 test = ["pytest>=8.3", "pytest-cov>=6.0", "ru-core-news-sm"]
 lint = ["mypy>=1.14", "pre-commit>=4.0", "ruff>=0.9"]
-docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "pymdown-extensions>=10.0"]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+    "mkdocs-static-i18n>=1.2",
+    "pymdown-extensions>=10.0",
+]
 dev = [
     { include-group = "test" },
     { include-group = "lint" },
@@ -159,8 +164,9 @@ warn_unused_configs = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
-addopts = "-v --strict-markers --strict-config"
-testpaths = ["tests"]
+addopts = "-v --strict-markers --strict-config --doctest-modules"
+testpaths = ["tests", "ruts"]
+doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 markers = [
     "network: тест ходит в сеть; отключается через -m 'not network'",
 ]

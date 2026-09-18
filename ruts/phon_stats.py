@@ -53,7 +53,7 @@ class PhonStats:
         'consonant_vowel_ratio': 1.48,
         'p_heavy_clusters': 0.034482758620689655,
         'p_hiatus': 0.0,
-        'cv_entropy': 3.1395722619867223,
+        'cv_entropy': 3.13957226198672...,
         'hardness': 0.5625,
         'alliteration': 0.9149440867502556,
         'assonance': 0.802520508857449,
