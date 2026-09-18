@@ -28,7 +28,7 @@
 
 ---
 
-**ruTS** computes for Russian texts what usually requires assembling several separate tools: basic statistics, readability and lexical diversity metrics, morphological features. The main functions are based on the [textacy](https://github.com/chartbeat-labs/textacy) statistics adapted to the Russian language.
+**ruTS** computes for Russian texts what usually requires assembling several separate tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
 
 The library works both with raw strings and with `Doc` objects of [spaCy](https://github.com/explosion/spaCy) - every statistic is available both as a standalone class and as a spaCy pipeline component.
 
