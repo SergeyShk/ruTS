@@ -7,10 +7,10 @@ from ruts.datasets.dataset import Dataset
 @pytest.fixture(autouse=True)
 def _skip_doctests_without_data(request):
     """
-    Примеры в докстрингах наборов данных выполняются, только если набор загружен
+    Примеры в докстрингах, которым нужен набор данных, выполняются только при загруженном наборе
     """
     item = request.node
-    if not isinstance(item, DoctestItem) or not item.name.startswith("ruts.datasets."):
+    if not isinstance(item, DoctestItem):
         return
     for value in item.dtest.globs.values():
         if (
