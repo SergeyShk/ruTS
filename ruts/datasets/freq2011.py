@@ -76,7 +76,7 @@ class FreqDict(Dataset):
     Загрузка и информация о словаре:
         >>> from ruts.datasets import FreqDict
         >>> fd = FreqDict()
-        >>> fd.download()
+        >>> fd.download()  # doctest: +SKIP
         >>> fd.info['citation']
         'Ляшевская О. Н., Шаров С. А. Частотный словарь современного русского языка (на материалах Национального корпуса русского языка). М.: Азбуковник, 2009.'
 
