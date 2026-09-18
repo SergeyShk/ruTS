@@ -614,8 +614,10 @@ def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[l
 
     Описание:
         Предложения извлекаются sents_extractor из текста и находятся в нем
-        по порядку; слово относится к последнему предложению, начавшемуся не позже
-        его первого токена, так что ни одно слово не теряется
+        по порядку; слово относится к предложению, в границах которого лежит его
+        первый токен. Слова вне найденных предложений (отброшенных экстрактором
+        по длине) не учитываются, как и для строки; без предложений все слова
+        образуют одну группу
 
     Аргументы:
         source (Doc): Объект Doc
@@ -625,19 +627,23 @@ def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[l
         list[list[list[Token]]]: Токены каждого слова каждого предложения
     """
     text = source.text
-    starts = []
+    spans = []
     cursor = 0
     for sent in sents_extractor.extract(text):
         start = text.find(sent, cursor)
         if start != -1:
-            starts.append(start)
+            spans.append((start, start + len(sent)))
             cursor = start + len(sent)
-    units: list[list[list[Token]]] = [[] for _ in starts] or [[]]
+    if not spans:
+        return [list(iter_doc_units(source))]
+    units: list[list[list[Token]]] = [[] for _ in spans]
     index = 0
     for unit in iter_doc_units(source):
-        while index + 1 < len(starts) and starts[index + 1] <= unit[0].idx:
+        position = unit[0].idx
+        while index + 1 < len(spans) and spans[index + 1][0] <= position:
             index += 1
-        units[index].append(unit)
+        if spans[index][0] <= position < spans[index][1]:
+            units[index].append(unit)
     return units
 
 

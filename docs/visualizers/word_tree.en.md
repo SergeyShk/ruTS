@@ -15,9 +15,10 @@ Building a [word tree](https://www.weblyzard.com/word-tree/) (Word Tree) that sh
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `texts` | List[List[str]] | `-` | List of word lists |
-| `keyword` | str | `None` | Keyword whose context is searched |
+| `keyword` | str | `-` | Keyword whose context is searched |
 | `max_n` | int | `5` | Maximum context size |
 | `max_per_n` | int | `8` | Maximum number of examples for each context size |
+| `**kwargs` | - | `-` | Drawing parameters: `max_font_size` (default `30`), `min_font_size` (`12`), `font_interp` - a function interpolating the font size from frequency |
 
 ## Usage example
 

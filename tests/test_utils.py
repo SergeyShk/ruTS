@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pytest
 
+from ruts import utils as utils_module
+from ruts.exceptions import DataFileError, DownloadError
 from ruts.utils import (
     download_file,
     extract_archive,
@@ -53,6 +55,61 @@ def test_download_file_runtime_error(tmp_path):
     url = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopword.zip"
     with pytest.raises(RuntimeError):
         download_file(url, dirpath=tmp_path, force=True)
+
+
+def test_download_file_partial_cleanup(tmp_path, monkeypatch):
+    class BrokenResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self, size=-1):
+            raise OSError("обрыв соединения")
+
+    calls = {}
+
+    def fake_urlopen(request, timeout=None):
+        calls["timeout"] = timeout
+        return BrokenResponse()
+
+    monkeypatch.setattr(utils_module.urllib.request, "urlopen", fake_urlopen)
+    with pytest.raises(DownloadError):
+        download_file("https://example.com/data.zip", dirpath=tmp_path, force=True)
+    assert calls["timeout"] == utils_module.DOWNLOAD_TIMEOUT
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_download_file_mkdir_error(tmp_path):
+    blocker = tmp_path / "file"
+    blocker.write_text("не директория", encoding="utf-8")
+    with pytest.raises(DownloadError):
+        download_file("https://example.com/data.zip", dirpath=blocker / "data")
+
+
+def test_extract_archive_traversal(tmp_path):
+    payload = tmp_path / "payload.txt"
+    payload.write_text("evil", encoding="utf-8")
+    archive = tmp_path / "evil.tar"
+    with tarfile.open(archive, mode="w") as tar_file:
+        tar_file.add(payload, arcname="../evil.txt")
+    with pytest.raises(DataFileError):
+        extract_archive(archive, tmp_path / "out")
+    assert not (tmp_path / "evil.txt").exists()
+    zipped = tmp_path / "evil.zip"
+    with zipfile.ZipFile(zipped, "w") as zip_file:
+        zip_file.writestr("../evil.txt", "evil")
+    with pytest.raises(DataFileError):
+        extract_archive(zipped, tmp_path / "zip_out")
+    assert not (tmp_path / "evil.txt").exists()
+    assert not (tmp_path / "zip_out" / "evil.txt").exists()
+    broken = tmp_path / "broken.zip"
+    with zipfile.ZipFile(broken, "w") as zip_file:
+        zip_file.writestr("good.txt", "good")
+    broken.write_bytes(b"\x00" * 4 + broken.read_bytes()[4:])
+    with pytest.raises(DataFileError):
+        extract_archive(broken, tmp_path / "broken_out")
 
 
 @pytest.fixture

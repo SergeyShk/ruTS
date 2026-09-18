@@ -143,7 +143,8 @@ Prints a table with the computed lexical sophistication statistics.
     _Code_:
 
     ``` python
-    ...
+    # Create the statistics object
+    ls = LexicalStats("Кот сидел на окне и смотрел на птиц")
 
     # Print the table of computed statistics
     ls.print_stats()

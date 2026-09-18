@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from math import isfinite, isnan, log2, nan
 
 import matplotlib.pyplot as plt
-from graphviz import Graph
+from graphviz import Graph, nohtml
 from matplotlib.axes import Axes
 from matplotlib.patches import Patch
 
@@ -175,12 +175,12 @@ def collocation_network(collocations: Sequence[Collocation], top_n: int | None =
     graph.attr("node", shape="plaintext", margin="0", fontname="Helvetica")
     graph.attr("edge", color="gray50", fontsize="9", fontname="Helvetica")
     for word, frequency in frequencies.items():
-        graph.node(word, fontsize=f"{_scale(frequency, min_freq, max_freq, 10, 24):.0f}")
+        graph.node(nohtml(word), fontsize=f"{_scale(frequency, min_freq, max_freq, 10, 24):.0f}")
     for pair in pairs:
         score = 0.0 if isnan(pair.score) else pair.score
         graph.edge(
-            pair.left,
-            pair.right,
+            nohtml(pair.left),
+            nohtml(pair.right),
             label=f"{score:.2f}",
             penwidth=f"{_scale(score, min_score, max_score, 0.5, 4):.2f}",
         )

@@ -36,6 +36,20 @@ CONSONANT_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in CON
 VOWEL_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in VOWELS]
 
 
+def check_params(window_len: int) -> None:
+    """
+    Проверка параметров фоностатистик
+
+    Аргументы:
+        window_len (int): Размер окна в словах для аллитерации и ассонанса
+
+    Исключения:
+        ParameterError: Если размер окна меньше 2
+    """
+    if window_len < 2:
+        raise ParameterError("Размер окна должен быть не меньше 2")
+
+
 class PhonStats:
     """
     Класс для вычисления фоностатистик текста
@@ -126,8 +140,7 @@ class PhonStats:
             raise SourceTypeError("Некорректный источник данных")
         if not words:
             raise SourceError("В источнике данных отсутствуют слова")
-        if window_len < 2:
-            raise ParameterError("Размер окна должен быть не меньше 2")
+        check_params(window_len)
         self.words = words
         self.window_len = window_len
         self.syllables = tuple(_syllables(word) for word in words)

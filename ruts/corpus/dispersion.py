@@ -1,11 +1,13 @@
 from collections import Counter
 from collections.abc import Sequence
 from math import log2, nan, sqrt
+from numbers import Integral
 from typing import NamedTuple
 
 import numpy as np
 
 from ..exceptions import ParameterError
+from ..utils import check_sequence
 
 
 class Dispersion(NamedTuple):
@@ -65,9 +67,10 @@ def dispersion(
             нет в тексте, - нулевая частота и nan
 
     Исключения:
-        ParameterError: Если частей меньше двух или больше слов, или размеры частей
-            не совпадают с текстом
+        ParameterError: Если частей меньше двух или больше слов, число частей не целое,
+            или размеры частей не совпадают с текстом
     """
+    check_sequence(words)
     sizes = _sizes(len(words), parts)
     total = Counter(words)
     targets = [word] if word is not None else [w for w, f in total.most_common() if f >= min_freq]
@@ -90,11 +93,17 @@ def dispersion(
 
 
 def _sizes(n_words: int, parts: int | Sequence[int]) -> list[int]:
-    if isinstance(parts, int):
-        if not 2 <= parts <= n_words:
+    if isinstance(parts, Integral):
+        n_parts = int(parts)
+        if not 2 <= n_parts <= n_words:
             raise ParameterError("Частей должно быть не меньше двух и не больше числа слов")
-        return [len(part) for part in np.array_split(np.arange(n_words), parts)]
-    sizes = [int(size) for size in parts]
+        return [len(part) for part in np.array_split(np.arange(n_words), n_parts)]
+    try:
+        sizes = [int(size) for size in parts]  # type: ignore[union-attr]
+    except (TypeError, ValueError) as e:
+        raise ParameterError(
+            "Число частей должно быть целым, размеры частей - списком целых чисел"
+        ) from e
     if len(sizes) < 2 or sum(sizes) != n_words or min(sizes) < 1:
         raise ParameterError(
             "Размеры частей должны быть положительными и в сумме давать число слов"

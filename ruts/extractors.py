@@ -50,14 +50,18 @@ class Extractor(metaclass=ABCMeta):
             iterator[str]: Итератор токенов
 
         Исключения:
-            SourceTypeError: Если некорректно задан токенизатор
+            SourceTypeError: Если токенизатор не вызываемый объект или возвращает
+                не итерируемый объект; собственные ошибки токенизатора не перехватываются
         """
         if isinstance(self.tokenizer, Pattern):
             return iter(re.split(self.tokenizer, text))
+        if not callable(self.tokenizer):
+            raise SourceTypeError("Токенизатор задан некорректно")
+        tokens = self.tokenizer(text)
         try:
-            return iter(self.tokenizer(text))  # type: ignore[misc]
-        except Exception as e:
-            raise SourceTypeError("Токенизатор задан некорректно") from e
+            return iter(tokens)
+        except TypeError as e:
+            raise SourceTypeError("Токенизатор должен возвращать итерируемый объект") from e
 
 
 class SentsExtractor(Extractor):
@@ -105,12 +109,13 @@ class SentsExtractor(Extractor):
             text (str): Строка текста
 
         Вывод:
-            sents (tuple[str]): Кортеж извлеченных предложений
+            sents (tuple[str]): Кортеж извлеченных предложений без пустых
+                и пробельных отрезков (их оставляет re.split после конечного разделителя)
 
         Исключения:
             SourceTypeError: Если некорректно задан токенизатор
         """
-        sents = self._tokenize(text)
+        sents = (sent for sent in self._tokenize(text) if sent.strip())
         if self.min_len > 0:
             sents = (sent for sent in sents if len(sent) >= self.min_len)
         if self.max_len > 0:
@@ -155,7 +160,7 @@ class WordsExtractor(Extractor):
         get_most_common: Получение счетчика топ-слов
 
     Исключения:
-        ParameterError: Если нижняя граница N-грамм большей верхней
+        ParameterError: Если нижняя граница N-грамм меньше единицы или больше верхней
         ParameterError: Если минимальная длина слова больше максимальной
     """
 
@@ -178,6 +183,8 @@ class WordsExtractor(Extractor):
         self.stopwords = stopwords
         self.lowercase = lowercase
         self.ngram_range = ngram_range
+        if self.ngram_range[0] < 1:
+            raise ParameterError("Нижняя граница N-грамм должна быть больше 0")
         if self.ngram_range[0] > self.ngram_range[1]:
             raise ParameterError("Нижняя граница N-грамм большей верхней")
         self.min_len = min_len

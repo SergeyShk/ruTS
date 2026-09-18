@@ -9,6 +9,7 @@ from scipy.stats import spearmanr
 from ruts import ReadabilityStats
 from ruts.constants import READABILITY_GRADE_STATS
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
+from ruts.exceptions import ParameterError
 from ruts.utils import extract_archive
 
 BUNDLED_ARCHIVE = (
@@ -121,11 +122,32 @@ def test_iter_ignores_foreign_files(dataset):
 
 @pytest.mark.parametrize(
     "kwargs",
-    [{"grade": 2}, {"grade": 18}, {"min_len": -1}, {"max_len": -1}, {"min_len": 10, "max_len": 5}],
+    [
+        {"grade": 0},
+        {"grade": 2},
+        {"grade": 18},
+        {"min_len": 0},
+        {"min_len": -1},
+        {"max_len": -1},
+        {"min_len": 10, "max_len": 5},
+        {"limit": -1},
+    ],
 )
 def test_get_filters_errors(dataset, kwargs):
-    with pytest.raises(ValueError):
+    with pytest.raises(ParameterError):
         list(dataset.get_texts(**kwargs))
+
+
+def test_download_extracts_existing_archive(tmp_path):
+    dataset = TextsByGrade(data_dir=tmp_path)
+    shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    dataset.download()
+    assert dataset.check_data()
+
+
+@pytest.mark.parametrize("subject, expected", [(".", 46), ("(", 0)])
+def test_subject_escaped(dataset, subject, expected):
+    assert len(list(dataset.get_records(subject=subject))) == expected
 
 
 @pytest.fixture(scope="module")

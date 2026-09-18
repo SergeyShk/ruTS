@@ -41,6 +41,7 @@ from ..syntax_stats import (
     is_word,
 )
 from ..utils import (
+    check_sequence,
     count_syllables,
     find_phrases,
     is_verbal_noun,
@@ -209,8 +210,18 @@ class HighlightedText:
             raise ParameterError("Количество слов в длинном предложении должно быть больше 0")
         if complex_syl_factor < 1:
             raise ParameterError("Количество слогов в сложном слове должно быть больше 0")
-        if not 0 < alliteration_threshold <= 1:
+        try:
+            threshold_ok = 0 < alliteration_threshold <= 1
+        except TypeError:
+            threshold_ok = False
+        if not threshold_ok:
             raise ParameterError("Порог аллитерации должен быть в интервале (0, 1]")
+        if stopwords is not None:
+            check_sequence(stopwords, "стоп-слов")
+            stopwords = tuple(stopwords)
+        if cliches is not None:
+            check_sequence(cliches, "штампов")
+            cliches = tuple(cliches)
         available = [
             layer
             for layer in HIGHLIGHT_LAYERS_DESC
@@ -352,6 +363,7 @@ def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) 
 
     Исключения:
         ParameterError: Если задан неизвестный или недоступный источнику слой
+            или слои переданы не списком названий
     """
     if layers is None:
         return tuple(layer for layer in HIGHLIGHT_DEFAULT_LAYERS if layer in available)
@@ -359,6 +371,10 @@ def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) 
         return tuple(available)
     if isinstance(layers, str):
         layers = [layers]
+    try:
+        layers = list(layers)
+    except TypeError as e:
+        raise ParameterError("Слои подсветки должны быть списком названий или строкой") from e
     for layer in layers:
         if layer not in HIGHLIGHT_LAYERS_DESC:
             raise ParameterError(f"Неизвестный слой подсветки: {layer}")

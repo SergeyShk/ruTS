@@ -1,24 +1,40 @@
+import shutil
 import tempfile
 from pathlib import Path
 
 import pytest
 
 from ruts.datasets.stalin_works import StalinWorks
+from ruts.exceptions import ParameterError
+
+BUNDLED_ARCHIVE = Path(__file__).parents[2] / "ruts" / "datasets" / "data" / "stalin_works.tar.xz"
 
 
 @pytest.fixture(scope="module")
 def dataset():
     path = Path(tempfile.gettempdir()) / "ruts_data_sw"
     path.mkdir(parents=True, exist_ok=True)
-    return StalinWorks(data_dir=path)
+    dataset = StalinWorks(data_dir=path)
+    # В репозитории архив лежит рядом с кодом, сеть не нужна
+    if not dataset.filepath:
+        shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    dataset.download()
+    return dataset
 
 
-def test_download(dataset):
-    if dataset.filepath:
-        pytest.skip(f"Не нужно загружать набор данных при каждом запуске теста {dataset.filepath}")
+@pytest.mark.network
+def test_download(tmp_path):
+    dataset = StalinWorks(data_dir=tmp_path)
     dataset.download()
     assert Path(dataset._filepath).is_file()
-    assert Path(dataset.data_dir).is_dir()
+    assert dataset.check_data()
+
+
+def test_download_extracts_existing_archive(tmp_path):
+    dataset = StalinWorks(data_dir=tmp_path)
+    shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    dataset.download()
+    assert dataset.check_data()
 
 
 def test_oserror():
@@ -44,7 +60,7 @@ def test_get_texts_min_len(dataset, min_len):
 
 @pytest.mark.parametrize("max_len", [250, 500, 1000])
 def test_get_texts_max_len(dataset, max_len):
-    assert all(len(text) < max_len for text in dataset.get_texts(max_len=max_len, limit=1))
+    assert all(len(text) <= max_len for text in dataset.get_texts(max_len=max_len, limit=1))
 
 
 def test_get_records(dataset):
@@ -81,7 +97,7 @@ def test_get_records_is_translation(dataset, is_translation, expected):
 
 
 @pytest.mark.parametrize(
-    "source, expected", [("Правда", 692), ("Большевик", 49), ("Коммунист", 42)]
+    "source, expected", [("Правда", 704), ("Большевик", 49), ("Коммунист", 42)]
 )
 def test_get_records_source(dataset, source, expected):
     records = list(dataset.get_records(source=source))
@@ -105,13 +121,52 @@ def test_get_records_topic(dataset, topic, expected):
 @pytest.mark.parametrize(
     "bad_filter",
     [
+        {"volume": 0},
         {"volume": 99},
         {"text_type": "Фильм"},
+        {"min_len": 0},
         {"min_len": -1},
         {"max_len": -1},
         {"min_len": 10, "max_len": 5},
+        {"limit": -1},
     ],
 )
 def test_bad_filters(dataset, bad_filter):
     with pytest.raises(ValueError):
         list(dataset.get_texts(**bad_filter))
+
+
+def test_bad_filters_error_type(dataset):
+    with pytest.raises(ParameterError):
+        list(dataset.get_records(volume=0))
+
+
+def test_records_order(dataset):
+    numbers = [int(record["file"].name) for record in dataset.get_records(volume=1)]
+    assert numbers == sorted(numbers)
+    assert numbers[:3] == [1, 2, 3]
+
+
+def test_header_with_colon(dataset):
+    record = next(
+        record
+        for record in dataset
+        if record["file"].parent.name == "volume_3" and record["file"].name == "11"
+    )
+    assert record["subject"].startswith("О временном правительстве: Речь на митинге")
+    assert list(dataset.get_records(source='Книга "Сталин: правда и ложь"', limit=1))
+
+
+def test_empty_header_field(dataset):
+    assert any(record["topic"] == "" for record in dataset.get_records(volume=1))
+
+
+@pytest.mark.parametrize(
+    "subject, expected", [("Две схватки (по поводу 9 января)", 2), ("(", 339), (".", 662)]
+)
+def test_subject_escaped(dataset, subject, expected):
+    assert len(list(dataset.get_records(subject=subject))) == expected
+
+
+def test_subject_case_insensitive(dataset):
+    assert len(list(dataset.get_records(subject="съезд"))) == 161

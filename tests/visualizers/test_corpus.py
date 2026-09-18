@@ -106,6 +106,9 @@ def test_collocation_network():
     assert '"а" [fontsize=17]' in single.source
     with pytest.raises(ValueError):
         collocation_network([])
+    html_like = collocation_network([Collocation("<b>", "кот", 2, 2, 2, 1.0)])
+    assert '"<b>" [fontsize=17]' in html_like.source
+    assert '"<b>" -- "кот"' in html_like.source
     for top_n in (0, -1):
         with pytest.raises(ValueError):
             collocation_network(found, top_n=top_n)

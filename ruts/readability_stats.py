@@ -22,6 +22,23 @@ from .exceptions import ParameterError, SourceError
 from .extractors import SentsExtractor, WordsExtractor
 
 
+def check_preset(preset: str) -> None:
+    """
+    Проверка названия пресета коэффициентов
+
+    Аргументы:
+        preset (str): Название пресета
+
+    Исключения:
+        ParameterError: Если пресет неизвестен
+    """
+    if preset not in READABILITY_PRESETS:
+        raise ParameterError(
+            f"Неизвестный пресет коэффициентов: {preset}. "
+            f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
+        )
+
+
 class ReadabilityStats:
     """
     Класс для вычисления основных метрик удобочитаемости текста
@@ -104,11 +121,7 @@ class ReadabilityStats:
         words_extractor: WordsExtractor | None = None,
         preset: str = "plainrussian",
     ):
-        if preset not in READABILITY_PRESETS:
-            raise ParameterError(
-                f"Неизвестный пресет коэффициентов: {preset}. "
-                f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
-            )
+        check_preset(preset)
         self.preset = preset
         self.coefficients = dict(READABILITY_PRESETS[preset])
         if isinstance(source, BasicStats):

@@ -3,7 +3,10 @@
 A set of modules for building [spaCy](https://github.com/explosion/spaCy) components. Each module is a class with two implemented methods: `__init__` (adds a new extension to the pipeline on initialization) and `__call__` (takes a `Doc` object and returns its modified version).
 
 !!! note "Note"
-    Detailed information on developing custom spaCy components is available in the corresponding section of the [documentation](https://spacy.io/usage/processing-pipelines#custom-components).
+    Detailed information on developing custom spaCy components is available in the corresponding section of the [documentation](https://spacy.io/usage/processing-pipelines#custom-components). The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
+
+!!! warning "Serialization"
+    The components store a statistics object in `doc._.<name>`, which spaCy cannot serialize: `Doc.to_bytes()`, `DocBin(store_user_data=True)` and `nlp.pipe(..., n_process>1)` with such components fail. To save a document, exclude the user data (`doc.to_bytes(exclude=["user_data"])`) or store `doc._.<name>.get_stats()` separately; for multiprocessing compute the statistics in the main process after `nlp.pipe` without the ruTS components.
 
 ## BasicStatsComponent
 

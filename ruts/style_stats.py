@@ -19,6 +19,20 @@ from .extractors import WordsExtractor
 from .utils import find_phrases, is_verbal_noun, iter_doc_words, parse_word, safe_divide
 
 
+def check_params(top_n: int) -> None:
+    """
+    Проверка параметров SEO-метрик
+
+    Аргументы:
+        top_n (int): Количество самых частых слов
+
+    Исключения:
+        ParameterError: Если количество самых частых слов меньше единицы
+    """
+    if top_n < 1:
+        raise ParameterError("Количество самых частых слов должно быть больше 0")
+
+
 class StyleStats:
     """
     Класс для вычисления SEO-метрик стиля и качества текста
@@ -119,8 +133,7 @@ class StyleStats:
             raise SourceTypeError("Некорректный источник данных")
         if not self.words:
             raise SourceError("В источнике данных отсутствуют слова")
-        if top_n < 1:
-            raise ParameterError("Количество самых частых слов должно быть больше 0")
+        check_params(top_n)
         self.stopwords = tuple(stopwords) if stopwords is not None else None
         self.top_n = top_n
         self.cliches_list = tuple(cliches) if cliches is not None else OFFICIALESE_CLICHES

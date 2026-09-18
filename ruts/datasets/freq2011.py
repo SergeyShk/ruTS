@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from ..constants import DEFAULT_DATA_DIR
-from ..exceptions import DatasetNotFoundError, DownloadError
+from ..exceptions import DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
-from .dataset import Dataset
+from .dataset import Dataset, check_limit
 
 NAME = "freq2011"
 META = {
@@ -27,6 +27,22 @@ ARCHIVE_SHA256 = "1ae2950966c34c52355e4d5cb91f1cc715f1d50774af71cdf4319223130c7c
 FILENAME = "freqrnc2011.csv"
 FILENAME_SHA256 = "a3742a5656a54e4ae164e8030769c4242e2ad8f5d73660d8614153e2f3c44f94"
 CORPUS_SIZE = 92_000_000
+POS_TAGS = (
+    "s",
+    "v",
+    "a",
+    "adv",
+    "s.PROP",
+    "intj",
+    "part",
+    "advpro",
+    "pr",
+    "conj",
+    "apro",
+    "spro",
+    "num",
+    "anum",
+)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("dicts")
 
 
@@ -208,13 +224,20 @@ class FreqDict(Dataset):
         Получение записей словаря
 
         Аргументы:
-            pos (str): Часть речи в разметке MyStem (s, v, a, adv, s.PROP)
+            pos (str): Часть речи в разметке MyStem из POS_TAGS (s, v, a, adv, s.PROP и другие)
             min_ipm (float): Минимальная частота
             limit (int): Количество записей
 
         Вывод:
             generator[dict[str, object]]: Генератор записей словаря
+
+        Исключения:
+            ParameterError: Если некорректно выбрана часть речи
+            ParameterError: Если количество записей отрицательное
         """
+        if pos is not None and pos not in POS_TAGS:
+            raise ParameterError(f"Некорректно выбрана часть речи {POS_TAGS} - {pos}")
+        check_limit(limit)
         records = (
             record
             for record in self
@@ -233,7 +256,7 @@ class FreqDict(Dataset):
         Получение лемм словаря
 
         Аргументы:
-            pos (str): Часть речи в разметке MyStem (s, v, a, adv, s.PROP)
+            pos (str): Часть речи в разметке MyStem из POS_TAGS (s, v, a, adv, s.PROP и другие)
             min_ipm (float): Минимальная частота
             limit (int): Количество лемм
 

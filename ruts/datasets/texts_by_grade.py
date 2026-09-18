@@ -1,5 +1,5 @@
 import re
-from collections.abc import Callable, Generator
+from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
@@ -7,10 +7,7 @@ from typing import Any
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
 from ..utils import download_file, extract_archive, to_path
-from .dataset import Dataset
-
-# Фильтр - предикат над записью набора данных
-Filters = list[Callable[[dict[str, Any]], bool]]
+from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
 
 NAME = "texts_by_grade"
 META = {
@@ -60,7 +57,7 @@ class TextsByGrade(Dataset):
     Итерация по набору данных:
         >>> for record in tbg.get_records(grade=1, subject='Ряба'):
         ...     pprint(record)
-        {'file': PosixPath('.../ruts_data/texts/texts_by_grade/grade_1/9'),
+        {'file': ...Path('.../ruts_data/texts/texts_by_grade/grade_1/9'),
          'grade': 1,
          'source': 'http://skazki.org.ru/tales/yaichko/',
          'subject': 'Курочка Ряба',
@@ -121,6 +118,10 @@ class TextsByGrade(Dataset):
         """
         Загрузка набора данных из сети и извлечение файлов
 
+        Описание:
+            Если архив уже есть, а какой-то из директорий уровней нет, архив
+            извлекается заново
+
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
         """
@@ -130,8 +131,9 @@ class TextsByGrade(Dataset):
             dirpath=self.data_dir,
             force=force,
         )
-        if filepath:
-            extract_archive(filepath)
+        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
+        if filepath or missing:
+            extract_archive(self._filepath)
         self.check_data()
 
     def get_texts(
@@ -147,7 +149,7 @@ class TextsByGrade(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            subject (str): Наименование текстов
+            subject (str): Наименование текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -156,6 +158,7 @@ class TextsByGrade(Dataset):
             generator[str]: Генератор текстов
         """
         filters = self.__get_filters(grade, subject, min_len, max_len)
+        check_limit(limit)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record["text"]
 
@@ -172,7 +175,7 @@ class TextsByGrade(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            subject (str): Наименование текстов
+            subject (str): Наименование текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -181,6 +184,7 @@ class TextsByGrade(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         filters = self.__get_filters(grade, subject, min_len, max_len)
+        check_limit(limit)
         yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
@@ -251,7 +255,7 @@ class TextsByGrade(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            subject (str): Наименование текстов
+            subject (str): Наименование текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
 
@@ -265,21 +269,11 @@ class TextsByGrade(Dataset):
             ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
-        if grade:
+        if grade is not None:
             if grade not in GRADES:
                 raise ParameterError(f"Некорректно выбран уровень текста {GRADES} - {grade}")
-            filters.append(lambda record: record.get("grade", "") == grade)
-        if subject:
-            pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
-        if min_len:
-            if min_len < 1:
-                raise ParameterError("Минимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) >= min_len)
-        if max_len:
-            if max_len < 1:
-                raise ParameterError("Максимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) <= max_len)
-        if min_len and max_len and min_len > max_len:
-            raise ParameterError("Минимальная длина текста больше максимальной")
+            filters.append(lambda record: record["grade"] == grade)
+        if subject is not None:
+            filters.append(substring_filter("subject", subject))
+        filters.extend(length_filters(min_len, max_len))
         return filters

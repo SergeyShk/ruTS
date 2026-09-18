@@ -1,6 +1,6 @@
 import re
 import shutil
-from collections.abc import Callable, Generator
+from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
@@ -8,10 +8,7 @@ from typing import Any
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
-from .dataset import Dataset
-
-# Фильтр - предикат над записью набора данных
-Filters = list[Callable[[dict[str, Any]], bool]]
+from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
 
 NAME = "russian_literature"
 META = {
@@ -53,7 +50,7 @@ class RussianLiterature(Dataset):
         Тургенев, Блок, Лермонтов - 269 текстов, от рассказов до романов), поэзия
         (Пушкин, Лермонтов, Некрасов, Блок - 78 текстов) и публицистика (Толстой -
         26 текстов); 39 млн символов. Год написания взят из файлов info.csv
-        собрания, у 28 произведений его нет. Заголовок с именем автора
+        собрания, у 27 произведений его нет. Заголовок с именем автора
         и названием в начале файла срезается (strip_header) - у 288 текстов;
         у 8 фамилия автора остается в первых строках в других формах заголовка
         или посвящениях, что важно для атрибуции авторства
@@ -82,7 +79,7 @@ class RussianLiterature(Dataset):
         >>> for record in rl.get_records(genre='poems', author='Пушкин', limit=1):
         ...     pprint(record)
         {'author': 'Александр Пушкин',
-         'file': PosixPath('.../ruts_data/texts/russian_literature/poems/Pushkin/19 октября.txt'),
+         'file': ...Path('.../ruts_data/texts/russian_literature/poems/Pushkin/19 октября.txt'),
          'genre': 'poems',
          'text': 'Роняет лес багряный свой убор,...',
          'title': '19 октября',
@@ -205,6 +202,7 @@ class RussianLiterature(Dataset):
             generator[str]: Генератор текстов
         """
         filters = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
+        check_limit(limit)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record["text"]
 
@@ -234,6 +232,7 @@ class RussianLiterature(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         filters = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
+        check_limit(limit)
         yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
@@ -318,13 +317,12 @@ class RussianLiterature(Dataset):
             ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
-        if genre:
+        if genre is not None:
             if genre not in GENRES:
                 raise ParameterError(f"Некорректно выбран жанр {GENRES} - {genre}")
             filters.append(lambda record: record["genre"] == genre)
-        if author:
-            pattern = re.compile(re.escape(author), re.IGNORECASE)
-            filters.append(lambda record: pattern.search(record["author"]) is not None)
+        if author is not None:
+            filters.append(substring_filter("author", author))
         if year_from is not None:
             filters.append(
                 lambda record: record["year_from"] is not None and record["year_from"] >= year_from
@@ -335,16 +333,7 @@ class RussianLiterature(Dataset):
             )
         if year_from is not None and year_to is not None and year_from > year_to:
             raise ParameterError("Наименьший год больше наибольшего")
-        if min_len:
-            if min_len < 1:
-                raise ParameterError("Минимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record["text"]) >= min_len)
-        if max_len:
-            if max_len < 1:
-                raise ParameterError("Максимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record["text"]) <= max_len)
-        if min_len and max_len and min_len > max_len:
-            raise ParameterError("Минимальная длина текста больше максимальной")
+        filters.extend(length_filters(min_len, max_len))
         return filters
 
 

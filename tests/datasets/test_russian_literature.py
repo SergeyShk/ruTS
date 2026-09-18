@@ -142,6 +142,10 @@ def test_filters(dataset):
         _ = list(dataset.get_texts(max_len=-1))
     with pytest.raises(ValueError):
         _ = list(dataset.get_texts(min_len=5, max_len=1))
+    with pytest.raises(ValueError):
+        _ = list(dataset.get_texts(max_len=0))
+    with pytest.raises(ValueError):
+        _ = list(dataset.get_texts(limit=-1))
 
 
 def test_strip_header():

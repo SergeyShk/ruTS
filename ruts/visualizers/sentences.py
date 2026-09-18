@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from numbers import Integral
 
 import matplotlib.pyplot as plt
@@ -73,6 +73,29 @@ def sentence_lengths_plot(
     return ax
 
 
+def count_words_by_spans(starts: Sequence[int], spans: Sequence[tuple[int, int]]) -> list[int]:
+    """
+    Число слов в каждом отрезке текста по позициям слов и границам отрезков
+
+    Аргументы:
+        starts (list[int]): Позиции первых символов слов по порядку
+        spans (list[tuple[int, int]]): Границы отрезков по порядку - начало и позиция
+            за концом
+
+    Вывод:
+        list[int]: Число слов в каждом отрезке; отрезки без слов пропускаются
+    """
+    lengths = []
+    index = 0
+    for start, stop in spans:
+        count = 0
+        while index < len(starts) and starts[index] < stop:
+            count += starts[index] >= start
+            index += 1
+        lengths.append(count)
+    return [length for length in lengths if length]
+
+
 def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
     """
     Извлечение длин предложений в словах
@@ -89,15 +112,8 @@ def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
     """
     if isinstance(source, str):
         starts = [start for start, _, _ in iter_text_words(source)]
-        lengths = []
-        index = 0
-        for sent in sentenize(source):
-            count = 0
-            while index < len(starts) and starts[index] < sent.stop:
-                count += starts[index] >= sent.start
-                index += 1
-            lengths.append(count)
-        return [length for length in lengths if length]
+        spans = [(sent.start, sent.stop) for sent in sentenize(source)]
+        return count_words_by_spans(starts, spans)
     if isinstance(source, Doc):
         if source.has_annotation("SENT_START"):
             lengths = [sum(1 for _ in iter_doc_words(sent)) for sent in source.sents]

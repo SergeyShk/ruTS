@@ -8,6 +8,7 @@ import pytest
 from ruts.datasets import FreqDict
 from ruts.datasets import freq2011 as freq2011_module
 from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm
+from ruts.exceptions import ParameterError
 from ruts.utils import sha256
 
 ROWS = (
@@ -96,6 +97,10 @@ def test_records(dataset):
         "и",
     ]
     assert list(dataset.get_texts(pos="s", min_ipm=41, limit=2)) == ["окно", "птица"]
+    with pytest.raises(ParameterError):
+        _ = list(dataset.get_records(pos="noun"))
+    with pytest.raises(ParameterError):
+        _ = list(dataset.get_texts(limit=-1))
 
 
 def test_entries(dataset):

@@ -107,12 +107,30 @@ def test_init_value_error():
         highlight(text, alliteration_threshold=0)
     with pytest.raises(ValueError):
         highlight(text, alliteration_threshold=1.5)
+    with pytest.raises(ValueError):
+        highlight(text, alliteration_threshold="x")
+    with pytest.raises(ValueError):
+        highlight(text, layers=42)
 
 
 @pytest.mark.parametrize("source", [666, ["a", "b"], {"a": "b"}])
 def test_init_type_error(source):
     with pytest.raises(TypeError):
         highlight(source)
+
+
+def test_init_string_lists():
+    with pytest.raises(TypeError):
+        highlight(text, stopwords="и на")
+    with pytest.raises(TypeError):
+        highlight(text, cliches="по вопросам")
+
+
+def test_layers_generator():
+    # генератор слоев не исчерпывается при проверке: слой остается включенным
+    ht = highlight(text, layers=(layer for layer in ["complex_words"]))
+    assert ht.layers == ("complex_words",)
+    assert ht.counts["complex_words"] > 0
 
 
 def test_highlight_returns_highlighted_text(ht):
