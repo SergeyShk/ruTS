@@ -1,3 +1,13 @@
+"""
+Компоненты spaCy для классов статистик
+
+Описание:
+    Каждый компонент кладет в doc._.<name> объект класса статистик; spaCy такие
+    объекты не сериализует, поэтому Doc.to_bytes(), DocBin(store_user_data=True)
+    и nlp.pipe(n_process > 1) с этими компонентами не работают - исключайте
+    user_data при сохранении или храните get_stats() отдельно
+"""
+
 from spacy.language import Language
 from spacy.tokens import Doc
 
@@ -14,11 +24,14 @@ from .constants import (
 )
 from .datasets.freq2011 import FreqDict
 from .diversity_stats import DiversityStats
+from .diversity_stats import check_params as check_diversity_params
 from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
 from .phon_stats import PhonStats
-from .readability_stats import ReadabilityStats
+from .phon_stats import check_params as check_phon_params
+from .readability_stats import ReadabilityStats, check_preset
 from .style_stats import StyleStats
+from .style_stats import check_params as check_style_params
 from .syntax_stats import SyntaxStats
 
 
@@ -134,6 +147,7 @@ class ReadabilityStatsComponent:
     """
 
     def __init__(self, nlp: Language, name: str = "readability", preset: str = "plainrussian"):
+        check_preset(preset)
         self.name = name
         self.preset = preset
         Doc.set_extension(self.name, default=None, force=True)
@@ -193,6 +207,7 @@ class DiversityStatsComponent:
         hdd_sample_size: int = HDD_SAMPLE_SIZE,
         log_base: float = DIVERSITY_LOG_BASE,
     ):
+        check_diversity_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)
         self.name = name
         self.window_len = window_len
         self.mtld_threshold = mtld_threshold
@@ -257,6 +272,7 @@ class StyleStatsComponent:
         stopwords: list[str] | None = None,
         top_n: int = NAUSEA_TOP_N,
     ):
+        check_style_params(top_n)
         self.name = name
         self.stopwords = stopwords
         self.top_n = top_n
@@ -304,6 +320,7 @@ class PhonStatsComponent:
     """
 
     def __init__(self, nlp: Language, name: str = "phon", window_len: int = PHON_WINDOW_LEN):
+        check_phon_params(window_len)
         self.name = name
         self.window_len = window_len
         Doc.set_extension(self.name, default=None, force=True)

@@ -1,6 +1,7 @@
 import re
 from collections import Counter
 from collections.abc import Iterable
+from typing import Any
 
 from spacy.tokens import Doc, Span
 
@@ -10,18 +11,15 @@ from .constants import (
     LONG_WORD_LETTER_FACTOR,
     PUNCTUATION_TYPES,
     PUNCTUATIONS,
-    RU_LETTERS,
     SPACES,
 )
 from .exceptions import SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import count_syllables, iter_doc_words
+from .utils import count_letters, count_syllables, iter_doc_words
 
 ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
 DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)
-_DELETE_LETTERS = str.maketrans("", "", "".join(RU_LETTERS))
 _DELETE_SPACES = str.maketrans("", "", "".join(SPACES))
-_DELETE_PUNCTUATIONS = str.maketrans("", "", PUNCTUATIONS)
 PUNCTUATION_CHARS = {
     ",": "comma",
     ".": "period",
@@ -159,7 +157,7 @@ class BasicStats:
         if not words:
             raise SourceError("В источнике данных отсутствуют слова")
 
-        letters_per_word = tuple(len(word) for word in words)
+        letters_per_word = tuple(count_letters(word) for word in words)
         syllables_per_word = tuple(count_syllables(word) for word in words)
         self.c_letters = dict(sorted(Counter(letters_per_word).items()))
         self.c_syllables = dict(sorted(Counter(syllables_per_word).items()))
@@ -175,12 +173,14 @@ class BasicStats:
         self.n_polysyllable_words = (
             self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
         )
-        self.n_chars = len(text) - text.count("\n")
-        self.n_letters = len(text) - len(text.translate(_DELETE_LETTERS))
+        self.n_chars = len(text) - text.count("\n") - text.count("\r")
+        # Без count_letters: кэш по словоформам не должен хранить целые тексты
+        self.n_letters = sum(map(str.isalpha, text))
         self.n_spaces = len(text) - len(text.translate(_DELETE_SPACES))
         self.n_syllables = sum(syllables_per_word)
-        self.n_punctuations = len(text) - len(text.translate(_DELETE_PUNCTUATIONS))
-        self.c_punctuations = count_punctuations(text)
+        punctuations = count_punctuations(text)
+        self.n_punctuations = sum(punctuations.values())
+        self.c_punctuations = punctuations
 
         if normalize:
             self.p_unique_words = self.n_unique_words / self.n_words
@@ -217,14 +217,18 @@ class BasicStats:
         """
         return sum(count for cpw, count in self.c_letters.items() if cpw >= min_letters)
 
-    def get_stats(self) -> dict[str, int]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Получение вычисленных статистик текста
 
         Вывод:
-            dict[str, int]: Справочник вычисленных статистик текста
+            dict[str, Any]: Справочник вычисленных статистик текста - копия, правка
+                которой не меняет объект
         """
-        return vars(self)
+        return {
+            key: dict(value) if isinstance(value, dict) else value
+            for key, value in vars(self).items()
+        }
 
     def print_stats(self):
         """Отображение вычисленных статистик текста с описанием на экран"""

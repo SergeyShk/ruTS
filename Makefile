@@ -1,4 +1,4 @@
-.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy demo demo-login demo-upload
+.PHONY: help uv deps lock nltk-data lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy demo demo-login demo-upload
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
@@ -78,7 +78,7 @@ publish-test: build ## Опубликовать релиз на TestPyPI
 
 docs-build: deps ## Собрать документацию
 	rm -fr site/
-	uv run mkdocs build
+	uv run mkdocs build --strict
 
 docs-serve: deps ## Запустить сервер документации
 	uv run mkdocs serve

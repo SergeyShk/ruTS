@@ -1,16 +1,12 @@
-import re
-from collections.abc import Callable, Generator
+from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import download_file, extract_archive, to_path
-from .dataset import Dataset
-
-# Фильтр - предикат над записью набора данных
-Filters = list[Callable[[dict[str, Any]], bool]]
+from ..utils import to_path
+from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
 
 NAME = "sov_chrest_lit"
 META = {
@@ -29,7 +25,10 @@ TEXT_TYPES = [
     "Загадка",
     "Песня",
     "Басня",
+    "Совет",
+    "Шутка",
 ]
+GRADES = (1,)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -62,7 +61,7 @@ class SovChLit(Dataset):
         {'author': 'С. Маршак',
          'book': 'Родная речь. Книга для чтения в I классе начальной школы',
          'category': 'Весна',
-         'file': PosixPath('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
+         'file': ...Path('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
          'grade': 1,
          'subject': 'Март',
          'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\\n'
@@ -86,7 +85,7 @@ class SovChLit(Dataset):
     def __init__(self, data_dir: str | Path = DEFAULT_DATASET_DIR) -> None:
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
-        self.labels = ("grade_1",)
+        self.labels = tuple(f"grade_{grade}" for grade in GRADES)
         self._filename = NAME + ".tar.xz"
         self._filepath = self.data_dir.joinpath(self._filename)
 
@@ -125,17 +124,20 @@ class SovChLit(Dataset):
         """
         Загрузка набора данных из сети и извлечение файлов
 
+        Описание:
+            Если архив уже есть, а какой-то из директорий уровней нет, архив
+            извлекается заново; архив, который не удалось извлечь, удаляется
+            и загружается заново в том же вызове
+
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
+
+        Исключения:
+            DownloadError: Если не удалось загрузить архив
+            DataFileError: Если загруженный архив не удалось извлечь
         """
-        filepath = download_file(
-            url=DOWNLOAD_URL,
-            filename="sov_chrest_lit.tar.xz",
-            dirpath=self.data_dir,
-            force=force,
-        )
-        if filepath:
-            extract_archive(filepath)
+        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
+        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
         self.check_data()
 
     def get_texts(
@@ -156,12 +158,12 @@ class SovChLit(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            book (str): Наименование книги
+            book (str): Наименование книги (подстрока без учета регистра)
             year (int): Год издания книги
-            category (str): Категория текстов
+            category (str): Категория текстов (подстрока без учета регистра)
             text_type (str): Тип текстов
-            subject (str): Наименование текстов
-            author (str): Автор текстов
+            subject (str): Наименование текстов (подстрока без учета регистра)
+            author (str): Автор текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -172,6 +174,7 @@ class SovChLit(Dataset):
         filters = self.__get_filters(
             grade, book, year, category, text_type, subject, author, min_len, max_len
         )
+        check_limit(limit)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record["text"]
 
@@ -193,12 +196,12 @@ class SovChLit(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            book (str): Наименование книги
+            book (str): Наименование книги (подстрока без учета регистра)
             year (int): Год издания книги
-            category (str): Категория текстов
+            category (str): Категория текстов (подстрока без учета регистра)
             text_type (str): Тип текстов
-            subject (str): Наименование текстов
-            author (str): Автор текстов
+            subject (str): Наименование текстов (подстрока без учета регистра)
+            author (str): Автор текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -209,6 +212,7 @@ class SovChLit(Dataset):
         filters = self.__get_filters(
             grade, book, year, category, text_type, subject, author, min_len, max_len
         )
+        check_limit(limit)
         yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
@@ -221,9 +225,9 @@ class SovChLit(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            for filepath in sorted(dirpath.iterdir()):
-                if re.match(r"[0-9]+", filepath.name):
-                    yield self.__load_record(filepath)
+            filepaths = (path for path in dirpath.iterdir() if path.name.isdigit())
+            for filepath in sorted(filepaths, key=lambda path: int(path.name)):
+                yield self.__load_record(filepath)
 
     def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
         """
@@ -259,8 +263,10 @@ class SovChLit(Dataset):
         """
         try:
             with to_path(filepath).open(encoding="utf-8") as f:
-                header_block, text = f.read().strip().split("\n\n")
-                headers = tuple(header.split(":")[1][1:] for header in header_block.split("\n"))
+                header_block, text = f.read().strip().split("\n\n", maxsplit=1)
+                headers = tuple(
+                    header.split(":", 1)[1].strip() for header in header_block.split("\n")
+                )
             return {
                 "grade": int(headers[0]),
                 "book": headers[1],
@@ -292,12 +298,12 @@ class SovChLit(Dataset):
 
         Аргументы:
             grade (int): Уровень сложности текстов
-            book (str): Наименование книги
+            book (str): Наименование книги (подстрока без учета регистра)
             year (int): Год издания книги
-            category (str): Категория текстов
+            category (str): Категория текстов (подстрока без учета регистра)
             text_type (str): Тип текстов
-            subject (str): Наименование текста
-            author (str): Автор текста
+            subject (str): Наименование текста (подстрока без учета регистра)
+            author (str): Автор текста (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
 
@@ -312,35 +318,23 @@ class SovChLit(Dataset):
             ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
-        if grade:
-            if grade not in range(1, 12):
-                raise ParameterError(f"Некорректно выбран уровень текста (1-11) - {grade}")
-            filters.append(lambda record: record.get("grade", "") == grade)
-        if book:
-            pattern = re.compile(f".*{book}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("book", ""))) > 0)
-        if year:
-            filters.append(lambda record: record.get("year", "") == year)
-        if category:
-            filters.append(lambda record: record.get("category", "") == category)
-        if text_type:
+        if grade is not None:
+            if grade not in GRADES:
+                raise ParameterError(f"Некорректно выбран уровень текста {GRADES} - {grade}")
+            filters.append(lambda record: record["grade"] == grade)
+        if book is not None:
+            filters.append(substring_filter("book", book))
+        if year is not None:
+            filters.append(lambda record: record["year"] == year)
+        if category is not None:
+            filters.append(substring_filter("category", category))
+        if text_type is not None:
             if text_type not in TEXT_TYPES:
                 raise ParameterError(f"Некорректно выбран тип текста - {text_type}")
-            filters.append(lambda record: record.get("type", "") == text_type)
-        if subject:
-            pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
-        if author:
-            pattern = re.compile(f".*{author}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("author", ""))) > 0)
-        if min_len:
-            if min_len < 1:
-                raise ParameterError("Минимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) >= min_len)
-        if max_len:
-            if max_len < 1:
-                raise ParameterError("Максимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) <= max_len)
-        if min_len and max_len and min_len > max_len:
-            raise ParameterError("Минимальная длина текста больше максимальной")
+            filters.append(lambda record: record["type"] == text_type)
+        if subject is not None:
+            filters.append(substring_filter("subject", subject))
+        if author is not None:
+            filters.append(substring_filter("author", author))
+        filters.extend(length_filters(min_len, max_len))
         return filters

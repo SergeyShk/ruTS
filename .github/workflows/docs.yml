@@ -36,4 +36,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Deploy
-        run: uv run mkdocs gh-deploy --force
+        run: uv run mkdocs gh-deploy --force --strict

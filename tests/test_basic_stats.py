@@ -40,8 +40,8 @@ def test_c_letters(bs):
         7: 5,
         8: 6,
         9: 5,
-        10: 5,
-        11: 6,
+        10: 6,
+        11: 5,
         12: 4,
         13: 2,
         15: 1,
@@ -239,7 +239,20 @@ def test_custom_factors():
 def test_multichar_punctuation():
     bs = BasicStats("Ура!!! Ура?! Ура... Слово – слово… и №1")
     assert bs.n_words == 7
-    assert bs.n_punctuations == 11
+    # знаки, а не символы: многоточие и «?!» считаются по знакам, как в c_punctuations
+    assert bs.n_punctuations == 9 == sum(bs.c_punctuations.values())
+    assert BasicStats(bs_text := "Ура!!! Ура?! Ура...", normalize=True).p_punctuations == (
+        6 / BasicStats(bs_text).n_chars
+    )
+
+
+def test_letters_only():
+    bs = BasicStats("какого-либо abcdefg 1234567 кот")
+    assert bs.c_letters == {0: 1, 3: 1, 7: 1, 10: 1}
+    assert bs.n_letters == 20
+    assert bs.n_long_words == 2
+    assert bs.count_words_by_letters(7) == 2
+    assert BasicStats("Кот спал.\r\nПёс ел.").n_chars == BasicStats("Кот спал.\nПёс ел.").n_chars
 
 
 def test_get_stats(bs):
@@ -247,6 +260,9 @@ def test_get_stats(bs):
     assert isinstance(stats, dict)
     for key in BASIC_STATS_DESC:
         assert stats[key] == getattr(bs, key)
+    stats["n_words"] = -1
+    stats["c_letters"][1] = -1
+    assert bs.n_words > 0 and bs.c_letters[1] == 4
 
 
 def test_print_stats(capsys, bs):

@@ -9,7 +9,7 @@ import numpy as np
 from nltk import FreqDist
 from numpy.lib.stride_tricks import sliding_window_view
 from scipy.optimize import OptimizeWarning, curve_fit
-from scipy.special import comb
+from scipy.special import gammaln
 from scipy.stats import t as student_t
 from spacy.tokens import Doc
 
@@ -46,6 +46,35 @@ class WindowStats(NamedTuple):
     lower: float
     upper: float
     n_windows: int
+
+
+def check_params(
+    window_len: int = MATTR_WINDOW_LEN,
+    mtld_threshold: float = MTLD_TTR_THRESHOLD,
+    mtld_min_len: int = MTLD_MIN_LEN,
+    hdd_sample_size: int = HDD_SAMPLE_SIZE,
+    log_base: float = DIVERSITY_LOG_BASE,
+) -> None:
+    """
+    Проверка параметров метрик лексического разнообразия
+
+    Аргументы:
+        window_len (int): Размер окна для MATTR и сегмента для MSTTR
+        mtld_threshold (float): Порог TTR для MTLD, MA-MTLD и MTLD-W
+        mtld_min_len (int): Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W
+        hdd_sample_size (int): Размер выборки для HD-D
+        log_base (float): Основание логарифма для метрик Summer, Maas и Dugast
+
+    Исключения:
+        ParameterError: Если параметр вне допустимого диапазона
+    """
+    if window_len < 1:
+        raise ParameterError("Размер окна должен быть больше 0")
+    _check_mtld_params(mtld_threshold, mtld_min_len)
+    if hdd_sample_size < 1:
+        raise ParameterError("Размер выборки HD-D должен быть больше 0")
+    if log_base <= 1:
+        raise ParameterError("Основание логарифма должно быть больше 1")
 
 
 class DiversityStats:
@@ -163,16 +192,7 @@ class DiversityStats:
             raise SourceTypeError("Некорректный источник данных")
         if not self.words:
             raise SourceError("В источнике данных отсутствуют слова")
-        if window_len < 1:
-            raise ParameterError("Размер окна должен быть больше 0")
-        if not 0 < mtld_threshold < 1:
-            raise ParameterError("Порог TTR для MTLD должен лежать в интервале (0, 1)")
-        if mtld_min_len < 0:
-            raise ParameterError("Минимальная длина фактора MTLD не может быть отрицательной")
-        if hdd_sample_size < 1:
-            raise ParameterError("Размер выборки HD-D должен быть больше 0")
-        if log_base <= 1:
-            raise ParameterError("Основание логарифма должно быть больше 1")
+        check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)
         self.window_len = window_len
         self.mtld_threshold = mtld_threshold
         self.mtld_min_len = mtld_min_len
@@ -582,7 +602,12 @@ def calc_mattr(text: Sequence[str], window_len: int = MATTR_WINDOW_LEN) -> float
 
     Вывод:
         float: Значение метрики
+
+    Исключения:
+        ParameterError: Если размер окна меньше единицы
     """
+    if window_len < 1:
+        raise ParameterError("Размер окна должен быть больше 0")
     n_words = len(text)
     if n_words < (window_len + 1):
         return calc_ttr(text)
@@ -615,13 +640,26 @@ def calc_msttr(text: Sequence[str], segment_len: int = MATTR_WINDOW_LEN) -> floa
 
     Вывод:
         float: Значение метрики
+
+    Исключения:
+        ParameterError: Если размер сегмента меньше единицы
     """
+    if segment_len < 1:
+        raise ParameterError("Размер сегмента должен быть больше 0")
     n_words = len(text)
     if n_words < (segment_len + 1):
         return calc_ttr(text)
     segments = [text[start : start + segment_len] for start in range(0, n_words, segment_len)]
     segments = [segment for segment in segments if len(segment) == segment_len]
     return sum(calc_ttr(segment) for segment in segments) / len(segments)
+
+
+def _check_mtld_params(threshold: float, min_len: int) -> None:
+    """Проверка порога TTR и минимальной длины фактора MTLD"""
+    if not 0 < threshold < 1:
+        raise ParameterError("Порог TTR для MTLD должен лежать в интервале (0, 1)")
+    if min_len < 0:
+        raise ParameterError("Минимальная длина фактора MTLD не может быть отрицательной")
 
 
 def _count_mtld_factors(text: Sequence[str], threshold: float, min_len: int) -> float:
@@ -670,7 +708,12 @@ def calc_mtld(
 
     Вывод:
         float: Значение метрики
+
+    Исключения:
+        ParameterError: Если порог TTR вне интервала (0, 1) или минимальная длина
+            фактора отрицательна
     """
+    _check_mtld_params(threshold, min_len)
     n_words = len(text)
     forward = safe_divide(n_words, _count_mtld_factors(text, threshold, min_len), inf)
     backward = safe_divide(n_words, _count_mtld_factors(text[::-1], threshold, min_len), inf)
@@ -776,7 +819,12 @@ def calc_mamtld(
 
     Вывод:
         float: Значение метрики, nan если ни один фактор не завершен
+
+    Исключения:
+        ParameterError: Если порог TTR вне интервала (0, 1) или минимальная длина
+            фактора отрицательна
     """
+    _check_mtld_params(threshold, min_len)
     lengths = _mtld_factor_lengths(text, threshold, min_len, wrap=False)
     lengths += _mtld_factor_lengths(text[::-1], threshold, min_len, wrap=False)
     return safe_divide(sum(lengths), len(lengths), nan)
@@ -804,7 +852,12 @@ def calc_mtldw(
 
     Вывод:
         float: Значение метрики, nan если ни один фактор не завершен
+
+    Исключения:
+        ParameterError: Если порог TTR вне интервала (0, 1) или минимальная длина
+            фактора отрицательна
     """
+    _check_mtld_params(threshold, min_len)
     lengths = _mtld_factor_lengths(text, threshold, min_len, wrap=True)
     return safe_divide(sum(lengths), len(lengths), nan)
 
@@ -826,36 +879,26 @@ def calc_hdd(text: Sequence[str], sample_size: int = HDD_SAMPLE_SIZE) -> float:
 
     Вывод:
         float: Значение метрики, для текстов короче 50 слов или размера выборки - nan
+
+    Исключения:
+        ParameterError: Если размер выборки меньше единицы
     """
-
-    def hyper(successes, sample_size, population_size, freq):
-        """
-        Вероятность появления слова по крайней мере в одном сегменте, каждый из которых
-        сформирован на основе гипергеометрического распределения
-        """
-        try:
-            prob = 1.0 - (
-                float(
-                    comb(freq, successes)
-                    * comb((population_size - freq), (sample_size - successes))
-                )
-                / float(comb(population_size, sample_size))
-            )
-            prob = prob * (1 / sample_size)
-        except ZeroDivisionError:
-            prob = 0
-        return prob
-
+    if sample_size < 1:
+        raise ParameterError("Размер выборки HD-D должен быть больше 0")
     n_words = len(text)
     if n_words < 50 or n_words < sample_size:
         return nan
-    hdd = 0.0
-    lexemes = list(set(text))
-    freqs = Counter(text)
-    for lexeme in lexemes:
-        prob = hyper(0, sample_size, n_words, freqs[lexeme])
-        hdd += prob
-    return hdd
+    frequencies = np.fromiter(Counter(text).values(), dtype=np.int64)
+    # вероятность не встретить лексему в выборке - через логарифмы биномиальных
+    # коэффициентов, чтобы C(N, k) не переполнялось на длинных текстах
+    absent = np.exp(
+        gammaln(n_words - frequencies + 1)
+        - gammaln(np.maximum(n_words - frequencies - sample_size, 0) + 1)
+        - gammaln(n_words + 1)
+        + gammaln(n_words - sample_size + 1)
+    )
+    absent[n_words - frequencies < sample_size] = 0.0
+    return float(np.sum(1.0 - absent) / sample_size)
 
 
 def calc_simpson_index(text: Sequence[str]) -> float:

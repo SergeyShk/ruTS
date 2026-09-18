@@ -1,5 +1,4 @@
 from collections.abc import Callable, Sequence
-from types import FunctionType
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +6,8 @@ from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 
 from ..diversity_stats import calc_ttr
-from ..exceptions import SourceTypeError
+from ..exceptions import ParameterError, SourceTypeError
+from ..utils import check_sequence
 
 
 def fingerprinting(
@@ -45,12 +45,19 @@ def fingerprinting(
         Axes: Оси с визуализацией литературной дактилоскопии
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является списком списков
+        SourceTypeError: Если тексты не список списков слов или метрика не вызываемый
+            объект
+        ParameterError: Если размер сегмента меньше единицы
     """
-    if not any(isinstance(text, (list, tuple)) for text in texts):
+    check_sequence(texts, "списков слов")
+    if not all(isinstance(text, (list, tuple)) for text in texts):
         raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
+    if metric is not None and not callable(metric):
+        raise SourceTypeError("Метрика должна быть вызываемым объектом")
+    if segment_len < 1:
+        raise ParameterError("Размер сегмента должен быть больше 0")
     metrics = {}
-    metric_func = metric if isinstance(metric, FunctionType) else calc_ttr
+    metric_func = metric if metric is not None else calc_ttr
     for i, text in enumerate(texts):
         start = 0
         end = segment_len

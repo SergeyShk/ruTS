@@ -1,16 +1,12 @@
-import re
-from collections.abc import Callable, Generator
+from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import download_file, extract_archive, to_path
-from .dataset import Dataset
-
-# Фильтр - предикат над записью набора данных
-Filters = list[Callable[[dict[str, Any]], bool]]
+from ..utils import to_path
+from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
 
 NAME = "stalin_works"
 META = {
@@ -84,7 +80,7 @@ class StalinWorks(Dataset):
     Итерация по набору данных:
         >>> for record in sw.get_records(year=1937, text_type='Письмо', limit=1):
         ...     pprint(record)
-        {'file': PosixPath('.../ruts_data/texts/stalin_works/volume_14/59'),
+        {'file': ...Path('.../ruts_data/texts/stalin_works/volume_14/59'),
          'is_translation': False,
          'source': 'Книга "Иосиф Сталин в объятиях семьи"',
          'subject': 'Письмо матери 10 марта 1937 года',
@@ -149,17 +145,20 @@ class StalinWorks(Dataset):
         """
         Загрузка набора данных из сети и извлечение файлов
 
+        Описание:
+            Если архив уже есть, а какой-то из директорий томов нет, архив
+            извлекается заново; архив, который не удалось извлечь, удаляется
+            и загружается заново в том же вызове
+
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
+
+        Исключения:
+            DownloadError: Если не удалось загрузить архив
+            DataFileError: Если загруженный архив не удалось извлечь
         """
-        filepath = download_file(
-            url=DOWNLOAD_URL,
-            filename="stalin_works.tar.xz",
-            dirpath=self.data_dir,
-            force=force,
-        )
-        if filepath:
-            extract_archive(filepath)
+        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
+        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
         self.check_data()
 
     def get_texts(
@@ -183,9 +182,9 @@ class StalinWorks(Dataset):
             year (int): Год издания книги
             text_type (str): Тип текстов
             is_translation (bool): Признак перевода
-            source (str): Первоначальный источник текстов
-            subject (str): Наименование текстов
-            topic (str): Наименование подраздела текстов
+            source (str): Первоначальный источник текстов (подстрока без учета регистра)
+            subject (str): Наименование текстов (подстрока без учета регистра)
+            topic (str): Наименование подраздела текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -204,6 +203,7 @@ class StalinWorks(Dataset):
             min_len,
             max_len,
         )
+        check_limit(limit)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record["text"]
 
@@ -228,9 +228,9 @@ class StalinWorks(Dataset):
             year (int): Год издания книги
             text_type (str): Тип текстов
             is_translation (bool): Признак перевода
-            source (str): Первоначальный источник текстов
-            subject (str): Наименование текстов
-            topic (str): Наименование подраздела текстов
+            source (str): Первоначальный источник текстов (подстрока без учета регистра)
+            subject (str): Наименование текстов (подстрока без учета регистра)
+            topic (str): Наименование подраздела текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
             limit (int): Количество текстов
@@ -249,6 +249,7 @@ class StalinWorks(Dataset):
             min_len,
             max_len,
         )
+        check_limit(limit)
         yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
@@ -261,9 +262,9 @@ class StalinWorks(Dataset):
         self.check_data()
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
-            for filepath in sorted(dirpath.iterdir()):
-                if re.match(r"[0-9]+", filepath.name):
-                    yield self.__load_record(filepath)
+            filepaths = (path for path in dirpath.iterdir() if path.name.isdigit())
+            for filepath in sorted(filepaths, key=lambda path: int(path.name)):
+                yield self.__load_record(filepath)
 
     def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
         """
@@ -299,8 +300,10 @@ class StalinWorks(Dataset):
         """
         try:
             with to_path(filepath).open(encoding="utf-8") as f:
-                header_block, text = f.read().strip().split("\n\n")
-                headers = tuple(header.split(":")[1][1:] for header in header_block.split("\n"))
+                header_block, text = f.read().strip().split("\n\n", maxsplit=1)
+                headers = tuple(
+                    header.split(":", 1)[1].strip() for header in header_block.split("\n")
+                )
             return {
                 "volume": int(headers[0]),
                 "year": int(headers[1]),
@@ -335,9 +338,9 @@ class StalinWorks(Dataset):
             year (int): Год издания книги
             text_type (str): Тип текстов
             is_translation (bool): Признак перевода
-            source (str): Первоначальный источник текстов
-            subject (str): Наименование текстов
-            topic (str): Наименование подраздела текстов
+            source (str): Первоначальный источник текстов (подстрока без учета регистра)
+            subject (str): Наименование текстов (подстрока без учета регистра)
+            topic (str): Наименование подраздела текстов (подстрока без учета регистра)
             min_len (int): Минимальная длина текста (в символах)
             max_len (int): Максимальная длина текста (в символах)
 
@@ -352,35 +355,23 @@ class StalinWorks(Dataset):
             ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
-        if volume:
+        if volume is not None:
             if volume not in range(1, 17):
                 raise ParameterError(f"Некорректно выбран номер тома (1-16) - {volume}")
-            filters.append(lambda record: record.get("volume", "") == volume)
-        if year:
-            filters.append(lambda record: record.get("year", "") == year)
-        if text_type:
+            filters.append(lambda record: record["volume"] == volume)
+        if year is not None:
+            filters.append(lambda record: record["year"] == year)
+        if text_type is not None:
             if text_type not in TEXT_TYPES:
                 raise ParameterError(f"Некорректно выбран тип текста - {text_type}")
-            filters.append(lambda record: record.get("type", "") == text_type)
+            filters.append(lambda record: record["type"] == text_type)
         if is_translation is not None:
-            filters.append(lambda record: record.get("is_translation", "") == is_translation)
-        if source:
-            pattern = re.compile(f".*{source}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("source", ""))) > 0)
-        if subject:
-            pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
-        if topic:
-            pattern = re.compile(f".*{topic}.*", re.IGNORECASE)
-            filters.append(lambda record: len(re.findall(pattern, record.get("topic", ""))) > 0)
-        if min_len:
-            if min_len < 1:
-                raise ParameterError("Минимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) >= min_len)
-        if max_len:
-            if max_len < 1:
-                raise ParameterError("Максимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record.get("text", "")) <= max_len)
-        if min_len and max_len and min_len > max_len:
-            raise ParameterError("Минимальная длина текста больше максимальной")
+            filters.append(lambda record: record["is_translation"] == is_translation)
+        if source is not None:
+            filters.append(substring_filter("source", source))
+        if subject is not None:
+            filters.append(substring_filter("subject", subject))
+        if topic is not None:
+            filters.append(substring_filter("topic", topic))
+        filters.extend(length_filters(min_len, max_len))
         return filters

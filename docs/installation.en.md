@@ -39,6 +39,16 @@ This installs the release version of the library with all dependencies.
 
     It adds the [DAWG2](https://github.com/pymorphy2-fork/DAWG) C extension for pymorphy3 (CPython only, wheels are available for Linux, macOS and Windows): word form analysis gets about 5x faster (175 vs 34 thousand word forms per second), `MorphStats` on a 70-thousand-word text about a third faster, because analyses are cached per word form and the rest of the time goes into counting. Without the extra the library works the same, just slower.
 
+!!! tip "spaCy model"
+    The [spaCy components](components.md), the [syntactic statistics](stats/syntax_stats.md) and the examples that start with `spacy.load("ru_core_news_sm")` need the Russian-language model; without it `spacy.load` fails with `OSError: [E050]`. The model is installed separately:
+
+    ``` bash
+    python -m spacy download ru_core_news_sm
+    ```
+
+!!! note "Datasets"
+    The [datasets](datasets/sovchlit.md) are downloaded by default into the `ruts_data` directory next to the package (`DEFAULT_DATA_DIR` in `ruts.constants`): for an installation from a wheel that is `site-packages/ruts_data`, where writing may be forbidden for a system Python. In that case pass your own directory in the `data_dir` argument when creating a dataset.
+
 !!! note "Note"
     A detailed guide to the `pip` package manager is available on its [website](https://pip.pypa.io/en/stable/).
 

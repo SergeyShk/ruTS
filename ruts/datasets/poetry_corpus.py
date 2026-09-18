@@ -1,7 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 from collections import Counter
-from collections.abc import Callable, Generator
+from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
@@ -9,10 +9,7 @@ from typing import Any
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import download_file, sha256, to_path
-from .dataset import Dataset
-
-# Фильтр - предикат над записью набора данных
-Filters = list[Callable[[dict[str, Any]], bool]]
+from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
 
 NAME = "poetry_corpus"
 META = {
@@ -185,6 +182,7 @@ class PoetryCorpus(Dataset):
             generator[str]: Генератор текстов
         """
         filters = self.__get_filters(author, theme, year_from, year_to, min_len, max_len)
+        check_limit(limit)
         for record in islice(self.__filtered_iter(filters), limit):
             yield record["text"]
 
@@ -214,6 +212,7 @@ class PoetryCorpus(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         filters = self.__get_filters(author, theme, year_from, year_to, min_len, max_len)
+        check_limit(limit)
         yield from islice(self.__filtered_iter(filters), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
@@ -280,10 +279,9 @@ class PoetryCorpus(Dataset):
             ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
-        if author:
-            pattern = re.compile(re.escape(author), re.IGNORECASE)
-            filters.append(lambda record: pattern.search(record["author"]) is not None)
-        if theme:
+        if author is not None:
+            filters.append(substring_filter("author", author))
+        if theme is not None:
             pattern_theme = re.compile(re.escape(theme), re.IGNORECASE)
             filters.append(
                 lambda record: any(pattern_theme.search(item) for item in record["themes"])
@@ -298,16 +296,7 @@ class PoetryCorpus(Dataset):
             )
         if year_from is not None and year_to is not None and year_from > year_to:
             raise ParameterError("Наименьший год больше наибольшего")
-        if min_len:
-            if min_len < 1:
-                raise ParameterError("Минимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record["text"]) >= min_len)
-        if max_len:
-            if max_len < 1:
-                raise ParameterError("Максимальная длина текста должна быть больше 0")
-            filters.append(lambda record: len(record["text"]) <= max_len)
-        if min_len and max_len and min_len > max_len:
-            raise ParameterError("Минимальная длина текста больше максимальной")
+        filters.extend(length_filters(min_len, max_len))
         return filters
 
 

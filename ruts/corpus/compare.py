@@ -5,6 +5,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from razdel import sentenize
 from scipy.stats import mannwhitneyu
 
 from ..basic_stats import BasicStats, punctuation_profile
@@ -14,8 +15,8 @@ from ..exceptions import ParameterError, SourceError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
-from ..utils import iter_text_words
-from ..visualizers.sentences import sentence_lengths
+from ..utils import check_sequence, iter_text_words
+from ..visualizers.sentences import count_words_by_spans
 
 Features = Callable[[str], Mapping[str, float]]
 Values = Sequence[float] | np.ndarray[Any, Any]
@@ -105,10 +106,12 @@ def text_features(text: str) -> dict[str, float]:
         длина предложения в словах, ее стандартное отклонение, коэффициент
         вариации и автокорреляция соседних длин - ритм текста; punct_ - частоты
         знаков по типам на 1000 слов и доля буквы ё (punctuation_profile)
-        Слова и предложения извлекаются по одному разу и передаются во все
-        классы, базовые статистики считаются один раз (ReadabilityStats получает
-        готовый BasicStats); на окно в 1000 слов уходит около 0.1 с, большая
-        часть - разбор pymorphy3
+        Текст токенизируется и делится на предложения один раз: слова
+        с позициями и границы предложений razdel передаются во все классы через
+        экстракторы с готовым результатом и в них же считаются длины предложений;
+        базовые статистики считаются один раз (ReadabilityStats получает готовый
+        BasicStats); на окно в 1000 слов уходит около 0.1 с, большая часть -
+        разбор pymorphy3
 
     Аргументы:
         text (str): Строка текста
@@ -119,8 +122,10 @@ def text_features(text: str) -> dict[str, float]:
     Исключения:
         SourceError: Если в тексте нет слов
     """
-    sents = _CachedSentsExtractor()
-    words = _CachedWordsExtractor()
+    positions = list(iter_text_words(text))
+    spans = [(sent.start, sent.stop) for sent in sentenize(text) if sent.text.strip()]
+    words = _FixedWordsExtractor(tuple(word for _, _, word in positions))
+    sents = _FixedSentsExtractor(tuple(text[start:stop] for start, stop in spans))
     basic = BasicStats(text, sents, words, normalize=True)
     features: dict[str, float] = {}
     for key in (
@@ -152,7 +157,9 @@ def text_features(text: str) -> dict[str, float]:
             features[f"morph_{category}_{label}"] = (
                 counts.get(label, 0) / denominator if denominator else nan
             )
-    features.update(sentence_rhythm(sentence_lengths(text)))
+    features.update(
+        sentence_rhythm(count_words_by_spans([start for start, _, _ in positions], spans))
+    )
     features.update(
         (f"punct_{key}", float(value))
         for key, value in punctuation_profile(text, basic.n_words).items()
@@ -160,27 +167,25 @@ def text_features(text: str) -> dict[str, float]:
     return features
 
 
-class _CachedWordsExtractor(WordsExtractor):
-    def __init__(self) -> None:
+class _FixedWordsExtractor(WordsExtractor):
+    """Экстрактор с готовыми словами, чтобы не токенизировать текст дважды"""
+
+    def __init__(self, words: tuple[str, ...]) -> None:
         super().__init__()
-        self._text: str | None = None
+        self.words = words
 
     def extract(self, text: str) -> tuple[str, ...]:
-        if text != self._text:
-            self._text = text
-            super().extract(text)
         return self.words
 
 
-class _CachedSentsExtractor(SentsExtractor):
-    def __init__(self) -> None:
+class _FixedSentsExtractor(SentsExtractor):
+    """Экстрактор с готовыми предложениями, чтобы не делить текст дважды"""
+
+    def __init__(self, sents: tuple[str, ...]) -> None:
         super().__init__()
-        self._text: str | None = None
+        self.sents = sents
 
     def extract(self, text: str) -> tuple[str, ...]:
-        if text != self._text:
-            self._text = text
-            super().extract(text)
         return self.sents
 
 
@@ -243,6 +248,7 @@ def corpus_features(
     Исключения:
         SourceError: Если в корпусе нет слов
     """
+    check_sequence(texts, "текстов")
     rows = {}
     for text_index, text in enumerate(texts):
         for window_index, chunk in enumerate(split_windows(text, window)):
@@ -456,7 +462,15 @@ def bootstrap_median_diff(
 
     Вывод:
         tuple[float, float]: Нижняя и верхняя границы, nan для пустого набора
+
+    Исключения:
+        ParameterError: Если число выборок меньше единицы или уровень доверия
+            вне интервала (0, 1)
     """
+    if n_bootstrap < 1:
+        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
+    if not 0 < confidence < 1:
+        raise ParameterError("Уровень доверия должен лежать в интервале (0, 1)")
     a = np.asarray(values_a, dtype=float)
     b = np.asarray(values_b, dtype=float)
     if not len(a) or not len(b):

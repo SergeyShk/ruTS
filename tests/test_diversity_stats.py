@@ -5,6 +5,7 @@ from math import e, inf, isnan, log, log2, log10, nan, nextafter, sqrt
 
 import pytest
 import spacy
+from scipy.special import comb
 
 from ruts import DiversityStats, diversity_stats
 from ruts.constants import DIVERSITY_STATS_DESC
@@ -45,6 +46,7 @@ from ruts.diversity_stats import (
     calc_zipf_alpha,
     fit_zipf_mandelbrot,
 )
+from ruts.exceptions import ParameterError
 
 text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота\
         значений словарного состава языка или какого-либо его сегмента; тематический, или идеографический способ\
@@ -289,9 +291,33 @@ def test_hdd_n_words():
     assert isnan(calc_hdd(text))
 
 
-def test_hdd_zero_division_error(ds):
-    text = ds.words
-    assert calc_hdd(text, 0) == 0.0
+def test_hdd_params(ds):
+    for sample_size in (0, -1):
+        with pytest.raises(ParameterError):
+            calc_hdd(ds.words, sample_size)
+    for func, kwargs in (
+        (calc_mattr, {"window_len": 0}),
+        (calc_msttr, {"segment_len": 0}),
+        (calc_mtld, {"threshold": 1.0}),
+        (calc_mamtld, {"min_len": -1}),
+        (calc_mtldw, {"threshold": 0.0}),
+    ):
+        with pytest.raises(ParameterError):
+            func(ds.words, **kwargs)
+
+
+def test_hdd_long_text():
+    # C(N, k) переполняется при N в тысячи слов и k = 200; в логарифмах значение конечно
+    rng = random.Random(0)
+    words = [str(rng.randrange(1000)) for _ in range(3000)]
+    value = calc_hdd(words, 200)
+    assert 0.9 < value < 0.92
+    assert calc_hdd(words, 42) == pytest.approx(
+        sum(
+            (1 - comb(3000 - freq, 42, exact=True) / comb(3000, 42, exact=True)) / 42
+            for freq in Counter(words).values()
+        )
+    )
 
 
 def test_hdd_sample_size_longer_than_text(ds):

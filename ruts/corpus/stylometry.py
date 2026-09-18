@@ -11,7 +11,7 @@ from spacy.tokens import Doc
 from ..constants import DELTA_VARIANTS, FUNCTION_UD_POS
 from ..exceptions import ParameterError, SourceError
 from ..morph_stats import tag_to_ud_pos
-from ..utils import is_punctuation, iter_doc_units, parse_word
+from ..utils import check_sequence, is_punctuation, iter_doc_units, parse_word
 
 ZERO_SEGMENTS = 0.5
 
@@ -65,6 +65,8 @@ def frequency_table(
     """
     if not corpus:
         raise SourceError("В корпусе нет текстов")
+    for units in corpus.values():
+        check_sequence(units, "единиц текста")
     if any(len(units) == 0 for units in corpus.values()):
         raise SourceError("В корпусе есть текст без единиц")
     if not 0 <= culling <= 1:
@@ -215,6 +217,8 @@ def zeta(
         raise ParameterError("Размер сегмента должен быть больше 0")
     if top_n is not None and top_n < 1:
         raise ParameterError("Количество слов должно быть больше 0")
+    check_sequence(target)
+    check_sequence(comparison)
     presence_target, n_target = _segment_presence(target, segment_size)
     presence_comparison, n_comparison = _segment_presence(comparison, segment_size)
     if not n_target or not n_comparison:
@@ -279,6 +283,8 @@ def kilgarriff_chi2(words_a: Sequence[str], words_b: Sequence[str], n_mfw: int =
     """
     if n_mfw < 1:
         raise ParameterError("Число самых частых слов должно быть больше 0")
+    check_sequence(words_a)
+    check_sequence(words_b)
     counts_a = Counter(words_a)
     counts_b = Counter(words_b)
     size_a = sum(counts_a.values())
@@ -314,6 +320,7 @@ def mendenhall_curve(words: Sequence[str]) -> dict[int, float]:
     Исключения:
         SourceError: Если слов нет
     """
+    check_sequence(words)
     if not words:
         raise SourceError("В источнике данных отсутствуют слова")
     counts = Counter(len(word) for word in words)
@@ -376,6 +383,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
             for unit in units
         ]
     else:
+        check_sequence(source)
         tags = [_word_pos(word) for word in source if not is_punctuation(word)]
     if not tags:
         raise SourceError("В источнике данных отсутствуют слова")

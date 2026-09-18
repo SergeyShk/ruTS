@@ -43,11 +43,14 @@ def zipf(
     Исключения:
         SourceTypeError: Если передаваемое значение не является объектом Counter
         SourceError: Если справочник пуст
+        ParameterError: Если количество слов отрицательное
     """
     if not isinstance(counter, Counter):
         raise SourceTypeError("Справочник частотности слов должен быть объектом Counter")
     if not counter:
         raise SourceError("В источнике данных отсутствуют слова")
+    if num_words is not None and num_words < 0:
+        raise ParameterError("Количество слов не может быть отрицательным")
     if ax is None:
         _, ax = plt.subplots()
     top_frequency = counter.most_common(1)[0][1]

@@ -5,6 +5,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 
 from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
+from ruts.exceptions import ParameterError, SourceTypeError
 
 
 @pytest.fixture(scope="module")
@@ -26,15 +27,31 @@ class TestSentsExtractor:
         assert len(tuple(se.extract(text))) == 2
 
     def test_extract_type_error(self, text):
-        tokenizers = [666, ["a", "b"], {"a": "b"}]
+        tokenizers = [666, ["a", "b"], {"a": "b"}, lambda text: 42]
         for tokenizer in tokenizers:
-            with pytest.raises(TypeError):
+            with pytest.raises(SourceTypeError):
                 se = SentsExtractor(tokenizer=tokenizer)  # type: ignore
                 se.extract(text)
 
+    def test_tokenizer_errors_propagate(self, text):
+        def failing(text):
+            raise KeyError("своя ошибка токенизатора")
+
+        with pytest.raises(KeyError):
+            SentsExtractor(tokenizer=failing).extract(text)
+
+    def test_extract_drops_empty(self):
+        se = SentsExtractor(tokenizer=re.compile(r"[.]"))
+        assert se.extract("Кот спит. Пёс лает.") == ("Кот спит", " Пёс лает")
+        assert se.extract("...") == ()
+        assert SentsExtractor(tokenizer=re.compile(r"\n")).extract("Кот.\n\n\nПёс.") == (
+            "Кот.",
+            "Пёс.",
+        )
+
     @pytest.mark.parametrize(
         "tokenizer, expected",
-        [(None, 2), (re.compile(r"[;.]"), 4), (sent_tokenize, 2)],
+        [(None, 2), (re.compile(r"[;.]"), 3), (sent_tokenize, 2)],
     )
     def test_extract_tokenizer(self, text, tokenizer, expected):
         se = SentsExtractor(tokenizer=tokenizer)
@@ -61,6 +78,9 @@ class TestWordsExtractor:
     def test_init_value_error_1(self):
         with pytest.raises(ValueError):
             WordsExtractor(ngram_range=(2, 1))
+        for ngram_range in ((0, 1), (-1, 1)):
+            with pytest.raises(ParameterError):
+                WordsExtractor(ngram_range=ngram_range)
 
     def test_init_value_error_2(self):
         with pytest.raises(ValueError):

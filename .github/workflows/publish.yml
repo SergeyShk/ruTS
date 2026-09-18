@@ -20,6 +20,13 @@ jobs:
         with:
           enable-cache: true
           python-version: "3.13"
+      - name: Check version matches tag
+        run: |
+          version="$(uv version --short)"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Версия в pyproject.toml ($version) не совпадает с тегом ($GITHUB_REF_NAME)"
+            exit 1
+          fi
       - name: Build distribution
         run: uv build
       - name: Check distribution

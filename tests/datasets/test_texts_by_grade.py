@@ -8,7 +8,9 @@ from scipy.stats import spearmanr
 
 from ruts import ReadabilityStats
 from ruts.constants import READABILITY_GRADE_STATS
+from ruts.datasets import dataset as dataset_module
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
+from ruts.exceptions import DataFileError, ParameterError
 from ruts.utils import extract_archive
 
 BUNDLED_ARCHIVE = (
@@ -121,11 +123,64 @@ def test_iter_ignores_foreign_files(dataset):
 
 @pytest.mark.parametrize(
     "kwargs",
-    [{"grade": 2}, {"grade": 18}, {"min_len": -1}, {"max_len": -1}, {"min_len": 10, "max_len": 5}],
+    [
+        {"grade": 0},
+        {"grade": 2},
+        {"grade": 18},
+        {"min_len": 0},
+        {"min_len": -1},
+        {"max_len": -1},
+        {"min_len": 10, "max_len": 5},
+        {"limit": -1},
+    ],
 )
 def test_get_filters_errors(dataset, kwargs):
-    with pytest.raises(ValueError):
+    with pytest.raises(ParameterError):
         list(dataset.get_texts(**kwargs))
+
+
+def test_download_extracts_existing_archive(tmp_path):
+    dataset = TextsByGrade(data_dir=tmp_path)
+    shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    dataset.download()
+    assert dataset.check_data()
+
+
+def test_download_replaces_broken_archive(tmp_path, monkeypatch):
+    dataset = TextsByGrade(data_dir=tmp_path)
+    dataset._filepath.write_bytes(b"\x00" * 40)
+    calls = []
+
+    def fake_download(url, filename, dirpath, force=False):
+        calls.append(force)
+        if not force and (Path(dirpath) / filename).is_file():
+            return ""
+        shutil.copy(BUNDLED_ARCHIVE, Path(dirpath) / filename)
+        return str(Path(dirpath) / filename)
+
+    monkeypatch.setattr(dataset_module, "download_file", fake_download)
+    dataset.download()
+    assert calls == [False, True]
+    assert dataset.check_data()
+    other = TextsByGrade(data_dir=tmp_path / "other")
+    other._filepath.parent.mkdir()
+    other._filepath.write_bytes(b"\x00" * 40)
+
+    def broken_download(url, filename, dirpath, force=False):
+        path = Path(dirpath) / filename
+        if not force and path.is_file():
+            return ""
+        path.write_bytes(b"\x00" * 40)
+        return str(path)
+
+    monkeypatch.setattr(dataset_module, "download_file", broken_download)
+    with pytest.raises(DataFileError):
+        other.download()
+
+
+@pytest.mark.parametrize("subject, expected", [(".", 46), ("(", 0)])
+def test_subject_escaped(dataset, subject, expected):
+    assert len(list(dataset.get_records(subject=subject))) == expected
 
 
 @pytest.fixture(scope="module")

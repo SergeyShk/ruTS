@@ -5,9 +5,10 @@ from enum import Enum
 from typing import Any
 
 import pandas as pd
-from graphviz import Digraph
+from graphviz import Digraph, nohtml
 
-from ..exceptions import SourceError, SourceTypeError
+from ..exceptions import ParameterError, SourceError, SourceTypeError
+from ..utils import check_sequence
 
 
 class Direction(Enum):
@@ -62,7 +63,7 @@ class TreeDrawer:
             [t.freq for t in fwd_tree.children.values()]
             + [t.freq for t in bwd_tree.children.values()]
         )
-        self.graph = Digraph(keyword, format="png")
+        self.graph = Digraph(nohtml(keyword), format="png")
         self.graph.attr("graph", rankdir="LR")
         self.graph.attr("node", shape="plaintext", margin="0")
 
@@ -101,16 +102,16 @@ class TreeDrawer:
         """
         if depth > 0:
             fontsize = self.interpolate_fontsize(tree.freq)
-            self.graph.node(root + suffix, label=root, fontsize=str(fontsize))
+            self.graph.node(nohtml(root + suffix), label=nohtml(root), fontsize=str(fontsize))
         for word, subtree in tree.children.items():
             new_suffix = f"{suffix}-{word}"
             self.draw_subtree(subtree, direction, word, new_suffix, depth + 1)
             src = root if depth == 0 else root + suffix
             dst = word + new_suffix
             if direction == Direction.Forward:
-                self.graph.edge(src, dst)
+                self.graph.edge(nohtml(src), nohtml(dst))
             else:
-                self.graph.edge(dst, src)
+                self.graph.edge(nohtml(dst), nohtml(src))
 
     def draw(self) -> Digraph:
         """
@@ -119,7 +120,9 @@ class TreeDrawer:
         Вывод:
             plot (Digraph): Дерево слов
         """
-        self.graph.node(self.keyword, label=self.keyword, fontsize=str(self.max_font_size))
+        self.graph.node(
+            nohtml(self.keyword), label=nohtml(self.keyword), fontsize=str(self.max_font_size)
+        )
         self.draw_subtree(self.bwd_tree, Direction.Backward, self.keyword, "-bwd", 0)
         self.draw_subtree(self.fwd_tree, Direction.Forward, self.keyword, "-fwd", 0)
         return self.graph
@@ -156,8 +159,17 @@ class WordTree:
         max_n: int = 5,
         max_per_n: int = 8,
     ):
-        if not any(isinstance(text, (list, tuple)) for text in texts):
+        check_sequence(texts, "списков слов")
+        if not all(isinstance(text, (list, tuple)) for text in texts):
             raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
+        if not texts:
+            raise SourceError("В источнике данных отсутствуют слова")
+        if max_n < 2:
+            raise ParameterError("Размер контекста должен быть не меньше 2")
+        if max_per_n < 1:
+            raise ParameterError(
+                "Число примеров для каждого размера контекста должно быть больше 0"
+            )
         self.texts = texts
         self.keyword = keyword
         self.max_n = max_n
@@ -268,12 +280,15 @@ def wordtree(
         keyword (str): Ключевое слово, по которому ищется контекст
         max_n (int): Максимальные размер контекста
         max_per_n (int): Максимальное число примеров для каждого размера контекста
+        kwargs: Параметры отрисовки TreeDrawer - max_font_size, min_font_size, font_interp
 
     Вывод:
         plot (Digraph): Дерево слов
 
     Исключения:
-        SourceError: Если ключевое слово не найдено ни в одном из текстов
+        SourceTypeError: Если тексты не список списков слов
+        SourceError: Если текстов нет или ключевое слово не найдено ни в одном из них
+        ParameterError: Если размер контекста меньше 2 или число примеров меньше единицы
     """
     wt = WordTree(
         texts,

@@ -29,7 +29,7 @@
 <a href="https://t.me/smekur">
     <img src="https://github.com/squidfunk/mkdocs-material/raw/master/material/.icons/fontawesome/brands/telegram.svg" width="48">
 </a>
-<a href="mailto:kouki.sergey@gmail.com">
+<a href="mailto:ekanerina@yandex.ru">
     <img src="https://github.com/squidfunk/mkdocs-material/raw/master/material/.icons/fontawesome/brands/yandex.svg" width="24">
 </a>
 <a href="https://vk.com/smekur">

@@ -9,7 +9,7 @@ from scipy.stats import chi2 as chi2_distribution
 from ..constants import KEYNESS_MEASURES
 from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
 from ..exceptions import ParameterError, SourceError
-from ..utils import normalize_yo
+from ..utils import check_sequence, normalize_yo
 
 ZERO_ADJUSTMENT = 0.5
 
@@ -92,6 +92,8 @@ def keyness(
         raise ParameterError(f"Неизвестная мера ключевости: {measure}")
     if top_n is not None and top_n < 1:
         raise ParameterError("Количество ключевых слов должно быть больше 0")
+    check_sequence(target)
+    check_sequence(reference)
     if isinstance(reference, FreqDict):
         counts_target = _count(target, normalize=True)
         size_reference = float(CORPUS_SIZE)
@@ -298,7 +300,9 @@ def calc_bic(a: float, b: float, c: float, d: float) -> float:
     Описание:
         По Wilson (2013): BIC = G² − ln(N), N = c + d; значения выше 2 - положительное
         свидетельство различия, выше 6 - сильное, выше 10 - очень сильное
-        Знак как у G²
+        Считается как sign(G²) · (|G²| − ln N): положительное значение - свидетельство
+        различия в направлении знака G², отрицательное - свидетельства нет, и тогда
+        знак BIC не совпадает со знаком G²
 
     Аргументы:
         a (float): Частота слова в целевом корпусе

@@ -1,10 +1,11 @@
 from collections import Counter
 from collections.abc import Sequence
-from math import log, log2, nan, sqrt
+from math import isnan, log, log2, nan, sqrt
 from typing import NamedTuple
 
 from ..constants import COLLOCATION_MEASURES
 from ..exceptions import ParameterError
+from ..utils import check_sequence
 
 
 class Collocation(NamedTuple):
@@ -76,6 +77,7 @@ def collocations(
         raise ParameterError("Окно должно быть не меньше единицы")
     if top_n is not None and top_n < 1:
         raise ParameterError("Количество коллокаций должно быть больше 0")
+    check_sequence(words)
     calc = MEASURES[measure]
     n_words = len(words)
     frequencies = Counter(words)
@@ -98,7 +100,8 @@ def collocations(
     ]
     found.sort(
         key=lambda collocation: (
-            -collocation.score,
+            isnan(collocation.score),
+            -(0.0 if isnan(collocation.score) else collocation.score),
             -collocation.freq_pair,
             collocation.left,
             collocation.right,

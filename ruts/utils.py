@@ -9,7 +9,7 @@ import urllib.request
 import zipfile
 from collections.abc import Iterable, Iterator, Sequence
 from functools import lru_cache
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pymorphy3
 from razdel import tokenize
@@ -23,7 +23,7 @@ from .constants import (
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
-from .exceptions import DownloadError, SourceTypeError
+from .exceptions import DataFileError, DownloadError, SourceTypeError
 
 logger = logging.getLogger(__name__)
 
@@ -181,10 +181,13 @@ def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:
     Извлечение слов из объекта Doc или Span в виде списков токенов
 
     Описание:
-        Знаки препинания и пробельные токены пропускаются. Слова с дефисом (во-первых,
-        по-видимому, кое-как), которые токенизатор spaCy режет на части и дефис,
-        склеиваются обратно, если между частями нет пробелов, - razdel в основном
-        оставляет такие слова целыми; обычное слово - список из одного токена
+        Знаки препинания и символы отбрасываются той же проверкой is_punctuation,
+        что и для строки (№, %, $ и другие символы категории S - не слова, хотя
+        spaCy не считает их пунктуацией), пробельные токены пропускаются. Слова
+        с дефисом (во-первых, по-видимому, кое-как), которые токенизатор spaCy
+        режет на части и дефис, склеиваются обратно, если между частями нет
+        пробелов, - razdel в основном оставляет такие слова целыми; обычное
+        слово - список из одного токена
 
     Аргументы:
         source (Doc|Span): Объект Doc или Span
@@ -196,7 +199,7 @@ def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:
     index = 0
     while index < len(tokens):
         token = tokens[index]
-        if token.is_punct or token.is_space:
+        if token.is_space or is_punctuation(token.text):
             index += 1
             continue
         last = index
@@ -205,8 +208,8 @@ def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:
             and tokens[last + 1].text == "-"
             and not tokens[last].whitespace_
             and not tokens[last + 1].whitespace_
-            and not tokens[last + 2].is_punct
             and not tokens[last + 2].is_space
+            and not is_punctuation(tokens[last + 2].text)
         ):
             last += 2
         yield tokens[index : last + 1]
@@ -254,6 +257,25 @@ _DELETE_VOWELS = str.maketrans("", "", "".join(RU_VOWELS))
 
 
 @lru_cache(maxsize=1 << 16)
+def count_letters(word: str) -> int:
+    """
+    Вычисление количества букв в строке
+
+    Описание:
+        Буквы любого алфавита (str.isalpha), без цифр, дефисов и знаков; результаты
+        кэшируются по словоформе, поэтому повторный подсчет бесплатен. Для целых
+        текстов функция не предназначена - они осели бы в кэше
+
+    Аргументы:
+        word (str): Словоформа
+
+    Вывод:
+        int: Количество букв
+    """
+    return sum(map(str.isalpha, word))
+
+
+@lru_cache(maxsize=1 << 16)
 def count_syllables(word: str) -> int:
     """
     Вычисление количества слогов в слове
@@ -268,6 +290,25 @@ def count_syllables(word: str) -> int:
         int: Количество слогов
     """
     return len(word) - len(word.translate(_DELETE_VOWELS))
+
+
+def check_sequence(value: object, what: str = "слов") -> None:
+    """
+    Проверка, что аргумент - последовательность, а не строка
+
+    Описание:
+        Строка формально удовлетворяет Sequence[str], но перебирается посимвольно;
+        функции, ожидающие список слов или текстов, отвергают ее явно
+
+    Аргументы:
+        value (object): Проверяемое значение
+        what (str): Что ожидается, для сообщения об ошибке
+
+    Исключения:
+        SourceTypeError: Если передана строка
+    """
+    if isinstance(value, str):
+        raise SourceTypeError(f"Ожидается список {what}, а не строка")
 
 
 def to_path(path: str | Path) -> Path:
@@ -290,6 +331,9 @@ def to_path(path: str | Path) -> Path:
     raise SourceTypeError("Некорректно указан путь")
 
 
+DOWNLOAD_TIMEOUT = 60
+
+
 def download_file(
     url: str,
     filename: str | None = None,
@@ -308,27 +352,47 @@ def download_file(
     Вывод:
         str: Путь к загруженному файлу
 
+    Описание:
+        Файл пишется во временное имя рядом с целевым и переименовывается после
+        полной загрузки, поэтому оборванная загрузка не оставляет частичного файла,
+        который следующий вызов принял бы за загруженный. Соединение ждет ответа
+        не дольше DOWNLOAD_TIMEOUT секунд
+
     Исключения:
-        DownloadError: Если не удалось загрузить файл
+        DownloadError: Если не удалось создать директорию или загрузить файл
     """
     dirpath = to_path(dirpath)
-    dirpath.mkdir(parents=True, exist_ok=True)
+    try:
+        dirpath.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        raise DownloadError(f"Не удалось создать директорию {dirpath}") from e
     if not filename:
         filename = Path(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path).name
     filepath = dirpath.resolve() / filename
     if filepath.is_file() and force is False:
         logger.info("Файл %s уже загружен", filepath)
         return ""
+    partial = filepath.with_name(filepath.name + ".part")
     try:
         logger.info("Загрузка файла %s", url)
         req = urllib.request.Request(url)
-        with urllib.request.urlopen(req) as response, filepath.open("wb") as out_file:
+        with (
+            urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT) as response,
+            partial.open("wb") as out_file,
+        ):
             shutil.copyfileobj(response, out_file)
+        partial.replace(filepath)
     except Exception as e:
+        partial.unlink(missing_ok=True)
         raise DownloadError("Не удалось загрузить файл") from e
-    else:
-        logger.info("Файл загружен: %s", filepath)
+    logger.info("Файл загружен: %s", filepath)
     return str(filepath)
+
+
+def _is_outside(member: str) -> bool:
+    """Проверка, что путь члена архива ведет за пределы директории извлечения"""
+    parts = PurePosixPath(member.replace("\\", "/")).parts
+    return bool(parts) and (parts[0] in ("/", "..") or ".." in parts)
 
 
 def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = None) -> str:
@@ -349,24 +413,37 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
 
     Вывод:
         str: Путь к директории с извлеченными файлами
+
+    Исключения:
+        DataFileError: Если файл не архив ZIP или TAR, архив поврежден, содержит пути
+            за пределами директории извлечения или директорию не удалось создать
     """
     archive_path = to_path(archive_file).resolve()
     extract_path = to_path(extract_dir) if extract_dir else archive_path.parent
-    extract_path.mkdir(parents=True, exist_ok=True)
+    try:
+        extract_path.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        raise DataFileError(f"Не удалось создать директорию {extract_path}") from e
     is_zip = zipfile.is_zipfile(archive_path)
     is_tar = tarfile.is_tarfile(archive_path)
     if not is_zip and not is_tar:
-        logger.warning("Файл %s не является архивом в формате ZIP или TAR", archive_path)
-        return str(extract_path)
+        raise DataFileError(f"Файл {archive_path} не является архивом в формате ZIP или TAR")
     logger.info("Извлечение файлов из архива %s", archive_path)
-    if is_zip:
-        with zipfile.ZipFile(archive_path, mode="r") as zip_file:
-            zip_file.extractall(extract_path)
-            members = zip_file.namelist()
-    else:
-        shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
-        with tarfile.open(archive_path, mode="r") as tar_file:
-            members = tar_file.getnames()
+    try:
+        if is_zip:
+            with zipfile.ZipFile(archive_path, mode="r") as zip_file:
+                members = zip_file.namelist()
+                if any(_is_outside(member) for member in members):
+                    raise DataFileError(
+                        f"Архив {archive_path} содержит пути за пределами директории"
+                    )
+                zip_file.extractall(extract_path)
+        else:
+            shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
+            with tarfile.open(archive_path, mode="r") as tar_file:
+                members = tar_file.getnames()
+    except (OSError, zipfile.BadZipFile, tarfile.TarError, shutil.ReadError) as e:
+        raise DataFileError(f"Не удалось извлечь архив {archive_path}") from e
     src_basename = os.path.commonpath(members)
     if src_basename and not (extract_path / src_basename).is_dir():
         src_basename = str(Path(src_basename).parent)
