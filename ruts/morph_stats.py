@@ -221,11 +221,9 @@ class MorphStats:
         """
         for arg in args:
             if not MORPHOLOGY_STATS_DESC.get(arg):
-                print(
-                    f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}"
-                )
                 raise UnknownStatError(
-                    arg + " отсутствует в справочнике морфологических статистик"
+                    f"{arg} отсутствует в справочнике морфологических статистик, "
+                    f"доступны: {', '.join(MORPHOLOGY_STATS_DESC)}"
                 )
         return True
 

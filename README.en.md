@@ -682,7 +682,7 @@ One can work solely with texts (without title info) or texts with metadata. Ther
  'year': 1963}
 ```
 
-A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `DatasetNotFoundError` (a subclass of `OSError`) with a hint. The poetry corpus and the classics collection are downloaded from their original sources at pinned commits with SHA-256 verification.
+A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `DatasetNotFoundError` with a hint. The poetry corpus and the classics collection are downloaded from their original sources at pinned commits with SHA-256 verification.
 
 </details>
 

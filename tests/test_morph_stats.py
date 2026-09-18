@@ -430,6 +430,11 @@ def test_print_stats_args(capsys, ms):
     assert captured.out.count("|") == 8
 
 
-def test_check_stat_key_error(ms):
-    with pytest.raises(KeyError):
+def test_check_stat_key_error(ms, capsys):
+    with pytest.raises(KeyError) as excinfo:
         ms.get_stats("foo", "tense")
+    assert str(excinfo.value) == (
+        "foo отсутствует в справочнике морфологических статистик, доступны: "
+        + ", ".join(MORPHOLOGY_STATS_DESC)
+    )
+    assert capsys.readouterr().out == ""

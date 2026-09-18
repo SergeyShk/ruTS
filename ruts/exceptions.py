@@ -45,7 +45,12 @@ class ParameterError(RutsError, ValueError):
 class UnknownStatError(ParameterError, KeyError):
     """
     Неизвестное название статистики
+
+    Описание:
+        Сообщение без кавычек, которые добавляет __str__ у KeyError
     """
+
+    __str__ = Exception.__str__
 
 
 class DatasetNotFoundError(RutsError, OSError):
