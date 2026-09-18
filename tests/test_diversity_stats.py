@@ -1,7 +1,7 @@
 import random
 import warnings
 from collections import Counter
-from math import e, inf, isnan, log, log2, log10, nan, sqrt
+from math import e, inf, isnan, log, log2, log10, nan, nextafter, sqrt
 
 import pytest
 import spacy
@@ -267,8 +267,12 @@ def test_mtld_factor_lengths_edges():
     assert calc_mtldw(["а"] * 500) == 10.0
 
 
-@pytest.mark.parametrize("threshold", [0.72, 0.5, 1 / 3, 0.66, 0.75, 1.0, 0.1])
+@pytest.mark.parametrize(
+    "threshold", [0.72, 0.5, 1 / 3, 0.66, 0.75, 1.0, 0.1, 0.29, 0.58, nextafter(0.1, 0)]
+)
 def test_max_types(threshold):
+    # 0.29 и 0.58: floor(threshold · length) занижен на единицу (100, 200);
+    # nextafter(0.1, 0): произведение округляется вверх, floor завышен (50, 90, 100)
     allowed = _max_types(threshold, 300)
     assert allowed[0] == -1
     for length in range(1, 301):
