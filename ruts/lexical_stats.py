@@ -8,6 +8,7 @@ from spacy.tokens import Doc
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
 from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
+from .exceptions import SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
 from .utils import iter_doc_units, normalize_yo, safe_divide
 
@@ -95,9 +96,9 @@ class LexicalStats:
         print_stats: Отображение вычисленных статистик с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
-        OSError: При обращении к метрикам по словарю, если словарь не загружен
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
+        DatasetNotFoundError: При обращении к метрикам по словарю, если словарь не загружен
     """
 
     def __init__(
@@ -122,9 +123,9 @@ class LexicalStats:
             )
             infos = [word_info(word) for word in self.words]
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not self.words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         self.freq_dict = freq_dict if freq_dict is not None else FreqDict()
         self.lemmas = tuple(info.lemma for info in infos)
         self._content = tuple(info.content for info in infos)

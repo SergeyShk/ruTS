@@ -21,6 +21,7 @@ from .constants import (
     MTLD_MIN_LEN,
     MTLD_TTR_THRESHOLD,
 )
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import iter_doc_words, safe_divide
 
@@ -134,9 +135,9 @@ class DiversityStats:
         print_stats: Отображение вычисленных метрик лексического разнообразия текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
-        ValueError: Если параметры метрик заданы некорректно
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если параметры метрик заданы некорректно
     """
 
     def __init__(
@@ -158,19 +159,19 @@ class DiversityStats:
                 words_extractor = WordsExtractor(lowercase=True)
             self.words = words_extractor.extract(text)
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not self.words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         if window_len < 1:
-            raise ValueError("Размер окна должен быть больше 0")
+            raise ParameterError("Размер окна должен быть больше 0")
         if not 0 < mtld_threshold < 1:
-            raise ValueError("Порог TTR для MTLD должен лежать в интервале (0, 1)")
+            raise ParameterError("Порог TTR для MTLD должен лежать в интервале (0, 1)")
         if mtld_min_len < 0:
-            raise ValueError("Минимальная длина фактора MTLD не может быть отрицательной")
+            raise ParameterError("Минимальная длина фактора MTLD не может быть отрицательной")
         if hdd_sample_size < 1:
-            raise ValueError("Размер выборки HD-D должен быть больше 0")
+            raise ParameterError("Размер выборки HD-D должен быть больше 0")
         if log_base <= 1:
-            raise ValueError("Основание логарифма должно быть больше 1")
+            raise ParameterError("Основание логарифма должно быть больше 1")
         self.window_len = window_len
         self.mtld_threshold = mtld_threshold
         self.mtld_min_len = mtld_min_len
@@ -378,10 +379,10 @@ class DiversityStats:
             WindowStats: Среднее, стандартное отклонение, границы интервала и число окон
 
         Исключения:
-            ValueError: Если указана неизвестная метрика
+            ParameterError: Если указана неизвестная метрика
         """
         if stat not in self._calculators:
-            raise ValueError(
+            raise ParameterError(
                 f"Неизвестная метрика: {stat}. Доступные метрики: {tuple(self._calculators)}"
             )
         return calc_windowed(self.words, self._calculators[stat], window_len, step, confidence)
@@ -1405,16 +1406,16 @@ def calc_windowed(
         WindowStats: Среднее, стандартное отклонение, границы интервала и число окон
 
     Исключения:
-        ValueError: Если размер окна, шаг или уровень доверия заданы некорректно
+        ParameterError: Если размер окна, шаг или уровень доверия заданы некорректно
     """
     if window_len < 1:
-        raise ValueError("Размер окна должен быть больше 0")
+        raise ParameterError("Размер окна должен быть больше 0")
     if step is None:
         step = window_len
     if step < 1:
-        raise ValueError("Шаг окна должен быть больше 0")
+        raise ParameterError("Шаг окна должен быть больше 0")
     if not 0 < confidence < 1:
-        raise ValueError("Уровень доверия должен лежать в интервале (0, 1)")
+        raise ParameterError("Уровень доверия должен лежать в интервале (0, 1)")
     n_words = len(text)
     if n_words <= window_len:
         windows = [text]

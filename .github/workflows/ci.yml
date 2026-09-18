@@ -44,7 +44,10 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --all-groups
+        run: uv sync --locked --all-groups ${{ matrix.python-version == '3.12' && '--extra fast' || '' }}
+      - name: Check DAWG extension
+        if: matrix.python-version == '3.12'
+        run: uv run python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
       - name: Cache NLTK data
         uses: actions/cache@v6
         with:

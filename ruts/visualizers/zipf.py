@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib.axes import Axes
 
 from ..diversity_stats import fit_zipf_mandelbrot
+from ..exceptions import ParameterError, SourceError, SourceTypeError
 
 
 def zipf(
@@ -40,13 +41,13 @@ def zipf(
         Axes: Оси с графиком Закона Ципфа
 
     Исключения:
-        TypeError: Если передаваемое значение не является объектом Counter
-        ValueError: Если справочник пуст
+        SourceTypeError: Если передаваемое значение не является объектом Counter
+        SourceError: Если справочник пуст
     """
     if not isinstance(counter, Counter):
-        raise TypeError("Справочник частотности слов должен быть объектом Counter")
+        raise SourceTypeError("Справочник частотности слов должен быть объектом Counter")
     if not counter:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     if ax is None:
         _, ax = plt.subplots()
     top_frequency = counter.most_common(1)[0][1]
@@ -113,12 +114,12 @@ def zipf_theory(size: int, num_ranks: int, alpha: float = 1.5, ax: Axes | None =
         Axes: Оси с графиком теоретического Закона Ципфа
 
     Исключения:
-        ValueError: Если число ранков меньше единицы или показатель не больше нуля
+        ParameterError: Если число ранков меньше единицы или показатель не больше нуля
     """
     if num_ranks < 1:
-        raise ValueError("Количество ранков должно быть больше 0")
+        raise ParameterError("Количество ранков должно быть больше 0")
     if alpha <= 0:
-        raise ValueError("Показатель α должен быть больше 0")
+        raise ParameterError("Показатель α должен быть больше 0")
     if ax is None:
         _, ax = plt.subplots()
     x = np.arange(1, num_ranks + 1)

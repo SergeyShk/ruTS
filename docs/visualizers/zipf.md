@@ -24,7 +24,7 @@
 | `show_fit` | bool | `False` | Отображать кривую подгонки закона Ципфа-Мандельброта $f(r) = C / (r + q)^s$ по [`fit_zipf_mandelbrot`](../stats/diversity_stats_funcs.md#fit_zipf_mandelbrot) |
 | `ax` | Axes | `None` | Оси matplotlib для графика; если не заданы, создается новая фигура |
 
-Функция возвращает оси `Axes` с графиком; `num_words` больше числа лексем не удлиняет кривые за пределы данных, пустой справочник - `ValueError`. `zipf_theory(size, num_ranks, alpha, ax)` строит только теоретическую кривую $f(r) = size \cdot r^{-\alpha}$ для рангов от 1 до `num_ranks`.
+Функция возвращает оси `Axes` с графиком; `num_words` больше числа лексем не удлиняет кривые за пределы данных, пустой справочник - `SourceError`. `zipf_theory(size, num_ranks, alpha, ax)` строит только теоретическую кривую $f(r) = size \cdot r^{-\alpha}$ для рангов от 1 до `num_ranks`.
 
 ## Пример использования
 

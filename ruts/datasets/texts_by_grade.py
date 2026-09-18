@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
+from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
 from ..utils import download_file, extract_archive, to_path
 from .dataset import Dataset
 
@@ -101,7 +102,7 @@ class TextsByGrade(Dataset):
             bool: Результат проверки
 
         Исключения:
-            OSError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен
         """
         dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
         for dirpath in dirpaths:
@@ -112,7 +113,7 @@ class TextsByGrade(Dataset):
                     ">>> tbg = TextsByGrade()\n"
                     ">>> tbg.download()"
                 )
-                raise OSError(msg)
+                raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -221,7 +222,7 @@ class TextsByGrade(Dataset):
             dict[str, object]: Справочник полей загруженной записи
 
         Исключения:
-            ValueError: Если не удалось извлечь записи из файла
+            DataFileError: Если не удалось извлечь записи из файла
         """
         try:
             with to_path(filepath).open(encoding="utf-8") as f:
@@ -235,7 +236,7 @@ class TextsByGrade(Dataset):
                 "file": filepath,
             }
         except Exception as e:
-            raise ValueError("Не удалось извлечь записи из файла") from e
+            raise DataFileError("Не удалось извлечь записи из файла") from e
 
     @staticmethod
     def __get_filters(
@@ -257,27 +258,27 @@ class TextsByGrade(Dataset):
             filters (Filters): Список фильтров-предикатов
 
         Исключения:
-            ValueError: Если некорректно выбран уровень текста
-            ValueError: Если минимальная длина текста не больше 0
-            ValueError: Если максимальная длина текста не больше 0
-            ValueError: Если минимальная длина текста больше максимальной
+            ParameterError: Если некорректно выбран уровень текста
+            ParameterError: Если минимальная длина текста не больше 0
+            ParameterError: Если максимальная длина текста не больше 0
+            ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
         if grade:
             if grade not in GRADES:
-                raise ValueError(f"Некорректно выбран уровень текста {GRADES} - {grade}")
+                raise ParameterError(f"Некорректно выбран уровень текста {GRADES} - {grade}")
             filters.append(lambda record: record.get("grade", "") == grade)
         if subject:
             pattern = re.compile(f".*{subject}.*", re.IGNORECASE)
             filters.append(lambda record: len(re.findall(pattern, record.get("subject", ""))) > 0)
         if min_len:
             if min_len < 1:
-                raise ValueError("Минимальная длина текста должна быть больше 0")
+                raise ParameterError("Минимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record.get("text", "")) >= min_len)
         if max_len:
             if max_len < 1:
-                raise ValueError("Максимальная длина текста должна быть больше 0")
+                raise ParameterError("Максимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record.get("text", "")) <= max_len)
         if min_len and max_len and min_len > max_len:
-            raise ValueError("Минимальная длина текста больше максимальной")
+            raise ParameterError("Минимальная длина текста больше максимальной")
         return filters

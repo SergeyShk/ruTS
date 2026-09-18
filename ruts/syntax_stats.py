@@ -17,6 +17,7 @@ from .constants import (
     SYNTAX_STATS_DESC,
     VALENCY_IGNORED_DEPS,
 )
+from .exceptions import SourceError, SourceTypeError
 from .utils import is_verbal_noun, lemmatize, normalize_yo, safe_divide
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
@@ -142,19 +143,19 @@ class SyntaxStats:
         print_stats: Отображение вычисленных синтаксических статистик текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является объектом Doc
-        ValueError: Если в источнике данных отсутствует разбор зависимостей
-        ValueError: Если в источнике данных отсутствуют слова
+        SourceTypeError: Если передаваемое значение не является объектом Doc
+        SourceError: Если в источнике данных отсутствует разбор зависимостей
+        SourceError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(self, source: Doc):
         if not isinstance(source, Doc):
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not source.has_annotation("DEP"):
-            raise ValueError("В источнике данных отсутствует разбор зависимостей")
+            raise SourceError("В источнике данных отсутствует разбор зависимостей")
         sents = [sent_words for sent in source.sents if (sent_words := get_words(sent))]
         if not sents:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         words = [token for sent in sents for token in sent]
         self.n_sents = len(sents)
         self.n_words = len(words)

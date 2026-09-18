@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
+from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
 from .dataset import Dataset
 
@@ -126,7 +127,7 @@ class RussianLiterature(Dataset):
             bool: Результат проверки
 
         Исключения:
-            OSError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен
         """
         for genre in self.genres:
             if not self._dirpath.joinpath(genre).is_dir():
@@ -136,7 +137,7 @@ class RussianLiterature(Dataset):
                     ">>> rl = RussianLiterature()\n"
                     ">>> rl.download()"
                 )
-                raise OSError(msg)
+                raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -155,7 +156,7 @@ class RussianLiterature(Dataset):
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            RuntimeError: Если архив не прошел проверку
+            DownloadError: Если архив не прошел проверку
         """
         filepath = download_file(
             url=DOWNLOAD_URL, filename=ARCHIVE, dirpath=self.data_dir, force=force
@@ -169,7 +170,7 @@ class RussianLiterature(Dataset):
                 )
                 if sha256(self._filepath) != ARCHIVE_SHA256:
                     self._filepath.unlink(missing_ok=True)
-                    raise RuntimeError(
+                    raise DownloadError(
                         f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
                         "повторите загрузку"
                     )
@@ -309,16 +310,16 @@ class RussianLiterature(Dataset):
             filters (Filters): Список фильтров-предикатов
 
         Исключения:
-            ValueError: Если некорректно выбран жанр
-            ValueError: Если наименьший год больше наибольшего
-            ValueError: Если минимальная длина текста не больше 0
-            ValueError: Если максимальная длина текста не больше 0
-            ValueError: Если минимальная длина текста больше максимальной
+            ParameterError: Если некорректно выбран жанр
+            ParameterError: Если наименьший год больше наибольшего
+            ParameterError: Если минимальная длина текста не больше 0
+            ParameterError: Если максимальная длина текста не больше 0
+            ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
         if genre:
             if genre not in GENRES:
-                raise ValueError(f"Некорректно выбран жанр {GENRES} - {genre}")
+                raise ParameterError(f"Некорректно выбран жанр {GENRES} - {genre}")
             filters.append(lambda record: record["genre"] == genre)
         if author:
             pattern = re.compile(re.escape(author), re.IGNORECASE)
@@ -332,17 +333,17 @@ class RussianLiterature(Dataset):
                 lambda record: record["year_to"] is not None and record["year_to"] <= year_to
             )
         if year_from is not None and year_to is not None and year_from > year_to:
-            raise ValueError("Наименьший год больше наибольшего")
+            raise ParameterError("Наименьший год больше наибольшего")
         if min_len:
             if min_len < 1:
-                raise ValueError("Минимальная длина текста должна быть больше 0")
+                raise ParameterError("Минимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record["text"]) >= min_len)
         if max_len:
             if max_len < 1:
-                raise ValueError("Максимальная длина текста должна быть больше 0")
+                raise ParameterError("Максимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record["text"]) <= max_len)
         if min_len and max_len and min_len > max_len:
-            raise ValueError("Минимальная длина текста больше максимальной")
+            raise ParameterError("Минимальная длина текста больше максимальной")
         return filters
 
 
@@ -457,7 +458,7 @@ def read_text(filepath: str | Path) -> str:
         str: Текст файла
 
     Исключения:
-        ValueError: Если файл не удалось прочитать ни в одной из кодировок
+        DataFileError: Если файл не удалось прочитать ни в одной из кодировок
     """
     data = to_path(filepath).read_bytes()
     for encoding in ENCODINGS:
@@ -465,4 +466,4 @@ def read_text(filepath: str | Path) -> str:
             return data.decode(encoding).lstrip("﻿").strip()
         except UnicodeDecodeError:
             continue
-    raise ValueError(f"Не удалось прочитать файл {filepath}")
+    raise DataFileError(f"Не удалось прочитать файл {filepath}")

@@ -6,6 +6,7 @@ nav:
     - Главная:
       - О проекте: index.md
       - Установка: installation.md
+      - Исключения и логирование: exceptions.md
       - Авторы: authors.md
     - Извлечение объектов:
       - Извлечение предложений: extractors/sentences.md

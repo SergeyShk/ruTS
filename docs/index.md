@@ -96,6 +96,7 @@ pip install ruts
         *   components.py - компоненты spaCy
         *   constants.py - основные используемые константы
         *   diversity_stats.py - метрики лексического разнообразия текста
+        *   exceptions.py - исключения библиотеки
         *   extractors.py - инструменты для извлечения объектов из текста
         *   lexical_stats.py - статистики лексической сложности текста
         *   morph_stats.py - морфологические статистики

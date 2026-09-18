@@ -7,6 +7,7 @@ from typing import Any
 
 from razdel import sentenize, tokenize
 
+from .exceptions import ParameterError, SourceTypeError
 from .utils import is_punctuation, parse_word
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
@@ -49,14 +50,14 @@ class Extractor(metaclass=ABCMeta):
             iterator[str]: Итератор токенов
 
         Исключения:
-            TypeError: Если некорректно задан токенизатор
+            SourceTypeError: Если некорректно задан токенизатор
         """
         if isinstance(self.tokenizer, Pattern):
             return iter(re.split(self.tokenizer, text))
         try:
             return iter(self.tokenizer(text))  # type: ignore[misc]
         except Exception as e:
-            raise TypeError("Токенизатор задан некорректно") from e
+            raise SourceTypeError("Токенизатор задан некорректно") from e
 
 
 class SentsExtractor(Extractor):
@@ -80,7 +81,7 @@ class SentsExtractor(Extractor):
         extract: Извлечение предложений из текста
 
     Исключения:
-        ValueError: Если минимальная длина предложения больше максимальной
+        ParameterError: Если минимальная длина предложения больше максимальной
     """
 
     def __init__(
@@ -91,7 +92,7 @@ class SentsExtractor(Extractor):
     ) -> None:
         super().__init__(tokenizer, min_len, max_len)
         if self.min_len and self.max_len and self.min_len > self.max_len:
-            raise ValueError("Минимальная длина предложения больше максимальной")
+            raise ParameterError("Минимальная длина предложения больше максимальной")
         self.sents: tuple[str, ...] = ()
         if not self.tokenizer:
             self.tokenizer = lambda text: (sent.text for sent in sentenize(text))
@@ -107,7 +108,7 @@ class SentsExtractor(Extractor):
             sents (tuple[str]): Кортеж извлеченных предложений
 
         Исключения:
-            TypeError: Если некорректно задан токенизатор
+            SourceTypeError: Если некорректно задан токенизатор
         """
         sents = self._tokenize(text)
         if self.min_len > 0:
@@ -154,8 +155,8 @@ class WordsExtractor(Extractor):
         get_most_common: Получение счетчика топ-слов
 
     Исключения:
-        ValueError: Если нижняя граница N-грамм большей верхней
-        ValueError: Если минимальная длина слова больше максимальной
+        ParameterError: Если нижняя граница N-грамм большей верхней
+        ParameterError: Если минимальная длина слова больше максимальной
     """
 
     def __init__(
@@ -178,11 +179,11 @@ class WordsExtractor(Extractor):
         self.lowercase = lowercase
         self.ngram_range = ngram_range
         if self.ngram_range[0] > self.ngram_range[1]:
-            raise ValueError("Нижняя граница N-грамм большей верхней")
+            raise ParameterError("Нижняя граница N-грамм большей верхней")
         self.min_len = min_len
         self.max_len = max_len
         if self.min_len and self.max_len and self.min_len > self.max_len:
-            raise ValueError("Минимальная длина слова больше максимальной")
+            raise ParameterError("Минимальная длина слова больше максимальной")
         self.words: tuple[str, ...] = ()
         if not self.tokenizer:
             self.tokenizer = lambda text: (word.text for word in tokenize(text))
@@ -201,7 +202,7 @@ class WordsExtractor(Extractor):
             words (tuple[str]): Кортеж извлеченных слов
 
         Исключения:
-            TypeError: Если некорректно задан токенизатор
+            SourceTypeError: Если некорректно задан токенизатор
         """
         words = self._tokenize(text)
         if self.filter_punct:
@@ -234,10 +235,10 @@ class WordsExtractor(Extractor):
             List: Список топ-слов
 
         Исключения:
-            ValueError: Если указанное количество слов меньше 0
+            ParameterError: Если указанное количество слов меньше 0
         """
         if n < 1:
-            raise ValueError("Количество слов должно быть больше 0")
+            raise ParameterError("Количество слов должно быть больше 0")
         return Counter(self.words).most_common(n)
 
     def __make_ngrams(self) -> tuple[str, ...]:
@@ -290,7 +291,7 @@ class CharNgramsExtractor(Extractor):
         get_most_common: Получение счетчика топ-N-грамм
 
     Исключения:
-        ValueError: Если длина N-граммы меньше единицы
+        ParameterError: Если длина N-граммы меньше единицы
     """
 
     def __init__(
@@ -302,7 +303,7 @@ class CharNgramsExtractor(Extractor):
     ) -> None:
         super().__init__(tokenizer)
         if n < 1:
-            raise ValueError("Длина N-граммы должна быть больше 0")
+            raise ParameterError("Длина N-граммы должна быть больше 0")
         self.n = n
         self.lowercase = lowercase
         self.within_words = within_words
@@ -321,7 +322,7 @@ class CharNgramsExtractor(Extractor):
             ngrams (tuple[str]): Кортеж извлеченных N-грамм
 
         Исключения:
-            TypeError: Если некорректно задан токенизатор
+            SourceTypeError: Если некорректно задан токенизатор
         """
         if self.lowercase:
             text = text.lower()
@@ -347,8 +348,8 @@ class CharNgramsExtractor(Extractor):
             List: Список топ-N-грамм
 
         Исключения:
-            ValueError: Если указанное количество N-грамм меньше 0
+            ParameterError: Если указанное количество N-грамм меньше 0
         """
         if n < 1:
-            raise ValueError("Количество N-грамм должно быть больше 0")
+            raise ParameterError("Количество N-грамм должно быть больше 0")
         return Counter(self.ngrams).most_common(n)

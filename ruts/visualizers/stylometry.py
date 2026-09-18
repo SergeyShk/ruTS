@@ -8,6 +8,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.spatial.distance import squareform
 
 from ..corpus.stylometry import frequency_table, mendenhall_curve, z_scores
+from ..exceptions import SourceError
 
 
 def dendrogram_plot(distances: pd.DataFrame, method: str = "ward", ax: Axes | None = None) -> Axes:
@@ -28,7 +29,7 @@ def dendrogram_plot(distances: pd.DataFrame, method: str = "ward", ax: Axes | No
         Axes: Оси с дендрограммой
 
     Исключения:
-        ValueError: Если матрица не квадратная, текстов меньше двух или есть
+        SourceError: Если матрица не квадратная, текстов меньше двух или есть
             бесконечные расстояния
     """
     values = _distance_matrix(distances, "дендрограммы")
@@ -68,10 +69,10 @@ def pca_plot(
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если текстов меньше трех
+        SourceError: Если текстов меньше трех
     """
     if len(corpus) < 3:
-        raise ValueError("Для главных компонент нужно не меньше трех текстов")
+        raise SourceError("Для главных компонент нужно не меньше трех текстов")
     scores = z_scores(frequency_table(corpus, n_mfw, culling))
     values = scores.to_numpy(dtype=float)
     left, singular, _ = np.linalg.svd(values, full_matrices=False)
@@ -111,7 +112,7 @@ def mds_plot(distances: pd.DataFrame, ax: Axes | None = None) -> Axes:
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если матрица не квадратная, текстов меньше двух или есть
+        SourceError: Если матрица не квадратная, текстов меньше двух или есть
             бесконечные расстояния
     """
     squared = _distance_matrix(distances, "шкалирования") ** 2
@@ -137,9 +138,9 @@ def mds_plot(distances: pd.DataFrame, ax: Axes | None = None) -> Axes:
 def _distance_matrix(distances: pd.DataFrame, purpose: str) -> np.ndarray:
     values = np.asarray(distances.to_numpy(dtype=float), dtype=float)
     if values.ndim != 2 or values.shape[0] != values.shape[1] or len(values) < 2:
-        raise ValueError(f"Для {purpose} нужна квадратная матрица не меньше чем из двух текстов")
+        raise SourceError(f"Для {purpose} нужна квадратная матрица не меньше чем из двух текстов")
     if not np.isfinite(values).all():
-        raise ValueError(f"Для {purpose} все расстояния должны быть конечными")
+        raise SourceError(f"Для {purpose} все расстояния должны быть конечными")
     return values
 
 
@@ -159,10 +160,10 @@ def mendenhall_plot(corpus: Mapping[str, Sequence[str]], ax: Axes | None = None)
         Axes: Оси с кривыми
 
     Исключения:
-        ValueError: Если текстов нет
+        SourceError: Если текстов нет
     """
     if not corpus:
-        raise ValueError("В корпусе нет текстов")
+        raise SourceError("В корпусе нет текстов")
     curves = {name: mendenhall_curve(words) for name, words in corpus.items()}
     if ax is None:
         _, ax = plt.subplots()

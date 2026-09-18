@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
+from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import download_file, sha256, to_path
 from .dataset import Dataset
 
@@ -117,7 +118,7 @@ class PoetryCorpus(Dataset):
             bool: Результат проверки
 
         Исключения:
-            OSError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен
         """
         if not self._filepath.is_file():
             msg = (
@@ -126,7 +127,7 @@ class PoetryCorpus(Dataset):
                 ">>> pc = PoetryCorpus()\n"
                 ">>> pc.download()"
             )
-            raise OSError(msg)
+            raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -143,7 +144,7 @@ class PoetryCorpus(Dataset):
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            RuntimeError: Если файл не прошел проверку
+            DownloadError: Если файл не прошел проверку
         """
         download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=force)
         if self._filepath.is_file() and sha256(self._filepath) != FILE_SHA256:
@@ -151,7 +152,7 @@ class PoetryCorpus(Dataset):
             download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=True)
             if sha256(self._filepath) != FILE_SHA256:
                 self._filepath.unlink(missing_ok=True)
-                raise RuntimeError(
+                raise DownloadError(
                     f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
                     "повторите загрузку"
                 )
@@ -226,7 +227,7 @@ class PoetryCorpus(Dataset):
             generator[dict[str, object]]: Генератор записей
 
         Исключения:
-            ValueError: Если не удалось извлечь записи из файла
+            DataFileError: Если не удалось извлечь записи из файла
         """
         self.check_data()
         yield from load_records(self._filepath)
@@ -272,10 +273,10 @@ class PoetryCorpus(Dataset):
             filters (Filters): Список фильтров-предикатов
 
         Исключения:
-            ValueError: Если наименьший год больше наибольшего
-            ValueError: Если минимальная длина текста не больше 0
-            ValueError: Если максимальная длина текста не больше 0
-            ValueError: Если минимальная длина текста больше максимальной
+            ParameterError: Если наименьший год больше наибольшего
+            ParameterError: Если минимальная длина текста не больше 0
+            ParameterError: Если максимальная длина текста не больше 0
+            ParameterError: Если минимальная длина текста больше максимальной
         """
         filters: Filters = []
         if author:
@@ -295,17 +296,17 @@ class PoetryCorpus(Dataset):
                 lambda record: record["year_to"] is not None and record["year_to"] <= year_to
             )
         if year_from is not None and year_to is not None and year_from > year_to:
-            raise ValueError("Наименьший год больше наибольшего")
+            raise ParameterError("Наименьший год больше наибольшего")
         if min_len:
             if min_len < 1:
-                raise ValueError("Минимальная длина текста должна быть больше 0")
+                raise ParameterError("Минимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record["text"]) >= min_len)
         if max_len:
             if max_len < 1:
-                raise ValueError("Максимальная длина текста должна быть больше 0")
+                raise ParameterError("Максимальная длина текста должна быть больше 0")
             filters.append(lambda record: len(record["text"]) <= max_len)
         if min_len and max_len and min_len > max_len:
-            raise ValueError("Минимальная длина текста больше максимальной")
+            raise ParameterError("Минимальная длина текста больше максимальной")
         return filters
 
 
@@ -327,7 +328,7 @@ def load_records(filepath: str | Path) -> Generator[dict[str, Any], None, None]:
         generator[dict[str, object]]: Генератор записей
 
     Исключения:
-        ValueError: Если не удалось извлечь записи из файла
+        DataFileError: Если не удалось извлечь записи из файла
     """
     depth = 0
     try:
@@ -350,7 +351,7 @@ def load_records(filepath: str | Path) -> Generator[dict[str, Any], None, None]:
                 }
                 element.clear()
     except ET.ParseError as e:
-        raise ValueError(
+        raise DataFileError(
             "Не удалось извлечь записи из файла, загрузите его заново: "
             ">>> PoetryCorpus().download(force=True)"
         ) from e

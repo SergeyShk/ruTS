@@ -21,6 +21,7 @@ from .constants import (
     RESOURCES_DIR,
     STOPWORD_GRAMMEMES,
 )
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import tag_to_ud_pos, word_to_ud
 from .utils import (
@@ -222,8 +223,8 @@ class CohesionStats:
         print_stats: Отображение вычисленных статистик связности текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -259,10 +260,10 @@ class CohesionStats:
             infos = [[word_info(word) for word in sent] for sent in sents]
             pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         self.words = tuple(sent for sent in sents if sent)
         if not self.words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         infos = [sent for sent in infos if sent]
         self.n_sents = len(self.words)
         self.n_words = sum(len(sent) for sent in self.words)
@@ -394,7 +395,7 @@ def _normalize(connectors: Mapping[str, tuple[str, str]]) -> ConnectorIndex:
     patterns: dict[str, list[tuple[str, ...]]] = {}
     for connector, (cls, kind) in connectors.items():
         if cls not in CONNECTOR_CLASSES or kind not in CONNECTOR_TYPES:
-            raise ValueError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
+            raise ParameterError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
         key = " ".join(normalize_yo(connector).split())
         split = " ".join(key.replace("-", " ").replace(".", " ").split())
         for variant in {key, split}:
@@ -501,7 +502,7 @@ def find_connectors(
         list[Connector]: Вхождения коннекторов в порядке слов
 
     Исключения:
-        ValueError: Если в словаре встречается неизвестный класс или тип
+        ParameterError: Если в словаре встречается неизвестный класс или тип
     """
     index = _normalize_connectors() if connectors is None else _normalize(connectors)
     return _find(words, index, sent_index, pos)

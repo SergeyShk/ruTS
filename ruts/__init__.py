@@ -5,6 +5,9 @@
 #         Смирнова Екатерина <ekanerina@yandex.ru>
 # URL: <https://github.com/SergeyShk/ruTS>
 
+import logging
+from importlib.metadata import PackageNotFoundError, version
+
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats
 from .components import (
@@ -19,6 +22,16 @@ from .components import (
     SyntaxStatsComponent,
 )
 from .diversity_stats import DiversityStats
+from .exceptions import (
+    DataFileError,
+    DatasetNotFoundError,
+    DownloadError,
+    ParameterError,
+    RutsError,
+    SourceError,
+    SourceTypeError,
+    UnknownStatError,
+)
 from .extractors import CharNgramsExtractor, SentsExtractor, WordsExtractor
 from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
@@ -27,8 +40,14 @@ from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
 
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+
 # Метаданные
 
+try:
+    __version__ = version("ruts")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
 __description__ = """Инструмент для извлечения статистик для текстов на русском языке.
 Требует версию Python 3.11 и выше"""
 __author__ = "Шкарин Сергей, Смирнова Екатерина"
@@ -40,20 +59,29 @@ __all__ = [
     "CharNgramsExtractor",
     "CohesionStats",
     "CohesionStatsComponent",
+    "DataFileError",
+    "DatasetNotFoundError",
     "DiversityStats",
     "DiversityStatsComponent",
+    "DownloadError",
     "LexicalStats",
     "LexicalStatsComponent",
     "MorphStats",
     "MorphStatsComponent",
+    "ParameterError",
     "PhonStats",
     "PhonStatsComponent",
     "ReadabilityStats",
     "ReadabilityStatsComponent",
+    "RutsError",
     "SentsExtractor",
+    "SourceError",
+    "SourceTypeError",
     "StyleStats",
     "StyleStatsComponent",
     "SyntaxStats",
     "SyntaxStatsComponent",
+    "UnknownStatError",
     "WordsExtractor",
+    "__version__",
 ]

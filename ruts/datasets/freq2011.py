@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 from ..constants import DEFAULT_DATA_DIR
+from ..exceptions import DatasetNotFoundError, DownloadError
 from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
 from .dataset import Dataset
 
@@ -130,7 +131,7 @@ class FreqDict(Dataset):
             bool: Результат проверки
 
         Исключения:
-            OSError: Если словарь не обнаружен
+            DatasetNotFoundError: Если словарь не обнаружен
         """
         if not self._filepath.is_file():
             msg = (
@@ -139,7 +140,7 @@ class FreqDict(Dataset):
                 ">>> fd = FreqDict()\n"
                 ">>> fd.download()"
             )
-            raise OSError(msg)
+            raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -155,7 +156,7 @@ class FreqDict(Dataset):
             force (bool): Загрузить словарь, даже если он уже загружен
 
         Исключения:
-            RuntimeError: Если не удалось загрузить файл или он не прошел проверку
+            DownloadError: Если не удалось загрузить файл или он не прошел проверку
         """
         archive = self.data_dir.joinpath(ARCHIVE)
         filepath = download_file(
@@ -167,7 +168,7 @@ class FreqDict(Dataset):
         if filepath or not self._filepath.is_file():
             if sha256(archive) != ARCHIVE_SHA256:
                 archive.unlink(missing_ok=True)
-                raise RuntimeError(
+                raise DownloadError(
                     f"Файл {archive} не прошел проверку контрольной суммы и удален, "
                     "повторите загрузку"
                 )

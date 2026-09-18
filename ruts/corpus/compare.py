@@ -10,6 +10,7 @@ from scipy.stats import mannwhitneyu
 from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC
 from ..diversity_stats import DiversityStats
+from ..exceptions import ParameterError, SourceError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
@@ -63,10 +64,10 @@ def split_windows(text: str, window: int | None = 1000) -> list[str]:
         list[str]: Окна текста; пустой список для текста без слов
 
     Исключения:
-        ValueError: Если размер окна меньше единицы
+        ParameterError: Если размер окна меньше единицы
     """
     if window is not None and window < 1:
-        raise ValueError("Размер окна должен быть больше 0")
+        raise ParameterError("Размер окна должен быть больше 0")
     words = list(iter_text_words(text))
     if not words:
         return []
@@ -116,7 +117,7 @@ def text_features(text: str) -> dict[str, float]:
         dict[str, float]: Признаки; неопределенные значения - nan
 
     Исключения:
-        ValueError: Если в тексте нет слов
+        SourceError: Если в тексте нет слов
     """
     sents = _CachedSentsExtractor()
     words = _CachedWordsExtractor()
@@ -240,14 +241,14 @@ def corpus_features(
         DataFrame: Признаки окон
 
     Исключения:
-        ValueError: Если в корпусе нет слов
+        SourceError: Если в корпусе нет слов
     """
     rows = {}
     for text_index, text in enumerate(texts):
         for window_index, chunk in enumerate(split_windows(text, window)):
             rows[text_index, window_index] = dict(features(chunk))
     if not rows:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     table = pd.DataFrame.from_dict(rows, orient="index").astype(float)
     table.index = pd.MultiIndex.from_tuples(table.index, names=["text", "window"])
     return table
@@ -299,10 +300,11 @@ def compare_corpora(
             с именами корпусов в столбцах)
 
     Исключения:
-        ValueError: Если один из корпусов без слов или число выборок меньше единицы
+        SourceError: Если один из корпусов без слов
+        ParameterError: Если число выборок меньше единицы
     """
     if n_bootstrap < 1:
-        raise ValueError("Число выборок бутстрэпа должно быть больше 0")
+        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
     feature_function = features or text_features
     table_a = corpus_features(a, window, feature_function)
     table_b = corpus_features(b, window, feature_function)
