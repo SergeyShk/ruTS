@@ -1,0 +1,40 @@
+name: Ошибка
+description: Неверный результат, исключение или падение
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Что происходит
+      description: Что вы ожидали и что получили
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Как воспроизвести
+      description: Минимальный код с текстом, на котором проявляется ошибка, и полный traceback, если он есть
+      render: python
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия ruTS
+      description: "`python -c \"import ruts; print(ruts.__version__)\"`"
+      placeholder: "0.13.0"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Python и ОС
+      placeholder: "Python 3.12, macOS 15"
+    validations:
+      required: true
+  - type: input
+    id: spacy
+    attributes:
+      label: Модель spaCy
+      description: Если ошибка связана с объектом Doc
+      placeholder: "ru_core_news_sm 3.8.0"

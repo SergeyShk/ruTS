@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "Если вы используете ruTS в исследованиях или программах, пожалуйста, сошлитесь на библиотеку."
+title: "ruTS, a library for statistics extraction from texts in Russian"
+type: software
+authors:
+  - family-names: Shkarin
+    given-names: Sergey
+    email: kouki.sergey@gmail.com
+repository-code: "https://github.com/SergeyShk/ruTS"
+url: "https://sergeyshk.github.io/ruTS/"
+license: MIT
+version: 0.12.0
+date-released: 2026-09-17
+keywords:
+  - russian
+  - nlp
+  - text statistics
+  - readability
+  - lexical diversity
+  - stylometry
+  - corpus linguistics
+abstract: "ruTS computes text statistics for Russian: basic counts, readability formulas, lexical diversity and sophistication, morphological, syntactic, cohesion, phonetic and style statistics, corpus measures and stylometry, with spaCy components, datasets and visualizations."

@@ -814,7 +814,7 @@ uv run pre-commit install
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. Before submitting a pull request, please make sure that `make lint` and `make test` pass.
+Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. The workflow, the checks to run before submitting a pull request and how to shape the changes are described in [CONTRIBUTING.md](CONTRIBUTING.md) (in Russian); the rules of conduct are in the [code of conduct](CODE_OF_CONDUCT.md).
 
 <details>
 <summary><b>Project structure</b></summary>
@@ -877,7 +877,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 
 ## Citation
 
-Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library.
+Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library. The same metadata is in [CITATION.cff](CITATION.cff) - GitHub shows it under the "Cite this repository" button.
 
 ```bibtex
 @software{ruTS,
