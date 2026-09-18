@@ -72,13 +72,74 @@ theme:
     text: Source Sans Pro
   features:
     - navigation.tabs
-    - navigation.instant
 
 plugins:
   - search:
       lang:
         - ru
         - en
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: ru
+          name: Русский
+          default: true
+          build: true
+        - locale: en
+          name: English
+          build: true
+          site_description: "A library for extracting statistics from Russian texts"
+          nav_translations:
+            Главная: Home
+            О проекте: About
+            Установка: Installation
+            Исключения и логирование: Exceptions and logging
+            Авторы: Authors
+            Извлечение объектов: Extraction
+            Извлечение предложений: Sentence extraction
+            Извлечение слов: Word extraction
+            Извлечение символьных N-грамм: Character N-gram extraction
+            Подсчет статистик: Statistics
+            Базовые статистики: Basic statistics
+            Метрики удобочитаемости: Readability metrics
+            Модуль вычисления метрик: Metrics module
+            Функции вычисления метрик: Metric functions
+            Метрики лексического разнообразия: Lexical diversity metrics
+            Морфологические статистики: Morphological statistics
+            SEO-метрики стиля: SEO style metrics
+            Фоностатистики: Phonostatistics
+            Модуль вычисления статистик: Statistics module
+            Функции вычисления статистик: Statistic functions
+            Синтаксические статистики: Syntactic statistics
+            Статистики связности: Cohesion statistics
+            Статистики лексической сложности: Lexical sophistication statistics
+            Корпусные меры: Corpus measures
+            Ключевые слова: Keywords
+            Коллокации: Collocations
+            Дисперсия слов: Word dispersion
+            Конкорданс KWIC: KWIC concordance
+            Стилометрия: Stylometry
+            Сравнение корпусов: Corpus comparison
+            Наборы данных: Datasets
+            Советские христоматии (литература): Soviet literature readers
+            Полное собрание сочинений И.В. Сталина: Collected works of Stalin
+            Тексты с метками класса: Texts with grade labels
+            Частотный словарь Ляшевской и Шарова: Lyashevskaya and Sharoff frequency dictionary
+            Корпус русской поэзии: Russian poetry corpus
+            Русская классическая литература: Russian classical literature
+            Визуализации: Visualizations
+            Закон Ципфа: Zipf's law
+            Литературная дактилоскопия: Literature fingerprinting
+            Дерево слов: Word tree
+            Подсветка текста: Text highlighting
+            Корпусные графики: Corpus plots
+            Стилометрические графики: Stylometric plots
+            Рост словаря и спектр частот: Vocabulary growth and frequency spectrum
+            Длины предложений: Sentence lengths
+            Компоненты: Components
 
 extra:
   social:

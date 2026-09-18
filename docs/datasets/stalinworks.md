@@ -73,9 +73,10 @@
     _Результат_:
 
     ``` bash
-    {'description': 'Полное собрание сочинений И.В. Сталина',
+    {'Наименование': 'stalin_works',
     'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
-    'Наименование': 'stalin_works'}
+    'description': 'Полное собрание сочинений И.В. Сталина',
+    'author': 'Шкарин С.С.'}
     ```
 
 ### get_texts

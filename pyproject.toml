@@ -86,7 +86,12 @@ fast = ["pymorphy3[fast]>=2.0.4"]
 [dependency-groups]
 test = ["pytest>=8.3", "pytest-cov>=6.0", "ru-core-news-sm"]
 lint = ["mypy>=1.14", "pre-commit>=4.0", "ruff>=0.9"]
-docs = ["mkdocs>=1.6", "mkdocs-material>=9.5", "pymdown-extensions>=10.0"]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+    "mkdocs-static-i18n>=1.2",
+    "pymdown-extensions>=10.0",
+]
 dev = [
     { include-group = "test" },
     { include-group = "lint" },

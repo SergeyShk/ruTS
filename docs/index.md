@@ -57,7 +57,11 @@ pip install ruts
  'n_letters': 45,
  'n_spaces': 8,
  'n_syllables': 18,
- 'n_punctuations': 2}
+ 'n_punctuations': 2,
+ 'c_punctuations': {'comma': 1, 'period': 0, 'question': 0, 'exclamation': 0,
+                    'ellipsis': 0, 'colon': 1, 'semicolon': 0, 'dash': 0,
+                    'hyphen': 0, 'angle_quotes': 0, 'straight_quotes': 0,
+                    'parentheses': 0, 'other': 0}}
 
 >>> ReadabilityStats(text).flesch_reading_easy
 74.93500000000003
