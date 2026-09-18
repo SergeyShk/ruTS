@@ -5,6 +5,8 @@ from typing import NamedTuple
 
 import numpy as np
 
+from ..exceptions import ParameterError
+
 
 class Dispersion(NamedTuple):
     """
@@ -63,7 +65,7 @@ def dispersion(
             нет в тексте, - нулевая частота и nan
 
     Исключения:
-        ValueError: Если частей меньше двух или больше слов, или размеры частей
+        ParameterError: Если частей меньше двух или больше слов, или размеры частей
             не совпадают с текстом
     """
     sizes = _sizes(len(words), parts)
@@ -90,11 +92,13 @@ def dispersion(
 def _sizes(n_words: int, parts: int | Sequence[int]) -> list[int]:
     if isinstance(parts, int):
         if not 2 <= parts <= n_words:
-            raise ValueError("Частей должно быть не меньше двух и не больше числа слов")
+            raise ParameterError("Частей должно быть не меньше двух и не больше числа слов")
         return [len(part) for part in np.array_split(np.arange(n_words), parts)]
     sizes = [int(size) for size in parts]
     if len(sizes) < 2 or sum(sizes) != n_words or min(sizes) < 1:
-        raise ValueError("Размеры частей должны быть положительными и в сумме давать число слов")
+        raise ParameterError(
+            "Размеры частей должны быть положительными и в сумме давать число слов"
+        )
     return sizes
 
 

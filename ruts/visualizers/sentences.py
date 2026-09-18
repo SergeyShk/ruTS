@@ -7,6 +7,7 @@ from matplotlib.axes import Axes
 from razdel import sentenize
 from spacy.tokens import Doc
 
+from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..utils import iter_doc_words, iter_text_words
 
 
@@ -37,14 +38,15 @@ def sentence_lengths_plot(
         Axes: Оси с графиком
 
     Исключения:
-        TypeError: Если источник данных некорректен
-        ValueError: Если предложений нет или окно меньше единицы
+        SourceTypeError: Если источник данных некорректен
+        ParameterError: Если окно меньше единицы
+        SourceError: Если предложений нет
     """
     if window < 1:
-        raise ValueError("Окно должно быть не меньше единицы")
+        raise ParameterError("Окно должно быть не меньше единицы")
     lengths = sentence_lengths(source)
     if not lengths:
-        raise ValueError("В источнике данных отсутствуют предложения")
+        raise SourceError("В источнике данных отсутствуют предложения")
     if ax is None:
         _, ax = plt.subplots(figsize=(9, 4))
     numbers = np.arange(1, len(lengths) + 1)
@@ -83,7 +85,7 @@ def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
         list[int]: Длины предложений по порядку; предложения без слов пропускаются
 
     Исключения:
-        TypeError: Если источник данных некорректен
+        SourceTypeError: Если источник данных некорректен
     """
     if isinstance(source, str):
         starts = [start for start, _, _ in iter_text_words(source)]
@@ -105,4 +107,4 @@ def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
         lengths = list(source)
         if all(isinstance(length, Integral) for length in lengths):
             return [int(length) for length in lengths]
-    raise TypeError("Некорректный источник данных")
+    raise SourceTypeError("Некорректный источник данных")

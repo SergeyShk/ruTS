@@ -13,6 +13,7 @@ from .constants import (
     RU_LETTERS,
     SPACES,
 )
+from .exceptions import SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .utils import count_syllables, iter_doc_words
 
@@ -108,8 +109,8 @@ class BasicStats:
         count_words_by_letters: Количество слов с заданным минимальным числом букв
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(
@@ -138,9 +139,9 @@ class BasicStats:
                 words_extractor = WordsExtractor()
             words = words_extractor.extract(text)
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
 
         letters_per_word = tuple(len(word) for word in words)
         syllables_per_word = tuple(count_syllables(word) for word in words)

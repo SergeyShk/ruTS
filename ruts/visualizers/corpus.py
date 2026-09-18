@@ -9,6 +9,7 @@ from matplotlib.patches import Patch
 
 from ..corpus.collocations import Collocation
 from ..corpus.keyness import Keyword
+from ..exceptions import ParameterError, SourceError
 
 
 def dispersion_plot(words: Sequence[str], targets: Sequence[str], ax: Axes | None = None) -> Axes:
@@ -29,10 +30,10 @@ def dispersion_plot(words: Sequence[str], targets: Sequence[str], ax: Axes | Non
         Axes: Оси с графиком дисперсии
 
     Исключения:
-        ValueError: Если слов или целевых слов нет
+        SourceError: Если слов или целевых слов нет
     """
     if not words or not targets:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     positions = [
         [index for index, word in enumerate(words) if word == target] for target in targets
     ]
@@ -87,18 +88,19 @@ def keyness_plot(
         Axes: Оси с диаграммой
 
     Исключения:
-        ValueError: Если ключевых слов нет, поле неизвестно или top_n меньше единицы
+        ParameterError: Если поле неизвестно или top_n меньше единицы
+        SourceError: Если ключевых слов нет
     """
     if field not in Keyword._fields[1:]:
-        raise ValueError(f"Неизвестное поле ключевого слова: {field}")
+        raise ParameterError(f"Неизвестное поле ключевого слова: {field}")
     if top_n < 1:
-        raise ValueError("Количество слов должно быть больше 0")
+        raise ParameterError("Количество слов должно быть больше 0")
     top = _bars(positive, field, log, 1)[:top_n]
     bottom = _bars(negative, field, log, -1)[:top_n]
     keywords = top + bottom[::-1]
     if not keywords:
         raw = list(positive) + list(negative)
-        raise ValueError(
+        raise SourceError(
             "В источнике данных отсутствуют слова" if not raw else "Мера не определена"
         )
     if ax is None:
@@ -153,13 +155,14 @@ def collocation_network(collocations: Sequence[Collocation], top_n: int | None =
         Graph: Граф graphviz
 
     Исключения:
-        ValueError: Если коллокаций нет или top_n меньше единицы
+        ParameterError: Если top_n меньше единицы
+        SourceError: Если коллокаций нет
     """
     if top_n is not None and top_n < 1:
-        raise ValueError("Количество пар должно быть больше 0")
+        raise ParameterError("Количество пар должно быть больше 0")
     pairs = list(collocations)[:top_n] if top_n else list(collocations)
     if not pairs:
-        raise ValueError("В источнике данных отсутствуют коллокации")
+        raise SourceError("В источнике данных отсутствуют коллокации")
     frequencies: Counter[str] = Counter()
     for pair in pairs:
         frequencies[pair.left] = max(frequencies[pair.left], pair.freq_left)

@@ -4,6 +4,7 @@ from typing import NamedTuple
 from spacy.tokens import Doc
 
 from ..cohesion_stats import unit_text
+from ..exceptions import ParameterError, SourceTypeError
 from ..utils import iter_doc_units, iter_text_words, lemmatize, normalize_yo
 
 
@@ -58,8 +59,8 @@ def kwic(
         list[Concordance]: Вхождения по порядку в тексте
 
     Исключения:
-        TypeError: Если источник данных не строка и не объект Doc
-        ValueError: Если ключевое слово пустое или окно отрицательное
+        SourceTypeError: Если источник данных не строка и не объект Doc
+        ParameterError: Если ключевое слово пустое или окно отрицательное
     """
     if isinstance(source, Doc):
         text = source.text
@@ -72,12 +73,12 @@ def kwic(
         words = list(iter_text_words(source))
         pos = [""] * len(words)
     else:
-        raise TypeError("Некорректный источник данных")
+        raise SourceTypeError("Некорректный источник данных")
     pattern = keyword.split()
     if not pattern:
-        raise ValueError("Ключевое слово не задано")
+        raise ParameterError("Ключевое слово не задано")
     if window < 0:
-        raise ValueError("Окно не может быть отрицательным")
+        raise ParameterError("Окно не может быть отрицательным")
     normalized = [
         _normalize(word, by_lemma, ignore_case, word_pos)
         for (_, _, word), word_pos in zip(words, pos, strict=True)
@@ -129,10 +130,10 @@ def format_kwic(concordances: Sequence[Concordance], width: int = 40) -> str:
         str: Конкорданс в виде текста
 
     Исключения:
-        ValueError: Если ширина контекста меньше единицы
+        ParameterError: Если ширина контекста меньше единицы
     """
     if width < 1:
-        raise ValueError("Ширина контекста должна быть больше 0")
+        raise ParameterError("Ширина контекста должна быть больше 0")
     keyword_width = max((len(line.keyword) for line in concordances), default=0)
     return "\n".join(
         f"{line.left[-width:]:>{width}}  {line.keyword:<{keyword_width}}  {line.right[:width]}"

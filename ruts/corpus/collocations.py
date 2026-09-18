@@ -4,6 +4,7 @@ from math import log, log2, nan, sqrt
 from typing import NamedTuple
 
 from ..constants import COLLOCATION_MEASURES
+from ..exceptions import ParameterError
 
 
 class Collocation(NamedTuple):
@@ -67,14 +68,14 @@ def collocations(
             по алфавиту
 
     Исключения:
-        ValueError: Если мера неизвестна, окно или top_n меньше единицы
+        ParameterError: Если мера неизвестна, окно или top_n меньше единицы
     """
     if measure not in COLLOCATION_MEASURES:
-        raise ValueError(f"Неизвестная мера ассоциации: {measure}")
+        raise ParameterError(f"Неизвестная мера ассоциации: {measure}")
     if window < 1:
-        raise ValueError("Окно должно быть не меньше единицы")
+        raise ParameterError("Окно должно быть не меньше единицы")
     if top_n is not None and top_n < 1:
-        raise ValueError("Количество коллокаций должно быть больше 0")
+        raise ParameterError("Количество коллокаций должно быть больше 0")
     calc = MEASURES[measure]
     n_words = len(words)
     frequencies = Counter(words)

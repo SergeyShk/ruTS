@@ -13,7 +13,7 @@
 
 | Ресурс | Метрики | Доступность |
 | :----- | :------ | :---------- |
-| [`FreqDict`](../datasets/freq2011.md) - словарь Ляшевской и Шарова, 52 138 лемм с ipm, R, D | `coverage`, `mean_ipm*`, `mean_log_ipm*`, `mean_range`, `mean_dispersion`, `surprisal`, `perplexity` | загружается один раз командой `FreqDict().download()`; без словаря обращение к этим метрикам и `get_stats` вызывает `OSError` |
+| [`FreqDict`](../datasets/freq2011.md) - словарь Ляшевской и Шарова, 52 138 лемм с ipm, R, D | `coverage`, `mean_ipm*`, `mean_log_ipm*`, `mean_range`, `mean_dispersion`, `surprisal`, `perplexity` | загружается один раз командой `FreqDict().download()`; без словаря обращение к этим метрикам и `get_stats` вызывает `DatasetNotFoundError` (наследник `OSError`) |
 | Вшитый список 10 000 самых частых лемм интернет-корпуса Лидского университета (С. А. Шаров, зеркало [hingston/russian](https://github.com/hingston/russian), CC BY 2.5) | `p_top1000`, `p_top2000`, `p_top5000`, `p_top10000`, `p_beyond_top10000`, `band_coverage` | всегда |
 
 `mean_ipm_content` - признак FREQ2 формулы Соловьёва, Иванова, Солнышкиной 2023 года с частотностью, см. [`sis_grade_by_freq`](readability_stats.md#sis_grade_by_freq).

@@ -7,6 +7,8 @@ from typing import Any
 import pandas as pd
 from graphviz import Digraph
 
+from ..exceptions import SourceError, SourceTypeError
+
 
 class Direction(Enum):
     Forward = 1
@@ -144,7 +146,7 @@ class WordTree:
         draw: Отображение дерева слов в виде двунаправленного графа
 
     Исключения:
-        TypeError: Если передаваемое значение не является списком списков
+        SourceTypeError: Если передаваемое значение не является списком списков
     """
 
     def __init__(
@@ -155,7 +157,7 @@ class WordTree:
         max_per_n: int = 8,
     ):
         if not any(isinstance(text, (list, tuple)) for text in texts):
-            raise TypeError("Тексты должны быть представлены в виде списка списков слов")
+            raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
         self.texts = texts
         self.keyword = keyword
         self.max_n = max_n
@@ -271,7 +273,7 @@ def wordtree(
         plot (Digraph): Дерево слов
 
     Исключения:
-        ValueError: Если ключевое слово не найдено ни в одном из текстов
+        SourceError: Если ключевое слово не найдено ни в одном из текстов
     """
     wt = WordTree(
         texts,
@@ -281,5 +283,5 @@ def wordtree(
     )
     wt.search()
     if not wt.ngrams:
-        raise ValueError("Ключевое слово не найдено")
+        raise SourceError("Ключевое слово не найдено")
     return wt.draw(**kwargs)

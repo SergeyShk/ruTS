@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import os
 import shutil
 import tarfile
@@ -22,6 +23,9 @@ from .constants import (
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
+from .exceptions import DownloadError, SourceTypeError
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=1)
@@ -270,13 +274,13 @@ def to_path(path: str | Path) -> Path:
         Path: Объект Path
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Path
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Path
     """
     if isinstance(path, str):
         return Path(path)
     if isinstance(path, Path):
         return path
-    raise TypeError("Некорректно указан путь")
+    raise SourceTypeError("Некорректно указан путь")
 
 
 def download_file(
@@ -298,7 +302,7 @@ def download_file(
         str: Путь к загруженному файлу
 
     Исключения:
-        RuntimeError: Если не удалось загрузить файл
+        DownloadError: Если не удалось загрузить файл
     """
     dirpath = to_path(dirpath)
     dirpath.mkdir(parents=True, exist_ok=True)
@@ -306,17 +310,17 @@ def download_file(
         filename = Path(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path).name
     filepath = dirpath.resolve() / filename
     if filepath.is_file() and force is False:
-        print(f"Файл {filepath} уже загружен")
+        logger.info("Файл %s уже загружен", filepath)
         return ""
     try:
-        print(f"Загрузка файла {url}...")
+        logger.info("Загрузка файла %s", url)
         req = urllib.request.Request(url)
         with urllib.request.urlopen(req) as response, filepath.open("wb") as out_file:
             shutil.copyfileobj(response, out_file)
     except Exception as e:
-        raise RuntimeError("Не удалось загрузить файл") from e
+        raise DownloadError("Не удалось загрузить файл") from e
     else:
-        print(f"Файл успешно загружен: {filepath}")
+        logger.info("Файл загружен: %s", filepath)
     return str(filepath)
 
 
@@ -345,9 +349,9 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     is_zip = zipfile.is_zipfile(archive_path)
     is_tar = tarfile.is_tarfile(archive_path)
     if not is_zip and not is_tar:
-        print(f"Файл {archive_path} не является архивом в формате ZIP или TAR")
+        logger.warning("Файл %s не является архивом в формате ZIP или TAR", archive_path)
         return str(extract_path)
-    print(f"Извлечение файлов из архива {archive_path}...")
+    logger.info("Извлечение файлов из архива %s", archive_path)
     if is_zip:
         with zipfile.ZipFile(archive_path, mode="r") as zip_file:
             zip_file.extractall(extract_path)

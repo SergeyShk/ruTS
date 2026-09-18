@@ -14,6 +14,7 @@ from .constants import (
     SUBORDINATING_CONJUNCTIONS,
     UD_PERSONS,
 )
+from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
 from .utils import get_morph_analyzer, iter_doc_units, parse_word
 
@@ -90,8 +91,8 @@ class MorphStats:
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
     """
 
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
@@ -112,9 +113,9 @@ class MorphStats:
             self.words = words_extractor.extract(source)
             features = [word_to_ud(word) for word in self.words]
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not self.words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
 
         self.tags = tuple(format_features(word_features) for word_features in features)
         self.pos = tuple(word_features["pos"] for word_features in features)
@@ -216,14 +217,16 @@ class MorphStats:
             bool: Результат проверки
 
         Исключения:
-            KeyError: Если выбранная статистика отсутствует в справочнике
+            UnknownStatError: Если выбранная статистика отсутствует в справочнике
         """
         for arg in args:
             if not MORPHOLOGY_STATS_DESC.get(arg):
                 print(
                     f"Реализованные морфологичесские статистики: {tuple(MORPHOLOGY_STATS_DESC.keys())}"
                 )
-                raise KeyError(arg + " отсутствует в справочнике морфологических статистик")
+                raise UnknownStatError(
+                    arg + " отсутствует в справочнике морфологических статистик"
+                )
         return True
 
 

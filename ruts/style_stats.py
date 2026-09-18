@@ -14,6 +14,7 @@ from .constants import (
     STOPWORD_POS,
     STYLE_STATS_DESC,
 )
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import find_phrases, is_verbal_noun, iter_doc_words, parse_word, safe_divide
 
@@ -90,9 +91,9 @@ class StyleStats:
         print_stats: Отображение вычисленных метрик стиля текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
-        ValueError: Если количество самых частых слов не положительно
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если количество самых частых слов не положительно
     """
 
     def __init__(
@@ -115,11 +116,11 @@ class StyleStats:
                 self.words = words_extractor.extract(source)
                 self.forms = WordsExtractor(lowercase=True).extract(source)
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not self.words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         if top_n < 1:
-            raise ValueError("Количество самых частых слов должно быть больше 0")
+            raise ParameterError("Количество самых частых слов должно быть больше 0")
         self.stopwords = tuple(stopwords) if stopwords is not None else None
         self.top_n = top_n
         self.cliches_list = tuple(cliches) if cliches is not None else OFFICIALESE_CLICHES

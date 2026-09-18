@@ -8,6 +8,7 @@ from scipy.stats import chi2 as chi2_distribution
 
 from ..constants import KEYNESS_MEASURES
 from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
+from ..exceptions import ParameterError, SourceError
 from ..utils import normalize_yo
 
 ZERO_ADJUSTMENT = 0.5
@@ -84,13 +85,13 @@ def keyness(
             по убыванию частоты и по алфавиту; слова с неопределенной мерой в конце
 
     Исключения:
-        ValueError: Если мера неизвестна, top_n меньше единицы или один
-            из корпусов пуст
+        ParameterError: Если мера неизвестна или top_n меньше единицы
+        SourceError: Если один из корпусов пуст
     """
     if measure not in KEYNESS_MEASURES:
-        raise ValueError(f"Неизвестная мера ключевости: {measure}")
+        raise ParameterError(f"Неизвестная мера ключевости: {measure}")
     if top_n is not None and top_n < 1:
-        raise ValueError("Количество ключевых слов должно быть больше 0")
+        raise ParameterError("Количество ключевых слов должно быть больше 0")
     if isinstance(reference, FreqDict):
         counts_target = _count(target, normalize=True)
         size_reference = float(CORPUS_SIZE)
@@ -103,7 +104,7 @@ def keyness(
         size_reference = float(sum(counts_reference.values()))
     size_target = float(sum(counts_target.values()))
     if not size_target or not size_reference:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     calc = MEASURES[measure]
     rows = []
     words = set(counts_target) | set(counts_reference)

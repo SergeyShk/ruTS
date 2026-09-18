@@ -25,6 +25,7 @@ from ..constants import (
     PARENTHETICALS,
     RU_LETTER_FREQUENCIES,
 )
+from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..lexical_stats import get_rank
 from ..phon_stats import CONSONANTS, LETTERS, VOWELS
 from ..style_stats import is_parenthetical, is_stopword
@@ -174,10 +175,10 @@ class HighlightedText:
         to_html: Получение HTML-разметки подсвеченного текста
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
-        ValueError: Если задан неизвестный или недоступный источнику слой
-        ValueError: Если пороги слоев заданы некорректно
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если задан неизвестный или недоступный источнику слой
+        ParameterError: Если пороги слоев заданы некорректно
     """
 
     def __init__(
@@ -201,15 +202,15 @@ class HighlightedText:
             sents = get_text_sents(source, words)
             doc = None
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         if long_sent_word_factor < 1:
-            raise ValueError("Количество слов в длинном предложении должно быть больше 0")
+            raise ParameterError("Количество слов в длинном предложении должно быть больше 0")
         if complex_syl_factor < 1:
-            raise ValueError("Количество слогов в сложном слове должно быть больше 0")
+            raise ParameterError("Количество слогов в сложном слове должно быть больше 0")
         if not 0 < alliteration_threshold <= 1:
-            raise ValueError("Порог аллитерации должен быть в интервале (0, 1]")
+            raise ParameterError("Порог аллитерации должен быть в интервале (0, 1]")
         available = [
             layer
             for layer in HIGHLIGHT_LAYERS_DESC
@@ -350,7 +351,7 @@ def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) 
         tuple[str]: Слои в порядке отрисовки
 
     Исключения:
-        ValueError: Если задан неизвестный или недоступный источнику слой
+        ParameterError: Если задан неизвестный или недоступный источнику слой
     """
     if layers is None:
         return tuple(layer for layer in HIGHLIGHT_DEFAULT_LAYERS if layer in available)
@@ -360,14 +361,14 @@ def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) 
         layers = [layers]
     for layer in layers:
         if layer not in HIGHLIGHT_LAYERS_DESC:
-            raise ValueError(f"Неизвестный слой подсветки: {layer}")
+            raise ParameterError(f"Неизвестный слой подсветки: {layer}")
         if layer not in available:
             requirement = (
                 "границ предложений в объекте Doc"
                 if layer == "long_sents"
                 else "объекта Doc с разбором зависимостей"
             )
-            raise ValueError(f"Слой {layer} требует {requirement}")
+            raise ParameterError(f"Слой {layer} требует {requirement}")
     return tuple(layer for layer in HIGHLIGHT_LAYERS_DESC if layer in layers)
 
 

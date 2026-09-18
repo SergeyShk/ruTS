@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib.axes import Axes
 
 from ..diversity_stats import calc_frequency_spectrum, fit_heaps, vocabulary_growth
+from ..exceptions import SourceError
 
 
 def heaps_plot(words: Sequence[str], ax: Axes | None = None) -> Axes:
@@ -23,10 +24,10 @@ def heaps_plot(words: Sequence[str], ax: Axes | None = None) -> Axes:
         Axes: Оси с графиком
 
     Исключения:
-        ValueError: Если слов меньше двух
+        SourceError: Если слов меньше двух
     """
     if len(words) < 2:
-        raise ValueError("Для кривой роста словаря нужно не меньше двух слов")
+        raise SourceError("Для кривой роста словаря нужно не меньше двух слов")
     if ax is None:
         _, ax = plt.subplots()
     lengths = np.arange(1, len(words) + 1)
@@ -63,10 +64,10 @@ def frequency_spectrum_plot(words: Sequence[str], ax: Axes | None = None) -> Axe
         Axes: Оси с графиком
 
     Исключения:
-        ValueError: Если слов нет
+        SourceError: Если слов нет
     """
     if not words:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     if ax is None:
         _, ax = plt.subplots()
     spectrum = calc_frequency_spectrum(words)

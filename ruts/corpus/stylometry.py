@@ -9,6 +9,7 @@ from scipy.spatial.distance import jensenshannon, pdist, squareform
 from spacy.tokens import Doc
 
 from ..constants import DELTA_VARIANTS, FUNCTION_UD_POS
+from ..exceptions import ParameterError, SourceError
 from ..morph_stats import tag_to_ud_pos
 from ..utils import is_punctuation, iter_doc_units, parse_word
 
@@ -58,17 +59,18 @@ def frequency_table(
         DataFrame: Таблица относительных частот
 
     Исключения:
-        ValueError: Если корпус пуст, в нем есть пустой текст, n_mfw меньше
-            единицы или после отсева не осталось единиц
+        SourceError: Если корпус пуст, в нем есть пустой текст или после отсева
+            не осталось единиц
+        ParameterError: Если n_mfw меньше единицы или culling вне [0, 1]
     """
     if not corpus:
-        raise ValueError("В корпусе нет текстов")
+        raise SourceError("В корпусе нет текстов")
     if any(len(units) == 0 for units in corpus.values()):
-        raise ValueError("В корпусе есть текст без единиц")
+        raise SourceError("В корпусе есть текст без единиц")
     if not 0 <= culling <= 1:
-        raise ValueError("Доля текстов для отсева должна быть в пределах от 0 до 1")
+        raise ParameterError("Доля текстов для отсева должна быть в пределах от 0 до 1")
     if n_mfw is not None and n_mfw < 1:
-        raise ValueError("Число самых частых единиц должно быть больше 0")
+        raise ParameterError("Число самых частых единиц должно быть больше 0")
     rows = {
         name: {unit: count / len(units) for unit, count in Counter(units).items()}
         for name, units in corpus.items()
@@ -86,7 +88,7 @@ def frequency_table(
     if n_mfw:
         selected = selected[:n_mfw]
     if not selected:
-        raise ValueError("После отсева не осталось единиц")
+        raise SourceError("После отсева не осталось единиц")
     columns = {unit: [row.get(unit, 0.0) for row in rows.values()] for unit in selected}
     return pd.DataFrame(columns, index=list(rows))
 
@@ -147,13 +149,13 @@ def delta(
         DataFrame: Симметричная матрица расстояний с именами текстов
 
     Исключения:
-        ValueError: Если вариант неизвестен, текстов меньше трех или n_mfw
-            меньше единицы
+        ParameterError: Если вариант неизвестен или n_mfw меньше единицы
+        SourceError: Если текстов меньше трех
     """
     if variant not in DELTA_VARIANTS:
-        raise ValueError(f"Неизвестный вариант дельты: {variant}")
+        raise ParameterError(f"Неизвестный вариант дельты: {variant}")
     if len(corpus) < 3:
-        raise ValueError("Для расстояний нужно не меньше трех текстов")
+        raise SourceError("Для расстояний нужно не меньше трех текстов")
     scores = z_scores(frequency_table(corpus, n_mfw, culling))
     n_units = scores.shape[1]
     values = scores.to_numpy()
@@ -206,17 +208,17 @@ def zeta(
             логарифмической Zeta и по алфавиту
 
     Исключения:
-        ValueError: Если размер сегмента или top_n меньше единицы или один
-            из корпусов пуст
+        ParameterError: Если размер сегмента или top_n меньше единицы
+        SourceError: Если один из корпусов пуст
     """
     if segment_size < 1:
-        raise ValueError("Размер сегмента должен быть больше 0")
+        raise ParameterError("Размер сегмента должен быть больше 0")
     if top_n is not None and top_n < 1:
-        raise ValueError("Количество слов должно быть больше 0")
+        raise ParameterError("Количество слов должно быть больше 0")
     presence_target, n_target = _segment_presence(target, segment_size)
     presence_comparison, n_comparison = _segment_presence(comparison, segment_size)
     if not n_target or not n_comparison:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     scores = []
     for word in set(presence_target) | set(presence_comparison):
         dp_target = presence_target.get(word, 0) / n_target
@@ -272,16 +274,17 @@ def kilgarriff_chi2(words_a: Sequence[str], words_b: Sequence[str], n_mfw: int =
         float: Значение хи-квадрат
 
     Исключения:
-        ValueError: Если один из корпусов пуст или n_mfw меньше единицы
+        ParameterError: Если n_mfw меньше единицы
+        SourceError: Если один из корпусов пуст
     """
     if n_mfw < 1:
-        raise ValueError("Число самых частых слов должно быть больше 0")
+        raise ParameterError("Число самых частых слов должно быть больше 0")
     counts_a = Counter(words_a)
     counts_b = Counter(words_b)
     size_a = sum(counts_a.values())
     size_b = sum(counts_b.values())
     if not size_a or not size_b:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     joint = counts_a + counts_b
     words = sorted(joint, key=lambda word: (-joint[word], word))[:n_mfw]
     total = size_a + size_b
@@ -309,10 +312,10 @@ def mendenhall_curve(words: Sequence[str]) -> dict[int, float]:
         dict[int, float]: Доли слов по длине, по возрастанию длины
 
     Исключения:
-        ValueError: Если слов нет
+        SourceError: Если слов нет
     """
     if not words:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     counts = Counter(len(word) for word in words)
     return {length: counts[length] / len(words) for length in sorted(counts)}
 
@@ -363,7 +366,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
         dict[str, float]: Доли по частям речи из FUNCTION_UD_POS
 
     Исключения:
-        ValueError: Если слов нет
+        SourceError: Если слов нет
     """
     if isinstance(source, Doc):
         units = list(iter_doc_units(source))
@@ -375,7 +378,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
     else:
         tags = [_word_pos(word) for word in source if not is_punctuation(word)]
     if not tags:
-        raise ValueError("В источнике данных отсутствуют слова")
+        raise SourceError("В источнике данных отсутствуют слова")
     counts = Counter(tags)
     return {pos: counts[pos] / len(tags) for pos in FUNCTION_UD_POS}
 

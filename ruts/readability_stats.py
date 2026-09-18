@@ -18,6 +18,7 @@ from .constants import (
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
 )
+from .exceptions import ParameterError, SourceError
 from .extractors import SentsExtractor, WordsExtractor
 
 
@@ -92,8 +93,8 @@ class ReadabilityStats:
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
     Исключения:
-        ValueError: Если в источнике данных отсутствуют слова или предложения
-        ValueError: Если указан неизвестный пресет коэффициентов
+        SourceError: Если в источнике данных отсутствуют слова или предложения
+        ParameterError: Если указан неизвестный пресет коэффициентов
     """
 
     def __init__(
@@ -104,7 +105,7 @@ class ReadabilityStats:
         preset: str = "plainrussian",
     ):
         if preset not in READABILITY_PRESETS:
-            raise ValueError(
+            raise ParameterError(
                 f"Неизвестный пресет коэффициентов: {preset}. "
                 f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
             )
@@ -115,7 +116,7 @@ class ReadabilityStats:
         else:
             self.bs = BasicStats(source, sents_extractor, words_extractor)
         if not self.bs.n_sents:
-            raise ValueError("В источнике данных отсутствуют предложения")
+            raise SourceError("В источнике данных отсутствуют предложения")
 
     @property
     def flesch_kincaid_grade(self) -> float:
@@ -221,11 +222,11 @@ class ReadabilityStats:
             str: Класс школы и возраст читателя
 
         Исключения:
-            ValueError: Если указанная метрика не является формулой класса
+            ParameterError: Если указанная метрика не является формулой класса
         """
         grade_stats = ("consensus_grade", *READABILITY_GRADE_STATS)
         if stat not in grade_stats:
-            raise ValueError(
+            raise ParameterError(
                 f"Метрика {stat} не является формулой класса. Формулы класса: {grade_stats}"
             )
         return grade_to_age(getattr(self, stat))
@@ -253,10 +254,10 @@ class ReadabilityStats:
             tuple[float, float]: Время чтения в минутах при верхней и нижней границе нормы
 
         Исключения:
-            ValueError: Если указана неизвестная норма скорости чтения
+            ParameterError: Если указана неизвестная норма скорости чтения
         """
         if norm not in READING_SPEED_NORMS:
-            raise ValueError(
+            raise ParameterError(
                 f"Неизвестная норма скорости чтения: {norm}. "
                 f"Доступные нормы: {tuple(READING_SPEED_NORMS)}"
             )
@@ -276,10 +277,10 @@ class ReadabilityStats:
             float: Значение формулы
 
         Исключения:
-            ValueError: Если указана неизвестная ступень обучения
+            ParameterError: Если указана неизвестная ступень обучения
         """
         if stage not in SIS_GRADE_STAGES:
-            raise ValueError(
+            raise ParameterError(
                 f"Неизвестная ступень обучения: {stage}. "
                 f"Доступные ступени: {tuple(SIS_GRADE_STAGES)}"
             )
@@ -301,14 +302,14 @@ class ReadabilityStats:
             float: Значение формулы
 
         Исключения:
-            ValueError: Если указана неизвестная ступень обучения
+            ParameterError: Если указана неизвестная ступень обучения
         """
         if stage is None:
             return calc_sis_grade_freq(
                 self.bs.n_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
             )
         if stage not in SIS_GRADE_FREQ_STAGES:
-            raise ValueError(
+            raise ParameterError(
                 f"Неизвестная ступень обучения: {stage}. "
                 f"Доступные ступени: {tuple(SIS_GRADE_FREQ_STAGES)}"
             )
@@ -829,13 +830,13 @@ def calc_consensus_grade(
         float: Сводный класс
 
     Исключения:
-        ValueError: Если список значений пуст
+        ParameterError: Если список значений пуст
     """
     values = [float(floor(grade + 0.5)) for grade in grades]
     if flesch_reading_easy is not None:
         values.append(flesch_reading_easy_to_grade(flesch_reading_easy))
     if not values:
-        raise ValueError("Список формул класса пуст")
+        raise ParameterError("Список формул класса пуст")
     return float(median(values))
 
 
@@ -895,8 +896,8 @@ def calc_reading_time(n_words: int, wpm: int = READING_SPEED_WPM) -> float:
         float: Время чтения в минутах
 
     Исключения:
-        ValueError: Если скорость чтения не положительна
+        ParameterError: Если скорость чтения не положительна
     """
     if wpm <= 0:
-        raise ValueError("Скорость чтения должна быть больше 0")
+        raise ParameterError("Скорость чтения должна быть больше 0")
     return n_words / wpm

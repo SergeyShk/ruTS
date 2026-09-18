@@ -15,6 +15,7 @@ from .constants import (
     RU_MARKS,
     RU_VOWELS,
 )
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import iter_doc_words, safe_divide
 
@@ -96,9 +97,9 @@ class PhonStats:
         print_stats: Отображение вычисленных фоностатистик текста с описанием на экран
 
     Исключения:
-        TypeError: Если передаваемое значение не является строкой или объектом Doc
-        ValueError: Если в источнике данных отсутствуют слова
-        ValueError: Если размер окна меньше 2
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если размер окна меньше 2
     """
 
     def __init__(
@@ -116,11 +117,11 @@ class PhonStats:
                 words_extractor = WordsExtractor(lowercase=True)
             words = tuple(word.lower() for word in words_extractor.extract(text))
         else:
-            raise TypeError("Некорректный источник данных")
+            raise SourceTypeError("Некорректный источник данных")
         if not words:
-            raise ValueError("В источнике данных отсутствуют слова")
+            raise SourceError("В источнике данных отсутствуют слова")
         if window_len < 2:
-            raise ValueError("Размер окна должен быть не меньше 2")
+            raise ParameterError("Размер окна должен быть не меньше 2")
         self.words = words
         self.window_len = window_len
         self.syllables = tuple(tuple(syllabify(word)) for word in words)

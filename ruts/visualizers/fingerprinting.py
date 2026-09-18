@@ -7,6 +7,7 @@ from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 
 from ..diversity_stats import calc_ttr
+from ..exceptions import SourceTypeError
 
 
 def fingerprinting(
@@ -44,10 +45,10 @@ def fingerprinting(
         Axes: Оси с визуализацией литературной дактилоскопии
 
     Исключения:
-        TypeError: Если передаваемое значение не является списком списков
+        SourceTypeError: Если передаваемое значение не является списком списков
     """
     if not any(isinstance(text, (list, tuple)) for text in texts):
-        raise TypeError("Тексты должны быть представлены в виде списка списков слов")
+        raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
     metrics = {}
     metric_func = metric if isinstance(metric, FunctionType) else calc_ttr
     for i, text in enumerate(texts):

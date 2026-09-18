@@ -30,6 +30,15 @@ pip install ruts
 !!! warning "Graphviz"
     Пакет `graphviz` из зависимостей - только обертка: для отрисовки [дерева слов](visualizers/word_tree.md) и [сети коллокаций](visualizers/corpus.md#collocation_network) нужны исполняемые файлы [Graphviz](https://graphviz.org/download/) (`brew install graphviz`, `apt install graphviz`, `conda install graphviz`), иначе `render()` и показ графа в Jupyter завершатся ошибкой `ExecutableNotFound`. Остальному функционалу они не нужны.
 
+!!! tip "Быстрый морфологический разбор"
+    Для корпусов ставьте библиотеку с extra `fast`:
+
+    ``` bash
+    pip install "ruts[fast]"
+    ```
+
+    Оно добавляет C-расширение [DAWG2](https://github.com/pymorphy2-fork/DAWG) для pymorphy3 (только CPython, колеса есть для Linux, macOS и Windows): разбор словоформ ускоряется примерно в 5 раз (175 против 34 тысяч словоформ в секунду), `MorphStats` на тексте в 70 тысяч слов - на треть, потому что разбор кэшируется по словоформе и остальное время уходит на подсчет. Без extra библиотека работает так же, только медленнее.
+
 !!! note "Примечание"
     С подробным руководством по работе с менеджером пакетов `pip` можно ознакомиться на [сайте разработчика](https://pip.pypa.io/en/stable/).
 

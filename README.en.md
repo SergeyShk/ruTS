@@ -69,6 +69,8 @@ Working with spaCy components and syntactic statistics requires the Russian-lang
 python -m spacy download ru_core_news_sm
 ```
 
+For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pymorphy3 (CPython only) - morphological analysis of word forms gets about 5x faster.
+
 ## Quick start
 
 ```python
@@ -680,7 +682,7 @@ One can work solely with texts (without title info) or texts with metadata. Ther
  'year': 1963}
 ```
 
-A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `OSError` with a hint. The poetry corpus and the classics collection are downloaded from their original sources at pinned commits with SHA-256 verification.
+A dataset is downloaded by the `download()` method and cached locally, a repeated call downloads nothing; before the download `get_texts()` and `get_records()` raise `DatasetNotFoundError` (a subclass of `OSError`) with a hint. The poetry corpus and the classics collection are downloaded from their original sources at pinned commits with SHA-256 verification.
 
 </details>
 
@@ -800,6 +802,8 @@ make lint        # ruff + mypy
 
 Run `make help` for the full list of commands.
 
+The installed version is `ruts.__version__`. All exceptions inherit `ruts.RutsError` and one of the built-in classes (`SourceError` and `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), so `except ValueError` keeps working. Messages about downloading and extracting datasets go to the `ruts` logger (`logging.getLogger("ruts")`) and are silent by default.
+
 Before submitting changes, install the hooks that run the linters on commit and the tests on push:
 
 ```bash
@@ -822,6 +826,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   components.py - spaCy components
     *   constants.py - main constants
     *   diversity_stats.py - lexical diversity metrics
+    *   exceptions.py - library exceptions
     *   extractors.py - tools for object extraction from a text
     *   lexical_stats.py - lexical sophistication statistics
     *   morph_stats.py - morphological statistics
