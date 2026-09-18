@@ -31,6 +31,9 @@ SOUNDS = VOWELS | CONSONANTS
 LETTERS = SOUNDS | MARKS
 IOTATED = frozenset("еёюя")
 CACHE_SIZE = 1 << 16
+SOUNDS_ORDER = sorted(SOUNDS)
+CONSONANT_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in CONSONANTS]
+VOWEL_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in VOWELS]
 
 
 class PhonStats:
@@ -129,7 +132,14 @@ class PhonStats:
         self.window_len = window_len
         self.syllables = tuple(_syllables(word) for word in words)
 
-        letters = Counter("".join(words))
+        counts = Counter(words)
+        letters: Counter[str] = Counter()
+        syllables: Counter[str] = Counter()
+        for word, count in counts.items():
+            for letter, number in Counter(word).items():
+                letters[letter] += number * count
+            for syllable in _syllables(word):
+                syllables[syllable] += count
         self.n_vowels = sum(letters[letter] for letter in VOWELS)
         self.n_sonorants = sum(letters[letter] for letter in SONORANTS)
         self.n_voiced = sum(letters[letter] for letter in VOICED)
@@ -137,14 +147,11 @@ class PhonStats:
         self.n_consonants = self.n_sonorants + self.n_voiced + self.n_voiceless
         self.n_marks = sum(letters[letter] for letter in MARKS)
         n_sounds = self.n_vowels + self.n_consonants
-        self.c_clusters = calc_consonant_clusters(words)
-        self.c_syllable_patterns = dict(
-            sorted(
-                Counter(
-                    cv_pattern(syllable) for word in self.syllables for syllable in word
-                ).items()
-            )
-        )
+        self.c_clusters = _consonant_clusters(counts)
+        patterns: Counter[str] = Counter()
+        for syllable, count in syllables.items():
+            patterns[cv_pattern(syllable)] += count
+        self.c_syllable_patterns = dict(sorted(patterns.items()))
 
         self.p_vowels = safe_divide(self.n_vowels, n_sounds)
         self.p_sonorants = safe_divide(self.n_sonorants, n_sounds)
@@ -155,20 +162,20 @@ class PhonStats:
         self.p_heavy_clusters = safe_divide(
             sum(count for size, count in self.c_clusters.items() if size >= 3), n_clusters
         )
-        self.p_hiatus = calc_hiatus(words) / len(words)
-        self.cv_entropy = calc_cv_entropy(words)
+        self.p_hiatus = _hiatus(counts) / len(words)
+        self.cv_entropy = _cv_entropy(counts)
         self.hardness = safe_divide(self.n_voiceless, self.n_vowels + self.n_sonorants, nan)
-        self.alliteration = calc_alliteration(words, window_len)
-        self.assonance = calc_assonance(words, window_len)
-        all_syllables = Counter(syllable for word in self.syllables for syllable in word)
-        n_syllables = sum(all_syllables.values())
+        windows = _letter_windows(words, SOUNDS_ORDER, window_len)
+        self.alliteration = _repetition_index(windows, CONSONANT_COLUMNS, len(words), window_len)
+        self.assonance = _repetition_index(windows, VOWEL_COLUMNS, len(words), window_len)
+        n_syllables = sum(syllables.values())
         self.p_open_syllables = safe_divide(
-            sum(count for syllable, count in all_syllables.items() if is_open_syllable(syllable)),
+            sum(count for syllable, count in syllables.items() if is_open_syllable(syllable)),
             n_syllables,
             nan,
         )
         self.mean_syllable_len = safe_divide(
-            sum(len(syllable) * count for syllable, count in all_syllables.items()),
+            sum(len(syllable) * count for syllable, count in syllables.items()),
             n_syllables,
             nan,
         )
@@ -302,8 +309,13 @@ def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
     Вывод:
         dict[int, int]: Количество кластеров каждой длины
     """
+    return _consonant_clusters(Counter(text))
+
+
+def _consonant_clusters(counts: Counter[str]) -> dict[int, int]:
+    """Распределение кластеров по длине по счетчику словоформ"""
     counter: Counter[int] = Counter()
-    for word, count in Counter(text).items():
+    for word, count in counts.items():
         for size in _clusters(word):
             counter[size] += count
     return dict(sorted(counter.items()))
@@ -344,11 +356,16 @@ def calc_hiatus(text: Sequence[str]) -> int:
     Вывод:
         int: Количество зияний
     """
-    return sum(_hiatus(word) * count for word, count in Counter(text).items())
+    return _hiatus(Counter(text))
+
+
+def _hiatus(counts: Counter[str]) -> int:
+    """Число зияний по счетчику словоформ"""
+    return sum(_word_hiatus(word) * count for word, count in counts.items())
 
 
 @lru_cache(maxsize=CACHE_SIZE)
-def _hiatus(word: str) -> int:
+def _word_hiatus(word: str) -> int:
     """Число зияний гласных в слове с кэшем по слову"""
     hiatus = 0
     previous_vowel = False
@@ -380,7 +397,15 @@ def calc_cv_entropy(text: Sequence[str]) -> float:
     Вывод:
         float: Значение энтропии, nan если в тексте нет слов с буквами
     """
-    patterns = Counter(pattern for word in text if (pattern := cv_pattern(word)))
+    return _cv_entropy(Counter(text))
+
+
+def _cv_entropy(counts: Counter[str]) -> float:
+    """Энтропия CV-шаблонов по счетчику словоформ"""
+    patterns: Counter[str] = Counter()
+    for word, count in counts.items():
+        if pattern := cv_pattern(word):
+            patterns[pattern] += count
     total = sum(patterns.values())
     if not total:
         return nan
@@ -392,24 +417,50 @@ def _calc_repetition_index(text: Sequence[str], letters: frozenset[str], window_
     Отношение наблюдаемого числа окон с повтором буквы в разных словах к ожидаемому
     при независимом распределении букв по словам
     """
-    n_words = len(text)
-    if n_words < window_len:
-        return nan
-    n_windows = n_words - window_len + 1
     alphabet = sorted(letters)
-    lowered = [word.lower() for word in text]
-    unique = list(dict.fromkeys(lowered))
+    windows = _letter_windows([word.lower() for word in text], alphabet, window_len)
+    return _repetition_index(windows, list(range(len(alphabet))), len(text), window_len)
+
+
+def _letter_windows(
+    words: Sequence[str], alphabet: Sequence[str], window_len: int
+) -> tuple[np.ndarray, np.ndarray] | None:
+    """
+    Число слов с каждой буквой в каждом окне и во всем тексте
+
+    Описание:
+        Матрица «словоформа × буква» индексируется словами текста, кумулятивные суммы
+        по словам дают счетчики окон разностью со сдвигом на окно; None для текста
+        короче окна
+    """
+    n_words = len(words)
+    if n_words < window_len:
+        return None
+    unique = list(dict.fromkeys(words))
     presence = np.array(
         [[letter in word for letter in alphabet] for word in unique], dtype=np.int32
     ).reshape(len(unique), len(alphabet))
     indices = dict(zip(unique, range(len(unique)), strict=True))
-    rows = np.fromiter(map(indices.__getitem__, lowered), dtype=np.int64, count=n_words)
+    rows = np.fromiter(map(indices.__getitem__, words), dtype=np.int64, count=n_words)
     cumulative = np.zeros((n_words + 1, len(alphabet)), dtype=np.int32)
     np.cumsum(presence[rows], axis=0, out=cumulative[1:])
-    in_window = cumulative[window_len:] - cumulative[:-window_len]
-    observed = int((in_window >= 2).sum())
+    return cumulative[window_len:] - cumulative[:-window_len], cumulative[-1]
+
+
+def _repetition_index(
+    windows: tuple[np.ndarray, np.ndarray] | None,
+    columns: Sequence[int],
+    n_words: int,
+    window_len: int,
+) -> float:
+    """Индекс повторов по счетчикам окон для столбцов выбранных букв"""
+    if windows is None:
+        return nan
+    in_window, totals = windows
+    n_windows = n_words - window_len + 1
+    observed = int((in_window[:, columns] >= 2).sum())
     expected = 0.0
-    for count in cumulative[-1]:
+    for count in totals[columns]:
         if not count:
             continue
         p = int(count) / n_words
