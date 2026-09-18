@@ -21,7 +21,7 @@
   <a href="https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml"><img src="https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml/badge.svg" alt="Build"></a>
   <a href="https://codecov.io/gh/SergeyShk/ruTS"><img src="https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg" alt="Coverage"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
-  <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="License"></a>
+  <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="License"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Downloads">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-demo-blue" alt="Demo on Hugging Face Spaces"></a>
 </p>
@@ -814,7 +814,7 @@ uv run pre-commit install
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. Before submitting a pull request, please make sure that `make lint` and `make test` pass.
+Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. The workflow, the checks to run before submitting a pull request and how to shape the changes are described in [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md) (in Russian); the rules of conduct are in the [code of conduct](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
 
 <details>
 <summary><b>Project structure</b></summary>
@@ -873,11 +873,11 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 
 ## License
 
-[MIT](LICENSE.txt)
+[MIT](https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt)
 
 ## Citation
 
-Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library.
+Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library. The same metadata is in [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub shows it under the "Cite this repository" button.
 
 ```bibtex
 @software{ruTS,

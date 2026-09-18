@@ -21,7 +21,7 @@
   <a href="https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml"><img src="https://github.com/SergeyShk/ruTS/actions/workflows/ci.yml/badge.svg" alt="Сборка"></a>
   <a href="https://codecov.io/gh/SergeyShk/ruTS"><img src="https://codecov.io/gh/SergeyShk/ruTS/branch/master/graph/badge.svg" alt="Покрытие"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
-  <a href="LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="Лицензия"></a>
+  <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="Лицензия"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Загрузки">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-демо-blue" alt="Демо на Hugging Face Spaces"></a>
 </p>
@@ -814,7 +814,7 @@ uv run pre-commit install
 
 ## Участие в проекте
 
-Баг-репорты, идеи и пул-реквесты приветствуются - [issues](https://github.com/SergeyShk/ruTS/issues) открыты. Перед отправкой пул-реквеста убедитесь, что `make lint` и `make test` проходят без ошибок.
+Баг-репорты, идеи и пул-реквесты приветствуются - [issues](https://github.com/SergeyShk/ruTS/issues) открыты. Как устроен процесс, что проверить перед отправкой пул-реквеста и как оформить изменения - в [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md); правила общения - в [кодексе поведения](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
 
 <details>
 <summary><b>Структура проекта</b></summary>
@@ -873,11 +873,11 @@ uv run pre-commit install
 
 ## Лицензия
 
-[MIT](LICENSE.txt)
+[MIT](https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt)
 
 ## Цитирование
 
-Пожалуйста, используйте следующую BibTeX нотацию для цитирования библиотеки **ruTS**, если вы используете ее в своих исследованиях или программах. Цитирование является очень полезным для дальнейшей разработки и поддержки данного проекта.
+Пожалуйста, используйте следующую BibTeX нотацию для цитирования библиотеки **ruTS**, если вы используете ее в своих исследованиях или программах. Цитирование является очень полезным для дальнейшей разработки и поддержки данного проекта. Те же метаданные лежат в [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub показывает их по кнопке «Cite this repository».
 
 ```bibtex
 @software{ruTS,

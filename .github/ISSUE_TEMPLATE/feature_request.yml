@@ -1,0 +1,27 @@
+name: Предложение
+description: Новая статистика, набор данных, визуализация или улучшение
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Какую задачу это решает
+      description: Что вы хотите посчитать или сделать и почему текущих возможностей не хватает
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Предлагаемое решение
+      description: Как это могло бы выглядеть в API - класс, функция, параметр
+  - type: textarea
+    id: sources
+    attributes:
+      label: Источники
+      description: Статья, формула или библиотека, где это уже реализовано - библиотека следует опубликованным определениям
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Участие
+      options:
+        - label: Готов(а) сделать пул-реквест

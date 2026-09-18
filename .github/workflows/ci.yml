@@ -6,6 +6,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -30,11 +33,18 @@ jobs:
         run: uv run mypy
 
   test:
-    runs-on: ubuntu-latest
+    name: test (${{ matrix.python-version }}${{ matrix.os != 'ubuntu-latest' && format(', {0}', matrix.os) || '' }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: windows-latest
+            python-version: "3.12"
+          - os: macos-latest
+            python-version: "3.12"
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -44,25 +54,27 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --all-groups ${{ matrix.python-version == '3.12' && '--extra fast' || '' }}
+        run: uv sync --locked --all-groups ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
       - name: Check DAWG extension
-        if: matrix.python-version == '3.12'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: uv run python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
       - name: Cache NLTK data
         uses: actions/cache@v6
         with:
-          path: ~/nltk_data
-          key: nltk-punkt-stopwords-v1
+          path: ${{ runner.temp }}/nltk_data
+          key: nltk-punkt-stopwords-${{ runner.os }}-v1
       - name: Download NLTK data
-        run: uv run python -m nltk.downloader punkt punkt_tab stopwords
+        run: uv run python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run tests
+        env:
+          NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: uv run pytest --cov ruts --cov-fail-under 90 --cov-report xml
       - name: Send report
         uses: codecov/codecov-action@v7
         with:
           files: ./coverage.xml
           flags: unittests
-          name: ruts-${{ matrix.python-version }}
+          name: ruts-${{ matrix.os }}-${{ matrix.python-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
           verbose: true
