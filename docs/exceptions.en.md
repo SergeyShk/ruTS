@@ -41,7 +41,7 @@ The classes are available from `ruts` and from `ruts.exceptions`.
 
 ## Logging
 
-The library prints nothing on its own: messages about downloading and extracting datasets (`download_file`, `extract_archive`, the `download()` methods) go to the `ruts` logger at the `INFO` level, the warning about a file that is not an archive - at the `WARNING` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
+The library prints nothing on its own: messages about downloading and extracting datasets (`download_file`, `extract_archive`, the `download()` methods) go to the `ruts` logger at the `INFO` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
 
 !!! example "Example"
 
