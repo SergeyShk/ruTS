@@ -6,6 +6,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -32,8 +35,6 @@ jobs:
   test:
     name: test (${{ matrix.python-version }}${{ matrix.os != 'ubuntu-latest' && format(', {0}', matrix.os) || '' }})
     runs-on: ${{ matrix.os }}
-    env:
-      NLTK_DATA: ${{ runner.temp }}/nltk_data
     strategy:
       fail-fast: false
       matrix:
@@ -60,11 +61,13 @@ jobs:
       - name: Cache NLTK data
         uses: actions/cache@v6
         with:
-          path: ${{ env.NLTK_DATA }}
+          path: ${{ runner.temp }}/nltk_data
           key: nltk-punkt-stopwords-${{ runner.os }}-v1
       - name: Download NLTK data
-        run: uv run python -m nltk.downloader -d "${{ env.NLTK_DATA }}" punkt punkt_tab stopwords
+        run: uv run python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run tests
+        env:
+          NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: uv run pytest --cov ruts --cov-fail-under 90 --cov-report xml
       - name: Send report
         uses: codecov/codecov-action@v7
