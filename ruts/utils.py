@@ -250,9 +250,16 @@ def is_punctuation(token: str) -> bool:
     return all(char in PUNCTUATIONS or unicodedata.category(char)[0] in "PS" for char in token)
 
 
+_DELETE_VOWELS = str.maketrans("", "", "".join(RU_VOWELS))
+
+
+@lru_cache(maxsize=1 << 16)
 def count_syllables(word: str) -> int:
     """
     Вычисление количества слогов в слове
+
+    Описание:
+        Число гласных букв; результаты кэшируются по словоформе
 
     Аргументы:
         word (str): Строка слова
@@ -260,7 +267,7 @@ def count_syllables(word: str) -> int:
     Вывод:
         int: Количество слогов
     """
-    return sum(1 for char in word if char in RU_VOWELS)
+    return len(word) - len(word.translate(_DELETE_VOWELS))
 
 
 def to_path(path: str | Path) -> Path:

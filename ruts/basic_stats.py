@@ -19,6 +19,9 @@ from .utils import count_syllables, iter_doc_words
 
 ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
 DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)
+_DELETE_LETTERS = str.maketrans("", "", "".join(RU_LETTERS))
+_DELETE_SPACES = str.maketrans("", "", "".join(SPACES))
+_DELETE_PUNCTUATIONS = str.maketrans("", "", PUNCTUATIONS)
 PUNCTUATION_CHARS = {
     ",": "comma",
     ".": "period",
@@ -172,11 +175,11 @@ class BasicStats:
         self.n_polysyllable_words = (
             self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
         )
-        self.n_chars = len(text.replace("\n", ""))
-        self.n_letters = sum(1 for char in text if char in RU_LETTERS)
-        self.n_spaces = sum(1 for char in text if char in SPACES)
+        self.n_chars = len(text) - text.count("\n")
+        self.n_letters = len(text) - len(text.translate(_DELETE_LETTERS))
+        self.n_spaces = len(text) - len(text.translate(_DELETE_SPACES))
         self.n_syllables = sum(syllables_per_word)
-        self.n_punctuations = sum(1 for char in text if char in PUNCTUATIONS)
+        self.n_punctuations = len(text) - len(text.translate(_DELETE_PUNCTUATIONS))
         self.c_punctuations = count_punctuations(text)
 
         if normalize:
@@ -252,14 +255,12 @@ def count_punctuations(text: str) -> dict[str, int]:
         dict[str, int]: Число знаков каждого типа в порядке PUNCTUATION_TYPES
     """
     counts = dict.fromkeys(PUNCTUATION_TYPES, 0)
-    counts["ellipsis"] = len(ELLIPSIS_PATTERN.findall(text))
-    rest = ELLIPSIS_PATTERN.sub("", text)
-    counts["dash"] = len(DASH_PATTERN.findall(rest))
-    for char in DASH_PATTERN.sub("", rest):
-        if char in PUNCTUATION_CHARS:
-            counts[PUNCTUATION_CHARS[char]] += 1
-        elif char in PUNCTUATIONS:
-            counts["other"] += 1
+    rest, counts["ellipsis"] = ELLIPSIS_PATTERN.subn("", text)
+    rest, counts["dash"] = DASH_PATTERN.subn("", rest)
+    chars = Counter(rest)
+    for char, kind in PUNCTUATION_CHARS.items():
+        counts[kind] += chars[char]
+    counts["other"] = sum(chars[char] for char in PUNCTUATIONS if char not in PUNCTUATION_CHARS)
     return counts
 
 
@@ -288,6 +289,7 @@ def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, floa
     profile = {
         kind: count / n_words * 1000 if n_words else float("nan") for kind, count in counts.items()
     }
-    n_ye = sum(1 for char in text.lower() if char in "её")
-    profile["yo_share"] = text.lower().count("ё") / n_ye if n_ye else float("nan")
+    lowered = text.lower()
+    n_ye = lowered.count("е") + lowered.count("ё")
+    profile["yo_share"] = lowered.count("ё") / n_ye if n_ye else float("nan")
     return profile

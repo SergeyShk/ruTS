@@ -1,8 +1,10 @@
 from collections import Counter
 from collections.abc import Sequence
+from functools import lru_cache
 from itertools import pairwise
 from math import log2, nan
 
+import numpy as np
 from spacy.tokens import Doc
 
 from .constants import (
@@ -28,6 +30,7 @@ MARKS = frozenset(letter.lower() for letter in RU_MARKS)
 SOUNDS = VOWELS | CONSONANTS
 LETTERS = SOUNDS | MARKS
 IOTATED = frozenset("еёюя")
+CACHE_SIZE = 1 << 16
 
 
 class PhonStats:
@@ -124,15 +127,15 @@ class PhonStats:
             raise ParameterError("Размер окна должен быть не меньше 2")
         self.words = words
         self.window_len = window_len
-        self.syllables = tuple(tuple(syllabify(word)) for word in words)
+        self.syllables = tuple(_syllables(word) for word in words)
 
-        letters = [letter for word in words for letter in word]
-        self.n_vowels = sum(1 for letter in letters if letter in VOWELS)
-        self.n_sonorants = sum(1 for letter in letters if letter in SONORANTS)
-        self.n_voiced = sum(1 for letter in letters if letter in VOICED)
-        self.n_voiceless = sum(1 for letter in letters if letter in VOICELESS)
+        letters = Counter("".join(words))
+        self.n_vowels = sum(letters[letter] for letter in VOWELS)
+        self.n_sonorants = sum(letters[letter] for letter in SONORANTS)
+        self.n_voiced = sum(letters[letter] for letter in VOICED)
+        self.n_voiceless = sum(letters[letter] for letter in VOICELESS)
         self.n_consonants = self.n_sonorants + self.n_voiced + self.n_voiceless
-        self.n_marks = sum(1 for letter in letters if letter in MARKS)
+        self.n_marks = sum(letters[letter] for letter in MARKS)
         n_sounds = self.n_vowels + self.n_consonants
         self.c_clusters = calc_consonant_clusters(words)
         self.c_syllable_patterns = dict(
@@ -157,14 +160,17 @@ class PhonStats:
         self.hardness = safe_divide(self.n_voiceless, self.n_vowels + self.n_sonorants, nan)
         self.alliteration = calc_alliteration(words, window_len)
         self.assonance = calc_assonance(words, window_len)
-        all_syllables = [syllable for word in self.syllables for syllable in word]
+        all_syllables = Counter(syllable for word in self.syllables for syllable in word)
+        n_syllables = sum(all_syllables.values())
         self.p_open_syllables = safe_divide(
-            sum(1 for syllable in all_syllables if is_open_syllable(syllable)),
-            len(all_syllables),
+            sum(count for syllable, count in all_syllables.items() if is_open_syllable(syllable)),
+            n_syllables,
             nan,
         )
         self.mean_syllable_len = safe_divide(
-            sum(len(syllable) for syllable in all_syllables), len(all_syllables), nan
+            sum(len(syllable) * count for syllable, count in all_syllables.items()),
+            n_syllables,
+            nan,
         )
 
     def get_stats(self) -> dict[str, float]:
@@ -185,6 +191,7 @@ class PhonStats:
             print(f"{value:40}|{stats.get(stat):^10.2f}")
 
 
+@lru_cache(maxsize=CACHE_SIZE)
 def cv_pattern(word: str) -> str:
     """
     Получение CV-шаблона слова или слога
@@ -192,6 +199,7 @@ def cv_pattern(word: str) -> str:
     Описание:
         Гласные обозначаются буквой V, согласные - C, ь и ъ пропускаются,
         остальные символы (латиница, цифры, дефис) не учитываются
+        Результаты кэшируются по строке
 
     Аргументы:
         word (str): Слово или слог
@@ -230,12 +238,18 @@ def syllabify(word: str) -> list[str]:
     Вывод:
         list[str]: Список слогов
     """
+    return list(_syllables(word))
+
+
+@lru_cache(maxsize=CACHE_SIZE)
+def _syllables(word: str) -> tuple[str, ...]:
+    """Слоги слова кортежем с кэшем по слову - см. syllabify"""
     word = "".join(letter for letter in word.lower() if letter in LETTERS)
     vowel_positions = [i for i, letter in enumerate(word) if letter in VOWELS]
     if not vowel_positions:
-        return []
+        return ()
     if len(vowel_positions) == 1:
-        return [word]
+        return (word,)
     syllables = []
     start = 0
     for current, following in pairwise(vowel_positions):
@@ -254,7 +268,7 @@ def syllabify(word: str) -> list[str]:
         syllables.append(word[start:boundary])
         start = boundary
     syllables.append(word[start:])
-    return syllables
+    return tuple(syllables)
 
 
 def is_open_syllable(syllable: str) -> bool:
@@ -289,20 +303,29 @@ def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
         dict[int, int]: Количество кластеров каждой длины
     """
     counter: Counter[int] = Counter()
-    for word in text:
-        size = 0
-        for letter in word.lower():
-            if letter in CONSONANTS:
-                size += 1
-            elif letter in MARKS:
-                continue
-            else:
-                if size:
-                    counter[size] += 1
-                size = 0
-        if size:
-            counter[size] += 1
+    for word, count in Counter(text).items():
+        for size in _clusters(word):
+            counter[size] += count
     return dict(sorted(counter.items()))
+
+
+@lru_cache(maxsize=CACHE_SIZE)
+def _clusters(word: str) -> tuple[int, ...]:
+    """Длины консонантных кластеров слова по порядку с кэшем по слову"""
+    sizes = []
+    size = 0
+    for letter in word.lower():
+        if letter in CONSONANTS:
+            size += 1
+        elif letter in MARKS:
+            continue
+        else:
+            if size:
+                sizes.append(size)
+            size = 0
+    if size:
+        sizes.append(size)
+    return tuple(sizes)
 
 
 def calc_hiatus(text: Sequence[str]) -> int:
@@ -321,19 +344,24 @@ def calc_hiatus(text: Sequence[str]) -> int:
     Вывод:
         int: Количество зияний
     """
+    return sum(_hiatus(word) * count for word, count in Counter(text).items())
+
+
+@lru_cache(maxsize=CACHE_SIZE)
+def _hiatus(word: str) -> int:
+    """Число зияний гласных в слове с кэшем по слову"""
     hiatus = 0
-    for word in text:
-        previous_vowel = False
-        run = False
-        for letter in word.lower():
-            is_vowel = letter in VOWELS
-            if is_vowel and previous_vowel and letter not in IOTATED:
-                if not run:
-                    hiatus += 1
-                run = True
-            else:
-                run = False
-            previous_vowel = is_vowel
+    previous_vowel = False
+    run = False
+    for letter in word.lower():
+        is_vowel = letter in VOWELS
+        if is_vowel and previous_vowel and letter not in IOTATED:
+            if not run:
+                hiatus += 1
+            run = True
+        else:
+            run = False
+        previous_vowel = is_vowel
     return hiatus
 
 
@@ -364,18 +392,27 @@ def _calc_repetition_index(text: Sequence[str], letters: frozenset[str], window_
     Отношение наблюдаемого числа окон с повтором буквы в разных словах к ожидаемому
     при независимом распределении букв по словам
     """
-    tokens = [{letter for letter in word.lower() if letter in letters} for word in text]
-    n_words = len(tokens)
+    n_words = len(text)
     if n_words < window_len:
         return nan
     n_windows = n_words - window_len + 1
-    observed = 0
-    for i in range(n_windows):
-        counts = Counter(letter for token in tokens[i : i + window_len] for letter in token)
-        observed += sum(1 for count in counts.values() if count >= 2)
+    alphabet = sorted(letters)
+    lowered = [word.lower() for word in text]
+    unique = list(dict.fromkeys(lowered))
+    presence = np.array(
+        [[letter in word for letter in alphabet] for word in unique], dtype=np.int32
+    ).reshape(len(unique), len(alphabet))
+    indices = dict(zip(unique, range(len(unique)), strict=True))
+    rows = np.fromiter(map(indices.__getitem__, lowered), dtype=np.int64, count=n_words)
+    cumulative = np.zeros((n_words + 1, len(alphabet)), dtype=np.int32)
+    np.cumsum(presence[rows], axis=0, out=cumulative[1:])
+    in_window = cumulative[window_len:] - cumulative[:-window_len]
+    observed = int((in_window >= 2).sum())
     expected = 0.0
-    for count in Counter(letter for token in tokens for letter in token).values():
-        p = count / n_words
+    for count in cumulative[-1]:
+        if not count:
+            continue
+        p = int(count) / n_words
         p_single = window_len * p * (1 - p) ** (window_len - 1)
         expected += n_windows * (1 - (1 - p) ** window_len - p_single)
     return safe_divide(observed, expected, nan)
