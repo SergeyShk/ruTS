@@ -24,6 +24,7 @@
   <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="Лицензия"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Загрузки">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-демо-blue" alt="Демо на Hugging Face Spaces"></a>
+  <a href="https://doi.org/10.5281/zenodo.22837587"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22837587.svg" alt="DOI"></a>
 </p>
 
 ---
@@ -877,7 +878,7 @@ uv run pre-commit install
 
 ## Цитирование
 
-Пожалуйста, используйте следующую BibTeX нотацию для цитирования библиотеки **ruTS**, если вы используете ее в своих исследованиях или программах. Цитирование является очень полезным для дальнейшей разработки и поддержки данного проекта. Те же метаданные лежат в [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub показывает их по кнопке «Cite this repository».
+Пожалуйста, используйте следующую BibTeX нотацию для цитирования библиотеки **ruTS**, если вы используете ее в своих исследованиях или программах. Цитирование является очень полезным для дальнейшей разработки и поддержки данного проекта. Те же метаданные лежат в [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub показывает их по кнопке «Cite this repository». Concept DOI [10.5281/zenodo.22837587](https://doi.org/10.5281/zenodo.22837587) на Zenodo указывает на все версии библиотеки; DOI конкретной версии - на странице релиза.
 
 ```bibtex
 @software{ruTS,
@@ -885,6 +886,7 @@ uv run pre-commit install
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
   year = 2026,
   publisher = {Moscow},
+  doi = {10.5281/zenodo.22837587},
   url = {https://github.com/SergeyShk/ruTS}
 }
 ```

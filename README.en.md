@@ -24,6 +24,7 @@
   <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="License"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Downloads">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-demo-blue" alt="Demo on Hugging Face Spaces"></a>
+  <a href="https://doi.org/10.5281/zenodo.22837587"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22837587.svg" alt="DOI"></a>
 </p>
 
 ---
@@ -877,7 +878,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 
 ## Citation
 
-Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library. The same metadata is in [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub shows it under the "Cite this repository" button.
+Please use the following BibTeX entry for citing **ruTS** if you use it in your research or software. Citations are helpful for the continued development and maintenance of this library. The same metadata is in [CITATION.cff](https://github.com/SergeyShk/ruTS/blob/master/CITATION.cff) - GitHub shows it under the "Cite this repository" button. The Zenodo concept DOI [10.5281/zenodo.22837587](https://doi.org/10.5281/zenodo.22837587) resolves to all versions of the library; the DOI of a specific version is on its release page.
 
 ```bibtex
 @software{ruTS,
@@ -885,6 +886,7 @@ Please use the following BibTeX entry for citing **ruTS** if you use it in your 
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
   year = 2026,
   publisher = {Moscow},
+  doi = {10.5281/zenodo.22837587},
   url = {https://github.com/SergeyShk/ruTS}
 }
 ```
