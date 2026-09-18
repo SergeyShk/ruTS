@@ -5,8 +5,8 @@ from typing import Any
 
 from ..constants import DEFAULT_DATA_DIR
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import download_file, extract_archive, to_path
-from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
+from ..utils import to_path
+from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
 
 NAME = "stalin_works"
 META = {
@@ -147,20 +147,18 @@ class StalinWorks(Dataset):
 
         Описание:
             Если архив уже есть, а какой-то из директорий томов нет, архив
-            извлекается заново
+            извлекается заново; архив, который не удалось извлечь, удаляется
+            и загружается заново в том же вызове
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
+
+        Исключения:
+            DownloadError: Если не удалось загрузить архив
+            DataFileError: Если загруженный архив не удалось извлечь
         """
-        filepath = download_file(
-            url=DOWNLOAD_URL,
-            filename=self._filename,
-            dirpath=self.data_dir,
-            force=force,
-        )
         missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
-        if filepath or missing:
-            extract_archive(self._filepath)
+        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
         self.check_data()
 
     def get_texts(

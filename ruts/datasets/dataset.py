@@ -1,9 +1,11 @@
 import re
 from abc import ABCMeta, abstractmethod
 from collections.abc import Callable, Generator
+from pathlib import Path
 from typing import Any
 
-from ..exceptions import ParameterError
+from ..exceptions import DataFileError, ParameterError
+from ..utils import download_file, extract_archive
 
 Filter = Callable[[dict[str, Any]], bool]
 Filters = list[Filter]
@@ -59,6 +61,41 @@ class Dataset(metaclass=ABCMeta):
     @abstractmethod
     def download(self, force: bool = False) -> None:
         raise NotImplementedError
+
+
+def fetch_archive(url: str, filepath: Path, missing: bool, force: bool = False) -> None:
+    """
+    Загрузка архива набора данных и извлечение файлов
+
+    Описание:
+        Архив извлекается, если он загружен сейчас или распакованных директорий
+        нет. Уже лежащий архив, который не удалось извлечь (битый, недокачанный,
+        подмененный - контрольной суммы у него нет), удаляется и загружается
+        заново в том же вызове
+
+    Аргументы:
+        url (str): Ссылка на архив
+        filepath (Path): Путь к архиву; файлы извлекаются в его директорию
+        missing (bool): Признак отсутствия распакованных директорий
+        force (bool): Загрузить архив, даже если он уже есть
+
+    Исключения:
+        DownloadError: Если не удалось загрузить архив
+        DataFileError: Если только что загруженный архив не удалось извлечь
+    """
+    downloaded = download_file(
+        url=url, filename=filepath.name, dirpath=filepath.parent, force=force
+    )
+    if not downloaded and not missing:
+        return
+    try:
+        extract_archive(filepath)
+    except DataFileError:
+        if downloaded:
+            raise
+        filepath.unlink(missing_ok=True)
+        download_file(url=url, filename=filepath.name, dirpath=filepath.parent, force=True)
+        extract_archive(filepath)
 
 
 def check_limit(limit: int | None) -> None:

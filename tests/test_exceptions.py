@@ -81,22 +81,18 @@ def test_logging(tmp_path, caplog):
     archive = tmp_path / "stopwords.zip"
     with zipfile.ZipFile(archive, mode="w") as zip_file:
         zip_file.writestr("stopwords/russian", "и\nв\n")
-    text = tmp_path / "text.txt"
-    text.write_text("текст", encoding="utf-8")
     with caplog.at_level(logging.INFO, logger="ruts"):
         assert download_file(archive.as_uri(), filename="copy.zip", dirpath=tmp_path) == str(
             tmp_path / "copy.zip"
         )
         assert download_file(archive.as_uri(), filename="copy.zip", dirpath=tmp_path) == ""
         extract_archive(archive, tmp_path / "out")
-        extract_archive(text)
     messages = [(record.name, record.levelname, record.getMessage()) for record in caplog.records]
     assert messages == [
         ("ruts.utils", "INFO", f"Загрузка файла {archive.as_uri()}"),
         ("ruts.utils", "INFO", f"Файл загружен: {tmp_path / 'copy.zip'}"),
         ("ruts.utils", "INFO", f"Файл {tmp_path / 'copy.zip'} уже загружен"),
         ("ruts.utils", "INFO", f"Извлечение файлов из архива {archive}"),
-        ("ruts.utils", "WARNING", f"Файл {text} не является архивом в формате ZIP или TAR"),
     ]
     assert any(isinstance(h, logging.NullHandler) for h in logging.getLogger("ruts").handlers)
 

@@ -415,8 +415,8 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
         str: Путь к директории с извлеченными файлами
 
     Исключения:
-        DataFileError: Если архив поврежден, содержит пути за пределами директории
-            извлечения или директорию не удалось создать
+        DataFileError: Если файл не архив ZIP или TAR, архив поврежден, содержит пути
+            за пределами директории извлечения или директорию не удалось создать
     """
     archive_path = to_path(archive_file).resolve()
     extract_path = to_path(extract_dir) if extract_dir else archive_path.parent
@@ -427,8 +427,7 @@ def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = N
     is_zip = zipfile.is_zipfile(archive_path)
     is_tar = tarfile.is_tarfile(archive_path)
     if not is_zip and not is_tar:
-        logger.warning("Файл %s не является архивом в формате ZIP или TAR", archive_path)
-        return str(extract_path)
+        raise DataFileError(f"Файл {archive_path} не является архивом в формате ZIP или TAR")
     logger.info("Извлечение файлов из архива %s", archive_path)
     try:
         if is_zip:

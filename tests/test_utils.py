@@ -149,9 +149,10 @@ def test_extract_archive_defaults_to_archive_dir(tar_archive):
 
 
 def test_extract_archive_not_an_archive(tmp_path):
-    not_an_archive = tmp_path / "russian"
+    not_an_archive = tmp_path / "russian.tar.xz"
     not_an_archive.write_text("и\nв\nне\n", encoding="utf-8")
-    assert extract_archive(not_an_archive) == str(tmp_path)
+    with pytest.raises(DataFileError):
+        extract_archive(not_an_archive)
 
 
 @pytest.mark.parametrize("args, result", [((1, 5), 0.2), ((1, 0), 0), ((1, "", -1), -1)])

@@ -4,8 +4,9 @@ from pathlib import Path
 
 import pytest
 
+from ruts.datasets import dataset as dataset_module
 from ruts.datasets.sov_chrest_lit import SovChLit
-from ruts.exceptions import ParameterError
+from ruts.exceptions import DataFileError, ParameterError
 
 BUNDLED_ARCHIVE = (
     Path(__file__).parents[2] / "ruts" / "datasets" / "data" / "sov_chrest_lit.tar.xz"
@@ -37,6 +38,38 @@ def test_download_extracts_existing_archive(tmp_path):
     shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
     dataset.download()
     assert dataset.check_data()
+
+
+def test_download_replaces_broken_archive(tmp_path, monkeypatch):
+    dataset = SovChLit(data_dir=tmp_path)
+    dataset._filepath.write_bytes(b"\x00" * 40)
+    calls = []
+
+    def fake_download(url, filename, dirpath, force=False):
+        calls.append(force)
+        if not force and (Path(dirpath) / filename).is_file():
+            return ""
+        shutil.copy(BUNDLED_ARCHIVE, Path(dirpath) / filename)
+        return str(Path(dirpath) / filename)
+
+    monkeypatch.setattr(dataset_module, "download_file", fake_download)
+    dataset.download()
+    assert calls == [False, True]
+    assert dataset.check_data()
+    other = SovChLit(data_dir=tmp_path / "other")
+    other._filepath.parent.mkdir()
+    other._filepath.write_bytes(b"\x00" * 40)
+
+    def broken_download(url, filename, dirpath, force=False):
+        path = Path(dirpath) / filename
+        if not force and path.is_file():
+            return ""
+        path.write_bytes(b"\x00" * 40)
+        return str(path)
+
+    monkeypatch.setattr(dataset_module, "download_file", broken_download)
+    with pytest.raises(DataFileError):
+        other.download()
 
 
 def test_oserror():

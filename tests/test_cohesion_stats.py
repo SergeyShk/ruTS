@@ -28,6 +28,7 @@ from ruts.cohesion_stats import (
     word_info,
 )
 from ruts.constants import COHESION_STATS_DESC, CONNECTOR_CLASSES, CONNECTOR_TYPES
+from ruts.exceptions import SourceError
 from ruts.utils import iter_doc_units, lemmatize
 
 text = (
@@ -516,8 +517,12 @@ def test_doc_without_sents(nlp):
         list(sent) for sent in cs.words
     ]
     extractor = SentsExtractor(tokenizer=lambda text: ("нет такого предложения",))
-    assert len(split_doc_units(blank, extractor)) == 1
-    assert len(split_doc_units(blank, extractor)[0]) == 11
+    assert split_doc_units(blank, extractor) == []
+    short = "Кот сидел. Пёс спал."
+    with pytest.raises(SourceError):
+        CohesionStats(short, sents_extractor=SentsExtractor(min_len=50))
+    with pytest.raises(SourceError):
+        CohesionStats(spacy.blank("ru")(short), sents_extractor=SentsExtractor(min_len=50))
 
 
 def test_find_connectors():
