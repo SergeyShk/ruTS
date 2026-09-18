@@ -23,7 +23,7 @@ XML = """<?xml version="1.0" encoding="UTF-8"?><items>
 
 def write_corpus(path: Path, content: str = XML) -> None:
     path.mkdir(parents=True, exist_ok=True)
-    path.joinpath(FILENAME).write_text(content, encoding="utf-8")
+    path.joinpath(FILENAME).write_bytes(content.encode("utf-8"))
 
 
 @pytest.fixture(scope="module")
