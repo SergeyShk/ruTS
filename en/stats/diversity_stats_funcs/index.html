@@ -3687,6 +3687,7 @@
 <p class="admonition-title">Warning</p>
 <p>If no factor completes, the function returns <code>nan</code>. The metric is unstable on short texts.</p>
 </div>
+<p>Factors from all starts are computed from the array of previous word occurrences in blocks of starts with numpy rather than by rebuilding sets of lexemes (<code>_mtld_factor_lengths</code>): the number of lexemes on a stretch equals the number of positions whose previous occurrence lies before the start of the stretch. On 340 thousand words MA-MTLD takes 0.7 s, MTLD-W 0.4 s; the values coincide with the direct enumeration.</p>
 <p>Parameters:</p>
 <table>
 <thead>
