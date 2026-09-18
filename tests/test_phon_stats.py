@@ -1,4 +1,6 @@
-from math import isnan, log2
+import random
+from collections import Counter
+from math import isnan, log2, nan
 
 import pytest
 import spacy
@@ -6,6 +8,9 @@ import spacy
 from ruts import PhonStats
 from ruts.constants import PHON_STATS_DESC
 from ruts.phon_stats import (
+    CONSONANTS,
+    VOWELS,
+    _calc_repetition_index,
     calc_alliteration,
     calc_assonance,
     calc_consonant_clusters,
@@ -152,6 +157,43 @@ def test_alliteration():
     assert isnan(calc_alliteration(["мама", "мыла"], window_len=3))
     # согласные не повторяются ни в одном окне
     assert calc_alliteration(["дом", "кит", "лес"], window_len=2) == 0.0
+
+
+def repetition_index_by_windows(text, letters, window_len):
+    # прямой перебор окон со счетчиком букв - эталон для векторного расчета
+    tokens = [{letter for letter in word.lower() if letter in letters} for word in text]
+    n_words = len(tokens)
+    if n_words < window_len:
+        return nan
+    n_windows = n_words - window_len + 1
+    observed = 0
+    for i in range(n_windows):
+        counts = Counter(letter for token in tokens[i : i + window_len] for letter in token)
+        observed += sum(1 for count in counts.values() if count >= 2)
+    expected = 0.0
+    for count in Counter(letter for token in tokens for letter in token).values():
+        p = count / n_words
+        p_single = window_len * p * (1 - p) ** (window_len - 1)
+        expected += n_windows * (1 - (1 - p) ** window_len - p_single)
+    return observed / expected if expected else nan
+
+
+@pytest.mark.parametrize("window_len", [2, 3, 5])
+def test_repetition_index_matches_windows(window_len):
+    rng = random.Random(0)
+    alphabet = "абвгдежзийклмнопрстуфхцчшщъыьэюяЙЁ-1x"
+    for _ in range(80):
+        words = [
+            "".join(rng.choice(alphabet) for _ in range(rng.randint(1, 8)))
+            for _ in range(rng.randint(0, 30))
+        ]
+        for letters in (CONSONANTS, VOWELS):
+            expected = repetition_index_by_windows(words, letters, window_len)
+            actual = _calc_repetition_index(words, letters, window_len)
+            assert actual == pytest.approx(expected, nan_ok=True)
+    assert calc_alliteration(["Мороз", "МЕРА", "мир"], window_len=2) == calc_alliteration(
+        ["мороз", "мера", "мир"], window_len=2
+    )
 
 
 def test_assonance(ps):
