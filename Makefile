@@ -1,8 +1,9 @@
-.PHONY: help uv deps lock nltk-data lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy demo demo-login demo-upload
+.PHONY: help uv deps lock nltk-data lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy notebooks demo demo-login demo-upload
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
 DEMO_PATH := demo
+EXAMPLES_PATH := examples
 HF_SPACE := SergeyShk/ruTS
 
 help: ## Показать список команд
@@ -16,9 +17,9 @@ uv: ## Проверить наличие uv
 
 deps: uv ## Установить зависимости
 ifeq ($(MODE), ci)
-	uv sync --locked --all-groups
+	uv sync --locked --all-groups --no-group examples
 else
-	uv sync --all-groups
+	uv sync --all-groups --no-group examples
 endif
 
 lock: uv ## Обновить lock-файл до последних версий зависимостей
@@ -31,15 +32,15 @@ lint: ruff mypy ## Запустить все проверки кода
 
 ruff: deps ## Проверить и отформатировать код с помощью ruff
 ifeq ($(MODE), ci)
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py --check
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py --check
 else
-	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py --fix
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
+	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py --fix
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
 endif
 
 format: deps ## Отформатировать код
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) conftest.py
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
 
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy
@@ -79,6 +80,11 @@ publish-test: build ## Опубликовать релиз на TestPyPI
 docs-build: deps ## Собрать документацию
 	rm -fr site/
 	uv run mkdocs build --strict
+
+notebooks: uv ## Выполнить ноутбуки из examples/ и записать вывод в файлы
+	uv sync --group examples
+	uv run pytest --nbmake --overwrite $(EXAMPLES_PATH) -p no:cacheprovider
+	uv run nbstripout --keep-output --keep-count --extra-keys metadata.language_info.version $(EXAMPLES_PATH)/*.ipynb
 
 docs-serve: deps ## Запустить сервер документации
 	uv run mkdocs serve

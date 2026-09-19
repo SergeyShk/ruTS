@@ -24,11 +24,11 @@ jobs:
         with:
           enable-cache: true
       - name: Install dependencies
-        run: uv sync --locked --all-groups
+        run: uv sync --locked --all-groups --no-group examples
       - name: Ruff
         run: |
-          uv run ruff check ruts tests demo conftest.py
-          uv run ruff format ruts tests demo conftest.py --check
+          uv run ruff check ruts tests demo examples conftest.py
+          uv run ruff format ruts tests demo examples conftest.py --check
       - name: Mypy
         run: uv run mypy
 
@@ -54,7 +54,7 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --all-groups ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
+        run: uv sync --locked --all-groups --no-group examples ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
       - name: Check DAWG extension
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: uv run python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"

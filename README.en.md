@@ -24,6 +24,7 @@
   <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="License"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Downloads">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-demo-blue" alt="Demo on Hugging Face Spaces"></a>
+  <a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
   <a href="https://doi.org/10.5281/zenodo.22837587"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22837587.svg" alt="DOI"></a>
 </p>
 
@@ -106,6 +107,8 @@ For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pym
 >>> DiversityStats(text).ttr
 0.8888888888888888
 ```
+
+A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), which opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); the other notebooks are on the [examples](https://sergeyshk.github.io/ruTS/en/examples/) page.
 
 ## Features
 
@@ -864,6 +867,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   word_tree.py - Word Tree
         *   zipf.py - Zipf's law
 *   **tests** - tests mirroring the package structure
+*   **examples** - example notebooks
 
 </details>
 

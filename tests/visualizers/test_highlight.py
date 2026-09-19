@@ -511,6 +511,7 @@ def test_to_html(ht):
         "Повышение</span>"
     ) in html
     assert ht._repr_html_() == html
+    assert repr(ht) == f"HighlightedText(counts={ht.counts})"
 
 
 def test_to_html_without_legend_and_css(ht):

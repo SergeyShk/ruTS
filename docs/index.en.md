@@ -91,6 +91,8 @@ Any statistic can be printed in a readable form:
 Знаки препинания    |    2
 ```
 
+A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), which opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); the other notebooks are on the [examples](examples.md) page.
+
 ??? note "Project structure"
 
     *   **docs** - project documentation
@@ -135,4 +137,5 @@ Any statistic can be printed in a readable form:
             *   word_tree.py - Word Tree
             *   zipf.py - Zipf's law
     *   **tests** - tests mirroring the package structure
+    *   **examples** - example notebooks
     *   **demo** - Gradio demo for Hugging Face Spaces

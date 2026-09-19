@@ -91,6 +91,8 @@ pip install ruts
 Знаки препинания    |    2
 ```
 
+Сквозной разбор одного рассказа всеми инструментами библиотеки - в ноутбуке [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), его можно открыть в [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); остальные ноутбуки - на странице [примеров](examples.md).
+
 ??? note "Структура проекта"
 
     *   **docs** - документация по проекту
@@ -135,4 +137,5 @@ pip install ruts
             *   word_tree.py - Дерево слов
             *   zipf.py - Закон Ципфа
     *   **tests** - тесты, повторяющие структуру пакета
+    *   **examples** - ноутбуки с примерами
     *   **demo** - демонстрация на Gradio для Hugging Face Spaces
