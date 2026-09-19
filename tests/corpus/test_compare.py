@@ -1,6 +1,7 @@
 from math import isnan, sqrt
 
 import numpy as np
+import pandas as pd
 import pytest
 from scipy.stats import mannwhitneyu
 
@@ -9,6 +10,7 @@ from ruts.corpus import (
     calc_cliff_delta,
     calc_cohen_d,
     compare_corpora,
+    compare_features,
     corpus_features,
     holm_correction,
     sentence_rhythm,
@@ -155,6 +157,19 @@ def test_compare_corpora():
     assert np.isfinite(result.drop(columns=["p_holm"]).dropna()).all().all()
     undefined = result[result["cliff_delta"].isna()]
     assert list(undefined.index) == list(result.index[-len(undefined) :])
+
+
+def test_compare_features():
+    table_short = corpus_features(short, window=None)
+    table_long = corpus_features(long, window=None)
+    result = compare_features(table_short, table_long, labels=("короткие", "длинные"), seed=1)
+    expected = compare_corpora(short, long, window=None, labels=("короткие", "длинные"), seed=1)
+    pd.testing.assert_frame_equal(result, expected)
+    # Признак только в одной таблице - nan, число выборок проверяется
+    extra = table_short.assign(extra=1.0)
+    assert isnan(compare_features(extra, table_long, n_bootstrap=10).loc["extra", "cliff_delta"])
+    with pytest.raises(ValueError):
+        compare_features(table_short, table_long, n_bootstrap=0)
 
 
 def test_compare_corpora_rare_values():
