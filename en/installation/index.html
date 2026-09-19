@@ -14,7 +14,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../exceptions/">
+        <link rel="next" href="../examples/">
       
       
         
@@ -592,6 +592,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2671,8 +2699,9 @@
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.
 </code></pre></div>
 <p>For development it is more convenient to use <a href="https://docs.astral.sh/uv/">uv</a>, which creates an isolated environment and installs all dependencies, including the development tools:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups<span class="w"> </span>--no-group<span class="w"> </span>examples
 </code></pre></div>
+<p>The <code>examples</code> group with Jupyter is needed only for the <a href="../examples/">example notebooks</a>.</p>
 </li>
 </ol>
 <div class="admonition note">

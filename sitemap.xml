@@ -2,616 +2,630 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>None./</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="None"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/"/>
     </url>
     <url>
         <loc>Noneauthors/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneauthors/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/authors/"/>
     </url>
     <url>
         <loc>Nonecomponents/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecomponents/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/components/"/>
     </url>
     <url>
+        <loc>Noneexamples/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="Noneexamples/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/examples/"/>
+    </url>
+    <url>
         <loc>Noneexceptions/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneexceptions/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/exceptions/"/>
     </url>
     <url>
         <loc>Noneinstallation/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneinstallation/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/installation/"/>
     </url>
     <url>
         <loc>Nonecorpus/collocations/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/collocations/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/collocations/"/>
     </url>
     <url>
         <loc>Nonecorpus/compare/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/compare/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/compare/"/>
     </url>
     <url>
         <loc>Nonecorpus/dispersion/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/dispersion/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/dispersion/"/>
     </url>
     <url>
         <loc>Nonecorpus/keyness/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/keyness/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/keyness/"/>
     </url>
     <url>
         <loc>Nonecorpus/kwic/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/kwic/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/kwic/"/>
     </url>
     <url>
         <loc>Nonecorpus/stylometry/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/stylometry/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/stylometry/"/>
     </url>
     <url>
         <loc>Nonedatasets/freq2011/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/freq2011/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/freq2011/"/>
     </url>
     <url>
         <loc>Nonedatasets/poetrycorpus/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/poetrycorpus/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/poetrycorpus/"/>
     </url>
     <url>
         <loc>Nonedatasets/russianliterature/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/russianliterature/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/russianliterature/"/>
     </url>
     <url>
         <loc>Nonedatasets/sovchlit/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/sovchlit/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/sovchlit/"/>
     </url>
     <url>
         <loc>Nonedatasets/stalinworks/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/stalinworks/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/stalinworks/"/>
     </url>
     <url>
         <loc>Nonedatasets/textsbygrade/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/textsbygrade/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/textsbygrade/"/>
     </url>
     <url>
         <loc>Noneextractors/char_ngrams/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/char_ngrams/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/char_ngrams/"/>
     </url>
     <url>
         <loc>Noneextractors/sentences/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/sentences/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/sentences/"/>
     </url>
     <url>
         <loc>Noneextractors/words/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/words/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/words/"/>
     </url>
     <url>
         <loc>Nonestats/basic_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/basic_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/basic_stats/"/>
     </url>
     <url>
         <loc>Nonestats/cohesion_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/cohesion_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/cohesion_stats/"/>
     </url>
     <url>
         <loc>Nonestats/cohesion_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/cohesion_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/cohesion_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/diversity_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/diversity_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/diversity_stats/"/>
     </url>
     <url>
         <loc>Nonestats/diversity_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/diversity_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/diversity_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/lexical_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/lexical_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/lexical_stats/"/>
     </url>
     <url>
         <loc>Nonestats/lexical_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/lexical_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/lexical_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/morph_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/morph_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/morph_stats/"/>
     </url>
     <url>
         <loc>Nonestats/phon_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/phon_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/phon_stats/"/>
     </url>
     <url>
         <loc>Nonestats/phon_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/phon_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/phon_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/readability_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/readability_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/readability_stats/"/>
     </url>
     <url>
         <loc>Nonestats/readability_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/readability_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/readability_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/style_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/style_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/style_stats/"/>
     </url>
     <url>
         <loc>Nonestats/style_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/style_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/style_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonestats/syntax_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats/"/>
     </url>
     <url>
         <loc>Nonestats/syntax_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonevisualizers/corpus/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/corpus/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/corpus/"/>
     </url>
     <url>
         <loc>Nonevisualizers/fingerprinting/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/fingerprinting/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/fingerprinting/"/>
     </url>
     <url>
         <loc>Nonevisualizers/highlight/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/highlight/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/highlight/"/>
     </url>
     <url>
         <loc>Nonevisualizers/sentences/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/sentences/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/sentences/"/>
     </url>
     <url>
         <loc>Nonevisualizers/stylometry/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/stylometry/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/stylometry/"/>
     </url>
     <url>
         <loc>Nonevisualizers/vocabulary/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/vocabulary/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/vocabulary/"/>
     </url>
     <url>
         <loc>Nonevisualizers/word_tree/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/word_tree/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/word_tree/"/>
     </url>
     <url>
         <loc>Nonevisualizers/zipf/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/zipf/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/zipf/"/>
     </url>
     <url>
         <loc>Noneen/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="None"/>
     </url>
     <url>
         <loc>Noneen/authors/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/authors/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneauthors/"/>
     </url>
     <url>
         <loc>Noneen/components/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/components/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecomponents/"/>
     </url>
     <url>
+        <loc>Noneen/examples/</loc>
+        <lastmod>2026-09-19</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/examples/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="Noneexamples/"/>
+    </url>
+    <url>
         <loc>Noneen/exceptions/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/exceptions/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneexceptions/"/>
     </url>
     <url>
         <loc>Noneen/installation/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/installation/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneinstallation/"/>
     </url>
     <url>
         <loc>Noneen/corpus/collocations/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/collocations/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/collocations/"/>
     </url>
     <url>
         <loc>Noneen/corpus/compare/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/compare/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/compare/"/>
     </url>
     <url>
         <loc>Noneen/corpus/dispersion/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/dispersion/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/dispersion/"/>
     </url>
     <url>
         <loc>Noneen/corpus/keyness/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/keyness/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/keyness/"/>
     </url>
     <url>
         <loc>Noneen/corpus/kwic/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/kwic/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/kwic/"/>
     </url>
     <url>
         <loc>Noneen/corpus/stylometry/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/corpus/stylometry/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonecorpus/stylometry/"/>
     </url>
     <url>
         <loc>Noneen/datasets/freq2011/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/freq2011/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/freq2011/"/>
     </url>
     <url>
         <loc>Noneen/datasets/poetrycorpus/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/poetrycorpus/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/poetrycorpus/"/>
     </url>
     <url>
         <loc>Noneen/datasets/russianliterature/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/russianliterature/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/russianliterature/"/>
     </url>
     <url>
         <loc>Noneen/datasets/sovchlit/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/sovchlit/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/sovchlit/"/>
     </url>
     <url>
         <loc>Noneen/datasets/stalinworks/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/stalinworks/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/stalinworks/"/>
     </url>
     <url>
         <loc>Noneen/datasets/textsbygrade/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/textsbygrade/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/textsbygrade/"/>
     </url>
     <url>
         <loc>Noneen/extractors/char_ngrams/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/char_ngrams/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/char_ngrams/"/>
     </url>
     <url>
         <loc>Noneen/extractors/sentences/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/sentences/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/sentences/"/>
     </url>
     <url>
         <loc>Noneen/extractors/words/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/extractors/words/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Noneextractors/words/"/>
     </url>
     <url>
         <loc>Noneen/stats/basic_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/basic_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/basic_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/cohesion_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/cohesion_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/cohesion_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/cohesion_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/cohesion_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/cohesion_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/diversity_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/diversity_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/diversity_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/diversity_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/diversity_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/diversity_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/lexical_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/lexical_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/lexical_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/lexical_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/lexical_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/lexical_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/morph_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/morph_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/morph_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/phon_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/phon_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/phon_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/phon_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/phon_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/phon_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/readability_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/readability_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/readability_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/readability_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/readability_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/readability_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/style_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/style_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/style_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/style_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/style_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/style_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/stats/syntax_stats/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats/"/>
     </url>
     <url>
         <loc>Noneen/stats/syntax_stats_funcs/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/corpus/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/corpus/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/corpus/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/fingerprinting/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/fingerprinting/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/fingerprinting/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/highlight/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/highlight/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/highlight/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/sentences/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/sentences/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/sentences/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/stylometry/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/stylometry/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/stylometry/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/vocabulary/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/vocabulary/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/vocabulary/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/word_tree/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/word_tree/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/word_tree/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/zipf/</loc>
-        <lastmod>2026-09-18</lastmod>
+        <lastmod>2026-09-19</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/visualizers/zipf/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonevisualizers/zipf/"/>

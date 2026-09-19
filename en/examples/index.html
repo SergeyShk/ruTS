@@ -1,26 +1,26 @@
 
 <!doctype html>
-<html lang="ru" class="no-js">
+<html lang="en" class="no-js">
   <head>
     
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Библиотека для извлечения статистик из текстов на русском языке">
+        <meta name="description" content="A library for extracting statistics from Russian texts">
       
       
       
       
-        <link rel="prev" href="../phon_stats/">
+        <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../syntax_stats/">
+        <link rel="next" href="../exceptions/">
       
       
         
-          <link rel="alternate" href="./" hreflang="ru">
+          <link rel="alternate" href="../../examples/" hreflang="ru">
         
-          <link rel="alternate" href="../../en/stats/phon_stats_funcs/" hreflang="en">
+          <link rel="alternate" href="./" hreflang="en">
         
       
       
@@ -29,7 +29,7 @@
     
     
       
-        <title>Функции вычисления статистик - RuTS</title>
+        <title>Examples - RuTS</title>
       
     
     
@@ -80,8 +80,8 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
-          Перейти к содержанию
+        <a href="#examples" class="md-skip">
+          Skip to content
         </a>
       
     </div>
@@ -93,8 +93,8 @@
       
 
 <header class="md-header" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Верхний колонтитул">
-    <a href="../.." title="RuTS" class="md-header__button md-logo" aria-label="RuTS" data-md-component="logo">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../" title="RuTS" class="md-header__button md-logo" aria-label="RuTS" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Функции вычисления статистик
+              Examples
             
           </span>
         </div>
@@ -128,20 +128,20 @@
       <div class="md-header__option">
   <div class="md-select">
     
-    <button class="md-header__button md-icon" aria-label="Выберите язык">
+    <button class="md-header__button md-icon" aria-label="Select language">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="./" hreflang="ru" class="md-select__link">
+            <a href="../../examples/" hreflang="ru" class="md-select__link">
               Русский
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="../../en/stats/phon_stats_funcs/" hreflang="en" class="md-select__link">
+            <a href="./" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
@@ -162,16 +162,16 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Поиск" placeholder="Поиск" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
-      <nav class="md-search__options" aria-label="Поиск">
+      <nav class="md-search__options" aria-label="Search">
         
-        <button type="reset" class="md-search__icon md-icon" title="Очистить" aria-label="Очистить" tabindex="-1">
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
@@ -182,7 +182,7 @@
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
-            Инициализация поиска
+            Initializing search
           </div>
           <ol class="md-search-result__list" role="presentation"></ol>
         </div>
@@ -194,7 +194,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/SergeyShk/ruTS" title="Перейти к репозиторию" class="md-source" data-md-component="source">
+        <a href="https://github.com/SergeyShk/ruTS" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -215,49 +215,9 @@
         
           
             
-<nav class="md-tabs" aria-label="Вкладки" data-md-component="tabs">
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
   <div class="md-grid">
     <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../.." class="md-tabs__link">
-          
-  
-  
-  Главная
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../extractors/sentences/" class="md-tabs__link">
-          
-  
-  
-  Извлечение объектов
-
-        </a>
-      </li>
-    
-  
-
       
         
   
@@ -269,11 +229,11 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../basic_stats/" class="md-tabs__link">
+        <a href="../" class="md-tabs__link">
           
   
   
-  Подсчет статистик
+  Home
 
         </a>
       </li>
@@ -289,11 +249,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../corpus/keyness/" class="md-tabs__link">
+        <a href="../extractors/sentences/" class="md-tabs__link">
           
   
   
-  Корпусные меры
+  Extraction
 
         </a>
       </li>
@@ -309,11 +269,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../datasets/sovchlit/" class="md-tabs__link">
+        <a href="../stats/basic_stats/" class="md-tabs__link">
           
   
   
-  Наборы данных
+  Statistics
 
         </a>
       </li>
@@ -329,11 +289,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../visualizers/zipf/" class="md-tabs__link">
+        <a href="../corpus/keyness/" class="md-tabs__link">
           
   
   
-  Визуализации
+  Corpus measures
 
         </a>
       </li>
@@ -349,11 +309,51 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../components/" class="md-tabs__link">
+        <a href="../datasets/sovchlit/" class="md-tabs__link">
           
   
   
-  Компоненты
+  Datasets
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../visualizers/zipf/" class="md-tabs__link">
+          
+  
+  
+  Visualizations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../components/" class="md-tabs__link">
+          
+  
+  
+  Components
 
         </a>
       </li>
@@ -381,9 +381,9 @@
   
 
 
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Навигация" data-md-level="0">
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="RuTS" class="md-nav__button md-logo" aria-label="RuTS" data-md-component="logo">
+    <a href="../" title="RuTS" class="md-nav__button md-logo" aria-label="RuTS" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -393,7 +393,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/SergeyShk/ruTS" title="Перейти к репозиторию" class="md-source" data-md-component="source">
+      <a href="https://github.com/SergeyShk/ruTS" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -410,31 +410,36 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
         
           
-          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Главная
+    Home
   
 
     
@@ -445,12 +450,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Главная
+    Home
   
 
           </label>
@@ -463,14 +468,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    О проекте
+    About
   
 
     
@@ -491,14 +496,139 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Установка
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#text-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running locally
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exceptions and logging
   
 
     
@@ -519,70 +649,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../authors/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Примеры
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../exceptions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Исключения и логирование
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../authors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Авторы
+    Authors
   
 
     
@@ -631,7 +705,7 @@
   <span class="md-ellipsis">
     
   
-    Извлечение объектов
+    Extraction
   
 
     
@@ -647,7 +721,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Извлечение объектов
+    Extraction
   
 
           </label>
@@ -660,14 +734,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extractors/sentences/" class="md-nav__link">
+      <a href="../extractors/sentences/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Извлечение предложений
+    Sentence extraction
   
 
     
@@ -688,14 +762,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extractors/words/" class="md-nav__link">
+      <a href="../extractors/words/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Извлечение слов
+    Word extraction
   
 
     
@@ -716,14 +790,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../extractors/char_ngrams/" class="md-nav__link">
+      <a href="../extractors/char_ngrams/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Извлечение символьных N-грамм
+    Character N-gram extraction
   
 
     
@@ -748,36 +822,31 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Подсчет статистик
+    Statistics
   
 
     
@@ -788,12 +857,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Подсчет статистик
+    Statistics
   
 
           </label>
@@ -806,14 +875,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../basic_stats/" class="md-nav__link">
+      <a href="../stats/basic_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Базовые статистики
+    Basic statistics
   
 
     
@@ -855,7 +924,7 @@
   <span class="md-ellipsis">
     
   
-    Метрики удобочитаемости
+    Readability metrics
   
 
     
@@ -871,7 +940,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Метрики удобочитаемости
+    Readability metrics
   
 
           </label>
@@ -884,14 +953,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../readability_stats/" class="md-nav__link">
+      <a href="../stats/readability_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Metrics module
   
 
     
@@ -912,14 +981,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
+      <a href="../stats/readability_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления метрик
+    Metric functions
   
 
     
@@ -969,7 +1038,7 @@
   <span class="md-ellipsis">
     
   
-    Метрики лексического разнообразия
+    Lexical diversity metrics
   
 
     
@@ -985,7 +1054,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Метрики лексического разнообразия
+    Lexical diversity metrics
   
 
           </label>
@@ -998,14 +1067,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../diversity_stats/" class="md-nav__link">
+      <a href="../stats/diversity_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Metrics module
   
 
     
@@ -1026,14 +1095,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
+      <a href="../stats/diversity_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления метрик
+    Metric functions
   
 
     
@@ -1062,14 +1131,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../morph_stats/" class="md-nav__link">
+      <a href="../stats/morph_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Морфологические статистики
+    Morphological statistics
   
 
     
@@ -1111,7 +1180,7 @@
   <span class="md-ellipsis">
     
   
-    SEO-метрики стиля
+    SEO style metrics
   
 
     
@@ -1127,7 +1196,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    SEO-метрики стиля
+    SEO style metrics
   
 
           </label>
@@ -1140,14 +1209,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../style_stats/" class="md-nav__link">
+      <a href="../stats/style_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Metrics module
   
 
     
@@ -1168,14 +1237,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
+      <a href="../stats/style_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления метрик
+    Metric functions
   
 
     
@@ -1201,8 +1270,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1213,11 +1280,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
         
           
           <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
@@ -1227,7 +1294,7 @@
   <span class="md-ellipsis">
     
   
-    Фоностатистики
+    Phonostatistics
   
 
     
@@ -1238,12 +1305,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_6">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Фоностатистики
+    Phonostatistics
   
 
           </label>
@@ -1256,14 +1323,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../phon_stats/" class="md-nav__link">
+      <a href="../stats/phon_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Statistics module
   
 
     
@@ -1281,44 +1348,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../stats/phon_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления статистик
+    Statistic functions
   
 
     
@@ -1327,125 +1367,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Содержание">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Содержание
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#syllabify" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Деление на слоги
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cv_pattern" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        CV-шаблон
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#is_open_syllable" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Открытый слог
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_consonant_clusters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Консонантные кластеры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_hiatus" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Зияния гласных
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_cv_entropy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Энтропия CV-шаблонов
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#hardness" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Жёсткость
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_alliteration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Индекс аллитерации
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_assonance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Индекс ассонанса
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1487,7 +1408,7 @@
   <span class="md-ellipsis">
     
   
-    Синтаксические статистики
+    Syntactic statistics
   
 
     
@@ -1503,7 +1424,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Синтаксические статистики
+    Syntactic statistics
   
 
           </label>
@@ -1516,14 +1437,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax_stats/" class="md-nav__link">
+      <a href="../stats/syntax_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Statistics module
   
 
     
@@ -1544,14 +1465,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
+      <a href="../stats/syntax_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления статистик
+    Statistic functions
   
 
     
@@ -1601,7 +1522,7 @@
   <span class="md-ellipsis">
     
   
-    Статистики связности
+    Cohesion statistics
   
 
     
@@ -1617,7 +1538,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Статистики связности
+    Cohesion statistics
   
 
           </label>
@@ -1630,14 +1551,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cohesion_stats/" class="md-nav__link">
+      <a href="../stats/cohesion_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Statistics module
   
 
     
@@ -1658,14 +1579,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
+      <a href="../stats/cohesion_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления статистик
+    Statistic functions
   
 
     
@@ -1715,7 +1636,7 @@
   <span class="md-ellipsis">
     
   
-    Статистики лексической сложности
+    Lexical sophistication statistics
   
 
     
@@ -1731,7 +1652,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Статистики лексической сложности
+    Lexical sophistication statistics
   
 
           </label>
@@ -1744,14 +1665,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../lexical_stats/" class="md-nav__link">
+      <a href="../stats/lexical_stats/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Statistics module
   
 
     
@@ -1772,14 +1693,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
+      <a href="../stats/lexical_stats_funcs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Функции вычисления статистик
+    Statistic functions
   
 
     
@@ -1836,7 +1757,7 @@
   <span class="md-ellipsis">
     
   
-    Корпусные меры
+    Corpus measures
   
 
     
@@ -1852,7 +1773,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Корпусные меры
+    Corpus measures
   
 
           </label>
@@ -1865,14 +1786,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/keyness/" class="md-nav__link">
+      <a href="../corpus/keyness/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Ключевые слова
+    Keywords
   
 
     
@@ -1893,14 +1814,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/collocations/" class="md-nav__link">
+      <a href="../corpus/collocations/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Коллокации
+    Collocations
   
 
     
@@ -1921,14 +1842,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/dispersion/" class="md-nav__link">
+      <a href="../corpus/dispersion/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Дисперсия слов
+    Word dispersion
   
 
     
@@ -1949,14 +1870,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/kwic/" class="md-nav__link">
+      <a href="../corpus/kwic/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Конкорданс KWIC
+    KWIC concordance
   
 
     
@@ -1977,14 +1898,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/stylometry/" class="md-nav__link">
+      <a href="../corpus/stylometry/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Стилометрия
+    Stylometry
   
 
     
@@ -2005,14 +1926,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../corpus/compare/" class="md-nav__link">
+      <a href="../corpus/compare/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Сравнение корпусов
+    Corpus comparison
   
 
     
@@ -2061,7 +1982,7 @@
   <span class="md-ellipsis">
     
   
-    Наборы данных
+    Datasets
   
 
     
@@ -2077,7 +1998,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Наборы данных
+    Datasets
   
 
           </label>
@@ -2090,14 +2011,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/sovchlit/" class="md-nav__link">
+      <a href="../datasets/sovchlit/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Soviet literature readers
   
 
     
@@ -2118,14 +2039,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/stalinworks/" class="md-nav__link">
+      <a href="../datasets/stalinworks/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Полное собрание сочинений И.В. Сталина
+    Collected works of Stalin
   
 
     
@@ -2146,14 +2067,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/textsbygrade/" class="md-nav__link">
+      <a href="../datasets/textsbygrade/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Тексты с метками класса
+    Texts with grade labels
   
 
     
@@ -2174,14 +2095,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/freq2011/" class="md-nav__link">
+      <a href="../datasets/freq2011/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Частотный словарь Ляшевской и Шарова
+    Lyashevskaya and Sharoff frequency dictionary
   
 
     
@@ -2202,14 +2123,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/poetrycorpus/" class="md-nav__link">
+      <a href="../datasets/poetrycorpus/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Корпус русской поэзии
+    Russian poetry corpus
   
 
     
@@ -2230,14 +2151,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../datasets/russianliterature/" class="md-nav__link">
+      <a href="../datasets/russianliterature/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Русская классическая литература
+    Russian classical literature
   
 
     
@@ -2286,7 +2207,7 @@
   <span class="md-ellipsis">
     
   
-    Визуализации
+    Visualizations
   
 
     
@@ -2302,7 +2223,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Визуализации
+    Visualizations
   
 
           </label>
@@ -2315,14 +2236,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/zipf/" class="md-nav__link">
+      <a href="../visualizers/zipf/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Закон Ципфа
+    Zipf's law
   
 
     
@@ -2343,14 +2264,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/fingerprinting/" class="md-nav__link">
+      <a href="../visualizers/fingerprinting/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Литературная дактилоскопия
+    Literature fingerprinting
   
 
     
@@ -2371,14 +2292,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/word_tree/" class="md-nav__link">
+      <a href="../visualizers/word_tree/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Дерево слов
+    Word tree
   
 
     
@@ -2399,14 +2320,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/highlight/" class="md-nav__link">
+      <a href="../visualizers/highlight/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Подсветка текста
+    Text highlighting
   
 
     
@@ -2427,14 +2348,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/corpus/" class="md-nav__link">
+      <a href="../visualizers/corpus/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Корпусные графики
+    Corpus plots
   
 
     
@@ -2455,14 +2376,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/stylometry/" class="md-nav__link">
+      <a href="../visualizers/stylometry/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Стилометрические графики
+    Stylometric plots
   
 
     
@@ -2483,14 +2404,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/vocabulary/" class="md-nav__link">
+      <a href="../visualizers/vocabulary/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Рост словаря и спектр частот
+    Vocabulary growth and frequency spectrum
   
 
     
@@ -2511,14 +2432,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../visualizers/sentences/" class="md-nav__link">
+      <a href="../visualizers/sentences/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Длины предложений
+    Sentence lengths
   
 
     
@@ -2567,7 +2488,7 @@
   <span class="md-ellipsis">
     
   
-    Компоненты
+    Components
   
 
     
@@ -2583,7 +2504,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Компоненты
+    Components
   
 
           </label>
@@ -2596,14 +2517,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../components/" class="md-nav__link">
+      <a href="../components/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Компоненты
+    Components
   
 
     
@@ -2637,7 +2558,7 @@
                   <div class="md-sidebar__inner">
                     
 
-<nav class="md-nav md-nav--secondary" aria-label="Содержание">
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
@@ -2646,15 +2567,15 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      Содержание
+      Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#syllabify" class="md-nav__link">
+  <a href="#text-walkthrough" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Деление на слоги
+        Text walkthrough
       
     </span>
   </a>
@@ -2662,87 +2583,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cv_pattern" class="md-nav__link">
+  <a href="#running-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CV-шаблон
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#is_open_syllable" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Открытый слог
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_consonant_clusters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Консонантные кластеры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_hiatus" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Зияния гласных
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_cv_entropy" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Энтропия CV-шаблонов
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#hardness" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Жёсткость
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_alliteration" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Индекс аллитерации
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#calc_assonance" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Индекс ассонанса
+        Running locally
       
     </span>
   </a>
@@ -2769,278 +2613,16 @@
   
 
 
-<h1 id="_1">Функции вычисления статистик<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<h2 id="syllabify">Деление на слоги<a class="headerlink" href="#syllabify" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.syllabify()</strong></p>
-</div>
-<p>Деление слова на слоги по правилу восходящей звучности (Аванесов). Слогов в слове столько, сколько гласных; слово без гласных (предлоги в, к, с) слога не образует - это проклитика, для него возвращается пустой список. Граница слога проходит по правилам:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Правило</th>
-<th style="text-align: center;">Пример</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">одиночный согласный между гласными отходит к следующему слогу</td>
-<td style="text-align: center;">ко-ро-ва, ра-йон</td>
-</tr>
-<tr>
-<td style="text-align: left;">сочетание шумных и шумного с сонорным отходит к следующему слогу</td>
-<td style="text-align: center;">ко-шка, се-стра, о-ткрыть, по-зна-ко-мить</td>
-</tr>
-<tr>
-<td style="text-align: left;">сонорный перед шумным отходит к предыдущему слогу</td>
-<td style="text-align: center;">кар-та, пол-ка</td>
-</tr>
-<tr>
-<td style="text-align: left;">между двумя сонорными проходит граница</td>
-<td style="text-align: center;">вол-на, кар-ман</td>
-</tr>
-<tr>
-<td style="text-align: left;">й перед согласным отходит к предыдущему слогу</td>
-<td style="text-align: center;">май-ка, вой-на</td>
-</tr>
-<tr>
-<td style="text-align: left;">ь и ъ отходят к предыдущей букве</td>
-<td style="text-align: center;">боль-шой, по-дъезд</td>
-</tr>
-<tr>
-<td style="text-align: left;">каждая гласная зияния образует свой слог</td>
-<td style="text-align: center;">а-э-ро-порт, а-ист</td>
-</tr>
-</tbody>
-</table>
-<p>Правила применяются к буквам, а не звукам, поэтому деление орфографическое, как в школьной фонетике, а не морфемное. Символы, кроме русских букв (дефис, цифры, латиница), отбрасываются.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слово</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.phon_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">syllabify</span>
-
-<span class="n">syllabify</span><span class="p">(</span><span class="s2">"здравствуйте"</span><span class="p">)</span>
-<span class="c1"># ['здра', 'вствуй', 'те']</span>
+<h1 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h1>
+<p>Jupyter notebooks in the <a href="https://github.com/SergeyShk/ruTS/tree/master/examples">examples/</a> directory of the repository. Each opens in Google Colab with a button and installs the library and the spaCy model itself; the outputs of all cells are stored in the files, so the notebooks can be read without running.</p>
+<h2 id="text-walkthrough">Text walkthrough<a class="headerlink" href="#text-walkthrough" title="Permanent link">&para;</a></h2>
+<p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb">01_text_walkthrough.ipynb</a> - Chekhov's short story "The Death of a Government Clerk" through every tool of the library in turn: sentence and word extraction, basic statistics, readability with coefficient presets, lexical diversity and windowed computation, morphology, SEO style metrics on fiction and on officialese, phonostatistics, syntax and cohesion from the spaCy parse, lexical sophistication by the frequency dictionary, highlighting, Zipf's law and the sentence length curve. At the end all statistics are attached as spaCy components, and a single <code>nlp.pipe</code> pass over the <code>TextsByGrade</code> dataset yields a table of statistics by text grade. The notebook is in Russian.</p>
+<h2 id="running-locally">Running locally<a class="headerlink" href="#running-locally" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>examples
+uv<span class="w"> </span>run<span class="w"> </span>jupyter<span class="w"> </span>lab<span class="w"> </span>examples/
 </code></pre></div>
-</div>
-<h2 id="cv_pattern">CV-шаблон<a class="headerlink" href="#cv_pattern" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.cv_pattern()</strong></p>
-</div>
-<p>Получение CV-шаблона слова или слога: гласные обозначаются буквой <code>V</code>, согласные - <code>C</code>, ь и ъ пропускаются, остальные символы не учитываются.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слово или слог</td>
-</tr>
-</tbody>
-</table>
-<h2 id="is_open_syllable">Открытый слог<a class="headerlink" href="#is_open_syllable" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.is_open_syllable()</strong></p>
-</div>
-<p>Проверка, является ли слог открытым - оканчивается на гласную; ь и ъ после гласной слог не закрывают.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>syllable</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слог</td>
-</tr>
-</tbody>
-</table>
-<h2 id="calc_consonant_clusters">Консонантные кластеры<a class="headerlink" href="#calc_consonant_clusters" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.calc_consonant_clusters()</strong></p>
-</div>
-<p>Вычисление распределения консонантных кластеров по длине. Кластер - последовательность согласных внутри слова, ь и ъ не прерывают кластер; кластеры длиной 1 - одиночные согласные между гласными или на краях слова. Класс <code>PhonStats</code> считает по распределению долю кластеров из 3 и более согласных (<code>p_heavy_clusters</code>).</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
-</tr>
-</tbody>
-</table>
-<h2 id="calc_hiatus">Зияния гласных<a class="headerlink" href="#calc_hiatus" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.calc_hiatus()</strong></p>
-</div>
-<p>Вычисление количества зияний гласных - двух и более гласных подряд внутри слова: аэропорт, аист, поэзия (о-э). Йотированные е, ё, ю, я после гласной обозначают [j] и гласный и зияния не образуют: заяц, моя, красивая, читает - иначе окончания прилагательных и глаголов давали бы четыре пятых всех зияний. Класс <code>PhonStats</code> делит количество зияний на количество слов (<code>p_hiatus</code>).</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
-</tr>
-</tbody>
-</table>
-<h2 id="calc_cv_entropy">Энтропия CV-шаблонов<a class="headerlink" href="#calc_cv_entropy" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.calc_cv_entropy()</strong></p>
-</div>
-<p>Вычисление энтропии Шеннона распределения слов по CV-шаблону в битах: чем выше значение, тем разнообразнее фонетическая форма слов текста. Слова без гласных и согласных (числа, латиница) не учитываются; если таких слов нет вовсе, функция возвращает <code>nan</code>.</p>
-<p>Формула:</p>
-<div class="arithmatex">\[
-H = -\sum_k p_k \log_2 p_k
-\]</div>
-<p>где <span class="arithmatex">\(p_k\)</span> - доля слов с шаблоном <span class="arithmatex">\(k\)</span>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
-</tr>
-</tbody>
-</table>
-<h2 id="hardness">Жёсткость<a class="headerlink" href="#hardness" title="Permanent link">&para;</a></h2>
-<p>Атрибут <code>hardness</code> класса <code>PhonStats</code> - отношение количества глухих шумных согласных к количеству гласных и сонорных. Чем выше значение, тем «жёстче» звучание текста. Не определено для текстов без гласных и сонорных.</p>
-<p>Формула:</p>
-<div class="arithmatex">\[
-\frac{\textrm{Глухие шумные}}{\textrm{Гласные}+\textrm{Сонорные}}
-\]</div>
-<h2 id="calc_alliteration">Индекс аллитерации<a class="headerlink" href="#calc_alliteration" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.calc_alliteration()</strong></p>
-</div>
-<p>Вычисление индекса аллитерации - отношения наблюдаемого числа окон из <code>window_len</code> соседних слов, в которых один и тот же согласный встречается минимум в двух словах, к ожидаемому при независимом распределении согласных по словам (сумма по всем согласным). Ожидаемое считается по частотам согласных в самом тексте, поэтому индекс показывает, сгруппированы ли повторы в соседних словах, а не общую частоту звука. Значение около 1 - повторы согласных случайны, заметно больше 1 - аллитерация. Считается по буквам без учета оглушения.</p>
-<p>Формула для одной буквы с долей слов <span class="arithmatex">\(p\)</span>, содержащих её, и окном из <span class="arithmatex">\(w\)</span> слов:</p>
-<div class="arithmatex">\[
-E = N_w\left(1-(1-p)^w-w\,p\,(1-p)^{w-1}\right)
-\]</div>
-<p>где <span class="arithmatex">\(N_w\)</span> - количество окон; индекс равен <span class="arithmatex">\(\sum O / \sum E\)</span> по всем буквам.</p>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для текстов короче окна функция возвращает <code>nan</code>.</p>
-</div>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>3</code></td>
-<td style="text-align: center;">Размер окна в словах</td>
-</tr>
-</tbody>
-</table>
-<h2 id="calc_assonance">Индекс ассонанса<a class="headerlink" href="#calc_assonance" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.calc_assonance()</strong></p>
-</div>
-<p>Вычисление индекса ассонанса - той же величины, что <a href="#calc_alliteration">индекс аллитерации</a>, но для гласных. Считается по всем гласным буквам без учета ударения и редукции.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>3</code></td>
-<td style="text-align: center;">Размер окна в словах</td>
-</tr>
-</tbody>
-</table>
+<p><code>make notebooks</code> executes all notebooks, writes the outputs into the files and strips the execution metadata; the <code>examples.yml</code> workflow runs the notebooks on a schedule and on demand.</p>
 
 
 
@@ -3128,7 +2710,7 @@ E = N_w\left(1-(1-p)^w-w\,p\,(1-p)^{w-1}\right)
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
