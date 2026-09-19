@@ -2681,7 +2681,7 @@
 
 <h1 id="corpus-comparison">Corpus comparison<a class="headerlink" href="#corpus-comparison" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.compare_corpora()</strong>, <strong>ruts.corpus.corpus_features()</strong>, <strong>ruts.corpus.text_features()</strong>, <strong>ruts.corpus.split_windows()</strong>, <strong>ruts.corpus.sentence_rhythm()</strong></p>
+<p><strong>ruts.corpus.compare_corpora()</strong>, <strong>ruts.corpus.compare_features()</strong>, <strong>ruts.corpus.corpus_features()</strong>, <strong>ruts.corpus.text_features()</strong>, <strong>ruts.corpus.split_windows()</strong>, <strong>ruts.corpus.sentence_rhythm()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Comparison of two corpora across all text features at once: which statistics distinguish authors, genres, translations, human and generated texts - and by how much. For individual words <a href="../keyness/"><code>keyness</code></a> does the same, for distances between texts - <a href="../stylometry/#delta"><code>delta</code></a>.</p>
@@ -2729,7 +2729,8 @@
 </tr>
 </tbody>
 </table>
-<p>A 1000-word window takes about 0.1 s. Features over the spaCy parse (<code>SyntaxStats</code>, <code>CohesionStats</code>) are not in the default set - the function works on strings; they can be added with your own feature function via <code>features</code>, see the example below. <code>corpus_features(texts, window, features)</code> returns the feature matrix of the windows indexed by (text number, window number) - for your own classifiers.</p>
+<p>A 1000-word window takes about 0.1 s. Features over the spaCy parse (<code>SyntaxStats</code>, <code>CohesionStats</code>) are not in the default set - the function works on strings; they can be added with your own feature function via <code>features</code>, see the example below. <code>corpus_features(texts, window, features)</code> returns the feature matrix of the windows indexed by (text number, window number) - for your own classifiers, and <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> compares two such tables: <code>compare_corpora</code> is <code>corpus_features</code> for each corpus followed by <code>compare_features</code>. The split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.</p>
+<p>The shares of spaces, letters and punctuation marks (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
 <p>For a feature with values <span class="arithmatex">\(x_1 \dots x_{n_A}\)</span> in corpus A and <span class="arithmatex">\(y_1 \dots y_{n_B}\)</span> in corpus B (undefined and infinite values dropped; with fewer than two values on a side - <code>nan</code>):</p>
 <table>

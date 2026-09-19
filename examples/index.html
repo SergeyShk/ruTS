@@ -609,6 +609,17 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
+        Попарное сравнение прозаиков
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         Запуск локально
       
     </span>
@@ -2608,6 +2619,17 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
+        Попарное сравнение прозаиков
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         Запуск локально
       
     </span>
@@ -2643,7 +2665,10 @@
 <h2 id="_3">Сложность текста по ступеням обучения<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb">02_text_complexity_by_grade.ipynb</a> - 68 текстов <code>TextsByGrade</code> с меткой класса от 1 до 17 как одна ось сложности, на которую по очереди накладываются все группы статистик: корреляция Спирмена одиннадцати формул удобочитаемости с меткой и их ошибка в классах, три пресета коэффициентов, лексическое разнообразие (с классом не связано) против лексической сложности по частотному словарю, синтаксис и морфология (именная нагрузка, глубина дерева, пассив, доля глаголов), связность, распределения по ступеням обучения и проверка на независимой хрестоматии для первого класса <code>SovChLit</code>.</p>
-<h2 id="_4">Запуск локально<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_4">Попарное сравнение прозаиков<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb">03_prose_authors.ipynb</a> - десять прозаиков <code>RussianLiterature</code> по 200 окон в 1000 слов, 130 признаков <code>text_features</code> и дельта Клиффа для 45 пар: три сильнейших признака каждой пары, подробный разбор Толстого и Достоевского (<code>compare_features</code>, распределения признаков, ключевые слова - речь против повествования), число признаков с большим эффектом как расстояние (от 6 у Гоголя-Тургенева до 67 у Герцена-Достоевского), признаки оформления издания (кавычки, ё), которые надо исключать, универсальные различители (точка с запятой, многоточие, длина слова, оконные меры разнообразия), дендрограмма и многомерное шкалирование по признакам и по дельте Барроуза с корреляцией двух матриц расстояний.</p>
+<h2 id="_5">Запуск локально<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>examples
 uv<span class="w"> </span>run<span class="w"> </span>jupyter<span class="w"> </span>lab<span class="w"> </span>examples/
 </code></pre></div>
