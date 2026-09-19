@@ -51,6 +51,7 @@ make docs-build  # mkdocs build --strict, если менялась докуме
 - `tests/` - тесты, повторяющие структуру пакета; `conftest.py` в корне обслуживает doctest.
 - `docs/` - документация MkDocs (Material), `mkdocs.yml` - навигация и перевод её на английский.
 - `demo/` - демо на Gradio для Hugging Face Spaces.
-- `.github/workflows/` - CI (`ci.yml`), публикация (`publish.yml`), документация (`docs.yml`), демо (`demo.yml`).
+- `examples/` - ноутбуки с примерами; после правок выполняются командой `make notebooks`, выводы хранятся в файлах.
+- `.github/workflows/` - CI (`ci.yml`), публикация (`publish.yml`), документация (`docs.yml`), демо (`demo.yml`), ноутбуки (`examples.yml`, по расписанию и вручную).
 
 Версия хранится только в `pyproject.toml`; релизы выпускаются через GitHub Release, изменения описываются в его заметках, отдельного файла CHANGELOG нет.

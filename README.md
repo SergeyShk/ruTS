@@ -24,6 +24,7 @@
   <a href="https://github.com/SergeyShk/ruTS/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/sergeyshk/ruts.svg" alt="Лицензия"></a>
   <img src="https://img.shields.io/pypi/dm/ruTS" alt="Загрузки">
   <a href="https://huggingface.co/spaces/SergeyShk/ruTS"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Spaces-демо-blue" alt="Демо на Hugging Face Spaces"></a>
+  <a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>
   <a href="https://doi.org/10.5281/zenodo.22837587"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22837587.svg" alt="DOI"></a>
 </p>
 
@@ -106,6 +107,8 @@ python -m spacy download ru_core_news_sm
 >>> DiversityStats(text).ttr
 0.8888888888888888
 ```
+
+Сквозной разбор одного рассказа всеми инструментами библиотеки - в ноутбуке [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), его можно открыть в [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); остальные ноутбуки - на странице [примеров](https://sergeyshk.github.io/ruTS/examples/).
 
 ## Возможности
 
@@ -864,6 +867,7 @@ uv run pre-commit install
         *   word_tree.py - Дерево слов
         *   zipf.py - Закон Ципфа
 *   **tests** - тесты, повторяющие структуру пакета
+*   **examples** - ноутбуки с примерами
 
 </details>
 

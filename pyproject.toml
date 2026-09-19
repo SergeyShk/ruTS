@@ -92,16 +92,19 @@ docs = [
     "mkdocs-static-i18n>=1.2",
     "pymdown-extensions>=10.0",
 ]
+examples = ["jupyterlab>=4.3", "nbmake>=1.5"]
 dev = [
     { include-group = "test" },
     { include-group = "lint" },
     { include-group = "docs" },
+    { include-group = "examples" },
 ]
 
 [tool.ruff]
 target-version = "py311"
 line-length = 99
 src = ["ruts", "tests"]
+extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
 select = [
