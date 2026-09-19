@@ -17,9 +17,9 @@ uv: ## Проверить наличие uv
 
 deps: uv ## Установить зависимости
 ifeq ($(MODE), ci)
-	uv sync --locked --all-groups
+	uv sync --locked --all-groups --no-group examples
 else
-	uv sync --all-groups
+	uv sync --all-groups --no-group examples
 endif
 
 lock: uv ## Обновить lock-файл до последних версий зависимостей
@@ -81,8 +81,10 @@ docs-build: deps ## Собрать документацию
 	rm -fr site/
 	uv run mkdocs build --strict
 
-notebooks: deps ## Выполнить ноутбуки из examples/ и записать вывод в файлы
+notebooks: uv ## Выполнить ноутбуки из examples/ и записать вывод в файлы
+	uv sync --group examples
 	uv run pytest --nbmake --overwrite $(EXAMPLES_PATH) -p no:cacheprovider
+	uv run nbstripout --keep-output --keep-count --extra-keys metadata.language_info.version $(EXAMPLES_PATH)/*.ipynb
 
 docs-serve: deps ## Запустить сервер документации
 	uv run mkdocs serve

@@ -11,8 +11,8 @@
 ## Запуск локально
 
 ``` bash
-uv sync --all-groups
+uv sync --group examples
 uv run jupyter lab examples/
 ```
 
-Команда `make notebooks` выполняет все ноутбуки и записывает выводы в файлы; она же запускается workflow `examples.yml` по расписанию и вручную.
+Команда `make notebooks` выполняет все ноутбуки, записывает выводы в файлы и убирает метаданные выполнения; workflow `examples.yml` прогоняет ноутбуки по расписанию и вручную.

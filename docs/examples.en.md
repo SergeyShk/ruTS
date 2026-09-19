@@ -11,8 +11,8 @@ Jupyter notebooks in the [examples/](https://github.com/SergeyShk/ruTS/tree/mast
 ## Running locally
 
 ``` bash
-uv sync --all-groups
+uv sync --group examples
 uv run jupyter lab examples/
 ```
 
-`make notebooks` executes all notebooks and writes the outputs into the files; the `examples.yml` workflow runs the same on a schedule and on demand.
+`make notebooks` executes all notebooks, writes the outputs into the files and strips the execution metadata; the `examples.yml` workflow runs the notebooks on a schedule and on demand.

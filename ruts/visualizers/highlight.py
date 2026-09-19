@@ -290,6 +290,9 @@ class HighlightedText:
     def _repr_html_(self) -> str:
         return self.to_html()
 
+    def __repr__(self) -> str:
+        return f"HighlightedText(counts={self.counts})"
+
     def _render_text(self) -> str:
         chunks = []
         for start, end, active in split_segments(len(self.text), self.highlights):

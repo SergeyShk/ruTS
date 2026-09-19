@@ -77,8 +77,10 @@ This way you get the latest version of the library straight from the project rep
     For development it is more convenient to use [uv](https://docs.astral.sh/uv/), which creates an isolated environment and installs all dependencies, including the development tools:
 
     ``` bash
-    uv sync --all-groups
+    uv sync --all-groups --no-group examples
     ```
+
+    The `examples` group with Jupyter is needed only for the [example notebooks](examples.md).
 
 !!! note "Note"
     A detailed guide to the `git` version control system is available on its [website](https://git-scm.com/).

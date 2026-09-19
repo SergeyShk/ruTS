@@ -13,6 +13,11 @@ repos:
         exclude: ^ruts/datasets/data/
       - id: check-merge-conflict
 
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
+        args: [--keep-output, --keep-count, --extra-keys, metadata.language_info.version]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.6
     hooks:
