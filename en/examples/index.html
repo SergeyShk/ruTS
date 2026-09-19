@@ -595,6 +595,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#text-complexity-by-school-grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text complexity by school grade
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2583,6 +2594,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#text-complexity-by-school-grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text complexity by school grade
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2618,6 +2640,9 @@
 <h2 id="text-walkthrough">Text walkthrough<a class="headerlink" href="#text-walkthrough" title="Permanent link">&para;</a></h2>
 <p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb">01_text_walkthrough.ipynb</a> - Chekhov's short story "The Death of a Government Clerk" through every tool of the library in turn: sentence and word extraction, basic statistics, readability with coefficient presets, lexical diversity and windowed computation, morphology, SEO style metrics on fiction and on officialese, phonostatistics, syntax and cohesion from the spaCy parse, lexical sophistication by the frequency dictionary, highlighting, Zipf's law and the sentence length curve. At the end all statistics are attached as spaCy components, and a single <code>nlp.pipe</code> pass over the <code>TextsByGrade</code> dataset yields a table of statistics by text grade. The notebook is in Russian.</p>
+<h2 id="text-complexity-by-school-grade">Text complexity by school grade<a class="headerlink" href="#text-complexity-by-school-grade" title="Permanent link">&para;</a></h2>
+<p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb">02_text_complexity_by_grade.ipynb</a> - the 68 <code>TextsByGrade</code> texts labelled with grades 1 to 17 as a single complexity axis onto which every group of statistics is laid in turn: Spearman correlation of the eleven readability formulas with the label and their error in grades, three coefficient presets, lexical diversity (unrelated to grade) versus lexical sophistication by the frequency dictionary, syntax and morphology (nominal load, tree depth, passive, share of verbs), cohesion, distributions by school stage and a check on the independent first-grade reader <code>SovChLit</code>. The notebook is in Russian.</p>
 <h2 id="running-locally">Running locally<a class="headerlink" href="#running-locally" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>examples
 uv<span class="w"> </span>run<span class="w"> </span>jupyter<span class="w"> </span>lab<span class="w"> </span>examples/
