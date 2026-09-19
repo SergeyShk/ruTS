@@ -46,6 +46,8 @@ This installs the release version of the library with all dependencies.
     python -m spacy download ru_core_news_sm
     ```
 
+    The larger models `ru_core_news_md` and `ru_core_news_lg` make no sense for ruTS statistics: in our measurements on the gold Universal Dependencies annotation (Taiga and GSD) they are less than one UAS point more accurate than `sm`, the text-level statistics of the three models coincide (correlation above 0.95 for 40 of 53), and they weigh 93 and 670 MB against 47.
+
 !!! note "Datasets"
     The [datasets](datasets/sovchlit.md) are downloaded by default into the `ruts_data` directory next to the package (`DEFAULT_DATA_DIR` in `ruts.constants`): for an installation from a wheel that is `site-packages/ruts_data`, where writing may be forbidden for a system Python. In that case pass your own directory in the `data_dir` argument when creating a dataset.
 

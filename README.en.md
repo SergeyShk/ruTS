@@ -71,6 +71,8 @@ Working with spaCy components and syntactic statistics requires the Russian-lang
 python -m spacy download ru_core_news_sm
 ```
 
+The `md` and `lg` models are not worth it: in our measurements on the gold Universal Dependencies annotation they are less than one point more accurate than `sm`, and the text-level statistics of the three models coincide.
+
 For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pymorphy3 (CPython only) - morphological analysis of word forms gets about 5x faster.
 
 ## Quick start
