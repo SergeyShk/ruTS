@@ -6,5 +6,6 @@
 |---|---|---|
 | [01_text_walkthrough.ipynb](01_text_walkthrough.ipynb) | Сквозной разбор рассказа Чехова всеми инструментами библиотеки и обработка корпуса компонентами spaCy | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb) |
 | [02_text_complexity_by_grade.ipynb](02_text_complexity_by_grade.ipynb) | Формулы удобочитаемости, лексика, синтаксис, морфология и связность против метки класса на `TextsByGrade`, проверка на хрестоматии `SovChLit` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb) |
+| [03_prose_authors.ipynb](03_prose_authors.ipynb) | Десять прозаиков `RussianLiterature` попарно: дельта Клиффа по 130 признакам, признаки оформления, близость авторов и сверка с дельтой Барроуза | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb) |
 
 Локально: `uv sync --group examples`, затем `uv run jupyter lab examples/`. `make notebooks` выполняет все ноутбуки заново, записывает выводы в файлы и убирает метаданные выполнения.

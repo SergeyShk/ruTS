@@ -1,7 +1,7 @@
 # Corpus comparison
 
 !!! info ""
-    **ruts.corpus.compare_corpora()**, **ruts.corpus.corpus_features()**, **ruts.corpus.text_features()**, **ruts.corpus.split_windows()**, **ruts.corpus.sentence_rhythm()**
+    **ruts.corpus.compare_corpora()**, **ruts.corpus.compare_features()**, **ruts.corpus.corpus_features()**, **ruts.corpus.text_features()**, **ruts.corpus.split_windows()**, **ruts.corpus.sentence_rhythm()**
 
 ## Description
 
@@ -22,7 +22,9 @@ The texts of both corpora are cut into windows of equal size (`split_windows`: t
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths (`sentence_rhythm`) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 
-A 1000-word window takes about 0.1 s. Features over the spaCy parse (`SyntaxStats`, `CohesionStats`) are not in the default set - the function works on strings; they can be added with your own feature function via `features`, see the example below. `corpus_features(texts, window, features)` returns the feature matrix of the windows indexed by (text number, window number) - for your own classifiers.
+A 1000-word window takes about 0.1 s. Features over the spaCy parse (`SyntaxStats`, `CohesionStats`) are not in the default set - the function works on strings; they can be added with your own feature function via `features`, see the example below. `corpus_features(texts, window, features)` returns the feature matrix of the windows indexed by (text number, window number) - for your own classifiers, and `compare_features(table_a, table_b, labels, n_bootstrap, seed)` compares two such tables: `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`. The split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
+
+The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
 
 ## Statistics
 

@@ -112,6 +112,10 @@ def text_features(text: str) -> dict[str, float]:
         базовые статистики считаются один раз (ReadabilityStats получает готовый
         BasicStats); на окно в 1000 слов уходит около 0.1 с, большая часть -
         разбор pymorphy3
+        Доли пробелов, букв и знаков (basic_p_spaces, basic_p_letters,
+        basic_p_punctuations) считаются по символам как есть: отступы строк,
+        двойные и неразрывные пробелы файлов отражают верстку издания, а не
+        текст, и в корпусе из разных источников их стоит схлопнуть заранее
 
     Аргументы:
         text (str): Строка текста
@@ -314,6 +318,42 @@ def compare_corpora(
     feature_function = features or text_features
     table_a = corpus_features(a, window, feature_function)
     table_b = corpus_features(b, window, feature_function)
+    return compare_features(table_a, table_b, labels, n_bootstrap, seed)
+
+
+def compare_features(
+    table_a: pd.DataFrame,
+    table_b: pd.DataFrame,
+    labels: tuple[str, str] = ("A", "B"),
+    n_bootstrap: int = 1000,
+    seed: int | None = 0,
+) -> pd.DataFrame:
+    """
+    Сравнение двух корпусов по готовым таблицам признаков окон
+
+    Описание:
+        Вторая половина compare_corpora: таблицы признаков (corpus_features
+        или свои) сравниваются по каждому столбцу, как описано там же. Нужна,
+        когда признаки посчитаны один раз для нескольких корпусов, а сравнить
+        надо пары - например, всех авторов попарно. Столбцы, которых нет
+        в одной из таблиц, сравниваются с пустым набором значений и дают nan
+
+    Аргументы:
+        table_a (DataFrame): Признаки окон первого корпуса (строки - окна)
+        table_b (DataFrame): Признаки окон второго корпуса
+        labels (tuple[str, str]): Имена корпусов для столбцов (mean_<a>, ...)
+        n_bootstrap (int): Число выборок бутстрэпа
+        seed (int): Зерно генератора случайных чисел; None - случайное
+
+    Вывод:
+        DataFrame: Признаки × статистики сравнения (COMPARISON_COLUMNS
+            с именами корпусов в столбцах)
+
+    Исключения:
+        ParameterError: Если число выборок меньше единицы
+    """
+    if n_bootstrap < 1:
+        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
     rng = np.random.default_rng(seed)
     rows = {}
     for name in table_a.columns.union(table_b.columns, sort=False):

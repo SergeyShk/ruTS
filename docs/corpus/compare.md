@@ -1,7 +1,7 @@
 # Сравнение корпусов
 
 !!! info ""
-    **ruts.corpus.compare_corpora()**, **ruts.corpus.corpus_features()**, **ruts.corpus.text_features()**, **ruts.corpus.split_windows()**, **ruts.corpus.sentence_rhythm()**
+    **ruts.corpus.compare_corpora()**, **ruts.corpus.compare_features()**, **ruts.corpus.corpus_features()**, **ruts.corpus.text_features()**, **ruts.corpus.split_windows()**, **ruts.corpus.sentence_rhythm()**
 
 ## Описание
 
@@ -22,7 +22,9 @@
 | `sents_` | средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (`sentence_rhythm`) - ритм текста | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | частоты знаков по типам на 1000 слов и доля буквы ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 
-На окно в 1000 слов уходит около 0.1 с. Признаки по разбору spaCy (`SyntaxStats`, `CohesionStats`) в набор по умолчанию не входят - функция работает по строкам; их можно добавить своей функцией признаков через `features`, см. пример ниже. `corpus_features(texts, window, features)` отдает матрицу признаков окон с индексом (номер текста, номер окна) - для своих классификаторов.
+На окно в 1000 слов уходит около 0.1 с. Признаки по разбору spaCy (`SyntaxStats`, `CohesionStats`) в набор по умолчанию не входят - функция работает по строкам; их можно добавить своей функцией признаков через `features`, см. пример ниже. `corpus_features(texts, window, features)` отдает матрицу признаков окон с индексом (номер текста, номер окна) - для своих классификаторов, а `compare_features(table_a, table_b, labels, n_bootstrap, seed)` сравнивает две такие таблицы: `compare_corpora` - это `corpus_features` для каждого корпуса и `compare_features`. Разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.
+
+Доли пробелов, букв и знаков (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) считаются по символам как есть: отступы строк, двойные и неразрывные пробелы в файлах отражают верстку издания, а не текст. В корпусе из разных источников их стоит схлопнуть заранее, например `re.sub(r"[^\S\n]+", " ", text)`.
 
 ## Статистики
 
