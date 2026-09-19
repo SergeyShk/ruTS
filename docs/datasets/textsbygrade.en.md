@@ -40,7 +40,7 @@ The dataset is used in the library tests to check the readability formulas: the 
 
 A breakdown over all groups of statistics - coefficient presets, lexis, syntax, morphology, cohesion and a check on the `SovChLit` reader - is in the notebook [02_text_complexity_by_grade.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb).
 
-The mean consensus grade grows with the label: 3.0 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.4 for 10-11 and 21.8 for documents labeled 12-17. The large error on documents is expected: the grade formulas are calibrated on school texts, and label 17 is nominal.
+The mean consensus grade grows with the label: 3.2 for grade 1, 5.8 for grades 3-4, 6.6 for 5-9, 7.4 for 10-11 and 22.4 for documents labeled 12-17. The large error on documents is expected: the grade formulas are calibrated on school texts, and label 17 is nominal.
 
 ## Parameters
 
