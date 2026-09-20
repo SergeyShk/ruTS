@@ -367,7 +367,7 @@ def test_too_many_moves(stress_dict):
     assert vs.meter == "ямб"
     assert vs.p_deviations == 0.0
     assert vs.accentuate().split("\n")[4] == "Когда́ реки́ воды́ теку́т"
-    # Три переноса на семнадцать словарных ударений - еще подгонка подвижных форм
+    # Три переноса на восемнадцать словарных ударений - еще подгонка подвижных форм
     vs = VerseStats(f"{ONEGIN}\n{line}\nКогда воды не в шутку мог", stress_dict)
     assert vs.meter == "ямб"
     assert vs.accentuate().split("\n")[5] == "Когда́ воды́ не в шу́тку мо́г"
