@@ -20,6 +20,7 @@ from .components import (
     ReadabilityStatsComponent,
     StyleStatsComponent,
     SyntaxStatsComponent,
+    VerseStatsComponent,
 )
 from .diversity_stats import DiversityStats
 from .exceptions import (
@@ -39,6 +40,7 @@ from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
+from .verse_stats import VerseStats
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -82,6 +84,8 @@ __all__ = [
     "SyntaxStats",
     "SyntaxStatsComponent",
     "UnknownStatError",
+    "VerseStats",
+    "VerseStatsComponent",
     "WordsExtractor",
     "__version__",
 ]

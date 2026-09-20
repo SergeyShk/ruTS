@@ -435,3 +435,56 @@ The dictionary directory is passed via `config`:
     ``` python
     nlp.add_pipe("lexical", config={"data_dir": "/path/to/dicts"}, last=True)
     ```
+
+## VerseStatsComponent
+
+!!! info ""
+    **ruts.components.VerseStatsComponent**
+
+A module for the verse statistics component. It requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary; the component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `nlp` | Language | `-` | Language object |
+| `name` | str | `"verse"` | Component name in the pipeline |
+| `data_dir` | str | `None` | Path to the stress dictionary directory; if not given, the default directory is used |
+
+Usage example:
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    # Import the libraries
+    import ruts
+    import spacy
+
+    # Load the spaCy model
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Add the component
+    nlp.add_pipe("verse", last=True)
+
+    # Access the computed statistics
+    doc = nlp(
+        "Буря мглою небо кроет,\nВихри снежные крутя;\nТо, как зверь, она завоет,\nТо заплачет, как дитя"
+    )
+    doc._.verse.meter, doc._.verse.n_feet
+    ```
+
+    _Result_:
+
+    ``` bash
+    ('хорей', 4)
+    ```
+
+The dictionary directory is passed via `config`:
+
+!!! example "Example"
+
+    ``` python
+    nlp.add_pipe("verse", config={"data_dir": "/path/to/dicts"}, last=True)
+    ```

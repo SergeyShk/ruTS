@@ -9,6 +9,7 @@ from ruts import (
     ReadabilityStats,
     StyleStats,
     SyntaxStats,
+    VerseStats,
 )
 from ruts.constants import (
     BASIC_STATS_DESC,
@@ -21,8 +22,10 @@ from ruts.constants import (
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
+    VERSE_STATS_DESC,
 )
-from ruts.datasets import FreqDict
+from ruts.datasets import FreqDict, StressDict
+from ruts.datasets.stress_dict import FILENAME as STRESS_FILENAME
 from ruts.utils import iter_doc_words
 
 text = (
@@ -215,6 +218,23 @@ def test_component_lexical(tmp_path):
         LexicalStats(doc, freq_dict=FreqDict(data_dir=tmp_path)).get_stats(), nan_ok=True
     )
     assert doc._.lexical.freq_dict.data_dir == tmp_path.resolve()
+
+
+def test_component_verse(tmp_path):
+    from tests.test_verse_stats import ROWS, STORM
+
+    lines = "\n".join("\t".join(row) for row in sorted(ROWS)) + "\n"
+    tmp_path.joinpath(STRESS_FILENAME).write_text(lines, encoding="utf-8")
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("verse", config={"data_dir": str(tmp_path)})
+    doc = nlp(STORM)
+    for key in VERSE_STATS_DESC:
+        assert hasattr(doc._.verse, key)
+    assert doc._.verse.meter == "хорей"
+    assert doc._.verse.get_stats() == pytest.approx(
+        VerseStats(doc, stress_dict=StressDict(data_dir=tmp_path)).get_stats(), nan_ok=True
+    )
+    assert doc._.verse.stress_dict.data_dir == tmp_path.resolve()
 
 
 def test_component_syntax_requires_parser():

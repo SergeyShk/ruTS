@@ -37,6 +37,9 @@ nav:
         - Статистики лексической сложности:
           - Модуль вычисления статистик: stats/lexical_stats.md
           - Функции вычисления статистик: stats/lexical_stats_funcs.md
+        - Стиховедческие статистики:
+          - Модуль вычисления статистик: stats/verse_stats.md
+          - Функции вычисления статистик: stats/verse_stats_funcs.md
     - Корпусные меры:
         - Ключевые слова: corpus/keyness.md
         - Коллокации: corpus/collocations.md
@@ -51,6 +54,7 @@ nav:
         - Частотный словарь Ляшевской и Шарова: datasets/freq2011.md
         - Корпус русской поэзии: datasets/poetrycorpus.md
         - Русская классическая литература: datasets/russianliterature.md
+        - Словарь ударений Козиева: datasets/stressdict.md
     - Визуализации:
         - Закон Ципфа: visualizers/zipf.md
         - Литературная дактилоскопия: visualizers/fingerprinting.md
@@ -118,6 +122,7 @@ plugins:
             Синтаксические статистики: Syntactic statistics
             Статистики связности: Cohesion statistics
             Статистики лексической сложности: Lexical sophistication statistics
+            Стиховедческие статистики: Verse statistics
             Корпусные меры: Corpus measures
             Ключевые слова: Keywords
             Коллокации: Collocations
@@ -132,6 +137,7 @@ plugins:
             Частотный словарь Ляшевской и Шарова: Lyashevskaya and Sharoff frequency dictionary
             Корпус русской поэзии: Russian poetry corpus
             Русская классическая литература: Russian classical literature
+            Словарь ударений Козиева: Koziev stress dictionary
             Визуализации: Visualizations
             Закон Ципфа: Zipf's law
             Литературная дактилоскопия: Literature fingerprinting

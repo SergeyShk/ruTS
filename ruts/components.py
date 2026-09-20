@@ -23,6 +23,7 @@ from .constants import (
     PHON_WINDOW_LEN,
 )
 from .datasets.freq2011 import FreqDict
+from .datasets.stress_dict import StressDict
 from .diversity_stats import DiversityStats
 from .diversity_stats import check_params as check_diversity_params
 from .lexical_stats import LexicalStats
@@ -33,6 +34,7 @@ from .readability_stats import ReadabilityStats, check_preset
 from .style_stats import StyleStats
 from .style_stats import check_params as check_style_params
 from .syntax_stats import SyntaxStats
+from .verse_stats import VerseStats
 
 
 @Language.factory("basic")
@@ -468,4 +470,55 @@ class LexicalStatsComponent:
         """
         ls = LexicalStats(doc, freq_dict=self.freq_dict)
         doc._.set(self.name, ls)
+        return doc
+
+
+@Language.factory("verse")
+class VerseStatsComponent:
+    """
+    Класс для компонента стиховедческих статистик текста
+
+    Описание:
+        Компонент работает по тексту Doc с переносами строк, поэтому текст
+        стихотворения нужно передавать в nlp как есть, не склеивая строки
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe('verse', last=True)
+        <ruts.components.VerseStatsComponent object at 0x...>
+
+    Словарь ударений из другой директории:
+        >>> nlp.add_pipe('verse', name='verse_dicts', config={'data_dir': '/path/to/dicts'}, last=True)
+        <ruts.components.VerseStatsComponent object at 0x...>
+
+    Доступ к извлеченным статистикам:
+        >>> doc = nlp("Буря мглою небо кроет,\\nВихри снежные крутя;\\nТо, как зверь, она завоет,\\nТо заплачет, как дитя")
+        >>> doc._.verse.meter, doc._.verse.n_feet
+        ('хорей', 4)
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+        data_dir (str): Путь к директории со словарем ударений; если не задан,
+            используется директория по умолчанию
+    """
+
+    def __init__(self, nlp: Language, name: str = "verse", data_dir: str | None = None):
+        self.name = name
+        self.stress_dict = StressDict(data_dir) if data_dir else StressDict()
+        Doc.set_extension(self.name, default=None, force=True)
+
+    def __call__(self, doc: Doc) -> Doc:
+        """
+        Добавление извлеченных статистик в компонент
+
+        Аргументы:
+            doc (Doc): Объект Doc
+
+        Вывод:
+            doc (Doc): Модифицированный объект Doc
+        """
+        vs = VerseStats(doc, stress_dict=self.stress_dict)
+        doc._.set(self.name, vs)
         return doc
