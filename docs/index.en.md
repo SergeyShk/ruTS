@@ -20,8 +20,9 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 *   compute [syntactic statistics](stats/syntax_stats.md) over the spaCy dependency tree (dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains)
 *   compute [cohesion statistics](stats/cohesion_stats.md) (noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class)
 *   compute [lexical sophistication statistics](stats/lexical_stats.md) (word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density)
+*   compute [verse statistics](stats/verse_stats.md) (stresses by the Koziev dictionary, meter and number of feet, pyrrhics and stress profile, rhyme schemes, line endings and stanzas)
 *   compute corpus measures ([keywords](corpus/keyness.md) relative to a reference corpus or a frequency dictionary, [collocations](corpus/collocations.md), [word dispersion](corpus/dispersion.md) across text parts, [KWIC concordance](corpus/kwic.md)) and [stylometry](corpus/stylometry.md) measures (Burrows's Delta with its variants, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile), [compare corpora](corpus/compare.md) across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)
-*   work with ready-to-use text datasets ([Soviet literature readers](datasets/sovchlit.md), [Collected works of Stalin](datasets/stalinworks.md), [Texts with grade labels](datasets/textsbygrade.md), [Lyashevskaya and Sharoff frequency dictionary](datasets/freq2011.md), [Russian poetry corpus](datasets/poetrycorpus.md), [Russian classical literature](datasets/russianliterature.md))
+*   work with ready-to-use text datasets ([Soviet literature readers](datasets/sovchlit.md), [Collected works of Stalin](datasets/stalinworks.md), [Texts with grade labels](datasets/textsbygrade.md), [Lyashevskaya and Sharoff frequency dictionary](datasets/freq2011.md), [Russian poetry corpus](datasets/poetrycorpus.md), [Russian classical literature](datasets/russianliterature.md), [Koziev stress dictionary](datasets/stressdict.md))
 *   visualize text data ([Zipf's law](visualizers/zipf.md), [Literature Fingerprinting](visualizers/fingerprinting.md), [Word Tree](visualizers/word_tree.md), [text highlighting](visualizers/highlight.md), [corpus](visualizers/corpus.md) and [stylometric](visualizers/stylometry.md) plots, [vocabulary growth and frequency spectrum](visualizers/vocabulary.md), [sentence lengths](visualizers/sentences.md))
 *   build [components](components.md) to plug into [spaCy](https://github.com/explosion/spaCy)
 
@@ -111,6 +112,7 @@ A walkthrough of one short story with every tool of the library is in the notebo
         *   style_stats.py - SEO style metrics
         *   syntax_stats.py - syntactic statistics
         *   utils.py - helper tools
+        *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
         *   **corpus** - corpus measures:
             *   collocations.py - collocations and association measures
             *   compare.py - corpus comparison by text features
@@ -125,6 +127,7 @@ A walkthrough of one short story with every tool of the library is in the notebo
             *   russian_literature.py - the RusLit collection of Russian classics
             *   sov_chrest_lit.py - soviet reading-books for literature classes
             *   stalin_works.py - the collected works of Stalin
+            *   stress_dict.py - the Koziev stress dictionary
             *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
         *   **resources** - embedded lexical resources (the most frequent lemmas list, the connectives dictionary)
         *   **visualizers** - tools for text visualization:

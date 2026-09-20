@@ -46,6 +46,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
+* **[Verse statistics](https://sergeyshk.github.io/ruTS/en/stats/verse_stats/)** - stresses by the Koziev dictionary, meter and number of feet, pyrrhics and stress profile, rhyme schemes, line endings and stanzas
 * **[Corpus measures](https://sergeyshk.github.io/ruTS/en/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile; corpus comparison across all features with effect sizes
 * **[Datasets](https://sergeyshk.github.io/ruTS/en/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering
 * **[Visualizations](https://sergeyshk.github.io/ruTS/en/visualizers/zipf/)** - Zipf's law, Literature Fingerprinting, Word Tree, text highlighting by readability and style layers, dispersion and keyness plots, collocation network, dendrogram and PCA by Delta, vocabulary growth, sentence lengths
@@ -600,6 +601,44 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/lexical_st
 </details>
 
 <details>
+<summary><b>Verse statistics</b></summary>
+
+<br>
+
+Stresses, meter and rhyme for syllabo-tonic verse:
+
+*   Stresses by Ilya Koziev's dictionary (1.68 million word forms, downloaded once: `StressDict().download()`) with corrections, by the letter ё, for contractions (желанье) and converbs
+*   Meter by the Barakhnin algorithm: iamb, trochee, dactyl, amphibrach, anapest or `None` for dolnik, free verse and prose; number of feet, pyrrhics, stress profile, stresses fitted to the meter
+*   Rhyme schemes by the phonetic key of the ending (`ABAB`, `-A-A`), ending types, stanzas
+*   On the RIFMA dataset stresses agree with the manual annotation for 97% of words, rhymes are found with 93% precision and 90% recall
+
+```python
+>>> from ruts import VerseStats
+>>> from ruts.datasets import StressDict
+
+>>> StressDict().download()
+>>> text = """Тучки небесные, вечные странники!
+... Степью лазурною, цепью жемчужною
+... Мчитесь вы, будто как я же, изгнанники,
+... С милого севера в сторону южную."""
+>>> vs = VerseStats(text)
+
+>>> vs.meter, vs.n_feet, vs.rhyme_schemes, vs.c_clausulas
+('дактиль', 4, ('ABAB',), {'дактилическая': 4})
+>>> vs.patterns[0]
+'CccCccCccCcc'
+>>> print(vs.accentuate())
+Ту́чки небе́сные, ве́чные стра́нники!
+Сте́пью лазу́рною, це́пью жемчу́жною
+Мчи́тесь вы, бу́дто как я́ же, изгна́нники,
+С ми́лого се́вера в сто́рону ю́жную.
+```
+
+More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/verse_stats/).
+
+</details>
+
+<details>
 <summary><b>Corpus measures</b></summary>
 
 <br>
@@ -660,6 +699,7 @@ The library allows working with a number of preprocessed datasets:
 *   [texts_by_grade](https://sergeyshk.github.io/ruTS/en/datasets/textsbygrade/) - texts with grade labels from the Plain Russian Language project (CC0), used to validate the readability formulas
 *   [poetry_corpus](https://sergeyshk.github.io/ruTS/en/datasets/poetrycorpus/) - Ilya Gusev's PoetryCorpus: 16,694 poems by 195 authors with years and themes (Apache-2.0)
 *   [russian_literature](https://sergeyshk.github.io/ruTS/en/datasets/russianliterature/) - the RusLit collection of Russian classics: 373 works by 12 authors in three genres with years (public domain)
+*   [stress_dict](https://sergeyshk.github.io/ruTS/en/datasets/stressdict/) - Ilya Koziev's stress dictionary: 1.68 million word forms with stress positions (CC0), used by the verse statistics
 
 One can work solely with texts (without title info) or texts with metadata. There is also an opportunity to filter texts on different criteria.
 
@@ -770,6 +810,7 @@ The library allows creating the following classes of spaCy components:
 *   `ReadabilityStats`
 *   `StyleStats`
 *   `SyntaxStats`
+*   `VerseStats`
 
 ```python
 >>> import ruts
@@ -843,6 +884,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   style_stats.py - SEO style metrics
     *   syntax_stats.py - syntactic statistics
     *   utils.py - helper tools
+    *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
     *   **corpus** - corpus measures:
         *   collocations.py - collocations and association measures
         *   compare.py - corpus comparison by text features
@@ -857,6 +899,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   russian_literature.py - the RusLit collection of Russian classics
         *   sov_chrest_lit.py - soviet reading-books for literature classes
         *   stalin_works.py - the collected works of Stalin
+        *   stress_dict.py - the Koziev stress dictionary
         *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
     *   **resources** - embedded lexical resources (the most frequent lemmas list, the connectives dictionary)
     *   **visualizers** - tools for text visualization:
