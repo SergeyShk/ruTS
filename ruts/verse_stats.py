@@ -13,7 +13,9 @@ from .constants import (
     STRESS_CORRECTIONS,
     VERSE_CLAUSULAS,
     VERSE_MAX_DEVIATIONS,
+    VERSE_MAX_MOVED,
     VERSE_METERS,
+    VERSE_MIN_MOVED,
     VERSE_PROCLITICS,
     VERSE_STATS_DESC,
     VERSE_WEAK_WORDS,
@@ -132,7 +134,10 @@ class VerseStats:
         внутри слова, а у последнего слова строки - еще и по рифме с соседними
         Метр не определяется (None), если после подгонки больше десятой части
         ударений многосложных слов (VERSE_MAX_DEVIATIONS) остается на слабых
-        позициях - так отсеиваются дольник, акцентный стих, верлибр и проза
+        позициях или если перенести на икт пришлось больше VERSE_MAX_MOVED
+        словарных ударений, и таких переносов не меньше VERSE_MIN_MOVED - так
+        отсеиваются дольник, акцентный стих, силлабика, верлибр и проза: у них
+        подгонка переносит ударения не подвижных форм, а любых двусложных слов
         Рифма ищется в окне RHYME_WINDOW строк внутри строфы по фонетическому
         ключу окончания: ударная гласная, следующие за ней согласные (после
         оглушения и упрощения групп) и число заударных слогов; опорный согласный
@@ -228,9 +233,14 @@ class VerseStats:
         self.mean_line_len = sum(line.n_syllables for line in lines) / len(lines)
 
         meter = _fit_meter(lines)
+        n_moved = sum(len(_movable(line, meter)) for line in lines)
+        n_fixed = sum(1 for line in lines for word in line.words if word.fixed)
         _assign_stresses(lines, meter)
         p_deviations = _deviations(lines, meter)
-        if meter is not None and p_deviations > VERSE_MAX_DEVIATIONS:
+        if meter is not None and (
+            p_deviations > VERSE_MAX_DEVIATIONS
+            or (n_moved >= VERSE_MIN_MOVED and n_moved > VERSE_MAX_MOVED * n_fixed)
+        ):
             meter = None
             p_deviations = nan
             _assign_stresses(lines, meter)

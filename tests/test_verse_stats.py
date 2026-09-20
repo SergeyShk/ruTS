@@ -206,6 +206,8 @@ def test_word_stress(stress_dict):
     assert word_stress("мой", stress_dict) == 0
     assert word_stress("еще", stress_dict) == 1
     assert word_stress("ещё", stress_dict) == 1
+    assert word_stress("бою", stress_dict) == 1
+    assert word_stress("спешит", stress_dict) == 1
     assert word_stress("кто-нибудь", stress_dict) == 0
     assert word_stress("по-прежнему", stress_dict) == 1
     assert word_stress("мороз-воевода", stress_dict) == 4
@@ -356,6 +358,27 @@ def test_yo_and_anacrusis_not_moved(stress_dict):
     # Двусложное слово в анакрузе тоже остается на месте
     vs = VerseStats(f"{ONEGIN}\nВоды не в шутку занемог", stress_dict)
     assert vs.accentuate().split("\n")[4] == "Во́ды не в шу́тку занемо́г"
+
+
+def test_too_many_moves(stress_dict):
+    # Два слова на слабых позициях переносятся на икты, если все такие слова двусложные
+    line = "Когда реки воды текут"
+    vs = VerseStats(f"{ONEGIN}\n{line}", stress_dict)
+    assert vs.meter == "ямб"
+    assert vs.p_deviations == 0.0
+    assert vs.accentuate().split("\n")[4] == "Когда́ реки́ воды́ теку́т"
+    # Три переноса на восемнадцать словарных ударений - еще подгонка подвижных форм
+    vs = VerseStats(f"{ONEGIN}\n{line}\nКогда воды не в шутку мог", stress_dict)
+    assert vs.meter == "ямб"
+    assert vs.accentuate().split("\n")[5] == "Когда́ воды́ не в шу́тку мо́г"
+    # Четыре переноса на восемнадцать - больше VERSE_MAX_MOVED, метр не подобран,
+    # ударения остаются словарными
+    vs = VerseStats(f"{ONEGIN}\n{line}\n{line}", stress_dict)
+    assert vs.meter is None
+    assert vs.accentuate().split("\n")[4] == "Когда́ ре́ки во́ды текут"
+    # Та же доля переносов на длинном тексте - метр подобран
+    vs = VerseStats(f"{ONEGIN}\n{ONEGIN}\n{ONEGIN}\n{line}\n{line}", stress_dict)
+    assert vs.meter == "ямб"
 
 
 def test_hard_g_adverbs():
