@@ -617,6 +617,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#stalins-language-over-half-a-century" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stalin's language over half a century
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2627,6 +2638,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#stalins-language-over-half-a-century" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stalin's language over half a century
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-locally" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2668,6 +2690,9 @@
 <h2 id="pairwise-comparison-of-prose-writers">Pairwise comparison of prose writers<a class="headerlink" href="#pairwise-comparison-of-prose-writers" title="Permanent link">&para;</a></h2>
 <p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
 <p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb">03_prose_authors.ipynb</a> - ten prose writers of <code>RussianLiterature</code>, 200 windows of 1000 words each, 130 <code>text_features</code> and Cliff's delta for 45 pairs: the three strongest features of every pair, a detailed look at Tolstoy and Dostoevsky (<code>compare_features</code>, feature distributions, keywords - speech against narration), the number of large-effect features as a distance (from 6 for Gogol-Turgenev to 67 for Herzen-Dostoevsky), edition features (quotes, the letter ё) that must be excluded, universal discriminators (semicolons, ellipses, word length, windowed diversity measures), dendrogram and multidimensional scaling by features and by Burrows's delta with a Mantel test, authorship attribution of 1000-word windows with held-out works (delta variants, number of frequent words, word forms against character trigrams, text features as a classifier, confusion matrix, Zeta markers). The notebook is in Russian.</p>
+<h2 id="stalins-language-over-half-a-century">Stalin's language over half a century<a class="headerlink" href="#stalins-language-over-half-a-century" title="Permanent link">&para;</a></h2>
+<p><a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/04_stalin_corpus.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><a href="https://github.com/SergeyShk/ruTS/blob/master/examples/04_stalin_corpus.ipynb">04_stalin_corpus.ipynb</a> - corpus measures as tools of diachrony on <code>StalinWorks</code> (1243 texts from 1901 to 1952, four periods): keywords against the frequency dictionary and lemmatization artefacts when comparing with an external dictionary, keywords of the periods and <code>keyness_plot</code> of the two extreme periods, collocates of the words «враг» (enemy) and «партия» (party) by period via <code>collocations</code> with <code>node</code>, dispersion of words over the volumes and <code>dispersion_plot</code> as a timeline, the <code>kwic</code> concordance by lemma, Zipf's law and windowed MTLD for every period. The notebook is in Russian.</p>
 <h2 id="running-locally">Running locally<a class="headerlink" href="#running-locally" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>examples
 uv<span class="w"> </span>run<span class="w"> </span>jupyter<span class="w"> </span>lab<span class="w"> </span>examples/
