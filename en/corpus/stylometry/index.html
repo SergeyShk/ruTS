@@ -2703,7 +2703,7 @@
 
 <h1 id="stylometry">Stylometry<a class="headerlink" href="#stylometry" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
+<p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.delta_profiles()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Measures of stylometry and authorship attribution: distances between texts by the frequencies of the most frequent words (Burrows's Delta and its variants, as in <a href="https://github.com/computationalstylistics/stylo">stylo</a>), markers of preferred and avoided words (Zeta), Kilgarriff's chi-square distance between corpora, the Mendenhall curve and the function word profile as author features. The functions work on lists of text units: lowercased word forms (the usual choice for Delta), lemmas or character N-grams (<a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>) - case and lemmatization are up to the extractor.</p>
@@ -2785,10 +2785,11 @@
 </tbody>
 </table>
 <p><code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> and <code>z_scores(table)</code> take the same parameters and the table.</p>
+<p>For authorship attribution there is <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: the most frequent units, culling and the statistics for the z-scores are taken from the reference texts <code>reference</code> (author profiles) or from a separate set <code>statistics</code> - for example, from the training windows when the profiles are concatenated from them and the profiles themselves are too few to estimate the spread of frequencies; the texts under test <code>samples</code> are described in the same units and normalized with the same statistics; the result is the distances from the tested texts to the reference ones, the nearest reference in a row is the presumed author. Unlike <code>delta</code> over a joint vocabulary, the tested texts affect neither the unit list nor the normalization, and the result for a text does not depend on which other texts are passed along with it.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">delta</span><span class="p">,</span> <span class="n">frequency_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">delta</span><span class="p">,</span> <span class="n">delta_profiles</span><span class="p">,</span> <span class="n">frequency_table</span>
 
 <span class="n">texts</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"А"</span><span class="p">:</span> <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне."</span><span class="p">,</span>
@@ -2815,6 +2816,11 @@
 <span class="c1"># А  0.000  1.782  1.452</span>
 <span class="c1"># Б  1.782  0.000  1.202</span>
 <span class="c1"># В  1.452  1.202  0.000</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"?"</span><span class="p">:</span> <span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s2">"Кот проснулся на окне и снова смотрел на птиц."</span><span class="p">)}</span>
+<span class="n">delta_profiles</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">#        А     Б     В</span>
+<span class="c1"># ?  0.364  1.66  1.16</span>
 </code></pre></div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>

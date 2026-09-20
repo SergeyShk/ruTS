@@ -2703,7 +2703,7 @@
 
 <h1 id="_1">Стилометрия<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
+<p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.delta_profiles()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Меры стилометрии и атрибуции авторства: расстояния между текстами по частотам самых частых слов (дельта Барроуза и ее варианты, как в <a href="https://github.com/computationalstylistics/stylo">stylo</a>), маркеры предпочитаемых и избегаемых слов (Zeta), расстояние хи-квадрат Килгарриффа между корпусами, кривая Менденхолла и профиль служебных слов как признаки автора. Функции работают со списками единиц текста: словоформ в нижнем регистре (обычный выбор для дельты), лемм или символьных N-грамм (<a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>) - регистр и лемматизация на стороне экстрактора.</p>
@@ -2785,10 +2785,11 @@
 </tbody>
 </table>
 <p><code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> и <code>z_scores(table)</code> принимают те же параметры и таблицу.</p>
+<p>Для атрибуции авторства есть <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: самые частые единицы, отсев и статистики для z-оценок берутся из эталонных текстов <code>reference</code> (профилей авторов) или из отдельного набора <code>statistics</code> - например, из обучающих окон, когда профили склеены из них и самих профилей слишком мало, чтобы оценивать разброс частот; проверяемые тексты <code>samples</code> описываются в тех же единицах и нормируются теми же статистиками; результат - расстояния проверяемых текстов до эталонных, ближайший эталон в строке - предполагаемый автор. В отличие от <code>delta</code> по объединенному словарю, проверяемые тексты не влияют ни на список единиц, ни на нормировку, и результат для текста не зависит от того, какие еще тексты поданы вместе с ним.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">delta</span><span class="p">,</span> <span class="n">frequency_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">delta</span><span class="p">,</span> <span class="n">delta_profiles</span><span class="p">,</span> <span class="n">frequency_table</span>
 
 <span class="n">texts</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">"А"</span><span class="p">:</span> <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне."</span><span class="p">,</span>
@@ -2815,6 +2816,11 @@
 <span class="c1"># А  0.000  1.782  1.452</span>
 <span class="c1"># Б  1.782  0.000  1.202</span>
 <span class="c1"># В  1.452  1.202  0.000</span>
+
+<span class="n">sample</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"?"</span><span class="p">:</span> <span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s2">"Кот проснулся на окне и снова смотрел на птиц."</span><span class="p">)}</span>
+<span class="n">delta_profiles</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1">#        А     Б     В</span>
+<span class="c1"># ?  0.364  1.66  1.16</span>
 </code></pre></div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
