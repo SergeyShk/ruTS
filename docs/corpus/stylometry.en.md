@@ -1,7 +1,7 @@
 # Stylometry
 
 !!! info ""
-    **ruts.corpus.delta()**, **ruts.corpus.frequency_table()**, **ruts.corpus.z_scores()**, **ruts.corpus.zeta()**, **ruts.corpus.kilgarriff_chi2()**, **ruts.corpus.mendenhall_curve()**, **ruts.corpus.mendenhall_distance()**, **ruts.corpus.function_words_profile()**
+    **ruts.corpus.delta()**, **ruts.corpus.delta_profiles()**, **ruts.corpus.frequency_table()**, **ruts.corpus.z_scores()**, **ruts.corpus.zeta()**, **ruts.corpus.kilgarriff_chi2()**, **ruts.corpus.mendenhall_curve()**, **ruts.corpus.mendenhall_distance()**, **ruts.corpus.function_words_profile()**
 
 ## Description
 
@@ -33,11 +33,13 @@ Parameters of `delta`:
 
 `frequency_table(corpus, n_mfw=100, culling=0.0)` and `z_scores(table)` take the same parameters and the table.
 
+For authorship attribution there is `delta_profiles(reference, samples, n_mfw, variant, culling, statistics)`: the most frequent units, culling and the statistics for the z-scores are taken from the reference texts `reference` (author profiles) or from a separate set `statistics` - for example, from the training windows when the profiles are concatenated from them and the profiles themselves are too few to estimate the spread of frequencies; the texts under test `samples` are described in the same units and normalized with the same statistics; the result is the distances from the tested texts to the reference ones, the nearest reference in a row is the presumed author. Unlike `delta` over a joint vocabulary, the tested texts affect neither the unit list nor the normalization, and the result for a text does not depend on which other texts are passed along with it.
+
 !!! example "Example"
 
     ``` python
     from ruts import WordsExtractor
-    from ruts.corpus import delta, frequency_table
+    from ruts.corpus import delta, delta_profiles, frequency_table
 
     texts = {
         "А": "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне.",
@@ -64,6 +66,11 @@ Parameters of `delta`:
     # А  0.000  1.782  1.452
     # Б  1.782  0.000  1.202
     # В  1.452  1.202  0.000
+
+    sample = {"?": we.extract("Кот проснулся на окне и снова смотрел на птиц.")}
+    delta_profiles(corpus, sample, n_mfw=5).round(3)
+    #        А     Б     В
+    # ?  0.364  1.66  1.16
     ```
 
 ## Zeta { #zeta }

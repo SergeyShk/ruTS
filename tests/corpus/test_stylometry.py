@@ -10,6 +10,7 @@ from ruts.constants import DELTA_VARIANTS, FUNCTION_UD_POS
 from ruts.corpus import (
     ZetaScore,
     delta,
+    delta_profiles,
     frequency_table,
     function_words_profile,
     kilgarriff_chi2,
@@ -93,6 +94,44 @@ def test_delta_char_ngrams():
     distances = delta({name: ngrams.extract(text) for name, text in texts.items()}, n_mfw=20)
     assert distances.shape == (3, 3)
     assert distances.loc["А", "В"] < distances.loc["А", "Б"]
+
+
+def test_delta_profiles():
+    samples = {
+        "А2": corpus["А"],
+        "Г": extractor.extract("Собака дремала на полу, а кот сидел на окне."),
+    }
+    distances = delta_profiles(corpus, samples, n_mfw=5)
+    assert list(distances.index) == ["А2", "Г"]
+    assert list(distances.columns) == ["А", "Б", "В"]
+    # Эталонный текст в роли проверяемого: z-оценки те же, расстояния как в delta
+    for variant in DELTA_VARIANTS:
+        expected = delta(corpus, n_mfw=5, variant=variant).loc["А"]
+        row = delta_profiles(corpus, samples, n_mfw=5, variant=variant).loc["А2"]
+        assert np.allclose(row.to_numpy(), expected.to_numpy())
+    # Единицы и нормировка берутся из эталона: результат не зависит от соседей
+    alone = delta_profiles(corpus, {"Г": samples["Г"]}, n_mfw=5)
+    assert np.allclose(alone.loc["Г"].to_numpy(), distances.loc["Г"].to_numpy())
+    # Слова проверяемого текста вне списка эталона не учитываются
+    extra = delta_profiles(corpus, {"Г": (*samples["Г"], "слон", "слон")}, n_mfw=5)
+    assert not np.allclose(extra.loc["Г"].to_numpy(), distances.loc["Г"].to_numpy())
+    with pytest.raises(ValueError):
+        delta_profiles(corpus, samples, variant="manhattan")
+    with pytest.raises(ValueError):
+        delta_profiles({"А": corpus["А"], "Б": corpus["Б"]}, samples)
+    with pytest.raises(ValueError):
+        delta_profiles(corpus, {})
+    with pytest.raises(ValueError):
+        delta_profiles(corpus, {"Г": []})
+    with pytest.raises(TypeError):
+        delta_profiles(corpus, {"Г": "кот сидел"})
+    # Статистики из отдельного набора: два эталона допустимы, нормировка по statistics
+    two = {"А": corpus["А"], "Б": corpus["Б"]}
+    scaled = delta_profiles(two, samples, n_mfw=5, statistics=corpus)
+    assert list(scaled.columns) == ["А", "Б"]
+    assert np.allclose(scaled.loc["А2"].to_numpy(), distances.loc["А2", ["А", "Б"]].to_numpy())
+    with pytest.raises(ValueError):
+        delta_profiles(two, samples, n_mfw=5)
 
 
 def test_delta_errors():
