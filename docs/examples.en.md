@@ -26,6 +26,12 @@ Jupyter notebooks in the [examples/](https://github.com/SergeyShk/ruTS/tree/mast
 
 [04_stalin_corpus.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/04_stalin_corpus.ipynb) - corpus measures as tools of diachrony on `StalinWorks` (1243 texts from 1901 to 1952, four periods): keywords against the frequency dictionary and lemmatization artefacts when comparing with an external dictionary, keywords of the periods and `keyness_plot` of the two extreme periods, collocates of the words «враг» (enemy) and «партия» (party) by period via `collocations` with `node`, dispersion of words over the volumes and `dispersion_plot` as a timeline, the `kwic` concordance by lemma, Zipf's law and windowed MTLD for every period. The notebook is in Russian.
 
+## Verse and sound
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/05_poetry.ipynb)
+
+[05_poetry.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/05_poetry.ipynb) - verse statistics and phonostatistics on `PoetryCorpus` (16,694 poems, 18th-20th centuries): the Onegin stanza through `VerseStats` (stresses, `cC` patterns, `ABABCCDDEFFEGG`, line endings, stress profile), meters by era and the number of feet in iambs (the alexandrine of the 18th century, the peak of iamb under Pushkin, ternary meters from the 1840s, dolniks and accentual verse of the 20th century as meter `None`), the stress profile of the iambic tetrameter of Lomonosov, Pushkin and Blok against Taranovsky's manual counts, meters by author, quatrain rhyme schemes and line endings by era, blank and free verse, stressed vowels and textbook sound painting, alliteration indices and "hardness" by author, alliteration highlighting, a check of stresses and rhymes on the RIFMA dataset. The notebook is in Russian.
+
 ## Running locally
 
 ``` bash
