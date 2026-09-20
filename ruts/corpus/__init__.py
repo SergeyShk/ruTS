@@ -17,6 +17,7 @@ from .kwic import Concordance, format_kwic, kwic, print_kwic
 from .stylometry import (
     ZetaScore,
     delta,
+    delta_profiles,
     frequency_table,
     function_words_profile,
     kilgarriff_chi2,
@@ -40,6 +41,7 @@ __all__ = [
     "compare_features",
     "corpus_features",
     "delta",
+    "delta_profiles",
     "dispersion",
     "format_kwic",
     "frequency_table",

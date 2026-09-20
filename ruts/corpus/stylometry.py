@@ -5,7 +5,7 @@ from typing import NamedTuple
 
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import jensenshannon, pdist, squareform
+from scipy.spatial.distance import cdist, jensenshannon, pdist, squareform
 from spacy.tokens import Doc
 
 from ..constants import DELTA_VARIANTS, FUNCTION_UD_POS
@@ -159,18 +159,117 @@ def delta(
     if len(corpus) < 3:
         raise SourceError("Для расстояний нужно не меньше трех текстов")
     scores = z_scores(frequency_table(corpus, n_mfw, culling))
-    n_units = scores.shape[1]
-    values = scores.to_numpy()
-    if variant == "burrows":
-        distances = pdist(values, "cityblock") / n_units
-    elif variant == "quadratic":
-        distances = pdist(values, "euclidean") / n_units
-    elif variant == "eder":
+    distances = squareform(_delta_distances(scores.to_numpy(), None, variant))
+    return pd.DataFrame(distances, index=scores.index, columns=scores.index)
+
+
+def delta_profiles(
+    reference: Mapping[str, Sequence[str]],
+    samples: Mapping[str, Sequence[str]],
+    n_mfw: int | None = 100,
+    variant: str = "burrows",
+    culling: float = 0.0,
+    statistics: Mapping[str, Sequence[str]] | None = None,
+) -> pd.DataFrame:
+    """
+    Вычисление расстояний по дельте от текстов до эталонных текстов
+
+    Описание:
+        Атрибуция авторства: самые частые единицы, отсев и среднее с отклонением
+        для z-оценок берутся из эталонных текстов (профилей авторов) или из
+        отдельного набора statistics - например, из обучающих окон, когда эталоны
+        склеены из них и профилей слишком мало, чтобы оценивать разброс частот;
+        проверяемые тексты samples описываются в тех же единицах и нормируются
+        теми же статистиками, расстояния считаются по варианту дельты, как в delta.
+        Ближайший эталон в строке - предполагаемый автор; проверяемые тексты
+        не влияют ни на список единиц, ни на нормировку, поэтому результат
+        для текста не зависит от того, какие еще тексты поданы вместе с ним
+
+    Аргументы:
+        reference (dict[str, list[str]]): Единицы эталонных текстов по именам
+        samples (dict[str, list[str]]): Единицы проверяемых текстов по именам
+        n_mfw (int): Число самых частых единиц; None - все
+        variant (str): Вариант дельты из DELTA_VARIANTS
+        culling (float): Наименьшая доля текстов, в которых встречается единица
+        statistics (dict[str, list[str]]): Тексты для списка единиц и статистик
+            нормировки; None - эталонные тексты
+
+    Вывод:
+        DataFrame: Расстояния, строки - проверяемые тексты, столбцы - эталонные
+
+    Исключения:
+        ParameterError: Если вариант неизвестен или n_mfw меньше единицы
+        SourceError: Если текстов для статистик меньше трех, эталонных или
+            проверяемых нет или среди них есть текст без единиц
+    """
+    if variant not in DELTA_VARIANTS:
+        raise ParameterError(f"Неизвестный вариант дельты: {variant}")
+    basis = reference if statistics is None else statistics
+    if len(basis) < 3:
+        raise SourceError("Для статистик нормировки нужно не меньше трех текстов")
+    _check_corpus(reference, "эталонных")
+    _check_corpus(samples, "проверяемых")
+    table = frequency_table(basis, n_mfw, culling)
+    mean = table.mean(axis=0)
+    std = table.std(axis=0, ddof=1)
+    scale = std.where(std > 0, 1.0)
+    constant = (std <= 0).to_numpy()
+    scores = []
+    for corpus in (reference, samples):
+        frequencies = _relative_frequencies(corpus, table.columns)
+        scaled = np.array((frequencies - mean) / scale)
+        scaled[:, constant] = 0.0
+        scores.append(scaled)
+    distances = _delta_distances(scores[1], scores[0], variant)
+    return pd.DataFrame(distances, index=list(samples), columns=list(reference))
+
+
+def _check_corpus(corpus: Mapping[str, Sequence[str]], what: str) -> None:
+    """Проверка, что в корпусе есть тексты, все они - последовательности и не пусты"""
+    if not corpus:
+        raise SourceError(f"Нет {what} текстов")
+    for units in corpus.values():
+        check_sequence(units, "единиц текста")
+    if any(len(units) == 0 for units in corpus.values()):
+        raise SourceError(f"Среди {what} есть текст без единиц")
+
+
+def _relative_frequencies(corpus: Mapping[str, Sequence[str]], columns: pd.Index) -> pd.DataFrame:
+    """Относительные частоты заданных единиц в текстах корпуса"""
+    rows = []
+    for units in corpus.values():
+        counts = Counter(units)
+        rows.append([counts.get(unit, 0) / len(units) for unit in columns])
+    return pd.DataFrame(rows, index=list(corpus), columns=columns)
+
+
+def _delta_distances(values: np.ndarray, others: np.ndarray | None, variant: str) -> np.ndarray:
+    """
+    Расстояния по варианту дельты между строками z-оценок
+
+    Аргументы:
+        values (ndarray): Z-оценки текстов, строки - тексты
+        others (ndarray): Z-оценки вторых текстов; None - попарно внутри values
+            (сжатая форма pdist)
+        variant (str): Вариант дельты из DELTA_VARIANTS
+
+    Вывод:
+        ndarray: Расстояния
+    """
+    n_units = values.shape[1]
+    if variant == "eder":
         weights = (n_units - np.arange(1, n_units + 1) + 2) / n_units
-        distances = pdist(values * weights, "cityblock")
-    else:
-        distances = np.nan_to_num(pdist(values, "cosine"), nan=0.0)
-    return pd.DataFrame(squareform(distances), index=scores.index, columns=scores.index)
+        values = values * weights
+        others = None if others is None else others * weights
+    metric = {"burrows": "cityblock", "quadratic": "euclidean", "eder": "cityblock"}.get(
+        variant, "cosine"
+    )
+    distances = pdist(values, metric) if others is None else cdist(values, others, metric)
+    if variant in ("burrows", "quadratic"):
+        return np.asarray(distances / n_units)
+    if variant == "cosine":
+        return np.asarray(np.nan_to_num(distances, nan=0.0))
+    return np.asarray(distances)
 
 
 def zeta(

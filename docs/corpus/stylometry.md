@@ -1,7 +1,7 @@
 # Стилометрия
 
 !!! info ""
-    **ruts.corpus.delta()**, **ruts.corpus.frequency_table()**, **ruts.corpus.z_scores()**, **ruts.corpus.zeta()**, **ruts.corpus.kilgarriff_chi2()**, **ruts.corpus.mendenhall_curve()**, **ruts.corpus.mendenhall_distance()**, **ruts.corpus.function_words_profile()**
+    **ruts.corpus.delta()**, **ruts.corpus.delta_profiles()**, **ruts.corpus.frequency_table()**, **ruts.corpus.z_scores()**, **ruts.corpus.zeta()**, **ruts.corpus.kilgarriff_chi2()**, **ruts.corpus.mendenhall_curve()**, **ruts.corpus.mendenhall_distance()**, **ruts.corpus.function_words_profile()**
 
 ## Описание
 
@@ -33,11 +33,13 @@
 
 `frequency_table(corpus, n_mfw=100, culling=0.0)` и `z_scores(table)` принимают те же параметры и таблицу.
 
+Для атрибуции авторства есть `delta_profiles(reference, samples, n_mfw, variant, culling, statistics)`: самые частые единицы, отсев и статистики для z-оценок берутся из эталонных текстов `reference` (профилей авторов) или из отдельного набора `statistics` - например, из обучающих окон, когда профили склеены из них и самих профилей слишком мало, чтобы оценивать разброс частот; проверяемые тексты `samples` описываются в тех же единицах и нормируются теми же статистиками; результат - расстояния проверяемых текстов до эталонных, ближайший эталон в строке - предполагаемый автор. В отличие от `delta` по объединенному словарю, проверяемые тексты не влияют ни на список единиц, ни на нормировку, и результат для текста не зависит от того, какие еще тексты поданы вместе с ним.
+
 !!! example "Пример"
 
     ``` python
     from ruts import WordsExtractor
-    from ruts.corpus import delta, frequency_table
+    from ruts.corpus import delta, delta_profiles, frequency_table
 
     texts = {
         "А": "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне.",
@@ -64,6 +66,11 @@
     # А  0.000  1.782  1.452
     # Б  1.782  0.000  1.202
     # В  1.452  1.202  0.000
+
+    sample = {"?": we.extract("Кот проснулся на окне и снова смотрел на птиц.")}
+    delta_profiles(corpus, sample, n_mfw=5).round(3)
+    #        А     Б     В
+    # ?  0.364  1.66  1.16
     ```
 
 ## Zeta { #zeta }
