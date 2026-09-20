@@ -1,4 +1,5 @@
 import re
+import string
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
@@ -78,6 +79,9 @@ CLUSTER_SIMPLIFICATIONS = (
 )
 PATTERN_STRESSED = "C"
 PATTERN_UNSTRESSED = "c"
+SCHEME_LABELS = string.ascii_uppercase + string.ascii_lowercase
+# Наречия на -ого с произносимым [г], в отличие от окончаний -ого/-его [ово]/[ево]
+HARD_G_ENDINGS = ("много", "строго", "убого", "полого", "отлого", "дорого")
 
 
 @dataclass(slots=True)
@@ -90,8 +94,10 @@ class _Word:
     n_syllables: int
     offset: int
     stress: int | None
+    yo: bool = False
     fixed: bool = False
     result: int = -1
+    candidates: list[int] = field(default_factory=list)
 
     @property
     def stressed_position(self) -> int:
@@ -108,7 +114,6 @@ class _Line:
     n_syllables: int
     stanza: int
     key: tuple[str, str, int] | None = None
-    candidates: list[int] = field(default_factory=list)
 
 
 class VerseStats:
@@ -133,9 +138,10 @@ class VerseStats:
         оглушения и упрощения групп) и число заударных слогов; опорный согласный
         открытых мужских окончаний и заударные гласные не сравниваются - так
         считаются и точные, и приблизительные рифмы. Схема рифмовки записывается
-        буквами по порядку появления, нерифмованные строки - дефисом: ABAB, -A-A
+        буквами по порядку появления (прописные, затем строчные), нерифмованные
+        строки - дефисом: ABAB, -A-A
         На наборе RIFMA (5121 строфа с ручной разметкой) ударения совпадают
-        с разметкой у 97% слов, пары рифмующихся строк находятся с точностью 93%
+        с разметкой у 97% слов, пары рифмующихся строк находятся с точностью 94%
         и полнотой 90%
 
     Ссылки:
@@ -271,7 +277,7 @@ class VerseStats:
         for line, stressed in zip(lines, self.stresses, strict=True):
             # Строка без ударений и строка с неизвестным ударением последнего слова
             # не учитываются
-            last = next((word for word in reversed(line.words) if word.n_syllables), None)
+            last = _last_word(line)
             if stressed and last is not None and (last.result >= 0 or last.stress is not None):
                 tail = line.n_syllables - 1 - stressed[-1]
                 clausulas[VERSE_CLAUSULAS[min(tail, len(VERSE_CLAUSULAS) - 1)]] += 1
@@ -458,6 +464,7 @@ def _parse_lines(text: str, stress_dict: StressDict) -> list[_Line]:
                 n_syllables = _count_vowels(word_text)
                 stress = _word_stress(word_text, stress_dict)
                 word = _Word(word_text, match.start(), match.end(), n_syllables, offset, stress)
+                word.yo = "ё" in word_text
                 word.fixed = (
                     n_syllables > 1
                     and stress is not None
@@ -504,13 +511,19 @@ def _fit_meter(lines: Sequence[_Line]) -> str | None:
 
 
 def _conflicts(line: _Line, meter: str) -> list[_Word]:
-    """Многосложные слова строки со словарным ударением на слабой позиции"""
+    """
+    Многосложные слова строки со словарным ударением на слабой позиции
+
+    Описание:
+        Ударение в анакрузе нарушением не считается, как в _fit_meter и _deviations
+    """
     foot_len, ictus = VERSE_METERS[meter]
     return [
         word
         for word in line.words
         if word.fixed
         and word.stress is not None
+        and word.offset + word.stress >= ictus
         and (word.offset + word.stress) % foot_len != ictus
     ]
 
@@ -564,9 +577,9 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
                 word.result = candidates[0]
             elif candidates:
                 word.result = candidates[-1]
-                line.candidates = candidates
             else:
                 word.result = -1
+            word.candidates = candidates if word.stress is None and len(candidates) > 1 else []
         _set_ending(line)
 
 
@@ -579,7 +592,8 @@ def _movable(line: _Line, meter: str | None) -> list[_Word]:
         если такое слово в строке одно или все они двусложные (формы с подвижным
         ударением: воды́ - во́ды), и только когда после переноса в строке
         не остается нарушений - иначе строка считается неметрической и ударения
-        сохраняются
+        сохраняются. Ударение по букве ё и ударение в анакрузе не переносятся:
+        первое надежнее словарного, второе отклонением не считается
     """
     if meter is None:
         return []
@@ -587,7 +601,9 @@ def _movable(line: _Line, meter: str | None) -> list[_Word]:
     movable = [
         word
         for word in conflicts
-        if len(_ictuses(word, meter)) == 1 and (len(conflicts) == 1 or word.n_syllables == 2)
+        if not word.yo
+        and len(_ictuses(word, meter)) == 1
+        and (len(conflicts) == 1 or word.n_syllables == 2)
     ]
     return movable if len(movable) == len(conflicts) else []
 
@@ -628,21 +644,32 @@ def _resolve_by_rhyme(lines: Sequence[_Line]) -> None:
         с соседней в окне RHYME_WINDOW той же строфы
     """
     for number, line in enumerate(lines):
-        if not line.candidates:
+        last = _last_word(line)
+        if last is None or not last.candidates:
             continue
-        last = next(word for word in reversed(line.words) if word.n_syllables)
         neighbours = [
             other.key
             for other in lines[max(0, number - RHYME_WINDOW) : number + RHYME_WINDOW + 1]
-            if other is not line and other.stanza == line.stanza and not other.candidates
+            if other is not line and other.stanza == line.stanza and not _ambiguous(other)
         ]
-        for candidate in line.candidates:
+        for candidate in last.candidates:
             key = _ending_key(last.text.replace("-", ""), candidate)
             if any(_rhymes(key, other) for other in neighbours):
                 last.result = candidate
                 line.key = key
                 break
-        line.candidates = []
+        last.candidates = []
+
+
+def _last_word(line: _Line) -> _Word | None:
+    """Последнее слово строки со слогами"""
+    return next((word for word in reversed(line.words) if word.n_syllables), None)
+
+
+def _ambiguous(line: _Line) -> bool:
+    """Проверка, что ударение последнего слова строки еще не снято"""
+    last = _last_word(line)
+    return last is not None and bool(last.candidates)
 
 
 def _ending_key(tail: str, stress: int) -> tuple[str, str, int] | None:
@@ -653,8 +680,9 @@ def _ending_key(tail: str, stress: int) -> tuple[str, str, int] | None:
         Ключ - ударная гласная (я/а, ё/о, ю/у, ы/и сведены; е сохраняется, чтобы
         рифмовать ё, записанное как е), группа согласных после нее без ь и ъ,
         с оглушением, упрощением непроизносимых сочетаний (стн - сн, тс - ц),
-        стяжением двойных и заменой -ого/-его на -ово/-ево, и число заударных
-        слогов; йотированная гласная сразу после ударной дает согласный й
+        стяжением двойных и заменой -ого/-его на -ово/-ево (кроме наречий
+        HARD_G_ENDINGS: мно́го, стро́го), и число заударных слогов; йотированная
+        гласная сразу после ударной дает согласный й
 
     Аргументы:
         tail (str): Хвост строки от последнего ударного слова без дефисов
@@ -669,10 +697,11 @@ def _ending_key(tail: str, stress: int) -> tuple[str, str, int] | None:
     position = positions[stress]
     vowel = STRESSED_VOWELS[tail[position]]
     rest = tail[position + 1 :]
-    if tail[position] in "ое" and rest == "го":
-        rest = "во"
-    elif rest.endswith(("ого", "его")):
-        rest = rest[:-2] + "во"
+    if not tail.endswith(HARD_G_ENDINGS):
+        if tail[position] in "ое" and rest == "го":
+            rest = "во"
+        elif rest.endswith(("ого", "его")):
+            rest = rest[:-2] + "во"
     rest = re.sub(r"ть?ся$", "ца", rest)
     n_after = _count_vowels(rest)
     match = re.match(r"[^аеёиоуыэюя]*", rest)
@@ -717,15 +746,40 @@ def _rhyme_scheme(keys: Sequence[tuple[str, str, int] | None]) -> str:
                     n_groups += 1
                 groups[number] = groups[previous]
                 break
-    letters: dict[int, str] = {}
+    return "".join(_group_labels(groups))
+
+
+def _group_labels(groups: Sequence[int | None]) -> list[str]:
+    """
+    Буквы групп рифм по порядку появления, дефис у нерифмованных строк
+
+    Описание:
+        Буквы берутся из SCHEME_LABELS (прописные, затем строчные); когда они
+        кончаются, повторно используется буква закрытой группы - той, к которой
+        в окне RHYME_WINDOW уже не может присоединиться ни одна строка
+    """
+    last_lines = {group: number for number, group in enumerate(groups) if group is not None}
+    labels: dict[int, str] = {}
+    used: dict[str, int] = {}
     scheme = []
-    for group in groups:
+    for number, group in enumerate(groups):
         if group is None:
             scheme.append("-")
-        else:
-            letters.setdefault(group, chr(ord("A") + len(letters)))
-            scheme.append(letters[group])
-    return "".join(scheme)
+            continue
+        if group not in labels:
+            free = [label for label in SCHEME_LABELS if label not in used]
+            closed = [
+                label for label, other in used.items() if last_lines[other] < number - RHYME_WINDOW
+            ]
+            label = (
+                free[0]
+                if free
+                else min(closed, default=SCHEME_LABELS[len(labels) % len(SCHEME_LABELS)])
+            )
+            labels[group] = label
+            used[label] = group
+        scheme.append(labels[group])
+    return scheme
 
 
 def _accentuate_line(line: _Line) -> str:

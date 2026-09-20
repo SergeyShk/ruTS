@@ -610,7 +610,7 @@ Stresses, meter and rhyme for syllabo-tonic verse:
 *   Stresses by Ilya Koziev's dictionary (1.68 million word forms, downloaded once: `StressDict().download()`) with corrections, by the letter ё, for contractions (желанье) and converbs
 *   Meter by the Barakhnin algorithm: iamb, trochee, dactyl, amphibrach, anapest or `None` for dolnik, free verse and prose; number of feet, pyrrhics, stress profile, stresses fitted to the meter
 *   Rhyme schemes by the phonetic key of the ending (`ABAB`, `-A-A`), ending types, stanzas
-*   On the RIFMA dataset stresses agree with the manual annotation for 97% of words, rhymes are found with 93% precision and 90% recall
+*   On the RIFMA dataset stresses agree with the manual annotation for 97% of words, rhymes are found with 94% precision and 90% recall
 
 ```python
 >>> from ruts import VerseStats

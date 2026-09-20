@@ -10,6 +10,7 @@ from ruts.datasets.stress_dict import FILENAME
 from ruts.exceptions import SourceError, SourceTypeError
 from ruts.verse_stats import (
     _ending_key,
+    _group_labels,
     _rhymes,
     accentuate,
     detect_meter,
@@ -20,10 +21,12 @@ from ruts.verse_stats import (
 
 ROWS = (
     ("без", "б^ез"),
+    ("бога", "б^ога"),
     ("бором", "б^ором"),
     ("будто", "б^удто"),
     ("буря", "б^уря"),
     ("бушует", "буш^ует"),
+    ("был", "б^ыл"),
     ("в", "в"),
     ("весна", "весн^а"),
     ("ветер", "в^етер"),
@@ -32,6 +35,7 @@ ROWS = (
     ("вихри", "в^ихри"),
     ("владенья", "влад^енья"),
     ("воевода", "воев^ода"),
+    ("воды", "в^оды"),
     ("все", "вс^е"),
     ("всех", "вс^ех"),
     ("вы", "в^ы"),
@@ -44,6 +48,7 @@ ROWS = (
     ("друг", "др^уг"),
     ("друга", "др^уга"),
     ("дядя", "д^ядя"),
+    ("елка", "^елка"),
     ("еще", "^еще"),
     ("же", "ж^е"),
     ("желание", "жел^ание"),
@@ -77,12 +82,15 @@ ROWS = (
     ("мглою", "мгл^ою"),
     ("мгновенье", "мгнов^енье"),
     ("мечта", "мечт^а"),
+    ("мил", "м^ил"),
     ("милого", "м^илого"),
     ("мимолетное", "мимол^етное"),
     ("мной", "мн^ой"),
+    ("моем", "мо^ем"),
     ("мог", "м^ог"),
     ("мой", "м^ой"),
     ("море", "м^оре"),
+    ("много", "мн^ого"),
     ("мороз", "мор^оз"),
     ("мчитесь", "мч^итесь"),
     ("на", "н^а"),
@@ -94,10 +102,12 @@ ROWS = (
     ("несчастливая", "несчастл^ивая"),
     ("о", "^о"),
     ("обходит", "обх^одит"),
+    ("окне", "окн^е"),
     ("он", "^он"),
     ("она", "он^а"),
     ("пела", "п^ела"),
     ("передо", "пер^едо"),
+    ("плывут", "плыв^ут"),
     ("по-прежнему", "по-пр^ежнему"),
     ("по-своему", "по-св^оему"),
     ("побежали", "побеж^али"),
@@ -120,6 +130,7 @@ ROWS = (
     ("семья", "семь^я"),
     ("снежные", "сн^ежные"),
     ("степью", "ст^епью"),
+    ("стоит", "сто^ит"),
     ("сторону", "ст^орону"),
     ("странники", "стр^анники"),
     ("счастливые", "счастл^ивые"),
@@ -135,6 +146,7 @@ ROWS = (
     ("цепью", "ц^епью"),
     ("церковном", "церк^овном"),
     ("честных", "ч^естных"),
+    ("черные", "ч^ерные"),
     ("чистой", "ч^истой"),
     ("чудное", "ч^удное"),
     ("чужом", "чуж^ом"),
@@ -317,6 +329,51 @@ def test_resolve_by_rhyme(stress_dict):
     assert single.accentuate().split("\n")[4] == "Когда́ не в шу́тку и хмуро́та"
 
 
+def test_candidates_only_for_last_word(stress_dict):
+    # Кандидаты слова вне словаря в середине строки не переходят на последнее слово
+    text = """Мой дядя самых честных правил,
+Когда не в шутку он был мил,
+Он зюзюкали и заставил
+И лучше выдумать не мог."""
+    vs = VerseStats(text, stress_dict)
+    assert vs.stresses[2] == (3, 7)
+    assert vs.accentuate().split("\n")[2] == "Он зюзюка́ли и заста́вил"
+    # После сброса метра кандидаты отброшенного метра не используются
+    text = f"{CHOIR.rsplit(' ', 1)[0]} бармаглою."
+    vs = VerseStats(text, stress_dict)
+    assert vs.meter is None
+    assert vs.stresses[3] == (1, 3, 5)
+    assert vs.accentuate().split("\n")[3].endswith("ра́дость бармаглою.")
+
+
+def test_yo_and_anacrusis_not_moved(stress_dict):
+    vs = VerseStats(f"{ONEGIN}\nЁлка стоит в моём окне", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Ё́лка стои́т в моё́м окне́"
+    assert vs.p_deviations == 0.0
+    vs = VerseStats(f"{FROST}\nПлывут, и чёрные ручьи", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Плыву́т, и чё́рные ручьи́"
+    assert vs.p_deviations == pytest.approx(1 / 13)
+    # Двусложное слово в анакрузе тоже остается на месте
+    vs = VerseStats(f"{ONEGIN}\nВоды не в шутку занемог", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Во́ды не в шу́тку занемо́г"
+
+
+def test_hard_g_adverbs():
+    assert _rhymes(_ending_key("много", 0), _ending_key("бога", 0))
+    assert not _rhymes(_ending_key("много", 0), _ending_key("снова", 0))
+    assert _rhymes(_ending_key("злого", 0), _ending_key("снова", 0))
+    assert _rhymes(_ending_key("немного", 1), _ending_key("порога", 1))
+
+
+def test_group_labels():
+    assert "".join(_group_labels([0, 1, 0, 1, 2, 3, 2, 3, None, 4, None, 4])) == "ABABCDCD-E-E"
+    labels = _group_labels([number // 2 for number in range(120)])
+    assert "".join(labels[:8]) == "AABBCCDD"
+    assert "".join(labels[50:56]) == "ZZaabb"
+    assert "".join(labels[102:112]) == "zzAABBCCAA"
+    assert len(set(labels)) == 52
+
+
 def test_stanzas(stress_dict):
     text = f"{ONEGIN}\n\n* * *\n\n{STORM}\n"
     vs = VerseStats(text, stress_dict)
@@ -373,7 +430,8 @@ def test_ending_key():
     assert _ending_key("рая", 0) == ("а", "й", 1)
     assert _ending_key("всего", 1) == ("о", "", 0)
     assert _ending_key("нового", 0) == ("о", "ф", 2)
-    assert _ending_key("много", 0) == ("о", "ф", 1)
+    assert _ending_key("много", 0) == ("о", "к", 1)
+    assert _ending_key("злого", 0) == ("о", "ф", 1)
     assert _ending_key("смеётся", 1) == ("о", "ц", 1)
     assert _ending_key("смеется", 1) == ("е", "ц", 1)
     assert _ending_key("местность", 0) == ("е", "сн", 1)
