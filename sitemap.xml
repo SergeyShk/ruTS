@@ -120,6 +120,13 @@
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/stalinworks/"/>
     </url>
     <url>
+        <loc>Nonedatasets/stressdict/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/stressdict/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/stressdict/"/>
+    </url>
+    <url>
         <loc>Nonedatasets/textsbygrade/</loc>
         <lastmod>2026-09-20</lastmod>
         <changefreq>daily</changefreq>
@@ -258,6 +265,20 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats_funcs/"/>
+    </url>
+    <url>
+        <loc>Nonestats/verse_stats/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/verse_stats/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/verse_stats/"/>
+    </url>
+    <url>
+        <loc>Nonestats/verse_stats_funcs/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/verse_stats_funcs/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/verse_stats_funcs/"/>
     </url>
     <url>
         <loc>Nonevisualizers/corpus/</loc>
@@ -435,6 +456,13 @@
         <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/stalinworks/"/>
     </url>
     <url>
+        <loc>Noneen/datasets/stressdict/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/datasets/stressdict/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonedatasets/stressdict/"/>
+    </url>
+    <url>
         <loc>Noneen/datasets/textsbygrade/</loc>
         <lastmod>2026-09-20</lastmod>
         <changefreq>daily</changefreq>
@@ -573,6 +601,20 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/syntax_stats_funcs/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/syntax_stats_funcs/"/>
+    </url>
+    <url>
+        <loc>Noneen/stats/verse_stats/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/verse_stats/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/verse_stats/"/>
+    </url>
+    <url>
+        <loc>Noneen/stats/verse_stats_funcs/</loc>
+        <lastmod>2026-09-20</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneen/stats/verse_stats_funcs/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="Nonestats/verse_stats_funcs/"/>
     </url>
     <url>
         <loc>Noneen/visualizers/corpus/</loc>

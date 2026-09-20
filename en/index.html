@@ -1731,6 +1731,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verse statistics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Verse statistics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="stats/verse_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statistics module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="stats/verse_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statistic functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2168,6 +2282,34 @@
     
   
     Russian classical literature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="datasets/stressdict/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Koziev stress dictionary
   
 
     
@@ -2650,8 +2792,9 @@
 <li>compute <a href="stats/syntax_stats/">syntactic statistics</a> over the spaCy dependency tree (dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains)</li>
 <li>compute <a href="stats/cohesion_stats/">cohesion statistics</a> (noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class)</li>
 <li>compute <a href="stats/lexical_stats/">lexical sophistication statistics</a> (word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density)</li>
+<li>compute <a href="stats/verse_stats/">verse statistics</a> (stresses by the Koziev dictionary, meter and number of feet, pyrrhics and stress profile, rhyme schemes, line endings and stanzas)</li>
 <li>compute corpus measures (<a href="corpus/keyness/">keywords</a> relative to a reference corpus or a frequency dictionary, <a href="corpus/collocations/">collocations</a>, <a href="corpus/dispersion/">word dispersion</a> across text parts, <a href="corpus/kwic/">KWIC concordance</a>) and <a href="corpus/stylometry/">stylometry</a> measures (Burrows's Delta with its variants, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile), <a href="corpus/compare/">compare corpora</a> across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)</li>
-<li>work with ready-to-use text datasets (<a href="datasets/sovchlit/">Soviet literature readers</a>, <a href="datasets/stalinworks/">Collected works of Stalin</a>, <a href="datasets/textsbygrade/">Texts with grade labels</a>, <a href="datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a>, <a href="datasets/poetrycorpus/">Russian poetry corpus</a>, <a href="datasets/russianliterature/">Russian classical literature</a>)</li>
+<li>work with ready-to-use text datasets (<a href="datasets/sovchlit/">Soviet literature readers</a>, <a href="datasets/stalinworks/">Collected works of Stalin</a>, <a href="datasets/textsbygrade/">Texts with grade labels</a>, <a href="datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a>, <a href="datasets/poetrycorpus/">Russian poetry corpus</a>, <a href="datasets/russianliterature/">Russian classical literature</a>, <a href="datasets/stressdict/">Koziev stress dictionary</a>)</li>
 <li>visualize text data (<a href="visualizers/zipf/">Zipf's law</a>, <a href="visualizers/fingerprinting/">Literature Fingerprinting</a>, <a href="visualizers/word_tree/">Word Tree</a>, <a href="visualizers/highlight/">text highlighting</a>, <a href="visualizers/corpus/">corpus</a> and <a href="visualizers/stylometry/">stylometric</a> plots, <a href="visualizers/vocabulary/">vocabulary growth and frequency spectrum</a>, <a href="visualizers/sentences/">sentence lengths</a>)</li>
 <li>build <a href="components/">components</a> to plug into <a href="https://github.com/explosion/spaCy">spaCy</a></li>
 </ul>
@@ -2730,6 +2873,7 @@
 <li>style_stats.py - SEO style metrics</li>
 <li>syntax_stats.py - syntactic statistics</li>
 <li>utils.py - helper tools</li>
+<li>verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas</li>
 <li><strong>corpus</strong> - corpus measures:<ul>
 <li>collocations.py - collocations and association measures</li>
 <li>compare.py - corpus comparison by text features</li>
@@ -2746,6 +2890,7 @@
 <li>russian_literature.py - the RusLit collection of Russian classics</li>
 <li>sov_chrest_lit.py - soviet reading-books for literature classes</li>
 <li>stalin_works.py - the collected works of Stalin</li>
+<li>stress_dict.py - the Koziev stress dictionary</li>
 <li>texts_by_grade.py - texts with grade labels from the Plain Russian Language project</li>
 </ul>
 </li>

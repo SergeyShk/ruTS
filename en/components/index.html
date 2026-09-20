@@ -1646,6 +1646,120 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verse statistics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Verse statistics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stats/verse_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statistics module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stats/verse_stats_funcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Statistic functions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2083,6 +2197,34 @@
     
   
     Russian classical literature
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../datasets/stressdict/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Koziev stress dictionary
   
 
     
@@ -2604,6 +2746,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#versestatscomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VerseStatsComponent
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2739,6 +2892,17 @@
     <span class="md-ellipsis">
       
         LexicalStatsComponent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#versestatscomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VerseStatsComponent
       
     </span>
   </a>
@@ -3331,6 +3495,72 @@
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"lexical"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<h2 id="versestatscomponent">VerseStatsComponent<a class="headerlink" href="#versestatscomponent" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.components.VerseStatsComponent</strong></p>
+</div>
+<p>A module for the verse statistics component. It requires a downloaded <a href="../datasets/stressdict/"><code>StressDict</code></a> stress dictionary; the component works on the <code>Doc</code> text with line breaks, so pass the poem text to <code>nlp</code> as is, without joining the lines.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>nlp</code></td>
+<td style="text-align: center;">Language</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Language object</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>name</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>"verse"</code></td>
+<td style="text-align: center;">Component name in the pipeline</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>data_dir</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Path to the stress dictionary directory; if not given, the default directory is used</td>
+</tr>
+</tbody>
+</table>
+<p>Usage example:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="c1"># Load the spaCy model</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+
+<span class="c1"># Add the component</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Access the computed statistics</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span>
+    <span class="s2">"Буря мглою небо кроет,</span><span class="se">\n</span><span class="s2">Вихри снежные крутя;</span><span class="se">\n</span><span class="s2">То, как зверь, она завоет,</span><span class="se">\n</span><span class="s2">То заплачет, как дитя"</span>
+<span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">verse</span><span class="o">.</span><span class="n">meter</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">verse</span><span class="o">.</span><span class="n">n_feet</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'хорей'</span>,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
+</code></pre></div>
+</div>
+<p>The dictionary directory is passed via <code>config</code>:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 
