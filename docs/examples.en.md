@@ -20,6 +20,12 @@ Jupyter notebooks in the [examples/](https://github.com/SergeyShk/ruTS/tree/mast
 
 [03_prose_authors.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/03_prose_authors.ipynb) - ten prose writers of `RussianLiterature`, 200 windows of 1000 words each, 130 `text_features` and Cliff's delta for 45 pairs: the three strongest features of every pair, a detailed look at Tolstoy and Dostoevsky (`compare_features`, feature distributions, keywords - speech against narration), the number of large-effect features as a distance (from 6 for Gogol-Turgenev to 67 for Herzen-Dostoevsky), edition features (quotes, the letter ё) that must be excluded, universal discriminators (semicolons, ellipses, word length, windowed diversity measures), dendrogram and multidimensional scaling by features and by Burrows's delta with a Mantel test, authorship attribution of 1000-word windows with held-out works (delta variants, number of frequent words, word forms against character trigrams, text features as a classifier, confusion matrix, Zeta markers). The notebook is in Russian.
 
+## Stalin's language over half a century
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/04_stalin_corpus.ipynb)
+
+[04_stalin_corpus.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/04_stalin_corpus.ipynb) - corpus measures as tools of diachrony on `StalinWorks` (1243 texts from 1901 to 1952, four periods): keywords against the frequency dictionary and lemmatization artefacts when comparing with an external dictionary, keywords of the periods and `keyness_plot` of the two extreme periods, collocates of the words «враг» (enemy) and «партия» (party) by period via `collocations` with `node`, dispersion of words over the volumes and `dispersion_plot` as a timeline, the `kwic` concordance by lemma, Zipf's law and windowed MTLD for every period. The notebook is in Russian.
+
 ## Running locally
 
 ``` bash
