@@ -360,21 +360,25 @@ def test_yo_and_anacrusis_not_moved(stress_dict):
     assert vs.accentuate().split("\n")[4] == "Во́ды не в шу́тку занемо́г"
 
 
-def test_single_conflict_moved(stress_dict):
-    # Единственное в строке слово на слабой позиции переносится на икт
-    vs = VerseStats(f"{ONEGIN}\nКогда воды не в шутку мог", stress_dict)
+def test_too_many_moves(stress_dict):
+    # Два слова на слабых позициях переносятся на икты, если все такие слова двусложные
+    line = "Когда реки воды текут"
+    vs = VerseStats(f"{ONEGIN}\n{line}", stress_dict)
     assert vs.meter == "ямб"
     assert vs.p_deviations == 0.0
-    assert vs.accentuate().split("\n")[4] == "Когда́ воды́ не в шу́тку мо́г"
-    # Два таких слова остаются на месте и считаются отклонениями от метра
-    vs = VerseStats(f"{ONEGIN}\n{ONEGIN}\nКогда реки воды текут", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Когда́ реки́ воды́ теку́т"
+    # Три переноса на семнадцать словарных ударений - еще подгонка подвижных форм
+    vs = VerseStats(f"{ONEGIN}\n{line}\nКогда воды не в шутку мог", stress_dict)
     assert vs.meter == "ямб"
-    assert vs.p_deviations == pytest.approx(2 / 28)
-    assert vs.accentuate().split("\n")[8] == "Когда́ ре́ки во́ды теку́т"
-    # Строки с двумя такими словами не подгоняют под метр тонический стих
-    vs = VerseStats(f"{ONEGIN}\nКогда реки воды текут", stress_dict)
+    assert vs.accentuate().split("\n")[5] == "Когда́ воды́ не в шу́тку мо́г"
+    # Четыре переноса на восемнадцать - больше VERSE_MAX_MOVED, метр не подобран,
+    # ударения остаются словарными
+    vs = VerseStats(f"{ONEGIN}\n{line}\n{line}", stress_dict)
     assert vs.meter is None
     assert vs.accentuate().split("\n")[4] == "Когда́ ре́ки во́ды текут"
+    # Та же доля переносов на длинном тексте - метр подобран
+    vs = VerseStats(f"{ONEGIN}\n{ONEGIN}\n{ONEGIN}\n{line}\n{line}", stress_dict)
+    assert vs.meter == "ямб"
 
 
 def test_hard_g_adverbs():

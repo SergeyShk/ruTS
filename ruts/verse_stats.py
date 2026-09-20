@@ -13,7 +13,9 @@ from .constants import (
     STRESS_CORRECTIONS,
     VERSE_CLAUSULAS,
     VERSE_MAX_DEVIATIONS,
+    VERSE_MAX_MOVED,
     VERSE_METERS,
+    VERSE_MIN_MOVED,
     VERSE_PROCLITICS,
     VERSE_STATS_DESC,
     VERSE_WEAK_WORDS,
@@ -128,12 +130,14 @@ class VerseStats:
         ударений многосложных слов попадает на слабые позиции. Найденный метр снимает
         оставшуюся неоднозначность: односложные слова ударны только на икте,
         служебные слова безударны вне икта, у слов без словарного ударения
-        и у форм с подвижным ударением (реки́ - ре́ки, если такое слово в строке
-        одно) ударение ставится на икт внутри слова, а у последнего слова
-        строки - еще и по рифме с соседними
+        и у форм с подвижным ударением (реки́ - ре́ки) ударение ставится на икт
+        внутри слова, а у последнего слова строки - еще и по рифме с соседними
         Метр не определяется (None), если после подгонки больше десятой части
         ударений многосложных слов (VERSE_MAX_DEVIATIONS) остается на слабых
-        позициях - так отсеиваются дольник, акцентный стих, верлибр и проза
+        позициях или если перенести на икт пришлось больше VERSE_MAX_MOVED
+        словарных ударений, и таких переносов не меньше VERSE_MIN_MOVED - так
+        отсеиваются дольник, акцентный стих, силлабика, верлибр и проза: у них
+        подгонка переносит ударения не подвижных форм, а любых двусложных слов
         Рифма ищется в окне RHYME_WINDOW строк внутри строфы по фонетическому
         ключу окончания: ударная гласная, следующие за ней согласные (после
         оглушения и упрощения групп) и число заударных слогов; опорный согласный
@@ -229,9 +233,14 @@ class VerseStats:
         self.mean_line_len = sum(line.n_syllables for line in lines) / len(lines)
 
         meter = _fit_meter(lines)
+        n_moved = sum(len(_movable(line, meter)) for line in lines)
+        n_fixed = sum(1 for line in lines for word in line.words if word.fixed)
         _assign_stresses(lines, meter)
         p_deviations = _deviations(lines, meter)
-        if meter is not None and p_deviations > VERSE_MAX_DEVIATIONS:
+        if meter is not None and (
+            p_deviations > VERSE_MAX_DEVIATIONS
+            or (n_moved >= VERSE_MIN_MOVED and n_moved > VERSE_MAX_MOVED * n_fixed)
+        ):
             meter = None
             p_deviations = nan
             _assign_stresses(lines, meter)
@@ -589,21 +598,24 @@ def _movable(line: _Line, meter: str | None) -> list[_Word]:
     Слова строки, чье словарное ударение переносится на икт
 
     Описание:
-        Переносится ударение слова на слабой позиции, если такое слово в строке
-        одно и икт в нем единственный (формы с подвижным ударением: воды́ - во́ды).
-        При двух и более таких словах строка считается неметрической и ударения
-        сохраняются: на RIFMA одиночный перенос совпадает с разметкой в 90%
-        случаев, а переносы по два-три слова в строке - в 66% и 50%, и они
-        подгоняют под метр дольник и акцентный стих. Ударение по букве ё
-        и ударение в анакрузе не переносятся: первое надежнее словарного,
-        второе отклонением не считается
+        Переносятся ударения слов на слабой позиции с единственным иктом в слове,
+        если такое слово в строке одно или все они двусложные (формы с подвижным
+        ударением: воды́ - во́ды), и только когда после переноса в строке
+        не остается нарушений - иначе строка считается неметрической и ударения
+        сохраняются. Ударение по букве ё и ударение в анакрузе не переносятся:
+        первое надежнее словарного, второе отклонением не считается
     """
     if meter is None:
         return []
     conflicts = _conflicts(line, meter)
-    if len(conflicts) != 1 or conflicts[0].yo or len(_ictuses(conflicts[0], meter)) != 1:
-        return []
-    return conflicts
+    movable = [
+        word
+        for word in conflicts
+        if not word.yo
+        and len(_ictuses(word, meter)) == 1
+        and (len(conflicts) == 1 or word.n_syllables == 2)
+    ]
+    return movable if len(movable) == len(conflicts) else []
 
 
 def _ictuses(word: _Word, meter: str | None) -> list[int]:

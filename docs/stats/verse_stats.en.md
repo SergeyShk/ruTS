@@ -46,7 +46,7 @@ The stress dictionary is downloaded once: `StressDict().download()` (10 MB). Wit
 | `p_dactylic` | float | Share of dactylic endings (two syllables after the stress) |
 | `c_stressed_vowels` | dict[str, int] | Distribution of stressed vowels |
 
-The meter is not determined (`None`) if after fitting more than a tenth of the polysyllabic word stresses (`VERSE_MAX_DEVIATIONS`) remain on weak positions - this filters out dolnik, accentual verse, free verse and prose. A rhyme scheme is written with letters in order of appearance, unrhymed lines with a hyphen: `ABAB`, `-A-A`. Endings with three or more syllables after the stress count as hyperdactylic.
+The meter is not determined (`None`) if after fitting more than a tenth of the polysyllabic word stresses (`VERSE_MAX_DEVIATIONS`) remain on weak positions, or if more than 15% of the dictionary stresses had to be moved to an ictus (`VERSE_MAX_MOVED`) with four or more moves (`VERSE_MIN_MOVED`) - this filters out dolnik, accentual verse, syllabic verse, free verse and prose. A rhyme scheme is written with letters in order of appearance, unrhymed lines with a hyphen: `ABAB`, `-A-A`. Endings with three or more syllables after the stress count as hyperdactylic.
 
 !!! note "Note"
     Stresses, meter and rhyme can be obtained separately with the corresponding functions. Detailed information about the algorithm and the functions is in the corresponding [section](verse_stats_funcs.md).
