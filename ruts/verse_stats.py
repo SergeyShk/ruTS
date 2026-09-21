@@ -16,6 +16,7 @@ from .constants import (
     VERSE_MAX_MOVED,
     VERSE_METERS,
     VERSE_MIN_MOVED,
+    VERSE_MIN_STRESSES,
     VERSE_PROCLITICS,
     VERSE_STATS_DESC,
     VERSE_WEAK_WORDS,
@@ -137,7 +138,12 @@ class VerseStats:
         позициях или если перенести на икт пришлось больше VERSE_MAX_MOVED
         словарных ударений, и таких переносов не меньше VERSE_MIN_MOVED - так
         отсеиваются дольник, акцентный стих, силлабика, верлибр и проза: у них
-        подгонка переносит ударения не подвижных форм, а любых двусложных слов
+        подгонка переносит ударения не подвижных форм, а любых двусложных слов.
+        Метр не подбирается и при словарных ударениях многосложных слов меньше
+        VERSE_MIN_STRESSES: одна-две строки или фраза прозы укладываются в какой-нибудь
+        метр почти всегда, и такой результат не показателен
+        Текст без русских слов (латиница, цифры) дает пустые статистики:
+        n_lines 0, метр None, доли nan
         Рифма ищется в окне RHYME_WINDOW строк внутри строфы по фонетическому
         ключу окончания: ударная гласная, следующие за ней согласные (после
         оглушения и упрощения групп) и число заударных слогов; опорный согласный
@@ -206,7 +212,7 @@ class VerseStats:
 
     Исключения:
         SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
-        SourceError: Если в источнике данных отсутствуют строки со словами
+        SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: Если словарь ударений не загружен
     """
 
@@ -218,19 +224,19 @@ class VerseStats:
         else:
             raise SourceTypeError("Некорректный источник данных")
         self.stress_dict = stress_dict if stress_dict is not None else StressDict()
+        if not re.search(r"[^\W\d_]", text):
+            raise SourceError("В источнике данных отсутствуют слова")
         lines = _parse_lines(text, self.stress_dict)
-        if not lines:
-            raise SourceError("В источнике данных отсутствуют строки со словами")
         self._lines = lines
         self.lines = tuple(line.text for line in lines)
-        n_stanzas = lines[-1].stanza + 1
+        n_stanzas = lines[-1].stanza + 1 if lines else 0
         self.stanzas = tuple(
             tuple(line.text for line in lines if line.stanza == number)
             for number in range(n_stanzas)
         )
         self.n_lines = len(lines)
         self.n_stanzas = n_stanzas
-        self.mean_line_len = sum(line.n_syllables for line in lines) / len(lines)
+        self.mean_line_len = safe_divide(sum(line.n_syllables for line in lines), len(lines), nan)
 
         meter = _fit_meter(lines)
         n_moved = sum(len(_movable(line, meter)) for line in lines)
@@ -304,7 +310,7 @@ class VerseStats:
             schemes.append(scheme)
             n_rhymed += sum(letter != "-" for letter in scheme)
         self.rhyme_schemes = tuple(schemes)
-        self.p_rhymed = n_rhymed / len(lines)
+        self.p_rhymed = safe_divide(n_rhymed, len(lines), nan)
 
         vowels: Counter[str] = Counter()
         for line in lines:
@@ -497,8 +503,13 @@ def _fit_meter(lines: Sequence[_Line]) -> str | None:
         при равенстве - с наибольшим числом ударных иктов, затем первый по порядку
         VERSE_METERS. Ударение в анакрузе - на слогах до первого икта строки -
         нарушением не считается: в трехсложных метрах оно обычно (Ста́ли дни
-        холоднее). Если ударений для подбора нет, метр не определен
+        холоднее). Если словарных ударений многосложных слов меньше
+        VERSE_MIN_STRESSES, метр не определен: на одной-двух строках или короткой
+        фразе прозы почти любой набор ударений укладывается в какой-нибудь метр
     """
+    n_fixed = sum(1 for line in lines for word in line.words if word.fixed)
+    if n_fixed < VERSE_MIN_STRESSES:
+        return None
     best: tuple[tuple[int, int], str] | None = None
     for name, (foot_len, ictus) in VERSE_METERS.items():
         violations = 0
@@ -515,9 +526,7 @@ def _fit_meter(lines: Sequence[_Line]) -> str | None:
         score = (violations, -hits)
         if best is None or score < best[0]:
             best = (score, name)
-    if best is None or best[0] == (0, 0):
-        return None
-    return best[1]
+    return best[1] if best is not None else None
 
 
 def _conflicts(line: _Line, meter: str) -> list[_Word]:

@@ -294,11 +294,17 @@ def test_no_meter(stress_dict):
     assert choir.stress_profile == ()
     assert choir.accentuate().split("\n")[0] == "Де́вушка пе́ла в церко́вном хо́ре"
     assert choir.rhyme_schemes == ("ABAB",)
+    # Фраза прозы: девять словарных ударений, но пять из них вне икта любого метра
     prose = VerseStats(PROSE, stress_dict)
     assert prose.meter is None
     assert prose.n_lines == 1
     assert prose.rhyme_schemes == ("-",)
     assert prose.p_rhymed == 0.0
+    # Короткая фраза укладывается в хорей (се́мьи переносится на икт), но словарных
+    # ударений меньше VERSE_MIN_STRESSES - метр не подбирается
+    short_prose = VerseStats("Все счастливые семьи похожи друг на друга.", stress_dict)
+    assert short_prose.meter is None
+    assert short_prose.accentuate() == "Все́ счастли́вые се́мьи похо́жи дру́г на дру́га."
     # Без многосложных слов со словарным ударением метр не подбирается
     short = VerseStats("Ночь. Дом. Хмурота.\nИ не", stress_dict)
     assert short.meter is None
@@ -308,11 +314,36 @@ def test_no_meter(stress_dict):
     assert short.accentuate() == "Но́чь. До́м. Хмурота.\nИ не"
 
 
+def test_no_russian_words(stress_dict):
+    for text in ("Hello world", "123 !!!\nabc"):
+        vs = VerseStats(text, stress_dict)
+        assert vs.n_lines == 0
+        assert vs.n_stanzas == 0
+        assert vs.lines == ()
+        assert vs.stanzas == ()
+        assert vs.meter is None
+        assert vs.n_feet is None
+        assert vs.c_feet == {}
+        assert vs.stresses == ()
+        assert vs.patterns == ()
+        assert vs.rhyme_schemes == ()
+        assert vs.c_clausulas == {}
+        assert vs.c_stressed_vowels == {}
+        assert vs.stress_profile == ()
+        assert all(
+            isnan(vs.get_stats()[stat]) for stat in ("p_rhymed", "p_masculine", "p_pyrrhics")
+        )
+        assert isnan(vs.mean_line_len)
+        assert vs.accentuate() == ""
+    with pytest.raises(SourceError):
+        VerseStats("123 !!!", stress_dict)
+
+
 def test_weak_words(stress_dict):
-    text = "Я помню чудное мгновенье:\nПередо мной явилась ты,"
+    text = "Я помню чудное мгновенье:\nПередо мной явилась ты,\nКак мимолетное виденье,\nКак гений чистой красоты."
     vs = VerseStats(text, stress_dict)
     assert vs.meter == "ямб"
-    assert vs.patterns == ("cCcCcccCc", "cccCcCcC")
+    assert vs.patterns == ("cCcCcccCc", "cccCcCcC", "cccCcccCc", "cCcCcccC")
     assert vs.accentuate().split("\n")[1] == "Передо мно́й яви́лась ты́,"
 
 
@@ -423,7 +454,7 @@ def test_errors(stress_dict):
     with pytest.raises(SourceError):
         VerseStats("", stress_dict)
     with pytest.raises(SourceError):
-        VerseStats("123\n* * *\nabc", stress_dict)
+        VerseStats("123\n* * *\n...", stress_dict)
 
 
 def test_print_stats(stress_dict, capsys):
