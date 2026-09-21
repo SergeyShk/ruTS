@@ -3501,7 +3501,7 @@
 <div class="admonition info">
 <p><strong>ruts.components.VerseStatsComponent</strong></p>
 </div>
-<p>A module for the verse statistics component. It requires a downloaded <a href="../datasets/stressdict/"><code>StressDict</code></a> stress dictionary; the component works on the <code>Doc</code> text with line breaks, so pass the poem text to <code>nlp</code> as is, without joining the lines.</p>
+<p>A module for the verse statistics component. It requires a downloaded <a href="../datasets/stressdict/"><code>StressDict</code></a> stress dictionary; the component works on the <code>Doc</code> text with line breaks, so pass the poem text to <code>nlp</code> as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like <code>VerseStats</code>, so <code>nlp.pipe</code> over a corpus does not stop on it.</p>
 <p>Parameters:</p>
 <table>
 <thead>
