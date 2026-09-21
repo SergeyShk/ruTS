@@ -10,8 +10,8 @@ repository-code: "https://github.com/SergeyShk/ruTS"
 url: "https://sergeyshk.github.io/ruTS/"
 license: MIT
 doi: 10.5281/zenodo.22837587
-version: 0.13.0
-date-released: 2026-09-18
+version: 0.14.0
+date-released: 2026-09-21
 keywords:
   - russian
   - nlp
