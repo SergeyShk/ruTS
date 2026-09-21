@@ -441,7 +441,7 @@ The dictionary directory is passed via `config`:
 !!! info ""
     **ruts.components.VerseStatsComponent**
 
-A module for the verse statistics component. It requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary; the component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines. A text without Russian words gives empty statistics, like `VerseStats`, so `nlp.pipe` over a corpus does not stop on it.
+A module for the verse statistics component. It requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary; the component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like `VerseStats`, so `nlp.pipe` over a corpus does not stop on it.
 
 Parameters:
 
