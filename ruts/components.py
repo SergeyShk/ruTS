@@ -480,7 +480,8 @@ class VerseStatsComponent:
 
     Описание:
         Компонент работает по тексту Doc с переносами строк, поэтому текст
-        стихотворения нужно передавать в nlp как есть, не склеивая строки
+        стихотворения нужно передавать в nlp как есть, не склеивая строки;
+        текст с буквами, но без русских слов дает пустые статистики, как VerseStats
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -489,14 +490,15 @@ class VerseStatsComponent:
         >>> nlp.add_pipe('verse', last=True)
         <ruts.components.VerseStatsComponent object at 0x...>
 
-    Словарь ударений из другой директории:
-        >>> nlp.add_pipe('verse', name='verse_dicts', config={'data_dir': '/path/to/dicts'}, last=True)
-        <ruts.components.VerseStatsComponent object at 0x...>
-
     Доступ к извлеченным статистикам:
         >>> doc = nlp("Буря мглою небо кроет,\\nВихри снежные крутя;\\nТо, как зверь, она завоет,\\nТо заплачет, как дитя")
         >>> doc._.verse.meter, doc._.verse.n_feet
         ('хорей', 4)
+
+    Словарь ударений из другой директории - компонент с этим словарем требует
+    его загрузки при первом вызове:
+        >>> nlp.add_pipe('verse', name='verse_dicts', config={'data_dir': '/path/to/dicts'}, last=True)
+        <ruts.components.VerseStatsComponent object at 0x...>
 
     Аргументы:
         name (str): Наименование компонента в пайплайне

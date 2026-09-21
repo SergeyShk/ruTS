@@ -23,6 +23,7 @@ from ruts import (
     ReadabilityStats,
     StyleStats,
     SyntaxStats,
+    VerseStats,
     WordsExtractor,
 )
 from ruts.constants import (
@@ -38,9 +39,10 @@ from ruts.constants import (
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
+    VERSE_STATS_DESC,
 )
 from ruts.corpus import collocations, keyness
-from ruts.datasets import FreqDict
+from ruts.datasets import FreqDict, StressDict
 from ruts.style_stats import is_stopword
 from ruts.visualizers import highlight, sentence_lengths_plot, zipf
 
@@ -53,6 +55,13 @@ SENTENCES_WINDOW = 5
 ZIPF_MIN_WORDS = 100
 KEYWORDS_TOP_N = 15
 COLLOCATION_WINDOW = 3
+VERSE_MAX_LINES = 40
+VERSE_PATTERN_WIDTH = 24
+VERSE_NOTE = (
+    "Ударения расставлены по словарю Козиева и подогнаны под метр; схема строки - `c` безударный "
+    "слог, `C` ударный, буква - группа рифмы, дефис - строка без рифмы. Для стиха вставляйте текст "
+    "построчно: на одной строке или короткой фразе метр не определяется."
+)
 KEYWORDS_NOTE = (
     "Ключевые слова - леммы, которые в тексте встречаются заметно чаще, чем в частотном "
     "словаре Ляшевской и Шарова (G² - значимость, Log Ratio - во сколько раз чаще в двоичном "
@@ -87,25 +96,6 @@ EXAMPLES = {
         "не золотое, а простое."
     ),
     "Стихи": (
-        "Полночной порою в болотной глуши\n"
-        "Чуть слышно, бесшумно, шуршат камыши.\n\n"
-        "О чём они шепчут? О чём говорят?\n"
-        "Зачем огоньки между ними горят?\n\n"
-        "Мелькают, мигают - и снова их нет.\n"
-        "И снова забрезжил блуждающий свет.\n\n"
-        "Полночной порой камыши шелестят.\n"
-        "В них жабы гнездятся, в них змеи свистят.\n\n"
-        "В болоте дрожит умирающий лик.\n"
-        "То месяц багровый печально поник.\n\n"
-        "И тиной запахло. И сырость ползёт.\n"
-        "Трясина заманит, сожмёт, засосёт.\n\n"
-        "«Кого? Для чего? - камыши говорят, -\n"
-        "Зачем огоньки между нами горят?»\n\n"
-        "Но месяц печальный безмолвно поник.\n"
-        "Не знает. Склоняет всё ниже свой лик.\n\n"
-        "И, вздох повторяя погибшей души,\n"
-        "Тоскливо, бесшумно, шуршат камыши.\n\n"
-        "* * *\n\n"
         "Вечер. Взморье. Вздохи ветра.\n"
         "Величавый возглас волн.\n"
         "Близко буря. В берег бьётся\n"
@@ -179,6 +169,12 @@ if not freq_dict.filepath:
         freq_dict.download()
     except (RuntimeError, OSError) as error:
         print(f"Частотный словарь недоступен: {error}")
+stress_dict = StressDict()
+if not stress_dict.filepath:
+    try:
+        stress_dict.download()
+    except (RuntimeError, OSError) as error:
+        print(f"Словарь ударений недоступен: {error}")
 plot_lock = threading.Lock()
 
 
@@ -187,7 +183,9 @@ def parse(text: str) -> Doc:
     return nlp(text)
 
 
-def format_value(value: float | int) -> str:
+def format_value(value: float | int | str | None) -> str:
+    if value is None:
+        return "-"
     if isinstance(value, float):
         return "-" if isnan(value) else f"{value:.2f}"
     return str(value)
@@ -268,6 +266,24 @@ def collocations_table(words: tuple[str, ...]) -> pd.DataFrame:
     )
 
 
+def verse_tables(doc: Doc) -> tuple[pd.DataFrame, str]:
+    if not stress_dict.filepath:
+        return pd.DataFrame(columns=["Метрика", "Значение"]), "*Словарь ударений недоступен.*"
+    vs = VerseStats(doc, stress_dict=stress_dict)
+    if not vs.n_lines:
+        return stats_table(vs.get_stats(), VERSE_STATS_DESC), "*В тексте нет русских слов.*"
+    accented = [line for stanza in vs.accentuate().split("\n\n") for line in stanza.split("\n")]
+    letters = [letter for scheme in vs.rhyme_schemes for letter in scheme]
+    rows = []
+    for pattern, letter, line in zip(vs.patterns, letters, accented, strict=True):
+        if len(pattern) > VERSE_PATTERN_WIDTH:
+            pattern = pattern[: VERSE_PATTERN_WIDTH - 1] + "…"
+        rows.append(f"{pattern:<{VERSE_PATTERN_WIDTH}} {letter} {line}")
+    if len(rows) > VERSE_MAX_LINES:
+        rows = [*rows[:VERSE_MAX_LINES], f"… ещё {len(rows) - VERSE_MAX_LINES} строк"]
+    return stats_table(vs.get_stats(), VERSE_STATS_DESC), "```\n" + "\n".join(rows) + "\n```"
+
+
 def morph_tables(ms: MorphStats) -> tuple[pd.DataFrame, pd.DataFrame]:
     stats = ms.get_stats(filter_none=True)
     pos = sorted(stats["pos"].items(), key=lambda item: -item[1])
@@ -336,6 +352,7 @@ def compute(text: str, layers: list[str]) -> dict:
     ls = LexicalStats(doc, freq_dict=freq_dict)
     words = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True).extract(text)
     pos_table, morph_table = morph_tables(ms)
+    verse_table, verse_lines = verse_tables(doc)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
     enough_words = bs.n_words >= ZIPF_MIN_WORDS
     enough_sents = bs.n_sents >= SENTENCES_MIN
@@ -352,6 +369,8 @@ def compute(text: str, layers: list[str]) -> dict:
         "lexical": lexical_table(ls),
         "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
+        "verse": verse_table,
+        "verse_lines": verse_lines,
         "basic": stats_table(basic, BASIC_STATS_DESC),
         "keywords": keywords_table(words),
         "collocations": collocations_table(words),
@@ -380,6 +399,8 @@ def analyze(text: str, *groups: list[str]):
         result["lexical"],
         result["style"],
         result["phon"],
+        result["verse"],
+        result["verse_lines"],
         result["basic"],
         result["keywords"],
         result["collocations"],
@@ -399,7 +420,7 @@ HEADER = """
 # ruTS - статистики русского текста
 
 Вставьте текст и получите удобочитаемость, лексическое разнообразие, морфологический и синтаксический
-профиль, связность, частотность слов, SEO-метрики стиля, фоностатистики, ключевые слова и коллокации, а также подсветку фрагментов, из которых складываются эти числа.
+профиль, связность, частотность слов, SEO-метрики стиля, фоностатистики, метр и рифму стиха, ключевые слова и коллокации, а также подсветку фрагментов, из которых складываются эти числа.
 [GitHub](https://github.com/SergeyShk/ruTS) · [Документация](https://sergeyshk.github.io/ruTS/) ·
 [PyPI](https://pypi.org/project/ruts/)
 """
@@ -434,11 +455,13 @@ with gr.Blocks(title="ruTS") as demo:
             "lexical",
             "style",
             "phon",
+            "verse",
             "basic",
             "keywords",
             "collocations",
         )
     }
+    verse_lines_output = gr.Markdown(INITIAL["verse_lines"], render=False)
     pos_output = gr.BarPlot(
         INITIAL["pos"],
         x="Часть речи",
@@ -483,6 +506,8 @@ with gr.Blocks(title="ruTS") as demo:
         tables["lexical"],
         tables["style"],
         tables["phon"],
+        tables["verse"],
+        verse_lines_output,
         tables["basic"],
         tables["keywords"],
         tables["collocations"],
@@ -550,6 +575,10 @@ with gr.Blocks(title="ruTS") as demo:
                     tables["style"].render()
                 with gr.Tab("Фоника"):
                     tables["phon"].render()
+                with gr.Tab("Стих"):
+                    gr.Markdown(VERSE_NOTE)
+                    tables["verse"].render()
+                    verse_lines_output.render()
                 with gr.Tab("Базовые"):
                     tables["basic"].render()
                 with gr.Tab("Ключевые слова"):
