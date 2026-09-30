@@ -319,6 +319,10 @@ def test_add_dash_rules():
         "сказал:—Нет",
         "«-Нет»",
         "да--сказал",
+        "Да́- нет",
+        "Да́,-нет",
+        "Он—«Нет»",
+        "он—(тихо)—сказал",
     ):
         assert [token.text for token in nlp(text)] == [token for _, _, token in iter_tokens(text)]
     assert [token.text for token in nlp("во-первых")] == ["во", "-", "первых"]

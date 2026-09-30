@@ -20,6 +20,7 @@ from spacy.tokens import Doc, Span, Token
 
 from .constants import (
     DEFAULT_DATA_DIR,
+    LETTER,
     PUNCTUATIONS,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
@@ -33,11 +34,8 @@ from .exceptions import DataFileError, DownloadError, SourceTypeError
 logger = logging.getLogger(__name__)
 
 DASHES = frozenset("-—–―")
-# Буква с комбинирующими знаками: ударение и NFD-запись й и ё - не \w
-_MARKED_LETTER = r"(?:[^\W\d_]|[\u0300-\u036f])"
 GLUED_DASHES = re.compile(
-    rf"^(?:-+|[—–―]+)(?=[^\W\d_])|(?<={_MARKED_LETTER})(?:-+|[—–―]+)$"
-    rf"|(?<={_MARKED_LETTER}{{2}})[—–―]+(?=[^\W\d_])"
+    rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
 
 
