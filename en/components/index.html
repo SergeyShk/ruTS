@@ -2978,7 +2978,7 @@
 
 
 <h1 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h1>
-<p>A set of modules for building <a href="https://github.com/explosion/spaCy">spaCy</a> components. Each module is a class with two implemented methods: <code>__init__</code> (adds a new extension to the pipeline on initialization) and <code>__call__</code> (takes a <code>Doc</code> object and returns its modified version).</p>
+<p>A set of modules for building <a href="https://github.com/explosion/spaCy">spaCy</a> components. Each module is a class with two implemented methods: <code>__init__</code> (adds a new extension to the pipeline on initialization) and <code>__call__</code> (takes a <code>Doc</code> object and returns its modified version). Adding a component extends the tokenizer of the pipeline with the rules for the dashes of dialogue (<code>ruts.utils.add_dash_rules</code>), so that a <code>Doc</code> is split into words the same way as a string.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Detailed information on developing custom spaCy components is available in the corresponding section of the <a href="https://spacy.io/usage/processing-pipelines#custom-components">documentation</a>. The examples below use the <code>ru_core_news_sm</code> model, which is installed separately: <code>python -m spacy download ru_core_news_sm</code> (see <a href="../installation/">installation</a>).</p>

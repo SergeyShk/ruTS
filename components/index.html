@@ -2978,7 +2978,7 @@
 
 
 <h1 id="_1">Компоненты<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Набор модулей для создания компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>. Каждый модуль представляет собой класс с двумя реализованными методами: <code>__init__</code> (добавляет новое расширение в пайплайн при инициализации) и <code>__call__</code> (принимает объект класса <code>Doc</code> и возвращает его модифицированную версию).</p>
+<p>Набор модулей для создания компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>. Каждый модуль представляет собой класс с двумя реализованными методами: <code>__init__</code> (добавляет новое расширение в пайплайн при инициализации) и <code>__call__</code> (принимает объект класса <code>Doc</code> и возвращает его модифицированную версию). Добавление компонента дополняет токенизатор пайплайна правилами для тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Подробную информацию о разработке пользовательских компонентов для spaCy можно узнать в соответствующем разделе <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации</a>. Примеры ниже используют модель <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
