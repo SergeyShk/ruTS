@@ -14,9 +14,11 @@ from ruts.syllables import (
 )
 
 ROWS = (
+    ("белый", "б^елый"),
     ("воевода", "воев^ода"),
     ("воровка", "вор^овка"),
     ("выскочивший", "в^ыскочивший"),
+    ("далеко-далеко", "далеко-далек^о"),
     ("еще", "^еще"),
     ("желание", "жел^ание"),
     ("желания", "жел^ания"),
@@ -110,6 +112,10 @@ def test_word_stresses(stress_dict):
     assert word_stresses("мороз-воевода", stress_dict) == [1, 4]
     assert word_stresses("сорок-воровка", stress_dict) == [0, 3]
     assert word_stresses("кто-нибудь", stress_dict) == [0]
+    assert word_stresses("корова-ли", stress_dict) == [1]
+    assert word_stresses("корова-же", stress_dict) == [1]
+    assert word_stresses("по-прежнему", stress_dict) == [1]
+    assert word_stresses("по-то", stress_dict) == [0]
     assert word_stresses("собака-корова", stress_dict) == []
     assert word_stresses("xyz", stress_dict) == []
 
@@ -149,3 +155,12 @@ def test_default_stress_dict(stress_dict, monkeypatch):
 def test_previous_modules():
     assert ruts.phon_stats.syllabify is syllabify
     assert ruts.verse_stats.word_stress is word_stress
+
+
+def test_compound_stresses_with_yo(stress_dict):
+    assert word_stresses("чёрно-белый", stress_dict) == [0, 2]
+    assert word_stresses("далёко-далёко", stress_dict) == [1, 4]
+    assert word_stresses("далеко-далеко", stress_dict) == [5]
+    assert word_stresses("всё-таки", stress_dict) == [0]
+    assert word_stresses("ёлка-собака", stress_dict) == [0]
+    assert stress_type("чёрно-белый", stress_dict) == "женская"

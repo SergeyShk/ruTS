@@ -97,7 +97,7 @@ Returns `None` if the word is not found or has no vowels.
 !!! info ""
     **ruts.syllables.word_stresses()**
 
-All stressed syllables of a word in ascending order. Most words have one stress, the one of `word_stress`. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (`со-рок-во-ро-вка` - 0 and 3), the particles -то, -нибудь, -ка are unstressed. The dictionary keeps one stress per word, so a compound found as a whole (`северо-западный`) gets no secondary stress.
+All stressed syllables of a word in ascending order. Most words have one stress, the one of `word_stress`. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (`со-рок-во-ро-вка` - 0 and 3); the particles -то, -нибудь, -ка, -ли, -же and the adverbial prefix по- (`по-французски`) are unstressed. A compound with ё is always split into parts (`чёр-но-бе-лый` - 0 and 2): the dictionary looks up the form without ё and may give the stress of another word (`далеко-далеко` instead of `далёко-далёко`). The dictionary keeps one stress per word, so a compound found as a whole (`северо-западный`) gets no secondary stress.
 
 Parameters:
 

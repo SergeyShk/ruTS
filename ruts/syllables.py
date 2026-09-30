@@ -24,7 +24,9 @@ CONSONANTS = (
 MARKS = frozenset(letter.lower() for letter in RU_MARKS)
 LETTERS = VOWELS | CONSONANTS | MARKS
 # Частицы, не несущие ударения в составных словах
-PARTICLES = frozenset({"то", "нибудь", "либо", "ка", "таки", "де", "с", "тка"})
+PARTICLES = frozenset({"то", "нибудь", "либо", "ка", "таки", "де", "с", "тка", "ли", "же", "бы"})
+# Приставки наречий через дефис, не несущие ударения: по-прежнему, по-французски
+UNSTRESSED_PREFIXES = frozenset({"по"})
 # Поэтические стяжения -ие > -ье: слово ищется в словаре в полной форме
 CONTRACTED_ENDINGS = (
     ("ьями", "иями"),
@@ -122,8 +124,9 @@ def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
         Слоги считаются по гласным с нуля, как в syllabify; у слов с буквой ё
         ударение на ней, у односложных слов - на единственном слоге; иначе ударение
         берется из словаря StressDict с поправками STRESS_CORRECTIONS. Составные
-        слова через дефис ищутся целиком, затем по частям (частицы -то, -нибудь, -ка
-        безударны), и главным считается последнее из word_stresses; поэтические
+        слова через дефис ищутся целиком, затем по частям (частицы -то, -нибудь,
+        -ка, -ли, -же и приставка по- наречий безударны, ё задает ударение своей
+        части), и главным считается последнее из word_stresses; поэтические
         стяжения (желанье - желание) и деепричастия (забыв - забывший) ищутся
         в словаре по полной форме
 
@@ -152,9 +155,12 @@ def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]
         Номера слогов с нуля по возрастанию. У большинства слов одно ударение
         (см. word_stress); составное слово через дефис, которого нет в словаре
         целиком, получает ударение каждой знаменательной части (сорок-воровка -
-        0 и 3), частицы -то, -нибудь, -ка безударны. Словарь хранит одно ударение
-        слова, поэтому у составных слов, найденных целиком, побочное ударение
-        не выделяется
+        0 и 3); частицы -то, -нибудь, -ка, -ли, -же и приставка по- наречий
+        (по-французски) безударны. Составное слово с ё делится на части всегда
+        (чёрно-белый - 0 и 2): словарь ищет форму без ё и может дать ударение
+        другого слова (далеко-далеко вместо далёко-далёко). Словарь хранит одно
+        ударение слова, поэтому у составных слов, найденных целиком, побочное
+        ударение не выделяется
 
     Аргументы:
         word (str): Слово
@@ -256,7 +262,9 @@ def _word_stresses(word: str, stress_dict: StressDict) -> tuple[int, ...]:
     if not n_syllables:
         return ()
     if "ё" in word:
-        return (_count_vowels(word[: word.index("ё")]),)
+        # Ё составного слова ставит ударение своей части: словарь ищет форму без ё
+        stresses = _compound_stresses(word, stress_dict) if "-" in word else ()
+        return stresses or (_count_vowels(word[: word.index("ё")]),)
     if n_syllables == 1:
         return (0,)
     stress = _lookup(word, stress_dict)
@@ -289,16 +297,21 @@ def _lookup(word: str, stress_dict: StressDict) -> int | None:
 
 def _compound_stresses(word: str, stress_dict: StressDict) -> tuple[int, ...]:
     """Ударения знаменательных частей составного слова через дефис"""
-    stresses = []
+    parts = []
     offset = 0
     for part in word.split("-"):
         n_syllables = _count_vowels(part)
         if n_syllables and part not in PARTICLES:
-            part_stress = _word_stress(part, stress_dict)
-            if part_stress is None:
-                return ()
-            stresses.append(offset + part_stress)
+            parts.append((offset, part))
         offset += n_syllables
+    if len(parts) > 1 and parts[0][1] in UNSTRESSED_PREFIXES:
+        parts = parts[1:]
+    stresses = []
+    for offset, part in parts:
+        part_stress = _word_stress(part, stress_dict)
+        if part_stress is None:
+            return ()
+        stresses.append(offset + part_stress)
     return tuple(stresses)
 
 
