@@ -9,7 +9,6 @@ class MorphologyStatDesc(TypedDict):
     values: dict[str, str]
 
 
-# Директория наборов данных по умолчанию: RUTS_DATA_DIR или ruts_data рядом с пакетом
 DEFAULT_DATA_DIR = (
     Path(os.environ["RUTS_DATA_DIR"]).expanduser().resolve()
     if os.environ.get("RUTS_DATA_DIR")

@@ -69,12 +69,10 @@ jobs:
       - name: Run tests
         env:
           NLTK_DATA: ${{ runner.temp }}/nltk_data
-        # Архивы наборов данных качаются с master, где новая версия архива появляется
-        # только после мержа: сетевые тесты идут отдельной задачей
+        # Архивы наборов качаются с master, поэтому сетевые тесты - в задаче network
         run: uv run --no-sync pytest -m "not network" --cov ruts
 
   network:
-    # Сетевые тесты - на push в master и по ручному запуску, в том числе на ветке
     if: github.event_name != 'pull_request'
     name: network (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
