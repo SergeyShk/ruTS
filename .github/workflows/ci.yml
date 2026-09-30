@@ -5,6 +5,7 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -73,8 +74,14 @@ jobs:
         run: uv run --no-sync pytest -m "not network" --cov ruts
 
   network:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    # Сетевые тесты - на push в master и по ручному запуску, в том числе на ветке
+    if: github.event_name != 'pull_request'
+    name: network (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -82,10 +89,19 @@ jobs:
         uses: astral-sh/setup-uv@v10.0.1
         with:
           enable-cache: true
-          python-version: "3.13"
+          python-version: "3.12"
       - name: Install dependencies
         run: uv sync --locked --no-default-groups --group test
+      - name: Cache NLTK data
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/nltk_data
+          key: nltk-punkt-stopwords-${{ runner.os }}-v1
+      - name: Download NLTK data
+        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run the network tests
+        env:
+          NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: uv run --no-sync pytest -m network
 
   docs:
