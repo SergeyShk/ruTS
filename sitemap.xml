@@ -43,6 +43,13 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://sergeyshk.github.io/ruTS/en/installation/"/>
     </url>
     <url>
+        <loc>https://sergeyshk.github.io/ruTS/syllables/</loc>
+        <lastmod>2026-09-30</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://sergeyshk.github.io/ruTS/syllables/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergeyshk.github.io/ruTS/en/syllables/"/>
+    </url>
+    <url>
         <loc>https://sergeyshk.github.io/ruTS/corpus/collocations/</loc>
         <lastmod>2026-09-30</lastmod>
         <changefreq>daily</changefreq>
@@ -377,6 +384,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://sergeyshk.github.io/ruTS/en/installation/"/>
         <xhtml:link rel="alternate" hreflang="ru" href="https://sergeyshk.github.io/ruTS/installation/"/>
+    </url>
+    <url>
+        <loc>https://sergeyshk.github.io/ruTS/en/syllables/</loc>
+        <lastmod>2026-09-30</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://sergeyshk.github.io/ruTS/en/syllables/"/>
+        <xhtml:link rel="alternate" hreflang="ru" href="https://sergeyshk.github.io/ruTS/syllables/"/>
     </url>
     <url>
         <loc>https://sergeyshk.github.io/ruTS/en/corpus/collocations/</loc>
