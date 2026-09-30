@@ -10,7 +10,6 @@ from spacy.tokens import Doc
 
 from .constants import (
     RHYME_WINDOW,
-    STRESS_CORRECTIONS,
     VERSE_CLAUSULAS,
     VERSE_MAX_DEVIATIONS,
     VERSE_MAX_MOVED,
@@ -23,42 +22,12 @@ from .constants import (
 )
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
-from .phon_stats import VOWELS
-from .utils import normalize_yo, safe_divide
+from .syllables import VOWELS, _count_vowels, _word_stress
+from .syllables import word_stress as word_stress
+from .utils import safe_divide
 
 ACUTE = "\u0301"
 WORD_PATTERN = re.compile(r"[а-яё]+(?:-[а-яё]+)*", re.IGNORECASE)
-# Частицы, не несущие ударения в составных словах
-PARTICLES = frozenset({"то", "нибудь", "либо", "ка", "таки", "де", "с", "тка"})
-# Поэтические стяжения -ие > -ье: слово ищется в словаре в полной форме
-CONTRACTED_ENDINGS = (
-    ("ьями", "иями"),
-    ("ьем", "ием"),
-    ("ьям", "иям"),
-    ("ьях", "иях"),
-    ("ье", "ие"),
-    ("ья", "ия"),
-    ("ьи", "ии"),
-    ("ью", "ию"),
-)
-# Деепричастия ищутся в словаре как причастия с тем же ударением
-CONVERB_ENDINGS = (
-    ("вшись", "вшийся"),
-    ("вши", "вший"),
-    ("в", "вший"),
-    ("аясь", "ающийся"),
-    ("яясь", "яющийся"),
-    ("уясь", "ующийся"),
-    ("юясь", "юющийся"),
-    ("ясь", "ящийся"),
-    ("ась", "ащийся"),
-    ("ая", "ающий"),
-    ("яя", "яющий"),
-    ("уя", "ующий"),
-    ("юя", "юющий"),
-    ("я", "ящий"),
-    ("а", "ащий"),
-)
 # Фонетический ключ рифмы: ударные гласные и редукция безударных
 STRESSED_VOWELS = {
     "а": "а", "я": "а", "о": "о", "ё": "о", "у": "у", "ю": "у", "э": "э", "е": "е", "и": "и", "ы": "и",
@@ -353,91 +322,6 @@ class VerseStats:
             "\n".join(_accentuate_line(line) for line in self._lines if line.stanza == number)
             for number in range(self.n_stanzas)
         )
-
-
-def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
-    """
-    Определение ударного слога слова
-
-    Описание:
-        Слоги считаются по гласным с нуля; у слов с буквой ё ударение на ней,
-        у односложных слов - на единственном слоге; иначе ударение берется
-        из словаря StressDict с поправками STRESS_CORRECTIONS. Составные слова
-        через дефис ищутся целиком, затем по частям (частицы -то, -нибудь, -ка
-        безударны, ударение последней знаменательной части считается главным);
-        поэтические стяжения (желанье - желание) и деепричастия (забыв - забывший)
-        ищутся в словаре по полной форме
-
-    Аргументы:
-        word (str): Слово
-        stress_dict (StressDict): Словарь ударений; если не задан, используется StressDict()
-
-    Вывод:
-        int|None: Номер ударного слога, None если слово не найдено или в нем нет гласных
-
-    Исключения:
-        DatasetNotFoundError: Если словарь ударений не загружен
-    """
-    if stress_dict is None:
-        stress_dict = StressDict()
-    return _word_stress(word.lower(), stress_dict)
-
-
-def _word_stress(word: str, stress_dict: StressDict) -> int | None:
-    """Ударный слог слова в нижнем регистре - см. word_stress"""
-    n_syllables = _count_vowels(word)
-    if not n_syllables:
-        return None
-    if "ё" in word:
-        return _count_vowels(word[: word.index("ё")])
-    if n_syllables == 1:
-        return 0
-    stress = _lookup(word, stress_dict)
-    if stress is not None:
-        return stress
-    if "-" in word:
-        return _compound_stress(word, stress_dict)
-    for contracted, full in CONTRACTED_ENDINGS:
-        if word.endswith(contracted):
-            stress = _lookup(word.removesuffix(contracted) + full, stress_dict)
-            if stress is not None:
-                n_stem = _count_vowels(word.removesuffix(contracted))
-                return stress if stress < n_stem else max(n_stem, stress - 1)
-    for converb, participle in CONVERB_ENDINGS:
-        if word.endswith(converb):
-            stem = word.removesuffix(converb)
-            stress = _lookup(stem + participle, stress_dict)
-            if stress is not None and stress < _count_vowels(stem) + _count_vowels(converb):
-                return stress
-    return None
-
-
-def _lookup(word: str, stress_dict: StressDict) -> int | None:
-    """Ударный слог по поправкам и словарю"""
-    key = normalize_yo(word)
-    if key in STRESS_CORRECTIONS:
-        return STRESS_CORRECTIONS[key]
-    return stress_dict.lookup(key)
-
-
-def _compound_stress(word: str, stress_dict: StressDict) -> int | None:
-    """Главное ударение составного слова через дефис по последней знаменательной части"""
-    stress = None
-    offset = 0
-    for part in word.split("-"):
-        n_syllables = _count_vowels(part)
-        if n_syllables and part not in PARTICLES:
-            part_stress = _word_stress(part, stress_dict)
-            if part_stress is None:
-                return None
-            stress = offset + part_stress
-        offset += n_syllables
-    return stress
-
-
-def _count_vowels(text: str) -> int:
-    """Число гласных букв - слогов"""
-    return sum(letter in VOWELS for letter in text)
 
 
 def _vowel(word: str, stress: int) -> str:

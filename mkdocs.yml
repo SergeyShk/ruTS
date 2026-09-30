@@ -14,6 +14,7 @@ nav:
       - Извлечение предложений: extractors/sentences.md
       - Извлечение слов: extractors/words.md
       - Извлечение символьных N-грамм: extractors/char_ngrams.md
+    - Слоги и ударение: syllables.md
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
         - Метрики удобочитаемости:
@@ -109,6 +110,7 @@ plugins:
             Извлечение предложений: Sentence extraction
             Извлечение слов: Word extraction
             Извлечение символьных N-грамм: Character N-gram extraction
+            Слоги и ударение: Syllables and stress
             Подсчет статистик: Statistics
             Базовые статистики: Basic statistics
             Метрики удобочитаемости: Readability metrics
