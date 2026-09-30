@@ -20,11 +20,14 @@ jobs:
         if: github.event_name == 'release'
         run: |
           sed -i 's|^ruts @ .*|ruts==${{ github.event.release.tag_name }}|' demo/requirements.txt
-          for attempt in $(seq 1 30); do
-            curl -sf "https://pypi.org/pypi/ruts/${{ github.event.release.tag_name }}/json" > /dev/null && exit 0
+          # Индекс, который читает pip, обновляется позже JSON релиза
+          for attempt in $(seq 1 60); do
+            curl -sf -H "Accept: application/vnd.pypi.simple.v1+json" https://pypi.org/simple/ruts/ \
+              | jq -e --arg version "${{ github.event.release.tag_name }}" '.versions | index($version)' > /dev/null \
+              && exit 0
             sleep 30
           done
-          echo "ruts ${{ github.event.release.tag_name }} is not on PyPI" && exit 1
+          echo "ruts ${{ github.event.release.tag_name }} is not in the index of PyPI" && exit 1
       - name: Upload demo to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
