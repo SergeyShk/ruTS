@@ -1,3 +1,7 @@
+import os
+import subprocess
+import sys
+
 import pytest
 
 from ruts.datasets.dataset import Dataset
@@ -58,3 +62,19 @@ def test_methods(dataset, name):
     assert hasattr(dataset, name)
     with pytest.raises(NotImplementedError):
         getattr(dataset, name)()
+
+
+def test_data_directory_of_the_environment(tmp_path):
+    code = (
+        "from ruts.datasets import FreqDict, SovChLit;"
+        "print(FreqDict().data_dir);"
+        "print(SovChLit().data_dir)"
+    )
+    environment = {**os.environ, "RUTS_DATA_DIR": str(tmp_path)}
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True, env=environment
+    )
+    assert result.stdout.splitlines() == [
+        str((tmp_path / "dicts").resolve()),
+        str((tmp_path / "texts").resolve()),
+    ]

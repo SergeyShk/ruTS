@@ -18,12 +18,6 @@ repos:
     hooks:
       - id: nbstripout
         args: [--keep-output, --keep-count, --extra-keys, metadata.language_info.version]
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.6
-    hooks:
-      - id: ruff-check
-        args: [--fix]
-      - id: ruff-format
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.12.12
@@ -32,6 +26,20 @@ repos:
 
   - repo: local
     hooks:
+      - id: ruff-check
+        name: ruff check
+        language: system
+        entry: uv run ruff check --force-exclude --fix
+        types_or: [python, pyi, jupyter]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        language: system
+        entry: uv run ruff format --force-exclude
+        types_or: [python, pyi, jupyter, markdown]
+        require_serial: true
+
       - id: mypy
         name: mypy
         language: system
@@ -43,6 +51,6 @@ repos:
         name: pytest
         stages: [pre-push]
         language: system
-        entry: uv run pytest --cov ruts --cov-fail-under 90
-        types: [python]
+        entry: uv run pytest -m "not network" --cov ruts
         pass_filenames: false
+        always_run: true

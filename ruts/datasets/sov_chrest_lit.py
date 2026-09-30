@@ -61,7 +61,7 @@ class SovChLit(Dataset):
         {'author': 'С. Маршак',
          'book': 'Родная речь. Книга для чтения в I классе начальной школы',
          'category': 'Весна',
-         'file': ...Path('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
+         'file': ...Path('.../texts/sov_chrest_lit/grade_1/114'),
          'grade': 1,
          'subject': 'Март',
          'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\\n'

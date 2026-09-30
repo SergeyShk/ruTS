@@ -18,7 +18,7 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v10.0.1
         with:
-          enable-cache: true
+          enable-cache: false
           python-version: "3.13"
       - name: Check version matches tag
         run: |

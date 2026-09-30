@@ -1,3 +1,4 @@
+import os
 import string
 from pathlib import Path
 from typing import TypedDict
@@ -8,7 +9,11 @@ class MorphologyStatDesc(TypedDict):
     values: dict[str, str]
 
 
-DEFAULT_DATA_DIR = Path(__file__).parent.parent.resolve() / "ruts_data"
+DEFAULT_DATA_DIR = (
+    Path(os.environ["RUTS_DATA_DIR"]).expanduser().resolve()
+    if os.environ.get("RUTS_DATA_DIR")
+    else Path(__file__).parent.parent.resolve() / "ruts_data"
+)
 RESOURCES_DIR = Path(__file__).parent.resolve() / "resources"
 RU_VOWELS = ["а", "е", "и", "у", "о", "я", "ё", "э", "ю", "ы"]
 RU_VOWELS += list(map(str.upper, RU_VOWELS))
