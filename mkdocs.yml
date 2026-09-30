@@ -1,5 +1,6 @@
 site_name: RuTS
 site_description: "Библиотека для извлечения статистик из текстов на русском языке"
+site_url: https://sergeyshk.github.io/ruTS/
 repo_url: https://github.com/SergeyShk/ruTS
 
 nav:
@@ -175,3 +176,6 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: True
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
