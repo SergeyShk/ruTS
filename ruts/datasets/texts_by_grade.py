@@ -57,7 +57,7 @@ class TextsByGrade(Dataset):
     Итерация по набору данных:
         >>> for record in tbg.get_records(grade=1, subject='Ряба'):
         ...     pprint(record)
-        {'file': ...Path('.../ruts_data/texts/texts_by_grade/grade_1/9'),
+        {'file': ...Path('.../texts/texts_by_grade/grade_1/9'),
          'grade': 1,
          'source': 'http://skazki.org.ru/tales/yaichko/',
          'subject': 'Курочка Ряба',

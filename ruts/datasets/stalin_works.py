@@ -80,7 +80,7 @@ class StalinWorks(Dataset):
     Итерация по набору данных:
         >>> for record in sw.get_records(year=1937, text_type='Письмо', limit=1):
         ...     pprint(record)
-        {'file': ...Path('.../ruts_data/texts/stalin_works/volume_14/59'),
+        {'file': ...Path('.../texts/stalin_works/volume_14/59'),
          'is_translation': False,
          'source': 'Книга "Иосиф Сталин в объятиях семьи"',
          'subject': 'Письмо матери 10 марта 1937 года',

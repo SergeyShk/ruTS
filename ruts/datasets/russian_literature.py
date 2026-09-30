@@ -79,7 +79,7 @@ class RussianLiterature(Dataset):
         >>> for record in rl.get_records(genre='poems', author='Пушкин', limit=1):
         ...     pprint(record)
         {'author': 'Александр Пушкин',
-         'file': ...Path('.../ruts_data/texts/russian_literature/poems/Pushkin/19 октября.txt'),
+         'file': ...Path('.../texts/russian_literature/poems/Pushkin/19 октября.txt'),
          'genre': 'poems',
          'text': 'Роняет лес багряный свой убор,...',
          'title': '19 октября',
