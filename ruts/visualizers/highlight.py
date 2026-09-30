@@ -27,8 +27,8 @@ from ..constants import (
 )
 from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..lexical_stats import get_rank
-from ..phon_stats import CONSONANTS, LETTERS, VOWELS
 from ..style_stats import is_parenthetical, is_stopword
+from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     find_split_predicates,
     get_lemma,
@@ -42,7 +42,6 @@ from ..syntax_stats import (
 )
 from ..utils import (
     check_sequence,
-    count_syllables,
     find_phrases,
     is_verbal_noun,
     iter_doc_units,

@@ -18,7 +18,6 @@ from spacy.tokens import Doc, Span, Token
 from .constants import (
     DEFAULT_DATA_DIR,
     PUNCTUATIONS,
-    RU_VOWELS,
     UD_TO_OPENCORPORA_POS,
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
@@ -253,9 +252,6 @@ def is_punctuation(token: str) -> bool:
     return all(char in PUNCTUATIONS or unicodedata.category(char)[0] in "PS" for char in token)
 
 
-_DELETE_VOWELS = str.maketrans("", "", "".join(RU_VOWELS))
-
-
 @lru_cache(maxsize=1 << 16)
 def count_letters(word: str) -> int:
     """
@@ -273,23 +269,6 @@ def count_letters(word: str) -> int:
         int: Количество букв
     """
     return sum(map(str.isalpha, word))
-
-
-@lru_cache(maxsize=1 << 16)
-def count_syllables(word: str) -> int:
-    """
-    Вычисление количества слогов в слове
-
-    Описание:
-        Число гласных букв; результаты кэшируются по словоформе
-
-    Аргументы:
-        word (str): Строка слова
-
-    Вывод:
-        int: Количество слогов
-    """
-    return len(word) - len(word.translate(_DELETE_VOWELS))
 
 
 def check_sequence(value: object, what: str = "слов") -> None:

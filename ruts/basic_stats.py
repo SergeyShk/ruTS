@@ -15,7 +15,8 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .utils import count_letters, count_syllables, iter_doc_words
+from .syllables import count_syllables
+from .utils import count_letters, iter_doc_words
 
 ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
 DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)

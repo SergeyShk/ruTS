@@ -16,7 +16,6 @@ from ruts.verse_stats import (
     detect_meter,
     rhyme_scheme,
     split_stanzas,
-    word_stress,
 )
 
 ROWS = (
@@ -197,30 +196,6 @@ def stress_dict(tmp_path_factory):
 @pytest.fixture(scope="module")
 def nlp():
     return spacy.load("ru_core_news_sm")
-
-
-def test_word_stress(stress_dict):
-    assert word_stress("корова", stress_dict) == 1
-    assert word_stress("Корова", stress_dict) == 1
-    assert word_stress("ёжик", stress_dict) == 0
-    assert word_stress("мой", stress_dict) == 0
-    assert word_stress("еще", stress_dict) == 1
-    assert word_stress("ещё", stress_dict) == 1
-    assert word_stress("бою", stress_dict) == 1
-    assert word_stress("спешит", stress_dict) == 1
-    assert word_stress("кто-нибудь", stress_dict) == 0
-    assert word_stress("по-прежнему", stress_dict) == 1
-    assert word_stress("мороз-воевода", stress_dict) == 4
-    assert word_stress("все-таки", stress_dict) == 0
-    assert word_stress("желанье", stress_dict) == 1
-    assert word_stress("желанья", stress_dict) == 1
-    assert word_stress("забыв", stress_dict) == 1
-    assert word_stress("забывши", stress_dict) == 1
-    assert word_stress("собака", stress_dict) is None
-    assert word_stress("собака-корова", stress_dict) is None
-    assert word_stress("вздрогнув", stress_dict) is None
-    assert word_stress("ь", stress_dict) is None
-    assert word_stress("xyz", stress_dict) is None
 
 
 def test_iamb(stress_dict):

@@ -1,7 +1,6 @@
 from collections import Counter
 from collections.abc import Sequence
 from functools import lru_cache
-from itertools import pairwise
 from math import log2, nan
 
 import numpy as np
@@ -12,23 +11,16 @@ from .constants import (
     PHON_WINDOW_LEN,
     RU_CONSONANTS_HIGH,
     RU_CONSONANTS_LOW,
-    RU_CONSONANTS_SONOR,
-    RU_CONSONANTS_YET,
-    RU_MARKS,
-    RU_VOWELS,
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
+from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables
+from .syllables import syllabify as syllabify
 from .utils import iter_doc_words, safe_divide
 
-VOWELS = frozenset(letter.lower() for letter in RU_VOWELS)
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
 VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
-SONORANTS = frozenset(letter.lower() for letter in RU_CONSONANTS_SONOR + RU_CONSONANTS_YET)
-CONSONANTS = VOICELESS | VOICED | SONORANTS
-MARKS = frozenset(letter.lower() for letter in RU_MARKS)
 SOUNDS = VOWELS | CONSONANTS
-LETTERS = SOUNDS | MARKS
 IOTATED = frozenset("еёюя")
 CACHE_SIZE = 1 << 16
 SOUNDS_ORDER = sorted(SOUNDS)
@@ -228,67 +220,6 @@ def cv_pattern(word: str) -> str:
         str: CV-шаблон
     """
     return "".join("V" if letter in VOWELS else "C" for letter in word.lower() if letter in SOUNDS)
-
-
-def syllabify(word: str) -> list[str]:
-    """
-    Деление слова на слоги по правилу восходящей звучности (Аванесов)
-
-    Описание:
-        Слогов в слове столько, сколько гласных; слово без гласных (предлоги в, к, с)
-        слога не образует - это проклитика, для него возвращается пустой список
-        Граница слога проходит по правилам:
-            одиночный согласный между гласными отходит к следующему слогу: ко-ро-ва
-            сочетание шумных и шумного с сонорным отходит к следующему слогу: ко-шка, се-стра, по-зна-ко-мить
-            сонорный перед шумным отходит к предыдущему слогу: кар-та, пол-ка
-            между двумя сонорными проходит граница: вол-на, кар-ман
-            й перед согласным отходит к предыдущему слогу: май-ка, вой-на
-            ь и ъ отходят к предыдущей букве: боль-шой, по-дъезд
-        Каждая гласная зияния образует свой слог: а-э-ро-порт
-        Правила применяются к буквам, а не звукам, поэтому деление на слоги
-        орфографическое, как в школьной фонетике, а не морфемное
-        Символы, кроме русских букв (дефис, цифры, латиница), отбрасываются
-
-    Ссылки:
-        https://ru.wikipedia.org/wiki/Слог
-
-    Аргументы:
-        word (str): Слово
-
-    Вывод:
-        list[str]: Список слогов
-    """
-    return list(_syllables(word))
-
-
-@lru_cache(maxsize=CACHE_SIZE)
-def _syllables(word: str) -> tuple[str, ...]:
-    """Слоги слова кортежем с кэшем по слову - см. syllabify"""
-    word = "".join(letter for letter in word.lower() if letter in LETTERS)
-    vowel_positions = [i for i, letter in enumerate(word) if letter in VOWELS]
-    if not vowel_positions:
-        return ()
-    if len(vowel_positions) == 1:
-        return (word,)
-    syllables = []
-    start = 0
-    for current, following in pairwise(vowel_positions):
-        consonants = [
-            (i, letter)
-            for i, letter in enumerate(word[current + 1 : following], current + 1)
-            if letter in CONSONANTS
-        ]
-        # Сочетание из двух и более согласных, первый из которых сонорный (в том числе й),
-        # делится после сонорного; в остальных случаях согласные отходят к следующему слогу
-        boundary = current + 1
-        if len(consonants) > 1 and consonants[0][1] in SONORANTS:
-            boundary = consonants[0][0] + 1
-        while boundary < following and word[boundary] in MARKS:
-            boundary += 1
-        syllables.append(word[start:boundary])
-        start = boundary
-    syllables.append(word[start:])
-    return tuple(syllables)
 
 
 def is_open_syllable(syllable: str) -> bool:
