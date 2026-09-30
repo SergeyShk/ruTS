@@ -10,6 +10,8 @@
       
       
       
+        <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/installation/">
+      
       
         <link rel="prev" href="../">
       
@@ -2818,7 +2820,9 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Datasets</p>
-<p>The <a href="../datasets/sovchlit/">datasets</a> are downloaded by default into the <code>ruts_data</code> directory next to the package (<code>DEFAULT_DATA_DIR</code> in <code>ruts.constants</code>): for an installation from a wheel that is <code>site-packages/ruts_data</code>, where writing may be forbidden for a system Python. In that case pass your own directory in the <code>data_dir</code> argument when creating a dataset.</p>
+<p>The <a href="../datasets/sovchlit/">datasets</a> are downloaded by default into the <code>ruts_data</code> directory next to the package (<code>DEFAULT_DATA_DIR</code> in <code>ruts.constants</code>): for an installation from a wheel that is <code>site-packages/ruts_data</code>, where writing may be forbidden for a system Python. In that case pass your own directory in the <code>data_dir</code> argument when creating a dataset or set the environment variable <code>RUTS_DATA_DIR</code> before the package is imported:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RUTS_DATA_DIR</span><span class="o">=</span>~/ruts_data
+</code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

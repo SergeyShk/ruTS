@@ -10,6 +10,8 @@
       
       
       
+        <link rel="canonical" href="https://sergeyshk.github.io/ruTS/installation/">
+      
       
         <link rel="prev" href="..">
       
@@ -2818,7 +2820,9 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Наборы данных</p>
-<p><a href="../datasets/sovchlit/">Наборы данных</a> по умолчанию загружаются в директорию <code>ruts_data</code> рядом с пакетом (<code>DEFAULT_DATA_DIR</code> в <code>ruts.constants</code>): при установке из колеса это <code>site-packages/ruts_data</code>, куда для системного Python запись может быть запрещена. В таком случае передавайте свою директорию в аргументе <code>data_dir</code> при создании набора данных.</p>
+<p><a href="../datasets/sovchlit/">Наборы данных</a> по умолчанию загружаются в директорию <code>ruts_data</code> рядом с пакетом (<code>DEFAULT_DATA_DIR</code> в <code>ruts.constants</code>): при установке из колеса это <code>site-packages/ruts_data</code>, куда для системного Python запись может быть запрещена. В таком случае передавайте свою директорию в аргументе <code>data_dir</code> при создании набора данных или задайте переменную окружения <code>RUTS_DATA_DIR</code> до импорта пакета:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RUTS_DATA_DIR</span><span class="o">=</span>~/ruts_data
+</code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
