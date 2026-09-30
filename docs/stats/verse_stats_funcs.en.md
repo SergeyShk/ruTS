@@ -13,36 +13,6 @@ Rhymes are searched within a window of `RHYME_WINDOW` (4) lines inside a stanza 
 
 The accuracy was checked on the [RIFMA](https://github.com/Koziev/Rifma) dataset (5,121 stanzas with manual stress annotation and rhyme schemes, MIT): stresses agree with the annotation for 97% of words (97% for polysyllabic dictionary words, 71% for out-of-dictionary words), pairs of rhyming lines are found with 94% precision and 90% recall, the whole stanza scheme matches in 78% of cases; the meter is undetermined for 8% of stanzas, 3% of them because of the `VERSE_MIN_STRESSES` threshold (mostly couplets, the rest three- and four-line stanzas with short lines). Part of the `STRESS_CORRECTIONS` fixes was collected from this very annotation (63 forms where the dictionary disagrees with it in 80% or more of five or more occurrences), so the stress estimate is partly in-sample: on a held-out half of the dataset, the fixes collected from the other half add 0.1-0.2 percentage points.
 
-## Stressed syllable { #word_stress }
-
-!!! info ""
-    **ruts.verse_stats.word_stress()**
-
-Determines the stressed syllable of a word by the dictionary (step 1 of the algorithm). Syllables are counted by vowels from zero; the stressed syllable itself can be obtained by splitting the word with [`syllabify`](phon_stats_funcs.md#syllabify).
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
-| `stress_dict` | StressDict | `None` | Stress dictionary; `StressDict()` if not given |
-
-Returns `None` if the word is not found or has no vowels.
-
-!!! example "Example"
-
-    ``` python
-    from ruts.phon_stats import syllabify
-    from ruts.verse_stats import word_stress
-
-    word_stress("корова"), word_stress("ещё"), word_stress("желанье"), word_stress("кто-нибудь")
-    # (1, 1, 1, 0)
-    word_stress("хмурота")
-    # None
-    syllabify("корова")[word_stress("корова")]
-    # 'ро'
-    ```
-
 ## Accentuation { #accentuate }
 
 !!! info ""

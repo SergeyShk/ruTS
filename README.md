@@ -472,7 +472,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 ```python
 >>> from pprint import pprint
 >>> from ruts import PhonStats
->>> from ruts.phon_stats import syllabify
+>>> from ruts.syllables import syllabify
 
 >>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
 >>> ps = PhonStats(text)

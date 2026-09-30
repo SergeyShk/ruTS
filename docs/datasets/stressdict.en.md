@@ -9,7 +9,7 @@ A module for working with Ilya Koziev's [stress dictionary](https://github.com/K
 
 The dictionary is distributed under the CC0 license and downloaded from the author's repository at a pinned commit (10.6 MB, a 77 MB file) with a SHA-256 checksum check. The file is read once per process and indexed in memory as a whole without parsing lines: a word form is found by binary search over the sorted file, so loading takes a fraction of a second and the dictionary occupies about 100 MB of memory.
 
-The dictionary is used by [`VerseStats`](../stats/verse_stats.md) and by the accentuation functions [`word_stress`](../stats/verse_stats_funcs.md#word_stress) and [`accentuate`](../stats/verse_stats_funcs.md#accentuate): they correct known dictionary errors, restore stress from the letter ё and fit it to the meter.
+The dictionary is used by [`VerseStats`](../stats/verse_stats.md) and by the accentuation functions [`word_stress`](../syllables.md#word_stress) and [`accentuate`](../stats/verse_stats_funcs.md#accentuate): they correct known dictionary errors, restore stress from the letter ё and fit it to the meter.
 
 ## Parameters
 

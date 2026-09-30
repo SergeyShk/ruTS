@@ -1,39 +1,5 @@
 # Statistic functions
 
-## Syllabification { #syllabify }
-
-!!! info ""
-    **ruts.phon_stats.syllabify()**
-
-Division of a word into syllables by the rising sonority rule (Avanesov). A word has as many syllables as vowels; a word without vowels (the prepositions в, к, с) forms no syllable - it is a proclitic, and an empty list is returned for it. The syllable boundary follows these rules:
-
-| Rule | Example |
-| :--- | :-----: |
-| a single consonant between vowels goes to the next syllable | ко-ро-ва, ра-йон |
-| a cluster of obstruents, or an obstruent followed by a sonorant, goes to the next syllable | ко-шка, се-стра, о-ткрыть, по-зна-ко-мить |
-| a sonorant before an obstruent goes to the previous syllable | кар-та, пол-ка |
-| the boundary goes between two sonorants | вол-на, кар-ман |
-| й before a consonant goes to the previous syllable | май-ка, вой-на |
-| ь and ъ go with the preceding letter | боль-шой, по-дъезд |
-| every vowel of a hiatus forms its own syllable | а-э-ро-порт, а-ист |
-
-The rules apply to letters rather than sounds, so the division is orthographic, as in school phonetics, not morphemic. Characters other than Russian letters (hyphens, digits, Latin script) are dropped.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
-
-!!! example "Example"
-
-    ``` python
-    from ruts.phon_stats import syllabify
-
-    syllabify("здравствуйте")
-    # ['здра', 'вствуй', 'те']
-    ```
-
 ## CV pattern { #cv_pattern }
 
 !!! info ""

@@ -472,7 +472,7 @@ The library counts by letters, without devoicing or stress:
 ```python
 >>> from pprint import pprint
 >>> from ruts import PhonStats
->>> from ruts.phon_stats import syllabify
+>>> from ruts.syllables import syllabify
 
 >>> text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
 >>> ps = PhonStats(text)
