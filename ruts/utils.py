@@ -14,11 +14,16 @@ from pathlib import Path, PurePosixPath
 
 import pymorphy3
 from razdel import tokenize
+from spacy.language import Language
+from spacy.tokenizer import Tokenizer
 from spacy.tokens import Doc, Span, Token
 
 from .constants import (
     DEFAULT_DATA_DIR,
     PUNCTUATIONS,
+    TOKENIZER_INFIXES,
+    TOKENIZER_PREFIXES,
+    TOKENIZER_SUFFIXES,
     UD_TO_OPENCORPORA_POS,
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
@@ -28,8 +33,11 @@ from .exceptions import DataFileError, DownloadError, SourceTypeError
 logger = logging.getLogger(__name__)
 
 DASHES = frozenset("-—–―")
+# Буква с комбинирующими знаками: ударение и NFD-запись й и ё - не \w
+_MARKED_LETTER = r"(?:[^\W\d_]|[\u0300-\u036f])"
 GLUED_DASHES = re.compile(
-    r"^(?:-+|[—–―]+)(?=[^\W\d_])|(?<=[^\W\d_])(?:-+|[—–―]+)$|(?<=[^\W\d_]{2})[—–―]+(?=[^\W\d_])"
+    rf"^(?:-+|[—–―]+)(?=[^\W\d_])|(?<={_MARKED_LETTER})(?:-+|[—–―]+)$"
+    rf"|(?<={_MARKED_LETTER}{{2}})[—–―]+(?=[^\W\d_])"
 )
 
 
@@ -216,6 +224,56 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     for start, stop, token in iter_tokens(text):
         if not is_punctuation(token):
             yield start, stop, token
+
+
+def add_dash_rules(nlp: Language) -> None:
+    """
+    Добавление в токенизатор пайплайна spaCy правил для тире реплик
+
+    Описание:
+        С правилами TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES и TOKENIZER_INFIXES
+        слова Doc совпадают со словами строки (iter_tokens): тире, приклеенные
+        к словам, становятся отдельными токенами. Правило, которое у токенизатора
+        уже есть, не добавляется повторно; токенизатор, который не Tokenizer
+        spaCy или чьи правила - не регулярные выражения, не меняется.
+        Компоненты ruTS добавляют правила в свой пайплайн сами
+
+    Аргументы:
+        nlp (Language): Пайплайн, в токенизатор которого добавляются правила
+
+    Примеры использования:
+        >>> import spacy
+        >>> from ruts.utils import add_dash_rules
+        >>> nlp = spacy.blank("ru")
+        >>> [token.text for token in nlp("-Нет -сказал он.")]
+        ['-Нет', '-сказал', 'он', '.']
+        >>> add_dash_rules(nlp)
+        >>> [token.text for token in nlp("-Нет -сказал он.")]
+        ['-', 'Нет', '-', 'сказал', 'он', '.']
+    """
+    tokenizer = nlp.tokenizer
+    if not isinstance(tokenizer, Tokenizer):
+        return
+    prefixes = _extend_rules(tokenizer.prefix_search, [f"^{rule}" for rule in TOKENIZER_PREFIXES])
+    suffixes = _extend_rules(tokenizer.suffix_search, [f"{rule}$" for rule in TOKENIZER_SUFFIXES])
+    infixes = _extend_rules(tokenizer.infix_finditer, list(TOKENIZER_INFIXES))
+    if prefixes is not None:
+        tokenizer.prefix_search = prefixes.search
+    if suffixes is not None:
+        tokenizer.suffix_search = suffixes.search
+    if infixes is not None:
+        tokenizer.infix_finditer = infixes.finditer
+
+
+def _extend_rules(method: object, rules: list[str]) -> re.Pattern[str] | None:
+    """Регулярное выражение токенизатора с добавленными правилами, которых в нем нет"""
+    if method is None:
+        return re.compile("|".join(rules))
+    pattern = getattr(getattr(method, "__self__", None), "pattern", None)
+    if not isinstance(pattern, str):
+        return None
+    missing = [rule for rule in rules if rule not in pattern]
+    return re.compile("|".join([pattern, *missing]))
 
 
 def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:

@@ -14,6 +14,20 @@ DEFAULT_DATA_DIR = (
     if os.environ.get("RUTS_DATA_DIR")
     else Path(__file__).parent.parent.resolve() / "ruts_data"
 )
+# Правила токенизатора spaCy для тире реплик - как utils.iter_tokens для строки
+_LETTER = r"[^\W\d_]"
+_OPENING = r"[«„“\"'(\[]"
+_CLOSING = r"[.,;:!?…»“”\"')\]]"
+_DASH = r"(?:-+|[—–―])"
+TOKENIZER_PREFIXES = (rf"-+(?={_LETTER}|{_OPENING})", "―")
+TOKENIZER_SUFFIXES = (rf"(?<={_LETTER})-+", "―", rf"(?<=―){_CLOSING}")
+TOKENIZER_INFIXES = (
+    rf"(?<={_LETTER})-{{2,}}(?={_LETTER}|{_OPENING})",
+    rf"(?<={_LETTER})-(?={_OPENING})",
+    rf"(?<={_CLOSING}){_DASH}(?={_LETTER}|{_OPENING})",
+    rf"(?<={_LETTER}){_CLOSING}+(?={_DASH})",
+    rf"(?<=[-—–―]){_OPENING}",
+)
 RESOURCES_DIR = Path(__file__).parent.resolve() / "resources"
 RU_VOWELS = ["а", "е", "и", "у", "о", "я", "ё", "э", "ю", "ы"]
 RU_VOWELS += list(map(str.upper, RU_VOWELS))

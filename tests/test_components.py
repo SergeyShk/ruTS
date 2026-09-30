@@ -2,6 +2,7 @@ import pytest
 import spacy
 
 from ruts import (
+    BasicStats,
     CohesionStats,
     DiversityStats,
     LexicalStats,
@@ -73,6 +74,14 @@ def test_components_names(spacy_nlp):
     assert spacy_nlp.has_pipe("style") is True
     assert spacy_nlp.has_pipe("phon") is True
     assert spacy_nlp.has_pipe("cohesion") is True
+
+
+def test_components_add_dash_rules():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe("basic")
+    dialogue = "-Нет -сказал он. -Да -сказал она. Нет- сказал он."
+    assert nlp(dialogue)._.basic.get_stats() == BasicStats(dialogue).get_stats()
 
 
 def test_component_basic(spacy_doc):

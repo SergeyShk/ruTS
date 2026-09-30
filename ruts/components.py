@@ -34,6 +34,7 @@ from .readability_stats import ReadabilityStats, check_preset
 from .style_stats import StyleStats
 from .style_stats import check_params as check_style_params
 from .syntax_stats import SyntaxStats
+from .utils import add_dash_rules
 from .verse_stats import VerseStats
 
 
@@ -61,6 +62,7 @@ class BasicStatsComponent:
 
     def __init__(self, nlp: Language, name: str = "basic"):
         self.name = name
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -105,6 +107,7 @@ class MorphStatsComponent:
 
     def __init__(self, nlp: Language, name: str = "morph"):
         self.name = name
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -152,6 +155,7 @@ class ReadabilityStatsComponent:
         check_preset(preset)
         self.name = name
         self.preset = preset
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -216,6 +220,7 @@ class DiversityStatsComponent:
         self.mtld_min_len = mtld_min_len
         self.hdd_sample_size = hdd_sample_size
         self.log_base = log_base
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -278,6 +283,7 @@ class StyleStatsComponent:
         self.name = name
         self.stopwords = stopwords
         self.top_n = top_n
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -325,6 +331,7 @@ class PhonStatsComponent:
         check_phon_params(window_len)
         self.name = name
         self.window_len = window_len
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -369,6 +376,7 @@ class SyntaxStatsComponent:
 
     def __init__(self, nlp: Language, name: str = "syntax"):
         self.name = name
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -409,6 +417,7 @@ class CohesionStatsComponent:
 
     def __init__(self, nlp: Language, name: str = "cohesion"):
         self.name = name
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -456,6 +465,7 @@ class LexicalStatsComponent:
     def __init__(self, nlp: Language, name: str = "lexical", data_dir: str | None = None):
         self.name = name
         self.freq_dict = FreqDict(data_dir) if data_dir else FreqDict()
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:
@@ -509,6 +519,7 @@ class VerseStatsComponent:
     def __init__(self, nlp: Language, name: str = "verse", data_dir: str | None = None):
         self.name = name
         self.stress_dict = StressDict(data_dir) if data_dir else StressDict()
+        add_dash_rules(nlp)
         Doc.set_extension(self.name, default=None, force=True)
 
     def __call__(self, doc: Doc) -> Doc:

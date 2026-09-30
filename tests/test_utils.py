@@ -1,4 +1,5 @@
 import tarfile
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -7,6 +8,7 @@ import pytest
 from ruts import utils as utils_module
 from ruts.exceptions import DataFileError, DownloadError
 from ruts.utils import (
+    add_dash_rules,
     download_file,
     extract_archive,
     find_phrases,
@@ -290,12 +292,45 @@ def test_iter_text_words():
         ("-5 1990—1995", ["-", "5", "1990—1995"]),
         ("Г—в и N—ский", ["Г—в", "и", "N—ский"]),
         ("Нет-сказал", ["Нет-сказал"]),
+        ("Он сказа́л—и ушёл", ["Он", "сказа́л", "—", "и", "ушёл"]),
+        ("Да́- сказал", ["Да́", "-", "сказал"]),
+        (
+            unicodedata.normalize("NFD", "мой—её"),
+            [unicodedata.normalize("NFD", "мой"), "—", unicodedata.normalize("NFD", "её")],
+        ),
     ],
 )
 def test_iter_tokens(text, expected):
     tokens = list(iter_tokens(text))
     assert [token for _, _, token in tokens] == expected
     assert all(text[start:stop] == token for start, stop, token in tokens)
+
+
+def test_add_dash_rules():
+    import spacy
+
+    nlp = spacy.blank("ru")
+    add_dash_rules(nlp)
+    add_dash_rules(nlp)
+    for text in (
+        "-Нет -сказал он.",
+        "Нет- сказал",
+        "Нет,-сказал",
+        "сказал:—Нет",
+        "«-Нет»",
+        "да--сказал",
+    ):
+        assert [token.text for token in nlp(text)] == [token for _, _, token in iter_tokens(text)]
+    assert [token.text for token in nlp("во-первых")] == ["во", "-", "первых"]
+
+
+def test_add_dash_rules_other_tokenizer():
+    import spacy
+
+    nlp = spacy.blank("ru")
+    tokenizer = nlp.tokenizer = lambda text: spacy.tokens.Doc(nlp.vocab, words=text.split())
+    add_dash_rules(nlp)
+    assert nlp.tokenizer is tokenizer
 
 
 def test_iter_text_words_dialogue():
