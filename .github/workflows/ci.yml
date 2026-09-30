@@ -24,13 +24,13 @@ jobs:
         with:
           enable-cache: true
       - name: Install dependencies
-        run: uv sync --locked --all-groups --no-group examples
+        run: uv sync --locked --no-default-groups --group lint
       - name: Ruff
         run: |
-          uv run ruff check ruts tests demo examples conftest.py
-          uv run ruff format ruts tests demo examples conftest.py --check
+          uv run --no-sync ruff check ruts tests demo examples conftest.py
+          uv run --no-sync ruff format ruts tests demo examples conftest.py --check
       - name: Mypy
-        run: uv run mypy
+        run: uv run --no-sync mypy
 
   test:
     name: test (${{ matrix.python-version }}${{ matrix.os != 'ubuntu-latest' && format(', {0}', matrix.os) || '' }})
@@ -54,30 +54,39 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --all-groups --no-group examples ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
+        run: uv sync --locked --no-default-groups --group test ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
       - name: Check DAWG extension
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        run: uv run python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
+        run: uv run --no-sync python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
       - name: Cache NLTK data
         uses: actions/cache@v6
         with:
           path: ${{ runner.temp }}/nltk_data
           key: nltk-punkt-stopwords-${{ runner.os }}-v1
       - name: Download NLTK data
-        run: uv run python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
+        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run tests
         env:
           NLTK_DATA: ${{ runner.temp }}/nltk_data
-        run: uv run pytest --cov ruts --cov-fail-under 90 --cov-report xml
-      - name: Send report
-        uses: codecov/codecov-action@v7
+        # Архивы наборов данных качаются с master, где новая версия архива появляется
+        # только после мержа: сетевые тесты идут отдельной задачей
+        run: uv run --no-sync pytest -m "not network" --cov ruts
+
+  network:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v10.0.1
         with:
-          files: ./coverage.xml
-          flags: unittests
-          name: ruts-${{ matrix.os }}-${{ matrix.python-version }}
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
-          verbose: true
+          enable-cache: true
+          python-version: "3.13"
+      - name: Install dependencies
+        run: uv sync --locked --no-default-groups --group test
+      - name: Run the network tests
+        run: uv run --no-sync pytest -m network
 
   docs:
     runs-on: ubuntu-latest
@@ -90,6 +99,6 @@ jobs:
           enable-cache: true
           python-version: "3.13"
       - name: Install dependencies
-        run: uv sync --locked --group docs
+        run: uv sync --locked --only-group docs
       - name: Build docs
-        run: uv run mkdocs build --strict
+        run: uv run --no-sync mkdocs build --strict

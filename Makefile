@@ -49,7 +49,7 @@ test: deps ## Запустить тесты
 	uv run pytest
 
 test-cov: deps ## Запустить тесты с проверкой покрытия
-	uv run pytest --cov $(APP_PATH) --cov-fail-under 90 --cov-report term-missing
+	uv run pytest --cov $(APP_PATH)
 
 clean: clean-build clean-pyc clean-test ## Удалить все артефакты
 	rm -f .coverage coverage.xml

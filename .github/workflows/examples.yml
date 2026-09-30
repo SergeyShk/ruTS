@@ -27,8 +27,8 @@ jobs:
           path: ${{ runner.temp }}/nltk_data
           key: nltk-punkt-stopwords-${{ runner.os }}-v1
       - name: Download NLTK data
-        run: uv run python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
+        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run notebooks
         env:
           NLTK_DATA: ${{ runner.temp }}/nltk_data
-        run: uv run pytest --nbmake examples -p no:cacheprovider
+        run: uv run --no-sync pytest --nbmake examples -p no:cacheprovider

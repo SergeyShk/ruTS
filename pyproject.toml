@@ -178,4 +178,6 @@ source = ["ruts"]
 branch = true
 
 [tool.coverage.report]
+fail_under = 90
+show_missing = true
 exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError"]
