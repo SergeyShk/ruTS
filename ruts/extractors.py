@@ -5,10 +5,10 @@ from collections.abc import Callable, Iterable, Iterator
 from re import Pattern
 from typing import Any
 
-from razdel import sentenize, tokenize
+from razdel import sentenize
 
 from .exceptions import ParameterError, SourceTypeError
-from .utils import is_punctuation, parse_word
+from .utils import is_punctuation, iter_tokens, parse_word
 
 Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
@@ -193,7 +193,7 @@ class WordsExtractor(Extractor):
             raise ParameterError("Минимальная длина слова больше максимальной")
         self.words: tuple[str, ...] = ()
         if not self.tokenizer:
-            self.tokenizer = lambda text: (word.text for word in tokenize(text))
+            self.tokenizer = lambda text: (word for _, _, word in iter_tokens(text))
 
     def extract(
         self,
@@ -316,7 +316,7 @@ class CharNgramsExtractor(Extractor):
         self.within_words = within_words
         self.ngrams: tuple[str, ...] = ()
         if not self.tokenizer:
-            self.tokenizer = lambda text: (word.text for word in tokenize(text))
+            self.tokenizer = lambda text: (word for _, _, word in iter_tokens(text))
 
     def extract(self, text: str) -> tuple[str, ...]:
         """

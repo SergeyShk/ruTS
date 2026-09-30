@@ -8,7 +8,7 @@
 A module for extracting words from a text. It allows using different tokenizers, filtering stop words, numbers and punctuation, lemmatizing, building N-grams, and setting the minimum and maximum length of extracted words.
 
 !!! note "Note"
-    The default tokenizer is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library.
+    The default tokenizer is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library, after which the dashes glued to words become tokens of their own: the hyphen of a line of dialogue (`-Нет -сказал он`), the em dash of a remark (`смеяться—говорил он—над`) and a hyphen at the end of a word (`Нет- сказал`). A hyphen between letters (`во-первых`), a hyphen before a digit and a dash after a single letter - an abbreviated name (`Г—в`) - stay in the word.
 
 !!! note "Note"
     The default morphological analyzer for lemmatization is the `MorphAnalyzer` class of the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) library.

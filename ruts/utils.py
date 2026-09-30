@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import re
 import shutil
 import tarfile
 import unicodedata
@@ -25,6 +26,11 @@ from .constants import (
 from .exceptions import DataFileError, DownloadError, SourceTypeError
 
 logger = logging.getLogger(__name__)
+
+DASHES = frozenset("-—–―")
+GLUED_DASHES = re.compile(
+    r"^(?:-+|[—–―]+)(?=[^\W\d_])|(?<=[^\W\d_])(?:-+|[—–―]+)$|(?<=[^\W\d_]{2})[—–―]+(?=[^\W\d_])"
+)
 
 
 @lru_cache(maxsize=1)
@@ -156,12 +162,49 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
     return spans
 
 
+def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
+    """
+    Токенизация строки razdel с отделением тире, приклеенных к словам
+
+    Описание:
+        razdel оставляет в слове дефис реплики перед словом в середине текста
+        (-Нет -сказал он), длинное тире, приклеенное к слову или между словами
+        ремарки (—сказал, смеяться—говорил он—над), и дефис на конце слова
+        (Нет- сказал); такие тире становятся отдельными токенами. Дефис между
+        буквами (во-первых, кто-то), дефис перед цифрой (-5) и тире после одной
+        буквы - сокращенное имя (Г—в, N—ский) - остаются
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого токена
+    """
+    for token in tokenize(text):
+        if not DASHES.intersection(token.text):
+            yield token.start, token.stop, token.text
+            continue
+        start = 0
+        for match in GLUED_DASHES.finditer(token.text):
+            if match.start() > start:
+                yield (
+                    token.start + start,
+                    token.start + match.start(),
+                    token.text[start : match.start()],
+                )
+            yield token.start + match.start(), token.start + match.end(), match.group()
+            start = match.end()
+        if start < len(token.text):
+            yield token.start + start, token.stop, token.text[start:]
+
+
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     """
     Извлечение слов с позициями из строки
 
     Описание:
-        Токенизация razdel, знаки препинания отбрасываются как в WordsExtractor
+        Токены iter_tokens, знаки препинания отбрасываются как в WordsExtractor
 
     Аргументы:
         text (str): Строка текста
@@ -170,9 +213,9 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого слова
     """
-    for token in tokenize(text):
-        if not is_punctuation(token.text):
-            yield token.start, token.stop, token.text
+    for start, stop, token in iter_tokens(text):
+        if not is_punctuation(token):
+            yield start, stop, token
 
 
 def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:

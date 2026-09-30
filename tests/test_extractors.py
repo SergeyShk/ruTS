@@ -127,13 +127,20 @@ class TestWordsExtractor:
             ("10-ГО", True),
             ("слово", False),
             ("какого-либо", False),
-            ("3-мя-", False),
+            ("3-мя-то", False),
         ],
     )
     def test_extract_filter_nums_tokens(self, token, is_number):
         we = WordsExtractor(filter_nums=True)
         expected = ("слово", "слово") if is_number else ("слово", token, "слово")
         assert we.extract(f"слово {token} слово") == expected
+
+    def test_extract_dialogue_dashes(self):
+        we = WordsExtractor(lowercase=True)
+        text = "-Нет -сказал он—и замолчал. Смеяться—говорил Г—в- не над чем."
+        assert we.extract(text) == (
+            "нет", "сказал", "он", "и", "замолчал", "смеяться", "говорил", "г—в", "не", "над", "чем",
+        )  # fmt: skip
 
     def test_extract_filter_multichar_punct(self):
         text = "Что?! Да!!! Нет... Слово -- слово … № 5 – да „так“ ‘вот’"
@@ -231,6 +238,10 @@ class TestCharNgramsExtractor:
         assert ce.extract("Кот - пёс") == ("Ко", "от", "пё", "ёс")
         ce = CharNgramsExtractor(n=2, within_words=True, tokenizer=wordpunct_tokenize)
         assert ce.extract("Кот, пёс") == ("Ко", "от", "пё", "ёс")
+
+    def test_within_words_dialogue_dashes(self):
+        ce = CharNgramsExtractor(n=3, within_words=True)
+        assert ce.extract("он—над -тот") == ("над", "тот")
 
     def test_errors(self):
         with pytest.raises(ValueError):

@@ -14,6 +14,7 @@ from ruts.utils import (
     is_verbal_noun,
     iter_doc_words,
     iter_text_words,
+    iter_tokens,
     normalize_yo,
     parse_word,
     safe_divide,
@@ -275,6 +276,30 @@ def test_iter_text_words():
         (23, 28, "зверь"),
     ]
     assert list(iter_text_words("")) == []
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("-Нет -сказал он.", ["-", "Нет", "-", "сказал", "он", "."]),
+        ("он —сказал", ["он", "—", "сказал"]),
+        ("смеяться—говорил он—над", ["смеяться", "—", "говорил", "он", "—", "над"]),
+        ("Нет- сказал", ["Нет", "-", "сказал"]),
+        ("--Нет --сказал", ["--", "Нет", "--", "сказал"]),
+        ("во-первых кто-то рок-н-ролл", ["во-первых", "кто-то", "рок-н-ролл"]),
+        ("-5 1990—1995", ["-", "5", "1990—1995"]),
+        ("Г—в и N—ский", ["Г—в", "и", "N—ский"]),
+        ("Нет-сказал", ["Нет-сказал"]),
+    ],
+)
+def test_iter_tokens(text, expected):
+    tokens = list(iter_tokens(text))
+    assert [token for _, _, token in tokens] == expected
+    assert all(text[start:stop] == token for start, stop, token in tokens)
+
+
+def test_iter_text_words_dialogue():
+    assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
 
 
 def test_iter_doc_words():
