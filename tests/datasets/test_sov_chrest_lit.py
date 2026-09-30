@@ -1,5 +1,4 @@
 import shutil
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -14,13 +13,10 @@ BUNDLED_ARCHIVE = (
 
 
 @pytest.fixture(scope="module")
-def dataset():
-    path = Path(tempfile.gettempdir()) / "ruts_data_scl"
-    path.mkdir(parents=True, exist_ok=True)
-    dataset = SovChLit(data_dir=path)
+def dataset(tmp_path_factory):
+    dataset = SovChLit(data_dir=tmp_path_factory.mktemp("ruts_data_scl"))
     # В репозитории архив лежит рядом с кодом, сеть не нужна
-    if not dataset.filepath:
-        shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
     dataset.download()
     return dataset
 

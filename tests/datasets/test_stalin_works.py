@@ -1,5 +1,4 @@
 import shutil
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -12,13 +11,10 @@ BUNDLED_ARCHIVE = Path(__file__).parents[2] / "ruts" / "datasets" / "data" / "st
 
 
 @pytest.fixture(scope="module")
-def dataset():
-    path = Path(tempfile.gettempdir()) / "ruts_data_sw"
-    path.mkdir(parents=True, exist_ok=True)
-    dataset = StalinWorks(data_dir=path)
+def dataset(tmp_path_factory):
+    dataset = StalinWorks(data_dir=tmp_path_factory.mktemp("ruts_data_sw"))
     # В репозитории архив лежит рядом с кодом, сеть не нужна
-    if not dataset.filepath:
-        shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
+    shutil.copy(BUNDLED_ARCHIVE, dataset._filepath)
     dataset.download()
     return dataset
 
