@@ -10,7 +10,7 @@ A module for extracting character N-grams from a text - sequences of N character
 Whitespace runs are collapsed into a single space beforehand, punctuation marks are kept: a space or a mark inside an N-gram is a stylistic signal too. With `within_words=True` N-grams do not cross word boundaries: the text is split into words by the tokenizer, punctuation is dropped, and words shorter than N yield no N-grams.
 
 !!! note "Note"
-    The default word tokenizer for `within_words` is the one of [`WordsExtractor`](words.md): the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library with the dashes glued to words split off.
+    The default word tokenizer for `within_words` is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library.
 
 ## Parameters
 
