@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import re
 import shutil
 import tarfile
 import unicodedata
@@ -13,11 +14,17 @@ from pathlib import Path, PurePosixPath
 
 import pymorphy3
 from razdel import tokenize
+from spacy.language import Language
+from spacy.tokenizer import Tokenizer
 from spacy.tokens import Doc, Span, Token
 
 from .constants import (
     DEFAULT_DATA_DIR,
+    LETTER,
     PUNCTUATIONS,
+    TOKENIZER_INFIXES,
+    TOKENIZER_PREFIXES,
+    TOKENIZER_SUFFIXES,
     UD_TO_OPENCORPORA_POS,
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
@@ -25,6 +32,11 @@ from .constants import (
 from .exceptions import DataFileError, DownloadError, SourceTypeError
 
 logger = logging.getLogger(__name__)
+
+DASHES = frozenset("-—–―")
+GLUED_DASHES = re.compile(
+    rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
+)
 
 
 @lru_cache(maxsize=1)
@@ -156,12 +168,49 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
     return spans
 
 
+def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
+    """
+    Токенизация строки razdel с отделением тире, приклеенных к словам
+
+    Описание:
+        razdel оставляет в слове дефис реплики перед словом в середине текста
+        (-Нет -сказал он), длинное тире, приклеенное к слову или между словами
+        ремарки (—сказал, смеяться—говорил он—над), и дефис на конце слова
+        (Нет- сказал); такие тире становятся отдельными токенами. Дефис между
+        буквами (во-первых, кто-то), дефис перед цифрой (-5) и тире после одной
+        буквы - сокращенное имя (Г—в, N—ский) - остаются
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого токена
+    """
+    for token in tokenize(text):
+        if not DASHES.intersection(token.text):
+            yield token.start, token.stop, token.text
+            continue
+        start = 0
+        for match in GLUED_DASHES.finditer(token.text):
+            if match.start() > start:
+                yield (
+                    token.start + start,
+                    token.start + match.start(),
+                    token.text[start : match.start()],
+                )
+            yield token.start + match.start(), token.start + match.end(), match.group()
+            start = match.end()
+        if start < len(token.text):
+            yield token.start + start, token.stop, token.text[start:]
+
+
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     """
     Извлечение слов с позициями из строки
 
     Описание:
-        Токенизация razdel, знаки препинания отбрасываются как в WordsExtractor
+        Токены iter_tokens, знаки препинания отбрасываются как в WordsExtractor
 
     Аргументы:
         text (str): Строка текста
@@ -170,9 +219,59 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого слова
     """
-    for token in tokenize(text):
-        if not is_punctuation(token.text):
-            yield token.start, token.stop, token.text
+    for start, stop, token in iter_tokens(text):
+        if not is_punctuation(token):
+            yield start, stop, token
+
+
+def add_dash_rules(nlp: Language) -> None:
+    """
+    Добавление в токенизатор пайплайна spaCy правил для тире реплик
+
+    Описание:
+        С правилами TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES и TOKENIZER_INFIXES
+        слова Doc совпадают со словами строки (iter_tokens): тире, приклеенные
+        к словам, становятся отдельными токенами. Правило, которое у токенизатора
+        уже есть, не добавляется повторно; токенизатор, который не Tokenizer
+        spaCy или чьи правила - не регулярные выражения, не меняется.
+        Компоненты ruTS добавляют правила в свой пайплайн сами
+
+    Аргументы:
+        nlp (Language): Пайплайн, в токенизатор которого добавляются правила
+
+    Примеры использования:
+        >>> import spacy
+        >>> from ruts.utils import add_dash_rules
+        >>> nlp = spacy.blank("ru")
+        >>> [token.text for token in nlp("-Нет -сказал он.")]
+        ['-Нет', '-сказал', 'он', '.']
+        >>> add_dash_rules(nlp)
+        >>> [token.text for token in nlp("-Нет -сказал он.")]
+        ['-', 'Нет', '-', 'сказал', 'он', '.']
+    """
+    tokenizer = nlp.tokenizer
+    if not isinstance(tokenizer, Tokenizer):
+        return
+    prefixes = _extend_rules(tokenizer.prefix_search, [f"^{rule}" for rule in TOKENIZER_PREFIXES])
+    suffixes = _extend_rules(tokenizer.suffix_search, [f"{rule}$" for rule in TOKENIZER_SUFFIXES])
+    infixes = _extend_rules(tokenizer.infix_finditer, list(TOKENIZER_INFIXES))
+    if prefixes is not None:
+        tokenizer.prefix_search = prefixes.search
+    if suffixes is not None:
+        tokenizer.suffix_search = suffixes.search
+    if infixes is not None:
+        tokenizer.infix_finditer = infixes.finditer
+
+
+def _extend_rules(method: object, rules: list[str]) -> re.Pattern[str] | None:
+    """Регулярное выражение токенизатора с добавленными правилами, которых в нем нет"""
+    if method is None:
+        return re.compile("|".join(rules))
+    pattern = getattr(getattr(method, "__self__", None), "pattern", None)
+    if not isinstance(pattern, str):
+        return None
+    missing = [rule for rule in rules if rule not in pattern]
+    return re.compile("|".join([pattern, *missing]))
 
 
 def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:

@@ -1,4 +1,5 @@
 import tarfile
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -7,6 +8,7 @@ import pytest
 from ruts import utils as utils_module
 from ruts.exceptions import DataFileError, DownloadError
 from ruts.utils import (
+    add_dash_rules,
     download_file,
     extract_archive,
     find_phrases,
@@ -14,6 +16,7 @@ from ruts.utils import (
     is_verbal_noun,
     iter_doc_words,
     iter_text_words,
+    iter_tokens,
     normalize_yo,
     parse_word,
     safe_divide,
@@ -275,6 +278,67 @@ def test_iter_text_words():
         (23, 28, "зверь"),
     ]
     assert list(iter_text_words("")) == []
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("-Нет -сказал он.", ["-", "Нет", "-", "сказал", "он", "."]),
+        ("он —сказал", ["он", "—", "сказал"]),
+        ("смеяться—говорил он—над", ["смеяться", "—", "говорил", "он", "—", "над"]),
+        ("Нет- сказал", ["Нет", "-", "сказал"]),
+        ("--Нет --сказал", ["--", "Нет", "--", "сказал"]),
+        ("во-первых кто-то рок-н-ролл", ["во-первых", "кто-то", "рок-н-ролл"]),
+        ("-5 1990—1995", ["-", "5", "1990—1995"]),
+        ("Г—в и N—ский", ["Г—в", "и", "N—ский"]),
+        ("Нет-сказал", ["Нет-сказал"]),
+        ("Он сказа́л—и ушёл", ["Он", "сказа́л", "—", "и", "ушёл"]),
+        ("Да́- сказал", ["Да́", "-", "сказал"]),
+        (
+            unicodedata.normalize("NFD", "мой—её"),
+            [unicodedata.normalize("NFD", "мой"), "—", unicodedata.normalize("NFD", "её")],
+        ),
+    ],
+)
+def test_iter_tokens(text, expected):
+    tokens = list(iter_tokens(text))
+    assert [token for _, _, token in tokens] == expected
+    assert all(text[start:stop] == token for start, stop, token in tokens)
+
+
+def test_add_dash_rules():
+    import spacy
+
+    nlp = spacy.blank("ru")
+    add_dash_rules(nlp)
+    add_dash_rules(nlp)
+    for text in (
+        "-Нет -сказал он.",
+        "Нет- сказал",
+        "Нет,-сказал",
+        "сказал:—Нет",
+        "«-Нет»",
+        "да--сказал",
+        "Да́- нет",
+        "Да́,-нет",
+        "Он—«Нет»",
+        "он—(тихо)—сказал",
+    ):
+        assert [token.text for token in nlp(text)] == [token for _, _, token in iter_tokens(text)]
+    assert [token.text for token in nlp("во-первых")] == ["во", "-", "первых"]
+
+
+def test_add_dash_rules_other_tokenizer():
+    import spacy
+
+    nlp = spacy.blank("ru")
+    tokenizer = nlp.tokenizer = lambda text: spacy.tokens.Doc(nlp.vocab, words=text.split())
+    add_dash_rules(nlp)
+    assert nlp.tokenizer is tokenizer
+
+
+def test_iter_text_words_dialogue():
+    assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
 
 
 def test_iter_doc_words():
