@@ -200,7 +200,7 @@ class PhonStats:
         print("-" * 50)
         stats = self.get_stats()
         for stat, value in PHON_STATS_DESC.items():
-            print(f"{value:40}|{stats.get(stat):^10.2f}")
+            print(f"{value:40}|{stats[stat]:^10.2f}")
 
 
 @lru_cache(maxsize=CACHE_SIZE)

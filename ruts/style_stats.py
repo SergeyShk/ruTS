@@ -201,7 +201,7 @@ class StyleStats:
         print("-" * 60)
         stats = self.get_stats()
         for stat, value in STYLE_STATS_DESC.items():
-            print(f"{value:50}|{stats.get(stat):^10.2f}")
+            print(f"{value:50}|{stats[stat]:^10.2f}")
 
 
 @lru_cache(maxsize=65536)
