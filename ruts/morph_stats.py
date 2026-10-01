@@ -1,5 +1,5 @@
 from collections import Counter, OrderedDict
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from math import nan
 
 import pymorphy3
@@ -139,7 +139,11 @@ class MorphStats:
         self.transitivity = tuple(word_features["transitivity"] for word_features in features)
         self.verb_form = tuple(word_features["verb_form"] for word_features in features)
         self.voice = tuple(word_features["voice"] for word_features in features)
-        self.lemmas = tuple(
+
+    @cached_property
+    def lemmas(self) -> tuple[str, ...]:
+        """Леммы слов: pymorphy3 с учетом части речи слова, считаются при первом обращении"""
+        return tuple(
             lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
         )
 
@@ -229,7 +233,8 @@ class MorphStats:
             совершенный вид - от форм с видом
             Сослагательное наклонение в русском - форма прошедшего времени с частицей
             бы (б), которая размечается как изъявительная, поэтому каждая частица
-            переводит одну изъявительную форму в сослагательную. Залог считается по
+            переводит одну изъявительную форму прошедшего времени в сослагательную;
+            экстрактор слов не должен отбрасывать частицы. Залог считается по
             страдательным причастиям, а возвратность - по окончанию -ся, -сь: так доли
             совпадают для строки и Doc (pymorphy3 дает залог только причастиям)
             Доля с пустой базой - nan
@@ -253,8 +258,14 @@ class MorphStats:
         aspects = Counter(self.aspect[index] for index in verbs if self.aspect[index])
         n_forms = len(verbs)
         n_finite = forms["Fin"]
-        n_particles = sum(word.lower() in CONDITIONAL_PARTICLES for word in self.words)
-        n_conditional = min(n_particles, moods["Ind"])
+        n_particles = sum(word in CONDITIONAL_PARTICLES for word in self.words)
+        n_past = sum(
+            self.verb_form[index] == "Fin"
+            and self.mood[index] == "Ind"
+            and self.tense[index] == "Past"
+            for index in verbs
+        )
+        n_conditional = min(n_particles, n_past)
         n_passive = sum(
             self.verb_form[index] == "Part" and self.voice[index] == "Pass" for index in verbs
         )

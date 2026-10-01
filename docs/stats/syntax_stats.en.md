@@ -52,7 +52,7 @@ Sentence-level indicators (maximum dependency distance, tree depth, numbers of l
 | `std_dependency_distance` | float | Standard deviation of dependency distance |
 | `max_dependency_distance` | float | Mean over sentences with dependencies of the largest dependency distance |
 | `p_adjacent_dependencies` | float | Share of adjacent relations - dependencies of distance 1 |
-| `tree_depth` | float | Dependency tree depth |
+| `tree_depth` | float | Mean over sentences of the dependency tree depth |
 | `leaves_per_sent` | float | Leaves per sentence |
 | `subtrees_per_sent` | float | Subtrees per sentence |
 | `nodes_per_leaf` | float | Mean over sentences of the ratio of words to leaves |
@@ -174,7 +174,7 @@ Prints a table with the computed syntactic statistics.
     Стандартное отклонение длины зависимости          |   1.61
     Средний максимум длины зависимости в предложении  |   5.00
     Доля смежных связей                               |   0.60
-    Глубина дерева зависимостей                       |   4.00
+    Средняя глубина дерева зависимостей предложения   |   4.00
     Листьев на предложение                            |   4.50
     Поддеревьев на предложение                        |   4.00
     Среднее число узлов на лист в предложении         |   1.90

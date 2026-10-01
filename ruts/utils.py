@@ -70,7 +70,6 @@ def parse_word(word: str) -> pymorphy3.analyzer.Parse:
 
 
 @lru_cache(maxsize=131072)
-@lru_cache(maxsize=131072)
 def lemmatize(word: str, pos: str = "") -> str:
     """
     Лемматизация словоформы pymorphy3 с учетом части речи Universal Dependencies

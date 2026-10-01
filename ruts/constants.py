@@ -258,7 +258,7 @@ MORPHOLOGY_MARKERS_DESC = {
     "p_reflexive": "Возвратные формы (-ся, -сь) среди форм глагола",
 }
 # Частицы сослагательного наклонения: глагол при них размечается как изъявительный
-CONDITIONAL_PARTICLES = frozenset({"бы", "б"})
+CONDITIONAL_PARTICLES = frozenset({"бы", "Бы", "б"})
 MORPHOLOGY_FEATURES = {
     "animacy": "Animacy",
     "aspect": "Aspect",
@@ -689,37 +689,39 @@ _COMMIT = ("совершать", "совершить")
 _CONDUCT = ("проводить", "провести")
 _PERFORM = ("производить", "произвести")
 _EXECUTE = ("осуществлять", "осуществить")
+_FULFIL = ("выполнять", "выполнить")
+_SUBJECT = ("подвергать", "подвергнуть")
 SPLIT_PREDICATE_NOUNS: dict[str, frozenset[str]] = {
     noun: frozenset(verbs)
     for noun, verbs in {
         "роль": ("выполнять", "выполнить"),
-        "работа": (*_CONDUCT, *_EXECUTE, "выполнять", "выполнить", "вести"),
+        "работа": (*_CONDUCT, *_EXECUTE, *_PERFORM, *_FULFIL, "вести"),
         "борьба": ("вести",),
-        "оценка": (*_CONDUCT, *_EXECUTE, "давать", "дать"),
+        "оценка": (*_CONDUCT, *_EXECUTE, *_PERFORM, *_SUBJECT, "давать", "дать"),
         "характер": ("носить", "иметь", "принимать", "принять"),
         "место": ("иметь",),
         "мера": ("принимать", "принять", "предпринимать", "предпринять"),
         "помощь": ("оказывать", "оказать"),
         "поддержка": ("оказывать", "оказать"),
-        "контроль": (*_EXECUTE, *_CONDUCT, "вести"),
-        "анализ": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_DO),
+        "контроль": (*_EXECUTE, *_CONDUCT, *_SUBJECT, "вести"),
+        "анализ": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_DO, *_FULFIL, *_SUBJECT, "давать", "дать"),
         "учет": (*_EXECUTE, *_PERFORM, "вести"),
-        "ремонт": (*_PERFORM, *_CONDUCT, *_EXECUTE, *_DO),
-        "расчет": (*_PERFORM, *_CONDUCT, *_DO, "выполнять", "выполнить"),
+        "ремонт": (*_PERFORM, *_CONDUCT, *_EXECUTE, *_DO, *_FULFIL, "вести"),
+        "расчет": (*_PERFORM, *_CONDUCT, *_DO, *_FULFIL),
         "выбор": (*_DO, *_EXECUTE, *_PERFORM),
-        "отбор": (*_CONDUCT, *_PERFORM, *_EXECUTE),
-        "осмотр": (*_CONDUCT, *_PERFORM, *_EXECUTE),
-        "поиск": (*_CONDUCT, *_PERFORM, *_EXECUTE, "вести"),
-        "проверка": (*_CONDUCT, *_PERFORM, *_EXECUTE),
+        "отбор": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_SUBJECT, "вести"),
+        "осмотр": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_SUBJECT),
+        "поиск": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_FULFIL, "вести"),
+        "проверка": (*_CONDUCT, *_PERFORM, *_EXECUTE, *_FULFIL, *_SUBJECT, "вести"),
         "деятельность": (*_EXECUTE, "вести"),
         "возможность": ("давать", "дать", "получать", "получить", "иметь"),
         "шаг": ("предпринимать", "предпринять"),
         "усилие": (*_DO, "предпринимать", "предпринять"),
         "вклад": _DO,
-        "попытка": (*_DO, "предпринимать", "предпринять"),
+        "попытка": (*_DO, *_COMMIT, "предпринимать", "предпринять"),
         "визит": (*_DO, *_COMMIT),
         "звонок": (*_DO, *_COMMIT),
-        "удар": (*_DO, *_COMMIT),
+        "удар": (*_DO, *_COMMIT, *_EXECUTE),
         "прыжок": (*_DO, *_COMMIT),
         "вывод": _DO,
         "заявка": _DO,
@@ -831,7 +833,7 @@ SYNTAX_STATS_DESC = {
     "std_dependency_distance": "Стандартное отклонение длины зависимости",
     "max_dependency_distance": "Средний максимум длины зависимости в предложении",
     "p_adjacent_dependencies": "Доля смежных связей",
-    "tree_depth": "Глубина дерева зависимостей",
+    "tree_depth": "Средняя глубина дерева зависимостей предложения",
     "leaves_per_sent": "Листьев на предложение",
     "subtrees_per_sent": "Поддеревьев на предложение",
     "nodes_per_leaf": "Среднее число узлов на лист в предложении",

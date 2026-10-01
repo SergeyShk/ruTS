@@ -113,7 +113,7 @@ class SyntaxStats:
         std_dependency_distance (float): Стандартное отклонение длины зависимости
         max_dependency_distance (float): Среднее по предложениям с зависимостями наибольших длин зависимости
         p_adjacent_dependencies (float): Доля смежных связей - зависимостей длины 1
-        tree_depth (float): Глубина дерева зависимостей
+        tree_depth (float): Средняя по предложениям глубина дерева зависимостей
         leaves_per_sent (float): Листьев на предложение
         subtrees_per_sent (float): Поддеревьев на предложение
         nodes_per_leaf (float): Среднее по предложениям отношение числа слов к числу листьев

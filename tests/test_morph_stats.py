@@ -449,6 +449,7 @@ def test_print_stats_value_without_description(capsys):
 
 
 def test_lemmas(ms):
+    assert "lemmas" not in MorphStats(text).__dict__
     assert ms.lemmas[:3] == ("постараться", "получить", "то")
     assert len(ms.lemmas) == len(ms.words)
 
@@ -466,6 +467,8 @@ def test_lemmas_doc(nlp):
             {"p_indicative": 0.0, "p_conditional": 1.0, "p_participle": 1 / 3, "p_passive": 1 / 3},
         ),
         ("Иди сюда, не спорь", {"p_imperative": 1.0, "p_perfective": 0.0}),
+        ("Хорошо бы ему уехать, а он остаётся и молчит", {"p_conditional": 0.0}),
+        ("Статью подписали А. Б. Иванов и В. Г. Петров", {"p_conditional": 0.0}),
         ("Он учился, улыбаясь, и решил прочитать", {"p_converb": 0.25, "p_infinitive": 0.25}),
         ("Он учился, улыбаясь, и решил прочитать", {"p_reflexive": 0.5, "p_perfective": 0.5}),
     ],
