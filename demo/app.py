@@ -226,11 +226,11 @@ def lexical_table(ls: LexicalStats) -> pd.DataFrame:
     return stats_table(bands, LEXICAL_STATS_DESC)
 
 
-def keywords_table(lemmas: tuple[str, ...]) -> pd.DataFrame:
+def keywords_table(words: tuple[str, ...]) -> pd.DataFrame:
     columns = ["Лемма", "В тексте", "ipm в тексте", "ipm в словаре", "G²", "Log Ratio"]
-    if not freq_dict.filepath or not lemmas:
+    if not freq_dict.filepath or not words:
         return pd.DataFrame(columns=columns)
-    keywords = keyness(lemmas, freq_dict, min_freq=2, top_n=KEYWORDS_TOP_N)
+    keywords = keyness(words, freq_dict, min_freq=2, top_n=KEYWORDS_TOP_N)
     return pd.DataFrame(
         [
             (
@@ -372,7 +372,7 @@ def compute(text: str, layers: list[str]) -> dict:
         "verse": verse_table,
         "verse_lines": verse_lines,
         "basic": stats_table(basic, BASIC_STATS_DESC),
-        "keywords": keywords_table(words),
+        "keywords": keywords_table(WordsExtractor(filter_nums=True).extract(text)),
         "collocations": collocations_table(words),
         "zipf": zipf_image(words) if enough_words else None,
         "enough_words": enough_words,

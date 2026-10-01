@@ -203,8 +203,12 @@ def test_print_stats(ls, capsys):
         assert value in captured
 
 
-def entries(**ipms):
-    return {lemma: Entry(lemma, ("s",), ipm, 100, 90, 1000) for lemma, ipm in ipms.items()}
+def entries(**values):
+    def entry(lemma, value):
+        ipm, pos = value if isinstance(value, tuple) else (value, "s")
+        return Entry(lemma, (pos,), ipm, 100, 90, 1000)
+
+    return {lemma: entry(lemma, value) for lemma, value in values.items()}
 
 
 @pytest.mark.parametrize(
@@ -236,6 +240,39 @@ def test_dictionary_lemma_frequent():
 def test_dictionary_lemma_proper(word):
     vocabulary = entries(родить=44.1, гласить=12.0)
     assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) not in vocabulary
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("должна", "должен"),
+        ("велика", "большой"),
+        ("денег", "деньги"),
+        ("стихов", "стихи"),
+        ("часов", "час"),
+        ("повестей", "повесть"),
+        ("счастья", "счастье"),
+        ("счастием", "счастие"),
+    ],
+)
+def test_dictionary_lemma_forms(word, expected):
+    vocabulary = entries(
+        должный=(17.6, "a"),
+        должен=(944.2, "a"),
+        большой=(1300.0, "a"),
+        велик=0.7,
+        деньга=1.1,
+        деньги=512.4,
+        стих=11.2,
+        стихи=157.0,
+        час=468.1,
+        часы=72.5,
+        повесть=60.0,
+        повести=(80.0, "v"),
+        счастие=1.2,
+        счастье=149.2,
+    )
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
 
 
 def test_dictionary_lemma_proper_name():

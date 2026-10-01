@@ -4,6 +4,7 @@ from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
 from statistics import fmean
 
+import pymorphy3
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
@@ -16,10 +17,11 @@ from .constants import (
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, safe_divide
+from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, parse_word, safe_divide
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
+ADJECTIVE_POS = frozenset({"a", "apro"})
 
 
 class LexicalStats:
@@ -318,12 +320,16 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
     Получение леммы слова в частотном словаре
 
     Описание:
-        Лемма приводится к нижнему регистру без буквы ё; если ее нет в словаре, берется
-        самая частотная в нем лемма другого разбора pymorphy3: словарь лемматизирован
-        не pymorphy3, и первый разбор части слов дает другую лемму (наречия ночью,
-        вечером при существительных ночь, вечер); имя собственное по первому разбору
-        заменяется только леммой имени собственного (Анне - анна, но не Родя - родить),
-        слово без подходящего разбора остается со своей леммой
+        Лемма приводится к нижнему регистру без буквы ё и к соглашениям словаря,
+        лемматизированного не pymorphy3: сохраняется написание слова (счастье, а не
+        счастие - в словаре это разные статьи), краткое прилагательное берет статью
+        краткой формы, если она прилагательное (должна - должен), форма множественного
+        числа - статью существительного во множественном числе, если та частотнее леммы
+        (денег - деньги, стихов - стихи). Если леммы нет в словаре, берется самая частотная в нем лемма
+        другого разбора pymorphy3 (наречия ночью, вечером при существительных ночь,
+        вечер); имя собственное по первому разбору заменяется только леммой имени
+        собственного (Анне - анна, но не Родя - родить), слово без подходящего разбора
+        остается со своей леммой
 
     Аргументы:
         word (str): Словоформа
@@ -333,11 +339,59 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
     Вывод:
         str: Лемма для поиска в словаре
     """
-    key = normalize_yo(lemma)
+    key, short, plural = _form_lemmas(word, normalize_yo(lemma))
+    if short and short in entries and ADJECTIVE_POS & set(entries[short].pos):
+        return short
+    if (
+        plural
+        and plural in entries
+        and "s" in entries[plural].pos
+        and entries[plural].ipm > _ipm(entries, key)
+    ):
+        return plural
     if key in entries:
         return key
     candidates = [candidate for candidate in _parse_lemmas(word) if candidate in entries]
     return max(candidates, key=lambda candidate: entries[candidate].ipm, default=key)
+
+
+def _ipm(entries: Mapping[str, Entry], lemma: str) -> float:
+    entry = entries.get(lemma)
+    return entry.ipm if entry else 0.0
+
+
+@lru_cache(maxsize=131072)
+def _form_lemmas(word: str, key: str) -> tuple[str, str | None, str | None]:
+    """Лемма в написании слова, краткая форма и форма множественного числа по разбору леммы"""
+    parse = parse_word(word)
+    if normalize_yo(parse.normal_form) != key:
+        parses = get_morph_analyzer().parse(word)
+        found = next((parse for parse in parses if normalize_yo(parse.normal_form) == key), None)
+        if found is None:
+            return key, None, None
+        parse = found
+    if parse.tag.POS == "ADJS":
+        form = parse.inflect({"masc", "sing"})
+        return key, normalize_yo(form.word) if form else None, None
+    if parse.tag.POS != "NOUN":
+        return key, None, None
+    plural = None
+    if parse.tag.number == "plur":
+        form = parse.inflect({"nomn", "plur"})
+        plural = normalize_yo(form.word) if form else None
+    return _spelling(parse) or key, None, plural
+
+
+def _spelling(parse: pymorphy3.analyzer.Parse) -> str | None:
+    """Нормальная форма в варианте написания слова (V-ie, V-be и другие граммемы V-)"""
+    normal = parse.normalized.tag.grammemes
+    target = {g for g in normal if not g.startswith("V-")}
+    target |= {g for g in parse.tag.grammemes if g.startswith("V-")}
+    if target == normal:
+        return None
+    return next(
+        (normalize_yo(form.word) for form in parse.lexeme if form.tag.grammemes == target), None
+    )
 
 
 @lru_cache(maxsize=131072)
