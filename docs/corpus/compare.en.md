@@ -7,11 +7,11 @@
 
 Comparison of two corpora across all text features at once: which statistics distinguish authors, genres, translations, human and generated texts - and by how much. For individual words [`keyness`](keyness.md) does the same, for distances between texts - [`delta`](stylometry.md#delta).
 
-The texts of both corpora are cut into windows of equal size (`split_windows`: the number of windows is the rounded ratio of the number of words to the window size, at least one, the parts are equal, windows of fewer than `min_words` words are dropped; a boundary goes before the opening marks of the first word of a window - dashes, quotation marks, brackets - so that punctuation is not lost) to remove the dependence of the features on text length. For every window the features are computed (`text_features` or your own function), for every feature the two sets of values are compared. The result is a `DataFrame` feature × statistics sorted by descending absolute Cliff's delta.
+The texts of both corpora are cut into windows of equal size (`split_windows`) to remove the dependence of the features on text length; windows of fewer than `min_words` words are dropped. For every window the features are computed (`text_features` or your own function), for every feature the two sets of values are compared. The result is a `DataFrame` feature × statistics sorted by descending absolute Cliff's delta.
 
 ## Features
 
-`text_features(text)` returns 108 features prefixed by source; features that monotonically repeat others (inverse Simpson index, perplexity, the second share of a two-valued feature) are left out:
+`text_features(text)` returns 108 features prefixed by source:
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
