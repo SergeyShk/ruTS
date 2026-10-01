@@ -138,18 +138,27 @@ def test_keyness_measures():
 
 def test_keyness_freq_dict(freq_dict):
     keywords = keyness(["Кот", "кот", "птица", "фелинолог"], freq_dict)
-    assert [keyword.word for keyword in keywords] == ["фелинолог", "кот", "птица"]
-    cat = keywords[1]
+    assert [keyword.word for keyword in keywords] == ["кот", "фелинолог", "птица"]
+    cat = keywords[0]
     assert cat.freq_reference == pytest.approx(40.3 * CORPUS_SIZE / 1e6)
     assert cat.ipm_reference == pytest.approx(40.3)
     assert cat.ipm_target == 500000.0
     assert cat.g2 == pytest.approx(calc_log_likelihood(2, 40.3 * 92, 4, CORPUS_SIZE))
-    assert keywords[0].freq_reference == 0
-    assert keywords[0].log_ratio == pytest.approx(calc_log_ratio(1, 0, 4, CORPUS_SIZE))
+    missing = freq_dict.min_ipm * CORPUS_SIZE / 1e6
+    assert keywords[1].freq_reference == pytest.approx(missing)
+    assert keywords[1].log_ratio == pytest.approx(calc_log_ratio(1, missing, 4, CORPUS_SIZE))
     negative = keyness(["кот"], freq_dict, positive=False, min_freq=1000)
     assert [keyword.word for keyword in negative][:2] == ["и", "на"]
     assert keyness({"ещё": 2, "Ещё": 1}, freq_dict)[0].freq_target == 3
     assert keyness(["ещё"], freq_dict)[0].ipm_reference == pytest.approx(2409.4)
+
+
+def test_keyness_freq_dict_forms(freq_dict):
+    keywords = keyness(["коты", "кота", "кошек", "2020", "cat"], freq_dict)
+    assert {keyword.word: keyword.freq_target for keyword in keywords} == {"кот": 2, "кошка": 1}
+    assert {keyword.word: keyword.ipm_target for keyword in keywords}["кот"] == pytest.approx(
+        2 / 3 * 1e6
+    )
 
 
 def test_p_values():

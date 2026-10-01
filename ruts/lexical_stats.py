@@ -1,5 +1,6 @@
-from collections.abc import Sequence
-from functools import cache, cached_property
+import re
+from collections.abc import Container, Sequence
+from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
 from statistics import fmean
 
@@ -10,9 +11,10 @@ from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import iter_doc_units, normalize_yo, safe_divide
+from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, safe_divide
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
+DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
 
 
 class LexicalStats:
@@ -131,7 +133,12 @@ class LexicalStats:
         self._content = tuple(info.content for info in infos)
         self.n_words = len(self.words)
         self.n_content_words = sum(self._content)
-        self.ranks = tuple(get_rank(lemma) for lemma in self.lemmas)
+        top_lemmas = load_top_lemmas()
+        self._rank_lemmas = tuple(
+            dictionary_lemma(word, lemma, top_lemmas)
+            for word, lemma in zip(self.words, self.lemmas, strict=True)
+        )
+        self.ranks = tuple(top_lemmas.get(lemma) for lemma in self._rank_lemmas)
         self.lexical_density = self.n_content_words / self.n_words
         bands = self.band_coverage()
         self.p_top1000 = bands[1000]
@@ -145,7 +152,16 @@ class LexicalStats:
         """
         Статьи частотного словаря для каждого слова, None для слов вне словаря
         """
-        return tuple(self.freq_dict.lookup(lemma) for lemma in self.lemmas)
+        return tuple(self.freq_dict.lookup(lemma) for lemma in self._dict_lemmas)
+
+    @cached_property
+    def _dict_lemmas(self) -> tuple[str, ...]:
+        """Леммы слов в частотном словаре (dictionary_lemma)"""
+        entries = self.freq_dict.entries
+        return tuple(
+            dictionary_lemma(word, lemma, entries)
+            for word, lemma in zip(self.words, self.lemmas, strict=True)
+        )
 
     @property
     def n_found(self) -> int:
@@ -193,7 +209,7 @@ class LexicalStats:
 
     @cached_property
     def surprisal(self) -> float:
-        return calc_surprisal(self.lemmas, self.freq_dict)
+        return calc_surprisal(self._dict_lemmas, self.freq_dict)
 
     @property
     def perplexity(self) -> float:
@@ -221,7 +237,9 @@ class LexicalStats:
                 raise ParameterError(
                     f"Граница полосы должна быть от 1 до {last_rank}, а не {band}"
                 )
-        ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
+        ranks = (
+            [get_rank(lemma) for lemma in set(self._rank_lemmas)] if unique else list(self.ranks)
+        )
         return {
             band: safe_divide(sum(1 for rank in ranks if rank and rank <= band), len(ranks))
             for band in bands
@@ -295,6 +313,37 @@ def get_rank(lemma: str) -> int | None:
         int|None: Ранг от 1 до 10 000, None если леммы в списке нет
     """
     return load_top_lemmas().get(normalize_yo(lemma))
+
+
+def dictionary_lemma(word: str, lemma: str, vocabulary: Container[str]) -> str:
+    """
+    Получение леммы слова в словаре
+
+    Описание:
+        Лемма приводится к нижнему регистру без буквы ё; если ее нет в словаре, берется
+        лемма другого разбора pymorphy3, которая в нем есть: частотный словарь и список
+        Шарова лемматизированы не pymorphy3, и первый разбор части слов дает другую лемму
+        (наречия ночью, вечером при существительных ночь, вечер; косу - кос вместо коса);
+        без подходящего разбора остается своя лемма
+
+    Аргументы:
+        word (str): Словоформа
+        lemma (str): Лемма слова
+        vocabulary (Container[str]): Леммы словаря в нижнем регистре без ё
+
+    Вывод:
+        str: Лемма для поиска в словаре
+    """
+    key = normalize_yo(lemma)
+    if key in vocabulary:
+        return key
+    return next((candidate for candidate in _parse_lemmas(word) if candidate in vocabulary), key)
+
+
+@lru_cache(maxsize=131072)
+def _parse_lemmas(word: str) -> tuple[str, ...]:
+    """Леммы всех разборов словоформы pymorphy3 в порядке разборов"""
+    return tuple(normalize_yo(parse.normal_form) for parse in get_morph_analyzer().parse(word))
 
 
 def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:

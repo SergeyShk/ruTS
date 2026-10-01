@@ -48,6 +48,7 @@ dependencies = [
     "numpy>=1.26",
     "pandas>=2.1",
     "pymorphy3>=2.0.4",
+    "pymorphy3-dicts-ru>=2.4.417150.4580142",
     "razdel>=0.5.0",
     "scipy>=1.11",
     "spacy>=3.7",

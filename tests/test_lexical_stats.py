@@ -7,7 +7,14 @@ from ruts import LexicalStats, WordsExtractor
 from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
 from ruts.exceptions import ParameterError
-from ruts.lexical_stats import calc_surprisal, get_rank, is_number, load_top_lemmas
+from ruts.lexical_stats import (
+    calc_surprisal,
+    dictionary_lemma,
+    get_rank,
+    is_number,
+    load_top_lemmas,
+)
+from ruts.utils import parse_word
 from tests.datasets.test_freq2011 import write_dict
 
 text = "Кот сидел на окне и смотрел на птиц"
@@ -193,3 +200,25 @@ def test_print_stats(ls, capsys):
     captured = capsys.readouterr().out
     for value in LEXICAL_STATS_DESC.values():
         assert value in captured
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("людей", "человек"),
+        ("шёл", "идти"),
+        ("детьми", "ребенок"),
+        ("написанный", "написать"),
+        ("ночью", "ночь"),
+        ("вечером", "вечер"),
+        ("косу", "коса"),
+        ("живи", "жить"),
+    ],
+)
+def test_dictionary_lemma(word, expected):
+    vocabulary = {"человек", "идти", "ребенок", "написать", "ночь", "вечер", "коса", "жить"}
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+
+
+def test_dictionary_lemma_missing():
+    assert dictionary_lemma("Фелинолога", "Фелинолог", {"кот"}) == "фелинолог"
