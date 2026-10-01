@@ -281,3 +281,12 @@ def test_expand_phrases():
     assert expand_phrases(["принимать"], ["принимать меры", "принять меры"])["принимать меры"] == (
         "принимать меры"
     )
+
+
+def test_cliches_reflexive_and_negated():
+    forms = "Это принимается во внимание, мы не остались в стороне, довожу до вашего сведения"
+    assert StyleStats(forms).cliches == pytest.approx(3 / 13 * 100)
+
+
+def test_phrase_density_iterator():
+    assert calc_phrase_density(["имеет", "место"], iter(["иметь место"])) == 50.0

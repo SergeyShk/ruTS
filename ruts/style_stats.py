@@ -1,5 +1,5 @@
-from collections import Counter, defaultdict
-from collections.abc import Sequence
+from collections import Counter
+from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from math import nan, sqrt
 
@@ -26,8 +26,6 @@ from .utils import (
     parse_word,
     safe_divide,
 )
-
-VERB_FORM_POS = frozenset({"VERB", "INFN", "PRTF", "PRTS", "GRND"})
 
 
 def check_params(top_n: int) -> None:
@@ -450,7 +448,7 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
     return safe_divide(verbal, len(nouns), nan) * 100
 
 
-def calc_phrase_density(text: Sequence[str], phrases: Sequence[str]) -> float:
+def calc_phrase_density(text: Sequence[str], phrases: Iterable[str]) -> float:
     """
     Вычисление плотности словосочетаний из списка
 
@@ -470,16 +468,17 @@ def calc_phrase_density(text: Sequence[str], phrases: Sequence[str]) -> float:
     return safe_divide(len(find_phrases(text, expand_phrases(text, phrases))), len(text)) * 100
 
 
-def expand_phrases(text: Sequence[str], phrases: Sequence[str]) -> dict[str, str]:
+def expand_phrases(text: Sequence[str], phrases: Iterable[str]) -> dict[str, str]:
     """
     Дополнение словосочетаний формами их глаголов из текста
 
     Описание:
-        Словосочетание, первое слово которого - инфинитив (довести до сведения),
-        дополняется вариантами с каждой формой этого глагола из текста, включая
-        причастия и деепричастия (довел до сведения, доведено до сведения);
-        форма относится к инфинитиву по разборам pymorphy3. Остальные словосочетания
-        остаются как есть
+        Словосочетание, первое слово которого (или второе после «не») - инфинитив
+        (довести до сведения, не остаться в стороне), дополняется вариантами
+        с каждой формой этого глагола из текста, включая причастия и деепричастия
+        (довел до сведения, доведено до сведения, не остался в стороне); формы
+        берутся из лексемы инфинитива pymorphy3. Остальные словосочетания остаются
+        как есть
 
     Аргументы:
         text (list[str]): Список слов
@@ -494,37 +493,26 @@ def expand_phrases(text: Sequence[str], phrases: Sequence[str]) -> dict[str, str
         >>> expand_phrases(["он", "довел", "до", "сведения"], ["довести до сведения"])
         {'довести до сведения': 'довести до сведения', 'довел до сведения': 'довести до сведения'}
     """
-    heads = {
-        first
-        for phrase in phrases
-        if (words := normalize_yo(phrase).split()) and _is_infinitive(first := words[0])
-    }
-    forms: defaultdict[str, set[str]] = defaultdict(set)
-    if heads:
-        for word in {normalize_yo(word) for word in text}:
-            for head in _verb_lemmas(word) & heads:
-                forms[head].add(word)
+    phrases = tuple(phrases)
+    words = {normalize_yo(word) for word in text}
     expanded = {phrase: phrase for phrase in phrases}
     for phrase in phrases:
-        first, *rest = normalize_yo(phrase).split() or [""]
-        for form in sorted(forms.get(first, ())):
-            expanded.setdefault(" ".join([form, *rest]), phrase)
+        parts = normalize_yo(phrase).split()
+        head = 1 if len(parts) > 1 and parts[0] == "не" else 0
+        if len(parts) <= head:
+            continue
+        for form in sorted(_verb_forms(parts[head]) & words):
+            expanded.setdefault(" ".join([*parts[:head], form, *parts[head + 1 :]]), phrase)
     return expanded
 
 
-@lru_cache(maxsize=131072)
-def _verb_lemmas(word: str) -> frozenset[str]:
-    """Инфинитивы глагольных разборов словоформы"""
-    return frozenset(
-        normalize_yo(parse.normal_form)
-        for parse in get_morph_analyzer().parse(word)
-        if parse.tag.POS in VERB_FORM_POS
-    )
-
-
-def _is_infinitive(word: str) -> bool:
-    """Проверка, что слово - инфинитив"""
-    return word in _verb_lemmas(word)
+@lru_cache(maxsize=4096)
+def _verb_forms(word: str) -> frozenset[str]:
+    """Формы глагола по лексеме pymorphy3, если слово - инфинитив, иначе пустое множество"""
+    for parse in get_morph_analyzer().parse(word):
+        if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word:
+            return frozenset(normalize_yo(form.word) for form in parse.lexeme)
+    return frozenset()
 
 
 def calc_parentheticals(text: Sequence[str]) -> float:
