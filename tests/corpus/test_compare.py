@@ -127,7 +127,7 @@ def test_text_features():
     assert features["morph_case_Voc"] == 0.0
     assert isnan(text_features("Кот, пёс, дом.")["morph_tense_Past"])
     assert sum(1 for key in features if key.startswith("morph_")) == 43
-    assert len(features) == 109
+    assert len(features) == 108
     assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"
@@ -169,6 +169,8 @@ def test_compare_features_drops_infinite():
 def test_compare_corpora_short_texts():
     with pytest.raises(SourceError, match=r"Корпус Чехов: .* 500 и более слов"):
         compare_corpora(["Кот спал."], ["Пёс ел."], labels=("Чехов", "Толстой"))
+    with pytest.raises(SourceError, match=r"Корпус Толстой: .*отсутствуют слова"):
+        compare_corpora([" ".join(["кот"] * 600)], ["...", ""], labels=("Чехов", "Толстой"))
 
 
 def test_corpus_features():

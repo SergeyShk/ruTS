@@ -29,6 +29,7 @@ REDUNDANT_FEATURES = frozenset(
         "diversity_inverse_simpson_index",
         "diversity_simpson_index",
         "diversity_cttr",
+        "diversity_dttr",
         "diversity_perplexity",
         "diversity_michea_m",
         "morph_pos_AUX",
@@ -321,6 +322,8 @@ def corpus_features(
         for window_index, chunk in enumerate(split_windows(text, window, min_words)):
             rows[text_index, window_index] = dict(features(chunk))
     if not rows:
+        if not any(next(iter_text_words(text), None) for text in texts):
+            raise SourceError("В источнике данных отсутствуют слова")
         raise SourceError(
             f"В источнике данных нет окна из {_min_words(window, min_words)} и более слов: "
             "уменьшите min_words или window"
@@ -380,6 +383,7 @@ def compare_corpora(
 
     Исключения:
         SourceError: Если в одном из корпусов нет окна из min_words и более слов
+        ParameterError: Если размер окна или min_words меньше единицы
         ParameterError: Если число выборок меньше единицы
     """
     if n_bootstrap < 1:
