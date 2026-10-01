@@ -1,5 +1,5 @@
 from collections import Counter
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from math import e, inf, isnan, log, log2, nan
 from typing import Any, NamedTuple
 
@@ -7,7 +7,7 @@ import numpy as np
 from scipy.stats import chi2 as chi2_distribution
 
 from ..constants import KEYNESS_MEASURES
-from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
+from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..exceptions import ParameterError, SourceError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
 from ..utils import check_sequence, parse_word
@@ -49,6 +49,7 @@ def keyness(
     min_freq: int = 1,
     positive: bool = True,
     top_n: int | None = None,
+    lemmatize: bool = False,
 ) -> list[Keyword]:
     """
     Поиск ключевых слов целевого корпуса относительно эталонного
@@ -59,12 +60,14 @@ def keyness(
         (размер эффекта), как рекомендуют Gabrielatos и Hardie, а также выбранная
         мера score, по которой список сортируется. Меры значимости (G², хи-квадрат,
         BIC, ELL) получают знак: отрицательный, если слово чаще в эталоне
-        Эталоном может быть частотный словарь FreqDict: тогда целевые слова (словоформы
-        или леммы) приводятся к леммам словаря так же, как в LexicalStats
-        (dictionary_lemma), слова вне алфавита словаря (числа, латиница) отбрасываются,
-        частота в эталоне - ipm, умноженная на объем корпуса словаря (92 млн); слово,
-        которого в словаре нет, получает наименьшую частоту словаря (min_ipm), а не 0:
-        словарь отрезан снизу, и отсутствие в нем не значит отсутствия в языке
+        Эталоном может быть частотный словарь FreqDict: тогда целевые слова - леммы,
+        а со словоформами нужен lemmatize=True (лемма первого разбора pymorphy3); леммы
+        приводятся к леммам словаря так же, как в LexicalStats (dictionary_lemma),
+        слова вне алфавита словаря (числа, латиница) отбрасываются, частота в эталоне -
+        ipm, умноженная на объем корпуса словаря (92 млн); слово, которого в словаре
+        нет, получает наименьшую частоту словаря (min_ipm), а не 0: словарь отрезан
+        снизу, и отсутствие в нем не значит отсутствия в языке; такая частота - оценка
+        сверху, поэтому слово вне словаря бывает только положительным ключевым словом
         Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения
         шансов заменяется на 0.5 (Hardie 2014)
         Положительные ключевые слова чаще в целевом корпусе, отрицательные -
@@ -83,25 +86,29 @@ def keyness(
         min_freq (int): Минимальная частота ключевого слова в своем корпусе
         positive (bool): Положительные ключевые слова (True) или отрицательные (False)
         top_n (int): Количество ключевых слов; None - все
+        lemmatize (bool): Лемматизировать словоформы цели (только с FreqDict)
 
     Вывод:
         list[Keyword]: Ключевые слова по убыванию ключевости, при равенстве -
             по убыванию частоты и по алфавиту; слова с неопределенной мерой в конце
 
     Исключения:
-        ParameterError: Если мера неизвестна или top_n меньше единицы
+        ParameterError: Если мера неизвестна, top_n меньше единицы или lemmatize
+            задан без частотного словаря
         SourceError: Если один из корпусов пуст
     """
     if measure not in KEYNESS_MEASURES:
         raise ParameterError(f"Неизвестная мера ключевости: {measure}")
     if top_n is not None and top_n < 1:
         raise ParameterError("Количество ключевых слов должно быть больше 0")
+    if lemmatize and not isinstance(reference, FreqDict):
+        raise ParameterError("Лемматизация цели доступна только с частотным словарем")
     check_sequence(target)
     check_sequence(reference)
     missing = 0.0
     counts_target: Mapping[str, float]
     if isinstance(reference, FreqDict):
-        counts_target = _count_lemmas(target, reference.entries)
+        counts_target = _count_lemmas(target, reference.entries, lemmatize)
         size_reference = float(CORPUS_SIZE)
         counts_reference: Mapping[str, float] = {
             lemma: entry.ipm * size_reference / 1e6 for lemma, entry in reference.entries.items()
@@ -116,7 +123,8 @@ def keyness(
         raise SourceError("В источнике данных отсутствуют слова")
     calc = MEASURES[measure]
     rows = []
-    words = set(counts_target) | set(counts_reference)
+    # Отрицательному ключевому слову нужна своя частота в эталоне: min_ipm ее только ограничивает
+    words: Iterable[str] = counts_target if positive else counts_reference
     for word in words:
         a = counts_target.get(word, 0)
         b = counts_reference.get(word, missing)
@@ -160,15 +168,16 @@ def _count(words: Sequence[str] | Mapping[str, float]) -> Mapping[str, float]:
 
 
 def _count_lemmas(
-    words: Sequence[str] | Mapping[str, float], vocabulary: Mapping[str, Any]
+    words: Sequence[str] | Mapping[str, float], entries: Mapping[str, Entry], lemmatize: bool
 ) -> dict[str, float]:
     """Частоты лемм словаря у слов из его алфавита (dictionary_lemma)"""
     pairs = words.items() if isinstance(words, Mapping) else Counter(words).items()
     counts: dict[str, float] = {}
     for word, count in pairs:
         if DICTIONARY_WORD.fullmatch(word):
-            lemma = dictionary_lemma(word, parse_word(word).normal_form, vocabulary)
-            counts[lemma] = counts.get(lemma, 0) + count
+            lemma = parse_word(word).normal_form if lemmatize else word
+            key = dictionary_lemma(word, lemma, entries)
+            counts[key] = counts.get(key, 0) + count
     return counts
 
 

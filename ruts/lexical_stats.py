@@ -1,5 +1,5 @@
 import re
-from collections.abc import Container, Sequence
+from collections.abc import Mapping, Sequence
 from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
 from statistics import fmean
@@ -7,7 +7,12 @@ from statistics import fmean
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
-from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
+from .constants import (
+    FREQUENCY_BANDS,
+    LEXICAL_STATS_DESC,
+    PROPER_NOUN_GRAMMEMES,
+    RESOURCES_DIR,
+)
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
@@ -133,12 +138,7 @@ class LexicalStats:
         self._content = tuple(info.content for info in infos)
         self.n_words = len(self.words)
         self.n_content_words = sum(self._content)
-        top_lemmas = load_top_lemmas()
-        self._rank_lemmas = tuple(
-            dictionary_lemma(word, lemma, top_lemmas)
-            for word, lemma in zip(self.words, self.lemmas, strict=True)
-        )
-        self.ranks = tuple(top_lemmas.get(lemma) for lemma in self._rank_lemmas)
+        self.ranks = tuple(get_rank(lemma) for lemma in self.lemmas)
         self.lexical_density = self.n_content_words / self.n_words
         bands = self.band_coverage()
         self.p_top1000 = bands[1000]
@@ -237,9 +237,7 @@ class LexicalStats:
                 raise ParameterError(
                     f"Граница полосы должна быть от 1 до {last_rank}, а не {band}"
                 )
-        ranks = (
-            [get_rank(lemma) for lemma in set(self._rank_lemmas)] if unique else list(self.ranks)
-        )
+        ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
         return {
             band: safe_divide(sum(1 for rank in ranks if rank and rank <= band), len(ranks))
             for band in bands
@@ -315,35 +313,40 @@ def get_rank(lemma: str) -> int | None:
     return load_top_lemmas().get(normalize_yo(lemma))
 
 
-def dictionary_lemma(word: str, lemma: str, vocabulary: Container[str]) -> str:
+def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str:
     """
-    Получение леммы слова в словаре
+    Получение леммы слова в частотном словаре
 
     Описание:
         Лемма приводится к нижнему регистру без буквы ё; если ее нет в словаре, берется
-        лемма другого разбора pymorphy3, которая в нем есть: частотный словарь и список
-        Шарова лемматизированы не pymorphy3, и первый разбор части слов дает другую лемму
-        (наречия ночью, вечером при существительных ночь, вечер; косу - кос вместо коса);
-        без подходящего разбора остается своя лемма
+        самая частотная в нем лемма другого разбора pymorphy3: словарь лемматизирован
+        не pymorphy3, и первый разбор части слов дает другую лемму (наречия ночью,
+        вечером при существительных ночь, вечер); имя собственное по первому разбору
+        заменяется только леммой имени собственного (Анне - анна, но не Родя - родить),
+        слово без подходящего разбора остается со своей леммой
 
     Аргументы:
         word (str): Словоформа
         lemma (str): Лемма слова
-        vocabulary (Container[str]): Леммы словаря в нижнем регистре без ё
+        entries (dict[str, Entry]): Статьи словаря по леммам в нижнем регистре без ё
 
     Вывод:
         str: Лемма для поиска в словаре
     """
     key = normalize_yo(lemma)
-    if key in vocabulary:
+    if key in entries:
         return key
-    return next((candidate for candidate in _parse_lemmas(word) if candidate in vocabulary), key)
+    candidates = [candidate for candidate in _parse_lemmas(word) if candidate in entries]
+    return max(candidates, key=lambda candidate: entries[candidate].ipm, default=key)
 
 
 @lru_cache(maxsize=131072)
 def _parse_lemmas(word: str) -> tuple[str, ...]:
-    """Леммы всех разборов словоформы pymorphy3 в порядке разборов"""
-    return tuple(normalize_yo(parse.normal_form) for parse in get_morph_analyzer().parse(word))
+    """Леммы разборов словоформы pymorphy3, у имени собственного - только имен собственных"""
+    parses = get_morph_analyzer().parse(word)
+    if PROPER_NOUN_GRAMMEMES & parses[0].tag.grammemes:
+        parses = [parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes]
+    return tuple(normalize_yo(parse.normal_form) for parse in parses)
 
 
 def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:

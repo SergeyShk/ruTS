@@ -18,7 +18,8 @@ from ruts.corpus.keyness import (
     calc_p_value,
 )
 from ruts.datasets import FreqDict
-from ruts.datasets.freq2011 import CORPUS_SIZE
+from ruts.datasets.freq2011 import CORPUS_SIZE, FILENAME
+from ruts.exceptions import ParameterError
 from tests.datasets.test_freq2011 import write_dict
 
 target = ["кот", "сидел", "на", "окне", "и", "смотрел", "на", "птиц", "кот", "уснул"]
@@ -153,12 +154,34 @@ def test_keyness_freq_dict(freq_dict):
     assert keyness(["ещё"], freq_dict)[0].ipm_reference == pytest.approx(2409.4)
 
 
+@pytest.fixture(scope="module")
+def homonym_dict(tmp_path_factory):
+    path = tmp_path_factory.mktemp("dicts")
+    rows = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc", "гора\ts\t115.5\t100\t97\t9000"]
+    rows += ["горе\ts\t48.3\t100\t95\t5000", "кошка\ts\t30.0\t95\t90\t800"]
+    path.joinpath(FILENAME).write_text("\n".join(rows) + "\n", encoding="utf-8")
+    return FreqDict(data_dir=path)
+
+
 def test_keyness_freq_dict_forms(freq_dict):
-    keywords = keyness(["коты", "кота", "кошек", "2020", "cat"], freq_dict)
+    keywords = keyness(["коты", "кота", "кошек", "2020", "cat"], freq_dict, lemmatize=True)
     assert {keyword.word: keyword.freq_target for keyword in keywords} == {"кот": 2, "кошка": 1}
     assert {keyword.word: keyword.ipm_target for keyword in keywords}["кот"] == pytest.approx(
         2 / 3 * 1e6
     )
+
+
+def test_keyness_freq_dict_lemmatize(homonym_dict):
+    assert [keyword.word for keyword in keyness(["горе"], homonym_dict)] == ["горе"]
+    lemmatized = keyness(["горе"], homonym_dict, lemmatize=True)
+    assert [keyword.word for keyword in lemmatized] == ["гора"]
+    with pytest.raises(ParameterError):
+        keyness(target, reference, lemmatize=True)
+
+
+def test_keyness_freq_dict_negative(homonym_dict):
+    negative = keyness({"гора": 10**7, "фелинолог": 1}, homonym_dict, positive=False)
+    assert [keyword.word for keyword in negative] == ["горе", "кошка"]
 
 
 def test_p_values():

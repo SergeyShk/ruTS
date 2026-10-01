@@ -9,7 +9,7 @@ Keyword extraction (keyness) for a target corpus relative to a reference corpus:
 
 For every word two values are computed that [Gabrielatos and Marchi](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf) and [Hardie](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/) recommend reading together: the log-likelihood $G^2$ with its p-value (significance of the difference - whether it exists) and Log Ratio (effect size - how large it is). Additionally the chosen measure `score` is computed and used for sorting. Significance measures ($G^2$, chi-square, BIC, ELL) are signed: negative if the word is more frequent in the reference; effect measures (%DIFF, Log Ratio, odds ratio) are directional by construction.
 
-The reference can be the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) (`FreqDict`): the target words - word forms or lemmas - are brought to the lemmas of the dictionary the same way as in [`LexicalStats`](../stats/lexical_stats.md), numbers and words not of Russian letters are dropped, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). A word absent from the dictionary gets the smallest frequency of the dictionary (0.4 ipm): the dictionary is cut off from below, and absence from it does not mean the word never occurs.
+The reference can be the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) (`FreqDict`): the target words are lemmas, word forms are lemmatized with `lemmatize=True`. The lemmas are brought to the lemmas of the dictionary the same way as in [`LexicalStats`](../stats/lexical_stats.md), numbers and words not of Russian letters are dropped, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). A word absent from the dictionary gets the smallest frequency of the dictionary (0.4 ipm): the dictionary is cut off from below, and absence from it does not mean the word never occurs. So such a word can only be a positive keyword.
 
 Words are compared as they are: case, lemmatization and stop words are up to [`WordsExtractor`](../extractors/words.md).
 
@@ -39,6 +39,7 @@ A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF
 | `min_freq` | int | `1` | Minimum frequency of a keyword in its own corpus |
 | `positive` | bool | `True` | Positive keywords (more frequent in the target corpus) or negative (more frequent in the reference) |
 | `top_n` | int | `None` | Number of keywords; `None` - all |
+| `lemmatize` | bool | `False` | Lemmatize the word forms of the target corpus (`FreqDict` only) |
 
 ## Result
 
