@@ -253,6 +253,10 @@ def test_dictionary_lemma_proper(word):
         ("повестей", "повесть"),
         ("счастья", "счастье"),
         ("счастием", "счастие"),
+        ("нашли", "найти"),
+        ("основных", "основной"),
+        ("поле", "поле"),
+        ("вниманье", "вниманье"),
     ],
 )
 def test_dictionary_lemma_forms(word, expected):
@@ -271,6 +275,14 @@ def test_dictionary_lemma_forms(word, expected):
         повести=(80.0, "v"),
         счастие=1.2,
         счастье=149.2,
+        наслать=(0.9, "v"),
+        найти=(424.1, "v"),
+        основный=(0.4, "a"),
+        основной=(334.1, "a"),
+        поле=180.0,
+        пол=200.0,
+        вниманье=0.4,
+        внимание=286.0,
     )
     assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
 

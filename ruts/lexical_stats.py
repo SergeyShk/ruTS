@@ -22,6 +22,8 @@ from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, parse_word,
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
 ADJECTIVE_POS = frozenset({"a", "apro"})
+RARE_IPM = 1.0
+RARE_RATIO = 20
 
 
 class LexicalStats:
@@ -325,11 +327,14 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
         счастие - в словаре это разные статьи), краткое прилагательное берет статью
         краткой формы, если она прилагательное (должна - должен), форма множественного
         числа - статью существительного во множественном числе, если та частотнее леммы
-        (денег - деньги, стихов - стихи). Если леммы нет в словаре, берется самая частотная в нем лемма
-        другого разбора pymorphy3 (наречия ночью, вечером при существительных ночь,
-        вечер); имя собственное по первому разбору заменяется только леммой имени
-        собственного (Анне - анна, но не Родя - родить), слово без подходящего разбора
-        остается со своей леммой
+        (денег - деньги, стихов - стихи). Если леммы нет в словаре, берется самая
+        частотная в нем лемма другого разбора pymorphy3 (наречия ночью, вечером при
+        существительных ночь, вечер); лемма у нижней границы словаря (до RARE_IPM)
+        уступает лемме разбора той же части речи, которая частотнее в RARE_RATIO раз
+        (нашли - найти, а не наслать; основных - основной, а не основный), кроме
+        варианта написания; имя собственное по первому разбору заменяется только леммой
+        имени собственного (Анне - анна, но не Родя - родить), слово без подходящего
+        разбора остается со своей леммой
 
     Аргументы:
         word (str): Словоформа
@@ -349,9 +354,19 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
         and entries[plural].ipm > _ipm(entries, key)
     ):
         return plural
-    if key in entries:
+    if key not in entries:
+        candidates = [candidate for candidate, _ in _parse_lemmas(word) if candidate in entries]
+    elif entries[key].ipm <= RARE_IPM and key == normalize_yo(lemma):
+        parses = _parse_lemmas(word)
+        pos = next((pos for candidate, pos in parses if candidate == key), None)
+        least = entries[key].ipm * RARE_RATIO
+        candidates = [
+            candidate
+            for candidate, candidate_pos in parses
+            if candidate_pos == pos and candidate in entries and entries[candidate].ipm >= least
+        ]
+    else:
         return key
-    candidates = [candidate for candidate in _parse_lemmas(word) if candidate in entries]
     return max(candidates, key=lambda candidate: entries[candidate].ipm, default=key)
 
 
@@ -395,12 +410,12 @@ def _spelling(parse: pymorphy3.analyzer.Parse) -> str | None:
 
 
 @lru_cache(maxsize=131072)
-def _parse_lemmas(word: str) -> tuple[str, ...]:
-    """Леммы разборов словоформы pymorphy3, у имени собственного - только имен собственных"""
+def _parse_lemmas(word: str) -> tuple[tuple[str, str | None], ...]:
+    """Леммы и части речи разборов pymorphy3, у имени собственного - только имен собственных"""
     parses = get_morph_analyzer().parse(word)
     if PROPER_NOUN_GRAMMEMES & parses[0].tag.grammemes:
         parses = [parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes]
-    return tuple(normalize_yo(parse.normal_form) for parse in parses)
+    return tuple((normalize_yo(parse.normal_form), parse.tag.POS) for parse in parses)
 
 
 def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:
