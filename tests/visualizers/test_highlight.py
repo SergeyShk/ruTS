@@ -621,7 +621,7 @@ def test_cliches():
     ]
     assert fragments(officialese_text, "cliches", cliches=[]) == []
     assert find_cliches(get_text_words("имеет место быть"), None) == [
-        Highlight(0, 16, "cliches", "штамп: «имеет место быть»")
+        Highlight(0, 16, "cliches", "штамп: «иметь место быть»")
     ]
 
 
@@ -717,3 +717,8 @@ def test_hyphenated_words_doc(nlp):
     assert [f for f, _ in fragments(source, "parentheticals")] == expected
     assert "Во" not in [f for f, _ in fragments(doc, "stopwords")]
     assert [sent.n_words for sent in get_doc_sents(doc)] == [3, 3, 3]
+
+
+def test_alliteration_runs_skip_stopwords():
+    assert calc_alliteration_runs(["пустая", "который", "площадь"], threshold=1.0) == [(0, 3, "п")]
+    assert calc_alliteration_runs(["что", "это", "тот"], threshold=1.0) == []

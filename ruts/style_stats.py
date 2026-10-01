@@ -1,5 +1,5 @@
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from math import nan, sqrt
 
@@ -16,7 +16,16 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
-from .utils import find_phrases, is_verbal_noun, iter_doc_words, parse_word, safe_divide
+from .utils import (
+    check_sequence,
+    find_phrases,
+    get_morph_analyzer,
+    is_verbal_noun,
+    iter_doc_words,
+    normalize_yo,
+    parse_word,
+    safe_divide,
+)
 
 
 def check_params(top_n: int) -> None:
@@ -118,6 +127,11 @@ class StyleStats:
         top_n: int = NAUSEA_TOP_N,
         cliches: Sequence[str] | None = None,
     ):
+        check_params(top_n)
+        if stopwords is not None:
+            check_sequence(stopwords, "стоп-слов")
+        if cliches is not None:
+            check_sequence(cliches, "штампов")
         if isinstance(source, Doc):
             self.words = tuple(text.lower() for _, _, text in iter_doc_words(source))
             self.forms = self.words
@@ -133,7 +147,6 @@ class StyleStats:
             raise SourceTypeError("Некорректный источник данных")
         if not self.words:
             raise SourceError("В источнике данных отсутствуют слова")
-        check_params(top_n)
         self.stopwords = tuple(stopwords) if stopwords is not None else None
         self.top_n = top_n
         self.cliches_list = tuple(cliches) if cliches is not None else OFFICIALESE_CLICHES
@@ -435,13 +448,15 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
     return safe_divide(verbal, len(nouns), nan) * 100
 
 
-def calc_phrase_density(text: Sequence[str], phrases: Sequence[str]) -> float:
+def calc_phrase_density(text: Sequence[str], phrases: Iterable[str]) -> float:
     """
     Вычисление плотности словосочетаний из списка
 
     Описание:
         Число вхождений словосочетаний (find_phrases) на 100 слов; используется для
-        производных предлогов (COMPOUND_PREPOSITIONS) и штампов (OFFICIALESE_CLICHES)
+        производных предлогов (COMPOUND_PREPOSITIONS) и штампов (OFFICIALESE_CLICHES).
+        Словосочетание, начинающееся с инфинитива, находится в любой форме глагола
+        (expand_phrases)
 
     Аргументы:
         text (list[str]): Список слов
@@ -450,7 +465,56 @@ def calc_phrase_density(text: Sequence[str], phrases: Sequence[str]) -> float:
     Вывод:
         float: Вхождений на 100 слов
     """
-    return safe_divide(len(find_phrases(text, phrases)), len(text)) * 100
+    return safe_divide(len(find_phrases(text, expand_phrases(text, phrases))), len(text)) * 100
+
+
+def expand_phrases(text: Sequence[str], phrases: Iterable[str]) -> dict[str, str]:
+    """
+    Дополнение словосочетаний формами их глаголов из текста
+
+    Описание:
+        Словосочетание, первое слово которого (или второе после «не») - инфинитив
+        (довести до сведения, не остаться в стороне), дополняется вариантами
+        с каждой формой этого глагола из текста, включая причастия и деепричастия
+        (довел до сведения, доведено до сведения, не остался в стороне); формы
+        берутся из лексемы инфинитива pymorphy3. Остальные словосочетания остаются
+        как есть
+
+    Аргументы:
+        text (list[str]): Список слов
+        phrases (list[str]): Словосочетания через пробел
+
+    Вывод:
+        dict[str, str]: Словосочетания и их варианты, у каждого - словосочетание
+            из списка; написание самого словосочетания важнее варианта другого
+
+    Пример использования:
+        >>> from ruts.style_stats import expand_phrases
+        >>> expand_phrases(["он", "довел", "до", "сведения"], ["довести до сведения"])
+        {'довести до сведения': 'довести до сведения', 'довел до сведения': 'довести до сведения'}
+    """
+    phrases = tuple(phrases)
+    words = {normalize_yo(word) for word in text}
+    expanded = {phrase: phrase for phrase in phrases}
+    for phrase in phrases:
+        parts = normalize_yo(phrase).split()
+        head = 1 if len(parts) > 1 and parts[0] == "не" else 0
+        if len(parts) <= head:
+            continue
+        for form in sorted(_verb_forms(parts[head]) & words):
+            expanded.setdefault(" ".join([*parts[:head], form, *parts[head + 1 :]]), phrase)
+    return expanded
+
+
+@lru_cache(maxsize=4096)
+def _verb_forms(word: str) -> frozenset[str]:
+    """Формы глагола по всем лексемам pymorphy3, где слово - инфинитив, иначе пустое множество"""
+    return frozenset(
+        normalize_yo(form.word)
+        for parse in get_morph_analyzer().parse(word)
+        if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word
+        for form in parse.lexeme
+    )
 
 
 def calc_parentheticals(text: Sequence[str]) -> float:

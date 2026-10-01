@@ -1,6 +1,6 @@
 import html
 import re
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from itertools import pairwise
 from typing import NamedTuple
@@ -27,7 +27,7 @@ from ..constants import (
 )
 from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..lexical_stats import get_rank
-from ..style_stats import is_parenthetical, is_stopword
+from ..style_stats import expand_phrases, is_parenthetical, is_stopword
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     find_split_predicates,
@@ -622,7 +622,7 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
 
 
 def find_phrase_highlights(
-    words: Sequence[Word], phrases: Iterable[str], layer: str, label: str
+    words: Sequence[Word], phrases: Iterable[str] | Mapping[str, str], layer: str, label: str
 ) -> list[Highlight]:
     """
     Поиск словосочетаний из списка
@@ -634,14 +634,22 @@ def find_phrase_highlights(
 
     Аргументы:
         words (list[Word]): Слова с позициями
-        phrases (list[str]): Словосочетания через пробел
+        phrases (list[str]|dict[str, str]): Словосочетания через пробел или варианты
+            словосочетаний с их словарной формой (expand_phrases)
         layer (str): Слой подсветки
         label (str): Подпись фрагмента в подсказке
 
     Вывод:
         list[Highlight]: Фрагменты слоя
     """
-    forms = {" ".join(normalize_yo(phrase).split()): phrase for phrase in phrases}
+    pairs = (
+        phrases.items()
+        if isinstance(phrases, Mapping)
+        else ((phrase, phrase) for phrase in phrases)
+    )
+    forms: dict[str, str] = {}
+    for variant, phrase in pairs:
+        forms.setdefault(" ".join(normalize_yo(variant).split()), phrase)
     texts = [word.text for word in words]
     highlights = []
     for start, end in find_phrases(texts, forms):
@@ -678,7 +686,8 @@ def find_cliches(words: Sequence[Word], cliches: Sequence[str] | None = None) ->
         list[Highlight]: Фрагменты слоя cliches
     """
     phrases = OFFICIALESE_CLICHES if cliches is None else cliches
-    return find_phrase_highlights(words, phrases, "cliches", "штамп")
+    expanded = expand_phrases([word.text for word in words], phrases)
+    return find_phrase_highlights(words, expanded, "cliches", "штамп")
 
 
 def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
@@ -800,9 +809,11 @@ def calc_alliteration_runs(
 
     Описание:
         Повтор - цепочка из двух и более соседних слов, в основе каждого из которых
-        есть одна и та же согласная буква; слова короче трех букв (предлоги, союзы,
-        частицы, местоимения он, их) и слова без гласных (аббревиатуры) цепочку
-        не прерывают и не продолжают: по полю плыл - повтор п в двух словах
+        есть одна и та же согласная буква; слова короче трех букв, стоп-слова
+        (is_stopword: что, как, это, его) и слова без гласных (аббревиатуры) цепочку
+        не прерывают и не продолжают: по полю плыл - повтор п в двух словах.
+        Служебное слово постоянно и часто, его согласная встречается чаще случайной,
+        и модель вероятности ниже к нему не подходит
         Согласная ищется в основе слова (функция get_stem), а не в окончании:
         окончания согласуются с соседними словами и повторяются по грамматике,
         а не по звучанию - этих крупных, своим целям и нуждам, в других губерниях
@@ -836,8 +847,10 @@ def calc_alliteration_runs(
     words = [word.lower() for word in text]
     letters = [[letter for letter in word if letter in LETTERS] for word in words]
     transparent = [
-        len(word) < ALLITERATION_MIN_WORD_LEN or not any(letter in VOWELS for letter in word)
-        for word in letters
+        len(word_letters) < ALLITERATION_MIN_WORD_LEN
+        or not any(letter in VOWELS for letter in word_letters)
+        or is_stopword(word)
+        for word, word_letters in zip(words, letters, strict=True)
     ]
     stems = [[letter for letter in get_stem(word) if letter in LETTERS] for word in words]
     runs = []

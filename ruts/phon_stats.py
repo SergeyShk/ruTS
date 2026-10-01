@@ -353,7 +353,7 @@ def _cv_entropy(counts: Counter[str]) -> float:
     total = sum(patterns.values())
     if not total:
         return nan
-    return -sum(count / total * log2(count / total) for count in patterns.values())
+    return -sum(count / total * log2(count / total) for count in patterns.values()) or 0.0
 
 
 def _calc_repetition_index(text: Sequence[str], letters: frozenset[str], window_len: int) -> float:

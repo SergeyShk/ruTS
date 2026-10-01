@@ -5,6 +5,7 @@ import spacy
 
 from ruts import StyleStats, WordsExtractor
 from ruts.constants import STYLE_STATS_DESC
+from ruts.exceptions import ParameterError, SourceTypeError
 from ruts.style_stats import (
     calc_academic_nausea,
     calc_classic_nausea,
@@ -15,6 +16,7 @@ from ruts.style_stats import (
     calc_verbal_nouns,
     calc_water,
     calc_zipf_naturalness,
+    expand_phrases,
     is_parenthetical,
     is_stopword,
 )
@@ -248,3 +250,47 @@ def test_hyphenated_words_doc(nlp):
         == StyleStats(source).parentheticals
         == pytest.approx(200 / 6)
     )
+
+
+@pytest.mark.parametrize("parameter", ["stopwords", "cliches"])
+def test_init_string_list(parameter):
+    with pytest.raises(SourceTypeError):
+        StyleStats(text, **{parameter: "и в"})
+
+
+def test_init_parameters_before_source():
+    with pytest.raises(ParameterError):
+        StyleStats("+ _", top_n=0)
+
+
+def test_cliches_verb_forms():
+    forms = "Он довёл до сведения коллег, это имело место, работа оставляла желать лучшего"
+    assert StyleStats(forms).cliches == 25.0
+
+
+def test_expand_phrases():
+    words = ["меры", "приняты", "принял", "к", "сведению", "стали", "в", "свете"]
+    assert expand_phrases(words, ["принять к сведению", "в свете", "стать причиной"]) == {
+        "принять к сведению": "принять к сведению",
+        "в свете": "в свете",
+        "стать причиной": "стать причиной",
+        "принял к сведению": "принять к сведению",
+        "приняты к сведению": "принять к сведению",
+        "стали причиной": "стать причиной",
+    }
+    assert expand_phrases(["принимать"], ["принимать меры", "принять меры"])["принимать меры"] == (
+        "принимать меры"
+    )
+
+
+def test_cliches_reflexive_and_negated():
+    forms = "Это принимается во внимание, мы не остались в стороне, довожу до вашего сведения"
+    assert StyleStats(forms).cliches == pytest.approx(3 / 13 * 100)
+
+
+def test_phrase_density_iterator():
+    assert calc_phrase_density(["имеет", "место"], iter(["иметь место"])) == 50.0
+
+
+def test_phrase_density_all_lexemes():
+    assert calc_phrase_density(["они", "стоят", "того"], ["стоить того"]) == pytest.approx(100 / 3)

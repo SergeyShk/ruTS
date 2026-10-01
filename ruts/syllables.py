@@ -1,3 +1,4 @@
+import re
 from functools import lru_cache
 from itertools import pairwise
 
@@ -23,6 +24,7 @@ CONSONANTS = (
 )
 MARKS = frozenset(letter.lower() for letter in RU_MARKS)
 LETTERS = VOWELS | CONSONANTS | MARKS
+HYPHENS = re.compile(r"[-‐‑‒–—―]")
 # Частицы, не несущие ударения в составных словах
 PARTICLES = frozenset({"то", "нибудь", "либо", "ка", "таки", "де", "с", "тка", "ли", "же", "бы"})
 # Приставки наречий через дефис, не несущие ударения: по-прежнему, по-французски
@@ -77,7 +79,9 @@ def syllabify(word: str) -> list[str]:
         Каждая гласная зияния образует свой слог: а-э-ро-порт
         Правила применяются к буквам, а не звукам, поэтому деление на слоги
         орфографическое, как в школьной фонетике, а не морфемное
-        Символы, кроме русских букв (дефис, цифры, латиница), отбрасываются
+        Составное слово делится по частям: со-рок-во-ро-вка, часть без гласных
+        примыкает к соседней (в-третьих - втре-тьих); остальные символы,
+        кроме русских букв (цифры, латиница, знак ударения), отбрасываются
 
     Ссылки:
         https://ru.wikipedia.org/wiki/Слог
@@ -223,6 +227,21 @@ def _count_syllables(word: str) -> int:
 @lru_cache(maxsize=CACHE_SIZE)
 def _syllables(word: str) -> tuple[str, ...]:
     """Слоги слова кортежем с кэшем по слову - см. syllabify"""
+    parts: list[str] = []
+    pending = ""
+    for part in HYPHENS.split(word):
+        if any(letter in VOWELS for letter in part.lower()):
+            parts.append(pending + part)
+            pending = ""
+        else:
+            pending += part
+    if parts:
+        parts[-1] += pending
+    return tuple(syllable for part in parts for syllable in _part_syllables(part))
+
+
+def _part_syllables(word: str) -> tuple[str, ...]:
+    """Слоги части слова без дефисов"""
     word = "".join(letter for letter in word.lower() if letter in LETTERS)
     vowel_positions = [i for i, letter in enumerate(word) if letter in VOWELS]
     if not vowel_positions:

@@ -101,7 +101,7 @@ def test_hiatus(ps):
 
 def test_cv_entropy(ps):
     assert calc_cv_entropy(["мама", "папа", "дом", "кот"]) == pytest.approx(1.0)
-    assert calc_cv_entropy(["мама", "мама"]) == 0.0
+    assert str(calc_cv_entropy(["мама", "мама"])) == "0.0"
     assert isnan(calc_cv_entropy(["100", "ok"]))
     assert ps.cv_entropy == pytest.approx(3.1395722619867223)
     assert ps.cv_entropy <= log2(len(ps.words))
