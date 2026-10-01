@@ -11,14 +11,14 @@ The texts of both corpora are cut into windows of equal size (`split_windows`: t
 
 ## Features
 
-`text_features(text)` returns 120 features prefixed by source:
+`text_features(text)` returns 109 features prefixed by source; features that monotonically repeat others (inverse Simpson index, perplexity, the second share of a two-valued feature) are left out:
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
 | `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | shares of parts of speech among the words (`morph_pos_NOUN`) and shares of values within each feature (`morph_case_Gen`, `morph_tense_Past`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
+| `morph_` | shares of parts of speech among the words (`morph_pos_NOUN`) and shares of values within each feature (`morph_case_Gen`, `morph_tense_Past`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths (`sentence_rhythm`) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 
@@ -90,19 +90,19 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ``` bash
                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    punct_ellipsis                       15.748           2.000  10.935   18.105    1.864        0.722  0.861     0.0
-    punct_exclamation                    14.881           3.996   8.956   12.207    1.702        0.673  0.836     0.0
-    morph_verb_form_Fin                   0.760           0.695   0.055    0.075    1.146        0.590  0.795     0.0
+    punct_ellipsis                       15.748           2.000  10.937   18.105    1.864        0.722  0.861     0.0
+    punct_exclamation                    14.881           3.996   9.283   12.720    1.702        0.673  0.836     0.0
+    morph_verb_form_Fin                   0.760           0.695   0.056    0.075    1.146        0.590  0.795     0.0
     punct_yo_share                        0.007           0.000   0.006    0.009    1.069        0.558  0.779     0.0
     readability_gunning_fog_index         6.011           7.970  -2.249   -1.668   -0.953       -0.535  0.232     0.0
     readability_matskovsky_index          8.609          11.234  -3.100   -2.290   -0.938       -0.526  0.237     0.0
-    sents_mean                           11.172          15.136  -4.531   -3.389   -0.934       -0.526  0.237     0.0
+    sents_mean                           11.172          15.136  -4.501   -3.381   -0.934       -0.526  0.237     0.0
     readability_dale_chall_index          5.200           6.676  -1.748   -1.206   -0.923       -0.523  0.239     0.0
     readability_sis_grade                 0.893           3.418  -2.894   -2.136   -0.901       -0.516  0.242     0.0
     readability_smog_index                5.746           7.294  -1.858   -1.271   -0.889       -0.512  0.244     0.0
     ```
 
-Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Of the 120 features, 97 have a corrected p-value below 0.01, but only 15 show a large effect by Cliff's delta - with thousands of windows significance is cheap, the effect size matters more.
+Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Of the 109 features, 88 have a corrected p-value below 0.01, but only 14 show a large effect by Cliff's delta - with thousands of windows significance is cheap, the effect size matters more.
 
 Your own features, for example syntactic ones by spaCy, are passed as a function:
 

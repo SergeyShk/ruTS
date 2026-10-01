@@ -18,6 +18,7 @@ from ruts.corpus import (
     text_features,
 )
 from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES, compare_values
+from ruts.exceptions import SourceError
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
 short = [
@@ -99,6 +100,14 @@ def test_split_windows():
             'раз два три четыре "пять" шесть семь восемь',
             ["раз два три четыре", '"пять" шесть семь восемь'],
         ),
+        (
+            'раз два три "четыре!" пять шесть семь восемь',
+            ['раз два три "четыре!"', "пять шесть семь восемь"],
+        ),
+        (
+            "раз два три „четыре“ пять шесть семь восемь",
+            ["раз два три „четыре“", "пять шесть семь восемь"],
+        ),
     ],
 )
 def test_split_windows_closing_marks(source, expected):
@@ -117,7 +126,8 @@ def test_text_features():
     assert features["morph_pos_INTJ"] == 0.0
     assert features["morph_case_Voc"] == 0.0
     assert isnan(text_features("Кот, пёс, дом.")["morph_tense_Past"])
-    assert sum(1 for key in features if key.startswith("morph_")) == 50
+    assert sum(1 for key in features if key.startswith("morph_")) == 43
+    assert len(features) == 109
     assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"
@@ -144,6 +154,21 @@ def test_sentence_rhythm():
     assert isnan(sentence_rhythm([3])["sents_std"])
     assert isnan(sentence_rhythm([3, 4])["sents_autocorr"])
     assert all(isnan(value) for value in sentence_rhythm([]).values())
+
+
+def test_text_features_lowercase_diversity():
+    assert text_features("Кот спал. кот ел. КОТ сидел.")["diversity_ttr"] == 4 / 6
+
+
+def test_compare_features_drops_infinite():
+    table_a = pd.DataFrame({"x": [1.0, 2.0, 3.0, float("inf")]})
+    table_b = pd.DataFrame({"x": [4.0, 5.0, 6.0, 7.0]})
+    assert compare_features(table_a, table_b, n_bootstrap=10).loc["x", "n_A"] == 3
+
+
+def test_compare_corpora_short_texts():
+    with pytest.raises(SourceError, match=r"Корпус Чехов: .* 500 и более слов"):
+        compare_corpora(["Кот спал."], ["Пёс ел."], labels=("Чехов", "Толстой"))
 
 
 def test_corpus_features():
@@ -183,7 +208,7 @@ def test_compare_corpora():
     assert (result["p_holm"].dropna() >= result["p_value"].dropna()).all()
     assert result.index[0] == "sents_mean" or abs(result.iloc[0]["cliff_delta"]) == 1.0
     assert result["cliff_delta"].isna().sum() == result["u"].isna().sum()
-    assert result.loc["diversity_michea_m", "n_длинные"] == 2
+    assert result.loc["sents_std", "n_длинные"] == 0
     assert np.isfinite(result.drop(columns=["p_holm"]).dropna()).all().all()
     undefined = result[result["cliff_delta"].isna()]
     assert list(undefined.index) == list(result.index[-len(undefined) :])

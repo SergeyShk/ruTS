@@ -21,17 +21,28 @@ from ..visualizers.sentences import count_words_by_spans
 Features = Callable[[str], Mapping[str, float]]
 Values = Sequence[float] | np.ndarray[Any, Any]
 
-# Повторяют другие признаки (время чтения - размер окна, gini_simpson = 1 - simpson) или постоянны
+# Монотонно повторяют другие признаки (ранговое сравнение дает те же U, p и |δ|) или постоянны
 REDUNDANT_FEATURES = frozenset(
     {
         "readability_reading_time",
         "diversity_gini_simpson_index",
+        "diversity_inverse_simpson_index",
+        "diversity_simpson_index",
         "diversity_cttr",
+        "diversity_perplexity",
+        "diversity_michea_m",
         "morph_pos_AUX",
         "morph_pos_PUNCT",
         "morph_pos_SYM",
         "morph_mood_Cnd",
+        "morph_mood_Ind",
         "morph_voice_Mid",
+        "morph_voice_Act",
+        "morph_number_Sing",
+        "morph_aspect_Imp",
+        "morph_animacy_Inan",
+        "morph_transitivity_Intr",
+        "morph_involvement_Ex",
     }
 )
 
@@ -67,8 +78,8 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         не дает окна. Первое окно начинается с первого непробельного символа
         текста, граница между окнами проходит перед первым словом следующего окна
         и открывающими знаками перед ним (OPENING_MARKS: кавычки, скобки, тире),
-        кроме прямой кавычки и тире, приклеенных к предыдущему слову: они его
-        закрывают (SYMMETRIC_MARKS); последнее окно длится до конца текста;
+        кроме кавычки и тире, приклеенных к предыдущему слову или к знаку после
+        него: они его закрывают (SYMMETRIC_MARKS); последнее окно длится до конца текста;
         пробелы по краям окон убираются,
         так что знаки препинания перед первым словом, после последнего слова окна
         и в конце текста остаются в окнах; при window=None окно - весь текст
@@ -87,8 +98,7 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         ParameterError: Если размер окна или min_words меньше единицы
     """
     _check_windows(window, min_words)
-    if min_words is None:
-        min_words = 1 if window is None else max(1, window // 2)
+    min_words = _min_words(window, min_words)
     words = list(iter_text_words(text))
     if not words:
         return []
@@ -103,9 +113,13 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
             text[boundary - 1].isspace() or text[boundary - 1] in OPENING_MARKS
         ):
             boundary -= 1
-        while boundary == previous_end < start and text[boundary] in SYMMETRIC_MARKS:
+        while (
+            boundary < start
+            and text[boundary] in SYMMETRIC_MARKS
+            and (boundary == previous_end or text[boundary - 1] in ".!?…,;)]»")
+        ):
             boundary += 1
-            previous_end += 1
+            previous_end = boundary
         boundaries.append(boundary)
     boundaries.append(len(text))
     return [
@@ -113,6 +127,13 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         for (start, end), chunk in zip(pairwise(boundaries), chunks, strict=True)
         if len(chunk) >= min_words
     ]
+
+
+def _min_words(window: int | None, min_words: int | None) -> int:
+    """Наименьшее число слов в окне: заданное, половина окна или одно слово при window=None"""
+    if min_words is not None:
+        return min_words
+    return 1 if window is None else max(1, window // 2)
 
 
 def _check_windows(window: int | None, min_words: int | None) -> None:
@@ -185,7 +206,8 @@ def text_features(text: str) -> dict[str, float]:
     features["basic_syllables_per_word"] = basic.n_syllables / basic.n_words
     for key, score in ReadabilityStats(basic).get_stats().items():
         features[f"readability_{key}"] = float(score)
-    for key, score in DiversityStats(text, words_extractor=words).get_stats().items():
+    lowered = _FixedWordsExtractor(tuple(word.lower() for word in words.words))
+    for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
         features[f"diversity_{key}"] = float(score)
     morph = MorphStats(text, words_extractor=words)
     n_words = len(morph.words)
@@ -282,13 +304,14 @@ def corpus_features(
         texts (list[str]): Тексты корпуса
         window (int): Размер окна в словах; None - тексты целиком
         features (callable): Функция признаков текста; по умолчанию text_features
-        min_words (int): Наименьшее число слов в окне; None - половина окна
+        min_words (int): Наименьшее число слов в окне; None - половина окна,
+            при window=None - одно слово
 
     Вывод:
         DataFrame: Признаки окон
 
     Исключения:
-        SourceError: Если в корпусе нет окна из достаточного числа слов
+        SourceError: Если в корпусе нет окна из min_words и более слов
         ParameterError: Если размер окна или min_words меньше единицы
     """
     check_sequence(texts, "текстов")
@@ -298,7 +321,10 @@ def corpus_features(
         for window_index, chunk in enumerate(split_windows(text, window, min_words)):
             rows[text_index, window_index] = dict(features(chunk))
     if not rows:
-        raise SourceError("В источнике данных нет окна из достаточного числа слов")
+        raise SourceError(
+            f"В источнике данных нет окна из {_min_words(window, min_words)} и более слов: "
+            "уменьшите min_words или window"
+        )
     table = pd.DataFrame.from_dict(rows, orient="index").astype(float)
     table.index = pd.MultiIndex.from_tuples(table.index, names=["text", "window"])
     return table
@@ -345,22 +371,28 @@ def compare_corpora(
         labels (tuple[str, str]): Имена корпусов для столбцов (mean_<a>, ...)
         n_bootstrap (int): Число выборок бутстрэпа
         seed (int): Зерно генератора случайных чисел; None - случайное
-        min_words (int): Наименьшее число слов в окне; None - половина окна
+        min_words (int): Наименьшее число слов в окне; None - половина окна,
+            при window=None - одно слово
 
     Вывод:
         DataFrame: Признаки × статистики сравнения (COMPARISON_COLUMNS
             с именами корпусов в столбцах)
 
     Исключения:
-        SourceError: Если один из корпусов без слов
+        SourceError: Если в одном из корпусов нет окна из min_words и более слов
         ParameterError: Если число выборок меньше единицы
     """
     if n_bootstrap < 1:
         raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
     _check_windows(window, min_words)
     feature_function = features or text_features
-    table_a = corpus_features(a, window, feature_function, min_words)
-    table_b = corpus_features(b, window, feature_function, min_words)
+    tables = []
+    for label, corpus in zip(labels, (a, b), strict=False):
+        try:
+            tables.append(corpus_features(corpus, window, feature_function, min_words))
+        except SourceError as error:
+            raise SourceError(f"Корпус {label}: {error}") from error
+    table_a, table_b = tables
     return compare_features(table_a, table_b, labels, n_bootstrap, seed)
 
 

@@ -1015,7 +1015,7 @@ RU_LETTER_FREQUENCIES = {
 
 # Знаки при первом слове окна split_windows и те, что закрывают слово, если приклеены к нему
 OPENING_MARKS = frozenset('«"„“‘([{—–―-')
-SYMMETRIC_MARKS = frozenset('"—–―-')
+SYMMETRIC_MARKS = frozenset('"“‘—–―-')
 KEYNESS_MEASURES = {
     "log_likelihood": "Логарифм правдоподобия G²",
     "chi2": "Хи-квадрат с поправкой Йейтса",
