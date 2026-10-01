@@ -508,11 +508,13 @@ def expand_phrases(text: Sequence[str], phrases: Iterable[str]) -> dict[str, str
 
 @lru_cache(maxsize=4096)
 def _verb_forms(word: str) -> frozenset[str]:
-    """Формы глагола по лексеме pymorphy3, если слово - инфинитив, иначе пустое множество"""
-    for parse in get_morph_analyzer().parse(word):
-        if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word:
-            return frozenset(normalize_yo(form.word) for form in parse.lexeme)
-    return frozenset()
+    """Формы глагола по всем лексемам pymorphy3, где слово - инфинитив, иначе пустое множество"""
+    return frozenset(
+        normalize_yo(form.word)
+        for parse in get_morph_analyzer().parse(word)
+        if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word
+        for form in parse.lexeme
+    )
 
 
 def calc_parentheticals(text: Sequence[str]) -> float:
