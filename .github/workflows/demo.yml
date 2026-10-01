@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup uv
-        uses: astral-sh/setup-uv@v10.0.1
+        uses: astral-sh/setup-uv@v10.2.0
       - name: Pin ruts to the released version
         if: github.event_name == 'release'
         run: |
