@@ -2876,8 +2876,8 @@
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Keyword extraction (keyness) for a target corpus relative to a reference corpus: words that occur significantly more often in the target corpus than in the reference. A standard corpus linguistics tool for comparing genres, authors, translations and periods (<a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a>, <a href="https://www.sketchengine.eu/">Sketch Engine</a>, quanteda <code>textstat_keyness</code>).</p>
 <p>For every word two values are computed that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (significance of the difference - whether it exists) and Log Ratio (effect size - how large it is). Additionally the chosen measure <code>score</code> is computed and used for sorting. Significance measures (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC, ELL) are signed: negative if the word is more frequent in the reference; effect measures (%DIFF, Log Ratio, odds ratio) are directional by construction.</p>
-<p>The reference can be the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> (<code>FreqDict</code>): the target words must then be lemmas (<code>WordsExtractor(use_lexemes=True)</code>), they are lowercased with ё replaced by е, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). Words absent from the dictionary get zero reference frequency.</p>
-<p>Words are compared as they are: case, lemmatization and stop words are up to <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
+<p>The reference can be the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> (<code>FreqDict</code>): the target words are word forms, they are brought to the lemmas of the dictionary the same way as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a>; ready lemmas are passed with <code>lemmatize=False</code>, but they match the dictionary worse. Numbers and words not of Russian letters are dropped, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). A word absent from the dictionary gets the smallest frequency of the dictionary (0.4 ipm): the dictionary is cut off from below, and absence from it does not mean the word never occurs. So such a word can only be a positive keyword.</p>
+<p>Against a reference list words are compared as they are: case, lemmatization and stop words are up to <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and both sides must be prepared the same way.</p>
 <h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
 <p>For a word with frequency <span class="arithmatex">\(a\)</span> in a target corpus of size <span class="arithmatex">\(c\)</span> and frequency <span class="arithmatex">\(b\)</span> in a reference corpus of size <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
 <table>
@@ -2982,6 +2982,12 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Number of keywords; <code>None</code> - all</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>lemmatize</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>True</code></td>
+<td style="text-align: center;">The target corpus is word forms, <code>False</code> - lemmas (<code>FreqDict</code> only)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
@@ -3065,10 +3071,14 @@
 <span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">g2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 <span class="c1"># [('собака', -5.79), ('дремать', -3.86)]</span>
 
-<span class="c1"># Relative to the frequency dictionary (after FreqDict().download())</span>
+<span class="c1"># Relative to the frequency dictionary (after FreqDict().download()) - by word forms</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
 
-<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
+    <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "</span>
+    <span class="s2">"Завтра кот снова будет сидеть на окне и смотреть на птиц."</span>
+<span class="p">)</span>
+<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 <span class="c1"># [('кот', 11.5), ('птица', 10.3)]</span>
 </code></pre></div>
 </div>

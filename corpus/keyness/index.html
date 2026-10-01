@@ -2876,8 +2876,8 @@
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном. Стандартный инструмент корпусной лингвистики для сравнения жанров, авторов, переводов и периодов (<a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a>, <a href="https://www.sketchengine.eu/">Sketch Engine</a>, quanteda <code>textstat_keyness</code>).</p>
 <p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (значимость различия - есть ли оно) и Log Ratio (размер эффекта - насколько велико). Дополнительно считается выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC, ELL) получают знак: отрицательный, если слово чаще в эталоне; меры эффекта (%DIFF, Log Ratio, отношение шансов) направленные по построению.</p>
-<p>Эталоном может быть <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> (<code>FreqDict</code>): целевые слова тогда должны быть леммами (<code>WordsExtractor(use_lexemes=True)</code>), они приводятся к нижнему регистру без буквы ё, а частота в эталоне - ipm, умноженная на объем корпуса словаря (92 млн словоупотреблений). Слова, которых в словаре нет, получают нулевую частоту в эталоне.</p>
-<p>Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
+<p>Эталоном может быть <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> (<code>FreqDict</code>): целевые слова - словоформы, они приводятся к леммам словаря так же, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a>; готовые леммы передаются с <code>lemmatize=False</code>, но сверяются со словарем хуже. Числа и слова не из русских букв отбрасываются, а частота в эталоне - ipm, умноженная на объем корпуса словаря (92 млн словоупотреблений). Слово, которого в словаре нет, получает наименьшую частоту словаря (0.4 ipm): словарь отрезан снизу, и отсутствие в нем не значит, что слово не встречается. Поэтому такое слово может быть только положительным ключевым словом.</p>
+<p>С эталоном-списком слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>, и обе стороны должны быть подготовлены одинаково.</p>
 <h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Для слова с частотой <span class="arithmatex">\(a\)</span> в целевом корпусе объемом <span class="arithmatex">\(c\)</span> и частотой <span class="arithmatex">\(b\)</span> в эталонном корпусе объемом <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
 <table>
@@ -2982,6 +2982,12 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Количество ключевых слов; <code>None</code> - все</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>lemmatize</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>True</code></td>
+<td style="text-align: center;">Целевой корпус из словоформ, <code>False</code> - из лемм (только с <code>FreqDict</code>)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="_5">Результат<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
@@ -3065,10 +3071,14 @@
 <span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">g2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 <span class="c1"># [('собака', -5.79), ('дремать', -3.86)]</span>
 
-<span class="c1"># Относительно частотного словаря (после FreqDict().download())</span>
+<span class="c1"># Относительно частотного словаря (после FreqDict().download()) - по словоформам</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
 
-<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
+    <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "</span>
+    <span class="s2">"Завтра кот снова будет сидеть на окне и смотреть на птиц."</span>
+<span class="p">)</span>
+<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 <span class="c1"># [('кот', 11.5), ('птица', 10.3)]</span>
 </code></pre></div>
 </div>
