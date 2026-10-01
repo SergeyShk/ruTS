@@ -111,12 +111,12 @@ class SyntaxStats:
         c_deps (dict[str, int]): Распределение слов по синтаксическим отношениям
         mean_dependency_distance (float): Средняя длина зависимости
         std_dependency_distance (float): Стандартное отклонение длины зависимости
-        max_dependency_distance (float): Максимальная длина зависимости в предложении (по предложениям с зависимостями)
+        max_dependency_distance (float): Среднее по предложениям с зависимостями наибольших длин зависимости
         p_adjacent_dependencies (float): Доля смежных связей - зависимостей длины 1
-        tree_depth (float): Глубина дерева зависимостей
+        tree_depth (float): Средняя по предложениям глубина дерева зависимостей
         leaves_per_sent (float): Листьев на предложение
         subtrees_per_sent (float): Поддеревьев на предложение
-        nodes_per_leaf (float): Отношение числа слов к числу листьев
+        nodes_per_leaf (float): Среднее по предложениям отношение числа слов к числу листьев
         verb_valency (float): Среднее число зависимых у финитного глагола
         coordination_chains_per_sent (float): Сочинительных цепочек на предложение
         mean_coordination_chain_len (float): Средняя длина сочинительной цепочки
@@ -250,7 +250,7 @@ class SyntaxStats:
         print("-" * 60)
         stats = self.get_stats()
         for stat, value in SYNTAX_STATS_DESC.items():
-            print(f"{value:50}|{stats.get(stat):^10.2f}")
+            print(f"{value:50}|{stats[stat]:^10.2f}")
 
 
 def is_word(token: Token) -> bool:
@@ -787,10 +787,12 @@ def is_light_verb(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if token.pos_ != "VERB":
-        return False
-    lemmas = {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
-    return not lemmas.isdisjoint(LIGHT_VERBS)
+    return token.pos_ == "VERB" and not _verb_lemmas(token).isdisjoint(LIGHT_VERBS)
+
+
+def _verb_lemmas(token: Token) -> set[str]:
+    """Леммы глагола по spaCy и pymorphy3"""
+    return {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
 
 
 def is_reflexive(token: Token) -> bool:
@@ -817,16 +819,19 @@ def is_reflexive(token: Token) -> bool:
     )
 
 
-def is_split_predicate_noun(token: Token) -> bool:
+def is_split_predicate_noun(token: Token, verb: Token | None = None) -> bool:
     """
     Проверка, может ли токен быть именной частью расщепленного сказуемого
 
     Описание:
         Существительное с отглагольной леммой (is_verbal_noun: проверка, участие,
-        реализация) или с леммой из SPLIT_PREDICATE_NOUNS (роль, работа, помощь, мера)
+        реализация) - при любом легком глаголе - или с леммой из SPLIT_PREDICATE_NOUNS
+        (роль, работа, помощь, мера) - только при глаголе своего оборота: оказать
+        помощь, принять меры, но не получить работу
 
     Аргументы:
         token (Token): Токен
+        verb (Token): Легкий глагол; если не задан, оборот не проверяется
 
     Вывод:
         bool: Результат проверки
@@ -834,7 +839,15 @@ def is_split_predicate_noun(token: Token) -> bool:
     if token.pos_ != "NOUN":
         return False
     lemma = normalize_yo(get_lemma(token))
-    return is_verbal_noun(lemma) or lemma in SPLIT_PREDICATE_NOUNS
+    if is_verbal_noun(lemma):
+        return True
+    if lemma not in SPLIT_PREDICATE_NOUNS:
+        return False
+    if verb is None:
+        return True
+    verb_lemmas = _verb_lemmas(verb)
+    verb_lemmas |= {verb_lemma.removesuffix("ся").removesuffix("сь") for verb_lemma in verb_lemmas}
+    return not verb_lemmas.isdisjoint(SPLIT_PREDICATE_NOUNS[lemma])
 
 
 def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
@@ -864,7 +877,7 @@ def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
         candidates = [
             child
             for child in get_children(token)
-            if is_split_predicate_noun(child) and _is_nominal_part(child, token)
+            if is_split_predicate_noun(child, token) and _is_nominal_part(child, token)
         ]
         if candidates:
             pairs.append((token, min(candidates, key=_nominal_part_rank)))

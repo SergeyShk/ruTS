@@ -1,6 +1,6 @@
 import pytest
 
-from ruts import BasicStats, ReadabilityStats, SentsExtractor
+from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
 from ruts.constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
@@ -161,6 +161,19 @@ def test_sis_grade_by_freq(rs):
     assert rs.sis_grade_by_freq(500, "2-4") != rs.sis_grade_by_freq(500)
     with pytest.raises(ValueError):
         rs.sis_grade_by_freq(500, "12")
+
+
+def test_sis_grade_counted_letters():
+    rs = ReadabilityStats(text, words_extractor=WordsExtractor(stopwords=["и", "в", "для", "к"]))
+    letters = sum(n_letters * count for n_letters, count in rs.bs.c_letters.items())
+    assert letters < rs.bs.n_letters
+    assert rs.sis_grade == calc_sis_grade(letters, rs.bs.n_words, rs.bs.n_sents)
+    assert rs.sis_grade_by_stage("5-7") == calc_sis_grade(
+        letters, rs.bs.n_words, rs.bs.n_sents, *SIS_GRADE_STAGES["5-7"]
+    )
+    assert rs.sis_grade_by_freq(300) == calc_sis_grade_freq(
+        letters, rs.bs.n_words, rs.bs.n_sents, 300
+    )
 
 
 def test_sis_grade_by_stage_error(rs):

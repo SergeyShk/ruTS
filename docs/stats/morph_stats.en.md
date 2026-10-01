@@ -47,6 +47,7 @@ Transitivity (`transitivity`: `Tran`, `Intr`) and clusivity (`involvement`: `In`
 | Attribute | Type | Description |
 | :-------: | :--: | :---------: |
 | `words` | tuple[str] | Tuple of extracted words |
+| `lemmas` | tuple[str] | Tuple of lemmas of the words (pymorphy3 by the part of speech of the word) |
 | `tags` | tuple[str] | Tuple of grammatical feature strings in CoNLL-U format (`Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing`, `_` without features) |
 | `pos` | tuple[str] | Tuple of part-of-speech values |
 | `animacy` | tuple[str] | Tuple of animacy values |
@@ -196,4 +197,73 @@ To illustrate the method, we reuse the code from the previous example:
     ('то', {'pos': 'CCONJ'}),
     ('что', {'pos': 'SCONJ'}),
     ('получили', {'number': 'Plur', 'pos': 'VERB', 'tense': 'Past'}))
+    ```
+
+### get_markers
+
+Returns the shares of the grammatical forms of verbs (words with the part of speech `VERB` and `AUX`), each of its own base. A share with an empty base is `nan`.
+
+| Marker | Share | Base |
+| :----: | :---- | :--- |
+| `p_indicative`, `p_imperative`, `p_conditional` | of the indicative, imperative and conditional mood | finite forms |
+| `p_infinitive`, `p_participle`, `p_converb` | of infinitives, participles and converbs | all verb forms |
+| `p_perfective` | of the perfective aspect | verb forms with an aspect |
+| `p_passive` | of passive participles | all verb forms |
+| `p_reflexive` | of reflexive forms in -ся, -сь | all verb forms |
+
+The conditional mood is counted by the particle бы (б): the past form next to it is tagged as indicative.
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    from ruts import MorphStats
+
+    ms = MorphStats("Если бы я знал, я бы пришел за книгами, прочитанными вчера")
+    ms.get_markers()
+    ```
+
+    _Result_:
+
+    ``` bash
+    {'p_indicative': 0.0,
+     'p_imperative': 0.0,
+     'p_conditional': 1.0,
+     'p_infinitive': 0.0,
+     'p_participle': 0.3333333333333333,
+     'p_converb': 0.0,
+     'p_perfective': 0.6666666666666666,
+     'p_passive': 0.3333333333333333,
+     'p_reflexive': 0.0}
+    ```
+
+### print_markers
+
+Prints a table of the shares of the grammatical forms of verbs.
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    ...
+
+    ms.print_markers()
+    ```
+
+    _Result_:
+
+    ``` bash
+                          Маркер                      |  Значение
+    ---------------------------------------------------------------
+    Изъявительное наклонение среди личных форм        |    0.00
+    Повелительное наклонение среди личных форм        |    0.00
+    Сослагательное наклонение среди личных форм       |    1.00
+    Инфинитив среди форм глагола                      |    0.00
+    Причастие среди форм глагола                      |    0.33
+    Деепричастие среди форм глагола                   |    0.00
+    Совершенный вид среди форм глагола с видом        |    0.67
+    Страдательные причастия среди форм глагола        |    0.33
+    Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
     ```

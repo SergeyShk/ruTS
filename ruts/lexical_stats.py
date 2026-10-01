@@ -233,7 +233,7 @@ class LexicalStats:
         print("-" * 68)
         stats = self.get_stats()
         for stat, value in LEXICAL_STATS_DESC.items():
-            print(f"{value:58}|{stats.get(stat):^10.2f}")
+            print(f"{value:58}|{stats[stat]:^10.2f}")
 
 
 def is_number(word: str) -> bool:

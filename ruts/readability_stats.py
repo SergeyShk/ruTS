@@ -191,7 +191,7 @@ class ReadabilityStats:
 
     @property
     def sis_grade(self) -> float:
-        return calc_sis_grade(self.bs.n_letters, self.bs.n_words, self.bs.n_sents)
+        return calc_sis_grade(self._n_word_letters, self.bs.n_words, self.bs.n_sents)
 
     @property
     def matskovsky_index(self) -> float:
@@ -279,6 +279,11 @@ class ReadabilityStats:
             self.bs.n_words, min_wpm
         )
 
+    @property
+    def _n_word_letters(self) -> int:
+        """Количество букв в учтенных словах, а не во всем тексте"""
+        return sum(n_letters * count for n_letters, count in self.bs.c_letters.items())
+
     def sis_grade_by_stage(self, stage: str) -> float:
         """
         Вычисление формулы Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
@@ -298,7 +303,7 @@ class ReadabilityStats:
                 f"Доступные ступени: {tuple(SIS_GRADE_STAGES)}"
             )
         return calc_sis_grade(
-            self.bs.n_letters, self.bs.n_words, self.bs.n_sents, *SIS_GRADE_STAGES[stage]
+            self._n_word_letters, self.bs.n_words, self.bs.n_sents, *SIS_GRADE_STAGES[stage]
         )
 
     def sis_grade_by_freq(self, mean_ipm: float, stage: str | None = None) -> float:
@@ -319,7 +324,7 @@ class ReadabilityStats:
         """
         if stage is None:
             return calc_sis_grade_freq(
-                self.bs.n_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
+                self._n_word_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
             )
         if stage not in SIS_GRADE_FREQ_STAGES:
             raise ParameterError(
@@ -327,7 +332,7 @@ class ReadabilityStats:
                 f"Доступные ступени: {tuple(SIS_GRADE_FREQ_STAGES)}"
             )
         return calc_sis_grade_freq(
-            self.bs.n_letters,
+            self._n_word_letters,
             self.bs.n_words,
             self.bs.n_sents,
             mean_ipm,
