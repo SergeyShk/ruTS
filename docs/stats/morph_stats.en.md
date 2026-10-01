@@ -211,7 +211,7 @@ Returns the shares of the grammatical forms of verbs (words with the part of spe
 | `p_passive` | of passive participles | all verb forms |
 | `p_reflexive` | of reflexive forms in -ся, -сь | all verb forms |
 
-The conditional mood is counted by the particle бы (б): the past form next to it is tagged as indicative.
+The conditional mood is detected by the particle бы.
 
 !!! example "Example"
 

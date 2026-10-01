@@ -1,6 +1,6 @@
 # Components
 
-A set of modules for building [spaCy](https://github.com/explosion/spaCy) components. Each module is a class with two implemented methods: `__init__` (adds a new extension to the pipeline on initialization) and `__call__` (takes a `Doc` object and returns its modified version). Adding a component extends the tokenizer of the pipeline with the rules for the dashes of dialogue (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string.
+A set of modules for building [spaCy](https://github.com/explosion/spaCy) components. Each module is a class with two implemented methods: `__init__` (adds a new extension to the pipeline on initialization) and `__call__` (takes a `Doc` object and returns its modified version). A component also sets up the tokenizer (`ruts.utils.add_dash_rules`) so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.
 
 !!! note "Note"
     Detailed information on developing custom spaCy components is available in the corresponding section of the [documentation](https://spacy.io/usage/processing-pipelines#custom-components). The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
