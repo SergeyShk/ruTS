@@ -1,6 +1,6 @@
 # Russian Texts Statistics (ruTS)
 
-![ruts](img/ruts.png)
+![ruTS](img/ruts.svg)
 
 **ruTS** computes for Russian texts what usually requires assembling several separate tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
 
