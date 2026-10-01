@@ -61,6 +61,7 @@ Let us look at the visualizers on 12 texts of the [StalinWorks](../datasets/stal
     texts = list(sw.get_texts(limit=12))
     we = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True)
     lemmas = [lemma for text in texts for lemma in we.extract(text)]
+    words = [word for text in texts for word in WordsExtractor(filter_nums=True).extract(text)]
 
     # Lexical dispersion
     dispersion_plot(lemmas, ["партия", "рабочий", "революция", "царь"])
@@ -68,8 +69,8 @@ Let us look at the visualizers on 12 texts of the [StalinWorks](../datasets/stal
     # Keywords relative to the frequency dictionary
     freq_dict = FreqDict()
     keyness_plot(
-        keyness(lemmas, freq_dict, min_freq=5, top_n=10),
-        keyness(lemmas, freq_dict, positive=False, min_freq=5, top_n=10),
+        keyness(words, freq_dict, min_freq=5, top_n=10),
+        keyness(words, freq_dict, positive=False, min_freq=5, top_n=10),
         labels=("тексты Сталина", "частотный словарь"),
     )
 

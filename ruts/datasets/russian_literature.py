@@ -201,9 +201,9 @@ class RussianLiterature(Dataset):
         Вывод:
             generator[str]: Генератор текстов
         """
-        filters = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
+        fields, lengths = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
         check_limit(limit)
-        for record in islice(self.__filtered_iter(filters), limit):
+        for record in islice(self.__filtered_iter(fields, lengths), limit):
             yield record["text"]
 
     def get_records(
@@ -231,9 +231,9 @@ class RussianLiterature(Dataset):
         Вывод:
             generator[dict[str, object]]: Генератор записей
         """
-        filters = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
+        fields, lengths = self.__get_filters(genre, author, year_from, year_to, min_len, max_len)
         check_limit(limit)
-        yield from islice(self.__filtered_iter(filters), limit)
+        yield from islice(self.__filtered_iter(fields, lengths), limit)
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
@@ -243,6 +243,22 @@ class RussianLiterature(Dataset):
             Жанры в порядке GENRES, внутри - папки авторов и файлы по алфавиту;
             тексты читаются по одному, год ищется в info.csv по названию файла
             без учета регистра и буквы ё («Алёша горшок» и «Алёша Горшок»)
+
+        Вывод:
+            generator[dict[str, object]]: Генератор записей
+        """
+        return self.__iter_records([])
+
+    def __iter_records(self, fields: Filters) -> Generator[dict[str, Any], None, None]:
+        """
+        Итерация по записям, прошедшим фильтры полей
+
+        Описание:
+            Жанр, автор и годы известны из папок и info.csv, поэтому файл текста
+            читается только у записи, прошедшей фильтры полей
+
+        Аргументы:
+            fields (Filters): Фильтры-предикаты по полям записи без текста
 
         Вывод:
             generator[dict[str, object]]: Генератор записей
@@ -259,28 +275,32 @@ class RussianLiterature(Dataset):
                 author = self.authors.get(author_dir.name, author_dir.name)
                 for filepath in sorted(author_dir.glob("*.txt")):
                     year_from, year_to = years.get(_title_key(filepath.stem), (None, None))
-                    yield {
+                    record = {
                         "genre": genre,
                         "author": author,
                         "title": filepath.stem,
                         "year_from": year_from,
                         "year_to": year_to,
-                        "text": strip_header(read_text(filepath), author, filepath.stem),
-                        "file": filepath,
                     }
+                    if all(filter_(record) for filter_ in fields):
+                        text = strip_header(read_text(filepath), author, filepath.stem)
+                        yield {**record, "text": text, "file": filepath}
 
-    def __filtered_iter(self, filters: Filters) -> Generator[dict[str, Any], None, None]:
+    def __filtered_iter(
+        self, fields: Filters, lengths: Filters
+    ) -> Generator[dict[str, Any], None, None]:
         """
         Итерация по набору данных с учетом фильтров
 
         Аргументы:
-            filters (Filters): Список фильтров-предикатов
+            fields (Filters): Фильтры-предикаты по полям записи - до чтения текста
+            lengths (Filters): Фильтры-предикаты по длине текста
 
         Вывод:
             generator[dict[str, object]]: Генератор записей
         """
-        for record in self:
-            if all(filter_(record) for filter_ in filters):
+        for record in self.__iter_records(fields):
+            if all(filter_(record) for filter_ in lengths):
                 yield record
 
     @staticmethod
@@ -291,9 +311,9 @@ class RussianLiterature(Dataset):
         year_to: int | None,
         min_len: int | None,
         max_len: int | None,
-    ) -> Filters:
+    ) -> tuple[Filters, Filters]:
         """
-        Получение списка фильтров
+        Получение фильтров по полям записи и по длине текста
 
         Описание:
             Произведения без года не проходят фильтры по годам
@@ -307,7 +327,7 @@ class RussianLiterature(Dataset):
             max_len (int): Максимальная длина текста (в символах)
 
         Вывод:
-            filters (Filters): Список фильтров-предикатов
+            tuple[Filters, Filters]: Фильтры-предикаты по полям и по длине текста
 
         Исключения:
             ParameterError: Если некорректно выбран жанр
@@ -333,8 +353,7 @@ class RussianLiterature(Dataset):
             )
         if year_from is not None and year_to is not None and year_from > year_to:
             raise ParameterError("Наименьший год больше наибольшего")
-        filters.extend(length_filters(min_len, max_len))
-        return filters
+        return filters, length_filters(min_len, max_len)
 
 
 def load_years(filepath: str | Path) -> dict[str, tuple[int | None, int | None]]:

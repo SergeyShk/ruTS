@@ -9,9 +9,9 @@ Keyword extraction (keyness) for a target corpus relative to a reference corpus:
 
 For every word two values are computed that [Gabrielatos and Marchi](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf) and [Hardie](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/) recommend reading together: the log-likelihood $G^2$ with its p-value (significance of the difference - whether it exists) and Log Ratio (effect size - how large it is). Additionally the chosen measure `score` is computed and used for sorting. Significance measures ($G^2$, chi-square, BIC, ELL) are signed: negative if the word is more frequent in the reference; effect measures (%DIFF, Log Ratio, odds ratio) are directional by construction.
 
-The reference can be the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) (`FreqDict`): the target words must then be lemmas (`WordsExtractor(use_lexemes=True)`), they are lowercased with ё replaced by е, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). Words absent from the dictionary get zero reference frequency.
+The reference can be the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) (`FreqDict`): the target words are word forms, they are brought to the lemmas of the dictionary the same way as in [`LexicalStats`](../stats/lexical_stats.md); ready lemmas are passed with `lemmatize=False`, but they match the dictionary worse. Numbers and words not of Russian letters are dropped, and the reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens). A word absent from the dictionary gets the smallest frequency of the dictionary (0.4 ipm): the dictionary is cut off from below, and absence from it does not mean the word never occurs. So such a word can only be a positive keyword.
 
-Words are compared as they are: case, lemmatization and stop words are up to [`WordsExtractor`](../extractors/words.md).
+Against a reference list words are compared as they are: case, lemmatization and stop words are up to [`WordsExtractor`](../extractors/words.md), and both sides must be prepared the same way.
 
 ## Measures
 
@@ -39,6 +39,7 @@ A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF
 | `min_freq` | int | `1` | Minimum frequency of a keyword in its own corpus |
 | `positive` | bool | `True` | Positive keywords (more frequent in the target corpus) or negative (more frequent in the reference) |
 | `top_n` | int | `None` | Number of keywords; `None` - all |
+| `lemmatize` | bool | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
 ## Result
 
@@ -81,9 +82,13 @@ A list of `Keyword` named tuples in descending keyness order (ties broken by des
     [(k.word, round(k.g2, 2)) for k in keyness(target, reference, positive=False, top_n=2)]
     # [('собака', -5.79), ('дремать', -3.86)]
 
-    # Relative to the frequency dictionary (after FreqDict().download())
+    # Relative to the frequency dictionary (after FreqDict().download()) - by word forms
     from ruts.datasets import FreqDict
 
-    [(k.word, round(k.log_ratio, 1)) for k in keyness(target, FreqDict(), min_freq=3, top_n=2)]
+    words = WordsExtractor().extract(
+        "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "
+        "Завтра кот снова будет сидеть на окне и смотреть на птиц."
+    )
+    [(k.word, round(k.log_ratio, 1)) for k in keyness(words, FreqDict(), min_freq=3, top_n=2)]
     # [('кот', 11.5), ('птица', 10.3)]
     ```

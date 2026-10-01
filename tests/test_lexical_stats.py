@@ -6,7 +6,16 @@ import spacy
 from ruts import LexicalStats, WordsExtractor
 from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
-from ruts.lexical_stats import calc_surprisal, get_rank, is_number, load_top_lemmas
+from ruts.datasets.freq2011 import Entry
+from ruts.exceptions import ParameterError
+from ruts.lexical_stats import (
+    calc_surprisal,
+    dictionary_lemma,
+    get_rank,
+    is_number,
+    load_top_lemmas,
+)
+from ruts.utils import parse_word
 from tests.datasets.test_freq2011 import write_dict
 
 text = "Кот сидел на окне и смотрел на птиц"
@@ -102,6 +111,12 @@ def test_bands(ls):
     }
 
 
+@pytest.mark.parametrize("bands", [(0,), (-5, 1000), (1000, 20000)])
+def test_band_coverage_bounds(ls, bands):
+    with pytest.raises(ParameterError):
+        ls.band_coverage(bands=bands)
+
+
 def test_rare_words(freq_dict):
     ls = LexicalStats("Фелинолог пребывал на подоконнике", freq_dict=freq_dict)
     assert ls.coverage == pytest.approx(1 / 4)
@@ -186,3 +201,95 @@ def test_print_stats(ls, capsys):
     captured = capsys.readouterr().out
     for value in LEXICAL_STATS_DESC.values():
         assert value in captured
+
+
+def entries(**values):
+    def entry(lemma, value):
+        ipm, pos = value if isinstance(value, tuple) else (value, "s")
+        return Entry(lemma, (pos,), ipm, 100, 90, 1000)
+
+    return {lemma: entry(lemma, value) for lemma, value in values.items()}
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("людей", "человек"),
+        ("шёл", "идти"),
+        ("детьми", "ребенок"),
+        ("написанный", "написать"),
+        ("ночью", "ночь"),
+        ("вечером", "вечер"),
+        ("утром", "утро"),
+        ("живи", "жить"),
+    ],
+)
+def test_dictionary_lemma(word, expected):
+    vocabulary = entries(
+        человек=1000, идти=500, ребенок=300, написать=200, ночь=400, вечер=300, утро=200, жить=600
+    )
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+
+
+def test_dictionary_lemma_frequent():
+    assert dictionary_lemma("часами", "часами", entries(часы=72.5, час=468.1)) == "час"
+    assert dictionary_lemma("часами", "часами", entries(часы=468.1, час=72.5)) == "часы"
+
+
+@pytest.mark.parametrize("word", ["Родя", "Глашу", "родя"])
+def test_dictionary_lemma_proper(word):
+    vocabulary = entries(родить=44.1, гласить=12.0)
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) not in vocabulary
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("должна", "должен"),
+        ("велика", "большой"),
+        ("денег", "деньги"),
+        ("стихов", "стихи"),
+        ("часов", "час"),
+        ("повестей", "повесть"),
+        ("счастья", "счастье"),
+        ("счастием", "счастие"),
+        ("нашли", "найти"),
+        ("основных", "основной"),
+        ("поле", "поле"),
+        ("вниманье", "вниманье"),
+    ],
+)
+def test_dictionary_lemma_forms(word, expected):
+    vocabulary = entries(
+        должный=(17.6, "a"),
+        должен=(944.2, "a"),
+        большой=(1300.0, "a"),
+        велик=0.7,
+        деньга=1.1,
+        деньги=512.4,
+        стих=11.2,
+        стихи=157.0,
+        час=468.1,
+        часы=72.5,
+        повесть=60.0,
+        повести=(80.0, "v"),
+        счастие=1.2,
+        счастье=149.2,
+        наслать=(0.9, "v"),
+        найти=(424.1, "v"),
+        основный=(0.4, "a"),
+        основной=(334.1, "a"),
+        поле=180.0,
+        пол=200.0,
+        вниманье=0.4,
+        внимание=286.0,
+    )
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+
+
+def test_dictionary_lemma_proper_name():
+    assert dictionary_lemma("Анне", parse_word("Анне").normal_form, entries(анна=100)) == "анна"
+
+
+def test_dictionary_lemma_missing():
+    assert dictionary_lemma("Фелинолога", "Фелинолог", entries(кот=40.3)) == "фелинолог"

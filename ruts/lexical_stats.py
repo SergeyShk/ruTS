@@ -1,18 +1,29 @@
-from collections.abc import Sequence
-from functools import cache, cached_property
+import re
+from collections.abc import Mapping, Sequence
+from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
 from statistics import fmean
 
+import pymorphy3
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
-from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
+from .constants import (
+    FREQUENCY_BANDS,
+    LEXICAL_STATS_DESC,
+    PROPER_NOUN_GRAMMEMES,
+    RESOURCES_DIR,
+)
 from .datasets.freq2011 import Entry, FreqDict
-from .exceptions import SourceError, SourceTypeError
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import iter_doc_units, normalize_yo, safe_divide
+from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, parse_word, safe_divide
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
+DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
+ADJECTIVE_POS = frozenset({"a", "apro"})
+RARE_IPM = 1.0
+RARE_RATIO = 20
 
 
 class LexicalStats:
@@ -145,7 +156,16 @@ class LexicalStats:
         """
         Статьи частотного словаря для каждого слова, None для слов вне словаря
         """
-        return tuple(self.freq_dict.lookup(lemma) for lemma in self.lemmas)
+        return tuple(self.freq_dict.lookup(lemma) for lemma in self._dict_lemmas)
+
+    @cached_property
+    def _dict_lemmas(self) -> tuple[str, ...]:
+        """Леммы слов в частотном словаре (dictionary_lemma)"""
+        entries = self.freq_dict.entries
+        return tuple(
+            dictionary_lemma(word, lemma, entries)
+            for word, lemma in zip(self.words, self.lemmas, strict=True)
+        )
 
     @property
     def n_found(self) -> int:
@@ -193,7 +213,7 @@ class LexicalStats:
 
     @cached_property
     def surprisal(self) -> float:
-        return calc_surprisal(self.lemmas, self.freq_dict)
+        return calc_surprisal(self._dict_lemmas, self.freq_dict)
 
     @property
     def perplexity(self) -> float:
@@ -211,7 +231,16 @@ class LexicalStats:
 
         Вывод:
             dict[int, float]: Доля слов с леммой из топ-N для каждой границы N
+
+        Исключения:
+            ParameterError: Если граница полосы вне рангов вшитого списка (1..10 000)
         """
+        last_rank = max(load_top_lemmas().values())
+        for band in bands:
+            if not 1 <= band <= last_rank:
+                raise ParameterError(
+                    f"Граница полосы должна быть от 1 до {last_rank}, а не {band}"
+                )
         ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
         return {
             band: safe_divide(sum(1 for rank in ranks if rank and rank <= band), len(ranks))
@@ -286,6 +315,107 @@ def get_rank(lemma: str) -> int | None:
         int|None: Ранг от 1 до 10 000, None если леммы в списке нет
     """
     return load_top_lemmas().get(normalize_yo(lemma))
+
+
+def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str:
+    """
+    Получение леммы слова в частотном словаре
+
+    Описание:
+        Лемма приводится к нижнему регистру без буквы ё и к соглашениям словаря,
+        лемматизированного не pymorphy3: сохраняется написание слова (счастье, а не
+        счастие - в словаре это разные статьи), краткое прилагательное берет статью
+        краткой формы, если она прилагательное (должна - должен), форма множественного
+        числа - статью существительного во множественном числе, если та частотнее леммы
+        (денег - деньги, стихов - стихи). Если леммы нет в словаре, берется самая
+        частотная в нем лемма другого разбора pymorphy3 (наречия ночью, вечером при
+        существительных ночь, вечер); лемма у нижней границы словаря (до RARE_IPM)
+        уступает лемме разбора той же части речи, которая частотнее в RARE_RATIO раз
+        (нашли - найти, а не наслать; основных - основной, а не основный), кроме
+        варианта написания; имя собственное по первому разбору заменяется только леммой
+        имени собственного (Анне - анна, но не Родя - родить), слово без подходящего
+        разбора остается со своей леммой
+
+    Аргументы:
+        word (str): Словоформа
+        lemma (str): Лемма слова
+        entries (dict[str, Entry]): Статьи словаря по леммам в нижнем регистре без ё
+
+    Вывод:
+        str: Лемма для поиска в словаре
+    """
+    key, short, plural = _form_lemmas(word, normalize_yo(lemma))
+    if short and short in entries and ADJECTIVE_POS & set(entries[short].pos):
+        return short
+    if (
+        plural
+        and plural in entries
+        and "s" in entries[plural].pos
+        and entries[plural].ipm > _ipm(entries, key)
+    ):
+        return plural
+    if key not in entries:
+        candidates = [candidate for candidate, _ in _parse_lemmas(word) if candidate in entries]
+    elif entries[key].ipm <= RARE_IPM and key == normalize_yo(lemma):
+        parses = _parse_lemmas(word)
+        pos = next((pos for candidate, pos in parses if candidate == key), None)
+        least = entries[key].ipm * RARE_RATIO
+        candidates = [
+            candidate
+            for candidate, candidate_pos in parses
+            if candidate_pos == pos and candidate in entries and entries[candidate].ipm >= least
+        ]
+    else:
+        return key
+    return max(candidates, key=lambda candidate: entries[candidate].ipm, default=key)
+
+
+def _ipm(entries: Mapping[str, Entry], lemma: str) -> float:
+    entry = entries.get(lemma)
+    return entry.ipm if entry else 0.0
+
+
+@lru_cache(maxsize=131072)
+def _form_lemmas(word: str, key: str) -> tuple[str, str | None, str | None]:
+    """Лемма в написании слова, краткая форма и форма множественного числа по разбору леммы"""
+    parse = parse_word(word)
+    if normalize_yo(parse.normal_form) != key:
+        parses = get_morph_analyzer().parse(word)
+        found = next((parse for parse in parses if normalize_yo(parse.normal_form) == key), None)
+        if found is None:
+            return key, None, None
+        parse = found
+    if parse.tag.POS == "ADJS":
+        form = parse.inflect({"masc", "sing"})
+        return key, normalize_yo(form.word) if form else None, None
+    if parse.tag.POS != "NOUN":
+        return key, None, None
+    plural = None
+    if parse.tag.number == "plur":
+        form = parse.inflect({"nomn", "plur"})
+        plural = normalize_yo(form.word) if form else None
+    return _spelling(parse) or key, None, plural
+
+
+def _spelling(parse: pymorphy3.analyzer.Parse) -> str | None:
+    """Нормальная форма в варианте написания слова (V-ie, V-be и другие граммемы V-)"""
+    normal = parse.normalized.tag.grammemes
+    target = {g for g in normal if not g.startswith("V-")}
+    target |= {g for g in parse.tag.grammemes if g.startswith("V-")}
+    if target == normal:
+        return None
+    return next(
+        (normalize_yo(form.word) for form in parse.lexeme if form.tag.grammemes == target), None
+    )
+
+
+@lru_cache(maxsize=131072)
+def _parse_lemmas(word: str) -> tuple[tuple[str, str | None], ...]:
+    """Леммы и части речи разборов pymorphy3, у имени собственного - только имен собственных"""
+    parses = get_morph_analyzer().parse(word)
+    if PROPER_NOUN_GRAMMEMES & parses[0].tag.grammemes:
+        parses = [parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes]
+    return tuple((normalize_yo(parse.normal_form), parse.tag.POS) for parse in parses)
 
 
 def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:

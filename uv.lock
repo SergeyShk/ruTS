@@ -3721,7 +3721,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.15.0.dev6"
+version = "0.15.0.dev7"
 source = { editable = "." }
 dependencies = [
     { name = "graphviz" },
@@ -3731,6 +3731,7 @@ dependencies = [
     { name = "numpy", version = "2.5.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pandas" },
     { name = "pymorphy3" },
+    { name = "pymorphy3-dicts-ru" },
     { name = "razdel" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
@@ -3786,6 +3787,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.1" },
     { name = "pymorphy3", specifier = ">=2.0.4" },
     { name = "pymorphy3", extras = ["fast"], marker = "extra == 'fast'", specifier = ">=2.0.4" },
+    { name = "pymorphy3-dicts-ru", specifier = ">=2.4.417150.4580142" },
     { name = "razdel", specifier = ">=0.5.0" },
     { name = "scipy", specifier = ">=1.11" },
     { name = "spacy", specifier = ">=3.7" },
