@@ -24,7 +24,7 @@ Division of a word into syllables by the rising sonority rule (Avanesov). A word
 | ь and ъ go with the preceding letter | боль-шой, по-дъезд |
 | every vowel of a hiatus forms its own syllable | а-э-ро-порт, а-ист |
 
-The rules apply to letters rather than sounds, so the division is orthographic, as in school phonetics, not morphemic. Characters other than Russian letters (hyphens, digits, Latin script) are dropped.
+The rules apply to letters rather than sounds, so the division is orthographic, as in school phonetics, not morphemic. A compound word is divided part by part (`со-рок-во-ро-вка`), a part without vowels joins its neighbour (`втре-тьих`); other characters than Russian letters (digits, Latin script) are dropped.
 
 Parameters:
 
