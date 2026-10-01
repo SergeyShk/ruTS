@@ -552,6 +552,14 @@ def test_model_split_predicates(nlp):
     assert ss.noun_verb_ratio == pytest.approx(9 / 4)
 
 
+def test_is_split_predicate_noun_verb(nlp):
+    doc = nlp("Провели работу. Получили работу. Получили разрешение.")
+    assert is_split_predicate_noun(doc[1], doc[0])
+    assert not is_split_predicate_noun(doc[4], doc[3])
+    assert is_split_predicate_noun(doc[4])
+    assert is_split_predicate_noun(doc[7], doc[6])
+
+
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
@@ -564,7 +572,11 @@ def test_model_split_predicates(nlp):
             [("проведена", "Проверка")],
         ),
         ("Решение принято комиссией с учетом замечаний.", [("принято", "Решение")]),
-        ("Он сделал шаг вперед при поддержке друзей.", [("сделал", "шаг")]),
+        ("Он предпринял шаг навстречу при поддержке друзей.", [("предпринял", "шаг")]),
+        ("Он сделал шаг назад.", []),
+        ("Он получил работу на заводе.", []),
+        ("Он получил место учителя.", []),
+        ("Эпидемия приняла массовый характер.", [("приняла", "характер")]),
         ("Помощь была оказана вовремя.", [("оказана", "Помощь")]),
         ("Ошибка получилась случайно.", []),
         ("Кот имеет хвост.", []),

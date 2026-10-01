@@ -50,12 +50,12 @@ Sentence-level indicators (maximum dependency distance, tree depth, numbers of l
 | `c_deps` | dict[str, int] | Distribution of words by syntactic relation |
 | `mean_dependency_distance` | float | Mean dependency distance |
 | `std_dependency_distance` | float | Standard deviation of dependency distance |
-| `max_dependency_distance` | float | Maximum dependency distance in a sentence (over sentences with dependencies) |
+| `max_dependency_distance` | float | Mean over sentences with dependencies of the largest dependency distance |
 | `p_adjacent_dependencies` | float | Share of adjacent relations - dependencies of distance 1 |
 | `tree_depth` | float | Dependency tree depth |
 | `leaves_per_sent` | float | Leaves per sentence |
 | `subtrees_per_sent` | float | Subtrees per sentence |
-| `nodes_per_leaf` | float | Ratio of words to leaves |
+| `nodes_per_leaf` | float | Mean over sentences of the ratio of words to leaves |
 | `verb_valency` | float | Mean number of dependents of a finite verb |
 | `coordination_chains_per_sent` | float | Coordination chains per sentence |
 | `mean_coordination_chain_len` | float | Mean coordination chain length |
@@ -172,12 +172,12 @@ Prints a table with the computed syntactic statistics.
     ------------------------------------------------------------
     Средняя длина зависимости                         |   1.93
     Стандартное отклонение длины зависимости          |   1.61
-    Максимальная длина зависимости                    |   5.00
+    Средний максимум длины зависимости в предложении  |   5.00
     Доля смежных связей                               |   0.60
     Глубина дерева зависимостей                       |   4.00
     Листьев на предложение                            |   4.50
     Поддеревьев на предложение                        |   4.00
-    Узлов на лист                                     |   1.90
+    Среднее число узлов на лист в предложении         |   1.90
     Валентность финитных глаголов                     |   2.00
     Сочинительных цепочек на предложение              |   0.50
     Средняя длина сочинительной цепочки               |   2.00
