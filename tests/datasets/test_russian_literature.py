@@ -279,3 +279,20 @@ def test_sha256_helper(tmp_path):
     path = tmp_path / "file"
     path.write_bytes(b"ruts")
     assert sha256(path) == hashlib.sha256(b"ruts").hexdigest()
+
+
+def test_field_filters_before_reading(dataset, monkeypatch):
+    reads = []
+    read_text = russian_literature_module.read_text
+
+    def counting_read_text(filepath):
+        if Path(filepath).suffix == ".txt":
+            reads.append(Path(filepath).name)
+        return read_text(filepath)
+
+    monkeypatch.setattr(russian_literature_module, "read_text", counting_read_text)
+    titles = [record["title"] for record in dataset.get_records(author="Пушкин")]
+    assert sorted(reads) == sorted(f"{title}.txt" for title in titles)
+    reads.clear()
+    assert list(dataset.get_texts(genre="prose", max_len=25)) == ["Альбом. Короткий рассказ."]
+    assert sorted(reads) == ["Агафья.txt", "Альбом.txt"]
