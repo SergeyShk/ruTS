@@ -2875,9 +2875,9 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Comparison of two corpora across all text features at once: which statistics distinguish authors, genres, translations, human and generated texts - and by how much. For individual words <a href="../keyness/"><code>keyness</code></a> does the same, for distances between texts - <a href="../stylometry/#delta"><code>delta</code></a>.</p>
-<p>The texts of both corpora are cut into windows of equal size (<code>split_windows</code>: the number of windows is the rounded ratio of the number of words to the window size, at least one, the parts are equal, windows of fewer than <code>min_words</code> words are dropped; a boundary goes before the opening marks of the first word of a window - dashes, quotation marks, brackets - so that punctuation is not lost) to remove the dependence of the features on text length. For every window the features are computed (<code>text_features</code> or your own function), for every feature the two sets of values are compared. The result is a <code>DataFrame</code> feature × statistics sorted by descending absolute Cliff's delta.</p>
+<p>The texts of both corpora are cut into windows of equal size (<code>split_windows</code>) to remove the dependence of the features on text length; windows of fewer than <code>min_words</code> words are dropped. For every window the features are computed (<code>text_features</code> or your own function), for every feature the two sets of values are compared. The result is a <code>DataFrame</code> feature × statistics sorted by descending absolute Cliff's delta.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<p><code>text_features(text)</code> returns 108 features prefixed by source; features that monotonically repeat others (inverse Simpson index, perplexity, the second share of a two-valued feature) are left out:</p>
+<p><code>text_features(text)</code> returns 108 features prefixed by source:</p>
 <table>
 <thead>
 <tr>

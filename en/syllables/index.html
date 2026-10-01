@@ -2891,12 +2891,12 @@
 <p><strong>ruts.syllables</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module that divides a Russian word into syllables and finds its stressed syllable. Syllabification and syllable counting follow rules and need no external resources; the stress is taken from the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic statistics and readability formulas (the number of syllables), the phonostatistics (syllables) and the verse statistics (stresses) are built on these functions.</p>
+<p>A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions.</p>
 <h2 id="syllabify">Syllabification<a class="headerlink" href="#syllabify" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.syllables.syllabify()</strong></p>
 </div>
-<p>Division of a word into syllables by the rising sonority rule (Avanesov). A word has as many syllables as vowels; a word without vowels (the prepositions в, к, с) forms no syllable - it is a proclitic, and an empty list is returned for it. The syllable boundary follows these rules:</p>
+<p>Division of a word into syllables by the rising sonority rule (Avanesov): there are as many syllables as vowels, a word without vowels (в, к, с) has none. The syllable boundary follows these rules:</p>
 <table>
 <thead>
 <tr>
@@ -2935,7 +2935,7 @@
 </tr>
 </tbody>
 </table>
-<p>The rules apply to letters rather than sounds, so the division is orthographic, as in school phonetics, not morphemic. A compound word is divided part by part (<code>со-рок-во-ро-вка</code>), a part without vowels joins its neighbour (<code>втре-тьих</code>); other characters than Russian letters (digits, Latin script) are dropped.</p>
+<p>The division is orthographic, by letters, as in school phonetics; a compound word is divided part by part (<code>со-рок-во-ро-вка</code>).</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -2967,7 +2967,7 @@
 <div class="admonition info">
 <p><strong>ruts.syllables.count_syllables()</strong></p>
 </div>
-<p>The number of syllables of a word - the number of vowel letters, as many syllables as <code>syllabify</code> gives. The results are cached by word form.</p>
+<p>The number of syllables of a word - the number of vowel letters.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -2999,7 +2999,7 @@
 <div class="admonition info">
 <p><strong>ruts.syllables.word_stress()</strong></p>
 </div>
-<p>Determines the stressed syllable of a word by the dictionary (step 1 of the <a href="../stats/verse_stats_funcs/#algorithm">algorithm</a> of the verse statistics). Syllables are counted by vowels from zero; the stressed syllable itself can be obtained by splitting the word with <a href="#syllabify"><code>syllabify</code></a>.</p>
+<p>The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the <a href="../stats/verse_stats_funcs/#algorithm">algorithm</a> of the verse statistics).</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3042,7 +3042,7 @@
 <div class="admonition info">
 <p><strong>ruts.syllables.word_stresses()</strong></p>
 </div>
-<p>All stressed syllables of a word in ascending order. Most words have one stress, the one of <code>word_stress</code>. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (<code>со-рок-во-ро-вка</code> - 0 and 3); the particles -то, -нибудь, -ка, -ли, -же and the adverbial prefix по- (<code>по-французски</code>) are unstressed. A compound with ё is always split into parts (<code>чёр-но-бе-лый</code> - 0 and 2): the dictionary looks up the form without ё and may give the stress of another word (<code>далеко-далеко</code> instead of <code>далёко-далёко</code>). The dictionary keeps one stress per word, so a compound found as a whole (<code>северо-западный</code>) gets no secondary stress.</p>
+<p>All stressed syllables of a word in ascending order. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (<code>со-рок-во-ро-вка</code> - 0 and 3), the particles (-то, -либо, -нибудь and others) are unstressed.</p>
 <p>Parameters:</p>
 <table>
 <thead>
