@@ -28,8 +28,8 @@ jobs:
         run: uv sync --locked --no-default-groups --group lint
       - name: Ruff
         run: |
-          uv run --no-sync ruff check ruts tests demo examples scripts conftest.py
-          uv run --no-sync ruff format ruts tests demo examples scripts conftest.py --check
+          uv run --no-sync ruff check ruts tests demo examples conftest.py
+          uv run --no-sync ruff format ruts tests demo examples conftest.py --check
       - name: Mypy
         run: uv run --no-sync mypy
 
