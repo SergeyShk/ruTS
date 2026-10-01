@@ -809,9 +809,11 @@ def calc_alliteration_runs(
 
     Описание:
         Повтор - цепочка из двух и более соседних слов, в основе каждого из которых
-        есть одна и та же согласная буква; слова короче трех букв (предлоги, союзы,
-        частицы, местоимения он, их) и слова без гласных (аббревиатуры) цепочку
-        не прерывают и не продолжают: по полю плыл - повтор п в двух словах
+        есть одна и та же согласная буква; слова короче трех букв, стоп-слова
+        (is_stopword: что, как, это, его) и слова без гласных (аббревиатуры) цепочку
+        не прерывают и не продолжают: по полю плыл - повтор п в двух словах.
+        Служебное слово постоянно и часто, его согласная встречается чаще случайной,
+        и модель вероятности ниже к нему не подходит
         Согласная ищется в основе слова (функция get_stem), а не в окончании:
         окончания согласуются с соседними словами и повторяются по грамматике,
         а не по звучанию - этих крупных, своим целям и нуждам, в других губерниях
@@ -845,8 +847,10 @@ def calc_alliteration_runs(
     words = [word.lower() for word in text]
     letters = [[letter for letter in word if letter in LETTERS] for word in words]
     transparent = [
-        len(word) < ALLITERATION_MIN_WORD_LEN or not any(letter in VOWELS for letter in word)
-        for word in letters
+        len(word_letters) < ALLITERATION_MIN_WORD_LEN
+        or not any(letter in VOWELS for letter in word_letters)
+        or is_stopword(word)
+        for word, word_letters in zip(words, letters, strict=True)
     ]
     stems = [[letter for letter in get_stem(word) if letter in LETTERS] for word in words]
     runs = []
