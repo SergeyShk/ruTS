@@ -68,7 +68,7 @@ Parameters:
 !!! info ""
     **ruts.syllables.word_stress()**
 
-The number of the stressed syllable of a word by the dictionary, counting from zero.
+The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the [algorithm](stats/verse_stats_funcs.md#algorithm) of the verse statistics).
 
 Parameters:
 
@@ -97,7 +97,7 @@ Returns `None` if the word is not found or has no vowels.
 !!! info ""
     **ruts.syllables.word_stresses()**
 
-All stressed syllables of a word in ascending order. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (`со-рок-во-ро-вка` - 0 and 3), the particles -то, -нибудь, -ка are unstressed.
+All stressed syllables of a word in ascending order. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (`со-рок-во-ро-вка` - 0 and 3), the particles (-то, -либо, -нибудь and others) are unstressed.
 
 Parameters:
 
