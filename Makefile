@@ -93,7 +93,7 @@ docs-deploy: deps ## Задеплоить документацию
 	uv run mkdocs gh-deploy
 
 demo: deps ## Запустить демо локально
-	uv run --with "gradio>=6.27,<7" python $(DEMO_PATH)/app.py
+	uv run --with "gradio>=6.28,<7" python $(DEMO_PATH)/app.py
 
 demo-login: uv ## Войти в Hugging Face для заливки демо
 	uvx --from huggingface_hub hf auth login
