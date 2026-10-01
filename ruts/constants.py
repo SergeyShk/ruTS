@@ -258,7 +258,7 @@ MORPHOLOGY_MARKERS_DESC = {
     "p_reflexive": "Возвратные формы (-ся, -сь) среди форм глагола",
 }
 # Частицы сослагательного наклонения: глагол при них размечается как изъявительный
-CONDITIONAL_PARTICLES = frozenset({"бы", "Бы", "б"})
+CONDITIONAL_PARTICLES = frozenset({"бы", "б"})
 MORPHOLOGY_FEATURES = {
     "animacy": "Animacy",
     "aspect": "Aspect",

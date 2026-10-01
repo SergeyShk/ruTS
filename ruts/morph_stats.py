@@ -258,7 +258,9 @@ class MorphStats:
         aspects = Counter(self.aspect[index] for index in verbs if self.aspect[index])
         n_forms = len(verbs)
         n_finite = forms["Fin"]
-        n_particles = sum(word in CONDITIONAL_PARTICLES for word in self.words)
+        n_particles = sum(
+            word.lower() in CONDITIONAL_PARTICLES and word != "Б" for word in self.words
+        )
         n_past = sum(
             self.verb_form[index] == "Fin"
             and self.mood[index] == "Ind"
