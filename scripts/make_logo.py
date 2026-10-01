@@ -5,12 +5,13 @@
 в контуры, поэтому файл не зависит от шрифтов у читателя. Имя созвучно roots:
 ствол T уходит под строку и ветвится корнями светлым оттенком того же тона
 
-Запуск: uv run --with fonttools python scripts/make_logo.py (PNG - через rsvg-convert)
+Запуск: uv run python scripts/make_logo.py (PNG - через rsvg-convert)
 """
 
+import hashlib
+import io
 import math
 import subprocess
-import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -19,7 +20,11 @@ from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
 
-FONT_URL = "https://github.com/google/fonts/raw/main/ofl/ptsans/PT_Sans-Web-Bold.ttf"
+FONT_URL = (
+    "https://raw.githubusercontent.com/google/fonts/"
+    "90abd17b4f97671435798b6147b698aa9087612f/ofl/ptsans/PT_Sans-Web-Bold.ttf"
+)
+FONT_SHA256 = "3128bd5ecf01816e59a23d54c57a7a6b14615b07db53ff277c77376010265b05"
 IMG_DIR = Path(__file__).resolve().parent.parent / "docs" / "img"
 TEXT = "ruTS"
 LETTERS = "#388e3c"
@@ -32,10 +37,11 @@ Curve = tuple[Point, Point, Point, Point]
 
 
 def load_font() -> TTFont:
-    path = Path(tempfile.gettempdir()) / "PT_Sans-Web-Bold.ttf"
-    if not path.exists():
-        urllib.request.urlretrieve(FONT_URL, path)
-    return TTFont(path)
+    with urllib.request.urlopen(FONT_URL) as response:
+        data = response.read()
+    if hashlib.sha256(data).hexdigest() != FONT_SHA256:
+        raise RuntimeError(f"Контрольная сумма шрифта не совпала: {FONT_URL}")
+    return TTFont(io.BytesIO(data))
 
 
 def letters(font: TTFont) -> tuple[list[str], list[tuple[float, float, float, float]], float]:
@@ -65,7 +71,7 @@ def bezier(p0: Point, p1: Point, p2: Point, p3: Point, t: float) -> Point:
     return x, y
 
 
-def tapered(curve: Curve, w0: float, w1: float, steps: int = 48) -> str:
+def tapered(curve: Curve, w0: float, w1: float, steps: int = 48) -> list[Point]:
     """Контур кривой, ширина которой линейно меняется от w0 до w1"""
     points = [bezier(*curve, i / steps) for i in range(steps + 1)]
     left, right = [], []
@@ -77,7 +83,10 @@ def tapered(curve: Curve, w0: float, w1: float, steps: int = 48) -> str:
         half = (w0 + (w1 - w0) * i / steps) / 2
         left.append((x + nx * half, y + ny * half))
         right.append((x - nx * half, y - ny * half))
-    outline = left + right[::-1]
+    return left + right[::-1]
+
+
+def path_data(outline: list[Point]) -> str:
     return "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in outline) + " Z"
 
 
@@ -93,7 +102,7 @@ def root(
     return (start, c1, c2, end), width
 
 
-def roots(x0: float, base: float, stem: float, depth: float) -> list[str]:
+def roots(x0: float, base: float, stem: float, depth: float) -> list[list[Point]]:
     """Ствол под строкой, пять корней и по корешку у каждого, кроме среднего"""
     shapes = []
     collar = (x0, base + 0.24 * depth)
@@ -130,11 +139,11 @@ def main() -> None:
     stem = 0.19 * cap
     depth = 0.62 * cap
     shapes = roots((t_left + t_right) / 2, cap, stem, depth)
-    left = min(box[0] for box in boxes) - MARGIN
-    top = min(box[1] for box in boxes) - MARGIN
-    width = max(box[2] for box in boxes) + MARGIN - left
-    height = cap + depth * 1.02 + MARGIN - top
-    body = [f'  <path fill="{ROOTS}" d="{d}"/>' for d in shapes]
+    xs = [x for box in boxes for x in (box[0], box[2])] + [x for o in shapes for x, _ in o]
+    ys = [y for box in boxes for y in (box[1], box[3])] + [y for o in shapes for _, y in o]
+    left, top = min(xs) - MARGIN, min(ys) - MARGIN
+    width, height = max(xs) + MARGIN - left, max(ys) + MARGIN - top
+    body = [f'  <path fill="{ROOTS}" d="{path_data(outline)}"/>' for outline in shapes]
     body += [f'  <path fill="{LETTERS}" d="{d}"/>' for d in paths]
     svg = "\n".join(
         [
