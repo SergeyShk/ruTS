@@ -1,10 +1,11 @@
 from collections import Counter
+from math import isnan
 
 import pytest
 import spacy
 
 from ruts import MorphStats
-from ruts.constants import MORPHOLOGY_STATS_DESC
+from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
 from ruts.morph_stats import (
     format_features,
     parse_verb,
@@ -438,3 +439,56 @@ def test_check_stat_key_error(ms, capsys):
         + ", ".join(MORPHOLOGY_STATS_DESC)
     )
     assert capsys.readouterr().out == ""
+
+
+def test_print_stats_value_without_description(capsys):
+    ms = MorphStats(text)
+    ms.case = ("Abl", *ms.case[1:])
+    ms.print_stats("case")
+    assert "Abl " in capsys.readouterr().out
+
+
+def test_lemmas(ms):
+    assert ms.lemmas[:3] == ("постараться", "получить", "то")
+    assert len(ms.lemmas) == len(ms.words)
+
+
+def test_lemmas_doc(nlp):
+    ms = MorphStats(nlp("Стали из стали делали ножи"))
+    assert ms.lemmas == ("стать", "из", "сталь", "делать", "нож")
+
+
+@pytest.mark.parametrize(
+    ("source", "expected"),
+    [
+        (
+            "Если бы я знал, я бы пришел за книгами, прочитанными вчера",
+            {"p_indicative": 0.0, "p_conditional": 1.0, "p_participle": 1 / 3, "p_passive": 1 / 3},
+        ),
+        ("Иди сюда, не спорь", {"p_imperative": 1.0, "p_perfective": 0.0}),
+        ("Он учился, улыбаясь, и решил прочитать", {"p_converb": 0.25, "p_infinitive": 0.25}),
+        ("Он учился, улыбаясь, и решил прочитать", {"p_reflexive": 0.5, "p_perfective": 0.5}),
+    ],
+)
+def test_get_markers(source, expected):
+    markers = MorphStats(source).get_markers()
+    assert list(markers) == list(MORPHOLOGY_MARKERS_DESC)
+    for marker, value in expected.items():
+        assert markers[marker] == pytest.approx(value)
+
+
+def test_get_markers_doc(nlp):
+    source = "Если бы я знал, я бы пришел за книгами, прочитанными вчера. Иди сюда!"
+    assert MorphStats(nlp(source)).get_markers() == pytest.approx(MorphStats(source).get_markers())
+
+
+def test_get_markers_empty_base():
+    markers = MorphStats("Кот и пёс").get_markers()
+    assert all(isnan(value) for value in markers.values())
+
+
+def test_print_markers(capsys):
+    MorphStats("Иди сюда").print_markers()
+    output = capsys.readouterr().out
+    for desc in MORPHOLOGY_MARKERS_DESC.values():
+        assert desc in output

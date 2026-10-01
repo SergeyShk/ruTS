@@ -1,11 +1,14 @@
 from collections import Counter, OrderedDict
 from functools import lru_cache
+from math import nan
 
 import pymorphy3
 from spacy.tokens import Doc, Token
 
 from .constants import (
+    CONDITIONAL_PARTICLES,
     MORPHOLOGY_FEATURES,
+    MORPHOLOGY_MARKERS_DESC,
     MORPHOLOGY_STATS_DESC,
     OPENCORPORA_TO_UD_GRAMMEMES,
     OPENCORPORA_TO_UD_POS,
@@ -16,9 +19,11 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer, iter_doc_units, parse_word
+from .utils import get_morph_analyzer, iter_doc_units, lemmatize, parse_word, safe_divide
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
+VERBAL_POS = frozenset({"VERB", "AUX"})
+REFLEXIVE_ENDINGS = ("ся", "сь")
 
 
 class MorphStats:
@@ -70,6 +75,7 @@ class MorphStats:
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
+        lemmas (tuple[str]): Кортеж лемм слов: pymorphy3 с учетом части речи слова
         tags (tuple[str]): Кортеж строк грамматических признаков в формате CoNLL-U
         pos (tuple[str]): Кортеж значений части речи
         animacy (tuple[str]): Кортеж значений одушевленности
@@ -89,6 +95,8 @@ class MorphStats:
         get_stats: Получение вычисленных морфологических статистик текста
         explain_text: Разбор текста по морфологическим статистикам
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
+        get_markers: Получение долей грамматических форм глагола
+        print_markers: Отображение долей грамматических форм глагола с описанием на экран
 
     Исключения:
         SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
@@ -131,6 +139,9 @@ class MorphStats:
         self.transitivity = tuple(word_features["transitivity"] for word_features in features)
         self.verb_form = tuple(word_features["verb_form"] for word_features in features)
         self.voice = tuple(word_features["voice"] for word_features in features)
+        self.lemmas = tuple(
+            lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
+        )
 
     def get_stats(self, *args: str, filter_none: bool = False) -> dict[str, dict[str, int]]:
         """
@@ -202,8 +213,88 @@ class MorphStats:
             ).items():
                 if filter_none and not value:
                     continue
-                print(f"{value_desc.get(value) if value else 'Неизвестно':30}|{number!s:^10}")
+                print(
+                    f"{value_desc.get(value, value) if value else 'Неизвестно':30}|{number!s:^10}"
+                )
             print()
+
+    def get_markers(self) -> dict[str, float]:
+        """
+        Получение долей грамматических форм глагола
+
+        Описание:
+            Каждая доля считается от своей базы среди слов с частью речи VERB и AUX:
+            наклонения - от личных форм, инфинитив, причастие, деепричастие,
+            страдательные причастия и возвратные формы - от всех форм глагола,
+            совершенный вид - от форм с видом
+            Сослагательное наклонение в русском - форма прошедшего времени с частицей
+            бы (б), которая размечается как изъявительная, поэтому каждая частица
+            переводит одну изъявительную форму в сослагательную. Залог считается по
+            страдательным причастиям, а возвратность - по окончанию -ся, -сь: так доли
+            совпадают для строки и Doc (pymorphy3 дает залог только причастиям)
+            Доля с пустой базой - nan
+
+        Вывод:
+            dict[str, float]: Словарь долей в порядке MORPHOLOGY_MARKERS_DESC
+
+        Пример использования:
+            >>> from ruts import MorphStats
+            >>> ms = MorphStats("Если бы я знал, я бы пришел за книгами, прочитанными вчера")
+            >>> ms.get_markers()["p_conditional"], ms.get_markers()["p_passive"]
+            (1.0, 0.3333333333333333)
+        """
+        verbs = [
+            index
+            for index, pos in enumerate(self.pos)
+            if pos in VERBAL_POS and self.verb_form[index]
+        ]
+        forms = Counter(self.verb_form[index] for index in verbs)
+        moods = Counter(self.mood[index] for index in verbs if self.verb_form[index] == "Fin")
+        aspects = Counter(self.aspect[index] for index in verbs if self.aspect[index])
+        n_forms = len(verbs)
+        n_finite = forms["Fin"]
+        n_particles = sum(word.lower() in CONDITIONAL_PARTICLES for word in self.words)
+        n_conditional = min(n_particles, moods["Ind"])
+        n_passive = sum(
+            self.verb_form[index] == "Part" and self.voice[index] == "Pass" for index in verbs
+        )
+        n_reflexive = sum(self.words[index].lower().endswith(REFLEXIVE_ENDINGS) for index in verbs)
+        return {
+            "p_indicative": safe_divide(moods["Ind"] - n_conditional, n_finite, nan),
+            "p_imperative": safe_divide(moods["Imp"], n_finite, nan),
+            "p_conditional": safe_divide(moods["Cnd"] + n_conditional, n_finite, nan),
+            "p_infinitive": safe_divide(forms["Inf"], n_forms, nan),
+            "p_participle": safe_divide(forms["Part"], n_forms, nan),
+            "p_converb": safe_divide(forms["Conv"], n_forms, nan),
+            "p_perfective": safe_divide(aspects["Perf"], sum(aspects.values()), nan),
+            "p_passive": safe_divide(n_passive, n_forms, nan),
+            "p_reflexive": safe_divide(n_reflexive, n_forms, nan),
+        }
+
+    def print_markers(self) -> None:
+        """
+        Отображение долей грамматических форм глагола с описанием на экран
+
+        Пример использования:
+            >>> from ruts import MorphStats
+            >>> MorphStats("Иди сюда и не спорь").print_markers()
+                                Маркер                     | Значение
+            ---------------------------------------------------------------
+            Изъявительное наклонение среди личных форм       |   0.00
+            Повелительное наклонение среди личных форм       |   1.00
+            Сослагательное наклонение среди личных форм      |   0.00
+            Инфинитив среди форм глагола                     |   0.00
+            Причастие среди форм глагола                     |   0.00
+            Деепричастие среди форм глагола                  |   0.00
+            Совершенный вид среди форм глагола с видом       |   0.00
+            Страдательные причастия среди форм глагола       |   0.00
+            Возвратные формы (-ся, -сь) среди форм глагола   |   0.00
+        """
+        markers = self.get_markers()
+        print(f"{'Маркер':^50}|{'Значение':^12}")
+        print("-" * 63)
+        for marker, desc in MORPHOLOGY_MARKERS_DESC.items():
+            print(f"{desc:50}|{markers[marker]:^12.2f}")
 
     @staticmethod
     def __check_stat(*args: str) -> bool:
@@ -220,7 +311,7 @@ class MorphStats:
             UnknownStatError: Если выбранная статистика отсутствует в справочнике
         """
         for arg in args:
-            if not MORPHOLOGY_STATS_DESC.get(arg):
+            if arg not in MORPHOLOGY_STATS_DESC:
                 raise UnknownStatError(
                     f"{arg} отсутствует в справочнике морфологических статистик, "
                     f"доступны: {', '.join(MORPHOLOGY_STATS_DESC)}"

@@ -246,6 +246,19 @@ MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
         },
     },
 }
+MORPHOLOGY_MARKERS_DESC = {
+    "p_indicative": "Изъявительное наклонение среди личных форм",
+    "p_imperative": "Повелительное наклонение среди личных форм",
+    "p_conditional": "Сослагательное наклонение среди личных форм",
+    "p_infinitive": "Инфинитив среди форм глагола",
+    "p_participle": "Причастие среди форм глагола",
+    "p_converb": "Деепричастие среди форм глагола",
+    "p_perfective": "Совершенный вид среди форм глагола с видом",
+    "p_passive": "Страдательные причастия среди форм глагола",
+    "p_reflexive": "Возвратные формы (-ся, -сь) среди форм глагола",
+}
+# Частицы сослагательного наклонения: глагол при них размечается как изъявительный
+CONDITIONAL_PARTICLES = frozenset({"бы", "б"})
 MORPHOLOGY_FEATURES = {
     "animacy": "Animacy",
     "aspect": "Aspect",
