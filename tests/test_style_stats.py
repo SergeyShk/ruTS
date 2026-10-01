@@ -5,6 +5,7 @@ import spacy
 
 from ruts import StyleStats, WordsExtractor
 from ruts.constants import STYLE_STATS_DESC
+from ruts.exceptions import ParameterError, SourceTypeError
 from ruts.style_stats import (
     calc_academic_nausea,
     calc_classic_nausea,
@@ -15,6 +16,7 @@ from ruts.style_stats import (
     calc_verbal_nouns,
     calc_water,
     calc_zipf_naturalness,
+    expand_phrases,
     is_parenthetical,
     is_stopword,
 )
@@ -247,4 +249,35 @@ def test_hyphenated_words_doc(nlp):
         StyleStats(doc).parentheticals
         == StyleStats(source).parentheticals
         == pytest.approx(200 / 6)
+    )
+
+
+@pytest.mark.parametrize("parameter", ["stopwords", "cliches"])
+def test_init_string_list(parameter):
+    with pytest.raises(SourceTypeError):
+        StyleStats(text, **{parameter: "и в"})
+
+
+def test_init_parameters_before_source():
+    with pytest.raises(ParameterError):
+        StyleStats("+ _", top_n=0)
+
+
+def test_cliches_verb_forms():
+    forms = "Он довёл до сведения коллег, это имело место, работа оставляла желать лучшего"
+    assert StyleStats(forms).cliches == 25.0
+
+
+def test_expand_phrases():
+    words = ["меры", "приняты", "принял", "к", "сведению", "стали", "в", "свете"]
+    assert expand_phrases(words, ["принять к сведению", "в свете", "стать причиной"]) == {
+        "принять к сведению": "принять к сведению",
+        "в свете": "в свете",
+        "стать причиной": "стать причиной",
+        "принял к сведению": "принять к сведению",
+        "приняты к сведению": "принять к сведению",
+        "стали причиной": "стать причиной",
+    }
+    assert expand_phrases(["принимать"], ["принимать меры", "принять меры"])["принимать меры"] == (
+        "принимать меры"
     )

@@ -621,7 +621,7 @@ def test_cliches():
     ]
     assert fragments(officialese_text, "cliches", cliches=[]) == []
     assert find_cliches(get_text_words("имеет место быть"), None) == [
-        Highlight(0, 16, "cliches", "штамп: «имеет место быть»")
+        Highlight(0, 16, "cliches", "штамп: «иметь место быть»")
     ]
 
 
