@@ -1247,6 +1247,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        print_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2900,6 +2922,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#get_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print_markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        print_markers
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3048,6 +3092,11 @@
 <td style="text-align: center;"><code>words</code></td>
 <td style="text-align: center;">tuple[str]</td>
 <td style="text-align: center;">Tuple of extracted words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>lemmas</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Tuple of lemmas of the words (pymorphy3 by the part of speech of the word)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>tags</code></td>
@@ -3287,6 +3336,88 @@
 <span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
 <span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
 <span class="o">(</span><span class="s1">'получили'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Past'</span><span class="o">}))</span>
+</code></pre></div>
+</div>
+<h3 id="get_markers">get_markers<a class="headerlink" href="#get_markers" title="Permanent link">&para;</a></h3>
+<p>Returns the shares of the grammatical forms of verbs (words with the part of speech <code>VERB</code> and <code>AUX</code>), each of its own base. A share with an empty base is <code>nan</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Marker</th>
+<th style="text-align: left;">Share</th>
+<th style="text-align: left;">Base</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>p_indicative</code>, <code>p_imperative</code>, <code>p_conditional</code></td>
+<td style="text-align: left;">of the indicative, imperative and conditional mood</td>
+<td style="text-align: left;">finite forms</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>p_infinitive</code>, <code>p_participle</code>, <code>p_converb</code></td>
+<td style="text-align: left;">of infinitives, participles and converbs</td>
+<td style="text-align: left;">all verb forms</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>p_perfective</code></td>
+<td style="text-align: left;">of the perfective aspect</td>
+<td style="text-align: left;">verb forms with an aspect</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>p_passive</code></td>
+<td style="text-align: left;">of passive participles</td>
+<td style="text-align: left;">all verb forms</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>p_reflexive</code></td>
+<td style="text-align: left;">of reflexive forms in -ся, -сь</td>
+<td style="text-align: left;">all verb forms</td>
+</tr>
+</tbody>
+</table>
+<p>The conditional mood is counted by the particle бы (б): the past form next to it is tagged as indicative.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Если бы я знал, я бы пришел за книгами, прочитанными вчера"</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_markers</span><span class="p">()</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'p_indicative'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="w"> </span><span class="s1">'p_imperative'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="w"> </span><span class="s1">'p_conditional'</span>:<span class="w"> </span><span class="m">1</span>.0,
+<span class="w"> </span><span class="s1">'p_infinitive'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="w"> </span><span class="s1">'p_participle'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
+<span class="w"> </span><span class="s1">'p_converb'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="w"> </span><span class="s1">'p_perfective'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
+<span class="w"> </span><span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
+<span class="w"> </span><span class="s1">'p_reflexive'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+</code></pre></div>
+</div>
+<h3 id="print_markers">print_markers<a class="headerlink" href="#print_markers" title="Permanent link">&para;</a></h3>
+<p>Prints a table of the shares of the grammatical forms of verbs.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="n">ms</span><span class="o">.</span><span class="n">print_markers</span><span class="p">()</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="w">                      </span>Маркер<span class="w">                      </span><span class="p">|</span><span class="w">  </span>Значение
+---------------------------------------------------------------
+Изъявительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+Повелительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+Сослагательное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>.00
+Инфинитив<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+Причастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
+Деепричастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+Совершенный<span class="w"> </span>вид<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w"> </span>с<span class="w"> </span>видом<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.67
+Страдательные<span class="w"> </span>причастия<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
+Возвратные<span class="w"> </span>формы<span class="w"> </span><span class="o">(</span>-ся,<span class="w"> </span>-сь<span class="o">)</span><span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
 
