@@ -17,7 +17,7 @@ from ruts.corpus import (
     split_windows,
     text_features,
 )
-from ruts.corpus.compare import COMPARISON_COLUMNS, compare_values
+from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES, compare_values
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
 short = [
@@ -41,7 +41,9 @@ def test_split_windows():
         "и смотреть на птиц.",
     ]
     assert split_windows(text, None) == [text]
-    assert split_windows(text, 100) == [text]
+    assert split_windows(text, 100) == []
+    assert split_windows(text, 100, min_words=1) == [text]
+    assert split_windows(text, 40) == [text]
     assert split_windows(" \n" + text + "\n ", None) == [text]
     assert len(split_windows(text, 8)) == 3
     assert split_windows("Кто там?! Никого… Ушли!!!", None) == ["Кто там?! Никого… Ушли!!!"]
@@ -74,19 +76,49 @@ def test_split_windows():
     assert split_windows("... !!!", 5) == []
     with pytest.raises(ValueError):
         split_windows(text, 0)
+    with pytest.raises(ValueError):
+        split_windows(text, 5, min_words=0)
+
+
+@pytest.mark.parametrize(
+    ("source", "expected"),
+    [
+        (
+            'раз два три "четыре" пять шесть семь восемь',
+            ['раз два три "четыре"', "пять шесть семь восемь"],
+        ),
+        (
+            "раз два три четыре— пять шесть семь восемь",
+            ["раз два три четыре—", "пять шесть семь восемь"],
+        ),
+        (
+            "раз два три (четыре) пять шесть семь восемь",
+            ["раз два три (четыре)", "пять шесть семь восемь"],
+        ),
+        (
+            'раз два три четыре "пять" шесть семь восемь',
+            ["раз два три четыре", '"пять" шесть семь восемь'],
+        ),
+    ],
+)
+def test_split_windows_closing_marks(source, expected):
+    assert split_windows(source, 4) == expected
 
 
 def test_text_features():
     features = text_features(text)
     prefixes = {key.split("_", 1)[0] for key in features}
     assert prefixes == {"basic", "readability", "diversity", "morph", "sents", "punct"}
-    assert features["basic_words_per_sent"] == 6.0
+    assert features["sents_mean"] == 6.0
+    for duplicate in ("basic_words_per_sent", "basic_p_unique_words"):
+        assert duplicate not in features
     assert features["basic_letters_per_word"] == pytest.approx(4.0, rel=0.2)
     assert features["morph_pos_NOUN"] == pytest.approx(7 / 24)
     assert features["morph_pos_INTJ"] == 0.0
     assert features["morph_case_Voc"] == 0.0
     assert isnan(text_features("Кот, пёс, дом.")["morph_tense_Past"])
-    assert sum(1 for key in features if key.startswith("morph_")) == 55
+    assert sum(1 for key in features if key.startswith("morph_")) == 50
+    assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"
     ] == (pytest.approx(1.0))
@@ -117,7 +149,8 @@ def test_sentence_rhythm():
 def test_corpus_features():
     table = corpus_features([text, "Кот спал."], window=8)
     assert table.index.names == ["text", "window"]
-    assert list(table.index) == [(0, 0), (0, 1), (0, 2), (1, 0)]
+    assert list(table.index) == [(0, 0), (0, 1), (0, 2)]
+    assert list(corpus_features([text, "Кот спал."], window=8, min_words=1).index)[-1] == (1, 0)
     assert "morph_pos_NOUN" in table.columns
     assert table.dtypes.eq(float).all()
     custom = corpus_features([text], window=None, features=lambda t: {"length": len(t)})
@@ -148,10 +181,7 @@ def test_compare_corpora():
     assert result["n_короткие"].dtype.kind == "i"
     assert result["cliff_delta"].abs().dropna().is_monotonic_decreasing
     assert (result["p_holm"].dropna() >= result["p_value"].dropna()).all()
-    assert (
-        result.index[0] in {"sents_mean", "basic_words_per_sent"}
-        or abs(result.iloc[0]["cliff_delta"]) == 1.0
-    )
+    assert result.index[0] == "sents_mean" or abs(result.iloc[0]["cliff_delta"]) == 1.0
     assert result["cliff_delta"].isna().sum() == result["u"].isna().sum()
     assert result.loc["diversity_michea_m", "n_длинные"] == 2
     assert np.isfinite(result.drop(columns=["p_holm"]).dropna()).all().all()
