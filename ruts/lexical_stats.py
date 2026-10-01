@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
 from .constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
-from .exceptions import SourceError, SourceTypeError
+from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
 from .utils import iter_doc_units, normalize_yo, safe_divide
 
@@ -211,7 +211,16 @@ class LexicalStats:
 
         Вывод:
             dict[int, float]: Доля слов с леммой из топ-N для каждой границы N
+
+        Исключения:
+            ParameterError: Если граница полосы вне рангов вшитого списка (1..10 000)
         """
+        last_rank = max(load_top_lemmas().values())
+        for band in bands:
+            if not 1 <= band <= last_rank:
+                raise ParameterError(
+                    f"Граница полосы должна быть от 1 до {last_rank}, а не {band}"
+                )
         ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
         return {
             band: safe_divide(sum(1 for rank in ranks if rank and rank <= band), len(ranks))

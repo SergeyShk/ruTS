@@ -6,6 +6,7 @@ import spacy
 from ruts import LexicalStats, WordsExtractor
 from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
+from ruts.exceptions import ParameterError
 from ruts.lexical_stats import calc_surprisal, get_rank, is_number, load_top_lemmas
 from tests.datasets.test_freq2011 import write_dict
 
@@ -100,6 +101,12 @@ def test_bands(ls):
         100: pytest.approx(3 / 8),
         500: pytest.approx(6 / 8),
     }
+
+
+@pytest.mark.parametrize("bands", [(0,), (-5, 1000), (1000, 20000)])
+def test_band_coverage_bounds(ls, bands):
+    with pytest.raises(ParameterError):
+        ls.band_coverage(bands=bands)
 
 
 def test_rare_words(freq_dict):
