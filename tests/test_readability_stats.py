@@ -1,3 +1,6 @@
+from math import isnan
+
+import anyts.basic_stats
 import pytest
 
 from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
@@ -9,15 +12,20 @@ from ruts.constants import (
     SIS_GRADE_STAGES,
 )
 from ruts.readability_stats import (
+    calc_automated_readability_index,
+    calc_coleman_liau_index,
     calc_consensus_grade,
     calc_dale_chall_index,
     calc_flesch_kincaid_grade,
+    calc_flesch_reading_easy,
     calc_gunning_fog_index,
     calc_matskovsky_index,
     calc_reading_time,
     calc_rix,
     calc_sis_grade,
     calc_sis_grade_freq,
+    calc_smog_index,
+    check_preset,
     flesch_reading_easy_to_grade,
     grade_to_age,
 )
@@ -47,13 +55,27 @@ def test_init_type_error(text):
 
 
 def test_init_no_sents_error():
-    with pytest.raises(ValueError, match="предложения"):
+    with pytest.raises(ValueError, match="sentences"):
         ReadabilityStats("Текст один. Текст два.", sents_extractor=SentsExtractor(min_len=1000))
 
 
-def test_init_preset_error():
+@pytest.mark.parametrize("preset", ["unknown", None, ["plainrussian"]])
+def test_init_preset_error(preset):
     with pytest.raises(ValueError):
-        ReadabilityStats(text, preset="unknown")
+        ReadabilityStats(text, preset=preset)
+    with pytest.raises(ValueError):
+        check_preset(preset)
+
+
+def test_init_foreign_basic_stats():
+    """Базовые статистики ядра без слогов ruTS не принимаются"""
+
+    class CoreBasicStats(anyts.basic_stats.BasicStats):
+        def count_syllables(self, word):
+            return 1
+
+    with pytest.raises(TypeError):
+        ReadabilityStats(CoreBasicStats(text))
 
 
 def test_init_basic_stats(rs):
@@ -274,6 +296,31 @@ def test_reading_time_by_speed(rs):
     assert rs.reading_time_by_speed(61) == 1.0
     with pytest.raises(ValueError):
         rs.reading_time_by_speed(-1)
+
+
+@pytest.mark.parametrize(
+    "formula",
+    [
+        lambda: calc_flesch_kincaid_grade(0, 0, 0),
+        lambda: calc_flesch_reading_easy(5, 3, 0),
+        lambda: calc_coleman_liau_index(0, 0, 0),
+        lambda: calc_smog_index(5, 0),
+        lambda: calc_automated_readability_index(5, 0, 2),
+        lambda: calc_sis_grade(5, 3, 0),
+        lambda: calc_sis_grade_freq(0, 0, 2, 300),
+        lambda: calc_matskovsky_index(0, 3, 0),
+        lambda: calc_dale_chall_index(0, 0, 2),
+    ],
+)
+def test_formulas_without_words_or_sents(formula):
+    assert isnan(formula())
+
+
+def test_unknown_stage(rs):
+    with pytest.raises(ValueError):
+        rs.sis_grade_by_stage(["2-4"])
+    with pytest.raises(ValueError):
+        rs.sis_grade_by_freq(300, "1-3")
 
 
 def test_reading_time_by_norm(rs):

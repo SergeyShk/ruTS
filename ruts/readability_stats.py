@@ -1,13 +1,20 @@
-from collections.abc import Iterable
-from math import floor, sqrt
-from statistics import median
+from collections.abc import Mapping
+from math import nan
 
+import anyts.readability_stats
+from anyts.readability_stats import (
+    calc_consensus_grade as calc_consensus_grade,
+    calc_gunning_fog_index as calc_gunning_fog_index,
+    calc_lix as calc_lix,
+    calc_rix as calc_rix,
+    flesch_reading_easy_to_grade as flesch_reading_easy_to_grade,
+)
+from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
 from .constants import (
     GRADE_AGE_LEVELS,
-    LIX_LONG_WORD_LETTER_FACTOR,
     POSTGRADUATE_LEVEL,
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
@@ -18,8 +25,11 @@ from .constants import (
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
 )
-from .exceptions import ParameterError, SourceError
+from .exceptions import ParameterError
 from .extractors import SentsExtractor, WordsExtractor
+
+# Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
+_NORMS_FROM_MAX = {norm: speeds[::-1] for norm, speeds in READING_SPEED_NORMS.items()}
 
 
 def check_preset(preset: str) -> None:
@@ -30,16 +40,16 @@ def check_preset(preset: str) -> None:
         preset (str): Название пресета
 
     Исключения:
-        ParameterError: Если пресет неизвестен
+        ParameterError: Если пресет не строка или неизвестен
     """
-    if preset not in READABILITY_PRESETS:
+    if not isinstance(preset, str) or preset not in READABILITY_PRESETS:
         raise ParameterError(
-            f"Неизвестный пресет коэффициентов: {preset}. "
+            f"Неизвестный пресет коэффициентов: {preset!r}. "
             f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
         )
 
 
-class ReadabilityStats:
+class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     """
     Класс для вычисления основных метрик удобочитаемости текста
 
@@ -85,7 +95,8 @@ class ReadabilityStats:
         bs (BasicStats): Объект основных статистик текста
         preset (str): Название пресета коэффициентов
         coefficients (dict[str, tuple[float, float, float]]): Коэффициенты формул пресета,
-            копия справочника READABILITY_PRESETS, которую можно менять для отдельного объекта
+            копия справочника READABILITY_PRESETS, которую можно менять для отдельного объекта;
+            формула, которой в нем нет, считается с английскими коэффициентами ядра anyTS
         flesch_kincaid_grade (float): Тест Флеша-Кинкайда
         flesch_reading_easy (float): Индекс удобочитаемости Флеша
         coleman_liau_index (float): Индекс Колман-Лиау
@@ -99,6 +110,7 @@ class ReadabilityStats:
         gunning_fog_index (float): Индекс Ганнинга в адаптации plainrussian
         consensus_grade (float): Сводный класс по всем формулам класса и индексу Флеша
         reading_time (float): Время чтения в минутах при скорости 180 слов в минуту
+        mu_index (float): Индекс µ ядра anyTS для испанского языка, вне get_stats
 
     Методы:
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
@@ -110,9 +122,22 @@ class ReadabilityStats:
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
     Исключения:
+        SourceTypeError: Если источник данных не строка, не объект Doc и не BasicStats ruTS
+            или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
-        ParameterError: Если указан неизвестный пресет коэффициентов
+        ParameterError: Если пресет коэффициентов не строка или неизвестен
     """
+
+    basic_stats_class = BasicStats
+    presets = READABILITY_PRESETS
+    grade_stats = READABILITY_GRADE_STATS
+    stats_desc = READABILITY_STATS_DESC
+    stats_headers = ("Метрика", "Значение")
+    smog_complex_syl_factor = SMOG_COMPLEX_SYL_FACTOR
+    grade_age_levels = GRADE_AGE_LEVELS
+    postgraduate_level = POSTGRADUATE_LEVEL
+    reading_speed = READING_SPEED_WPM
+    reading_speed_norms = _NORMS_FROM_MAX
 
     def __init__(
         self,
@@ -121,73 +146,7 @@ class ReadabilityStats:
         words_extractor: WordsExtractor | None = None,
         preset: str = "plainrussian",
     ):
-        check_preset(preset)
-        self.preset = preset
-        self.coefficients = dict(READABILITY_PRESETS[preset])
-        if isinstance(source, BasicStats):
-            self.bs = source
-        else:
-            self.bs = BasicStats(source, sents_extractor, words_extractor)
-        if not self.bs.n_sents:
-            raise SourceError("В источнике данных отсутствуют предложения")
-
-    @property
-    def flesch_kincaid_grade(self) -> float:
-        return calc_flesch_kincaid_grade(
-            self.bs.n_syllables,
-            self.bs.n_words,
-            self.bs.n_sents,
-            *self.coefficients["flesch_kincaid_grade"],
-        )
-
-    @property
-    def flesch_reading_easy(self) -> float:
-        return calc_flesch_reading_easy(
-            self.bs.n_syllables,
-            self.bs.n_words,
-            self.bs.n_sents,
-            *self.coefficients["flesch_reading_easy"],
-        )
-
-    @property
-    def coleman_liau_index(self) -> float:
-        return calc_coleman_liau_index(
-            self.bs.n_letters,
-            self.bs.n_words,
-            self.bs.n_sents,
-            *self.coefficients["coleman_liau_index"],
-        )
-
-    @property
-    def smog_index(self) -> float:
-        return calc_smog_index(
-            self.bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR),
-            self.bs.n_sents,
-            *self.coefficients["smog_index"],
-        )
-
-    @property
-    def automated_readability_index(self) -> float:
-        return calc_automated_readability_index(
-            self.bs.n_letters,
-            self.bs.n_words,
-            self.bs.n_sents,
-            *self.coefficients["automated_readability_index"],
-        )
-
-    @property
-    def lix(self) -> float:
-        return calc_lix(
-            self.bs.count_words_by_letters(LIX_LONG_WORD_LETTER_FACTOR),
-            self.bs.n_words,
-            self.bs.n_sents,
-        )
-
-    @property
-    def rix(self) -> float:
-        return calc_rix(
-            self.bs.count_words_by_letters(LIX_LONG_WORD_LETTER_FACTOR), self.bs.n_sents
-        )
+        super().__init__(source, sents_extractor, words_extractor, preset)
 
     @property
     def sis_grade(self) -> float:
@@ -202,81 +161,9 @@ class ReadabilityStats:
     @property
     def dale_chall_index(self) -> float:
         return calc_dale_chall_index(
-            self.bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR),
+            self.bs.count_words_by_syllables(self.smog_complex_syl_factor),
             self.bs.n_words,
             self.bs.n_sents,
-        )
-
-    @property
-    def gunning_fog_index(self) -> float:
-        return calc_gunning_fog_index(
-            self.bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR),
-            self.bs.n_words,
-            self.bs.n_sents,
-        )
-
-    @property
-    def consensus_grade(self) -> float:
-        grades = [getattr(self, stat) for stat in READABILITY_GRADE_STATS]
-        return calc_consensus_grade(grades, self.flesch_reading_easy)
-
-    @property
-    def reading_time(self) -> float:
-        return calc_reading_time(self.bs.n_words)
-
-    def describe_grade(self, stat: str = "consensus_grade") -> str:
-        """
-        Получение класса школы и возраста читателя по значению формулы класса
-
-        Аргументы:
-            stat (str): Название формулы класса, по умолчанию сводный класс
-
-        Вывод:
-            str: Класс школы и возраст читателя
-
-        Исключения:
-            ParameterError: Если указанная метрика не является формулой класса
-        """
-        grade_stats = ("consensus_grade", *READABILITY_GRADE_STATS)
-        if stat not in grade_stats:
-            raise ParameterError(
-                f"Метрика {stat} не является формулой класса. Формулы класса: {grade_stats}"
-            )
-        return grade_to_age(getattr(self, stat))
-
-    def reading_time_by_speed(self, wpm: int) -> float:
-        """
-        Вычисление времени чтения текста при заданной скорости
-
-        Аргументы:
-            wpm (int): Скорость чтения, слов в минуту
-
-        Вывод:
-            float: Время чтения в минутах
-        """
-        return calc_reading_time(self.bs.n_words, wpm)
-
-    def reading_time_by_norm(self, norm: str) -> tuple[float, float]:
-        """
-        Вычисление времени чтения текста в границах нормы скорости чтения
-
-        Аргументы:
-            norm (str): Название нормы из справочника READING_SPEED_NORMS
-
-        Вывод:
-            tuple[float, float]: Время чтения в минутах при верхней и нижней границе нормы
-
-        Исключения:
-            ParameterError: Если указана неизвестная норма скорости чтения
-        """
-        if norm not in READING_SPEED_NORMS:
-            raise ParameterError(
-                f"Неизвестная норма скорости чтения: {norm}. "
-                f"Доступные нормы: {tuple(READING_SPEED_NORMS)}"
-            )
-        min_wpm, max_wpm = READING_SPEED_NORMS[norm]
-        return calc_reading_time(self.bs.n_words, max_wpm), calc_reading_time(
-            self.bs.n_words, min_wpm
         )
 
     @property
@@ -297,11 +184,7 @@ class ReadabilityStats:
         Исключения:
             ParameterError: Если указана неизвестная ступень обучения
         """
-        if stage not in SIS_GRADE_STAGES:
-            raise ParameterError(
-                f"Неизвестная ступень обучения: {stage}. "
-                f"Доступные ступени: {tuple(SIS_GRADE_STAGES)}"
-            )
+        _check_stage(stage, SIS_GRADE_STAGES)
         return calc_sis_grade(
             self._n_word_letters, self.bs.n_words, self.bs.n_sents, *SIS_GRADE_STAGES[stage]
         )
@@ -326,11 +209,7 @@ class ReadabilityStats:
             return calc_sis_grade_freq(
                 self._n_word_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
             )
-        if stage not in SIS_GRADE_FREQ_STAGES:
-            raise ParameterError(
-                f"Неизвестная ступень обучения: {stage}. "
-                f"Доступные ступени: {tuple(SIS_GRADE_FREQ_STAGES)}"
-            )
+        _check_stage(stage, SIS_GRADE_FREQ_STAGES)
         return calc_sis_grade_freq(
             self._n_word_letters,
             self.bs.n_words,
@@ -339,22 +218,13 @@ class ReadabilityStats:
             *SIS_GRADE_FREQ_STAGES[stage],
         )
 
-    def get_stats(self) -> dict[str, float]:
-        """
-        Получение вычисленных метрик удобочитаемости текста
 
-        Вывод:
-            dict[str, float]: Справочник вычисленных метрик удобочитаемости текста
-        """
-        return {stat: getattr(self, stat) for stat in READABILITY_STATS_DESC}
-
-    def print_stats(self):
-        """Отображение вычисленных метрик удобочитаемости текста с описанием на экран"""
-        print(f"{'Метрика':^45}|{'Значение':^10}")
-        print("-" * 55)
-        stats = self.get_stats()
-        for stat, value in READABILITY_STATS_DESC.items():
-            print(f"{value:45}|{stats.get(stat):^10.2f}")
+def _check_stage(stage: str, stages: Mapping[str, tuple[float, ...]]) -> None:
+    """Проверка ступени обучения формулы Соловьёва, Иванова, Солнышкиной"""
+    if not isinstance(stage, str) or stage not in stages:
+        raise ParameterError(
+            f"Неизвестная ступень обучения: {stage!r}. Доступные ступени: {tuple(stages)}"
+        )
 
 
 def calc_flesch_kincaid_grade(
@@ -389,9 +259,11 @@ def calc_flesch_kincaid_grade(
         c (float): Коэффициент c
 
     Вывод:
-        float: Значение теста
+        float: Значение теста, nan без слов или предложений
     """
-    return (a * n_words / n_sents) + (b * n_syllables / n_words) - c
+    return anyts.readability_stats.calc_flesch_kincaid_grade(
+        n_syllables, n_words, n_sents, a, b, c
+    )
 
 
 def calc_flesch_reading_easy(
@@ -431,9 +303,9 @@ def calc_flesch_reading_easy(
         c (float): Коэффициент c
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, nan без слов или предложений
     """
-    return c - (a * n_words / n_sents) - (b * n_syllables / n_words)
+    return anyts.readability_stats.calc_flesch_reading_easy(n_syllables, n_words, n_sents, a, b, c)
 
 
 def calc_coleman_liau_index(
@@ -457,7 +329,7 @@ def calc_coleman_liau_index(
         https://en.wikipedia.org/wiki/Coleman–Liau_index
 
     Аргументы:
-        n_letters (int): Количество букв
+        n_letters (int): Количество букв в словах
         n_words (int): Количество слов
         n_sents (int): Количество предложений
         a (float): Коэффициент a
@@ -465,9 +337,9 @@ def calc_coleman_liau_index(
         c (float): Коэффициент c
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, nan без слов
     """
-    return (a * n_letters / n_words * 100) - (b * n_sents / n_words * 100) - c
+    return anyts.readability_stats.calc_coleman_liau_index(n_letters, n_words, n_sents, a, b, c)
 
 
 def calc_smog_index(
@@ -496,9 +368,9 @@ def calc_smog_index(
         c (float): Коэффициент c
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, nan без предложений
     """
-    return (a * sqrt(b * n_complex / n_sents)) + c
+    return anyts.readability_stats.calc_smog_index(n_complex, n_sents, a, b, c)
 
 
 def calc_automated_readability_index(
@@ -535,7 +407,7 @@ def calc_automated_readability_index(
         https://ru.wikipedia.org/wiki/Автоматический_индекс_удобочитаемости
 
     Аргументы:
-        n_letters (int): Количество букв
+        n_letters (int): Количество букв в словах
         n_words (int): Количество слов
         n_sents (int): Количество предложений
         a (float): Коэффициент a
@@ -543,76 +415,11 @@ def calc_automated_readability_index(
         c (float): Коэффициент c
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, nan без слов или предложений
     """
-    return (a * n_letters / n_words) + (b * n_words / n_sents) - c
-
-
-def calc_lix(n_long_words: int, n_words: int, n_sents: int) -> float:
-    """
-    Вычисление индекса удобочитаемости LIX
-
-    Описание:
-        Чем выше показатель, тем сложнее текст для чтения
-        Значения индекса лежат в пределах от 0 до 100 и могут интерпретироваться следующим образом:
-            0-30 - Очень простые тексты, детская литература
-            30-40 - Простые тексты, художественная литература, газетные статьи
-            40-50 - Тексты средней сложности, журнальные статьи
-            50-60 - Сложные тексты, научно-популярные статьи, профессиональная литература, официальные тексты
-            60-100 - Очень сложные тексты, написанные канцелярским языком, законы
-        В канонической формуле длинным считается слово длиннее 6 букв, поэтому
-        класс ReadabilityStats передает количество слов с числом букв не меньше 7
-
-    Ссылки:
-        https://en.wikipedia.org/wiki/Lix_(readability_test)
-        https://ru.wikipedia.org/wiki/LIX
-
-    Аргументы:
-        n_long_words (int): Количество длинных слов
-        n_words (int): Количество слов
-        n_sents (int): Количество предложений
-
-    Вывод:
-        float: Значение индекса
-    """
-    return (n_words / n_sents) + (100 * n_long_words / n_words)
-
-
-def calc_rix(n_long_words: int, n_sents: int) -> float:
-    """
-    Вычисление индекса удобочитаемости RIX
-
-    Описание:
-        Упрощенный спутник индекса LIX (1983, Anderson), не зависящий от языка
-        Чем выше показатель, тем сложнее текст для чтения
-        Значения индекса могут интерпретироваться следующим образом:
-            < 0.2 - 1-й класс
-            0.2-0.5 - 2-й класс
-            0.5-0.8 - 3-й класс
-            0.8-1.3 - 4-й класс
-            1.3-1.8 - 5-й класс
-            1.8-2.4 - 6-й класс
-            2.4-3.0 - 7-й класс
-            3.0-3.7 - 8-й класс
-            3.7-4.5 - 9-й класс
-            4.5-5.3 - 10-й класс
-            5.3-6.2 - 11-й класс
-            6.2-7.2 - 12-й класс
-            > 7.2 - Студент университета
-        Как и для LIX, длинным считается слово длиннее 6 букв, поэтому
-        класс ReadabilityStats передает количество слов с числом букв не меньше 7
-
-    Ссылки:
-        https://en.wikipedia.org/wiki/Lix_(readability_test)
-
-    Аргументы:
-        n_long_words (int): Количество длинных слов
-        n_sents (int): Количество предложений
-
-    Вывод:
-        float: Значение индекса
-    """
-    return n_long_words / n_sents
+    return anyts.readability_stats.calc_automated_readability_index(
+        n_letters, n_words, n_sents, a, b, c
+    )
 
 
 def calc_sis_grade(
@@ -639,7 +446,7 @@ def calc_sis_grade(
         https://link.springer.com/article/10.1007/s10958-024-07436-y
 
     Аргументы:
-        n_letters (int): Количество букв
+        n_letters (int): Количество букв в словах
         n_words (int): Количество слов
         n_sents (int): Количество предложений
         a (float): Коэффициент a (свободный член)
@@ -647,9 +454,9 @@ def calc_sis_grade(
         c (float): Коэффициент c (при средней длине слова в буквах)
 
     Вывод:
-        float: Значение формулы
+        float: Значение формулы, nan без слов или предложений
     """
-    return a + (b * n_words / n_sents) + (c * n_letters / n_words)
+    return a + safe_divide(b * n_words, n_sents, nan) + safe_divide(c * n_letters, n_words, nan)
 
 
 def calc_sis_grade_freq(
@@ -680,7 +487,7 @@ def calc_sis_grade_freq(
         http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf
 
     Аргументы:
-        n_letters (int): Количество букв
+        n_letters (int): Количество букв в словах
         n_words (int): Количество слов
         n_sents (int): Количество предложений
         mean_ipm (float): Средняя частотность слов (ipm)
@@ -690,9 +497,9 @@ def calc_sis_grade_freq(
         d (float): Коэффициент d (при средней частотности)
 
     Вывод:
-        float: Значение формулы
+        float: Значение формулы, nan без слов или предложений
     """
-    return a + (b * n_words / n_sents) + (c * n_letters / n_words) + d * mean_ipm
+    return calc_sis_grade(n_letters, n_words, n_sents, a, b, c) + d * mean_ipm
 
 
 def calc_matskovsky_index(
@@ -725,9 +532,11 @@ def calc_matskovsky_index(
         c (float): Коэффициент c (свободный член)
 
     Вывод:
-        float: Значение формулы
+        float: Значение формулы, nan без слов или предложений
     """
-    return (a * n_words / n_sents) + (b * 100 * n_complex / n_words) + c
+    return (
+        safe_divide(a * n_words, n_sents, nan) + safe_divide(b * 100 * n_complex, n_words, nan) + c
+    )
 
 
 def calc_dale_chall_index(
@@ -762,103 +571,16 @@ def calc_dale_chall_index(
         b (float): Коэффициент b (при средней длине предложения в словах)
 
     Вывод:
-        float: Значение индекса
+        float: Значение индекса, nan без слов или предложений
     """
-    return (a * 100 * n_complex / n_words) + (b * n_words / n_sents)
+    return safe_divide(a * 100 * n_complex, n_words, nan) + safe_divide(b * n_words, n_sents, nan)
 
 
-def calc_gunning_fog_index(n_complex: int, n_words: int, n_sents: int, a: float = 0.4) -> float:
-    """
-    Вычисление индекса Ганнинга
-
-    Описание:
-        Индекс туманности Ганнинга (1952, Gunning)
-        Чем выше показатель, тем сложнее текст для чтения
-        Результатом является число лет обучения в американской системе образования, необходимых для понимания текста
-        Используется в адаптации проекта Plain Russian Language (Бегтин): сложным считается слово
-        с числом слогов больше четырех, поэтому класс ReadabilityStats передает количество слов
-        с числом слогов не меньше 5
-        SEO-сервисы дополнительно умножают результат на 0.78, обоснование этого множителя не опубликовано
-
-    Ссылки:
-        https://en.wikipedia.org/wiki/Gunning_fog_index
-        https://github.com/infoculture/plainrussian
-
-    Аргументы:
-        n_complex (int): Количество сложных слов
-        n_words (int): Количество слов
-        n_sents (int): Количество предложений
-        a (float): Коэффициент a
-
-    Вывод:
-        float: Значение индекса
-    """
-    return a * ((n_words / n_sents) + (100 * n_complex / n_words))
-
-
-def flesch_reading_easy_to_grade(flesch_reading_easy: float) -> float:
-    """
-    Перевод индекса удобочитаемости Флеша в класс школы
-
-    Описание:
-        Используется для включения индекса Флеша в сводный класс по аналогии
-        с text_standard библиотеки textstat:
-            90-100 - 5
-            80-90 - 6
-            70-80 - 7
-            60-70 - 8.5 (8-9 классы)
-            50-60 - 10
-            40-50 - 11
-            30-40 - 12
-            меньше 30 - 13
-        Значения больше 100 относятся к 5-му классу
-
-    Аргументы:
-        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
-
-    Вывод:
-        float: Класс школы
-    """
-    thresholds = ((90, 5), (80, 6), (70, 7), (60, 8.5), (50, 10), (40, 11), (30, 12))
-    for threshold, grade in thresholds:
-        if flesch_reading_easy >= threshold:
-            return grade
-    return 13
-
-
-def calc_consensus_grade(
-    grades: Iterable[float], flesch_reading_easy: float | None = None
-) -> float:
-    """
-    Вычисление сводного класса
-
-    Описание:
-        Медиана округленных значений формул класса по аналогии с text_standard
-        библиотеки textstat, где вместо медианы используется мода
-        Медиана устойчивее к выбросам отдельных формул
-        Значения формул округляются арифметически (половина - вверх)
-        Индекс Флеша переводится в класс функцией flesch_reading_easy_to_grade
-        и добавляется без округления, поэтому для диапазона 60-70 он голосует за 8.5
-
-    Аргументы:
-        grades (list[float]): Значения формул класса
-        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
-
-    Вывод:
-        float: Сводный класс
-
-    Исключения:
-        ParameterError: Если список значений пуст
-    """
-    values = [float(floor(grade + 0.5)) for grade in grades]
-    if flesch_reading_easy is not None:
-        values.append(flesch_reading_easy_to_grade(flesch_reading_easy))
-    if not values:
-        raise ParameterError("Список формул класса пуст")
-    return float(median(values))
-
-
-def grade_to_age(grade: float) -> str:
+def grade_to_age(
+    grade: float,
+    levels: tuple[tuple[int, int, str, str], ...] = GRADE_AGE_LEVELS,
+    above: tuple[str, str] = POSTGRADUATE_LEVEL,
+) -> str:
     """
     Получение класса школы и возраста читателя по значению формулы класса
 
@@ -881,19 +603,20 @@ def grade_to_age(grade: float) -> str:
 
     Аргументы:
         grade (float): Значение формулы класса
+        levels (list[tuple[int, int, str, str]]): Ступени - первый и последний год,
+            ступень и возраст - по возрастанию
+        above (tuple[str, str]): Ступень и возраст после последней ступени
 
     Вывод:
         str: Класс школы и возраст читателя
+
+    Исключения:
+        ParameterError: Если значение не конечное число
     """
-    rounded = floor(grade + 0.5)
-    for _, high, education, age in GRADE_AGE_LEVELS:
-        if rounded <= high:
-            return f"{education} ({age})"
-    education, age = POSTGRADUATE_LEVEL
-    return f"{education} ({age})"
+    return anyts.readability_stats.grade_to_age(grade, levels, above)
 
 
-def calc_reading_time(n_words: int, wpm: int = READING_SPEED_WPM) -> float:
+def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
     """
     Вычисление времени чтения текста
 
@@ -908,14 +631,12 @@ def calc_reading_time(n_words: int, wpm: int = READING_SPEED_WPM) -> float:
 
     Аргументы:
         n_words (int): Количество слов
-        wpm (int): Скорость чтения, слов в минуту
+        wpm (float): Скорость чтения, слов в минуту
 
     Вывод:
         float: Время чтения в минутах
 
     Исключения:
-        ParameterError: Если скорость чтения не положительна
+        ParameterError: Если скорость чтения не положительное число
     """
-    if wpm <= 0:
-        raise ParameterError("Скорость чтения должна быть больше 0")
-    return n_words / wpm
+    return anyts.readability_stats.calc_reading_time(n_words, wpm)

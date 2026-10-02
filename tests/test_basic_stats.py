@@ -1,10 +1,11 @@
 from math import isnan
 
 import pytest
+from anyts.constants import PUNCTUATION_TYPES
 
 from ruts import BasicStats
 from ruts.basic_stats import count_punctuations, punctuation_profile
-from ruts.constants import BASIC_STATS_DESC, PUNCTUATION_TYPES
+from ruts.constants import BASIC_STATS_DESC
 
 
 @pytest.fixture(scope="module")

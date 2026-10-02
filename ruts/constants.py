@@ -1,5 +1,4 @@
 import os
-import string
 from pathlib import Path
 from typing import TypedDict
 
@@ -42,27 +41,9 @@ RU_CONSONANTS_YET = ["й", "Й"]
 RU_CONSONANTS = RU_CONSONANTS_HIGH + RU_CONSONANTS_LOW + RU_CONSONANTS_SONOR + RU_CONSONANTS_YET
 RU_MARKS = ["ь", "ъ", "Ь", "Ъ"]
 RU_LETTERS = RU_CONSONANTS + RU_MARKS + RU_VOWELS
-PUNCTUATIONS = string.punctuation + "—–…«»„“”‘’№"
-PUNCTUATION_TYPES = {
-    "comma": "Запятые",
-    "period": "Точки",
-    "question": "Вопросительные знаки",
-    "exclamation": "Восклицательные знаки",
-    "ellipsis": "Многоточия",
-    "colon": "Двоеточия",
-    "semicolon": "Точки с запятой",
-    "dash": "Тире",
-    "hyphen": "Дефисы",
-    "angle_quotes": "Кавычки-ёлочки",
-    "straight_quotes": "Прямые кавычки и лапки",
-    "parentheses": "Скобки",
-    "other": "Прочие знаки",
-}
-SPACES = [" ", "\t"]
 COMPLEX_SYL_FACTOR = 4
 LONG_WORD_LETTER_FACTOR = 6
 SMOG_COMPLEX_SYL_FACTOR = 5
-LIX_LONG_WORD_LETTER_FACTOR = 7
 BASIC_STATS_DESC = {
     "n_sents": "Предложения",
     "n_words": "Слова",
