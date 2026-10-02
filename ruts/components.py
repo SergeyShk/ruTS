@@ -8,17 +8,19 @@
     user_data при сохранении или храните get_stats() отдельно
 """
 
+from anyts.constants import (
+    DIVERSITY_LOG_BASE,
+    HDD_SAMPLE_SIZE,
+    MATTR_WINDOW_LEN,
+    MTLD_MIN_LEN,
+    MTLD_TTR_THRESHOLD,
+)
 from spacy.language import Language
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats
 from .constants import (
-    DIVERSITY_LOG_BASE,
-    HDD_SAMPLE_SIZE,
-    MATTR_WINDOW_LEN,
-    MTLD_MIN_LEN,
-    MTLD_TTR_THRESHOLD,
     NAUSEA_TOP_N,
     PHON_WINDOW_LEN,
 )
