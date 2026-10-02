@@ -38,6 +38,7 @@ from ruts.style_stats import (
 )
 from ruts.syllables import count_syllables, stress_type, syllabify
 from ruts.utils import find_phrases
+from ruts.visualizers import highlight
 
 TEXT = "Кот спит на окне. Собака ест на полу, и кот на нее смотрит."
 WORDS = ["кот", "спит", "на", "окне", "собака", "ест", "на", "полу"]
@@ -104,6 +105,8 @@ WORD_LISTS = {
     "compare_corpora(features)": lambda: compare_corpora([TEXT], [TEXT], features=1),
     "corpus_features(features)": lambda: corpus_features([TEXT], features="text_features"),
     "WordsExtractor(stopwords)": lambda: WordsExtractor(stopwords=NOT_STRINGS),
+    "highlight(stopwords)": lambda: highlight(TEXT, stopwords=NOT_STRINGS),
+    "highlight(cliches)": lambda: highlight(TEXT, cliches="в связи с"),
 }
 
 
@@ -128,6 +131,11 @@ def test_sets_of_words():
     assert (
         StyleStats(TEXT, cliches={"на окне"}).cliches
         == StyleStats(TEXT, cliches=["на окне"]).cliches
+    )
+    layers = ["stopwords", "cliches"]
+    assert (
+        highlight(TEXT, layers=layers, stopwords={"на"}, cliches={"на окне"}).highlights
+        == highlight(TEXT, layers=layers, stopwords=["на"], cliches=["на окне"]).highlights
     )
 
 
