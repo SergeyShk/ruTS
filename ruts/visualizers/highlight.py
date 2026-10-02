@@ -1,11 +1,11 @@
 import html
 import re
-from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
+from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from itertools import pairwise
 from typing import NamedTuple
 
-from anyts.utils import check_sequence, iter_doc_units, iter_doc_words
+from anyts.utils import check_words, iter_doc_units, iter_doc_words
 from razdel import sentenize
 from spacy.tokens import Doc, Token
 
@@ -179,8 +179,8 @@ class HighlightedText:
         layers: Sequence[str] | str | None = None,
         long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
-        stopwords: Sequence[str] | None = None,
-        cliches: Sequence[str] | None = None,
+        stopwords: Collection[str] | None = None,
+        cliches: Collection[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
         if isinstance(source, Doc):
@@ -208,10 +208,10 @@ class HighlightedText:
         if not threshold_ok:
             raise ParameterError("Порог аллитерации должен быть в интервале (0, 1]")
         if stopwords is not None:
-            check_sequence(stopwords, "стоп-слов")
+            check_words(stopwords, "stopwords", ordered=False)
             stopwords = tuple(stopwords)
         if cliches is not None:
-            check_sequence(cliches, "штампов")
+            check_words(cliches, "clichés", ordered=False)
             cliches = tuple(cliches)
         available = [
             layer
@@ -303,8 +303,8 @@ def highlight(
     layers: Sequence[str] | str | None = None,
     long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
     complex_syl_factor: int = COMPLEX_SYL_FACTOR,
-    stopwords: Sequence[str] | None = None,
-    cliches: Sequence[str] | None = None,
+    stopwords: Collection[str] | None = None,
+    cliches: Collection[str] | None = None,
     alliteration_threshold: float = ALLITERATION_THRESHOLD,
 ) -> HighlightedText:
     """
@@ -541,7 +541,7 @@ def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[H
 
 
 def find_stopwords(
-    words: Iterable[Word], stopwords: Sequence[str] | None = None
+    words: Iterable[Word], stopwords: Collection[str] | None = None
 ) -> list[Highlight]:
     """
     Поиск стоп-слов
@@ -666,7 +666,7 @@ def find_compound_prepositions(words: Sequence[Word]) -> list[Highlight]:
     )
 
 
-def find_cliches(words: Sequence[Word], cliches: Sequence[str] | None = None) -> list[Highlight]:
+def find_cliches(words: Sequence[Word], cliches: Collection[str] | None = None) -> list[Highlight]:
     """
     Поиск штампов
 
