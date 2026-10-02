@@ -815,7 +815,7 @@ The library allows creating the following classes of spaCy components:
 >>> import spacy
 
 >>> nlp = spacy.load('ru_core_news_sm')
->>> nlp.add_pipe('basic', last=True)
+>>> nlp.add_pipe("ruts_basic", name="basic", last=True)
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
 >>> doc._.basic.c_letters

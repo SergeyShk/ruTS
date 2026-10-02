@@ -815,7 +815,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> import spacy
 
 >>> nlp = spacy.load('ru_core_news_sm')
->>> nlp.add_pipe('basic', last=True)
+>>> nlp.add_pipe("ruts_basic", name="basic", last=True)
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
 >>> doc._.basic.c_letters

@@ -151,7 +151,7 @@
     {'author': 'С. Маршак',
     'book': 'Родная речь. Книга для чтения в I классе начальной школы',
     'category': 'Весна',
-    'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit/grade_1/114'),
+    'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit_v1/grade_1/114'),
     'grade': 1,
     'subject': 'Март',
     'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'

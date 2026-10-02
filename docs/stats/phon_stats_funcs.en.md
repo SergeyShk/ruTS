@@ -88,18 +88,18 @@ $$
 !!! info ""
     **ruts.phon_stats.calc_alliteration()**
 
-Computation of the alliteration index - the ratio of the observed number of windows of `window_len` adjacent words in which the same consonant occurs in at least two words to the number expected under an independent distribution of consonants over words (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.
+Computation of the alliteration index - the ratio of the observed number of windows of `window_len` adjacent words in which the same consonant occurs in at least two words to the number expected if the words stood in random order (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.
 
-The formula for one letter with the share $p$ of words containing it and a window of $w$ words:
+A window of shuffled words is a sample of them without replacement, so for a letter found in $K$ of the $N$ words of the text, a window of $w$ words holds it in at least two words with the hypergeometric probability
 
 $$
-E = N_w\left(1-(1-p)^w-w\,p\,(1-p)^{w-1}\right)
+P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 $$
 
-where $N_w$ is the number of windows; the index equals $\sum O / \sum E$ over all letters.
+and the expected number of windows is the sum of these probabilities over the letters times the $N - w + 1$ windows; the index equals $\sum O / \sum E$.
 
 !!! warning "Warning"
-    For texts shorter than the window the function returns `nan`.
+    For texts shorter than the window and texts where no consonant occurs in two words the function returns `nan`.
 
 Parameters:
 

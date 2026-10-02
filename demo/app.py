@@ -43,6 +43,7 @@ from ruts.constants import (
 )
 from ruts.corpus import collocations, keyness
 from ruts.datasets import FreqDict, StressDict
+from ruts.exceptions import SourceError
 from ruts.style_stats import is_stopword
 from ruts.visualizers import highlight, sentence_lengths_plot, zipf
 
@@ -230,7 +231,11 @@ def keywords_table(words: tuple[str, ...]) -> pd.DataFrame:
     columns = ["Лемма", "В тексте", "ipm в тексте", "ipm в словаре", "G²", "Log Ratio"]
     if not freq_dict.filepath or not words:
         return pd.DataFrame(columns=columns)
-    keywords = keyness(words, freq_dict, min_freq=2, top_n=KEYWORDS_TOP_N)
+    try:
+        keywords = keyness(words, freq_dict, min_freq=2, top_n=KEYWORDS_TOP_N)
+    except SourceError:
+        # Нет слов словаря, например только латиница
+        return pd.DataFrame(columns=columns)
     return pd.DataFrame(
         [
             (
@@ -309,8 +314,7 @@ def figure_image(fig: plt.Figure) -> Image.Image:
     return Image.open(buffer)
 
 
-def zipf_image(words: tuple[str, ...]) -> Image.Image:
-    counter = Counter(word for word in words if not is_stopword(word))
+def zipf_image(counter: Counter[str]) -> Image.Image:
     with plot_lock:
         fig, ax = plt.subplots(figsize=(7, 4.5))
         zipf(
@@ -354,7 +358,8 @@ def compute(text: str, layers: list[str]) -> dict:
     pos_table, morph_table = morph_tables(ms)
     verse_table, verse_lines = verse_tables(doc)
     basic = {key: value for key, value in bs.get_stats().items() if key in BASIC_STATS_DESC}
-    enough_words = bs.n_words >= ZIPF_MIN_WORDS
+    counter = Counter(word for word in words if not is_stopword(word))
+    enough_words = bs.n_words >= ZIPF_MIN_WORDS and bool(counter)
     enough_sents = bs.n_sents >= SENTENCES_MIN
     return {
         "text": text,
@@ -374,7 +379,7 @@ def compute(text: str, layers: list[str]) -> dict:
         "basic": stats_table(basic, BASIC_STATS_DESC),
         "keywords": keywords_table(WordsExtractor(filter_nums=True).extract(text)),
         "collocations": collocations_table(words),
-        "zipf": zipf_image(words) if enough_words else None,
+        "zipf": zipf_image(counter) if enough_words else None,
         "enough_words": enough_words,
         "sentences": sentences_image(doc) if enough_sents else None,
         "enough_sents": enough_sents,

@@ -20,7 +20,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"basic"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_basic"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -37,7 +37,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("basic", last=True)
+    nlp.add_pipe("ruts_basic", name="basic", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -62,7 +62,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"morph"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_morph"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -79,7 +79,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("morph", last=True)
+    nlp.add_pipe("ruts_morph", name="morph", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -104,8 +104,9 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"readability"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_readability"` | Наименование компонента в пайплайне |
 | `preset` | str | `"plainrussian"` | [Пресет коэффициентов](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`) |
+| `basic` | str | `None` | Расширение компонента основных статистик, которые берутся вместо повторного подсчета |
 
 Пример использования:
 
@@ -122,7 +123,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("readability", last=True)
+    nlp.add_pipe("ruts_readability", name="readability", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -140,7 +141,9 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("readability", config={"preset": "fiction"}, last=True)
+    nlp.add_pipe(
+        "ruts_readability", name="readability_fiction", config={"preset": "fiction"}, last=True
+    )
     ```
 
 ## DiversityStatsComponent
@@ -155,7 +158,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"diversity"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_diversity"` | Наименование компонента в пайплайне |
 | `window_len` | int | `50` | Размер окна для MATTR и сегмента для MSTTR |
 | `mtld_threshold` | float | `0.72` | Порог TTR для MTLD, MA-MTLD и MTLD-W |
 | `mtld_min_len` | int | `10` | Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W |
@@ -177,7 +180,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("diversity", last=True)
+    nlp.add_pipe("ruts_diversity", name="diversity", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -195,7 +198,12 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("diversity", config={"window_len": 100, "log_base": 2.718281828459045}, last=True)
+    nlp.add_pipe(
+        "ruts_diversity",
+        name="diversity_ln",
+        config={"window_len": 100, "log_base": 2.718281828459045},
+        last=True,
+    )
     ```
 
 ## StyleStatsComponent
@@ -210,7 +218,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"style"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_style"` | Наименование компонента в пайплайне |
 | `stopwords` | list[str] | `None` | Список стоп-слов для водности; если не задан, используется разметка pymorphy3 |
 | `top_n` | int | `10` | Количество самых частых слов для академической тошноты и естественности по Ципфу |
 
@@ -229,7 +237,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("style", last=True)
+    nlp.add_pipe("ruts_style", name="style", last=True)
 
     # Доступ к посчитанным метрикам
     doc = nlp("мама мыла раму")
@@ -247,7 +255,9 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("style", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True)
+    nlp.add_pipe(
+        "ruts_style", name="style_short", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True
+    )
     ```
 
 ## PhonStatsComponent
@@ -262,7 +272,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"phon"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_phon"` | Наименование компонента в пайплайне |
 | `window_len` | int | `3` | Размер окна в словах для аллитерации и ассонанса |
 
 Пример использования:
@@ -280,7 +290,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("phon", last=True)
+    nlp.add_pipe("ruts_phon", name="phon", last=True)
 
     # Доступ к посчитанным статистикам
     doc = nlp("мама мыла раму")
@@ -298,7 +308,7 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("phon", config={"window_len": 5}, last=True)
+    nlp.add_pipe("ruts_phon", name="phon_windowed", config={"window_len": 5}, last=True)
     ```
 
 ## SyntaxStatsComponent
@@ -313,7 +323,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"syntax"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_syntax"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -330,7 +340,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("syntax", last=True)
+    nlp.add_pipe("ruts_syntax", name="syntax", last=True)
 
     # Доступ к посчитанным статистикам
     doc = nlp("Дом, построенный рабочими в прошлом году, был продан")
@@ -355,7 +365,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"cohesion"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_cohesion"` | Наименование компонента в пайплайне |
 
 Пример использования:
 
@@ -372,7 +382,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("cohesion", last=True)
+    nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
 
     # Доступ к посчитанным статистикам
     doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул.")
@@ -397,7 +407,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"lexical"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_lexical"` | Наименование компонента в пайплайне |
 | `data_dir` | str | `None` | Путь к директории с частотным словарем; если не задан, используется директория по умолчанию |
 
 Пример использования:
@@ -415,7 +425,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("lexical", last=True)
+    nlp.add_pipe("ruts_lexical", name="lexical", last=True)
 
     # Доступ к посчитанным статистикам
     doc = nlp("Кот сидел на окне и смотрел на птиц")
@@ -433,7 +443,9 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("lexical", config={"data_dir": "/path/to/dicts"}, last=True)
+    nlp.add_pipe(
+        "ruts_lexical", name="lexical_dicts", config={"data_dir": "/path/to/dicts"}, last=True
+    )
     ```
 
 ## VerseStatsComponent
@@ -448,7 +460,7 @@
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
-| `name` | str | `"verse"` | Наименование компонента в пайплайне |
+| `name` | str | `"ruts_verse"` | Наименование компонента в пайплайне |
 | `data_dir` | str | `None` | Путь к директории со словарем ударений; если не задан, используется директория по умолчанию |
 
 Пример использования:
@@ -466,7 +478,7 @@
     nlp = spacy.load("ru_core_news_sm")
 
     # Добавление компонента
-    nlp.add_pipe("verse", last=True)
+    nlp.add_pipe("ruts_verse", name="verse", last=True)
 
     # Доступ к посчитанным статистикам
     doc = nlp(
@@ -486,5 +498,5 @@
 !!! example "Пример"
 
     ``` python
-    nlp.add_pipe("verse", config={"data_dir": "/path/to/dicts"}, last=True)
+    nlp.add_pipe("ruts_verse", name="verse_dicts", config={"data_dir": "/path/to/dicts"}, last=True)
     ```
