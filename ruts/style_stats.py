@@ -3,6 +3,7 @@ from collections.abc import Iterable, Sequence
 from functools import lru_cache
 from math import nan, sqrt
 
+from anyts.utils import check_sequence, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
@@ -16,16 +17,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
-from .utils import (
-    check_sequence,
-    find_phrases,
-    get_morph_analyzer,
-    is_verbal_noun,
-    iter_doc_words,
-    normalize_yo,
-    parse_word,
-    safe_divide,
-)
+from .utils import find_phrases, get_morph_analyzer, is_verbal_noun, normalize_yo, parse_word
 
 
 def check_params(top_n: int) -> None:
@@ -133,7 +125,9 @@ class StyleStats:
         if cliches is not None:
             check_sequence(cliches, "штампов")
         if isinstance(source, Doc):
-            self.words = tuple(text.lower() for _, _, text in iter_doc_words(source))
+            self.words = tuple(
+                text.lower() for _, _, text in iter_doc_words(source, join_hyphens=True)
+            )
             self.forms = self.words
         elif isinstance(source, str):
             if not words_extractor:

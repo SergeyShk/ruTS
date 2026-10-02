@@ -1,5 +1,6 @@
 import pytest
 import spacy
+from anyts.utils import iter_doc_words
 
 from ruts import (
     BasicStats,
@@ -27,7 +28,6 @@ from ruts.constants import (
 )
 from ruts.datasets import FreqDict, StressDict
 from ruts.datasets.stress_dict import FILENAME as STRESS_FILENAME
-from ruts.utils import iter_doc_words
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -183,7 +183,7 @@ def test_component_diversity_params(spacy_doc):
 
 def test_components_filter_punctuation(spacy_doc):
     n_tokens = sum(1 for token in spacy_doc if not token.is_punct and not token.is_space)
-    n_words = sum(1 for _ in iter_doc_words(spacy_doc))
+    n_words = sum(1 for _ in iter_doc_words(spacy_doc, join_hyphens=True))
     assert n_words < n_tokens < len(spacy_doc)
     assert spacy_doc._.basic.n_words == n_words
     assert len(spacy_doc._.diversity.words) == n_words

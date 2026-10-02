@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from itertools import pairwise
 from typing import NamedTuple
 
+from anyts.utils import check_sequence, iter_doc_units, iter_doc_words
 from razdel import sentenize
 from spacy.tokens import Doc, Token
 
@@ -40,16 +41,7 @@ from ..syntax_stats import (
     is_passive,
     is_word,
 )
-from ..utils import (
-    check_sequence,
-    find_phrases,
-    is_verbal_noun,
-    iter_doc_units,
-    iter_doc_words,
-    iter_text_words,
-    normalize_yo,
-    parse_word,
-)
+from ..utils import find_phrases, is_verbal_noun, iter_text_words, normalize_yo, parse_word
 
 RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
 CSS = """\
@@ -454,7 +446,7 @@ def get_doc_words(doc: Doc) -> list[Word]:
             unit_text(unit),
             unit_pos(unit) if tagged else None,
         )
-        for unit in iter_doc_units(doc)
+        for unit in iter_doc_units(doc, join_hyphens=True)
     ]
 
 
@@ -479,7 +471,7 @@ def get_doc_sents(doc: Doc) -> list[Sent]:
         if tokens:
             start = min(token.idx for token in tokens)
             end = max(token.idx + len(token) for token in tokens)
-            sents.append(Sent(start, end, sum(1 for _ in iter_doc_words(sent))))
+            sents.append(Sent(start, end, sum(1 for _ in iter_doc_words(sent, join_hyphens=True))))
     return sents
 
 

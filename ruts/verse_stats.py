@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from math import nan
 from typing import Any
 
+from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
@@ -23,7 +24,6 @@ from .constants import (
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
 from .syllables import VOWELS, _count_vowels, _word_stress, word_stress as word_stress
-from .utils import safe_divide
 
 ACUTE = "\u0301"
 WORD_PATTERN = re.compile(r"[а-яё]+(?:-[а-яё]+)*", re.IGNORECASE)

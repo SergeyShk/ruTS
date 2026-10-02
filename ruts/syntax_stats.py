@@ -17,6 +17,7 @@ from anyts.syntax import (
     is_word as is_word,
     subtree_len as subtree_len,
 )
+from anyts.utils import safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -31,7 +32,7 @@ from .constants import (
     SYNTAX_STATS_DESC,
 )
 from .exceptions import SourceError, SourceTypeError
-from .utils import is_verbal_noun, lemmatize, normalize_yo, safe_divide
+from .utils import is_verbal_noun, lemmatize, normalize_yo
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 

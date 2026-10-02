@@ -5,6 +5,7 @@ from math import log2, log10, nan
 from statistics import fmean
 
 import pymorphy3
+from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
@@ -17,7 +18,7 @@ from .constants import (
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import get_morph_analyzer, iter_doc_units, normalize_yo, parse_word, safe_divide
+from .utils import get_morph_analyzer, normalize_yo, parse_word
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
@@ -120,7 +121,11 @@ class LexicalStats:
     ):
         infos: list[WordInfo]
         if isinstance(source, Doc):
-            units = [unit for unit in iter_doc_units(source) if not is_number(unit_text(unit))]
+            units = [
+                unit
+                for unit in iter_doc_units(source, join_hyphens=True)
+                if not is_number(unit_text(unit))
+            ]
             self.words = tuple(unit_text(unit) for unit in units)
             if source.has_annotation("POS"):
                 infos = [unit_info(unit) for unit in units]

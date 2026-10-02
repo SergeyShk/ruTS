@@ -2,12 +2,12 @@ from collections.abc import Callable, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
+from anyts.utils import check_sequence
 from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 
 from ..diversity_stats import calc_ttr
 from ..exceptions import ParameterError, SourceTypeError
-from ..utils import check_sequence
 
 
 def fingerprinting(

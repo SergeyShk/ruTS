@@ -3,6 +3,7 @@ from functools import cached_property, lru_cache
 from math import nan
 
 import pymorphy3
+from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -19,7 +20,7 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer, iter_doc_units, lemmatize, parse_word, safe_divide
+from .utils import get_morph_analyzer, lemmatize, parse_word
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 VERBAL_POS = frozenset({"VERB", "AUX"})
@@ -105,7 +106,7 @@ class MorphStats:
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
         features: list[dict[str, str | None]]
         if isinstance(source, Doc):
-            units = list(iter_doc_units(source))
+            units = list(iter_doc_units(source, join_hyphens=True))
             self.words = tuple("".join(token.text for token in unit) for unit in units)
             if source.has_annotation("POS"):
                 features = [

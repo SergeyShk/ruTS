@@ -15,6 +15,7 @@ from anyts.cohesion import (
     dice as dice,
     dominant as dominant,
 )
+from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -32,14 +33,7 @@ from .constants import (
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import tag_to_ud_pos, word_to_ud
-from .utils import (
-    get_morph_analyzer,
-    iter_doc_units,
-    lemmatize,
-    normalize_yo,
-    parse_word,
-    safe_divide,
-)
+from .utils import get_morph_analyzer, lemmatize, normalize_yo, parse_word
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -230,7 +224,7 @@ class CohesionStats:
         pos: list[list[str | None]]
         if isinstance(source, Doc):
             if source.has_annotation("SENT_START"):
-                units = [list(iter_doc_units(sent)) for sent in source.sents]
+                units = [list(iter_doc_units(sent, join_hyphens=True)) for sent in source.sents]
             else:
                 units = split_doc_units(source, sents_extractor or SentsExtractor())
             sents = [tuple(unit_text(unit) for unit in sent) for sent in units]
@@ -629,7 +623,7 @@ def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[l
         return []
     units: list[list[list[Token]]] = [[] for _ in spans]
     index = 0
-    for unit in iter_doc_units(source):
+    for unit in iter_doc_units(source, join_hyphens=True):
         position = unit[0].idx
         while index + 1 < len(spans) and spans[index + 1][0] <= position:
             index += 1

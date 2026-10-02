@@ -2,6 +2,7 @@ from math import isnan
 
 import pytest
 import spacy
+from anyts.utils import iter_doc_units
 
 from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
 from ruts.cohesion_stats import (
@@ -20,7 +21,7 @@ from ruts.cohesion_stats import (
 )
 from ruts.constants import COHESION_STATS_DESC, CONNECTOR_CLASSES, CONNECTOR_TYPES
 from ruts.exceptions import SourceError
-from ruts.utils import iter_doc_units, lemmatize
+from ruts.utils import lemmatize
 
 text = (
     "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. "
@@ -392,7 +393,7 @@ def test_hyphenated_verb_doc(nlp):
     assert cs.lemmas[0][0] == lemmatize("Жили-были", "VERB")
     assert cs.tense_repetition == 1.0
     assert cs.aspect_repetition == 0.5
-    units = list(iter_doc_units(doc))
+    units = list(iter_doc_units(doc, join_hyphens=True))
     assert unit_info(units[0]) == WordInfo(
         lemmatize("Жили-были", "VERB"), False, False, False, False, True, "Past", "Imp"
     )

@@ -5,10 +5,10 @@ from enum import Enum
 from typing import Any
 
 import pandas as pd
+from anyts.utils import check_sequence
 from graphviz import Digraph, nohtml
 
 from ..exceptions import ParameterError, SourceError, SourceTypeError
-from ..utils import check_sequence
 
 
 class Direction(Enum):

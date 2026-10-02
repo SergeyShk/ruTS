@@ -4,6 +4,7 @@ from functools import lru_cache
 from math import log2, nan
 
 import numpy as np
+from anyts.utils import iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
@@ -15,7 +16,6 @@ from .constants import (
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
-from .utils import iter_doc_words, safe_divide
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
 VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
@@ -121,7 +121,7 @@ class PhonStats:
     ):
         if isinstance(source, Doc):
             text = source.text
-            words = tuple(word.lower() for _, _, word in iter_doc_words(source))
+            words = tuple(word.lower() for _, _, word in iter_doc_words(source, join_hyphens=True))
         elif isinstance(source, str):
             text = source
             if not words_extractor:
