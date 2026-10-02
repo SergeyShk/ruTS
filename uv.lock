@@ -49,7 +49,7 @@ wheels = [
 
 [[package]]
 name = "anyts"
-version = "0.2.4"
+version = "0.2.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "graphviz" },
@@ -61,9 +61,9 @@ dependencies = [
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "spacy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/f3/8eed26a6f6ecde3aa4c90c859bbd82b6699d83da5df63f049ebe4c42cfe9/anyts-0.2.4.tar.gz", hash = "sha256:183859405c3c7d6cfa3d7fd7424e2cfc190040e80f27b9805597fe95e0835550", size = 97871, upload-time = "2026-10-02T16:26:30.894Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/58/2cd6751fa2dc9baf66a10577f68afeeee112716baef71a544d0126fe45f5/anyts-0.2.5.tar.gz", hash = "sha256:39014438740683a72bee6eb3be7183a99f6519ad11c2d0e3b66affd06a9cfa6e", size = 98228, upload-time = "2026-10-02T18:33:55.677Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/1b/35945d6a0f08654ccef51c7b13e9f436ca73e7f7bf58b0ec9bdfa3c46e12/anyts-0.2.4-py3-none-any.whl", hash = "sha256:1e950fafee85b4a485aa1861a733ab9f08b561e66c73c6545711fb1769930b7c", size = 114475, upload-time = "2026-10-02T16:26:29.8Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/10/93fd274ceba2a94da74ec327cd0a11cd2078ae473316de404660b714ccfd/anyts-0.2.5-py3-none-any.whl", hash = "sha256:3d56f3bd8fc7382d0386d3460e082cd9b75a9fe60a73d430f89764240555f4bd", size = 114799, upload-time = "2026-10-02T18:33:54.481Z" },
 ]
 
 [[package]]
@@ -3642,7 +3642,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "anyts", specifier = ">=0.2.4,<0.3" },
+    { name = "anyts", specifier = ">=0.2.5,<0.3" },
     { name = "graphviz", specifier = ">=0.20.3" },
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=1.26" },
