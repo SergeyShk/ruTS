@@ -149,6 +149,7 @@ RUSSIAN = {
     "BasicStats",
     "COMPLEX_SYL_FACTOR",
     "CharNgramsExtractor",
+    "DASH_PATTERN",
     "DIVERSITY_STATS_DESC",
     "Dataset",
     "DiversityStats",

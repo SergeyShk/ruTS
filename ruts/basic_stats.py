@@ -2,7 +2,7 @@ from collections.abc import Mapping
 from re import Pattern
 
 import anyts.basic_stats
-from anyts.basic_stats import DASH_PATTERN
+from anyts.basic_stats import dash_pattern
 from anyts.utils import check_integer
 from spacy.tokens import Doc
 
@@ -12,6 +12,7 @@ from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
 
 PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
+DASH_PATTERN = dash_pattern(("и", "или", "либо"), hanging_before_comma=True)
 
 
 class BasicStats(anyts.basic_stats.BasicStats):
@@ -167,9 +168,9 @@ def count_punctuations(
         Типы из PUNCTUATION_TYPES: запятые, точки, вопросительные и восклицательные
         знаки, многоточия («Кто там?..» - вопрос и многоточие), двоеточия, точки
         с запятой, тире (в том числе дефис, которым тире набирают в текстовых
-        корпусах: «- Ушли, - сказал он»), дефисы в словах, кавычки-ёлочки, прямые
-        кавычки и лапки, скобки и прочие знаки. Знаки ядра anyTS дополнены нижней
-        кавычкой „
+        корпусах: «- Ушли, - сказал он»), дефисы в словах и висячие дефисы
+        («двух- и трёхкомнатные»), кавычки-ёлочки, прямые кавычки и лапки, скобки
+        и прочие знаки. Знаки ядра anyTS дополнены нижней кавычкой „
 
     Аргументы:
         text (str): Строка текста

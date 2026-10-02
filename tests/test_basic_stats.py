@@ -170,6 +170,22 @@ def test_count_punctuations_spaced_hyphen_as_dash():
     assert count_punctuations("дом -\nмузей")["dash"] == 1
 
 
+@pytest.mark.parametrize(
+    ("text", "dashes", "hyphens"),
+    [
+        ("двух- и трёхкомнатные квартиры", 0, 1),
+        ("лево- или правосторонний", 0, 1),
+        ("сорока-, пятидесяти- и шестидесятилетние", 0, 2),
+        ("10- или 8-часовой рабочий день", 0, 2),
+        # Дефис реплики, приклеенный к слову, - тире
+        ("Ушли- сказал он", 1, 0),
+    ],
+)
+def test_count_punctuations_hanging_hyphen(text, dashes, hyphens):
+    counts = count_punctuations(text)
+    assert (counts["dash"], counts["hyphen"]) == (dashes, hyphens)
+
+
 def test_punctuation_profile():
     profile = punctuation_profile("Ёж, ещё ёж — и еще еж!")
     assert profile["comma"] == pytest.approx(1 / 6 * 1000)
