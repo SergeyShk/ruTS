@@ -1,70 +1,16 @@
 import re
-from abc import ABCMeta, abstractmethod
-from collections import Counter
-from collections.abc import Callable, Iterable, Iterator
-from re import Pattern
-from typing import Any
+from collections.abc import Iterable
+from typing import ClassVar
 
+import anyts
 from razdel import sentenize
 
-from .exceptions import ParameterError, SourceTypeError
-from .utils import is_punctuation, iter_tokens, parse_word
+from .utils import iter_tokens, parse_word
 
-Tokenizer = Pattern[str] | Callable[[str], Iterable[str]]
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
 
 
-class Extractor(metaclass=ABCMeta):
-    """
-    Абстрактный класс для извлечения объектов из текста
-
-    Аргументы:
-        tokenizer (pattern|callable): Токенизатор или регулярное выражение
-        min_len (int): Минимальная длина извлекаемого объекта
-        max_len (int): Максимальная длина извлекаемого объекта
-
-    Методы:
-        extract: Извлечение объектов из текста
-    """
-
-    @abstractmethod
-    def __init__(
-        self, tokenizer: Tokenizer | None = None, min_len: int = 0, max_len: int = 0
-    ) -> None:
-        self.tokenizer = tokenizer
-        self.min_len = min_len
-        self.max_len = max_len
-
-    @abstractmethod
-    def extract(self, text: str) -> tuple[str, ...]:
-        raise NotImplementedError
-
-    def _tokenize(self, text: str) -> Iterator[str]:
-        """
-        Разбиение текста токенизатором
-
-        Аргументы:
-            text (str): Строка текста
-
-        Вывод:
-            iterator[str]: Итератор токенов
-
-        Исключения:
-            SourceTypeError: Если токенизатор не вызываемый объект или возвращает
-                не итерируемый объект; собственные ошибки токенизатора не перехватываются
-        """
-        if isinstance(self.tokenizer, Pattern):
-            return iter(re.split(self.tokenizer, text))
-        if not callable(self.tokenizer):
-            raise SourceTypeError("Токенизатор задан некорректно")
-        tokens = self.tokenizer(text)
-        try:
-            return iter(tokens)
-        except TypeError as e:
-            raise SourceTypeError("Токенизатор должен возвращать итерируемый объект") from e
-
-
-class SentsExtractor(Extractor):
+class SentsExtractor(anyts.SentsExtractor):
     """
     Класс для извлечения предложений из текста
 
@@ -76,6 +22,9 @@ class SentsExtractor(Extractor):
         >>> se.extract(text)
         ('Не имей 100 рублей', 'а имей 100 друзей')
 
+    Описание:
+        Токенизатор по умолчанию - razdel
+
     Аргументы:
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
         min_len (int): Минимальная длина извлекаемого предложения
@@ -85,61 +34,32 @@ class SentsExtractor(Extractor):
         extract: Извлечение предложений из текста
 
     Исключения:
-        ParameterError: Если минимальная длина предложения больше максимальной
+        ParameterError: Если граница длины не целое число, отрицательна или минимальная
+            длина больше максимальной
     """
 
-    def __init__(
-        self,
-        tokenizer: Tokenizer | None = None,
-        min_len: int = 0,
-        max_len: int = 0,
-    ) -> None:
-        super().__init__(tokenizer, min_len, max_len)
-        if self.min_len and self.max_len and self.min_len > self.max_len:
-            raise ParameterError("Минимальная длина предложения больше максимальной")
-        self.sents: tuple[str, ...] = ()
-        if not self.tokenizer:
-            self.tokenizer = lambda text: (sent.text for sent in sentenize(text))
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        """
-        Извлечение предложений из текста
-
-        Аргументы:
-            text (str): Строка текста
-
-        Вывод:
-            sents (tuple[str]): Кортеж извлеченных непустых предложений
-
-        Исключения:
-            SourceTypeError: Если некорректно задан токенизатор
-        """
-        sents = (sent for sent in self._tokenize(text) if sent.strip())
-        if self.min_len > 0:
-            sents = (sent for sent in sents if len(sent) >= self.min_len)
-        if self.max_len > 0:
-            sents = (sent for sent in sents if len(sent) <= self.max_len)
-        self.sents = tuple(sents)
-        return self.sents
+    def sentenize(self, text: str) -> Iterable[str]:
+        """Разбиение текста на предложения razdel"""
+        return (sent.text for sent in sentenize(text))
 
 
-class WordsExtractor(Extractor):
+class WordsExtractor(anyts.WordsExtractor):
     """
     Класс для извлечения слов из текста
 
     Пример использования:
-        >>> from nltk.corpus import stopwords
         >>> from ruts import WordsExtractor
         >>> text = "Не имей 100 рублей, а имей 100 друзей"
-        >>> we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'),
+        >>> we = WordsExtractor(use_lexemes=True, stopwords=["не", "а"],
         ...                     filter_nums=True, ngram_range=(1, 2))
         >>> we.extract(text)
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
     Описание:
-        Фильтры применяются по порядку: знаки препинания, числа, лемматизация,
-        нижний регистр, стоп-слова, длина слова; стоп-слова сравниваются
-        уже после приведения к нижнему регистру
+        Токенизатор по умолчанию - razdel с отделением приклеенных тире
+        (ruts.utils.iter_tokens), леммы - первый разбор pymorphy3. Фильтры применяются
+        по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова,
+        длина слова; стоп-слова сравниваются без учета регистра
         Числами считаются также диапазоны, дроби и порядковые числительные:
         2020-2021, 5.5, 1,5, 3-й, 90-х
 
@@ -148,7 +68,7 @@ class WordsExtractor(Extractor):
         filter_punct (bool): Фильтровать знаки препинания
         filter_nums (bool): Фильтровать числа
         use_lexemes (bool): Использовать леммы слов
-        stopwords (list[str]): Список стоп-слов
+        stopwords (collection[str]): Стоп-слова
         lowercase (bool): Конвертировать слова в нижний регистр
         ngram_range (tuple[int, int]): Нижняя и верхняя граница размера N-грамм
         min_len (int): Минимальная длина извлекаемого слова
@@ -159,110 +79,25 @@ class WordsExtractor(Extractor):
         get_most_common: Получение счетчика топ-слов
 
     Исключения:
-        ParameterError: Если нижняя граница N-грамм меньше единицы или больше верхней
-        ParameterError: Если минимальная длина слова больше максимальной
+        ParameterError: Если границы N-грамм не пара целых чисел, нижняя меньше единицы
+            или больше верхней
+        ParameterError: Если граница длины не целое число, отрицательна или минимальная
+            длина больше максимальной
+        SourceTypeError: Если стоп-слова не набор строк
     """
 
-    def __init__(
-        self,
-        tokenizer: Tokenizer | None = None,
-        filter_punct: bool = True,
-        filter_nums: bool = False,
-        use_lexemes: bool = False,
-        stopwords: list[str] | None = None,
-        lowercase: bool = False,
-        ngram_range: tuple[int, int] = (1, 1),
-        min_len: int = 0,
-        max_len: int = 0,
-    ) -> None:
-        super().__init__(tokenizer, min_len, max_len)
-        self.filter_punct = filter_punct
-        self.filter_nums = filter_nums
-        self.use_lexemes = use_lexemes
-        self.stopwords = stopwords
-        self.lowercase = lowercase
-        self.ngram_range = ngram_range
-        if self.ngram_range[0] < 1:
-            raise ParameterError("Нижняя граница N-грамм должна быть больше 0")
-        if self.ngram_range[0] > self.ngram_range[1]:
-            raise ParameterError("Нижняя граница N-грамм большей верхней")
-        self.min_len = min_len
-        self.max_len = max_len
-        if self.min_len and self.max_len and self.min_len > self.max_len:
-            raise ParameterError("Минимальная длина слова больше максимальной")
-        self.words: tuple[str, ...] = ()
-        if not self.tokenizer:
-            self.tokenizer = lambda text: (word for _, _, word in iter_tokens(text))
+    number_pattern: ClassVar[re.Pattern[str]] = NUMBER_PATTERN
 
-    def extract(
-        self,
-        text: str,
-    ) -> tuple[str, ...]:
-        """
-        Извлечение слов из текста
+    def tokenize(self, text: str) -> Iterable[str]:
+        """Разбиение текста на слова ruts.utils.iter_tokens"""
+        return (word for _, _, word in iter_tokens(text))
 
-        Аргументы:
-            text (str): Строка текста
-
-        Вывод:
-            words (tuple[str]): Кортеж извлеченных слов
-
-        Исключения:
-            SourceTypeError: Если некорректно задан токенизатор
-        """
-        words = self._tokenize(text)
-        if self.filter_punct:
-            words = (word for word in words if not is_punctuation(word))
-        if self.filter_nums:
-            words = (word for word in words if not NUMBER_PATTERN.fullmatch(word.lower()))
-        if self.use_lexemes:
-            words = (parse_word(word).normal_form for word in words)
-        if self.lowercase:
-            words = (word.lower() for word in words)
-        if self.stopwords:
-            words = (word for word in words if word not in self.stopwords)
-        if self.min_len > 0:
-            words = (word for word in words if len(word) >= self.min_len)
-        if self.max_len > 0:
-            words = (word for word in words if len(word) <= self.max_len)
-        self.words = tuple(words)
-        if self.ngram_range != (1, 1):
-            self.words = self.__make_ngrams()
-        return self.words
-
-    def get_most_common(self, n: int = 10) -> list[tuple[Any, int]]:
-        """
-        Получение счетчика топ-слов
-
-        Аргументы:
-            n (int): Количество слов
-
-        Вывод:
-            List: Список топ-слов
-
-        Исключения:
-            ParameterError: Если указанное количество слов меньше 0
-        """
-        if n < 1:
-            raise ParameterError("Количество слов должно быть больше 0")
-        return Counter(self.words).most_common(n)
-
-    def __make_ngrams(self) -> tuple[str, ...]:
-        """
-        Формирование N-грамм
-
-        Вывод:
-            ngrams (tuple[str]): Кортеж извлеченных N-грамм
-        """
-        ngrams: tuple[str, ...] = ()
-        for n in range(self.ngram_range[0], self.ngram_range[1] + 1):
-            ngrams += tuple(
-                "_".join(self.words[i : i + n]) for i in range(len(self.words) - n + 1)
-            )
-        return ngrams
+    def lemmatize(self, word: str) -> str:
+        """Лемма слова по первому разбору pymorphy3"""
+        return str(parse_word(word).normal_form)
 
 
-class CharNgramsExtractor(Extractor):
+class CharNgramsExtractor(anyts.CharNgramsExtractor):
     """
     Класс для извлечения символьных N-грамм из текста
 
@@ -281,9 +116,8 @@ class CharNgramsExtractor(Extractor):
         N-граммы берутся окном по строке, пробельные символы предварительно
         схлопываются в один пробел, знаки препинания сохраняются (Stamatatos 2009);
         при within_words N-граммы не пересекают границ слов: текст режется
-        токенизатором на слова, знаки препинания отбрасываются, слова короче N
-        N-грамм не дают. Символьные N-граммы - признак для стилометрии
-        (ruts.corpus.delta)
+        токенизатором на слова (по умолчанию ruts.utils.iter_tokens), знаки
+        препинания отбрасываются, слова короче N N-грамм не дают
 
     Аргументы:
         n (int): Длина N-граммы в символах
@@ -297,65 +131,9 @@ class CharNgramsExtractor(Extractor):
         get_most_common: Получение счетчика топ-N-грамм
 
     Исключения:
-        ParameterError: Если длина N-граммы меньше единицы
+        ParameterError: Если длина N-граммы не целое число или меньше единицы
     """
 
-    def __init__(
-        self,
-        n: int = 2,
-        lowercase: bool = False,
-        within_words: bool = False,
-        tokenizer: Tokenizer | None = None,
-    ) -> None:
-        super().__init__(tokenizer)
-        if n < 1:
-            raise ParameterError("Длина N-граммы должна быть больше 0")
-        self.n = n
-        self.lowercase = lowercase
-        self.within_words = within_words
-        self.ngrams: tuple[str, ...] = ()
-        if not self.tokenizer:
-            self.tokenizer = lambda text: (word for _, _, word in iter_tokens(text))
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        """
-        Извлечение символьных N-грамм из текста
-
-        Аргументы:
-            text (str): Строка текста
-
-        Вывод:
-            ngrams (tuple[str]): Кортеж извлеченных N-грамм
-
-        Исключения:
-            SourceTypeError: Если некорректно задан токенизатор
-        """
-        if self.lowercase:
-            text = text.lower()
-        if self.within_words:
-            units = [word for word in self._tokenize(text) if not is_punctuation(word)]
-        else:
-            units = [" ".join(text.split())]
-        self.ngrams = tuple(
-            unit[index : index + self.n]
-            for unit in units
-            for index in range(len(unit) - self.n + 1)
-        )
-        return self.ngrams
-
-    def get_most_common(self, n: int = 10) -> list[tuple[Any, int]]:
-        """
-        Получение счетчика топ-N-грамм
-
-        Аргументы:
-            n (int): Количество N-грамм
-
-        Вывод:
-            List: Список топ-N-грамм
-
-        Исключения:
-            ParameterError: Если указанное количество N-грамм меньше 0
-        """
-        if n < 1:
-            raise ParameterError("Количество N-грамм должно быть больше 0")
-        return Counter(self.ngrams).most_common(n)
+    def tokenize(self, text: str) -> Iterable[str]:
+        """Разбиение текста на слова ruts.utils.iter_tokens"""
+        return (word for _, _, word in iter_tokens(text))

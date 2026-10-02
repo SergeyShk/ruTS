@@ -34,6 +34,7 @@ from .exceptions import DataFileError, DownloadError, SourceTypeError
 logger = logging.getLogger(__name__)
 
 DASHES = frozenset("-—–―")
+BYTE_ORDER_MARK = "\ufeff"
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -175,7 +176,8 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
     Описание:
         razdel оставляет в слове приклеенные тире реплик и ремарок (-Нет -сказал он,
         —сказал); они становятся отдельными токенами, а дефис внутри слова (кто-то),
-        минус перед числом и тире в сокращенном имени (N—ский) остаются
+        минус перед числом и тире в сокращенном имени (N—ский) остаются; метка порядка
+        байтов (BOM) в начале токена отбрасывается
 
     Аргументы:
         text (str): Строка текста
@@ -185,21 +187,21 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
             символом и текст каждого токена
     """
     for token in tokenize(text):
-        if not DASHES.intersection(token.text):
-            yield token.start, token.stop, token.text
+        word = token.text.lstrip(BYTE_ORDER_MARK)
+        if not word:
+            continue
+        offset = token.stop - len(word)
+        if not DASHES.intersection(word):
+            yield offset, token.stop, word
             continue
         start = 0
-        for match in GLUED_DASHES.finditer(token.text):
+        for match in GLUED_DASHES.finditer(word):
             if match.start() > start:
-                yield (
-                    token.start + start,
-                    token.start + match.start(),
-                    token.text[start : match.start()],
-                )
-            yield token.start + match.start(), token.start + match.end(), match.group()
+                yield offset + start, offset + match.start(), word[start : match.start()]
+            yield offset + match.start(), offset + match.end(), match.group()
             start = match.end()
-        if start < len(token.text):
-            yield token.start + start, token.stop, token.text[start:]
+        if start < len(word):
+            yield offset + start, token.stop, word[start:]
 
 
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:

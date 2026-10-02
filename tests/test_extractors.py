@@ -42,7 +42,7 @@ class TestSentsExtractor:
 
     def test_extract_drops_empty(self):
         se = SentsExtractor(tokenizer=re.compile(r"[.]"))
-        assert se.extract("Кот спит. Пёс лает.") == ("Кот спит", " Пёс лает")
+        assert se.extract("Кот спит. Пёс лает.") == ("Кот спит", "Пёс лает")
         assert se.extract("...") == ()
         assert SentsExtractor(tokenizer=re.compile(r"\n")).extract("Кот.\n\n\nПёс.") == (
             "Кот.",
