@@ -21,14 +21,14 @@ A module for extracting words from a text. It allows using different tokenizers,
 | `filter_punct` | bool | `True` | Filter punctuation marks |
 | `filter_nums` | bool | `False` | Filter numbers, including ranges, fractions and ordinals (2020-2021, 5.5, 1,5, 3-й) |
 | `use_lexemes` | bool | `False` | Use word lemmas |
-| `stopwords` | List[str] | `None` | List of stop words |
+| `stopwords` | Collection[str] | `None` | Stop words (a list or a set) |
 | `lowercase` | bool | `False` | Convert words to lower case |
 | `ngram_range` | Tuple[int, int] | `(1, 1)` | Lower and upper bound of the N-gram size |
 | `min_len` | int | `0` | Minimum length of an extracted word |
 | `max_len` | int | `0` | Maximum length of an extracted word |
 
 !!! note "Note"
-    The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared after lowercasing, so with `lowercase=True` the stop word list only needs to be in lower case. A punctuation mark is a token consisting entirely of marks and symbols, including multi-character ones: `?!`, `!..`, `--`, `…`.
+    The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared case-insensitively: «И» at the start of a sentence is dropped along with «и».
 
 ## Methods
 

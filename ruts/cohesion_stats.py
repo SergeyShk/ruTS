@@ -16,7 +16,7 @@ from anyts.cohesion import (
     dice as dice,
     dominant as dominant,
 )
-from anyts.utils import check_words, iter_doc_units, safe_divide
+from anyts.utils import check_sequence, check_words, iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -224,6 +224,7 @@ class CohesionStats:
             raise SourceTypeError("Экстрактор предложений должен быть SentsExtractor")
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
+        index = _normalize_connectors() if connectors is None else _normalize(connectors)
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
@@ -291,7 +292,6 @@ class CohesionStats:
         self.aspect_repetition = calc_repetition(aspects)
         self.temporal_cohesion = fmean((self.tense_repetition, self.aspect_repetition))
 
-        index = _normalize_connectors() if connectors is None else _normalize(connectors)
         pos = [sent for sent in pos if sent]
         self.connector_spans = tuple(
             connector
@@ -381,9 +381,21 @@ def _normalize(connectors: Mapping[str, tuple[str, str]]) -> ConnectorIndex:
         с пробелами вместо них, так как spaCy отделяет дефис, а WordsExtractor - точку;
         шаблоны группируются по первому слову
     """
+    if not isinstance(connectors, Mapping):
+        raise SourceTypeError("Коннекторы должны быть словарем: словосочетание - класс и тип")
     entries: dict[str, tuple[str, str, str]] = {}
     patterns: dict[str, list[tuple[str, ...]]] = {}
-    for connector, (cls, kind) in connectors.items():
+    for connector, value in connectors.items():
+        if not (
+            isinstance(connector, str)
+            and isinstance(value, tuple | list)
+            and len(value) == 2
+            and all(isinstance(item, str) for item in value)
+        ):
+            raise SourceTypeError(
+                f"Коннектор должен быть словосочетанием с парой класс и тип: {connector!r}"
+            )
+        cls, kind = value
         if cls not in CONNECTOR_CLASSES or kind not in CONNECTOR_TYPES:
             raise ParameterError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
         key = " ".join(normalize_yo(connector).split())
@@ -495,6 +507,10 @@ def find_connectors(
         ParameterError: Если в словаре встречается неизвестный класс или тип
     """
     check_words(words)
+    if pos is not None:
+        check_sequence(pos, "parts of speech")
+        if len(pos) != len(words):
+            raise ParameterError("Частей речи должно быть столько же, сколько слов")
     index = _normalize_connectors() if connectors is None else _normalize(connectors)
     return _find(words, index, sent_index, pos)
 

@@ -56,6 +56,7 @@ INTEGERS = {
     "split_windows(min_words)": lambda: split_windows(TEXT, 10, min_words=2.0),
     "corpus_features(window)": lambda: corpus_features([TEXT], window=2.5),
     "compare_corpora(n_bootstrap)": lambda: compare_corpora([TEXT], [TEXT], n_bootstrap=1.5),
+    "find_connectors(pos)": lambda: find_connectors(["но", "не"], pos=["CCONJ"]),
 }
 
 NOT_STRINGS = [1, 2]
@@ -102,6 +103,9 @@ WORD_LISTS = {
     "stress_type": lambda: stress_type(5),
     "is_stopword": lambda: is_stopword(None),
     "find_connectors": lambda: find_connectors("но не"),
+    "find_connectors(pos)": lambda: find_connectors(["но", "не"], pos="CC"),
+    "CohesionStats(connectors)": lambda: CohesionStats(TEXT, connectors=["потому что"]),
+    "CohesionStats(connector)": lambda: CohesionStats(TEXT, connectors={"потому что": "causal"}),
     "compare_corpora(features)": lambda: compare_corpora([TEXT], [TEXT], features=1),
     "corpus_features(features)": lambda: corpus_features([TEXT], features="text_features"),
     "WordsExtractor(stopwords)": lambda: WordsExtractor(stopwords=NOT_STRINGS),
@@ -157,3 +161,9 @@ def test_compare_corpora_checks_before_the_features():
     with pytest.raises(SourceTypeError):
         compare_corpora([TEXT], NOT_STRINGS, features=features)
     assert calls == []
+
+
+def test_cohesion_checks_the_connectors_before_parsing():
+    # Текст разбирается долго, а неверный словарь отвергается сразу
+    with pytest.raises(SourceTypeError):
+        CohesionStats("кот спит " * 200_000, connectors=["потому что"])

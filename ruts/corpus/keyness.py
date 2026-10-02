@@ -57,7 +57,7 @@ def keyness(
         target (list[str]|dict[str, int]): Слова целевого корпуса или их частоты
         reference (list[str]|dict[str, float]|FreqDict|FrequencyReference): Слова
             эталонного корпуса, их частоты, частотный словарь или эталон по частотам
-        measure (str): Мера из KEYNESS_MEASURES для score и сортировки
+        measure (str): Мера из anyts.constants.KEYNESS_MEASURES для score и сортировки
         min_freq (int): Минимальная частота ключевого слова в своем корпусе
         positive (bool): Положительные ключевые слова (True) или отрицательные (False)
         top_n (int): Количество ключевых слов; None - все

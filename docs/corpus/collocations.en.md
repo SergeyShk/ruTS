@@ -26,7 +26,7 @@ For a pair with word frequencies $f_a$, $f_b$, pair frequency $f_{ab}$ and numbe
 | NPMI | `npmi` | $\frac{MI}{-\log_2 (f_{ab} / N)}$ | Bouma (2009); from −1 to 1, one means the words occur only together |
 | Minimum sensitivity | `min_sensitivity` | $\min(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b})$ | Pedersen (1998); from 0 to 1 |
 
-The measures are available as functions `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi`, `calc_min_sensitivity` with arguments `(freq_a, freq_b, freq_ab, n)` from the module `ruts.corpus.collocations` (`from ruts.corpus.collocations import calc_logdice`); names and descriptions are in `ruts.constants.COLLOCATION_MEASURES`.
+The measures are available as functions `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi`, `calc_min_sensitivity` with arguments `(freq_a, freq_b, freq_ab, n)` from the module `ruts.corpus.collocations` (`from ruts.corpus.collocations import calc_logdice`); names and descriptions are in `anyts.constants.COLLOCATION_MEASURES`.
 
 ## Parameters
 

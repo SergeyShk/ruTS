@@ -26,7 +26,7 @@
 | NPMI | `npmi` | $\frac{MI}{-\log_2 (f_{ab} / N)}$ | Bouma (2009); от −1 до 1, единица - слова встречаются только вместе |
 | Минимальная чувствительность | `min_sensitivity` | $\min(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b})$ | Pedersen (1998); от 0 до 1 |
 
-Меры доступны как функции `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi`, `calc_min_sensitivity` с аргументами `(freq_a, freq_b, freq_ab, n)` из модуля `ruts.corpus.collocations` (`from ruts.corpus.collocations import calc_logdice`); названия и описания - в `ruts.constants.COLLOCATION_MEASURES`.
+Меры доступны как функции `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi`, `calc_min_sensitivity` с аргументами `(freq_a, freq_b, freq_ab, n)` из модуля `ruts.corpus.collocations` (`from ruts.corpus.collocations import calc_logdice`); названия и описания - в `anyts.constants.COLLOCATION_MEASURES`.
 
 ## Параметры
 

@@ -49,7 +49,7 @@ def fingerprinting(
             объект
         ParameterError: Если размер сегмента меньше единицы
     """
-    check_sequence(texts, "списков слов")
+    check_sequence(texts, "word lists")
     if not all(isinstance(text, (list, tuple)) for text in texts):
         raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
     if metric is not None and not callable(metric):
