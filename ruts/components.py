@@ -24,15 +24,12 @@ from .constants import (
 )
 from .datasets.freq2011 import FreqDict
 from .datasets.stress_dict import StressDict
-from .diversity_stats import DiversityStats
-from .diversity_stats import check_params as check_diversity_params
+from .diversity_stats import DiversityStats, check_params as check_diversity_params
 from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
-from .phon_stats import PhonStats
-from .phon_stats import check_params as check_phon_params
+from .phon_stats import PhonStats, check_params as check_phon_params
 from .readability_stats import ReadabilityStats, check_preset
-from .style_stats import StyleStats
-from .style_stats import check_params as check_style_params
+from .style_stats import StyleStats, check_params as check_style_params
 from .syntax_stats import SyntaxStats
 from .utils import add_dash_rules
 from .verse_stats import VerseStats

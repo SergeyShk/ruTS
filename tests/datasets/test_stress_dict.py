@@ -4,8 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from ruts.datasets import StressDict
-from ruts.datasets import stress_dict as stress_dict_module
+from ruts.datasets import StressDict, stress_dict as stress_dict_module
 from ruts.datasets.stress_dict import (
     ARCHIVE,
     FILENAME,

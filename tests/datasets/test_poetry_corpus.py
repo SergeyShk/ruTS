@@ -3,8 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from ruts.datasets import PoetryCorpus
-from ruts.datasets import poetry_corpus as poetry_corpus_module
+from ruts.datasets import PoetryCorpus, poetry_corpus as poetry_corpus_module
 from ruts.datasets.poetry_corpus import FILE_SHA256, FILENAME, load_records
 from ruts.utils import sha256
 

@@ -42,6 +42,7 @@ classifiers = [
     "Natural Language :: Russian",
 ]
 dependencies = [
+    "anyts>=0.2.4,<0.3",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
     "nltk>=3.9",
@@ -137,6 +138,7 @@ max-complexity = 18
 
 [tool.ruff.lint.isort]
 known-first-party = ["ruts"]
+combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["N801", "N802"]

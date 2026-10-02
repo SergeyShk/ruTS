@@ -14,8 +14,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
-from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables
-from .syllables import syllabify as syllabify
+from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
 from .utils import iter_doc_words, safe_divide
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)

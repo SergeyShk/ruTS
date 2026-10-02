@@ -6,8 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from ruts.datasets import RussianLiterature
-from ruts.datasets import russian_literature as russian_literature_module
+from ruts.datasets import RussianLiterature, russian_literature as russian_literature_module
 from ruts.datasets.russian_literature import (
     ARCHIVE,
     ARCHIVE_SHA256,

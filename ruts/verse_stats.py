@@ -22,8 +22,7 @@ from .constants import (
 )
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
-from .syllables import VOWELS, _count_vowels, _word_stress
-from .syllables import word_stress as word_stress
+from .syllables import VOWELS, _count_vowels, _word_stress, word_stress as word_stress
 from .utils import safe_divide
 
 ACUTE = "\u0301"
