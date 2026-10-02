@@ -1033,9 +1033,36 @@ HIGHLIGHT_DEFAULT_LAYERS = (
     "split_predicates",
     "cliches",
 )
-HIGHLIGHT_SYNTAX_LAYERS = frozenset(
-    {"passive", "participle_clauses", "converb_clauses", "genitive_chains", "split_predicates"}
-)
+# Разметка Doc, которая нужна слою; леммы ruTS берет из pymorphy3, а не из spaCy
+HIGHLIGHT_LAYER_ANNOTATIONS = {
+    "passive": ("DEP",),
+    "participle_clauses": ("DEP",),
+    "converb_clauses": ("DEP",),
+    "genitive_chains": ("DEP",),
+    "split_predicates": ("DEP",),
+}
+# Стили CSS слоев; где фоны слоев пересекаются, побеждает более поздний
+HIGHLIGHT_LAYER_STYLES = {
+    "long_sents": "background: #fef9c3;",
+    "stopwords": "background: #bae6fd;",
+    "complex_words": "background: #fed7aa;",
+    "rare_words": "background: #e5e7eb;",
+    "passive": "background: #fecaca;",
+    "verbal_nouns": "background: #e9d5ff;",
+    "compound_prepositions": "background: #a7f3d0;",
+    "cliches": "background: #fbcfe8;",
+    "parentheticals": "background: #d9f99d;",
+    "participle_clauses": "border-bottom: 2px solid #7c3aed;",
+    "converb_clauses": "border-bottom: 2px solid #0d9488;",
+    "genitive_chains": "border-bottom: 2px solid #b45309;",
+    "split_predicates": "border-bottom: 2px solid #dc2626;",
+    "connectors": "border-bottom: 2px dashed #2563eb;",
+    "alliteration": (
+        "text-decoration-line: underline; text-decoration-style: dotted; "
+        "text-decoration-color: #db2777; text-decoration-thickness: 2px; "
+        "text-underline-offset: 3px;"
+    ),
+}
 LONG_SENT_WORD_FACTOR = 20
 ALLITERATION_THRESHOLD = 0.001
 ALLITERATION_MIN_WORD_LEN = 3

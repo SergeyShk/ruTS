@@ -1,11 +1,15 @@
-import html
 import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
-from dataclasses import dataclass
-from itertools import pairwise
-from typing import NamedTuple
 
-from anyts.utils import check_words, iter_doc_units, iter_doc_words
+import anyts.visualizers.highlight
+from anyts.utils import check_integer, check_number, check_words, iter_doc_units
+from anyts.visualizers.highlight import (
+    Highlight as Highlight,
+    Sent,
+    Word,
+    group_words_by_sents,
+    tokens_span,
+)
 from razdel import sentenize
 from spacy.tokens import Doc, Token
 
@@ -19,14 +23,15 @@ from ..constants import (
     CONNECTOR_CLASSES,
     CONNECTOR_TYPES,
     HIGHLIGHT_DEFAULT_LAYERS,
+    HIGHLIGHT_LAYER_ANNOTATIONS,
+    HIGHLIGHT_LAYER_STYLES,
     HIGHLIGHT_LAYERS_DESC,
-    HIGHLIGHT_SYNTAX_LAYERS,
     LONG_SENT_WORD_FACTOR,
     OFFICIALESE_CLICHES,
     PARENTHETICALS,
     RU_LETTER_FREQUENCIES,
 )
-from ..exceptions import ParameterError, SourceError, SourceTypeError
+from ..exceptions import ParameterError
 from ..lexical_stats import get_rank
 from ..style_stats import expand_phrases, is_parenthetical, is_stopword
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
@@ -41,66 +46,19 @@ from ..syntax_stats import (
     is_passive,
     is_word,
 )
-from ..utils import find_phrases, is_verbal_noun, iter_text_words, normalize_yo, parse_word
+from ..utils import (
+    BYTE_ORDER_MARK,
+    find_phrases,
+    is_verbal_noun,
+    iter_text_words,
+    normalize_yo,
+    parse_word,
+)
 
 RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
-CSS = """\
-.ruts-highlight { line-height: 1.7; }
-.ruts-highlight-legend { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin-bottom: 0.8em; font-size: 0.9em; }
-.ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
-.ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
-.ruts-highlight-text { white-space: pre-wrap; }
-.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
-.ruts-hl-long_sents { background: #fef9c3; }
-.ruts-hl-complex_words { background: #fed7aa; }
-.ruts-hl-rare_words { background: #e5e7eb; }
-.ruts-hl-passive { background: #fecaca; }
-.ruts-hl-verbal_nouns { background: #e9d5ff; }
-.ruts-hl-compound_prepositions { background: #a7f3d0; }
-.ruts-hl-cliches { background: #fbcfe8; }
-.ruts-hl-stopwords { background: #bae6fd; }
-.ruts-hl-parentheticals { background: #d9f99d; }
-.ruts-hl-participle_clauses { border-bottom: 2px solid #7c3aed; }
-.ruts-hl-converb_clauses { border-bottom: 2px solid #0d9488; }
-.ruts-hl-genitive_chains { border-bottom: 2px solid #b45309; }
-.ruts-hl-split_predicates { border-bottom: 2px solid #dc2626; }
-.ruts-hl-connectors { border-bottom: 2px dashed #2563eb; }
-.ruts-hl-alliteration { text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: #db2777; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-"""
 
 
-class Word(NamedTuple):
-    start: int
-    end: int
-    text: str
-    pos: str | None = None
-
-
-class Sent(NamedTuple):
-    start: int
-    end: int
-    n_words: int
-
-
-@dataclass(frozen=True)
-class Highlight:
-    """
-    Подсвеченный фрагмент текста
-
-    Аргументы:
-        start (int): Позиция первого символа фрагмента
-        end (int): Позиция за последним символом фрагмента
-        layer (str): Слой подсветки
-        note (str): Пояснение к фрагменту для всплывающей подсказки
-    """
-
-    start: int
-    end: int
-    layer: str
-    note: str = ""
-
-
-class HighlightedText:
+class HighlightedText(anyts.visualizers.highlight.HighlightedText):
     """
     Класс для подсветки текста по слоям в стиле Главреда и Тургенева
 
@@ -123,13 +81,13 @@ class HighlightedText:
             alliteration - повторы согласной в соседних словах, маловероятные при частотах букв русского языка (PhonStats)
         Слои сгруппированы в HIGHLIGHT_LAYER_GROUPS: читаемость, синтаксис, канцелярит,
         стиль, фоника. Синтаксические слои считаются по дереву зависимостей и доступны
-        только для объекта Doc с разбором зависимостей; слой long_sents для Doc требует
-        границ предложений. По умолчанию включаются слои HIGHLIGHT_DEFAULT_LAYERS
+        только для объекта Doc с разбором зависимостей; Doc без границ предложений
+        делится на предложения razdel. По умолчанию включаются слои HIGHLIGHT_DEFAULT_LAYERS
         (длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные
         сказуемые, штампы), доступные источнику; layers="all" включает все доступные
         Результат отображается в Jupyter как HTML со стилями и легендой, метод to_html
         возвращает ту же разметку для документации и веб-приложений; фрагменты разных слоев
-        могут пересекаться, при отрисовке текст режется на отрезки с набором классов CSS
+        могут пересекаться
 
     Пример использования:
         >>> from ruts.visualizers import highlight
@@ -165,13 +123,21 @@ class HighlightedText:
 
     Методы:
         to_html: Получение HTML-разметки подсвеченного текста
+        css: Получение стилей слоев
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc,
+            а стоп-слова или штампы - набором строк
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если задан неизвестный или недоступный источнику слой
-        ParameterError: Если пороги слоев заданы некорректно
+            или пороги слоев заданы некорректно
     """
+
+    layers_desc = HIGHLIGHT_LAYERS_DESC
+    default_layers = HIGHLIGHT_DEFAULT_LAYERS
+    layer_annotations = HIGHLIGHT_LAYER_ANNOTATIONS
+    layer_styles = HIGHLIGHT_LAYER_STYLES
+    css_prefix = "ruts"
 
     def __init__(
         self,
@@ -183,29 +149,14 @@ class HighlightedText:
         cliches: Collection[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
-        if isinstance(source, Doc):
-            self.text = source.text
-            words = get_doc_words(source)
-            sents = get_doc_sents(source) if source.has_annotation("SENT_START") else None
-            doc = source if source.has_annotation("DEP") else None
-        elif isinstance(source, str):
-            self.text = source
-            words = get_text_words(source)
-            sents = get_text_sents(source, words)
-            doc = None
-        else:
-            raise SourceTypeError("Некорректный источник данных")
-        if not words:
-            raise SourceError("В источнике данных отсутствуют слова")
+        check_integer(long_sent_word_factor, "number of words in a long sentence")
+        check_integer(complex_syl_factor, "number of syllables in a complex word")
         if long_sent_word_factor < 1:
             raise ParameterError("Количество слов в длинном предложении должно быть больше 0")
         if complex_syl_factor < 1:
             raise ParameterError("Количество слогов в сложном слове должно быть больше 0")
-        try:
-            threshold_ok = 0 < alliteration_threshold <= 1
-        except TypeError:
-            threshold_ok = False
-        if not threshold_ok:
+        check_number(alliteration_threshold, "threshold of the alliteration")
+        if not 0 < alliteration_threshold <= 1:
             raise ParameterError("Порог аллитерации должен быть в интервале (0, 1]")
         if stopwords is not None:
             check_words(stopwords, "stopwords", ordered=False)
@@ -213,89 +164,55 @@ class HighlightedText:
         if cliches is not None:
             check_words(cliches, "clichés", ordered=False)
             cliches = tuple(cliches)
-        available = [
-            layer
-            for layer in HIGHLIGHT_LAYERS_DESC
-            if not (layer == "long_sents" and sents is None)
-            and not (layer in HIGHLIGHT_SYNTAX_LAYERS and doc is None)
-        ]
-        self.layers = select_layers(layers, available)
+        self._long_sent_word_factor = long_sent_word_factor
+        self._complex_syl_factor = complex_syl_factor
+        self._stopwords = stopwords
+        self._cliches = cliches
+        self._alliteration_threshold = alliteration_threshold
+        super().__init__(source, layers)
 
-        finders: dict[str, Callable[[], list[Highlight]]] = {
-            "long_sents": lambda: find_long_sents(sents or [], long_sent_word_factor),
-            "complex_words": lambda: find_complex_words(words, complex_syl_factor),
-            "rare_words": lambda: find_rare_words(words),
-            "stopwords": lambda: find_stopwords(words, stopwords),
-            "verbal_nouns": lambda: find_verbal_nouns(words),
-            "compound_prepositions": lambda: find_compound_prepositions(words),
-            "cliches": lambda: find_cliches(words, cliches),
-            "parentheticals": lambda: find_parentheticals(words),
-            "connectors": lambda: find_connector_highlights(words, sents),
-            "alliteration": lambda: find_alliteration(words, alliteration_threshold, sents),
-            "passive": lambda: find_passive(doc) if doc else [],
-            "participle_clauses": lambda: find_participle_clauses(doc) if doc else [],
-            "converb_clauses": lambda: find_converb_clauses(doc) if doc else [],
-            "genitive_chains": lambda: find_genitive_chains(doc) if doc else [],
-            "split_predicates": lambda: find_split_predicate_highlights(doc) if doc else [],
-        }
-        highlights = [h for layer in self.layers for h in finders[layer]()]
-        self.highlights = tuple(sorted(highlights, key=lambda h: (h.start, -h.end)))
+    def iter_words(self, text: str) -> Iterator[tuple[int, int, str]]:
+        """Слова строки с позициями по iter_text_words, без знаков препинания"""
+        return iter_text_words(text)
 
-    @property
-    def counts(self) -> dict[str, int]:
-        return {
-            layer: sum(1 for h in self.highlights if h.layer == layer) for layer in self.layers
-        }
+    def iter_sents(self, text: str) -> Iterator[tuple[int, int, str]]:
+        """Предложения строки с позициями по razdel"""
+        return ((sent.start, sent.stop, sent.text) for sent in sentenize(text))
 
-    def to_html(self, legend: bool = True, css: bool = True) -> str:
+    def doc_words(self, doc: Doc) -> list[Word]:
+        """Слова объекта Doc с позициями по get_doc_words"""
+        return get_doc_words(doc)
+
+    def find(
+        self, layer: str, words: Sequence[Word], sents: Sequence[Sent], doc: Doc | None
+    ) -> list[Highlight]:
         """
-        Получение HTML-разметки подсвеченного текста
-
-        Описание:
-            Разметка - блок div с классом ruts-highlight, внутри легенда со счетчиками
-            и текст, в котором подсвеченные отрезки обернуты в span с классами
-            ruts-hl и ruts-hl-<слой>; пояснения фрагментов выводятся в атрибут title
-            Переносы строк сохраняются как символьные ссылки, поэтому разметку можно
-            вставлять в Markdown без пустых строк внутри блока
+        Поиск фрагментов слоя
 
         Аргументы:
-            legend (bool): Добавлять легенду со счетчиками фрагментов
-            css (bool): Добавлять стили слоев
+            layer (str): Слой подсветки
+            words (list[Word]): Слова текста с позициями
+            sents (list[Sent]): Предложения текста с позициями
+            doc (Doc): Объект Doc источника; None для строки
 
         Вывод:
-            str: HTML-разметка
+            list[Highlight]: Фрагменты слоя
         """
-        parts = ['<div class="ruts-highlight">']
-        if css:
-            parts.append(f"<style>{CSS}</style>")
-        if legend:
-            items = "".join(
-                f'<span><span class="ruts-hl ruts-hl-{layer}">{HIGHLIGHT_LAYERS_DESC[layer]}</span>'
-                f'<span class="ruts-highlight-count">{count}</span></span>'
-                for layer, count in self.counts.items()
-            )
-            parts.append(f'<div class="ruts-highlight-legend">{items}</div>')
-        parts.append(f'<div class="ruts-highlight-text">{self._render_text()}</div></div>')
-        return "".join(parts)
-
-    def _repr_html_(self) -> str:
-        return self.to_html()
-
-    def __repr__(self) -> str:
-        return f"HighlightedText(counts={self.counts})"
-
-    def _render_text(self) -> str:
-        chunks = []
-        for start, end, active in split_segments(len(self.text), self.highlights):
-            chunk = html.escape(self.text[start:end]).replace("\n", "&#10;")
-            if active:
-                active.sort(key=lambda h: self.layers.index(h.layer))
-                classes = " ".join(f"ruts-hl-{h.layer}" for h in active)
-                notes = "; ".join(dict.fromkeys(h.note for h in active if h.note))
-                title = f' title="{html.escape(notes)}"' if notes else ""
-                chunk = f'<span class="ruts-hl {classes}"{title}>{chunk}</span>'
-            chunks.append(chunk)
-        return "".join(chunks)
+        if layer in SYNTAX_FINDERS:
+            return SYNTAX_FINDERS[layer](doc) if doc is not None else []
+        finders: dict[str, Callable[[], list[Highlight]]] = {
+            "long_sents": lambda: find_long_sents(sents, self._long_sent_word_factor),
+            "complex_words": lambda: find_complex_words(words, self._complex_syl_factor),
+            "rare_words": lambda: find_rare_words(words),
+            "stopwords": lambda: find_stopwords(words, self._stopwords),
+            "verbal_nouns": lambda: find_verbal_nouns(words),
+            "compound_prepositions": lambda: find_compound_prepositions(words),
+            "cliches": lambda: find_cliches(words, self._cliches),
+            "parentheticals": lambda: find_parentheticals(words),
+            "connectors": lambda: find_connector_highlights(words, sents),
+            "alliteration": lambda: find_alliteration(words, self._alliteration_threshold, sents),
+        }
+        return finders[layer]()
 
 
 def highlight(
@@ -343,136 +260,29 @@ def highlight(
     )
 
 
-def select_layers(layers: Sequence[str] | str | None, available: Sequence[str]) -> tuple[str, ...]:
-    """
-    Выбор слоев подсветки
-
-    Аргументы:
-        layers (list[str]|str): Запрошенные слои; если не заданы, берутся слои
-            HIGHLIGHT_DEFAULT_LAYERS из доступных, "all" - все доступные
-        available (list[str]): Слои, доступные источнику данных
-
-    Вывод:
-        tuple[str]: Слои в порядке отрисовки
-
-    Исключения:
-        ParameterError: Если задан неизвестный или недоступный источнику слой
-            или слои переданы не списком названий
-    """
-    if layers is None:
-        return tuple(layer for layer in HIGHLIGHT_DEFAULT_LAYERS if layer in available)
-    if layers == "all":
-        return tuple(available)
-    if isinstance(layers, str):
-        layers = [layers]
-    try:
-        layers = list(layers)
-    except TypeError as e:
-        raise ParameterError("Слои подсветки должны быть списком названий или строкой") from e
-    for layer in layers:
-        if layer not in HIGHLIGHT_LAYERS_DESC:
-            raise ParameterError(f"Неизвестный слой подсветки: {layer}")
-        if layer not in available:
-            requirement = (
-                "границ предложений в объекте Doc"
-                if layer == "long_sents"
-                else "объекта Doc с разбором зависимостей"
-            )
-            raise ParameterError(f"Слой {layer} требует {requirement}")
-    return tuple(layer for layer in HIGHLIGHT_LAYERS_DESC if layer in layers)
-
-
-def get_text_words(text: str) -> list[Word]:
-    """
-    Извлечение слов с позициями из строки
-
-    Описание:
-        Токенизация razdel, знаки препинания отбрасываются как в WordsExtractor
-
-    Аргументы:
-        text (str): Строка текста
-
-    Вывод:
-        list[Word]: Список слов с позициями
-    """
-    return [Word(start, end, text) for start, end, text in iter_text_words(text)]
-
-
-def get_text_sents(text: str, words: Sequence[Word]) -> list[Sent]:
-    """
-    Извлечение предложений с позициями и числом слов из строки
-
-    Описание:
-        Разбиение на предложения razdel, как в SentsExtractor; слова относятся
-        к предложению по позиции первого символа
-
-    Аргументы:
-        text (str): Строка текста
-        words (list[Word]): Слова текста с позициями
-
-    Вывод:
-        list[Sent]: Список предложений с позициями и числом слов
-    """
-    sents = []
-    index = 0
-    for sent in sentenize(text):
-        n_words = 0
-        while index < len(words) and words[index].start < sent.stop:
-            n_words += words[index].start >= sent.start
-            index += 1
-        sents.append(Sent(sent.start, sent.stop, n_words))
-    return sents
-
-
 def get_doc_words(doc: Doc) -> list[Word]:
     """
     Извлечение слов с позициями из объекта Doc
 
     Описание:
-        Слова как в iter_doc_words, дефисные слова - одним словом; при разметке
-        частей речи слово получает часть речи UD (unit_pos)
+        Слова iter_doc_units, дефисные слова - одним словом; при разметке частей
+        речи слово получает часть речи UD (unit_pos)
 
     Аргументы:
         doc (Doc): Объект Doc
 
     Вывод:
-        list[Word]: Список слов с позициями
+        list[Word]: Слова с позициями
     """
     tagged = doc.has_annotation("POS")
-    return [
-        Word(
-            unit[0].idx,
-            unit[-1].idx + len(unit[-1]),
-            unit_text(unit),
-            unit_pos(unit) if tagged else None,
-        )
-        for unit in iter_doc_units(doc, join_hyphens=True)
-    ]
-
-
-def get_doc_sents(doc: Doc) -> list[Sent]:
-    """
-    Извлечение предложений с позициями и числом слов из объекта Doc
-
-    Описание:
-        Пробельные токены в начале и конце предложения не входят в его позиции:
-        sentencizer ставит границу на перенос строки после точки; слова считаются
-        как в iter_doc_words, дефисные слова - одним словом
-
-    Аргументы:
-        doc (Doc): Объект Doc с границами предложений
-
-    Вывод:
-        list[Sent]: Список предложений с позициями и числом слов
-    """
-    sents = []
-    for sent in doc.sents:
-        tokens = [token for token in sent if not token.is_space]
-        if tokens:
-            start = min(token.idx for token in tokens)
-            end = max(token.idx + len(token) for token in tokens)
-            sents.append(Sent(start, end, sum(1 for _ in iter_doc_words(sent, join_hyphens=True))))
-    return sents
+    words = []
+    for unit in iter_doc_units(doc, join_hyphens=True):
+        text = unit_text(unit)
+        word = text.lstrip(BYTE_ORDER_MARK)
+        start = unit[0].idx + len(text) - len(word)
+        end = unit[-1].idx + len(unit[-1])
+        words.append(Word(start, end, word, unit_pos(unit) if tagged else None))
+    return words
 
 
 def plural(n: int, one: str, few: str, many: str) -> str:
@@ -742,32 +552,6 @@ def find_connector_highlights(
     return highlights
 
 
-def group_words_by_sents(words: Sequence[Word], sents: Sequence[Sent]) -> list[list[Word]]:
-    """
-    Группировка слов по предложениям
-
-    Описание:
-        Слова и предложения упорядочены по позиции, поэтому достаточно одного прохода;
-        слово относится к предложению по позиции первого символа, слова вне
-        предложений пропускаются
-
-    Аргументы:
-        words (list[Word]): Слова с позициями
-        sents (list[Sent]): Предложения с позициями
-
-    Вывод:
-        list[list[Word]]: Слова каждого предложения
-    """
-    groups: list[list[Word]] = [[] for _ in sents]
-    index = 0
-    for word in words:
-        while index < len(sents) and sents[index].end <= word.start:
-            index += 1
-        if index < len(sents) and sents[index].start <= word.start:
-            groups[index].append(word)
-    return groups
-
-
 def get_stem(word: str) -> str:
     """
     Получение основы словоформы
@@ -898,24 +682,6 @@ def find_alliteration(
     return highlights
 
 
-def tokens_span(tokens: Iterable[Token]) -> tuple[int, int]:
-    """
-    Вычисление позиций фрагмента текста, покрывающего слова
-
-    Описание:
-        Знаки препинания и пробельные токены не учитываются, поэтому запятые
-        на границах оборота во фрагмент не входят
-
-    Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
-
-    Вывод:
-        tuple[int, int]: Позиция первого символа и позиция за последним символом
-    """
-    words = get_words(tokens, join_hyphens=True)
-    return min(token.idx for token in words), max(token.idx + len(token) for token in words)
-
-
 def find_passive(doc: Doc) -> list[Highlight]:
     """
     Поиск пассивных глагольных форм
@@ -1042,30 +808,10 @@ def find_genitive_chains(doc: Doc) -> list[Highlight]:
     return highlights
 
 
-def split_segments(
-    length: int, highlights: Sequence[Highlight]
-) -> Iterator[tuple[int, int, list[Highlight]]]:
-    """
-    Разбиение текста на отрезки с одинаковым набором фрагментов
-
-    Описание:
-        Границы отрезков - начала и концы всех фрагментов; пересекающиеся
-        и вложенные фрагменты разных слоев дают отрезки с несколькими слоями
-
-    Аргументы:
-        length (int): Длина текста
-        highlights (list[Highlight]): Фрагменты, отсортированные по позиции начала
-
-    Вывод:
-        iterator[tuple[int, int, list[Highlight]]]: Позиции отрезка и покрывающие его фрагменты
-    """
-    bounds = sorted({0, length, *(h.start for h in highlights), *(h.end for h in highlights)})
-    pending = sorted(highlights, key=lambda h: h.start)
-    active: list[Highlight] = []
-    index = 0
-    for start, end in pairwise(bounds):
-        while index < len(pending) and pending[index].start <= start:
-            active.append(pending[index])
-            index += 1
-        active = [h for h in active if h.end > start]
-        yield start, end, list(active)
+SYNTAX_FINDERS: dict[str, Callable[[Doc], list[Highlight]]] = {
+    "passive": find_passive,
+    "participle_clauses": find_participle_clauses,
+    "converb_clauses": find_converb_clauses,
+    "genitive_chains": find_genitive_chains,
+    "split_predicates": find_split_predicate_highlights,
+}
