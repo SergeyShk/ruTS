@@ -2,10 +2,10 @@ import tempfile
 from pathlib import Path
 
 import pytest
+from anyts.datasets import sha256
 
 from ruts.datasets import PoetryCorpus, poetry_corpus as poetry_corpus_module
 from ruts.datasets.poetry_corpus import FILE_SHA256, FILENAME, load_records
-from ruts.utils import sha256
 
 XML = """<?xml version="1.0" encoding="UTF-8"?><items>
 <item><themes></themes><author>Михаил Лермонтов</author><date_from>1829</date_from>

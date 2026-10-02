@@ -6,11 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from anyts.datasets import check_limit, download_file, extract_archive, sha256, to_path
 
-from ..constants import DEFAULT_DATA_DIR, RU_VOWELS
+from ..constants import DEFAULT_DATA_DIR, RU_VOWELS, USER_AGENT
 from ..exceptions import DatasetNotFoundError, DownloadError
-from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
-from .dataset import Dataset, check_limit
+from ..utils import normalize_yo
+from .dataset import Dataset
 
 NAME = "stress_dict"
 META = {
@@ -190,9 +191,10 @@ class StressDict(Dataset):
         archive = self.data_dir.joinpath(ARCHIVE)
         filepath = download_file(
             url=DOWNLOAD_URL,
-            filename=ARCHIVE,
             dirpath=self.data_dir,
+            filename=ARCHIVE,
             force=force,
+            user_agent=USER_AGENT,
         )
         if filepath or not self._filepath.is_file():
             if sha256(archive) != ARCHIVE_SHA256:

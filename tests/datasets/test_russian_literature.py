@@ -4,7 +4,9 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+import anyts.datasets
 import pytest
+from anyts.datasets import sha256
 
 from ruts.datasets import RussianLiterature, russian_literature as russian_literature_module
 from ruts.datasets.russian_literature import (
@@ -18,7 +20,6 @@ from ruts.datasets.russian_literature import (
     read_text,
     strip_header,
 )
-from ruts.utils import sha256
 
 TEXTS = {
     "prose/Chekhov/Агафья.txt": "Антон Чехов\nАГАФЬЯ\nАгафья. Рассказ о деревне.",
@@ -221,7 +222,7 @@ def test_download_extracts(tmp_path, monkeypatch):
             make_archive(tmp_path)
         return str(archive)
 
-    monkeypatch.setattr(russian_literature_module, "download_file", fake_download)
+    monkeypatch.setattr(anyts.datasets, "download_file", fake_download)
     with pytest.raises(RuntimeError):
         dataset.download()
     assert calls == [False, True]
@@ -236,10 +237,10 @@ def test_download_extracts(tmp_path, monkeypatch):
         "Борис Годунов",
     ]
     assert len(list(dataset)) == len(TEXTS)
-    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: "")
+    monkeypatch.setattr(anyts.datasets, "download_file", lambda **kwargs: "")
     dataset.download()
     assert len(list(dataset)) == len(TEXTS)
-    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: str(archive))
+    monkeypatch.setattr(anyts.datasets, "download_file", lambda **kwargs: str(archive))
     dataset.download(force=True)
     assert sorted(path.name for path in dataset._dirpath.iterdir()) == [
         "poems",
@@ -248,7 +249,7 @@ def test_download_extracts(tmp_path, monkeypatch):
     ]
     assert len(list(dataset)) == len(TEXTS)
     shutil.rmtree(dataset._dirpath / "poems")
-    monkeypatch.setattr(russian_literature_module, "download_file", lambda **kwargs: "")
+    monkeypatch.setattr(anyts.datasets, "download_file", lambda **kwargs: "")
     dataset.download()
     assert len(list(dataset)) == len(TEXTS)
 
@@ -265,7 +266,7 @@ def test_download_retries_corrupted_archive(tmp_path, monkeypatch):
         archive.write_bytes(good[:100] if len(calls) == 1 else good)
         return str(archive)
 
-    monkeypatch.setattr(russian_literature_module, "download_file", fake_download)
+    monkeypatch.setattr(anyts.datasets, "download_file", fake_download)
     monkeypatch.setattr(
         russian_literature_module, "ARCHIVE_SHA256", sha256(tmp_path / "good" / ARCHIVE)
     )

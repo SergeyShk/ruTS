@@ -1,14 +1,15 @@
 import re
-import shutil
 from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..constants import DEFAULT_DATA_DIR
-from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
-from ..utils import download_file, extract_archive, normalize_yo, sha256, to_path
-from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
+from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, to_path
+
+from ..constants import DEFAULT_DATA_DIR, USER_AGENT
+from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
+from ..utils import normalize_yo
+from .dataset import Dataset, substring_filter
 
 NAME = "russian_literature"
 META = {
@@ -146,34 +147,19 @@ class RussianLiterature(Dataset):
             Архив репозитория по закрепленному коммиту сверяется с контрольной
             суммой SHA-256; поврежденный или подмененный файл (например, после
             оборванной загрузки) удаляется и загружается заново в том же вызове.
-            Если архив уже есть, а какой-то
-            из папок жанров нет, архив извлекается заново; прежняя директория
-            набора перед извлечением удаляется
+            Если архив уже есть, а какой-то из папок жанров нет, архив извлекается
+            заново; извлеченные файлы заменяют директорию набора, только когда
+            извлечение завершено
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            DownloadError: Если архив не прошел проверку
+            DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
+            DataFileError: Если проверенный архив не удалось извлечь
         """
-        filepath = download_file(
-            url=DOWNLOAD_URL, filename=ARCHIVE, dirpath=self.data_dir, force=force
-        )
         missing = any(not self._dirpath.joinpath(genre).is_dir() for genre in self.genres)
-        if filepath or missing:
-            if sha256(self._filepath) != ARCHIVE_SHA256:
-                self._filepath.unlink(missing_ok=True)
-                download_file(
-                    url=DOWNLOAD_URL, filename=ARCHIVE, dirpath=self.data_dir, force=True
-                )
-                if sha256(self._filepath) != ARCHIVE_SHA256:
-                    self._filepath.unlink(missing_ok=True)
-                    raise DownloadError(
-                        f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
-                        "повторите загрузку"
-                    )
-            shutil.rmtree(self._dirpath, ignore_errors=True)
-            extract_archive(self._filepath, self.data_dir)
+        fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
     def get_texts(

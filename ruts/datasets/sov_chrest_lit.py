@@ -3,10 +3,11 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..constants import DEFAULT_DATA_DIR
+from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, to_path
+
+from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import to_path
-from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
+from .dataset import Dataset, substring_filter
 
 NAME = "sov_chrest_lit"
 META = {
@@ -14,9 +15,10 @@ META = {
     "description": "Корпус советских хрестоматий по литературе",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = (
-    "https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/sov_chrest_lit.tar.xz"
-)
+VERSION = 1
+ARCHIVE = f"{NAME}_v{VERSION}.tar.xz"
+DOWNLOAD_URL = f"https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/{ARCHIVE}"
+ARCHIVE_SHA256 = "d1f3b775b7dde6b2d975ade62b8a7fd99b2758e2ae4912ea307202209e0f82df"
 TEXT_TYPES = [
     "Рассказ",
     "Стихотворение",
@@ -61,7 +63,7 @@ class SovChLit(Dataset):
         {'author': 'С. Маршак',
          'book': 'Родная речь. Книга для чтения в I классе начальной школы',
          'category': 'Весна',
-         'file': ...Path('.../texts/sov_chrest_lit/grade_1/114'),
+         'file': ...Path('.../texts/sov_chrest_lit_v1/grade_1/114'),
          'grade': 1,
          'subject': 'Март',
          'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\\n'
@@ -86,8 +88,8 @@ class SovChLit(Dataset):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = tuple(f"grade_{grade}" for grade in GRADES)
-        self._filename = NAME + ".tar.xz"
-        self._filepath = self.data_dir.joinpath(self._filename)
+        self._filepath = self.data_dir.joinpath(ARCHIVE)
+        self._dirpath = self.data_dir.joinpath(f"{NAME}_v{VERSION}")
 
     @property
     def filepath(self) -> str | None:
@@ -108,7 +110,7 @@ class SovChLit(Dataset):
         Исключения:
             DatasetNotFoundError: Если набор данных не обнаружен
         """
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             if not dirpath.is_dir():
                 msg = (
@@ -125,19 +127,19 @@ class SovChLit(Dataset):
         Загрузка набора данных из сети и извлечение файлов
 
         Описание:
-            Если архив уже есть, а какой-то из директорий уровней нет, архив
-            извлекается заново; архив, который не удалось извлечь, удаляется
-            и загружается заново в том же вызове
+            Архив сверяется с контрольной суммой SHA-256 и при несовпадении
+            загружается заново один раз; если архив уже есть, а какой-то
+            из директорий уровней нет, архив извлекается заново
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            DownloadError: Если не удалось загрузить архив
-            DataFileError: Если загруженный архив не удалось извлечь
+            DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
+            DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
-        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
+        missing = any(not self._dirpath.joinpath(label).is_dir() for label in self.labels)
+        fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
     def get_texts(
@@ -223,7 +225,7 @@ class SovChLit(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         self.check_data()
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             filepaths = (path for path in dirpath.iterdir() if path.name.isdigit())
             for filepath in sorted(filepaths, key=lambda path: int(path.name)):

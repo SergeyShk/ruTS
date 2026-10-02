@@ -1,4 +1,3 @@
-import re
 import xml.etree.ElementTree as ET
 from collections import Counter
 from collections.abc import Generator
@@ -6,10 +5,19 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..constants import DEFAULT_DATA_DIR
+from anyts.datasets import (
+    Filters,
+    check_limit,
+    download_file,
+    length_filters,
+    sha256,
+    to_path,
+)
+
+from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
-from ..utils import download_file, sha256, to_path
-from .dataset import Dataset, Filters, check_limit, length_filters, substring_filter
+from ..utils import normalize_yo
+from .dataset import Dataset, substring_filter
 
 NAME = "poetry_corpus"
 META = {
@@ -144,10 +152,22 @@ class PoetryCorpus(Dataset):
         Исключения:
             DownloadError: Если файл не прошел проверку
         """
-        download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=force)
+        download_file(
+            url=DOWNLOAD_URL,
+            dirpath=self.data_dir,
+            filename=FILENAME,
+            force=force,
+            user_agent=USER_AGENT,
+        )
         if self._filepath.is_file() and sha256(self._filepath) != FILE_SHA256:
             self._filepath.unlink()
-            download_file(url=DOWNLOAD_URL, filename=FILENAME, dirpath=self.data_dir, force=True)
+            download_file(
+                url=DOWNLOAD_URL,
+                dirpath=self.data_dir,
+                filename=FILENAME,
+                force=True,
+                user_agent=USER_AGENT,
+            )
             if sha256(self._filepath) != FILE_SHA256:
                 self._filepath.unlink(missing_ok=True)
                 raise DownloadError(
@@ -282,9 +302,11 @@ class PoetryCorpus(Dataset):
         if author is not None:
             filters.append(substring_filter("author", author))
         if theme is not None:
-            pattern_theme = re.compile(re.escape(theme), re.IGNORECASE)
+            if not isinstance(theme, str):
+                raise ParameterError(f"Тема должна быть строкой, а не {type(theme).__name__}")
+            needle = normalize_yo(theme)
             filters.append(
-                lambda record: any(pattern_theme.search(item) for item in record["themes"])
+                lambda record: any(needle in normalize_yo(item) for item in record["themes"])
             )
         if year_from is not None:
             filters.append(

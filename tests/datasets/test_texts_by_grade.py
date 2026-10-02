@@ -1,19 +1,20 @@
 import shutil
 from pathlib import Path
 
+import anyts.datasets as dataset_module
 import numpy as np
 import pytest
+from anyts.datasets import extract_archive
 from scipy.stats import spearmanr
 
 from ruts import ReadabilityStats
 from ruts.constants import READABILITY_GRADE_STATS
-from ruts.datasets import dataset as dataset_module
+from ruts.datasets import texts_by_grade as texts_by_grade_module
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
-from ruts.exceptions import DataFileError, ParameterError
-from ruts.utils import extract_archive
+from ruts.exceptions import DownloadError, ParameterError
 
 BUNDLED_ARCHIVE = (
-    Path(__file__).parents[2] / "ruts" / "datasets" / "data" / "texts_by_grade.tar.xz"
+    Path(__file__).parents[2] / "ruts" / "datasets" / "data" / texts_by_grade_module.ARCHIVE
 )
 
 
@@ -109,7 +110,7 @@ def test_get_records_commented_source(dataset):
 
 
 def test_iter_ignores_foreign_files(dataset):
-    stray = dataset.data_dir / "texts_by_grade" / "grade_1" / ".DS_Store"
+    stray = dataset._dirpath / "grade_1" / ".DS_Store"
     stray.write_bytes(b"")
     try:
         assert sum(1 for _ in dataset) == 68
@@ -147,7 +148,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     dataset._filepath.write_bytes(b"\x00" * 40)
     calls = []
 
-    def fake_download(url, filename, dirpath, force=False):
+    def fake_download(url, dirpath, filename, force=False, user_agent=None):
         calls.append(force)
         if not force and (Path(dirpath) / filename).is_file():
             return ""
@@ -162,7 +163,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     other._filepath.parent.mkdir()
     other._filepath.write_bytes(b"\x00" * 40)
 
-    def broken_download(url, filename, dirpath, force=False):
+    def broken_download(url, dirpath, filename, force=False, user_agent=None):
         path = Path(dirpath) / filename
         if not force and path.is_file():
             return ""
@@ -170,7 +171,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
         return str(path)
 
     monkeypatch.setattr(dataset_module, "download_file", broken_download)
-    with pytest.raises(DataFileError):
+    with pytest.raises(DownloadError):
         other.download()
 
 

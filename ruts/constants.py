@@ -13,6 +13,8 @@ DEFAULT_DATA_DIR = (
     if os.environ.get("RUTS_DATA_DIR")
     else Path(__file__).parent.parent.resolve() / "ruts_data"
 )
+# Заголовок User-Agent загрузок наборов данных
+USER_AGENT = "ruTS"
 # Правила токенизатора spaCy для тире реплик - как utils.iter_tokens для строки
 # Буква с комбинирующими знаками: ударение и NFD-запись й и ё - не \w
 LETTER = r"(?:[^\W\d_]|[\u0300-\u036f])"

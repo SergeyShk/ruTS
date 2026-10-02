@@ -4,10 +4,11 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..constants import DEFAULT_DATA_DIR
+from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, to_path
+
+from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import to_path
-from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
+from .dataset import Dataset, substring_filter
 
 NAME = "texts_by_grade"
 META = {
@@ -16,9 +17,10 @@ META = {
     "author": "Бегтин И.В.",
     "license": "CC0 1.0",
 }
-DOWNLOAD_URL = (
-    "https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/texts_by_grade.tar.xz"
-)
+VERSION = 1
+ARCHIVE = f"{NAME}_v{VERSION}.tar.xz"
+DOWNLOAD_URL = f"https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/{ARCHIVE}"
+ARCHIVE_SHA256 = "ea49d6153c08414a30e50cc76e39c16da2adf437c78dbf88630472fd5f855952"
 GRADES = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 17)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
@@ -57,7 +59,7 @@ class TextsByGrade(Dataset):
     Итерация по набору данных:
         >>> for record in tbg.get_records(grade=1, subject='Ряба'):
         ...     pprint(record)
-        {'file': ...Path('.../texts/texts_by_grade/grade_1/9'),
+        {'file': ...Path('.../texts/texts_by_grade_v1/grade_1/9'),
          'grade': 1,
          'source': 'http://skazki.org.ru/tales/yaichko/',
          'subject': 'Курочка Ряба',
@@ -80,8 +82,8 @@ class TextsByGrade(Dataset):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = tuple(f"grade_{grade}" for grade in GRADES)
-        self._filename = NAME + ".tar.xz"
-        self._filepath = self.data_dir.joinpath(self._filename)
+        self._filepath = self.data_dir.joinpath(ARCHIVE)
+        self._dirpath = self.data_dir.joinpath(f"{NAME}_v{VERSION}")
 
     @property
     def filepath(self) -> str | None:
@@ -102,7 +104,7 @@ class TextsByGrade(Dataset):
         Исключения:
             DatasetNotFoundError: Если набор данных не обнаружен
         """
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             if not dirpath.is_dir():
                 msg = (
@@ -119,19 +121,19 @@ class TextsByGrade(Dataset):
         Загрузка набора данных из сети и извлечение файлов
 
         Описание:
-            Если архив уже есть, а какой-то из директорий уровней нет, архив
-            извлекается заново; архив, который не удалось извлечь, удаляется
-            и загружается заново в том же вызове
+            Архив сверяется с контрольной суммой SHA-256 и при несовпадении
+            загружается заново один раз; если архив уже есть, а какой-то
+            из директорий уровней нет, архив извлекается заново
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            DownloadError: Если не удалось загрузить архив
-            DataFileError: Если загруженный архив не удалось извлечь
+            DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
+            DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
-        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
+        missing = any(not self._dirpath.joinpath(label).is_dir() for label in self.labels)
+        fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
     def get_texts(
@@ -193,7 +195,7 @@ class TextsByGrade(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         self.check_data()
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             filepaths = (path for path in dirpath.iterdir() if re.fullmatch(r"[0-9]+", path.name))
             for filepath in sorted(filepaths, key=lambda path: int(path.name)):

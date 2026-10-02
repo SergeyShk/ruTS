@@ -4,11 +4,11 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from anyts.datasets import sha256
 
 from ruts.datasets import FreqDict, freq2011 as freq2011_module
 from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm
 from ruts.exceptions import ParameterError
-from ruts.utils import sha256
 
 ROWS = (
     ("а", "conj", 8198.0, 100, 97, 32332),
@@ -158,7 +158,7 @@ def test_check_data_once(tmp_path, monkeypatch):
 
 
 def test_download_corrupted(tmp_path, monkeypatch):
-    def fake_download(url, filename, dirpath, force):
+    def fake_download(url, dirpath, filename, force, user_agent):
         return str(make_archive(Path(dirpath), b"<html>not an archive</html>"))
 
     monkeypatch.setattr(freq2011_module, "download_file", fake_download)
