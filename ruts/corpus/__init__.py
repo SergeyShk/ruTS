@@ -13,7 +13,7 @@ from .compare import (
     text_features,
 )
 from .dispersion import Dispersion, dispersion
-from .keyness import FrequencyReference, Keyword, keyness
+from .keyness import FrequencyReference, Keyword, check_keyness_params, keyness
 from .kwic import Concordance, format_kwic, kwic, print_kwic
 from .stylometry import (
     ZetaScore,
@@ -39,6 +39,7 @@ __all__ = [
     "calc_cliff_delta",
     "calc_cohen_d",
     "check_comparison_params",
+    "check_keyness_params",
     "collocations",
     "compare_corpora",
     "compare_features",

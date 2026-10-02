@@ -13,7 +13,7 @@ from anyts.corpus.keyness import (
     calc_log_ratio as calc_log_ratio,
     calc_odds_ratio as calc_odds_ratio,
     calc_p_value as calc_p_value,
-    check_keyness_params,
+    check_keyness_params as check_keyness_params,
 )
 
 from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
