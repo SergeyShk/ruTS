@@ -935,6 +935,66 @@ DEMONSTRATIVE_LEMMAS = frozenset(
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10
+# Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS
+VISUALIZER_LABELS = {
+    "zipf": {
+        "title": "Закон Ципфа",
+        "xlabel": "Ранк слова",
+        "ylabel": "Частота слова",
+        "experimental": "Экспериментальный закон",
+        "theoretical": "Теоретический закон",
+        "fit": "Ципф-Мандельброт: q={q:.2f}, s={s:.2f}",
+    },
+    "zipf_theory": {"theoretical": "Теоретический закон"},
+    "heaps_plot": {
+        "title": "Закон Хипса",
+        "xlabel": "Длина текста, слов",
+        "ylabel": "Размер словаря",
+        "growth": "Рост словаря",
+        "fit": "K·N^β: K={k:.2f}, β={beta:.2f}",
+    },
+    "frequency_spectrum_plot": {
+        "title": "Спектр частот",
+        "xlabel": "Частота лексемы m",
+        "ylabel": "Число лексем V(m)",
+    },
+    "sentence_lengths_plot": {
+        "title": "Длины предложений",
+        "xlabel": "Номер предложения",
+        "ylabel": "Слов в предложении",
+        "length": "Длина предложения",
+        "average": "Скользящее среднее ({window})",
+        "distribution": "Распределение",
+    },
+    "fingerprinting": {"title": "Литературная дактилоскопия"},
+    "dispersion_plot": {
+        "title": "Лексическая дисперсия",
+        "xlabel": "Позиция слова в тексте",
+    },
+    "keyness_plot": {
+        "title": "Ключевые слова",
+        "xlabel": "|{field}|",
+        "xlabel_log": "|log2({field})|",
+        "target": "целевой корпус",
+        "reference": "эталонный корпус",
+    },
+    "dendrogram_plot": {"title": "Кластеризация текстов", "xlabel": "Расстояние"},
+    "pca_plot": {
+        "title": "Главные компоненты",
+        "xlabel": "Компонента 1 ({share:.1%})",
+        "ylabel": "Компонента 2 ({share:.1%})",
+    },
+    "mds_plot": {
+        "title": "Многомерное шкалирование",
+        "xlabel": "Измерение 1",
+        "ylabel": "Измерение 2",
+    },
+    "mendenhall_plot": {
+        "title": "Кривые Менденхолла",
+        "xlabel": "Длина слова, символов",
+        "ylabel": "Доля слов",
+    },
+}
 HIGHLIGHT_LAYERS_DESC = {
     "long_sents": "Длинные предложения",
     "complex_words": "Сложные слова",

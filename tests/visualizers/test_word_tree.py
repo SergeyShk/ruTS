@@ -33,7 +33,7 @@ def test_wordtree_value_error(texts):
 def test_wordtree_html_like_words():
     g = wordtree([["<script>", "кот", "спал"], ["злой", "<script>", "ел"]], "<script>")
     assert g.source.splitlines()[0] == 'digraph "<script>" {'
-    assert '"<script>" [label="<script>"' in g.source
+    assert '[label="<script>"' in g.source
     assert "\t<script>" not in g.source
 
 

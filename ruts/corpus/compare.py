@@ -24,8 +24,7 @@ from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
-from ..utils import iter_text_words
-from ..visualizers.sentences import count_words_by_spans
+from ..utils import count_words_by_spans, iter_text_words
 
 Features = Callable[[str], Mapping[str, float]]
 

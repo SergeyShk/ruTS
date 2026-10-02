@@ -40,7 +40,8 @@ def test_fingerprinting(texts):
     assert ax.figure.axes[1].get_label() == "<colorbar>"
     assert ax.get_xlim() == (-600.0, 600.0)
     assert ax.get_ylim() == (-500.0, 500.0)
-    assert len(ax.patches) == 2
+    assert len(ax.collections) == 2
+    assert ax.collections[0].get_cmap().name == "PuOr"
     plt.close("all")
 
 
@@ -61,9 +62,11 @@ def test_fingerprinting_metric(texts):
 def test_fingerprinting_callable_metric(texts):
     # любой вызываемый объект, а не только функция: partial, метод, класс
     by_length = partial(lambda segment, scale: scale * len(segment), scale=0.1)
-    colors = [patch.get_facecolor() for patch in fingerprinting(texts, metric=by_length).patches]
+    values = [
+        float(mesh.get_array()[0]) for mesh in fingerprinting(texts, metric=by_length).collections
+    ]
     plt.close("all")
-    ttr_colors = [patch.get_facecolor() for patch in fingerprinting(texts).patches]
+    ttr_values = [float(mesh.get_array()[0]) for mesh in fingerprinting(texts).collections]
     plt.close("all")
-    assert len(set(ttr_colors)) == 1
-    assert len(set(colors)) == 2
+    assert ttr_values == [1.0, 1.0]
+    assert values == [pytest.approx(0.3), pytest.approx(0.4)]
