@@ -4,7 +4,7 @@ from functools import lru_cache
 from math import log2, nan
 
 import anyts
-import numpy as np
+from anyts.phonetics import calc_repetition_index
 from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
@@ -23,9 +23,6 @@ VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
 SOUNDS = VOWELS | CONSONANTS
 IOTATED = frozenset("еёюя")
 CACHE_SIZE = 1 << 16
-SOUNDS_ORDER = sorted(SOUNDS)
-CONSONANT_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in CONSONANTS]
-VOWEL_COLUMNS = [i for i, letter in enumerate(SOUNDS_ORDER) if letter in VOWELS]
 
 
 def check_params(window_len: int) -> None:
@@ -68,8 +65,8 @@ class PhonStats:
         'p_hiatus': 0.0,
         'cv_entropy': 3.13957226198672...,
         'hardness': 0.5625,
-        'alliteration': 0.9149440867502556,
-        'assonance': 0.802520508857449,
+        'alliteration': 1.0916179337231968,
+        'assonance': 0.8305084745762712,
         'p_open_syllables': 0.76,
         'mean_syllable_len': 2.6}
         >>> ps.syllables[:4]
@@ -173,9 +170,8 @@ class PhonStats:
         self.p_hiatus = _hiatus(counts) / len(words)
         self.cv_entropy = _cv_entropy(counts)
         self.hardness = safe_divide(self.n_voiceless, self.n_vowels + self.n_sonorants, nan)
-        windows = _letter_windows(words, SOUNDS_ORDER, window_len)
-        self.alliteration = _repetition_index(windows, CONSONANT_COLUMNS, len(words), window_len)
-        self.assonance = _repetition_index(windows, VOWEL_COLUMNS, len(words), window_len)
+        self.alliteration = calc_repetition_index(words, window_len, CONSONANTS)
+        self.assonance = calc_repetition_index(words, window_len, VOWELS)
         n_syllables = sum(syllables.values())
         self.p_open_syllables = safe_divide(
             sum(count for syllable, count in syllables.items() if is_open_syllable(syllable)),
@@ -362,63 +358,6 @@ def _cv_entropy(counts: Counter[str]) -> float:
     return -sum(count / total * log2(count / total) for count in patterns.values()) or 0.0
 
 
-def _calc_repetition_index(text: Sequence[str], letters: frozenset[str], window_len: int) -> float:
-    """
-    Отношение наблюдаемого числа окон с повтором буквы в разных словах к ожидаемому
-    при независимом распределении букв по словам
-    """
-    alphabet = sorted(letters)
-    windows = _letter_windows([word.lower() for word in text], alphabet, window_len)
-    return _repetition_index(windows, list(range(len(alphabet))), len(text), window_len)
-
-
-def _letter_windows(
-    words: Sequence[str], alphabet: Sequence[str], window_len: int
-) -> tuple[np.ndarray, np.ndarray] | None:
-    """
-    Число слов с каждой буквой в каждом окне и во всем тексте
-
-    Описание:
-        Матрица «словоформа × буква» индексируется словами текста, кумулятивные суммы
-        по словам дают счетчики окон разностью со сдвигом на окно; None для текста
-        короче окна
-    """
-    n_words = len(words)
-    if n_words < window_len:
-        return None
-    unique = list(dict.fromkeys(words))
-    presence = np.array(
-        [[letter in word for letter in alphabet] for word in unique], dtype=np.int32
-    ).reshape(len(unique), len(alphabet))
-    indices = dict(zip(unique, range(len(unique)), strict=True))
-    rows = np.fromiter(map(indices.__getitem__, words), dtype=np.int64, count=n_words)
-    cumulative = np.zeros((n_words + 1, len(alphabet)), dtype=np.int32)
-    np.cumsum(presence[rows], axis=0, out=cumulative[1:])
-    return cumulative[window_len:] - cumulative[:-window_len], cumulative[-1]
-
-
-def _repetition_index(
-    windows: tuple[np.ndarray, np.ndarray] | None,
-    columns: Sequence[int],
-    n_words: int,
-    window_len: int,
-) -> float:
-    """Индекс повторов по счетчикам окон для столбцов выбранных букв"""
-    if windows is None:
-        return nan
-    in_window, totals = windows
-    n_windows = n_words - window_len + 1
-    observed = int((in_window[:, columns] >= 2).sum())
-    expected = 0.0
-    for count in totals[columns]:
-        if not count:
-            continue
-        p = int(count) / n_words
-        p_single = window_len * p * (1 - p) ** (window_len - 1)
-        expected += n_windows * (1 - (1 - p) ** window_len - p_single)
-    return safe_divide(observed, expected, nan)
-
-
 def calc_alliteration(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> float:
     """
     Вычисление индекса аллитерации
@@ -426,7 +365,7 @@ def calc_alliteration(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) ->
     Описание:
         Отношение наблюдаемого числа окон из window_len соседних слов, в которых один
         и тот же согласный встречается минимум в двух словах, к ожидаемому при
-        независимом распределении согласных по словам (сумма по всем согласным)
+        случайном порядке слов (сумма по всем согласным)
         Ожидаемое считается по частотам согласных в самом тексте, поэтому индекс
         показывает, сгруппированы ли повторы в соседних словах, а не общую частоту звука
         Значение около 1 - повторы согласных случайны, заметно больше 1 - аллитерация
@@ -437,11 +376,11 @@ def calc_alliteration(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) ->
         window_len (int): Размер окна в словах
 
     Вывод:
-        float: Значение индекса, nan для текстов короче окна
+        float: Значение индекса, nan для текстов короче окна или без согласной в двух словах
     """
     check_words(text)
     check_params(window_len)
-    return _calc_repetition_index(text, CONSONANTS, window_len)
+    return calc_repetition_index([word.lower() for word in text], window_len, CONSONANTS)
 
 
 def calc_assonance(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> float:
@@ -450,8 +389,8 @@ def calc_assonance(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> fl
 
     Описание:
         Отношение наблюдаемого числа окон из window_len соседних слов, в которых одна
-        и та же гласная встречается минимум в двух словах, к ожидаемому при независимом
-        распределении гласных по словам (сумма по всем гласным)
+        и та же гласная встречается минимум в двух словах, к ожидаемому при случайном
+        порядке слов (сумма по всем гласным)
         Ожидаемое считается по частотам гласных в самом тексте, поэтому индекс
         показывает, сгруппированы ли повторы в соседних словах, а не общую частоту звука
         Считается по всем гласным буквам без учета ударения и редукции
@@ -461,8 +400,8 @@ def calc_assonance(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> fl
         window_len (int): Размер окна в словах
 
     Вывод:
-        float: Значение индекса, nan для текстов короче окна
+        float: Значение индекса, nan для текстов короче окна или без гласной в двух словах
     """
     check_words(text)
     check_params(window_len)
-    return _calc_repetition_index(text, VOWELS, window_len)
+    return calc_repetition_index([word.lower() for word in text], window_len, VOWELS)
