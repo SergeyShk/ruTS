@@ -170,7 +170,7 @@ class DiversityStats(anyts.DiversityStats):
         log_base: float = DIVERSITY_LOG_BASE,
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("The word extractor must be a WordsExtractor")
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)
         if isinstance(source, Doc) and words_extractor is None:
             words: Sequence[str] = [
@@ -180,7 +180,7 @@ class DiversityStats(anyts.DiversityStats):
             text = source.text if isinstance(source, Doc) else source
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
-            raise SourceTypeError("The data source is set incorrectly")
+            raise SourceTypeError("Некорректный источник данных")
         super().__init__(
             [word.lower() for word in words],
             window_len,

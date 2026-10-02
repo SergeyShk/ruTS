@@ -4,8 +4,9 @@ from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
 from statistics import fmean
 
+import anyts
 import pymorphy3
-from anyts.utils import iter_doc_units, safe_divide
+from anyts.utils import check_words, iter_doc_units, safe_divide
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
@@ -119,6 +120,10 @@ class LexicalStats:
         words_extractor: WordsExtractor | None = None,
         freq_dict: FreqDict | None = None,
     ):
+        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
+        if freq_dict is not None and not isinstance(freq_dict, FreqDict):
+            raise SourceTypeError("Частотный словарь должен быть FreqDict")
         infos: list[WordInfo]
         if isinstance(source, Doc):
             units = [
@@ -432,5 +437,8 @@ def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:
     Вывод:
         float: Средний сюрпризал в битах, nan для пустого списка
     """
+    check_words(lemmas)
+    if not isinstance(freq_dict, FreqDict):
+        raise SourceTypeError("Частотный словарь должен быть FreqDict")
     floor = freq_dict.min_ipm
     return _mean([-log2(max(freq_dict.ipm(lemma), floor) / 1_000_000) for lemma in lemmas])

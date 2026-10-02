@@ -12,7 +12,7 @@ from anyts.corpus.stylometry import (
     z_scores as z_scores,
     zeta as zeta,
 )
-from anyts.utils import check_sequence, is_punctuation, iter_doc_units
+from anyts.utils import check_words, is_punctuation, iter_doc_units
 from spacy.tokens import Doc
 
 from ..constants import FUNCTION_UD_POS
@@ -51,7 +51,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
             for unit in units
         ]
     else:
-        check_sequence(source)
+        check_words(source)
         tags = [_word_pos(word) for word in source if not is_punctuation(word)]
     if not tags:
         raise SourceError("В источнике данных отсутствуют слова")

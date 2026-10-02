@@ -12,7 +12,7 @@ from functools import lru_cache
 from pathlib import Path, PurePosixPath
 
 import pymorphy3
-from anyts.utils import is_punctuation
+from anyts.utils import check_words, is_punctuation
 from razdel import tokenize
 from spacy.language import Language
 from spacy.tokenizer import Tokenizer
@@ -144,6 +144,7 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         list[tuple[int, int]]: Границы найденных словосочетаний как срезы words;
             пустые словосочетания пропускаются
     """
+    check_words(words)
     patterns = sorted(
         {pattern for phrase in phrases if (pattern := tuple(normalize_yo(phrase).split()))},
         key=len,

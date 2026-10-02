@@ -1,6 +1,7 @@
 from collections.abc import Callable, Mapping, Sequence
 from itertools import pairwise
 from math import floor, isnan, nan
+from numbers import Integral
 
 import numpy as np
 import pandas as pd
@@ -13,13 +14,13 @@ from anyts.corpus.compare import (
     compare_features as compare_features,
     holm_correction as holm_correction,
 )
-from anyts.utils import check_sequence
+from anyts.utils import check_integer, check_sequence, check_words
 from razdel import sentenize
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC, OPENING_MARKS, SYMMETRIC_MARKS
 from ..diversity_stats import DiversityStats
-from ..exceptions import ParameterError, SourceError
+from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
@@ -78,6 +79,8 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
     Исключения:
         ParameterError: Если размер окна или min_words меньше единицы
     """
+    if not isinstance(text, str):
+        raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
     _check_windows(window, min_words)
     min_words = _min_words(window, min_words)
     words = list(iter_text_words(text))
@@ -119,10 +122,14 @@ def _min_words(window: int | None, min_words: int | None) -> int:
 
 def _check_windows(window: int | None, min_words: int | None) -> None:
     """Проверка размера окна и наименьшего числа слов в нем"""
-    if window is not None and window < 1:
-        raise ParameterError("Размер окна должен быть больше 0")
-    if min_words is not None and min_words < 1:
-        raise ParameterError("Наименьшее число слов в окне должно быть больше 0")
+    if window is not None:
+        check_integer(window, "size of a window")
+        if window < 1:
+            raise ParameterError("Размер окна должен быть больше 0")
+    if min_words is not None:
+        check_integer(min_words, "smallest number of words in a window")
+        if min_words < 1:
+            raise ParameterError("Наименьшее число слов в окне должно быть больше 0")
 
 
 def text_features(text: str) -> dict[str, float]:
@@ -152,6 +159,8 @@ def text_features(text: str) -> dict[str, float]:
     Исключения:
         SourceError: Если в тексте нет слов
     """
+    if not isinstance(text, str):
+        raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
     positions = list(iter_text_words(text))
     spans = [(sent.start, sent.stop) for sent in sentenize(text) if sent.text.strip()]
     words = _FixedWordsExtractor(tuple(word for _, _, word in positions))
@@ -233,6 +242,9 @@ def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:
     Вывод:
         dict[str, float]: Признаки sents_mean, sents_std, sents_cv, sents_autocorr
     """
+    check_sequence(lengths, "sentence lengths")
+    if not all(isinstance(length, Integral) for length in lengths):
+        raise SourceTypeError("Длины предложений должны быть целыми числами")
     values = np.asarray(lengths, dtype=float)
     if not len(values):
         return dict.fromkeys(("sents_mean", "sents_std", "sents_cv", "sents_autocorr"), nan)
@@ -281,7 +293,9 @@ def corpus_features(
         SourceError: Если в корпусе нет окна из min_words и более слов
         ParameterError: Если размер окна или min_words меньше единицы
     """
-    check_sequence(texts, "текстов")
+    check_words(texts, "texts")
+    if not callable(features):
+        raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)
     rows = {}
     for text_index, text in enumerate(texts):
@@ -353,10 +367,12 @@ def compare_corpora(
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)
-    check_sequence(a, "texts")
-    check_sequence(b, "texts")
+    check_words(a, "texts")
+    check_words(b, "texts")
+    if features is not None and not callable(features):
+        raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)
-    feature_function = features or text_features
+    feature_function = text_features if features is None else features
     tables = []
     for label, corpus in zip(labels, (a, b), strict=False):
         try:

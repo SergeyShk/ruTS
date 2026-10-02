@@ -2,6 +2,7 @@ from collections import Counter, OrderedDict
 from functools import cached_property, lru_cache
 from math import nan
 
+import anyts
 import pymorphy3
 from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
@@ -104,6 +105,8 @@ class MorphStats:
     """
 
     def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
+        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         features: list[dict[str, str | None]]
         if isinstance(source, Doc):
             units = list(iter_doc_units(source, join_hyphens=True))

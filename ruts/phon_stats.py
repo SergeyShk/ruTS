@@ -3,8 +3,9 @@ from collections.abc import Sequence
 from functools import lru_cache
 from math import log2, nan
 
+import anyts
 import numpy as np
-from anyts.utils import iter_doc_words, safe_divide
+from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
@@ -37,6 +38,7 @@ def check_params(window_len: int) -> None:
     Исключения:
         ParameterError: Если размер окна меньше 2
     """
+    check_integer(window_len, "size of a window")
     if window_len < 2:
         raise ParameterError("Размер окна должен быть не меньше 2")
 
@@ -119,6 +121,9 @@ class PhonStats:
         words_extractor: WordsExtractor | None = None,
         window_len: int = PHON_WINDOW_LEN,
     ):
+        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
+        check_params(window_len)
         if isinstance(source, Doc):
             text = source.text
             words = tuple(word.lower() for _, _, word in iter_doc_words(source, join_hyphens=True))
@@ -131,7 +136,6 @@ class PhonStats:
             raise SourceTypeError("Некорректный источник данных")
         if not words:
             raise SourceError("В источнике данных отсутствуют слова")
-        check_params(window_len)
         self.words = words
         self.window_len = window_len
         self.syllables = tuple(_syllables(word) for word in words)
@@ -252,6 +256,7 @@ def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
     Вывод:
         dict[int, int]: Количество кластеров каждой длины
     """
+    check_words(text)
     return _consonant_clusters(Counter(text))
 
 
@@ -299,6 +304,7 @@ def calc_hiatus(text: Sequence[str]) -> int:
     Вывод:
         int: Количество зияний
     """
+    check_words(text)
     return _hiatus(Counter(text))
 
 
@@ -340,6 +346,7 @@ def calc_cv_entropy(text: Sequence[str]) -> float:
     Вывод:
         float: Значение энтропии, nan если в тексте нет слов с буквами
     """
+    check_words(text)
     return _cv_entropy(Counter(text))
 
 
@@ -432,6 +439,8 @@ def calc_alliteration(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) ->
     Вывод:
         float: Значение индекса, nan для текстов короче окна
     """
+    check_words(text)
+    check_params(window_len)
     return _calc_repetition_index(text, CONSONANTS, window_len)
 
 
@@ -454,4 +463,6 @@ def calc_assonance(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> fl
     Вывод:
         float: Значение индекса, nan для текстов короче окна
     """
+    check_words(text)
+    check_params(window_len)
     return _calc_repetition_index(text, VOWELS, window_len)

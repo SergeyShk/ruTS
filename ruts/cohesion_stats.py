@@ -5,6 +5,7 @@ from math import nan
 from statistics import fmean
 from typing import NamedTuple
 
+import anyts
 from anyts.cohesion import (
     Overlap as Overlap,
     calc_overlap as calc_overlap,
@@ -15,7 +16,7 @@ from anyts.cohesion import (
     dice as dice,
     dominant as dominant,
 )
-from anyts.utils import iter_doc_units, safe_divide
+from anyts.utils import check_words, iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -219,6 +220,10 @@ class CohesionStats:
         words_extractor: WordsExtractor | None = None,
         connectors: Mapping[str, tuple[str, str]] | None = None,
     ):
+        if sents_extractor is not None and not isinstance(sents_extractor, anyts.SentsExtractor):
+            raise SourceTypeError("Экстрактор предложений должен быть SentsExtractor")
+        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
@@ -489,6 +494,7 @@ def find_connectors(
     Исключения:
         ParameterError: Если в словаре встречается неизвестный класс или тип
     """
+    check_words(words)
     index = _normalize_connectors() if connectors is None else _normalize(connectors)
     return _find(words, index, sent_index, pos)
 
