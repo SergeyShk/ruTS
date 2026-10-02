@@ -64,6 +64,18 @@ Issues = "https://github.com/SergeyShk/ruTS/issues"
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
+[project.entry-points.spacy_factories]
+ruts_basic = "ruts.components:BasicStatsComponent"
+ruts_readability = "ruts.components:ReadabilityStatsComponent"
+ruts_diversity = "ruts.components:DiversityStatsComponent"
+ruts_morph = "ruts.components:MorphStatsComponent"
+ruts_syntax = "ruts.components:SyntaxStatsComponent"
+ruts_cohesion = "ruts.components:CohesionStatsComponent"
+ruts_lexical = "ruts.components:LexicalStatsComponent"
+ruts_style = "ruts.components:StyleStatsComponent"
+ruts_phon = "ruts.components:PhonStatsComponent"
+ruts_verse = "ruts.components:VerseStatsComponent"
+
 [tool.hatch.build.targets.wheel]
 packages = ["ruts"]
 exclude = ["ruts/datasets/data"]
