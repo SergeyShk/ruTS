@@ -920,7 +920,7 @@ def tokens_span(tokens: Iterable[Token]) -> tuple[int, int]:
     Вывод:
         tuple[int, int]: Позиция первого символа и позиция за последним символом
     """
-    words = get_words(tokens)
+    words = get_words(tokens, join_hyphens=True)
     return min(token.idx for token in words), max(token.idx + len(token) for token in words)
 
 
@@ -963,7 +963,7 @@ def find_participle_clauses(doc: Doc) -> list[Highlight]:
     for token in doc:
         if is_participle_clause(token):
             start, end = tokens_span(token.subtree)
-            n_words = len(get_words(token.subtree))
+            n_words = len(get_words(token.subtree, join_hyphens=True))
             note = f"причастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "participle_clauses", note))
     return highlights
@@ -983,7 +983,7 @@ def find_converb_clauses(doc: Doc) -> list[Highlight]:
     for token in doc:
         if is_converb_clause(token):
             start, end = tokens_span(token.subtree)
-            n_words = len(get_words(token.subtree))
+            n_words = len(get_words(token.subtree, join_hyphens=True))
             note = f"деепричастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "converb_clauses", note))
     return highlights

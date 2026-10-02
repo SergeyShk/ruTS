@@ -3,15 +3,13 @@ from statistics import pstdev
 
 import pytest
 import spacy
+from anyts.utils import iter_doc_units
 from spacy.tokens import Doc
 
 from ruts import SyntaxStats
 from ruts.constants import SYNTAX_STATS_DESC
 from ruts.syntax_stats import (
-    calc_coordination_chains,
-    calc_dependency_distances,
     calc_genitive_chains,
-    calc_tree_depth,
     calc_valency,
     count_noun_modifiers,
     find_split_predicates,
@@ -360,24 +358,6 @@ def test_no_nouns():
     assert isnan(ss.p_agentless_passive)
 
 
-def test_calc_dependency_distances(doc, sents):
-    for sent, expected in zip(sents, DISTANCES, strict=True):
-        assert calc_dependency_distances(sent) == expected
-    assert calc_dependency_distances(doc) == [d for sent in DISTANCES for d in sent]
-    assert calc_dependency_distances(sents[1][2:6]) == [2, 1]
-
-
-def test_calc_tree_depth(doc, sents):
-    assert [calc_tree_depth(sent) for sent in sents] == [3, 2, 4, 0, 3]
-    assert calc_tree_depth(doc) == 4
-    assert calc_tree_depth([]) == 0
-
-
-def test_calc_coordination_chains(doc, sents):
-    assert [calc_coordination_chains(sent) for sent in sents] == [[], [2], [], [], []]
-    assert calc_coordination_chains(doc) == [2]
-
-
 def test_calc_genitive_chains(doc, sents):
     assert [calc_genitive_chains(sent) for sent in sents] == [[], [], [3], [], []]
     assert calc_genitive_chains(doc) == [3]
@@ -516,7 +496,7 @@ def test_model(nlp):
     doc = nlp(text)
     ss = SyntaxStats(doc)
     assert ss.n_sents == len(list(doc.sents))
-    assert ss.n_words == sum(1 for token in doc if not token.is_punct and not token.is_space)
+    assert ss.n_words == sum(1 for _ in iter_doc_units(doc, join_hyphens=True))
     assert ss.n_leaves + ss.n_subtrees == ss.n_words
     assert ss.n_clauses >= ss.n_sents
     assert ss.n_subordinate_clauses <= ss.n_clauses

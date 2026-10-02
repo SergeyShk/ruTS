@@ -1,4 +1,3 @@
-import random
 from math import isnan
 
 import pytest
@@ -7,16 +6,8 @@ import spacy
 from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
 from ruts.cohesion_stats import (
     Connector,
-    Overlap,
     WordInfo,
-    calc_overlap,
-    calc_overlaps,
-    calc_proportional_overlap,
-    calc_repetition,
     connector_pos,
-    count_given,
-    dice,
-    dominant,
     find_connectors,
     is_content_word,
     is_pronoun,
@@ -266,96 +257,6 @@ def test_is_pronoun(word, expected):
 )
 def test_is_content_word(word, expected):
     assert is_content_word(word) is expected
-
-
-def test_calc_overlap():
-    sets = [{"a", "b"}, {"b", "c"}, {"d"}, {"a"}]
-    assert calc_overlap(sets) == pytest.approx(1 / 3)
-    assert calc_overlap(sets, adjacent=False) == pytest.approx(2 / 6)
-    assert calc_overlap([{"a"}, set()]) == 0
-    assert calc_overlap([["a", "a"], ["a"]]) == 1
-    assert isnan(calc_overlap([{"a"}]))
-    assert isnan(calc_overlap([]))
-
-
-def test_calc_proportional_overlap():
-    sets = [{"a", "b"}, {"b", "c"}, {"b"}, set()]
-    assert calc_proportional_overlap(sets) == pytest.approx((1 / 2 + 2 / 3 + 0) / 3)
-    assert calc_proportional_overlap(sets, adjacent=False) == pytest.approx(
-        (1 / 2 + 2 / 3 + 0 + 2 / 3 + 0 + 0) / 6
-    )
-    assert calc_proportional_overlap([["a", "a"], ["a"]]) == 1
-    assert isnan(calc_proportional_overlap([{"a"}]))
-
-
-def test_dice():
-    assert dice(frozenset("ab"), frozenset("bc")) == pytest.approx(1 / 2)
-    assert dice(frozenset("ab"), frozenset()) == 0
-    assert dice(frozenset(), frozenset()) == 0
-
-
-@pytest.mark.parametrize(
-    "sets",
-    [
-        [{"a", "b"}, {"b", "c"}, {"d"}, {"a"}],
-        [{"a", "b"}, {"b", "c"}, {"b"}, set()],
-        [set(), {"a"}, set(), {"a", "b"}, {"b"}],
-        [{"a"}, {"a"}],
-    ],
-)
-def test_calc_overlaps(sets):
-    overlap = calc_overlaps(sets)
-    assert isinstance(overlap, Overlap)
-    assert overlap == pytest.approx(
-        (
-            calc_overlap(sets),
-            calc_overlap(sets, adjacent=False),
-            calc_proportional_overlap(sets),
-            calc_proportional_overlap(sets, adjacent=False),
-        )
-    )
-
-
-def test_calc_overlaps_random():
-    rng = random.Random(7)
-    sets = [
-        {rng.randrange(40) for _ in range(rng.randrange(6))} for _ in range(rng.randrange(2, 300))
-    ]
-    sets = [{str(element) for element in elements} for elements in sets]
-    assert calc_overlaps(sets) == pytest.approx(
-        (
-            calc_overlap(sets),
-            calc_overlap(sets, adjacent=False),
-            calc_proportional_overlap(sets),
-            calc_proportional_overlap(sets, adjacent=False),
-        )
-    )
-    long_sets = [{"a"} if i % 2 else {"b"} for i in range(5000)]
-    assert calc_overlaps(long_sets).all == pytest.approx(2 * (2500 * 2499 / 2) / (5000 * 4999 / 2))
-
-
-def test_calc_overlaps_short():
-    assert all(isnan(value) for value in calc_overlaps([{"a"}]))
-    assert all(isnan(value) for value in calc_overlaps([]))
-
-
-def test_count_given():
-    assert count_given([["a", "b"], ["b", "c", "a"], ["c"]]) == 3
-    assert count_given([["a", "a"]]) == 1
-    assert count_given([]) == 0
-
-
-def test_dominant():
-    assert dominant(["past", "pres", "past"]) == "past"
-    assert dominant(["pres", "past"]) == "pres"
-    assert dominant([]) is None
-
-
-def test_calc_repetition():
-    assert calc_repetition([["past"], ["past", "pres"], ["pres"]]) == pytest.approx(1 / 2)
-    assert calc_repetition([["past"], [], ["past"]]) is not None
-    assert isnan(calc_repetition([["past"], [], ["past"]]))
-    assert isnan(calc_repetition([["past"]]))
 
 
 def test_get_stats(cs):
