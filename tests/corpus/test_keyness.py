@@ -1,20 +1,11 @@
 from collections import Counter
-from math import inf, isnan, log
 
-import numpy as np
 import pytest
 
-from ruts.constants import G2_CRITICAL_VALUES, KEYNESS_MEASURES
 from ruts.corpus import Keyword, keyness
 from ruts.corpus.keyness import (
-    MEASURES,
-    calc_bic,
-    calc_chi2,
-    calc_diff,
-    calc_ell,
     calc_log_likelihood,
     calc_log_ratio,
-    calc_odds_ratio,
     calc_p_value,
 )
 from ruts.datasets import FreqDict
@@ -30,45 +21,6 @@ def freq_dict(tmp_path_factory):
     path = tmp_path_factory.mktemp("dicts")
     write_dict(path)
     return FreqDict(data_dir=path)
-
-
-def test_measures():
-    assert set(MEASURES) == set(KEYNESS_MEASURES)
-    assert calc_log_likelihood(10, 5, 1000, 2000) == pytest.approx(
-        2 * (10 * log(2) + 5 * log(0.5))
-    )
-    assert calc_log_likelihood(5, 10, 2000, 1000) == pytest.approx(
-        -calc_log_likelihood(10, 5, 1000, 2000)
-    )
-    assert calc_log_likelihood(0, 0, 1000, 2000) == 0
-    assert calc_log_likelihood(10, 0, 1000, 2000) == pytest.approx(2 * 10 * log(3))
-    assert calc_chi2(10, 5, 1000, 2000) == pytest.approx(6.105527638190955)
-    assert calc_chi2(5, 10, 2000, 1000) == pytest.approx(-6.105527638190955)
-    assert calc_chi2(1, 2, 1000, 2000) == 0
-    assert calc_chi2(0, 0, 1000, 2000) == 0
-    assert calc_diff(10, 5, 1000, 2000) == pytest.approx(300)
-    assert calc_diff(10, 0, 1000, 2000) == pytest.approx((0.01 - 0.00025) / 0.00025 * 100)
-    assert calc_log_ratio(10, 5, 1000, 2000) == 2
-    assert calc_log_ratio(0, 5, 1000, 2000) == pytest.approx(-2.321928094887362)
-    assert calc_bic(10, 5, 1000, 2000) == pytest.approx(
-        calc_log_likelihood(10, 5, 1000, 2000) - log(3000)
-    )
-    assert calc_bic(5, 10, 2000, 1000) == pytest.approx(-calc_bic(10, 5, 1000, 2000))
-    assert calc_ell(10, 5, 1000, 2000) == pytest.approx(
-        calc_log_likelihood(10, 5, 1000, 2000) / (3000 * log(5))
-    )
-    assert isnan(calc_ell(1, 0, 1000, 2000))
-    assert isnan(calc_ell(5, 0, 1000, 2000))
-    assert not isnan(calc_ell(9, 0, 1000, 2000))
-    assert calc_odds_ratio(10, 5, 1000, 2000) == pytest.approx((10 / 990) / (5 / 1995))
-    assert calc_odds_ratio(10, 10, 10, 20) == inf
-    assert calc_odds_ratio(10, 20, 20, 20) == 0
-    assert isnan(calc_odds_ratio(20, 20, 20, 20))
-    assert keyness(["а", "б"], ["а"], positive=False, measure="odds_ratio")[0].score == 0
-    assert calc_p_value(3.84) == pytest.approx(0.05, abs=0.001)
-    for p, critical in G2_CRITICAL_VALUES.items():
-        assert calc_p_value(critical) == pytest.approx(p, rel=0.01)
-        assert calc_p_value(-critical) == pytest.approx(p, rel=0.01)
 
 
 def test_keyness():
@@ -116,26 +68,6 @@ def test_keyness_negative():
     assert keywords[-1].log_ratio == pytest.approx(-0.32192809488736235)
 
 
-def test_keyness_measures():
-    for measure in KEYNESS_MEASURES:
-        keywords = keyness(target, reference, measure=measure)
-        cat = next(keyword for keyword in keywords if keyword.word == "кот")
-        assert cat.score == MEASURES[measure](2, 0, 10, 8) or isnan(cat.score)
-        if measure != "ell":
-            assert keywords[0].word == "кот"
-    keywords = keyness(target, reference, measure="ell")
-    assert all(isnan(keyword.score) for keyword in keywords)
-    assert [keyword.word for keyword in keywords[:2]] == ["кот", "на"]
-    assert keyness(["а"] * 30 + ["б"] * 30, ["а"] * 5 + ["б"] * 55, measure="ell")[0].score == (
-        pytest.approx(calc_ell(30, 5, 60, 60))
-    )
-    assert 0 < calc_ell(30, 5, 60, 60) < 1
-    assert isnan(calc_ell(4, 0, 4, 2))
-    assert [keyword.word for keyword in keyness(target, reference, measure="odds_ratio")[:1]] == [
-        "кот"
-    ]
-
-
 def test_keyness_freq_dict(freq_dict):
     keywords = keyness(["Кот", "кот", "птица", "фелинолог"], freq_dict)
     assert [keyword.word for keyword in keywords] == ["кот", "фелинолог", "птица"]
@@ -180,17 +112,6 @@ def test_keyness_freq_dict_lemmatize(homonym_dict):
 def test_keyness_freq_dict_negative(homonym_dict):
     negative = keyness({"гора": 10**7, "фелинолог": 1}, homonym_dict, positive=False)
     assert [keyword.word for keyword in negative] == ["горе", "кошка"]
-
-
-def test_p_values():
-    keywords = keyness(target, reference)
-    assert [keyword.p_value for keyword in keywords] == [
-        pytest.approx(calc_p_value(keyword.g2)) for keyword in keywords
-    ]
-    assert list(calc_p_value(np.array([3.84, -6.63]))) == [
-        pytest.approx(0.05, abs=0.001),
-        pytest.approx(0.01, abs=0.001),
-    ]
 
 
 def test_keyness_errors():

@@ -3,6 +3,7 @@ from .compare import (
     bootstrap_median_diff,
     calc_cliff_delta,
     calc_cohen_d,
+    check_comparison_params,
     compare_corpora,
     compare_features,
     corpus_features,
@@ -12,7 +13,7 @@ from .compare import (
     text_features,
 )
 from .dispersion import Dispersion, dispersion
-from .keyness import Keyword, keyness
+from .keyness import FrequencyReference, Keyword, keyness
 from .kwic import Concordance, format_kwic, kwic, print_kwic
 from .stylometry import (
     ZetaScore,
@@ -31,11 +32,13 @@ __all__ = [
     "Collocation",
     "Concordance",
     "Dispersion",
+    "FrequencyReference",
     "Keyword",
     "ZetaScore",
     "bootstrap_median_diff",
     "calc_cliff_delta",
     "calc_cohen_d",
+    "check_comparison_params",
     "collocations",
     "compare_corpora",
     "compare_features",

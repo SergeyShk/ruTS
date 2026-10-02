@@ -1,50 +1,28 @@
-from collections import Counter
-from collections.abc import Iterable, Mapping, Sequence
-from math import e, inf, isnan, log, log2, nan
-from typing import Any, NamedTuple
+from collections.abc import Mapping, Sequence
+from functools import cache
 
-import numpy as np
-from scipy.stats import chi2 as chi2_distribution
+import anyts.corpus
+from anyts.corpus.keyness import (
+    FrequencyReference as FrequencyReference,
+    Keyword as Keyword,
+    calc_bic as calc_bic,
+    calc_chi2 as calc_chi2,
+    calc_diff as calc_diff,
+    calc_ell as calc_ell,
+    calc_log_likelihood as calc_log_likelihood,
+    calc_log_ratio as calc_log_ratio,
+    calc_odds_ratio as calc_odds_ratio,
+    calc_p_value as calc_p_value,
+)
 
-from ..constants import KEYNESS_MEASURES
-from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
-from ..exceptions import ParameterError, SourceError
+from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import check_sequence, parse_word
-
-ZERO_ADJUSTMENT = 0.5
-
-
-class Keyword(NamedTuple):
-    """
-    Ключевое слово - результат сравнения частот в двух корпусах
-
-    Атрибуты:
-        word (str): Слово
-        freq_target (int): Частота в целевом корпусе
-        freq_reference (float): Частота в эталонном корпусе (по словарю - дробная)
-        ipm_target (float): Частота в целевом корпусе на миллион слов
-        ipm_reference (float): Частота в эталонном корпусе на миллион слов
-        g2 (float): Логарифм правдоподобия G² со знаком направления
-        p_value (float): p-значение G² по распределению хи-квадрат с одной степенью свободы
-        log_ratio (float): Двоичный логарифм отношения нормированных частот
-        score (float): Значение выбранной меры
-    """
-
-    word: str
-    freq_target: int
-    freq_reference: float
-    ipm_target: float
-    ipm_reference: float
-    g2: float
-    p_value: float
-    log_ratio: float
-    score: float
+from ..utils import parse_word
 
 
 def keyness(
     target: Sequence[str] | Mapping[str, int],
-    reference: Sequence[str] | Mapping[str, float] | FreqDict,
+    reference: Sequence[str] | Mapping[str, float] | FreqDict | FrequencyReference,
     measure: str = "log_likelihood",
     min_freq: int = 1,
     positive: bool = True,
@@ -77,8 +55,8 @@ def keyness(
 
     Аргументы:
         target (list[str]|dict[str, int]): Слова целевого корпуса или их частоты
-        reference (list[str]|dict[str, float]|FreqDict): Слова эталонного корпуса,
-            их частоты или частотный словарь
+        reference (list[str]|dict[str, float]|FreqDict|FrequencyReference): Слова
+            эталонного корпуса, их частоты, частотный словарь или эталон по частотам
         measure (str): Мера из KEYNESS_MEASURES для score и сортировки
         min_freq (int): Минимальная частота ключевого слова в своем корпусе
         positive (bool): Положительные ключевые слова (True) или отрицательные (False)
@@ -91,305 +69,34 @@ def keyness(
 
     Исключения:
         ParameterError: Если мера неизвестна или top_n меньше единицы
+        SourceTypeError: Если слова не список строк
         SourceError: Если один из корпусов пуст
+        DatasetNotFoundError: Если частотный словарь не загружен
     """
-    if measure not in KEYNESS_MEASURES:
-        raise ParameterError(f"Неизвестная мера ключевости: {measure}")
-    if top_n is not None and top_n < 1:
-        raise ParameterError("Количество ключевых слов должно быть больше 0")
-    check_sequence(target)
-    check_sequence(reference)
-    missing = 0.0
-    counts_target: Mapping[str, float]
     if isinstance(reference, FreqDict):
-        counts_target = _count_lemmas(target, reference.entries, lemmatize)
-        size_reference = float(CORPUS_SIZE)
-        counts_reference: Mapping[str, float] = {
-            lemma: entry.ipm * size_reference / 1e6 for lemma, entry in reference.entries.items()
-        }
-        missing = reference.min_ipm * size_reference / 1e6
-    else:
-        counts_target = _count(target)
-        counts_reference = _count(reference)
-        size_reference = float(sum(counts_reference.values()))
-    size_target = float(sum(counts_target.values()))
-    if not size_target or not size_reference:
-        raise SourceError("В источнике данных отсутствуют слова")
-    calc = MEASURES[measure]
-    rows = []
-    # Отрицательному ключевому слову нужна своя частота в эталоне: min_ipm ее только ограничивает
-    words: Iterable[str] = counts_target if positive else counts_reference
-    for word in words:
-        a = counts_target.get(word, 0)
-        b = counts_reference.get(word, missing)
-        ipm_target = a / size_target * 1e6
-        ipm_reference = b / size_reference * 1e6
-        if ipm_target == ipm_reference or (ipm_target > ipm_reference) != positive:
-            continue
-        if (a if positive else b) < min_freq:
-            continue
-        rows.append(
-            (
-                word,
-                int(a),
-                b,
-                ipm_target,
-                ipm_reference,
-                calc_log_likelihood(a, b, size_target, size_reference),
-                calc_log_ratio(a, b, size_target, size_reference),
-                calc(a, b, size_target, size_reference),
-            )
-        )
-    p_values = calc_p_value(np.array([row[5] for row in rows]))
-    keywords = [
-        Keyword(*row[:6], float(p_value), *row[6:])
-        for row, p_value in zip(rows, p_values, strict=True)
-    ]
-    sign = -1 if positive else 1
-    keywords.sort(
-        key=lambda keyword: (
-            isnan(keyword.score),
-            sign * (0.0 if isnan(keyword.score) else keyword.score),
-            -(keyword.freq_target if positive else keyword.freq_reference),
-            keyword.word,
-        )
+        reference = _frequency_reference(reference, lemmatize)
+    return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n)
+
+
+def _frequency_reference(freq_dict: FreqDict, lemmatize: bool) -> FrequencyReference:
+    """Эталон частотного словаря, как его описывает докстринг keyness"""
+    size = float(CORPUS_SIZE)
+    entries = freq_dict.entries
+
+    @cache
+    def key(word: str) -> str:
+        lemma = parse_word(word).normal_form if lemmatize else word
+        return dictionary_lemma(word, lemma, entries)
+
+    return FrequencyReference(
+        {lemma: entry.ipm * size / 1e6 for lemma, entry in entries.items()},
+        size,
+        freq_dict.min_ipm * size / 1e6,
+        key,
+        _is_dictionary_word,
     )
-    return keywords[:top_n] if top_n else keywords
 
 
-def _count(words: Sequence[str] | Mapping[str, float]) -> Mapping[str, float]:
-    return words if isinstance(words, Mapping) else Counter(words)
-
-
-def _count_lemmas(
-    words: Sequence[str] | Mapping[str, float], entries: Mapping[str, Entry], lemmatize: bool
-) -> dict[str, float]:
-    """Частоты лемм словаря у слов из его алфавита (dictionary_lemma)"""
-    pairs = words.items() if isinstance(words, Mapping) else Counter(words).items()
-    counts: dict[str, float] = {}
-    for word, count in pairs:
-        if DICTIONARY_WORD.fullmatch(word):
-            lemma = parse_word(word).normal_form if lemmatize else word
-            key = dictionary_lemma(word, lemma, entries)
-            counts[key] = counts.get(key, 0) + count
-    return counts
-
-
-def _sign(a: float, b: float, c: float, d: float) -> int:
-    return 1 if a / c >= b / d else -1
-
-
-def _adjust(a: float, b: float) -> tuple[float, float]:
-    return a or ZERO_ADJUSTMENT, b or ZERO_ADJUSTMENT
-
-
-def calc_log_likelihood(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление логарифма правдоподобия G² частот слова в двух корпусах
-
-    Описание:
-        По Rayson и Garside (2000): ожидаемые частоты E1 = c·(a + b)/(c + d)
-        и E2 = d·(a + b)/(c + d), G² = 2·(a·ln(a/E1) + b·ln(b/E2)); слагаемое
-        с нулевой частотой равно нулю. Критические значения - G2_CRITICAL_VALUES
-        (3.84 для p < 0.05, 6.63 для p < 0.01, 10.83 для p < 0.001, 15.13 для p < 0.0001)
-        Знак отрицательный, если слово чаще в эталоне
-
-    Ссылки:
-        https://ucrel.lancs.ac.uk/llwizard.html
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: Значение G² со знаком
-    """
-    total = a + b
-    if not total:
-        return 0.0
-    expected_a = c * total / (c + d)
-    expected_b = d * total / (c + d)
-    value = 2 * (_xlog(a, expected_a) + _xlog(b, expected_b))
-    return _sign(a, b, c, d) * value
-
-
-def _xlog(observed: float, expected: float) -> float:
-    return observed * log(observed / expected) if observed else 0.0
-
-
-def calc_p_value(g2: float | np.ndarray) -> Any:
-    """
-    Вычисление p-значения по величине G² или хи-квадрат
-
-    Аргументы:
-        g2 (float|ndarray): Значение G² или хи-квадрат (знак не учитывается)
-            или массив значений
-
-    Вывод:
-        float|ndarray: p-значение по распределению хи-квадрат с одной степенью свободы
-    """
-    p_value = chi2_distribution.sf(np.abs(g2), 1)
-    return float(p_value) if np.isscalar(g2) else p_value
-
-
-def calc_chi2(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление хи-квадрат с поправкой Йейтса для частот слова в двух корпусах
-
-    Описание:
-        Таблица сопряженности 2×2: слово и остальные слова в каждом корпусе,
-        χ² = N·(|a·(d − b) − b·(c − a)| − N/2)² / ((a + b)·(c − a + d − b)·c·d), N = c + d
-        Знак отрицательный, если слово чаще в эталоне
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: Значение хи-квадрат со знаком
-    """
-    total = c + d
-    rest_a = c - a
-    rest_b = d - b
-    denominator = (a + b) * (rest_a + rest_b) * c * d
-    if not denominator:
-        return 0.0
-    difference = max(abs(a * rest_b - b * rest_a) - total / 2, 0.0)
-    return _sign(a, b, c, d) * total * difference**2 / denominator
-
-
-def calc_diff(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление разности нормированных частот %DIFF
-
-    Описание:
-        По Gabrielatos и Marchi (2011): (NF_a − NF_b) / NF_b · 100, где NF - частота
-        на миллион слов; нулевая частота заменяется на 0.5
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: %DIFF
-    """
-    a, b = _adjust(a, b)
-    return (a / c - b / d) / (b / d) * 100
-
-
-def calc_log_ratio(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление Log Ratio - двоичного логарифма отношения нормированных частот
-
-    Описание:
-        По Hardie (2014): log2(NF_a / NF_b); единица - слово вдвое чаще в целевом
-        корпусе; нулевая частота заменяется на 0.5
-
-    Ссылки:
-        http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: Log Ratio
-    """
-    a, b = _adjust(a, b)
-    return log2((a / c) / (b / d))
-
-
-def calc_bic(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление байесовского информационного критерия для G²
-
-    Описание:
-        По Wilson (2013): BIC = G² − ln(N), N = c + d; значения выше 2 - положительное
-        свидетельство различия, выше 6 - сильное, выше 10 - очень сильное
-        Считается как sign(G²) · (|G²| − ln N): положительное значение - свидетельство
-        различия в направлении знака G², отрицательное - свидетельства нет, и тогда
-        знак BIC не совпадает со знаком G²
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: BIC со знаком
-    """
-    g2 = calc_log_likelihood(a, b, c, d)
-    return _sign(a, b, c, d) * (abs(g2) - log(c + d))
-
-
-def calc_ell(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление размера эффекта для логарифма правдоподобия ELL
-
-    Описание:
-        По Johnson, Culpeper и Rayson (2007): ELL = G² / (N · ln(min(E1, E2))),
-        N = c + d; лежит в пределах от 0 до 1. Знак как у G²
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: ELL со знаком, nan при минимальной ожидаемой частоте меньше e -
-            там знаменатель меньше N и ELL выходит за пределы от 0 до 1
-    """
-    total = a + b
-    expected_min = min(c, d) * total / (c + d)
-    if expected_min < e:
-        return nan
-    return calc_log_likelihood(a, b, c, d) / ((c + d) * log(expected_min))
-
-
-def calc_odds_ratio(a: float, b: float, c: float, d: float) -> float:
-    """
-    Вычисление отношения шансов слова в двух корпусах
-
-    Описание:
-        (a / (c − a)) / (b / (d − b)); единица - шансы равны, нулевая частота
-        заменяется на 0.5
-
-    Аргументы:
-        a (float): Частота слова в целевом корпусе
-        b (float): Частота слова в эталонном корпусе
-        c (float): Объем целевого корпуса
-        d (float): Объем эталонного корпуса
-
-    Вывод:
-        float: Отношение шансов; inf, если слово занимает весь целевой корпус,
-            0, если весь эталонный, nan, если оба
-    """
-    a, b = _adjust(a, b)
-    if a >= c and b >= d:
-        return nan
-    if a >= c:
-        return inf
-    if b >= d:
-        return 0.0
-    return (a / (c - a)) / (b / (d - b))
-
-
-MEASURES = {
-    "log_likelihood": calc_log_likelihood,
-    "chi2": calc_chi2,
-    "diff": calc_diff,
-    "log_ratio": calc_log_ratio,
-    "bic": calc_bic,
-    "ell": calc_ell,
-    "odds_ratio": calc_odds_ratio,
-}
+def _is_dictionary_word(word: str) -> bool:
+    """Состоит ли слово из букв словаря (DICTIONARY_WORD)"""
+    return DICTIONARY_WORD.fullmatch(word) is not None

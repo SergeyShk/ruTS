@@ -1,12 +1,20 @@
 from collections.abc import Callable, Mapping, Sequence
 from itertools import pairwise
-from math import floor, isnan, nan, sqrt
-from typing import Any
+from math import floor, isnan, nan
 
 import numpy as np
 import pandas as pd
+from anyts.corpus.compare import (
+    COMPARISON_COLUMNS as COMPARISON_COLUMNS,
+    bootstrap_median_diff as bootstrap_median_diff,
+    calc_cliff_delta as calc_cliff_delta,
+    calc_cohen_d as calc_cohen_d,
+    check_comparison_params as check_comparison_params,
+    compare_features as compare_features,
+    holm_correction as holm_correction,
+)
+from anyts.utils import check_sequence
 from razdel import sentenize
-from scipy.stats import mannwhitneyu
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC, OPENING_MARKS, SYMMETRIC_MARKS
@@ -15,11 +23,10 @@ from ..exceptions import ParameterError, SourceError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
-from ..utils import check_sequence, iter_text_words
+from ..utils import iter_text_words
 from ..visualizers.sentences import count_words_by_spans
 
 Features = Callable[[str], Mapping[str, float]]
-Values = Sequence[float] | np.ndarray[Any, Any]
 
 # Монотонно повторяют другие признаки (ранговое сравнение дает те же U, p и |δ|) или постоянны
 REDUNDANT_FEATURES = frozenset(
@@ -45,24 +52,6 @@ REDUNDANT_FEATURES = frozenset(
         "morph_transitivity_Intr",
         "morph_involvement_Ex",
     }
-)
-
-COMPARISON_COLUMNS = (
-    "mean_a",
-    "mean_b",
-    "median_a",
-    "median_b",
-    "median_diff",
-    "ci_low",
-    "ci_high",
-    "cohen_d",
-    "cliff_delta",
-    "auc",
-    "u",
-    "p_value",
-    "p_holm",
-    "n_a",
-    "n_b",
 )
 
 
@@ -363,8 +352,9 @@ def compare_corpora(
         ParameterError: Если размер окна или min_words меньше единицы
         ParameterError: Если число выборок меньше единицы
     """
-    if n_bootstrap < 1:
-        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
+    check_comparison_params(labels, n_bootstrap, seed)
+    check_sequence(a, "texts")
+    check_sequence(b, "texts")
     _check_windows(window, min_words)
     feature_function = features or text_features
     tables = []
@@ -375,233 +365,3 @@ def compare_corpora(
             raise SourceError(f"Корпус {label}: {error}") from error
     table_a, table_b = tables
     return compare_features(table_a, table_b, labels, n_bootstrap, seed)
-
-
-def compare_features(
-    table_a: pd.DataFrame,
-    table_b: pd.DataFrame,
-    labels: tuple[str, str] = ("A", "B"),
-    n_bootstrap: int = 1000,
-    seed: int | None = 0,
-) -> pd.DataFrame:
-    """
-    Сравнение двух корпусов по готовым таблицам признаков окон
-
-    Описание:
-        Вторая половина compare_corpora: таблицы признаков (corpus_features
-        или свои) сравниваются по каждому столбцу, как описано там же. Нужна,
-        когда признаки посчитаны один раз для нескольких корпусов, а сравнить
-        надо пары - например, всех авторов попарно. Столбцы, которых нет
-        в одной из таблиц, сравниваются с пустым набором значений и дают nan
-
-    Аргументы:
-        table_a (DataFrame): Признаки окон первого корпуса (строки - окна)
-        table_b (DataFrame): Признаки окон второго корпуса
-        labels (tuple[str, str]): Имена корпусов для столбцов (mean_<a>, ...)
-        n_bootstrap (int): Число выборок бутстрэпа
-        seed (int): Зерно генератора случайных чисел; None - случайное
-
-    Вывод:
-        DataFrame: Признаки × статистики сравнения (COMPARISON_COLUMNS
-            с именами корпусов в столбцах)
-
-    Исключения:
-        ParameterError: Если число выборок меньше единицы
-    """
-    if n_bootstrap < 1:
-        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
-    rng = np.random.default_rng(seed)
-    rows = {}
-    for name in table_a.columns.union(table_b.columns, sort=False):
-        rows[name] = compare_values(
-            _finite(table_a, name), _finite(table_b, name), n_bootstrap, rng
-        )
-    result = pd.DataFrame.from_dict(rows, orient="index", columns=list(COMPARISON_COLUMNS))
-    result["p_holm"] = holm_correction(result["p_value"].to_numpy())
-    result = result.iloc[(-result["cliff_delta"].abs()).fillna(np.inf).argsort(kind="stable")]
-    result[["n_a", "n_b"]] = result[["n_a", "n_b"]].astype(int)
-    label_a, label_b = labels
-    return result.rename(
-        columns={
-            "mean_a": f"mean_{label_a}",
-            "mean_b": f"mean_{label_b}",
-            "median_a": f"median_{label_a}",
-            "median_b": f"median_{label_b}",
-            "n_a": f"n_{label_a}",
-            "n_b": f"n_{label_b}",
-        }
-    )
-
-
-def _finite(table: pd.DataFrame, name: str) -> np.ndarray:
-    if name not in table:
-        return np.array([])
-    values = table[name].to_numpy(dtype=float)
-    return np.asarray(values[np.isfinite(values)], dtype=float)
-
-
-def compare_values(
-    values_a: np.ndarray,
-    values_b: np.ndarray,
-    n_bootstrap: int = 1000,
-    rng: np.random.Generator | None = None,
-) -> tuple[float, ...]:
-    """
-    Сравнение двух наборов значений признака
-
-    Аргументы:
-        values_a (ndarray): Конечные значения в первом корпусе
-        values_b (ndarray): Конечные значения во втором корпусе
-        n_bootstrap (int): Число выборок бутстрэпа
-        rng (Generator): Генератор случайных чисел
-
-    Вывод:
-        tuple[float, ...]: Значения в порядке COMPARISON_COLUMNS, p_holm - nan
-    """
-    n_a, n_b = len(values_a), len(values_b)
-    if n_a < 2 or n_b < 2:
-        return (*(nan,) * 13, n_a, n_b)
-    u, p_value = mannwhitneyu(values_a, values_b, alternative="two-sided")
-    auc = float(u) / (n_a * n_b)
-    ci_low, ci_high = bootstrap_median_diff(values_a, values_b, n_bootstrap, rng)
-    return (
-        float(values_a.mean()),
-        float(values_b.mean()),
-        float(np.median(values_a)),
-        float(np.median(values_b)),
-        float(np.median(values_a) - np.median(values_b)),
-        ci_low,
-        ci_high,
-        calc_cohen_d(values_a, values_b),
-        2 * auc - 1,
-        auc,
-        float(u),
-        float(p_value),
-        nan,
-        n_a,
-        n_b,
-    )
-
-
-def calc_cohen_d(values_a: Values, values_b: Values) -> float:
-    """
-    Вычисление d Коэна - стандартизированной разности средних
-
-    Описание:
-        (mean_a − mean_b) / s, где s - объединенное стандартное отклонение
-        с выборочными дисперсиями (ddof=1); по Коэну 0.2 - малый эффект,
-        0.5 - средний, 0.8 - большой
-
-    Аргументы:
-        values_a (list[float]): Значения в первом корпусе
-        values_b (list[float]): Значения во втором корпусе
-
-    Вывод:
-        float: d Коэна, nan при менее чем двух значениях на стороне или нулевой
-            дисперсии
-    """
-    a = np.asarray(values_a, dtype=float)
-    b = np.asarray(values_b, dtype=float)
-    if len(a) < 2 or len(b) < 2:
-        return nan
-    pooled = ((len(a) - 1) * a.var(ddof=1) + (len(b) - 1) * b.var(ddof=1)) / (len(a) + len(b) - 2)
-    if not pooled:
-        return nan
-    return float((a.mean() - b.mean()) / sqrt(pooled))
-
-
-def calc_cliff_delta(values_a: Values, values_b: Values) -> float:
-    """
-    Вычисление дельты Клиффа - вероятностного размера эффекта
-
-    Описание:
-        Доля пар (x из A, y из B) с x > y минус доля пар с x < y (Cliff 1993);
-        от −1 до 1, 0 - распределения не различаются; |δ| < 0.147 - пренебрежимый
-        эффект, < 0.33 - малый, < 0.474 - средний, иначе большой (Romano и др. 2006)
-
-    Аргументы:
-        values_a (list[float]): Значения в первом корпусе
-        values_b (list[float]): Значения во втором корпусе
-
-    Вывод:
-        float: Дельта Клиффа, nan для пустого набора
-    """
-    a = np.asarray(values_a, dtype=float)
-    b = np.asarray(values_b, dtype=float)
-    if not len(a) or not len(b):
-        return nan
-    comparison = np.sign(a[:, None] - b[None, :])
-    return float(comparison.mean())
-
-
-def bootstrap_median_diff(
-    values_a: Values,
-    values_b: Values,
-    n_bootstrap: int = 1000,
-    rng: np.random.Generator | None = None,
-    confidence: float = 0.95,
-) -> tuple[float, float]:
-    """
-    Вычисление перцентильного бутстрэп-интервала разности медиан
-
-    Описание:
-        Оба набора пересэмплируются с возвращением n_bootstrap раз, для каждой
-        пары выборок считается median_a − median_b, границы интервала - перцентили
-        (1 − confidence) / 2 и 1 − (1 − confidence) / 2
-
-    Аргументы:
-        values_a (list[float]): Значения в первом корпусе
-        values_b (list[float]): Значения во втором корпусе
-        n_bootstrap (int): Число выборок
-        rng (Generator): Генератор случайных чисел; None - новый без зерна
-        confidence (float): Уровень доверия
-
-    Вывод:
-        tuple[float, float]: Нижняя и верхняя границы, nan для пустого набора
-
-    Исключения:
-        ParameterError: Если число выборок меньше единицы или уровень доверия
-            вне интервала (0, 1)
-    """
-    if n_bootstrap < 1:
-        raise ParameterError("Число выборок бутстрэпа должно быть больше 0")
-    if not 0 < confidence < 1:
-        raise ParameterError("Уровень доверия должен лежать в интервале (0, 1)")
-    a = np.asarray(values_a, dtype=float)
-    b = np.asarray(values_b, dtype=float)
-    if not len(a) or not len(b):
-        return nan, nan
-    generator = rng if rng is not None else np.random.default_rng()
-    medians_a = np.median(generator.choice(a, size=(n_bootstrap, len(a))), axis=1)
-    medians_b = np.median(generator.choice(b, size=(n_bootstrap, len(b))), axis=1)
-    differences = medians_a - medians_b
-    tail = (1 - confidence) / 2 * 100
-    low, high = np.percentile(differences, [tail, 100 - tail])
-    return float(low), float(high)
-
-
-def holm_correction(p_values: Sequence[float]) -> np.ndarray:
-    """
-    Поправка Холма на множественные сравнения
-
-    Описание:
-        p-значения сортируются по возрастанию, i-е умножается на (m − i + 1),
-        где m - число определенных значений, затем берется накопленный максимум
-        и ограничение единицей; nan остаются nan
-
-    Аргументы:
-        p_values (list[float]): p-значения
-
-    Вывод:
-        ndarray: Скорректированные p-значения в исходном порядке
-    """
-    values = np.asarray(p_values, dtype=float)
-    adjusted = np.full(len(values), nan)
-    defined = np.flatnonzero(~np.isnan(values))
-    if not len(defined):
-        return adjusted
-    order = defined[np.argsort(values[defined], kind="stable")]
-    m = len(order)
-    scaled = values[order] * (m - np.arange(m))
-    adjusted[order] = np.minimum(np.maximum.accumulate(scaled), 1.0)
-    return adjusted
