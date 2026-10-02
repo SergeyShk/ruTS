@@ -29,7 +29,7 @@ Highlighting layers:
 | | `connectors` | Connectives by part of speech from the `Doc` annotation or pymorphy3, the tooltip shows the class and type | [CohesionStats](../stats/cohesion_stats.md) |
 | Phonics | `alliteration` | Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies | [PhonStats](../stats/phon_stats.md) |
 
-The groups are defined in `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. The layers of the "Syntax" group are computed over the dependency tree and are available only for a `Doc` object with a dependency parse (the `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` models); the `long_sents` layer for a `Doc` requires sentence boundaries. By default the `HIGHLIGHT_DEFAULT_LAYERS` layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; `layers="all"` enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.
+The groups are defined in `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. The layers of the "Syntax" group are computed over the dependency tree and are available only for a `Doc` object with a dependency parse (the `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` models); a `Doc` without sentence boundaries is split into sentences the same way as a string. By default the `HIGHLIGHT_DEFAULT_LAYERS` layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; `layers="all"` enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.
 
 !!! note "Note"
     Alliteration is searched within a sentence as a chain of two or more adjacent words each of whose stems contains the same consonant letter. The stem is the common initial part of the word form and its pymorphy3 lemma (*крупных* → *крупны*, *руках* → *рука*): endings agree with neighboring words and repeat consonants by grammar rather than by sound (*этих крупных*, *своим целям и нуждам*). The probability of a chain under an independent letter distribution is the product over the words of the probabilities of meeting the consonant among the stem letters, $1 - (1 - f)^n$, where $f$ is the [frequency of the consonant](https://ru.wikipedia.org/wiki/Частотность) in Russian texts and $n$ the number of stem letters; a chain is highlighted if the probability is below the `alliteration_threshold`. About twenty consonants are checked at every position, so the threshold is strict: in prose about 5% of words are highlighted at 0.001, about 20% at 0.01, mostly random coincidences of frequent letters. A repeat of a rare consonant (*слышно, бесшумно шуршат камыши*) is noticeable in two or three words, a repeat of a frequent one in long words is expected and not highlighted. Words shorter than three letters, stop words and words without vowels neither break nor continue a chain, the letter *й* is not counted, since in the nominative case it is part of the adjective lemma. The alliteration index of [PhonStats](../stats/phon_stats.md) measures how clustered the repeats are across the whole text; the highlighting shows where they are.
@@ -122,15 +122,15 @@ _Result_ (hover over a fragment to see the explanation):
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
+.ruts-hl-stopwords { background: #bae6fd; }
 .ruts-hl-complex_words { background: #fed7aa; }
 .ruts-hl-rare_words { background: #e5e7eb; }
 .ruts-hl-passive { background: #fecaca; }
 .ruts-hl-verbal_nouns { background: #e9d5ff; }
 .ruts-hl-compound_prepositions { background: #a7f3d0; }
 .ruts-hl-cliches { background: #fbcfe8; }
-.ruts-hl-stopwords { background: #bae6fd; }
 .ruts-hl-parentheticals { background: #d9f99d; }
 .ruts-hl-participle_clauses { border-bottom: 2px solid #7c3aed; }
 .ruts-hl-converb_clauses { border-bottom: 2px solid #0d9488; }
