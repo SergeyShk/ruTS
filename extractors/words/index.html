@@ -2932,9 +2932,9 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">List[str]</td>
+<td style="text-align: center;">Collection[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов</td>
+<td style="text-align: center;">Стоп-слова (список или множество)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>lowercase</code></td>
@@ -2964,7 +2964,7 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Стоп-слова сравниваются уже после приведения к нижнему регистру, поэтому при <code>lowercase=True</code> список стоп-слов достаточно задать в нижнем регистре. Знаком препинания считается токен, целиком состоящий из знаков и символов, в том числе многосимвольный: <code>?!</code>, <code>!..</code>, <code>--</code>, <code>…</code>.</p>
+<p>Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Стоп-слова сравниваются без учета регистра: «И» в начале предложения отбрасывается вместе с «и».</p>
 </div>
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
@@ -2993,7 +2993,6 @@
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">stopwords</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 
 <span class="c1"># Подготовка данных</span>
@@ -3001,20 +3000,12 @@
 
 <span class="c1"># Извлечение предложений</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span>
-    <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s2">"russian"</span><span class="p">),</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="p">[</span><span class="s2">"не"</span><span class="p">,</span> <span class="s2">"а"</span><span class="p">],</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="p">)</span>
 <span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'иметь'</span>,<span class="w"> </span><span class="s1">'рубль'</span>,<span class="w"> </span><span class="s1">'иметь'</span>,<span class="w"> </span><span class="s1">'друг'</span>,<span class="w"> </span><span class="s1">'иметь_рубль'</span>,<span class="w"> </span><span class="s1">'рубль_иметь'</span>,<span class="w"> </span><span class="s1">'иметь_друг'</span><span class="o">)</span>
-</code></pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для корректной работы данного примера необходимо иметь предварительно загруженный список стоп-слов библиотеки <a href="https://github.com/nltk/nltk">nltk</a> на локальном компьютере. Сделать это можно, выполнив следующий код:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">nltk</span>
-
-<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"stopwords"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>

@@ -2927,7 +2927,7 @@
 </tr>
 </tbody>
 </table>
-<p>The measures are available as functions <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code>, <code>calc_kl_divergence</code> with arguments <code>(frequencies, sizes)</code> - the word frequencies by part and the part sizes - from the module <code>ruts.corpus.dispersion</code> (<code>from ruts.corpus.dispersion import calc_dp</code>); names are in <code>ruts.constants.DISPERSION_STATS_DESC</code>. For a word with zero frequency all measures are <code>nan</code>. The <code>dispersion</code> function computes the same measures for all words at once over the non-zero cells of the word × part matrix, so memory is linear in the number of words and splitting by sentences is cheap: 260 thousand words, 13 thousand lexemes and 15 thousand sentences - 0.13 s and 28 MB.</p>
+<p>The measures are available as functions <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code>, <code>calc_kl_divergence</code> with arguments <code>(frequencies, sizes)</code> - the word frequencies by part and the part sizes - from the module <code>ruts.corpus.dispersion</code> (<code>from ruts.corpus.dispersion import calc_dp</code>); names are in <code>anyts.constants.DISPERSION_STATS_DESC</code>. For a word with zero frequency all measures are <code>nan</code>. The <code>dispersion</code> function computes the same measures for all words at once over the non-zero cells of the word × part matrix, so memory is linear in the number of words and splitting by sentences is cheap: 260 thousand words, 13 thousand lexemes and 15 thousand sentences - 0.13 s and 28 MB.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2984,8 +2984,8 @@
 <span class="c1"># [8, 7, 11]</span>
 
 <span class="n">dispersion</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">)</span>
-<span class="c1"># [Dispersion(word='кот', freq=3, dp=0.08974358974358973, dp_norm=0.12280701754385961,</span>
-<span class="c1">#  juilland_d=0.8725780285943102, carroll_d2=0.984770130157433,</span>
+<span class="c1"># [Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966,</span>
+<span class="c1">#  juilland_d=0.8725780285943101, carroll_d2=0.984770130157433,</span>
 <span class="c1">#  rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]</span>
 
 <span class="c1"># Three equal parts: «птица» only in the first and the last</span>

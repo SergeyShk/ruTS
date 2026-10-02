@@ -2904,9 +2904,9 @@
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">stopwords</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SovChLit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.style_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_stopword</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">zipf</span>
 
 <span class="c1"># Подготовка данных</span>
@@ -2915,8 +2915,8 @@
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
 
 <span class="c1"># Подсчет частотности слов</span>
-<span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s2">"russian"</span><span class="p">),</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">tokens_with_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">tokens_with_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_stopword</span><span class="p">(</span><span class="n">word</span><span class="p">))</span>
 
 <span class="c1"># Построение графика</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">zipf</span><span class="p">(</span><span class="n">tokens_with_count</span><span class="p">,</span> <span class="n">num_words</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">num_labels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_theory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.1</span><span class="p">)</span>

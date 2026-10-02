@@ -2927,7 +2927,7 @@
 </tr>
 </tbody>
 </table>
-<p>Меры доступны как функции <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code>, <code>calc_kl_divergence</code> с аргументами <code>(frequencies, sizes)</code> - частоты слова по частям и размеры частей - из модуля <code>ruts.corpus.dispersion</code> (<code>from ruts.corpus.dispersion import calc_dp</code>); названия - в <code>ruts.constants.DISPERSION_STATS_DESC</code>. Для слова с нулевой частотой все меры <code>nan</code>. Функция <code>dispersion</code> считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.</p>
+<p>Меры доступны как функции <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code>, <code>calc_kl_divergence</code> с аргументами <code>(frequencies, sizes)</code> - частоты слова по частям и размеры частей - из модуля <code>ruts.corpus.dispersion</code> (<code>from ruts.corpus.dispersion import calc_dp</code>); названия - в <code>anyts.constants.DISPERSION_STATS_DESC</code>. Для слова с нулевой частотой все меры <code>nan</code>. Функция <code>dispersion</code> считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2984,8 +2984,8 @@
 <span class="c1"># [8, 7, 11]</span>
 
 <span class="n">dispersion</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">)</span>
-<span class="c1"># [Dispersion(word='кот', freq=3, dp=0.08974358974358973, dp_norm=0.12280701754385961,</span>
-<span class="c1">#  juilland_d=0.8725780285943102, carroll_d2=0.984770130157433,</span>
+<span class="c1"># [Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966,</span>
+<span class="c1">#  juilland_d=0.8725780285943101, carroll_d2=0.984770130157433,</span>
 <span class="c1">#  rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]</span>
 
 <span class="c1"># Три равные части: «птица» - только в первой и последней</span>

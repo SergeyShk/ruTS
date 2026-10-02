@@ -2924,7 +2924,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnson, Culpeper and Rayson (2007); effect size for <span class="arithmatex">\(G^2\)</span> from 0 to 1, <code>nan</code> when the minimum expected frequency is below <span class="arithmatex">\(e\)</span> - then <span class="arithmatex">\(\ln \min(E_1, E_2) &lt; 1\)</span> and the measure exceeds one</td>
+<td style="text-align: left;">Johnson, Culpeper and Rayson (2007); effect size for <span class="arithmatex">\(G^2\)</span> from 0 to 1, though it grows without bound as the minimum expected frequency nears one; <code>nan</code> when the minimum expected frequency is at most 1</td>
 </tr>
 <tr>
 <td style="text-align: left;">Odds ratio</td>
@@ -2934,7 +2934,7 @@
 </tr>
 </tbody>
 </table>
-<p>A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> is computed from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The measures are available as functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> with arguments <code>(a, b, c, d)</code> from the module <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>; the name <code>ruts.corpus.keyness</code> in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in <code>ruts.constants.KEYNESS_MEASURES</code>.</p>
+<p>A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> is computed from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The measures are available as functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> with arguments <code>(a, b, c, d)</code> from the module <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>; the name <code>ruts.corpus.keyness</code> in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3064,7 +3064,7 @@
 <span class="p">)</span>
 
 <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># [Keyword(word='кот', freq_target=3, freq_reference=0, ipm_target=115384.61538461539,</span>
+<span class="c1"># [Keyword(word='кот', freq_target=3, freq_reference=0.0, ipm_target=115384.61538461539,</span>
 <span class="c1">#  ipm_reference=0.0, g2=2.8774384815713177, p_value=0.08982881315854577,</span>
 <span class="c1">#  log_ratio=1.8845227825800641, score=2.8774384815713177)]</span>
 
