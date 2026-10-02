@@ -134,21 +134,65 @@ CORE_MODULES = {
     "ruts.corpus.stylometry": "anyts.corpus.stylometry",
     "ruts.corpus.compare": "anyts.corpus.compare",
     "ruts.corpus.kwic": "anyts.corpus.kwic",
+    "ruts.basic_stats": "anyts.basic_stats",
+    "ruts.readability_stats": "anyts.readability_stats",
+    "ruts.components": "anyts.components",
+    "ruts.phon_stats": "anyts.phonetics",
+    "ruts.datasets.dataset": "anyts.datasets",
+    "ruts.visualizers": "anyts.visualizers",
+    "ruts.visualizers.highlight": "anyts.visualizers.highlight",
 }
 # Имена ядра, которые библиотека определяет сама: подклассы с русскими крючками,
-# обертки с русскими умолчаниями, русские описания метрик и русский шаблон чисел
+# обертки с русскими умолчаниями, русские описания, подписи и настройки
 RUSSIAN = {
+    "BASIC_STATS_DESC",
+    "BasicStats",
+    "COMPLEX_SYL_FACTOR",
     "CharNgramsExtractor",
     "DIVERSITY_STATS_DESC",
+    "Dataset",
     "DiversityStats",
+    "GRADE_AGE_LEVELS",
+    "HighlightedText",
+    "LONG_WORD_LETTER_FACTOR",
     "NUMBER_PATTERN",
+    "POSTGRADUATE_LEVEL",
+    "PUNCTUATION_MARKS",
+    "READABILITY_GRADE_STATS",
+    "READABILITY_PRESETS",
+    "READABILITY_STATS_DESC",
+    "READING_SPEED_NORMS",
+    "READING_SPEED_WPM",
+    "ReadabilityStats",
+    "SMOG_COMPLEX_SYL_FACTOR",
     "SentsExtractor",
     "WordsExtractor",
+    "calc_automated_readability_index",
+    "calc_coleman_liau_index",
+    "calc_flesch_kincaid_grade",
+    "calc_flesch_reading_easy",
+    "calc_reading_time",
+    "calc_smog_index",
+    "count_punctuations",
+    "dendrogram_plot",
+    "dispersion_plot",
+    "fingerprinting",
+    "frequency_spectrum_plot",
+    "get_doc_words",
+    "grade_to_age",
+    "heaps_plot",
     "keyness",
+    "keyness_plot",
     "kwic",
+    "mds_plot",
+    "mendenhall_plot",
+    "pca_plot",
+    "sentence_lengths",
+    "sentence_lengths_plot",
+    "substring_filter",
+    "zipf",
+    "zipf_theory",
 }
-# Классы второго среза ядра, у которых в ruTS пока свои реализации
-OWN_UNTIL_SECOND_SLICE = {"BasicStats", "ReadabilityStats"}
 
 
 @pytest.mark.parametrize(("library", "core"), CORE_MODULES.items())
@@ -162,7 +206,6 @@ def test_core_names(library, core):
             name.startswith("_")
             or isinstance(value, ModuleType)
             or not hasattr(library_module, name)
-            or name in OWN_UNTIL_SECOND_SLICE
         ):
             continue
         own = getattr(library_module, name)
