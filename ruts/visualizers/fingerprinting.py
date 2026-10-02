@@ -2,12 +2,12 @@ from collections.abc import Callable, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
+from anyts.utils import check_sequence
 from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 
 from ..diversity_stats import calc_ttr
 from ..exceptions import ParameterError, SourceTypeError
-from ..utils import check_sequence
 
 
 def fingerprinting(
@@ -49,7 +49,7 @@ def fingerprinting(
             объект
         ParameterError: Если размер сегмента меньше единицы
     """
-    check_sequence(texts, "списков слов")
+    check_sequence(texts, "word lists")
     if not all(isinstance(text, (list, tuple)) for text in texts):
         raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
     if metric is not None and not callable(metric):

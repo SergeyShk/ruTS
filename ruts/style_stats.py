@@ -1,8 +1,10 @@
 from collections import Counter
-from collections.abc import Iterable, Sequence
+from collections.abc import Collection, Iterable, Sequence
 from functools import lru_cache
 from math import nan, sqrt
 
+import anyts
+from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
@@ -16,16 +18,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
-from .utils import (
-    check_sequence,
-    find_phrases,
-    get_morph_analyzer,
-    is_verbal_noun,
-    iter_doc_words,
-    normalize_yo,
-    parse_word,
-    safe_divide,
-)
+from .utils import find_phrases, get_morph_analyzer, is_verbal_noun, normalize_yo, parse_word
 
 
 def check_params(top_n: int) -> None:
@@ -38,6 +31,7 @@ def check_params(top_n: int) -> None:
     Исключения:
         ParameterError: Если количество самых частых слов меньше единицы
     """
+    check_integer(top_n, "number of the most frequent words")
     if top_n < 1:
         raise ParameterError("Количество самых частых слов должно быть больше 0")
 
@@ -123,17 +117,21 @@ class StyleStats:
         self,
         source: str | Doc,
         words_extractor: WordsExtractor | None = None,
-        stopwords: Sequence[str] | None = None,
+        stopwords: Collection[str] | None = None,
         top_n: int = NAUSEA_TOP_N,
-        cliches: Sequence[str] | None = None,
+        cliches: Collection[str] | None = None,
     ):
+        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
+            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         check_params(top_n)
         if stopwords is not None:
-            check_sequence(stopwords, "стоп-слов")
+            check_words(stopwords, "stopwords", ordered=False)
         if cliches is not None:
-            check_sequence(cliches, "штампов")
+            check_words(cliches, "clichés", ordered=False)
         if isinstance(source, Doc):
-            self.words = tuple(text.lower() for _, _, text in iter_doc_words(source))
+            self.words = tuple(
+                text.lower() for _, _, text in iter_doc_words(source, join_hyphens=True)
+            )
             self.forms = self.words
         elif isinstance(source, str):
             if not words_extractor:
@@ -235,6 +233,8 @@ def is_stopword(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
+    if not isinstance(word, str):
+        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
     tag = parse_word(word).tag
     return tag.POS in STOPWORD_POS or bool(STOPWORD_GRAMMEMES & tag.grammemes)
 
@@ -258,6 +258,7 @@ def calc_classic_nausea(text: Sequence[str]) -> float:
     Вывод:
         float: Значение тошноты
     """
+    check_words(text)
     if not text:
         return 0.0
     return sqrt(max(Counter(text).values()))
@@ -283,11 +284,13 @@ def calc_academic_nausea(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> floa
     Вывод:
         float: Значение тошноты в процентах
     """
+    check_words(text)
+    check_params(top_n)
     top_freqs = sum(freq for _, freq in Counter(text).most_common(top_n))
     return safe_divide(100 * top_freqs, len(text))
 
 
-def calc_water(text: Sequence[str], stopwords: Sequence[str] | None = None) -> float:
+def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) -> float:
     """
     Вычисление водности
 
@@ -309,6 +312,9 @@ def calc_water(text: Sequence[str], stopwords: Sequence[str] | None = None) -> f
     Вывод:
         float: Значение водности в процентах
     """
+    check_words(text)
+    if stopwords is not None:
+        check_words(stopwords, "stopwords", ordered=False)
     if stopwords is not None:
         stopwords_set = {word.lower() for word in stopwords}
         n_stopwords = sum(1 for word in text if word.lower() in stopwords_set)
@@ -337,6 +343,7 @@ def calc_spam(text: Sequence[str]) -> float:
     Вывод:
         float: Значение заспамленности в процентах
     """
+    check_words(text)
     n_words = len(text)
     return safe_divide(100 * (n_words - len(set(text))), n_words)
 
@@ -366,6 +373,8 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
     Вывод:
         float: Значение естественности в процентах, nan если рангов для сравнения нет
     """
+    check_words(text)
+    check_params(top_n)
     frequencies = sorted(Counter(text).values(), reverse=True)
     if not frequencies:
         return nan
@@ -380,7 +389,7 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
     return max(0.0, 100 * (1 - deviation))
 
 
-def calc_keyword_density(text: Sequence[str], keywords: Sequence[str]) -> dict[str, float]:
+def calc_keyword_density(text: Sequence[str], keywords: Collection[str]) -> dict[str, float]:
     """
     Вычисление плотности ключевых слов
 
@@ -401,6 +410,8 @@ def calc_keyword_density(text: Sequence[str], keywords: Sequence[str]) -> dict[s
     Вывод:
         dict[str, float]: Плотность каждого ключевого слова в процентах
     """
+    check_words(text)
+    check_words(keywords, "keywords", ordered=False)
     n_words = len(text)
     lowered = [word.lower() for word in text]
     density = {}
@@ -443,6 +454,7 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
     Вывод:
         float: Доля в процентах
     """
+    check_words(text)
     nouns = [parse for parse in map(parse_word, text) if parse.tag.POS == "NOUN"]
     verbal = sum(1 for parse in nouns if is_verbal_noun(parse.normal_form))
     return safe_divide(verbal, len(nouns), nan) * 100
@@ -465,6 +477,8 @@ def calc_phrase_density(text: Sequence[str], phrases: Iterable[str]) -> float:
     Вывод:
         float: Вхождений на 100 слов
     """
+    check_words(text)
+    check_words(phrases, "phrases", ordered=False)
     return safe_divide(len(find_phrases(text, expand_phrases(text, phrases))), len(text)) * 100
 
 
@@ -489,6 +503,8 @@ def expand_phrases(text: Sequence[str], phrases: Iterable[str]) -> dict[str, str
         >>> expand_phrases(["он", "довел", "до", "сведения"], ["довести до сведения"])
         {'довести до сведения': 'довести до сведения', 'довел до сведения': 'довести до сведения'}
     """
+    check_words(text)
+    check_words(phrases, "phrases", ordered=False)
     phrases = tuple(phrases)
     words = {normalize_yo(word) for word in text}
     expanded = {phrase: phrase for phrase in phrases}
@@ -528,6 +544,7 @@ def calc_parentheticals(text: Sequence[str]) -> float:
     Вывод:
         float: Вводных слов на 100 слов
     """
+    check_words(text)
     spans = find_phrases(text, PARENTHETICALS)
     covered = {position for start, end in spans for position in range(start, end)}
     singles = sum(

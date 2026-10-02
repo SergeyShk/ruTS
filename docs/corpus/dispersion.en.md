@@ -24,7 +24,7 @@ For $n$ parts with shares $s_i$ of the text, word frequencies by part $v_i$ and 
 | Rosengren's S | `rosengren_s` | $\frac{(\sum \sqrt{s_i v_i})^2}{f}$ | 1 - proportional, tends to $1/n$ when concentrated in one of equal parts; Rosengren (1971) |
 | Kullback-Leibler divergence | `kl_divergence` | $\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}$ | in bits; 0 - proportional, grows when concentrated in small parts; Gries (2020) |
 
-The measures are available as functions `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` with arguments `(frequencies, sizes)` - the word frequencies by part and the part sizes - from the module `ruts.corpus.dispersion` (`from ruts.corpus.dispersion import calc_dp`); names are in `ruts.constants.DISPERSION_STATS_DESC`. For a word with zero frequency all measures are `nan`. The `dispersion` function computes the same measures for all words at once over the non-zero cells of the word × part matrix, so memory is linear in the number of words and splitting by sentences is cheap: 260 thousand words, 13 thousand lexemes and 15 thousand sentences - 0.13 s and 28 MB.
+The measures are available as functions `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` with arguments `(frequencies, sizes)` - the word frequencies by part and the part sizes - from the module `ruts.corpus.dispersion` (`from ruts.corpus.dispersion import calc_dp`); names are in `anyts.constants.DISPERSION_STATS_DESC`. For a word with zero frequency all measures are `nan`. The `dispersion` function computes the same measures for all words at once over the non-zero cells of the word × part matrix, so memory is linear in the number of words and splitting by sentences is cheap: 260 thousand words, 13 thousand lexemes and 15 thousand sentences - 0.13 s and 28 MB.
 
 ## Parameters
 
@@ -58,8 +58,8 @@ A list of `Dispersion` named tuples in descending frequency order: `word`, `freq
     # [8, 7, 11]
 
     dispersion(words, parts=sizes, word="кот")
-    # [Dispersion(word='кот', freq=3, dp=0.08974358974358973, dp_norm=0.12280701754385961,
-    #  juilland_d=0.8725780285943102, carroll_d2=0.984770130157433,
+    # [Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966,
+    #  juilland_d=0.8725780285943101, carroll_d2=0.984770130157433,
     #  rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]
 
     # Three equal parts: «птица» only in the first and the last

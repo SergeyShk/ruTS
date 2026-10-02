@@ -5,8 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from ruts.datasets import FreqDict
-from ruts.datasets import freq2011 as freq2011_module
+from ruts.datasets import FreqDict, freq2011 as freq2011_module
 from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm
 from ruts.exceptions import ParameterError
 from ruts.utils import sha256

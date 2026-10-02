@@ -21,14 +21,14 @@ A module for extracting words from a text. It allows using different tokenizers,
 | `filter_punct` | bool | `True` | Filter punctuation marks |
 | `filter_nums` | bool | `False` | Filter numbers, including ranges, fractions and ordinals (2020-2021, 5.5, 1,5, 3-й) |
 | `use_lexemes` | bool | `False` | Use word lemmas |
-| `stopwords` | List[str] | `None` | List of stop words |
+| `stopwords` | Collection[str] | `None` | Stop words (a list or a set) |
 | `lowercase` | bool | `False` | Convert words to lower case |
 | `ngram_range` | Tuple[int, int] | `(1, 1)` | Lower and upper bound of the N-gram size |
 | `min_len` | int | `0` | Minimum length of an extracted word |
 | `max_len` | int | `0` | Maximum length of an extracted word |
 
 !!! note "Note"
-    The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared after lowercasing, so with `lowercase=True` the stop word list only needs to be in lower case. A punctuation mark is a token consisting entirely of marks and symbols, including multi-character ones: `?!`, `!..`, `--`, `…`.
+    The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared case-insensitively: «И» at the start of a sentence is dropped along with «и».
 
 ## Methods
 
@@ -49,7 +49,6 @@ An example of word extraction with bigrams as tokens, after filtering stop words
     ``` python
     # Import the libraries
     import re
-    from nltk.corpus import stopwords
     from ruts import WordsExtractor
 
     # Prepare the data
@@ -57,7 +56,7 @@ An example of word extraction with bigrams as tokens, after filtering stop words
 
     # Extract words
     we = WordsExtractor(
-        use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True, ngram_range=(1, 2)
+        use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2)
     )
     we.extract(text)
     ```
@@ -68,14 +67,6 @@ An example of word extraction with bigrams as tokens, after filtering stop words
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
     ```
 
-!!! warning "Warning"
-    This example requires the [nltk](https://github.com/nltk/nltk) stop word list to be downloaded to the local machine beforehand. Run the following code to do so:
-
-    ``` python
-    import nltk
-
-    nltk.download("stopwords")
-    ```
 
 ### get_most_common
 

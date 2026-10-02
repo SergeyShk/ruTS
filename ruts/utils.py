@@ -4,7 +4,6 @@ import os
 import re
 import shutil
 import tarfile
-import unicodedata
 import urllib.parse
 import urllib.request
 import zipfile
@@ -13,15 +12,14 @@ from functools import lru_cache
 from pathlib import Path, PurePosixPath
 
 import pymorphy3
+from anyts.utils import check_words, is_punctuation
 from razdel import tokenize
 from spacy.language import Language
 from spacy.tokenizer import Tokenizer
-from spacy.tokens import Doc, Span, Token
 
 from .constants import (
     DEFAULT_DATA_DIR,
     LETTER,
-    PUNCTUATIONS,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
     TOKENIZER_SUFFIXES,
@@ -34,6 +32,7 @@ from .exceptions import DataFileError, DownloadError, SourceTypeError
 logger = logging.getLogger(__name__)
 
 DASHES = frozenset("-—–―")
+BYTE_ORDER_MARK = "\ufeff"
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -145,6 +144,7 @@ def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int
         list[tuple[int, int]]: Границы найденных словосочетаний как срезы words;
             пустые словосочетания пропускаются
     """
+    check_words(words)
     patterns = sorted(
         {pattern for phrase in phrases if (pattern := tuple(normalize_yo(phrase).split()))},
         key=len,
@@ -175,7 +175,8 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
     Описание:
         razdel оставляет в слове приклеенные тире реплик и ремарок (-Нет -сказал он,
         —сказал); они становятся отдельными токенами, а дефис внутри слова (кто-то),
-        минус перед числом и тире в сокращенном имени (N—ский) остаются
+        минус перед числом и тире в сокращенном имени (N—ский) остаются; метка порядка
+        байтов (BOM) в начале токена отбрасывается
 
     Аргументы:
         text (str): Строка текста
@@ -185,21 +186,21 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
             символом и текст каждого токена
     """
     for token in tokenize(text):
-        if not DASHES.intersection(token.text):
-            yield token.start, token.stop, token.text
+        word = token.text.lstrip(BYTE_ORDER_MARK)
+        if not word:
+            continue
+        offset = token.stop - len(word)
+        if not DASHES.intersection(word):
+            yield offset, token.stop, word
             continue
         start = 0
-        for match in GLUED_DASHES.finditer(token.text):
+        for match in GLUED_DASHES.finditer(word):
             if match.start() > start:
-                yield (
-                    token.start + start,
-                    token.start + match.start(),
-                    token.text[start : match.start()],
-                )
-            yield token.start + match.start(), token.start + match.end(), match.group()
+                yield offset + start, offset + match.start(), word[start : match.start()]
+            yield offset + match.start(), offset + match.end(), match.group()
             start = match.end()
-        if start < len(token.text):
-            yield token.start + start, token.stop, token.text[start:]
+        if start < len(word):
+            yield offset + start, token.stop, word[start:]
 
 
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
@@ -266,121 +267,6 @@ def _extend_rules(method: object, rules: list[str]) -> re.Pattern[str] | None:
         return None
     missing = [rule for rule in rules if rule not in pattern]
     return re.compile("|".join([pattern, *missing]))
-
-
-def iter_doc_units(source: Doc | Span) -> Iterator[list[Token]]:
-    """
-    Извлечение слов из объекта Doc или Span в виде списков токенов
-
-    Описание:
-        Знаки препинания и символы отбрасываются той же проверкой is_punctuation,
-        что и для строки (№, %, $ и другие символы категории S - не слова, хотя
-        spaCy не считает их пунктуацией), пробельные токены пропускаются. Слова
-        с дефисом (во-первых, по-видимому, кое-как), которые токенизатор spaCy
-        режет на части и дефис, склеиваются обратно, если между частями нет
-        пробелов, - razdel в основном оставляет такие слова целыми; обычное
-        слово - список из одного токена
-
-    Аргументы:
-        source (Doc|Span): Объект Doc или Span
-
-    Вывод:
-        generator[list[Token]]: Токены каждого слова
-    """
-    tokens = list(source)
-    index = 0
-    while index < len(tokens):
-        token = tokens[index]
-        if token.is_space or is_punctuation(token.text):
-            index += 1
-            continue
-        last = index
-        while (
-            last + 2 < len(tokens)
-            and tokens[last + 1].text == "-"
-            and not tokens[last].whitespace_
-            and not tokens[last + 1].whitespace_
-            and not tokens[last + 2].is_space
-            and not is_punctuation(tokens[last + 2].text)
-        ):
-            last += 2
-        yield tokens[index : last + 1]
-        index = last + 1
-
-
-def iter_doc_words(source: Doc | Span) -> Iterator[tuple[int, int, str]]:
-    """
-    Извлечение слов с позициями из объекта Doc или Span
-
-    Описание:
-        Слова собираются из токенов iter_doc_units, текст дефисного слова - из текстов
-        его частей, между которыми нет пробелов
-
-    Аргументы:
-        source (Doc|Span): Объект Doc или Span
-
-    Вывод:
-        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
-            символом и текст каждого слова
-    """
-    for unit in iter_doc_units(source):
-        yield unit[0].idx, unit[-1].idx + len(unit[-1]), "".join(token.text for token in unit)
-
-
-def is_punctuation(token: str) -> bool:
-    """
-    Проверка, состоит ли токен только из знаков препинания и символов
-
-    Описание:
-        Знаками считаются символы из PUNCTUATIONS и символы Юникода категорий
-        P (пунктуация) и S (символы), поэтому фильтруются и многосимвольные
-        токены вроде «?!», «!..», «--», «…», «№», «„»
-
-    Аргументы:
-        token (str): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return all(char in PUNCTUATIONS or unicodedata.category(char)[0] in "PS" for char in token)
-
-
-@lru_cache(maxsize=1 << 16)
-def count_letters(word: str) -> int:
-    """
-    Вычисление количества букв в строке
-
-    Описание:
-        Буквы любого алфавита (str.isalpha), без цифр, дефисов и знаков; результаты
-        кэшируются по словоформе, поэтому повторный подсчет бесплатен. Для целых
-        текстов функция не предназначена - они осели бы в кэше
-
-    Аргументы:
-        word (str): Словоформа
-
-    Вывод:
-        int: Количество букв
-    """
-    return sum(map(str.isalpha, word))
-
-
-def check_sequence(value: object, what: str = "слов") -> None:
-    """
-    Проверка, что аргумент - последовательность, а не строка
-
-    Описание:
-        Строка формально удовлетворяет Sequence[str], но перебирается посимвольно;
-        функции, ожидающие список слов или текстов, отвергают ее явно
-
-    Аргументы:
-        value (object): Проверяемое значение
-        what (str): Что ожидается, для сообщения об ошибке
-
-    Исключения:
-        SourceTypeError: Если передана строка
-    """
-    if isinstance(value, str):
-        raise SourceTypeError(f"Ожидается список {what}, а не строка")
 
 
 def to_path(path: str | Path) -> Path:
@@ -547,20 +433,3 @@ def sha256(path: Path) -> str:
         return ""
     with path.open("rb") as file:
         return hashlib.file_digest(file, "sha256").hexdigest()
-
-
-def safe_divide(num: float | int, den: float | int, default: float | int = 0) -> float:
-    """
-    Безопасное деление двух чисел
-
-    Аргументы:
-        num (float|int): Число в числителе
-        den (float|int): Число в знаменателе
-        default (float|int): Значение по умолчанию при возникновении ошибки
-
-    Вывод:
-        float: Результат безопасного деления
-    """
-    if not den:
-        return default
-    return num / den

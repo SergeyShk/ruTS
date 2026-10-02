@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.15.0.dev7"
+version = "0.15.0.dev8"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -42,9 +42,9 @@ classifiers = [
     "Natural Language :: Russian",
 ]
 dependencies = [
+    "anyts>=0.2.5,<0.3",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
-    "nltk>=3.9",
     "numpy>=1.26",
     "pandas>=2.1",
     "pymorphy3>=2.0.4",
@@ -137,6 +137,7 @@ max-complexity = 18
 
 [tool.ruff.lint.isort]
 known-first-party = ["ruts"]
+combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["N801", "N802"]

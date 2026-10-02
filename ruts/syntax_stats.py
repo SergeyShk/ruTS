@@ -3,6 +3,21 @@ from collections.abc import Iterable
 from math import nan
 from statistics import fmean, pstdev
 
+from anyts.syntax import (
+    base_dep as base_dep,
+    calc_coordination_chains as calc_coordination_chains,
+    calc_dependency_distances as calc_dependency_distances,
+    calc_tree_depth as calc_tree_depth,
+    calc_valency as calc_valency,
+    count_children as count_children,
+    get_children as get_children,
+    get_words as get_words,
+    has_feature as has_feature,
+    is_root as is_root,
+    is_word as is_word,
+    subtree_len as subtree_len,
+)
+from anyts.utils import safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -15,10 +30,9 @@ from .constants import (
     SUBJECT_DEPS,
     SUBORDINATE_CLAUSE_DEPS,
     SYNTAX_STATS_DESC,
-    VALENCY_IGNORED_DEPS,
 )
 from .exceptions import SourceError, SourceTypeError
-from .utils import is_verbal_noun, lemmatize, normalize_yo, safe_divide
+from .utils import is_verbal_noun, lemmatize, normalize_yo
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
@@ -153,18 +167,27 @@ class SyntaxStats:
             raise SourceTypeError("Некорректный источник данных")
         if not source.has_annotation("DEP"):
             raise SourceError("В источнике данных отсутствует разбор зависимостей")
-        sents = [sent_words for sent in source.sents if (sent_words := get_words(sent))]
+        sents = [
+            sent_words
+            for sent in source.sents
+            if (sent_words := get_words(sent, join_hyphens=True))
+        ]
         if not sents:
             raise SourceError("В источнике данных отсутствуют слова")
         words = [token for sent in sents for token in sent]
         self.n_sents = len(sents)
         self.n_words = len(words)
 
-        distances = [calc_dependency_distances(sent) for sent in sents]
+        distances = [calc_dependency_distances(sent, join_hyphens=True) for sent in sents]
         all_distances = [distance for sent in distances for distance in sent]
         depths = [calc_tree_depth(sent) for sent in sents]
-        leaves = [sum(1 for token in sent if not count_children(token)) for sent in sents]
-        self.c_children = dict(sorted(Counter(count_children(token) for token in words).items()))
+        leaves = [
+            sum(1 for token in sent if not count_children(token, join_hyphens=True))
+            for sent in sents
+        ]
+        self.c_children = dict(
+            sorted(Counter(count_children(token, join_hyphens=True) for token in words).items())
+        )
         self.c_deps = dict(sorted(Counter(token.dep_ for token in words).items()))
         self.n_leaves = sum(leaves)
         self.n_subtrees = self.n_words - self.n_leaves
@@ -181,9 +204,13 @@ class SyntaxStats:
         self.n_nouns = len(nouns)
         genitive_chains = [length for sent in sents for length in calc_genitive_chains(sent)]
         self.n_genitive_chains = len(genitive_chains)
-        participle_clauses = [subtree_len(token) for token in words if is_participle_clause(token)]
+        participle_clauses = [
+            subtree_len(token, join_hyphens=True) for token in words if is_participle_clause(token)
+        ]
         self.n_participle_clauses = len(participle_clauses)
-        converb_clauses = [subtree_len(token) for token in words if is_converb_clause(token)]
+        converb_clauses = [
+            subtree_len(token, join_hyphens=True) for token in words if is_converb_clause(token)
+        ]
         self.n_converb_clauses = len(converb_clauses)
         self.n_verbs = sum(1 for token in words if token.pos_ == "VERB")
         passive = [token for token in words if is_passive(token)]
@@ -211,7 +238,9 @@ class SyntaxStats:
             len(sent) / n_leaves for sent, n_leaves in zip(sents, leaves, strict=True)
         )
         self.verb_valency = safe_divide(
-            sum(calc_valency(token) for token in finite_verbs), len(finite_verbs), nan
+            sum(calc_valency(token, join_hyphens=True) for token in finite_verbs),
+            len(finite_verbs),
+            nan,
         )
         self.coordination_chains_per_sent = self.n_coordination_chains / self.n_sents
         self.mean_coordination_chain_len = fmean(chains) if chains else nan
@@ -251,171 +280,6 @@ class SyntaxStats:
         stats = self.get_stats()
         for stat, value in SYNTAX_STATS_DESC.items():
             print(f"{value:50}|{stats[stat]:^10.2f}")
-
-
-def is_word(token: Token) -> bool:
-    """
-    Проверка, является ли токен словом - не знаком препинания и не пробелом
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return not token.is_punct and not token.is_space
-
-
-def get_words(tokens: Iterable[Token]) -> list[Token]:
-    """
-    Получение слов из последовательности токенов
-
-    Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
-
-    Вывод:
-        list[Token]: Список слов
-    """
-    return [token for token in tokens if is_word(token)]
-
-
-def is_root(token: Token) -> bool:
-    """
-    Проверка, является ли токен вершиной предложения
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return token.head.i == token.i
-
-
-def base_dep(token: Token) -> str:
-    """
-    Получение базового синтаксического отношения токена без подтипа
-
-    Описание:
-        Подтипы Universal Dependencies отделяются двоеточием: acl:relcl → acl,
-        nsubj:pass → nsubj, nummod:gov → nummod
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        str: Базовое отношение
-    """
-    return token.dep_.split(":")[0]
-
-
-def get_children(token: Token) -> list[Token]:
-    """
-    Получение зависимых слов токена
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        list[Token]: Список зависимых слов без знаков препинания и пробелов
-    """
-    return [child for child in token.children if is_word(child)]
-
-
-def count_children(token: Token) -> int:
-    """
-    Вычисление количества зависимых слов токена
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        int: Количество зависимых слов
-    """
-    return len(get_children(token))
-
-
-def subtree_len(token: Token) -> int:
-    """
-    Вычисление длины поддерева токена в словах
-
-    Описание:
-        Учитываются сам токен и все его прямые и косвенные зависимые слова
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        int: Количество слов в поддереве
-    """
-    return sum(1 for descendant in token.subtree if is_word(descendant))
-
-
-def calc_dependency_distances(tokens: Iterable[Token]) -> list[int]:
-    """
-    Вычисление длин зависимостей
-
-    Описание:
-        Длина зависимости - расстояние между словом и его вершиной в позициях слов,
-        знаки препинания не учитываются (Liu 2008); вершины предложений не имеют
-        зависимости и пропускаются, как и слова, вершина которых лежит вне
-        переданной последовательности
-
-    Ссылки:
-        Liu H. Dependency distance as a metric for language comprehension difficulty.
-        Journal of Cognitive Science, 2008, 9(2), 159-191
-
-    Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
-
-    Вывод:
-        list[int]: Длины зависимостей в порядке слов
-    """
-    words = get_words(tokens)
-    positions = {token.i: position for position, token in enumerate(words)}
-    return [
-        abs(positions[token.i] - positions[token.head.i])
-        for token in words
-        if not is_root(token) and token.head.i in positions
-    ]
-
-
-def calc_tree_depth(tokens: Iterable[Token]) -> int:
-    """
-    Вычисление глубины дерева зависимостей
-
-    Описание:
-        Длина самого длинного пути от вершины предложения к листу в связях;
-        для последовательности из нескольких предложений берется максимум,
-        для предложения из одного слова - 0
-
-    Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
-
-    Вывод:
-        int: Глубина дерева
-    """
-    words = get_words(tokens)
-    ids = {token.i for token in words}
-    return max(
-        (sum(1 for ancestor in token.ancestors if ancestor.i in ids) for token in words),
-        default=0,
-    )
-
-
-def has_feature(token: Token, field: str, value: str) -> bool:
-    """
-    Проверка, есть ли у токена морфологический признак с заданным значением
-
-    Аргументы:
-        token (Token): Токен
-        field (str): Название признака Universal Dependencies (VerbForm, Case, Voice)
-        value (str): Значение признака (Part, Gen, Pass)
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return value in token.morph.get(field, [])
 
 
 def is_finite_verb(token: Token) -> bool:
@@ -497,46 +361,6 @@ def is_negation(token: Token) -> bool:
     return has_feature(token, "Polarity", "Neg") or token.lower_ in NEGATION_PARTICLES
 
 
-def calc_valency(token: Token) -> int:
-    """
-    Вычисление валентности токена
-
-    Описание:
-        Количество зависимых слов без сочинительных (cc, conj) и вставных (parataxis)
-        связей, как в признаке VERBS_DEP Иванова, Солнышкиной и Соловьёва (2018)
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        int: Количество зависимых слов
-    """
-    return sum(1 for child in get_children(token) if child.dep_ not in VALENCY_IGNORED_DEPS)
-
-
-def calc_coordination_chains(tokens: Iterable[Token]) -> list[int]:
-    """
-    Вычисление длин сочинительных цепочек
-
-    Описание:
-        В Universal Dependencies все однородные члены присоединяются связью conj
-        к первому из них, поэтому цепочка - слово с зависимыми conj, а ее длина -
-        число однородных членов вместе с первым
-
-    Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
-
-    Вывод:
-        list[int]: Длины цепочек в порядке слов
-    """
-    chains = []
-    for token in get_words(tokens):
-        n_conjuncts = sum(1 for child in get_children(token) if child.dep_ == "conj")
-        if n_conjuncts:
-            chains.append(n_conjuncts + 1)
-    return chains
-
-
 def is_clause_head(token: Token) -> bool:
     """
     Проверка, является ли токен вершиной клаузы
@@ -585,7 +409,7 @@ def is_predicate(token: Token) -> bool:
         bool: Результат проверки
     """
     return token.pos_ in ("VERB", "AUX") or any(
-        base_dep(child) in SUBJECT_DEPS for child in get_children(token)
+        base_dep(child) in SUBJECT_DEPS for child in get_children(token, join_hyphens=True)
     )
 
 
@@ -625,7 +449,11 @@ def count_noun_modifiers(token: Token) -> int:
     Вывод:
         int: Количество модификаторов
     """
-    return sum(1 for child in get_children(token) if base_dep(child) in NOUN_MODIFIER_DEPS)
+    return sum(
+        1
+        for child in get_children(token, join_hyphens=True)
+        if base_dep(child) in NOUN_MODIFIER_DEPS
+    )
 
 
 def is_genitive_modifier(token: Token) -> bool:
@@ -671,7 +499,7 @@ def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
         list[int]: Длины цепочек в порядке слов
     """
     chains = []
-    for token in get_words(tokens):
+    for token in get_words(tokens, join_hyphens=True):
         if is_genitive_modifier(token) and not is_genitive_modifier(token.head):
             length = _genitive_chain_len(token)
             if length >= 2:
@@ -693,7 +521,7 @@ def is_participle_clause(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return is_participle(token) and calc_valency(token) > 0
+    return is_participle(token) and calc_valency(token, join_hyphens=True) > 0
 
 
 def is_converb_clause(token: Token) -> bool:
@@ -710,7 +538,7 @@ def is_converb_clause(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return is_converb(token) and calc_valency(token) > 0
+    return is_converb(token) and calc_valency(token, join_hyphens=True) > 0
 
 
 def is_passive(token: Token) -> bool:
@@ -871,12 +699,12 @@ def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
         list[tuple[Token, Token]]: Пары глагол - существительное в порядке слов
     """
     pairs = []
-    for token in get_words(tokens):
+    for token in get_words(tokens, join_hyphens=True):
         if not is_light_verb(token):
             continue
         candidates = [
             child
-            for child in get_children(token)
+            for child in get_children(token, join_hyphens=True)
             if is_split_predicate_noun(child, token) and _is_nominal_part(child, token)
         ]
         if candidates:

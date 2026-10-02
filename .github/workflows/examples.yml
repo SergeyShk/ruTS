@@ -21,14 +21,5 @@ jobs:
           python-version: "3.13"
       - name: Install dependencies
         run: uv sync --locked --all-groups
-      - name: Cache NLTK data
-        uses: actions/cache@v6
-        with:
-          path: ${{ runner.temp }}/nltk_data
-          key: nltk-punkt-stopwords-${{ runner.os }}-v1
-      - name: Download NLTK data
-        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run notebooks
-        env:
-          NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: uv run --no-sync pytest --nbmake examples -p no:cacheprovider

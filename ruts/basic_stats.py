@@ -3,6 +3,7 @@ from collections import Counter
 from collections.abc import Iterable
 from typing import Any
 
+from anyts.utils import count_letters, iter_doc_words
 from spacy.tokens import Doc, Span
 
 from .constants import (
@@ -16,7 +17,6 @@ from .constants import (
 from .exceptions import SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
-from .utils import count_letters, iter_doc_words
 
 ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
 DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)
@@ -144,7 +144,7 @@ class BasicStats:
                 sents = source.sents
             else:
                 sents = (sents_extractor or SentsExtractor()).extract(text)
-            words = tuple(word for _, _, word in iter_doc_words(source))
+            words = tuple(word for _, _, word in iter_doc_words(source, join_hyphens=True))
         elif isinstance(source, str):
             text = source
             if not sents_extractor:

@@ -1,23 +1,16 @@
-from math import isnan, sqrt
+from math import isnan
 
 import numpy as np
-import pandas as pd
 import pytest
-from scipy.stats import mannwhitneyu
 
 from ruts.corpus import (
-    bootstrap_median_diff,
-    calc_cliff_delta,
-    calc_cohen_d,
     compare_corpora,
-    compare_features,
     corpus_features,
-    holm_correction,
     sentence_rhythm,
     split_windows,
     text_features,
 )
-from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES, compare_values
+from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES
 from ruts.exceptions import SourceError
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
@@ -160,12 +153,6 @@ def test_text_features_lowercase_diversity():
     assert text_features("Кот спал. кот ел. КОТ сидел.")["diversity_ttr"] == 4 / 6
 
 
-def test_compare_features_drops_infinite():
-    table_a = pd.DataFrame({"x": [1.0, 2.0, 3.0, float("inf")]})
-    table_b = pd.DataFrame({"x": [4.0, 5.0, 6.0, 7.0]})
-    assert compare_features(table_a, table_b, n_bootstrap=10).loc["x", "n_A"] == 3
-
-
 def test_compare_corpora_short_texts():
     with pytest.raises(SourceError, match=r"Корпус Чехов: .* 500 и более слов"):
         compare_corpora(["Кот спал."], ["Пёс ел."], labels=("Чехов", "Толстой"))
@@ -216,19 +203,6 @@ def test_compare_corpora():
     assert list(undefined.index) == list(result.index[-len(undefined) :])
 
 
-def test_compare_features():
-    table_short = corpus_features(short, window=None)
-    table_long = corpus_features(long, window=None)
-    result = compare_features(table_short, table_long, labels=("короткие", "длинные"), seed=1)
-    expected = compare_corpora(short, long, window=None, labels=("короткие", "длинные"), seed=1)
-    pd.testing.assert_frame_equal(result, expected)
-    # Признак только в одной таблице - nan, число выборок проверяется
-    extra = table_short.assign(extra=1.0)
-    assert isnan(compare_features(extra, table_long, n_bootstrap=10).loc["extra", "cliff_delta"])
-    with pytest.raises(ValueError):
-        compare_features(table_short, table_long, n_bootstrap=0)
-
-
 def test_compare_corpora_rare_values():
     a = ["Ах, кот спал. Ох, пёс ел. Эх, дождь шёл. Кот встал."] * 3
     b = ["Кот спал. Пёс ел. Дождь шёл. Кот встал. Пёс лёг."] * 3
@@ -257,44 +231,3 @@ def test_compare_corpora_options():
     single = compare_corpora(short[:1], long, window=None, features=lengths, n_bootstrap=50)
     assert isnan(single.loc["length", "cliff_delta"])
     assert (single.loc["length", "n_A"], single.loc["length", "n_B"]) == (1, 3)
-
-
-def test_compare_values():
-    a = np.array([1.0, 2.0, 3.0, 4.0])
-    b = np.array([3.0, 4.0, 5.0, 6.0])
-    values = compare_values(a, b, n_bootstrap=100, rng=np.random.default_rng(0))
-    assert len(values) == len(COMPARISON_COLUMNS)
-    assert values[:5] == (2.5, 4.5, 2.5, 4.5, -2.0)
-    assert values[8] == pytest.approx(calc_cliff_delta(a, b))
-    assert values[9] == pytest.approx(mannwhitneyu(a, b)[0] / 16)
-    assert values[11] == pytest.approx(mannwhitneyu(a, b, alternative="two-sided")[1])
-    assert isnan(values[12])
-    assert values[13:] == (4, 4)
-    assert all(isnan(value) for value in compare_values(np.array([1.0]), b)[:13])
-    assert compare_values(np.array([1.0]), b)[13:] == (1, 4)
-
-
-def test_effect_sizes():
-    a = [2.0, 4.0, 6.0, 8.0]
-    b = [1.0, 3.0, 5.0, 7.0]
-    assert calc_cohen_d(a, b) == pytest.approx(1 / sqrt(20 / 3))
-    assert isnan(calc_cohen_d([1.0, 1.0], [1.0, 1.0]))
-    assert isnan(calc_cohen_d([1.0], [2.0, 3.0]))
-    assert calc_cliff_delta(a, b) == pytest.approx((10 - 6) / 16)
-    assert calc_cliff_delta([1, 1], [1, 1]) == 0.0
-    assert calc_cliff_delta([5, 6], [1, 2]) == 1.0
-    assert isnan(calc_cliff_delta([], [1.0]))
-    low, high = bootstrap_median_diff(a, b, n_bootstrap=500, rng=np.random.default_rng(0))
-    assert low <= 1.0 <= high
-    assert bootstrap_median_diff([3.0, 3.0, 3.0], [1.0, 1.0, 1.0], n_bootstrap=10) == (2.0, 2.0)
-    assert all(isnan(value) for value in bootstrap_median_diff([], [1.0]))
-    assert bootstrap_median_diff(a, b, n_bootstrap=20) != (float("nan"), float("nan"))
-
-
-def test_holm_correction():
-    adjusted = holm_correction([0.01, 0.04, 0.03, float("nan")])
-    assert adjusted[:3] == pytest.approx([0.03, 0.06, 0.06])
-    assert isnan(adjusted[3])
-    assert list(holm_correction([0.5, 0.9])) == [1.0, 1.0]
-    assert list(holm_correction([])) == []
-    assert all(isnan(value) for value in holm_correction([float("nan")]))

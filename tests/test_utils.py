@@ -12,14 +12,11 @@ from ruts.utils import (
     download_file,
     extract_archive,
     find_phrases,
-    is_punctuation,
     is_verbal_noun,
-    iter_doc_words,
     iter_text_words,
     iter_tokens,
     normalize_yo,
     parse_word,
-    safe_divide,
     to_path,
 )
 
@@ -156,36 +153,6 @@ def test_extract_archive_not_an_archive(tmp_path):
     not_an_archive.write_text("и\nв\nне\n", encoding="utf-8")
     with pytest.raises(DataFileError):
         extract_archive(not_an_archive)
-
-
-@pytest.mark.parametrize("args, result", [((1, 5), 0.2), ((1, 0), 0), ((1, "", -1), -1)])
-def test_safe_divide(args, result):
-    assert safe_divide(*args) == result
-
-
-@pytest.mark.parametrize(
-    ("token", "expected"),
-    [
-        ("!", True),
-        ("?!", True),
-        ("!..", True),
-        ("--", True),
-        ("…", True),
-        ("–", True),
-        ("№", True),
-        ("„", True),
-        ("’", True),
-        ("«»", True),
-        ("+", True),
-        ("слово", False),
-        ("какого-либо", False),
-        ("3-й", False),
-        ("100", False),
-        ("a", False),
-    ],
-)
-def test_is_punctuation(token, expected):
-    assert is_punctuation(token) is expected
 
 
 def test_parse_word_cached():
@@ -339,17 +306,3 @@ def test_add_dash_rules_other_tokenizer():
 
 def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
-
-
-def test_iter_doc_words():
-    import spacy
-
-    doc = spacy.blank("ru")("Во-первых, кот -\nсобака - дом-музей, кое-как-нибудь.")
-    assert list(iter_doc_words(doc)) == [
-        (0, 9, "Во-первых"),
-        (11, 14, "кот"),
-        (17, 23, "собака"),
-        (26, 35, "дом-музей"),
-        (37, 51, "кое-как-нибудь"),
-    ]
-    assert list(iter_doc_words(spacy.blank("ru")("- . ,"))) == []

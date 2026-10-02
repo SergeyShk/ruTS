@@ -5,10 +5,10 @@ from enum import Enum
 from typing import Any
 
 import pandas as pd
+from anyts.utils import check_sequence
 from graphviz import Digraph, nohtml
 
 from ..exceptions import ParameterError, SourceError, SourceTypeError
-from ..utils import check_sequence
 
 
 class Direction(Enum):
@@ -159,7 +159,7 @@ class WordTree:
         max_n: int = 5,
         max_per_n: int = 8,
     ):
-        check_sequence(texts, "списков слов")
+        check_sequence(texts, "word lists")
         if not all(isinstance(text, (list, tuple)) for text in texts):
             raise SourceTypeError("Тексты должны быть представлены в виде списка списков слов")
         if not texts:

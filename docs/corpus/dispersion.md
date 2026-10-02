@@ -24,7 +24,7 @@
 | S Розенгрена | `rosengren_s` | $\frac{(\sum \sqrt{s_i v_i})^2}{f}$ | 1 - пропорционально, стремится к $1/n$ при сосредоточении в одной из равных частей; Rosengren (1971) |
 | Дивергенция Кульбака-Лейблера | `kl_divergence` | $\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}$ | в битах; 0 - пропорционально, растет при сосредоточении в малых частях; Gries (2020) |
 
-Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей - из модуля `ruts.corpus.dispersion` (`from ruts.corpus.dispersion import calc_dp`); названия - в `ruts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`. Функция `dispersion` считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.
+Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей - из модуля `ruts.corpus.dispersion` (`from ruts.corpus.dispersion import calc_dp`); названия - в `anyts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`. Функция `dispersion` считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.
 
 ## Параметры
 
@@ -58,8 +58,8 @@
     # [8, 7, 11]
 
     dispersion(words, parts=sizes, word="кот")
-    # [Dispersion(word='кот', freq=3, dp=0.08974358974358973, dp_norm=0.12280701754385961,
-    #  juilland_d=0.8725780285943102, carroll_d2=0.984770130157433,
+    # [Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966,
+    #  juilland_d=0.8725780285943101, carroll_d2=0.984770130157433,
     #  rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]
 
     # Три равные части: «птица» - только в первой и последней

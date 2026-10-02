@@ -15,7 +15,6 @@ git clone https://github.com/SergeyShk/ruTS.git
 cd ruTS
 
 make deps        # создать окружение и установить все зависимости
-make nltk-data   # загрузить данные NLTK, нужные для тестов
 uv run pre-commit install   # хуки: линтеры на коммите, тесты на пуше
 ```
 

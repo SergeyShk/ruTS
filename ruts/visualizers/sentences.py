@@ -3,12 +3,13 @@ from numbers import Integral
 
 import matplotlib.pyplot as plt
 import numpy as np
+from anyts.utils import iter_doc_words
 from matplotlib.axes import Axes
 from razdel import sentenize
 from spacy.tokens import Doc
 
 from ..exceptions import ParameterError, SourceError, SourceTypeError
-from ..utils import iter_doc_words, iter_text_words
+from ..utils import iter_text_words
 
 
 def sentence_lengths_plot(
@@ -116,7 +117,9 @@ def sentence_lengths(source: str | Doc | Iterable[int]) -> list[int]:
         return count_words_by_spans(starts, spans)
     if isinstance(source, Doc):
         if source.has_annotation("SENT_START"):
-            lengths = [sum(1 for _ in iter_doc_words(sent)) for sent in source.sents]
+            lengths = [
+                sum(1 for _ in iter_doc_words(sent, join_hyphens=True)) for sent in source.sents
+            ]
             return [length for length in lengths if length]
         return sentence_lengths(source.text)
     if isinstance(source, Iterable):

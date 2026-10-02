@@ -24,10 +24,10 @@ For a word with frequency $a$ in a target corpus of size $c$ and frequency $b$ i
 | %DIFF | `diff` | $\frac{NF_a - NF_b}{NF_b} \cdot 100$ | [Gabrielatos and Marchi (2011)](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf); $NF$ - frequency per million words |
 | Log Ratio | `log_ratio` | $\log_2 \frac{NF_a}{NF_b}$ | [Hardie (2014)](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/); one means the word is twice as frequent in the target corpus |
 | BIC | `bic` | $\operatorname{sign}(G^2) \cdot (\lvert G^2 \rvert - \ln N)$ | Wilson (2013); in absolute value above 2 - positive evidence of a difference, above 6 - strong, above 10 - very strong; a negative value with $\lvert G^2 \rvert < \ln N$ means no evidence, not the opposite direction |
-| ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper and Rayson (2007); effect size for $G^2$ from 0 to 1, `nan` when the minimum expected frequency is below $e$ - then $\ln \min(E_1, E_2) < 1$ and the measure exceeds one |
+| ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper and Rayson (2007); effect size for $G^2$ from 0 to 1, though it grows without bound as the minimum expected frequency nears one; `nan` when the minimum expected frequency is at most 1 |
 | Odds ratio | `odds_ratio` | $\frac{a / (c - a)}{b / (d - b)}$ | one means equal odds; `inf` if the word fills the whole target corpus, 0 - the whole reference |
 
-A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of $G^2$ is computed from the chi-square distribution with one degree of freedom (`calc_p_value`). The measures are available as functions `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` with arguments `(a, b, c, d)` from the module `ruts.corpus.keyness` (`from ruts.corpus.keyness import calc_log_likelihood`; the name `ruts.corpus.keyness` in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in `ruts.constants.KEYNESS_MEASURES`.
+A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of $G^2$ is computed from the chi-square distribution with one degree of freedom (`calc_p_value`). The measures are available as functions `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` with arguments `(a, b, c, d)` from the module `ruts.corpus.keyness` (`from ruts.corpus.keyness import calc_log_likelihood`; the name `ruts.corpus.keyness` in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in `anyts.constants.KEYNESS_MEASURES`.
 
 ## Parameters
 
@@ -75,7 +75,7 @@ A list of `Keyword` named tuples in descending keyness order (ties broken by des
     )
 
     keyness(target, reference, top_n=1)
-    # [Keyword(word='кот', freq_target=3, freq_reference=0, ipm_target=115384.61538461539,
+    # [Keyword(word='кот', freq_target=3, freq_reference=0.0, ipm_target=115384.61538461539,
     #  ipm_reference=0.0, g2=2.8774384815713177, p_value=0.08982881315854577,
     #  log_ratio=1.8845227825800641, score=2.8774384815713177)]
 

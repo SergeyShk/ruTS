@@ -870,7 +870,6 @@ SYNTAX_STATS_DESC = {
 CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass", "parataxis"})
 SUBORDINATE_CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass"})
 SUBJECT_DEPS = frozenset({"nsubj", "csubj"})
-VALENCY_IGNORED_DEPS = frozenset({"cc", "conj", "parataxis", "punct"})
 NOUN_MODIFIER_DEPS = frozenset({"amod", "det", "nmod", "nummod", "acl"})
 PASSIVE_DEPS = frozenset({"nsubj:pass", "csubj:pass", "aux:pass"})
 NEGATION_PARTICLES = frozenset({"не", "ни"})
@@ -953,12 +952,6 @@ DEMONSTRATIVE_LEMMAS = frozenset(
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10
-MATTR_WINDOW_LEN = 50
-MTLD_TTR_THRESHOLD = 0.72
-MTLD_MIN_LEN = 10
-HDD_SAMPLE_SIZE = 42
-DIVERSITY_LOG_BASE = 10
-BRUNET_W_EXPONENT = 0.172
 HIGHLIGHT_LAYERS_DESC = {
     "long_sents": "Длинные предложения",
     "complex_words": "Сложные слова",
@@ -1016,38 +1009,4 @@ RU_LETTER_FREQUENCIES = {
 # Знаки при первом слове окна split_windows и те, что закрывают слово, если приклеены к нему
 OPENING_MARKS = frozenset('«"„“‘([{—–―-')
 SYMMETRIC_MARKS = frozenset('"“‘—–―-')
-KEYNESS_MEASURES = {
-    "log_likelihood": "Логарифм правдоподобия G²",
-    "chi2": "Хи-квадрат с поправкой Йейтса",
-    "diff": "Разность нормированных частот %DIFF",
-    "log_ratio": "Двоичный логарифм отношения нормированных частот",
-    "bic": "Байесовский информационный критерий",
-    "ell": "Размер эффекта для логарифма правдоподобия",
-    "odds_ratio": "Отношение шансов",
-}
-G2_CRITICAL_VALUES = {0.05: 3.84, 0.01: 6.63, 0.001: 10.83, 0.0001: 15.13}
-COLLOCATION_MEASURES = {
-    "mi": "Взаимная информация MI",
-    "mi3": "Кубическая взаимная информация MI³",
-    "t_score": "t-критерий",
-    "dice": "Коэффициент Дайса",
-    "logdice": "logDice",
-    "log_likelihood": "Логарифм правдоподобия G²",
-    "npmi": "Нормированная взаимная информация",
-    "min_sensitivity": "Минимальная чувствительность",
-}
-DISPERSION_STATS_DESC = {
-    "dp": "Отклонение пропорций DP Гриса",
-    "dp_norm": "Нормированное DP",
-    "juilland_d": "D Жюйана",
-    "carroll_d2": "D2 Кэрролла",
-    "rosengren_s": "S Розенгрена",
-    "kl_divergence": "Дивергенция Кульбака-Лейблера",
-}
-DELTA_VARIANTS = {
-    "burrows": "Дельта Барроуза - манхэттенское расстояние z-оценок на число единиц",
-    "quadratic": "Квадратичная дельта Аргамона - евклидово расстояние z-оценок на число единиц",
-    "eder": "Дельта Эдера - манхэттенское расстояние z-оценок с весами по рангу",
-    "cosine": "Косинусная дельта - косинусное расстояние z-оценок",
-}
 FUNCTION_UD_POS = ("ADP", "CCONJ", "SCONJ", "PART", "PRON", "DET", "INTJ")

@@ -37,9 +37,9 @@ Let us look at the visualizer on 100 texts of the [SovChLit](../datasets/sovchli
     ``` python
     # Import the libraries
     from collections import Counter
-    from nltk.corpus import stopwords
     from ruts import WordsExtractor
     from ruts.datasets import SovChLit
+    from ruts.style_stats import is_stopword
     from ruts.visualizers import zipf
 
     # Prepare the data
@@ -48,8 +48,8 @@ Let us look at the visualizer on 100 texts of the [SovChLit](../datasets/sovchli
     text = "\n".join(texts)
 
     # Count word frequencies
-    we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True)
-    tokens_with_count = Counter(we.extract(text))
+    we = WordsExtractor(use_lexemes=True, filter_nums=True)
+    tokens_with_count = Counter(word for word in we.extract(text) if not is_stopword(word))
 
     # Plot
     ax = zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)

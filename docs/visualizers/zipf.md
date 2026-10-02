@@ -37,9 +37,9 @@
     ``` python
     # Загрузка библиотек
     from collections import Counter
-    from nltk.corpus import stopwords
     from ruts import WordsExtractor
     from ruts.datasets import SovChLit
+    from ruts.style_stats import is_stopword
     from ruts.visualizers import zipf
 
     # Подготовка данных
@@ -48,8 +48,8 @@
     text = "\n".join(texts)
 
     # Подсчет частотности слов
-    we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True)
-    tokens_with_count = Counter(we.extract(text))
+    we = WordsExtractor(use_lexemes=True, filter_nums=True)
+    tokens_with_count = Counter(word for word in we.extract(text) if not is_stopword(word))
 
     # Построение графика
     ax = zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)

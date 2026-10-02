@@ -289,7 +289,8 @@ def test_cliches_reflexive_and_negated():
 
 
 def test_phrase_density_iterator():
-    assert calc_phrase_density(["имеет", "место"], iter(["иметь место"])) == 50.0
+    with pytest.raises(SourceTypeError):
+        calc_phrase_density(["имеет", "место"], iter(["иметь место"]))
 
 
 def test_phrase_density_all_lexemes():
