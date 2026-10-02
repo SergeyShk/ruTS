@@ -7,7 +7,7 @@ The library can be installed with `pip` or by cloning the project repository wit
 ruTS relies on the following third-party libraries:
 
 *   `python` - 3.11 or newer
-*   `anyts` - 0.2.4 or newer
+*   `anyts` - 0.2.5 or newer
 *   `pymorphy3`
 *   `razdel`
 *   `scipy`

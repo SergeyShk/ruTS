@@ -13,6 +13,7 @@ from anyts.corpus.keyness import (
     calc_log_ratio as calc_log_ratio,
     calc_odds_ratio as calc_odds_ratio,
     calc_p_value as calc_p_value,
+    check_keyness_params,
 )
 
 from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
@@ -74,6 +75,7 @@ def keyness(
         DatasetNotFoundError: Если частотный словарь не загружен
     """
     if isinstance(reference, FreqDict):
+        check_keyness_params(measure, min_freq, top_n, target)
         reference = _frequency_reference(reference, lemmatize)
     return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n)
 

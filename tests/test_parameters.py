@@ -12,8 +12,9 @@ from ruts import (
     WordsExtractor,
 )
 from ruts.cohesion_stats import find_connectors
-from ruts.corpus import compare_corpora, corpus_features, function_words_profile, kwic
+from ruts.corpus import compare_corpora, corpus_features, function_words_profile, keyness, kwic
 from ruts.corpus.compare import sentence_rhythm, split_windows, text_features
+from ruts.datasets import FreqDict
 from ruts.exceptions import ParameterError, SourceTypeError
 from ruts.lexical_stats import calc_surprisal
 from ruts.phon_stats import (
@@ -167,3 +168,14 @@ def test_cohesion_checks_the_connectors_before_parsing():
     # Текст разбирается долго, а неверный словарь отвергается сразу
     with pytest.raises(SourceTypeError):
         CohesionStats("кот спит " * 200_000, connectors=["потому что"])
+
+
+def test_keyness_checks_before_the_dictionary(tmp_path):
+    """Неверные параметры и цель отвергаются до чтения частотного словаря"""
+    freq_dict = FreqDict(data_dir=tmp_path)
+    with pytest.raises(ParameterError):
+        keyness(["кот"], freq_dict, measure="x")
+    with pytest.raises(SourceTypeError):
+        keyness("кот спит", freq_dict)
+    with pytest.raises(SourceTypeError):
+        keyness({"кот": 1.5}, freq_dict)
