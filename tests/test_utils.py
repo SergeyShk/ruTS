@@ -4,7 +4,6 @@ import pytest
 
 from ruts.utils import (
     add_dash_rules,
-    count_words_by_spans,
     find_phrases,
     is_verbal_noun,
     iter_text_words,
@@ -132,11 +131,3 @@ def test_add_dash_rules_other_tokenizer():
 
 def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
-
-
-def test_count_words_by_spans():
-    text = "Кот спит. Где пёс? Ест."
-    starts = [start for start, _, _ in iter_text_words(text)]
-    assert count_words_by_spans(starts, [(0, 9), (10, 18), (19, 23)]) == [2, 2, 1]
-    # отрезок без слов пропускается
-    assert count_words_by_spans(starts, [(0, 9), (9, 10), (10, 23)]) == [2, 3]

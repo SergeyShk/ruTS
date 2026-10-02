@@ -209,29 +209,6 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
             yield start, stop, token
 
 
-def count_words_by_spans(starts: Sequence[int], spans: Sequence[tuple[int, int]]) -> list[int]:
-    """
-    Число слов в каждом отрезке текста по позициям слов и границам отрезков
-
-    Аргументы:
-        starts (list[int]): Позиции первых символов слов по порядку
-        spans (list[tuple[int, int]]): Границы отрезков по порядку - начало и позиция
-            за концом
-
-    Вывод:
-        list[int]: Число слов в каждом отрезке; отрезки без слов пропускаются
-    """
-    lengths = []
-    index = 0
-    for start, stop in spans:
-        count = 0
-        while index < len(starts) and starts[index] < stop:
-            count += starts[index] >= start
-            index += 1
-        lengths.append(count)
-    return [length for length in lengths if length]
-
-
 def add_dash_rules(nlp: Language) -> None:
     """
     Добавление в токенизатор пайплайна spaCy правил для тире реплик
