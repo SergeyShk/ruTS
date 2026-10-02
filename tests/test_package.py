@@ -1,4 +1,5 @@
 import importlib
+from types import ModuleType
 
 import pytest
 
@@ -115,3 +116,58 @@ def test_subpackage_names(name):
     assert set(module.__all__) >= SUBPACKAGE_NAMES[name]
     assert module.__all__ == sorted(module.__all__)
     assert all(hasattr(module, attr) for attr in module.__all__)
+
+
+# Модули библиотеки и модули ядра, на которых они построены
+CORE_MODULES = {
+    "ruts": "anyts",
+    "ruts.exceptions": "anyts.exceptions",
+    "ruts.utils": "anyts.utils",
+    "ruts.extractors": "anyts.extractors",
+    "ruts.diversity_stats": "anyts.diversity_stats",
+    "ruts.cohesion_stats": "anyts.cohesion",
+    "ruts.syntax_stats": "anyts.syntax",
+    "ruts.corpus": "anyts.corpus",
+    "ruts.corpus.collocations": "anyts.corpus.collocations",
+    "ruts.corpus.dispersion": "anyts.corpus.dispersion",
+    "ruts.corpus.keyness": "anyts.corpus.keyness",
+    "ruts.corpus.stylometry": "anyts.corpus.stylometry",
+    "ruts.corpus.compare": "anyts.corpus.compare",
+    "ruts.corpus.kwic": "anyts.corpus.kwic",
+}
+# Имена ядра, которые библиотека определяет сама: подклассы с русскими крючками,
+# обертки с русскими умолчаниями, русские описания метрик и русский шаблон чисел
+RUSSIAN = {
+    "CharNgramsExtractor",
+    "DIVERSITY_STATS_DESC",
+    "DiversityStats",
+    "NUMBER_PATTERN",
+    "SentsExtractor",
+    "WordsExtractor",
+    "keyness",
+    "kwic",
+}
+# Классы второго среза ядра, у которых в ruTS пока свои реализации
+OWN_UNTIL_SECOND_SLICE = {"BasicStats", "ReadabilityStats"}
+
+
+@pytest.mark.parametrize(("library", "core"), CORE_MODULES.items())
+def test_core_names(library, core):
+    """Имя ядра в библиотеке - объект ядра, а не его копия"""
+    library_module, core_module = importlib.import_module(library), importlib.import_module(core)
+    # dir, а не vars: ленивый пакет ядра импортирует имена при первом обращении
+    for name in dir(core_module):
+        value = getattr(core_module, name)
+        if (
+            name.startswith("_")
+            or isinstance(value, ModuleType)
+            or not hasattr(library_module, name)
+            or name in OWN_UNTIL_SECOND_SLICE
+        ):
+            continue
+        own = getattr(library_module, name)
+        if name in RUSSIAN:
+            assert own is not value, name
+            assert not isinstance(value, type) or issubclass(own, value), name
+        else:
+            assert own is value, name
