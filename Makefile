@@ -1,4 +1,4 @@
-.PHONY: help uv deps lock nltk-data lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy notebooks demo demo-login demo-upload
+.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy notebooks demo demo-login demo-upload
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
@@ -24,9 +24,6 @@ endif
 
 lock: uv ## Обновить lock-файл до последних версий зависимостей
 	uv lock --upgrade
-
-nltk-data: deps ## Загрузить данные NLTK, необходимые для тестов
-	uv run python -m nltk.downloader punkt punkt_tab stopwords
 
 lint: ruff mypy ## Запустить все проверки кода
 

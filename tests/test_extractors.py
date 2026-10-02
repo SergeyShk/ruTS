@@ -1,11 +1,15 @@
 import re
 
 import pytest
-from nltk.corpus import stopwords
-from nltk.tokenize import sent_tokenize, wordpunct_tokenize
 
 from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
 from ruts.exceptions import ParameterError, SourceTypeError
+
+wordpunct_tokenize = re.compile(r"\w+|[^\w\s]+").findall
+
+
+def split_sentences(text):
+    return re.split(r"(?<=[.!?])\s+", text)
 
 
 @pytest.fixture(scope="module")
@@ -51,7 +55,7 @@ class TestSentsExtractor:
 
     @pytest.mark.parametrize(
         "tokenizer, expected",
-        [(None, 2), (re.compile(r"[;.]"), 3), (sent_tokenize, 2)],
+        [(None, 2), (re.compile(r"[;.]"), 3), (split_sentences, 2)],
     )
     def test_extract_tokenizer(self, text, tokenizer, expected):
         se = SentsExtractor(tokenizer=tokenizer)
@@ -162,8 +166,8 @@ class TestWordsExtractor:
     @pytest.mark.parametrize(
         "stopwords, expected",
         [
-            (stopwords.words("russian"), 47),
             (["и", "а", "с", "в"], 57),
+            ({"и", "а", "с", "в"}, 57),
         ],
     )
     def test_extract_stopwords(self, text, stopwords, expected):

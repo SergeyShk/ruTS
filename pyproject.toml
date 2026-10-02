@@ -45,7 +45,6 @@ dependencies = [
     "anyts>=0.2.4,<0.3",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
-    "nltk>=3.9",
     "numpy>=1.26",
     "pandas>=2.1",
     "pymorphy3>=2.0.4",

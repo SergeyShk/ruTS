@@ -49,7 +49,6 @@ An example of word extraction with bigrams as tokens, after filtering stop words
     ``` python
     # Import the libraries
     import re
-    from nltk.corpus import stopwords
     from ruts import WordsExtractor
 
     # Prepare the data
@@ -57,7 +56,7 @@ An example of word extraction with bigrams as tokens, after filtering stop words
 
     # Extract words
     we = WordsExtractor(
-        use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True, ngram_range=(1, 2)
+        use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2)
     )
     we.extract(text)
     ```
@@ -68,14 +67,6 @@ An example of word extraction with bigrams as tokens, after filtering stop words
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
     ```
 
-!!! warning "Warning"
-    This example requires the [nltk](https://github.com/nltk/nltk) stop word list to be downloaded to the local machine beforehand. Run the following code to do so:
-
-    ``` python
-    import nltk
-
-    nltk.download("stopwords")
-    ```
 
 ### get_most_common
 

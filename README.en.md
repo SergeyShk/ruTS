@@ -120,7 +120,6 @@ The library allows creating your own tools for sentence, word and character n-gr
 
 ```python
 >>> import re
->>> from nltk.corpus import stopwords
 >>> from ruts import CharNgramsExtractor, SentsExtractor, WordsExtractor
 
 >>> text = "Не имей 100 рублей, а имей 100 друзей"
@@ -129,7 +128,7 @@ The library allows creating your own tools for sentence, word and character n-gr
 >>> se.extract(text)
 ('Не имей 100 рублей', 'а имей 100 друзей')
 
->>> we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words('russian'), filter_nums=True, ngram_range=(1, 2))
+>>> we = WordsExtractor(use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2))
 >>> we.extract(text)
 ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
@@ -775,15 +774,15 @@ Matplotlib plots accept `ax` and return `Axes`, so they can be laid out on one f
 
 ```python
 >>> from collections import Counter
->>> from nltk.corpus import stopwords
 >>> from ruts import WordsExtractor
 >>> from ruts.datasets import SovChLit
+>>> from ruts.style_stats import is_stopword
 >>> from ruts.visualizers import zipf
 
 >>> sc = SovChLit()
 >>> text = "\n".join(text for text in sc.get_texts(limit=100))
->>> we = WordsExtractor(use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True)
->>> tokens_with_count = Counter(we.extract(text))
+>>> we = WordsExtractor(use_lexemes=True, filter_nums=True)
+>>> tokens_with_count = Counter(word for word in we.extract(text) if not is_stopword(word))
 >>> zipf(tokens_with_count, num_words=100, num_labels=10, log=False, show_theory=True, alpha=1.1)
 ```
 
@@ -841,7 +840,6 @@ git clone https://github.com/SergeyShk/ruTS.git
 cd ruTS
 
 make deps        # create the environment and install dependencies
-make nltk-data   # download the NLTK data required by the tests
 make test        # run the tests and docstring examples (doctest)
 make lint        # ruff + mypy
 ```

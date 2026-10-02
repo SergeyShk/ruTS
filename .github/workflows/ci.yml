@@ -59,16 +59,7 @@ jobs:
       - name: Check DAWG extension
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: uv run --no-sync python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
-      - name: Cache NLTK data
-        uses: actions/cache@v6
-        with:
-          path: ${{ runner.temp }}/nltk_data
-          key: nltk-punkt-stopwords-${{ runner.os }}-v1
-      - name: Download NLTK data
-        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run tests
-        env:
-          NLTK_DATA: ${{ runner.temp }}/nltk_data
         # Архивы наборов качаются с master, поэтому сетевые тесты - в задаче network
         run: uv run --no-sync pytest -m "not network" --cov ruts
 
@@ -90,16 +81,7 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: uv sync --locked --no-default-groups --group test
-      - name: Cache NLTK data
-        uses: actions/cache@v6
-        with:
-          path: ${{ runner.temp }}/nltk_data
-          key: nltk-punkt-stopwords-${{ runner.os }}-v1
-      - name: Download NLTK data
-        run: uv run --no-sync python -m nltk.downloader -d "${{ runner.temp }}/nltk_data" punkt punkt_tab stopwords
       - name: Run the network tests
-        env:
-          NLTK_DATA: ${{ runner.temp }}/nltk_data
         run: uv run --no-sync pytest -m network
 
   docs:

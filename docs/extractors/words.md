@@ -49,7 +49,6 @@
     ``` python
     # Загрузка библиотек
     import re
-    from nltk.corpus import stopwords
     from ruts import WordsExtractor
 
     # Подготовка данных
@@ -57,7 +56,7 @@
 
     # Извлечение предложений
     we = WordsExtractor(
-        use_lexemes=True, stopwords=stopwords.words("russian"), filter_nums=True, ngram_range=(1, 2)
+        use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2)
     )
     we.extract(text)
     ```
@@ -68,14 +67,6 @@
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
     ```
 
-!!! warning "Предупреждение"
-    Для корректной работы данного примера необходимо иметь предварительно загруженный список стоп-слов библиотеки [nltk](https://github.com/nltk/nltk) на локальном компьютере. Сделать это можно, выполнив следующий код:
-
-    ``` python
-    import nltk
-
-    nltk.download("stopwords")
-    ```
 
 ### get_most_common
 
