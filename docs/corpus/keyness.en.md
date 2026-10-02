@@ -75,7 +75,7 @@ A list of `Keyword` named tuples in descending keyness order (ties broken by des
     )
 
     keyness(target, reference, top_n=1)
-    # [Keyword(word='кот', freq_target=3, freq_reference=0, ipm_target=115384.61538461539,
+    # [Keyword(word='кот', freq_target=3, freq_reference=0.0, ipm_target=115384.61538461539,
     #  ipm_reference=0.0, g2=2.8774384815713177, p_value=0.08982881315854577,
     #  log_ratio=1.8845227825800641, score=2.8774384815713177)]
 
