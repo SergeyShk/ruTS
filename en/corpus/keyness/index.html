@@ -1972,6 +1972,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reference-by-frequencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference by frequencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#result" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2828,6 +2839,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#reference-by-frequencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference by frequencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#result" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2871,15 +2893,15 @@
 
 <h1 id="keywords">Keywords<a class="headerlink" href="#keywords" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong></p>
+<p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong>, <strong>ruts.corpus.FrequencyReference</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Keyword extraction (keyness) for a target corpus relative to a reference corpus: words that occur significantly more often in the target corpus than in the reference. A standard corpus linguistics tool for comparing genres, authors, translations and periods (<a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a>, <a href="https://www.sketchengine.eu/">Sketch Engine</a>, quanteda <code>textstat_keyness</code>).</p>
-<p>For every word two values are computed that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (significance of the difference - whether it exists) and Log Ratio (effect size - how large it is). Additionally the chosen measure <code>score</code> is computed and used for sorting. Significance measures (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC, ELL) are signed: negative if the word is more frequent in the reference; effect measures (%DIFF, Log Ratio, odds ratio) are directional by construction.</p>
-<p>The reference can be the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> (<code>FreqDict</code>): the target words are word forms (ready lemmas - with <code>lemmatize=False</code>), they are brought to the lemmas of the dictionary the same way as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a>, and numbers and words not of Russian letters are dropped. The reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens); a word absent from the dictionary gets its smallest frequency (0.4 ipm) and can only be a positive keyword.</p>
-<p>Against a reference list words are compared as they are: case, lemmatization and stop words are up to <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and both sides must be prepared the same way.</p>
+<p>Keyword extraction (keyness) for a target corpus against a reference one: the words that occur significantly more often in the target corpus than in the reference.</p>
+<p>For every word two values are computed that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (the significance of the difference - whether there is one) and Log Ratio (the size of the effect - how large it is). The chosen measure <code>score</code> is computed as well and used for the sorting. The measures of significance (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC) and ELL, the effect size of <span class="arithmatex">\(G^2\)</span>, are signed: negative when the word is more frequent in the reference; the other measures of effect (%DIFF, Log Ratio, odds ratio) are directional by construction.</p>
+<p>The reference may be a list of words, a mapping of frequencies (its size is the sum of the counts) or a <code>FrequencyReference</code>. Words are compared as they are: case, lemmatization and stop words belong to the word extractor, and both corpora have to be extracted the same way.</p>
+<p>The function wraps <code>keyness</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> core and also takes the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> <code>FreqDict</code> as the reference; <code>FrequencyReference</code> is in <code>ruts.corpus</code> next to it, and the functions of the measures in <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>). Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
-<p>For a word with frequency <span class="arithmatex">\(a\)</span> in a target corpus of size <span class="arithmatex">\(c\)</span> and frequency <span class="arithmatex">\(b\)</span> in a reference corpus of size <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
+<p>For a word of frequency <span class="arithmatex">\(a\)</span> in a target corpus of size <span class="arithmatex">\(c\)</span> and of frequency <span class="arithmatex">\(b\)</span> in a reference corpus of size <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
 <table>
 <thead>
 <tr>
@@ -2894,13 +2916,13 @@
 <td style="text-align: left;">Log-likelihood</td>
 <td style="text-align: left;"><code>log_likelihood</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})\)</span>, <span class="arithmatex">\(E_1 = \frac{c\,(a+b)}{N}\)</span>, <span class="arithmatex">\(E_2 = \frac{d\,(a+b)}{N}\)</span></td>
-<td style="text-align: left;"><a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson and Garside (2000)</a>; critical values <code>G2_CRITICAL_VALUES</code>: 3.84 for p &lt; 0.05, 6.63 for p &lt; 0.01, 10.83 for p &lt; 0.001, 15.13 for p &lt; 0.0001</td>
+<td style="text-align: left;"><a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson and Garside (2000)</a>; critical values <code>anyts.constants.G2_CRITICAL_VALUES</code>: 3.84 for p &lt; 0.05, 6.63 for p &lt; 0.01, 10.83 for p &lt; 0.001, 15.13 for p &lt; 0.0001</td>
 </tr>
 <tr>
 <td style="text-align: left;">Chi-square</td>
 <td style="text-align: left;"><code>chi2</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\chi^2 = \frac{N\,\max(\lvert a(d-b) - b(c-a) \rvert - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}\)</span></td>
-<td style="text-align: left;">with Yates's correction over the 2×2 contingency table; if the correction exceeds the difference, the statistic is zero</td>
+<td style="text-align: left;">with Yates's correction over the 2×2 contingency table; when the correction exceeds the difference, the statistic is zero</td>
 </tr>
 <tr>
 <td style="text-align: left;">%DIFF</td>
@@ -2924,7 +2946,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnson, Culpeper and Rayson (2007); effect size for <span class="arithmatex">\(G^2\)</span> from 0 to 1, though it grows without bound as the minimum expected frequency nears one; <code>nan</code> when the minimum expected frequency is at most 1</td>
+<td style="text-align: left;">Johnston, Berry and Mielke (2006); size of the effect of <span class="arithmatex">\(G^2\)</span>, the share of the greatest possible departure from the expected frequencies, from 0 to 1; <code>nan</code> when the least expected frequency is at most one - then the logarithm is zero or negative; just above one the measure grows without bound</td>
 </tr>
 <tr>
 <td style="text-align: left;">Odds ratio</td>
@@ -2934,7 +2956,7 @@
 </tr>
 </tbody>
 </table>
-<p>A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> is computed from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The measures are available as functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> with arguments <code>(a, b, c, d)</code> from the module <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>; the name <code>ruts.corpus.keyness</code> in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
+<p>A zero frequency in one of the corpora is replaced with 0.5 for %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> comes from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The measures are available as the functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> and <code>calc_odds_ratio</code> with the arguments <code>(a, b, c, d)</code> of the module <code>anyts.corpus.keyness</code>; their names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2954,15 +2976,15 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>reference</code></td>
-<td style="text-align: center;">list[str]/dict[str, float]/FreqDict</td>
+<td style="text-align: center;">list[str]/dict[str, float]/FrequencyReference</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words of the reference corpus, their frequencies or a frequency dictionary</td>
+<td style="text-align: center;">Words of the reference corpus, their frequencies or a reference by frequencies</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>measure</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>log_likelihood</code></td>
-<td style="text-align: center;">Measure from <code>KEYNESS_MEASURES</code> for <code>score</code> and sorting</td>
+<td style="text-align: center;">Measure of <code>anyts.constants.KEYNESS_MEASURES</code> for <code>score</code> and the sorting</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>min_freq</code></td>
@@ -2974,14 +2996,27 @@
 <td style="text-align: center;"><code>positive</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Positive keywords (more frequent in the target corpus) or negative (more frequent in the reference)</td>
+<td style="text-align: center;">Positive keywords (more frequent in the target corpus) or negative ones (more frequent in the reference)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>top_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of keywords; <code>None</code> - all</td>
+<td style="text-align: center;">Number of keywords; <code>None</code> - all of them</td>
 </tr>
+</tbody>
+</table>
+<p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td style="text-align: center;"><code>lemmatize</code></td>
 <td style="text-align: center;">bool</td>
@@ -2990,8 +3025,84 @@
 </tr>
 </tbody>
 </table>
+<h2 id="reference-by-frequencies">Reference by frequencies<a class="headerlink" href="#reference-by-frequencies" title="Permanent link">&para;</a></h2>
+<p><code>FrequencyReference(counts, size, missing=0.0, key=None, keep=None)</code> describes a reference corpus by its frequencies alone, such as a frequency dictionary built from a corpus too large to pass as words:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Field</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>counts</code></td>
+<td style="text-align: center;">dict[str, float]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: left;">Frequencies of the keys in the reference corpus</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: left;">Size of the reference corpus in words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>missing</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.0</code></td>
+<td style="text-align: left;">Frequency of a key missing from <code>counts</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>key</code></td>
+<td style="text-align: center;">callable</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: left;">Key of a word of the target corpus in <code>counts</code>, such as its lemma; <code>None</code> - the word itself</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>keep</code></td>
+<td style="text-align: center;">callable</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: left;">Whether a word of the target corpus is counted; <code>None</code> - every word</td>
+</tr>
+</tbody>
+</table>
+<p>The words of the target that <code>keep</code> passes are counted under their <code>key</code>, and the words it leaves out do not count in the size of the target either; negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. The frequency of a key missing from <code>counts</code> is <code>missing</code>: a dictionary gives its least frequency, an upper bound of the true one, so such a word may be a positive keyword but never a negative one.</p>
+<p>The frequency dictionary <code>FreqDict</code> passed as <code>reference</code> is turned into such a reference:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Field</th>
+<th style="text-align: left;"><code>FreqDict</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>counts</code></td>
+<td style="text-align: left;">the ipm of the lemmas of <code>FreqDict.entries</code> converted to occurrences in the corpus of the dictionary</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: left;"><code>CORPUS_SIZE</code> of <code>ruts.datasets.freq2011</code>, 92 million tokens of the modern subcorpus of the Russian National Corpus</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>missing</code></td>
+<td style="text-align: left;">the least frequency of the dictionary <code>FreqDict.min_ipm</code>, 0.4 ipm (about 37 occurrences)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>key</code></td>
+<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>keep</code></td>
+<td style="text-align: left;">the words of the Cyrillic letters of <code>ruts.lexical_stats.DICTIONARY_WORD</code>; numbers and words with Latin letters are left out</td>
+</tr>
+</tbody>
+</table>
 <h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
-<p>A list of <code>Keyword</code> named tuples in descending keyness order (ties broken by descending frequency and alphabetically, words with an undefined measure last); <code>pd.DataFrame(keywords)</code> gives a table.</p>
+<p>A list of <code>Keyword</code> named tuples by descending keyness (ties broken by descending frequency and alphabetically, words of an undefined measure last); <code>pd.DataFrame(keywords)</code> gives a table.</p>
 <table>
 <thead>
 <tr>
@@ -3014,7 +3125,7 @@
 <tr>
 <td style="text-align: center;"><code>freq_reference</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: left;">Frequency in the reference corpus (fractional for a dictionary)</td>
+<td style="text-align: left;">Frequency in the reference corpus</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ipm_target</code></td>

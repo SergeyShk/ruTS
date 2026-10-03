@@ -1008,7 +1008,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -1017,6 +1017,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Атрибуты
@@ -1049,7 +1060,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2905,7 +2916,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2914,6 +2925,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Атрибуты
@@ -2946,7 +2968,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -3064,7 +3086,10 @@
 <p><strong>ruts.readability_stats.ReadabilityStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления основных метрик <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%B4%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D1%82%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D1%8C">удобочитаемости</a> текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или уже вычисленные <a href="../basic_stats/">базовые статистики</a> <code>BasicStats</code> - тогда текст не разбирается повторно.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats 7ee1446 -->
+<p>Метрики <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%B4%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D1%82%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D1%8C">удобочитаемости</a> текста по его базовым статистикам: средней длине предложения в словах, средней длине слова в слогах или буквах, доле сложных и длинных слов и вариативности длины слова. Источником данных может быть текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или готовые базовые статистики - тогда текст не считается повторно; экстракторы передаются базовым статистикам текста или <code>Doc</code>, а готовые статистики берутся как есть. Буквы формул - это буквы учтенных слов, поэтому экстрактор слов, который отбрасывает слова, не удлиняет среднее слово.</p>
+<p>Метрики - свойства, которые вычисляются при каждом обращении, поэтому изменение <code>coefficients</code> объекта действует сразу.</p>
+<p>Источник, который не строка, не <code>Doc</code> и не базовые статистики, базовые статистики не того класса, что у библиотеки, и экстрактор другого типа дают <code>SourceTypeError</code>, источник без слов или предложений - <code>SourceError</code>, неизвестный пресет или пресет, который не строка, - <code>ParameterError</code>.</p>
 <div class="admonition quote">
 <p class="admonition-title">Определение</p>
 <p>Удобочитаемость («читабельность») - свойство текстового материала, характеризующее лёгкость восприятия его человеком в процессе чтения.</p>
@@ -3074,19 +3099,17 @@
 <li>лингвистических особенностей текстового материала (сложность синтаксических конструкций, трудная для восприятия лексика и т.п.).</li>
 </ul>
 </div>
-<p>Удобочитаемость в данном модуле рассчитывается на основе различных лингвистических метрик. Коэффициенты формул, адаптированных для русского языка, задаются пресетом (см. <a href="#presets">ниже</a>): по умолчанию используются коэффициенты проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, полученные на 68 текстах с метками класса, доступны также коэффициенты Оборневой для художественных текстов и казанской группы (Соловьёв, Иванов, Солнышкина) для учебных.</p>
+<p>Коэффициенты формул, адаптированных для русского языка, задаются пресетом (см. <a href="#presets">ниже</a>): по умолчанию используются коэффициенты проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, полученные на 68 текстах с метками класса, доступны также коэффициенты Оборневой для художественных текстов и казанской группы (Соловьёв, Иванов, Солнышкина) для учебных.</p>
 <p>Основные презумпции метрик удобочитаемости:</p>
 <ul>
 <li>короткие предложения читать легче, чем длинные;</li>
 <li>длинные слова затрудняют чтение;</li>
 <li>читатель замедляется, встречая низкочастотные и/или незнакомые ему слова.</li>
 </ul>
-<p>В модуле реализована возможность использования предварительно созданных объектов классов <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации предложений и слов перед вычислением статистик.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>ReadabilityStats</code>.</p>
-</div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, пресетами коэффициентов <code>ruts.constants.READABILITY_PRESETS</code>, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса <code>ruts.constants.READABILITY_GRADE_STATS</code>, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), классами и возрастами таблицы plainrussian и скоростями чтения русских читателей.</p>
+<p>Атрибут <code>mu_index</code> ядра (Legibilidad µ) не входит в <code>get_stats</code>: он получен на испанских текстах.</p>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -3123,7 +3146,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -3199,6 +3222,11 @@
 <td style="text-align: center;">Время чтения в минутах при скорости 180 слов в минуту</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>mu_index</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Legibilidad µ ядра, вне <code>get_stats</code></td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>bs</code></td>
 <td style="text-align: center;">BasicStats</td>
 <td style="text-align: center;">Базовые текстовые статистики</td>
@@ -3211,7 +3239,7 @@
 <tr>
 <td style="text-align: center;"><code>coefficients</code></td>
 <td style="text-align: center;">dict[str, tuple[float, float, float]]</td>
-<td style="text-align: center;">Коэффициенты формул пресета</td>
+<td style="text-align: center;">Коэффициенты формул пресета, копия, которую можно менять для отдельного объекта</td>
 </tr>
 </tbody>
 </table>
@@ -3270,7 +3298,9 @@
 <p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках удобочитаемости и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../readability_stats_funcs/">разделе</a>.</p>
 </div>
 <h2 id="interpretation">Интерпретация<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
-<p>Формулы, результатом которых является класс школы (тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формула Соловьёва, Иванова, Солнышкиной), сводятся в атрибут <code>consensus_grade</code> - медиану округлённых значений, к которым добавлен индекс Флеша, переведённый в класс. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-consensus 40f0d09 -->
+<p>Формулы, результатом которых является число лет обучения (<code>grade_stats</code>), сводятся в атрибут <code>consensus_grade</code>: медиану их значений, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления.</p>
+<p>Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">переводится в класс</a> по диапазонам textstat. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
 <table>
 <thead>
 <tr>
@@ -3318,9 +3348,10 @@
 </tbody>
 </table>
 <p>Атрибут <code>reading_time</code> оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a>, а метод <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> считает время в границах нормы из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе школьных норм чтения вслух по ФГОС.</p>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
-<p>Возвращает класс школы и возраст читателя для сводного класса или отдельной формулы класса.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe_grade af0b5e5 -->
+<p>Возвращает ступень обучения и возраст читателя для сводного класса или формулы класса; другая метрика дает <code>ParameterError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3353,7 +3384,8 @@
 </code></pre></div>
 </div>
 <h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>
-<p>Возвращает время чтения текста в минутах при заданной скорости.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_speed 7c6fa90 -->
+<p>Возвращает время чтения текста в минутах при заданной скорости; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3367,14 +3399,15 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>wpm</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Скорость чтения, слов в минуту</td>
 </tr>
 </tbody>
 </table>
 <h3 id="reading_time_by_norm">reading_time_by_norm<a class="headerlink" href="#reading_time_by_norm" title="Permanent link">&para;</a></h3>
-<p>Возвращает время чтения текста в минутах при верхней и нижней границе нормы скорости чтения из справочника <code>ruts.constants.READING_SPEED_NORMS</code> (<code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code>, <code>grade_4</code>).</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_norm dcb8ada -->
+<p>Возвращает время чтения текста в минутах при скоростях нормы из <code>reading_speed_norms</code> в их порядке; неизвестная норма дает <code>ParameterError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3394,6 +3427,7 @@
 </tr>
 </tbody>
 </table>
+<p>Нормы справочника <code>ruts.constants.READING_SPEED_NORMS</code> - <code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code> и <code>grade_4</code>, у каждой нижняя и верхняя граница, а метод возвращает время чтения при верхней и при нижней границе.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
@@ -3465,7 +3499,8 @@
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Возвращает справочник с вычисленными метриками удобочитаемости текста.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-get_stats c9e4353 -->
+<p>Возвращает справочник с вычисленными метриками удобочитаемости из <code>stats_desc</code>.</p>
 <p>Рассмотрим пример вычисления метрик удобочитаемости текста:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -3497,7 +3532,8 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Выводит на экран таблицу с вычисленными метриками удобочитаемости текста.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-print_stats 62374bb -->
+<p>Выводит таблицу с вычисленными метриками удобочитаемости, их описаниями из <code>stats_desc</code> и заголовками из <code>stats_headers</code>.</p>
 <p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>

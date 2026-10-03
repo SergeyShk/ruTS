@@ -1119,6 +1119,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2847,6 +2858,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2954,12 +2976,13 @@
 <p><strong>ruts.diversity_stats.DiversityStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing the main <a href="https://en.wikipedia.org/wiki/Lexical_diversity">lexical diversity</a> metrics of a text. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The module allows using a pre-built <a href="../../extractors/words/"><code>WordsExtractor</code></a> object for the word tokenization needed before computing the statistics.</p>
+<p>A class for computing the main <a href="https://en.wikipedia.org/wiki/Lexical_diversity">lexical diversity</a> metrics of a text from its words.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>DiversityStats</code> object.</p>
 </div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library. The words of a text are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given one, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The words are always lower-cased. The <code>print_stats</code> table has Russian headers and the Russian descriptions of the metrics from <code>ruts.constants.DIVERSITY_STATS_DESC</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2981,7 +3004,7 @@
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool</td>
+<td style="text-align: center;">Word extraction tool; for a Doc it is applied to its text when given</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>window_len</code></td>
@@ -3015,13 +3038,14 @@
 </tr>
 </tbody>
 </table>
+<p>The parameters are checked by <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)</code>, which raises <code>ParameterError</code> for a window, a sample size or a minimum factor length out of range, a threshold outside (0, 1) or a logarithm base not above 1. Called before the words are extracted, it reports a wrong parameter before an empty text.</p>
 <h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
-<p>The values of some metrics depend on parameters that different libraries choose differently. The defaults match koRpus and Kyle's lexical-diversity, and all of them are class parameters. The comparison with the MTLD threshold is the only convention that is not a parameter:</p>
+<p>The values of some metrics depend on conventions that differ between libraries. All of them except the comparison with the MTLD threshold are class parameters:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">ruTS</th>
+<th style="text-align: center;">Default</th>
 <th style="text-align: center;">Other libraries</th>
 </tr>
 </thead>
@@ -3043,13 +3067,13 @@
 </tr>
 <tr>
 <td style="text-align: center;">Comparison with the MTLD threshold</td>
-<td style="text-align: center;">a factor closes at TTR ≤ 0.72 - in McCarthy and Jarvis (2010) a factor ends when TTR "reaches" 0.720</td>
-<td style="text-align: center;">lexical-diversity and TAALED - strict <code>&lt;</code>, so on factors where TTR hits the threshold exactly (18/25, 36/50) the MTLD, MA-MTLD and MTLD-W values diverge</td>
+<td style="text-align: center;">a factor closes at TTR ≤ 0.72 (McCarthy &amp; Jarvis, 2010)</td>
+<td style="text-align: center;">lexical-diversity and TAALED - strict <code>&lt;</code>; the values differ when TTR hits the threshold exactly</td>
 </tr>
 <tr>
 <td style="text-align: center;">Minimum MTLD factor length</td>
 <td style="text-align: center;">10</td>
-<td style="text-align: center;">koRpus applies it only to MA-MTLD, LexicalRichness and textcomplexity do not apply it</td>
+<td style="text-align: center;">koRpus applies it only to MTLD-MA and drops the shorter factors instead of extending them, LexicalRichness and textcomplexity do not apply it</td>
 </tr>
 <tr>
 <td style="text-align: center;">HD-D sample size</td>
@@ -3058,7 +3082,7 @@
 </tr>
 </tbody>
 </table>
-<p>By Zenker and Kyle (2021) MATTR, MTLD and HD-D are stable on texts of 50-200 words and longer, MTLD-W, MA-MTLD and Maas are unstable on short texts, and the TTR family never stabilizes. To compare texts of different lengths use the <a href="#windowed">windowed computation</a> with confidence intervals.</p>
+<p>According to Zenker and Kyle (2021), MATTR, MTLD and HD-D are stable on texts of 50-200 words and longer, MTLD-W, MA-MTLD and Maas are unstable on short texts, and the TTR family never stabilizes. To compare texts of different lengths use the <a href="#windowed">windowed computation</a> with confidence intervals.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3072,7 +3096,12 @@
 <tr>
 <td style="text-align: center;"><code>words</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of extracted words</td>
+<td style="text-align: center;">Tuple of the words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>window_len</code>, <code>mtld_threshold</code>, <code>mtld_min_len</code>, <code>hdd_sample_size</code>, <code>log_base</code></td>
+<td style="text-align: center;">int/float</td>
+<td style="text-align: center;">The parameters of the metrics; changing them on the object changes the metrics</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>frequency_spectrum</code></td>
@@ -3248,11 +3277,11 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Every metric can be computed separately by calling the corresponding function. Detailed information on the lexical diversity metrics and the functions used to compute them is available in the corresponding <a href="../diversity_stats_funcs/">section</a>.</p>
+<p>Every metric can also be computed by its function; the metrics and their functions are described in the corresponding <a href="../diversity_stats_funcs/">section</a>.</p>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="windowed">windowed<a class="headerlink" href="#windowed" title="Permanent link">&para;</a></h3>
-<p>Windowed computation of a metric: its value over consecutive text windows of equal length, the mean, the sample standard deviation and the confidence interval of the mean by Student's distribution. The standard way to compare texts of different lengths; Kubát and Milička's STTR is a windowed TTR with a 1000-word window and a 95% confidence interval. For texts shorter than the window the metric is computed over the whole text as a single window; windows with an undefined metric value (<code>nan</code>) are ignored. If the metric is infinite in at least one window, the mean is infinite and the standard deviation and confidence interval are undefined.</p>
+<p>Windowed computation of a metric by its name, as in <a href="../diversity_stats_funcs/#calc_windowed"><code>calc_windowed</code></a>: its value over consecutive text windows of equal length, the mean, the sample standard deviation and the confidence interval of the mean by Student's distribution. The edge cases (short texts, <code>nan</code> and infinite values) are described there.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3290,7 +3319,7 @@
 </tr>
 </tbody>
 </table>
-<p>Returns a <code>WindowStats</code> named tuple with the fields <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> and <code>n_windows</code>.</p>
+<p>Returns a <code>WindowStats</code> named tuple with the fields <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> and <code>n_windows</code>. An unknown metric name raises <code>UnknownStatError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiversityStats</span>
@@ -3355,7 +3384,7 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed lexical diversity metrics.</p>
+<p>Prints a table with the computed lexical diversity metrics, their descriptions from <code>stats_desc</code> and the headers from <code>stats_headers</code>.</p>
 <p>To illustrate the method, we reuse the code from the previous example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

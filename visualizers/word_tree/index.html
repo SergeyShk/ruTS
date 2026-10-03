@@ -2830,12 +2830,11 @@
 <p><strong>ruts.visualizers.wordtree()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Построение <a href="https://www.weblyzard.com/word-tree/">дерева слов</a> (Word Tree), отображающее контекст для заданного ключевого слова в тексте.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Более подробно с деревом слов можно ознакомиться в данной <a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">публикации</a>.</p>
-</div>
+<!-- core: visualizers/word_tree.md:wordtree 7b85f86 -->
+<p>Построение <a href="https://www.weblyzard.com/word-tree/">дерева слов</a>, которое показывает контексты ключевого слова в тексте: в каждом списке слов - например, в предложении - считаются N-граммы длиной до <code>max_n</code> слов, которые начинаются или заканчиваются ключевым словом. Каждый уровень дерева сохраняет <code>max_per_n</code> самых частых N-грамм, продолжающих сохраненную более короткую, при равенстве - по алфавиту. Сохраненные N-граммы объединяются в два дерева, слов после ключевого слова и перед ним, с размером шрифта по частоте (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg и Viégas 2008</a>). Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>.</p>
+<p>Это функция ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a>.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/word_tree.md:wordtree-parameters d32a474 -->
 <table>
 <thead>
 <tr>
@@ -2848,7 +2847,7 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>texts</code></td>
-<td style="text-align: center;">List[List[str]]</td>
+<td style="text-align: center;">list[list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Список списков слов</td>
 </tr>
@@ -2856,35 +2855,35 @@
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Ключевое слово, по которому ищется контекст</td>
+<td style="text-align: center;">Ключевое слово, контексты которого показываются</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>5</code></td>
-<td style="text-align: center;">Максимальные размер контекста</td>
+<td style="text-align: center;">Наибольший размер контекста</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_per_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>8</code></td>
-<td style="text-align: center;">Максимальное число примеров для каждого размера контекста</td>
+<td style="text-align: center;">Наибольшее число примеров для каждого размера контекста</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>**kwargs</code></td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Параметры отрисовки: <code>max_font_size</code> (по умолчанию <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - функция интерполяции размера шрифта по частоте</td>
+<td style="text-align: center;">Параметры отрисовки: <code>max_font_size</code> (по умолчанию <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - функция относительной частоты узла (его частоты к наибольшей, в интервале (0, 1]), которая дает долю диапазона от <code>min_font_size</code> до <code>max_font_size</code>, от 0 до 1; по умолчанию кубический корень</td>
 </tr>
 </tbody>
 </table>
+<p>Функция возвращает <code>Digraph</code> библиотеки graphviz.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
+<p>Рассмотрим работу визуализатора на примере предложений 50 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span><span class="p">,</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StalinWorks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">wordtree</span>
@@ -2894,7 +2893,6 @@
 <span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">()</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sw</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)]</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
 
 <span class="c1"># Подготовка списка списков слов</span>
 <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2907,14 +2905,10 @@
 <span class="n">g</span> <span class="o">=</span> <span class="n">wordtree</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="s2">"рабочий"</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
 <span class="c1"># Сохранение визуализации на диск</span>
-<span class="n">g</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="s2">".gv"</span><span class="p">))</span>
+<span class="n">g</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">"wordtree"</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"png"</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <p><img alt="ruts" class="center" src="../../img/wordtree.png" /></p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для просмотра визуализации необходимо установить инструмент <code>Graphviz</code>.</p>
 </div>
 
 

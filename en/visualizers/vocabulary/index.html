@@ -2853,8 +2853,9 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Two plots about the word distribution of a text complementing <a href="../zipf/">Zipf's law</a>: vocabulary growth with text length by Heaps' law and the frequency spectrum - how many lexemes occur exactly once, twice, three times. Both plots exist in zipfR (<code>plot.vgc</code>, <code>plot.spc</code>). The functions take axes <code>ax</code> and return <code>Axes</code>.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/vocabulary/">anyTS</a> core with the Russian labels of <code>ruts.constants.VISUALIZER_LABELS</code> by default; <code>labels</code> puts the given labels over them. The fit of Heaps' law is described in <a href="../../stats/diversity_stats_funcs/#heaps_beta"><code>fit_heaps</code></a> and the spectrum in <a href="../../stats/diversity_stats_funcs/#frequency_spectrum"><code>calc_frequency_spectrum</code></a>.</p>
 <h2 id="heaps_plot">Heaps' law<a class="headerlink" href="#heaps_plot" title="Permanent link">&para;</a></h2>
-<p>The vocabulary size <span class="arithmatex">\(V\)</span> after every word of the text and the fitted curve <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> by <a href="../../stats/diversity_stats_funcs/#heaps_beta"><code>fit_heaps</code></a> with the parameters in the legend. On corpora of millions of words <span class="arithmatex">\(\beta\)</span> lies within 0.4-0.6; over the whole growth curve of a single text it comes out higher (0.6-0.9), since at the beginning of a text almost every word is new; the curve depends on word order.</p>
+<p>The size of the vocabulary <span class="arithmatex">\(V\)</span> after every word of the text and the fitted curve <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> of <code>fit_heaps</code> with its parameters in the legend; the curve depends on the order of the words.</p>
 <table>
 <thead>
 <tr>
@@ -2877,10 +2878,16 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code>, <code>ylabel</code>, <code>growth</code> (the curve), <code>fit</code> (a format string with <code>k</code> and <code>beta</code>)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="frequency_spectrum_plot">Frequency spectrum<a class="headerlink" href="#frequency_spectrum_plot" title="Permanent link">&para;</a></h2>
-<p>The number of lexemes <span class="arithmatex">\(V(m)\)</span> occurring exactly <span class="arithmatex">\(m\)</span> times (<a href="../../stats/diversity_stats_funcs/#frequency_spectrum"><code>calc_frequency_spectrum</code></a>) in logarithmic coordinates; the left edge is the hapaxes. The spectrum underlies the diversity measures of Yule, Sichel, Michéa and Honoré, and its shape shows how "undersampled" the vocabulary of the text is.</p>
+<p>The number of word types <span class="arithmatex">\(V(m)\)</span> that occur exactly <span class="arithmatex">\(m\)</span> times (<code>calc_frequency_spectrum</code>) in logarithmic coordinates; the left edge is the hapaxes. The spectrum underlies the measures of diversity of Yule, Sichel, Michéa and Honoré, and its shape shows how far the vocabulary of the text is from being exhausted.</p>
 <table>
 <thead>
 <tr>
@@ -2902,6 +2909,12 @@
 <td style="text-align: center;">Axes</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code>, <code>ylabel</code></td>
 </tr>
 </tbody>
 </table>

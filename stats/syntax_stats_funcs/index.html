@@ -3070,7 +3070,7 @@
 
 
 <h1 id="_1">Функции вычисления статистик<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Все функции работают с объектами <code>Token</code> библиотеки spaCy: функции <code>calc_*</code> принимают последовательность токенов (<code>Doc</code>, <code>Span</code> или список), функции <code>is_*</code> и <code>count_*</code> - отдельный токен. Знаки препинания и пробельные токены пропускаются. Синтаксические отношения и морфологические признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a>; подтипы отношений (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) учитываются по базовому отношению там, где это указано.</p>
+<p>Все функции работают с объектами <code>Token</code> библиотеки spaCy: функции <code>calc_*</code> принимают последовательность токенов (<code>Doc</code>, <code>Span</code> или список), функции <code>is_*</code> и <code>count_*</code> - отдельный токен. Знаки препинания, символы и пробельные токены пропускаются. Функции дерева зависимостей взяты из ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax/">anyTS</a>; с <code>join_hyphens=True</code>, который передает <code>SyntaxStats</code>, дефисное слово, разрезанное spaCy (<code>во-первых</code>), - одно слово. Синтаксические отношения и морфологические признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a>; подтипы отношений (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) учитываются по базовому отношению там, где это указано.</p>
 <p>Определения признаков следуют работе <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванова, Солнышкиной и Соловьёва (2018)</a>; в скобках указаны исходные названия признаков и коэффициенты корреляции с классом учебника из этой работы.</p>
 <h2 id="calc_dependency_distances">Длины зависимостей<a class="headerlink" href="#calc_dependency_distances" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
@@ -3093,6 +3093,12 @@
 <td style="text-align: center;">Doc/Span/list[Token]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Считать дефисное слово одной позицией</td>
 </tr>
 </tbody>
 </table>
@@ -3154,6 +3160,12 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Токен</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Считать дефисное слово одним словом</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_valency">Валентность<a class="headerlink" href="#calc_valency" title="Permanent link">&para;</a></h2>
@@ -3178,13 +3190,19 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Токен</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Считать дефисное слово одним словом</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_coordination_chains">Сочинительные цепочки<a class="headerlink" href="#calc_coordination_chains" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.syntax_stats.calc_coordination_chains()</strong></p>
 </div>
-<p>Вычисление длин сочинительных цепочек. В Universal Dependencies все однородные члены присоединяются связью <code>conj</code> к первому из них, поэтому цепочка - слово с зависимыми <code>conj</code>, а ее длина - число однородных членов вместе с первым: в предложении «Он купил хлеб, молоко и сыр» одна цепочка длины 3. Число цепочек на предложение (<code>SOCHIN_NUMBER</code>, r = 0.93) и их средняя длина (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) - сильнейшие синтаксические предикторы сложности учебника.</p>
+<p>Вычисление длин сочинительных цепочек. Цепочка - группа слов, связанных отношением <code>conj</code>, к какому бы слову ни присоединялся каждый однородный член, поэтому вложенное сочинение и перечисление, которое парсер разбил между несколькими вершинами, - тоже одна цепочка; ее длина - число ее слов: в предложении «Он купил хлеб, молоко и сыр» одна цепочка длины 3. Число цепочек на предложение (<code>SOCHIN_NUMBER</code>, r = 0.93) и их средняя длина (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) - сильнейшие синтаксические предикторы сложности учебника.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3411,11 +3429,11 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>is_word(token)</code></td>
-<td style="text-align: left;">Токен не является знаком препинания или пробелом</td>
+<td style="text-align: left;">Токен не является знаком препинания, символом или пробелом</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>get_words(tokens)</code></td>
-<td style="text-align: left;">Список слов последовательности токенов</td>
+<td style="text-align: left;"><code>get_words(tokens, join_hyphens=False)</code></td>
+<td style="text-align: left;">Список слов последовательности токенов; с <code>join_hyphens=True</code> дефисное слово - одно слово, представленное первой частью</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>is_root(token)</code></td>
@@ -3426,8 +3444,8 @@
 <td style="text-align: left;">Базовое отношение без подтипа: <code>acl:relcl</code> → <code>acl</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>get_children(token)</code></td>
-<td style="text-align: left;">Список зависимых слов токена</td>
+<td style="text-align: left;"><code>get_children(token, join_hyphens=False)</code></td>
+<td style="text-align: left;">Список зависимых слов токена; с <code>join_hyphens=True</code> - всего дефисного слова</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>has_feature(token, field, value)</code></td>

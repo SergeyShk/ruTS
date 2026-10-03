@@ -3073,16 +3073,13 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.phon_stats.calc_alliteration()</strong></p>
 </div>
-<p>Computation of the alliteration index - the ratio of the observed number of windows of <code>window_len</code> adjacent words in which the same consonant occurs in at least two words to the number expected if the words stood in random order (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.</p>
-<p>A window of shuffled words is a sample of them without replacement, so for a letter found in <span class="arithmatex">\(K\)</span> of the <span class="arithmatex">\(N\)</span> words of the text, a window of <span class="arithmatex">\(w\)</span> words holds it in at least two words with the hypergeometric probability</p>
+<p>The index is <code>calc_repetition_index</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phonetics/">anyTS</a> core over the consonant letters of the words:</p>
+<p>The repetition index: the ratio of the number of windows of <code>window_len</code> neighbouring words where a feature - a letter or a sound, as a library chooses - occurs in two words or more, summed over the features, to the number expected if the words stood in random order. A window of shuffled words is a sample of them without replacement, so for a feature found in <span class="arithmatex">\(K\)</span> of the <span class="arithmatex">\(N\)</span> words of the text, a window of <span class="arithmatex">\(w\)</span> words holds it in two words or more with the hypergeometric probability</p>
 <div class="arithmatex">\[
 P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 \]</div>
-<p>and the expected number of windows is the sum of these probabilities over the letters times the <span class="arithmatex">\(N - w + 1\)</span> windows; the index equals <span class="arithmatex">\(\sum O / \sum E\)</span>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>For texts shorter than the window and texts where no consonant occurs in two words the function returns <code>nan</code>.</p>
-</div>
+<p>and the expected number is the sum of these probabilities over the features times the <span class="arithmatex">\(N - w + 1\)</span> windows. The expectation comes from the text itself, so the index tells whether the repetitions gather in neighbouring words, not how frequent a feature is: it averages to 1 over the orders of the words, and is well above 1 when the repetitions come closer than chance. A word counts a feature once, however often it holds it; <code>nan</code> for a text shorter than the window and for a text where no feature is shared by two words.</p>
+<p>Letters are compared, not sounds: devoicing is not accounted for.</p>
 <p>Parameters:</p>
 <table>
 <thead>

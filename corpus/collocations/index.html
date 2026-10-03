@@ -2874,11 +2874,14 @@
 <p><strong>ruts.corpus.collocations()</strong>, <strong>ruts.corpus.Collocation</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем ожидалось бы при независимости: устойчивые сочетания («точка зрения», «рабочий класс»), терминология, сочетаемость слова. Меры ассоциации те же, что в <a href="https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf">Sketch Engine</a> и <a href="https://www.nltk.org/api/nltk.metrics.association.html"><code>nltk.metrics.association</code></a>.</p>
-<p>Пары слов считаются упорядоченными, как в NLTK: правое слово встречается не дальше <code>window</code> слов после левого, каждая пара позиций учитывается один раз; <code>window=1</code> дает биграммы. В меру частота пары делится на размер окна (Church и Hanks 1990, так же в NLTK), чтобы ожидаемая частота не зависела от окна, а Dice и минимальная чувствительность не превышали единицы; в поле <code>freq_pair</code> записывается частота без деления. Поэтому при <code>window &gt; 1</code> шкала Dice-мер сдвинута: пара, всегда стоящая рядом («точка зрения»), получает logDice <span class="arithmatex">\(14 - \log_2 window\)</span> - 13 при окне 2, 11.68 при окне 5, а не 14, как для биграмм и в Sketch Engine, где logDice считается по сырому числу совстречаемостей; максимум 14 достижим только для пары, встречающейся на каждом расстоянии в окне. Параметр <code>node</code> оставляет пары с заданным словом слева или справа - сочетаемость одного слова.</p>
-<p>Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>; для устойчивых сочетаний обычно берут леммы, для служебных конструкций - словоформы.</p>
+<!-- core: corpus/collocations.md:collocations 90cd7f5 -->
+<p>Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем дала бы независимость: устойчивые сочетания, терминология, сочетаемость слова. Меры ассоциации те же, что в <a href="https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf">Sketch Engine</a> и <a href="https://www.nltk.org/api/nltk.metrics.association.html"><code>nltk.metrics.association</code></a>.</p>
+<p>Пары слов упорядочены, как в NLTK: правое слово встречается не дальше <code>window</code> слов после левого, каждая пара позиций учитывается один раз; <code>window=1</code> дает биграммы. В мере частота пары делится на размер окна (Church и Hanks 1990, так же в NLTK), чтобы ожидаемая частота не зависела от окна, а Dice и минимальная чувствительность не превышали единицы; поле <code>freq_pair</code> хранит частоту без деления. Поэтому при <code>window &gt; 1</code> шкала Dice-мер сдвигается: пара, всегда стоящая рядом, получает logDice <span class="arithmatex">\(14 - \log_2 window\)</span> (13 при окне 2), а не 14, как в Sketch Engine, где берется сырое число совстречаемостей; 14 достигает только пара, встречающаяся на каждом расстоянии в окне. Параметр <code>node</code> оставляет пары с заданным словом слева или справа - сочетаемость одного слова.</p>
+<p>Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов; для устойчивых сочетаний подходят леммы, для грамматических конструкций - словоформы.</p>
+<p>Модуль <code>ruts.corpus.collocations</code> реэкспортирует функцию и меры ядра <a href="https://sergeyshk.github.io/anyTS/corpus/collocations/">anyTS</a> (<code>from ruts.corpus.collocations import calc_logdice</code>). Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>; для русских устойчивых сочетаний вроде «точка зрения» или «рабочий класс» берут его леммы (<code>use_lexemes=True</code>).</p>
 <h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Для пары с частотами слов <span class="arithmatex">\(f_a\)</span>, <span class="arithmatex">\(f_b\)</span>, частотой пары <span class="arithmatex">\(f_{ab}\)</span> и числом слов <span class="arithmatex">\(N\)</span>:</p>
+<!-- core: corpus/collocations.md:collocations-measures fb0a1f7 -->
+<p>Для пары слов с частотами <span class="arithmatex">\(f_a\)</span> и <span class="arithmatex">\(f_b\)</span>, частотой пары <span class="arithmatex">\(f_{ab}\)</span> и числом слов <span class="arithmatex">\(N\)</span>:</p>
 <table>
 <thead>
 <tr>
@@ -2917,13 +2920,13 @@
 <td style="text-align: left;">logDice</td>
 <td style="text-align: left;"><code>logdice</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(14 + \log_2 \frac{2 f_{ab}}{f_a + f_b}\)</span></td>
-<td style="text-align: left;"><a href="https://www.sketchengine.eu/glossary/logdice/">Rychlý (2008)</a>; не зависит от размера текста, максимум 14 (для окна - <span class="arithmatex">\(14 - \log_2 window\)</span>), ниже нуля - слабая связь; мера по умолчанию, как в Sketch Engine</td>
+<td style="text-align: left;"><a href="https://www.sketchengine.eu/glossary/logdice/">Rychlý (2008)</a>; не зависит от размера текста, максимум 14, ниже нуля - слабая связь; мера по умолчанию, как в Sketch Engine</td>
 </tr>
 <tr>
 <td style="text-align: left;">Логарифм правдоподобия</td>
 <td style="text-align: left;"><code>log_likelihood</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(G^2 = 2 \sum O \ln \frac{O}{E}\)</span></td>
-<td style="text-align: left;">Dunning (1993); по таблице сопряженности 2×2, <code>nan</code> если одно из слов занимает весь текст</td>
+<td style="text-align: left;">Dunning (1993); по таблице сопряженности 2×2, <code>nan</code>, если одно из слов занимает весь текст</td>
 </tr>
 <tr>
 <td style="text-align: left;">NPMI</td>
@@ -2939,8 +2942,9 @@
 </tr>
 </tbody>
 </table>
-<p>Меры доступны как функции <code>calc_mi</code>, <code>calc_mi3</code>, <code>calc_t_score</code>, <code>calc_dice</code>, <code>calc_logdice</code>, <code>calc_log_likelihood</code>, <code>calc_npmi</code>, <code>calc_min_sensitivity</code> с аргументами <code>(freq_a, freq_b, freq_ab, n)</code> из модуля <code>ruts.corpus.collocations</code> (<code>from ruts.corpus.collocations import calc_logdice</code>); названия и описания - в <code>anyts.constants.COLLOCATION_MEASURES</code>.</p>
+<p>Меры доступны как функции <code>calc_mi</code>, <code>calc_mi3</code>, <code>calc_t_score</code>, <code>calc_dice</code>, <code>calc_logdice</code>, <code>calc_log_likelihood</code>, <code>calc_npmi</code> и <code>calc_min_sensitivity</code> с аргументами <code>(freq_a, freq_b, freq_ab, n)</code> из модуля <code>anyts.corpus.collocations</code>; их названия и описания - в <code>anyts.constants.COLLOCATION_MEASURES</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/collocations.md:collocations-parameters 459ab39 -->
 <table>
 <thead>
 <tr>
@@ -2967,7 +2971,7 @@
 <td style="text-align: center;"><code>measure</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>logdice</code></td>
-<td style="text-align: center;">Мера из <code>COLLOCATION_MEASURES</code></td>
+<td style="text-align: center;">Мера из <code>anyts.constants.COLLOCATION_MEASURES</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>min_freq</code></td>
@@ -2990,6 +2994,7 @@
 </tbody>
 </table>
 <h2 id="_5">Результат<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/collocations.md:Collocation 77925e6 -->
 <p>Список именованных кортежей <code>Collocation</code> по убыванию меры и частоты пары (при равенстве - по алфавиту); <code>pd.DataFrame(found)</code> дает таблицу.</p>
 <table>
 <thead>

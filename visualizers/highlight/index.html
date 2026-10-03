@@ -2515,7 +2515,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2526,7 +2526,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -2535,6 +2535,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2556,13 +2567,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        css
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример использования
@@ -2826,7 +2848,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2837,7 +2859,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -2846,6 +2868,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2867,13 +2900,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        css
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример использования
@@ -2905,11 +2949,12 @@
 
 <h1 id="_1">Подсветка текста<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.visualizers.highlight()</strong></p>
+<p><strong>ruts.visualizers.highlight()</strong>, <strong>ruts.visualizers.HighlightedText</strong>, <strong>ruts.visualizers.Highlight</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Подсветка фрагментов текста, по которым считаются статистики библиотеки, в стиле сервисов <a href="https://glvrd.ru/">Главред</a> и <a href="https://turgenev.ashmanov.com/">Тургенев</a>: длинные предложения, сложные и редкие слова, пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отглагольные существительные, производные предлоги, штампы, стоп-слова, вводные слова, коннекторы, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Функция возвращает объект <code>HighlightedText</code>, который в Jupyter отображается как HTML со стилями и легендой; метод <code>to_html</code> возвращает ту же разметку для документации и веб-приложений. Фрагменты хранятся в атрибуте <code>highlights</code> и доступны для собственной отрисовки.</p>
+<!-- core: visualizers/highlight.md:HighlightedText ca113fe -->
+<p>Механизм подсветки текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Результат отображается в Jupyter как HTML со стилями и легендой; метод <code>to_html</code> возвращает ту же разметку для документации и веб-приложений, а фрагменты хранятся в атрибуте <code>highlights</code> для собственной отрисовки. Фрагменты разных слоев могут пересекаться.</p>
+<p>Функция <code>highlight</code> возвращает объект <code>HighlightedText</code> ruTS со слоями в стиле сервисов <a href="https://glvrd.ru/">Главред</a> и <a href="https://turgenev.ashmanov.com/">Тургенев</a>: длинные предложения, сложные и редкие слова, пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отглагольные существительные, производные предлоги, штампы, стоп-слова, вводные слова, коннекторы, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел.</p>
 <p>Слои подсветки:</p>
 <table>
 <thead>
@@ -3013,12 +3058,15 @@
 </tr>
 </tbody>
 </table>
-<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>); <code>Doc</code> без границ предложений делится на предложения так же, как строка. По умолчанию включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code> - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; <code>layers="all"</code> включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.</p>
+<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>). По умолчанию включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code> - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; <code>layers="all"</code> включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Аллитерация ищется внутри предложения как цепочка из двух и более соседних слов, в основе каждого из которых есть одна и та же согласная буква. Основа - общая начальная часть словоформы и ее леммы по pymorphy3 (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>): окончания согласуются с соседними словами и повторяют согласные по грамматике, а не по звучанию (<em>этих крупных</em>, <em>своим целям и нуждам</em>). Вероятность цепочки при независимом распределении букв - произведение по словам вероятностей встретить согласную среди букв основы, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, где <span class="arithmatex">\(f\)</span> - <a href="https://ru.wikipedia.org/wiki/Частотность">частота согласной</a> в русских текстах, <span class="arithmatex">\(n\)</span> - число букв основы; цепочка подсвечивается, если вероятность ниже порога <code>alliteration_threshold</code>. На каждой позиции проверяется около двадцати согласных, поэтому порог строгий: на прозе при 0.001 подсвечено около 5% слов, при 0.01 - около 20%, в основном случайные совпадения частых букв. Повтор редкой согласной (<em>слышно, бесшумно шуршат камыши</em>) заметен в двух-трех словах, повтор частой в длинных словах ожидаем и не подсвечивается. Слова короче трех букв, стоп-слова и слова без гласных цепочку не прерывают и не продолжают, буква <em>й</em> не учитывается, так как в именительном падеже входит в лемму прилагательного. Индекс аллитерации <a href="../../stats/phon_stats/">PhonStats</a> измеряет сгруппированность повторов во всем тексте, подсветка показывает их места.</p>
 </div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>HighlightedText</code> ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/">anyTS</a> крючками русского языка из <code>ruts.constants</code>: слои с их названиями в легенде - <code>HIGHLIGHT_LAYERS_DESC</code>, слои по умолчанию - <code>HIGHLIGHT_DEFAULT_LAYERS</code>, разметка <code>Doc</code>, которая нужна слою, - <code>HIGHLIGHT_LAYER_ANNOTATIONS</code> (синтаксическим слоям нужен только разбор зависимостей, так как леммы берутся из pymorphy3), стили слоев - <code>HIGHLIGHT_LAYER_STYLES</code>; префикс классов CSS - <code>ruts</code>. Слова строки выделяются так же, как в <a href="../../extractors/words/"><code>WordsExtractor</code></a>, предложения - razdel; <code>Doc</code> без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) тоже делится на предложения razdel, поэтому для него доступен слой <code>long_sents</code>, а части дефисного слова <code>Doc</code> составляют одно слово.</p>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/highlight.md:HighlightedText-parameters 94d89c2 -->
 <table>
 <thead>
 <tr>
@@ -3039,8 +3087,22 @@
 <td style="text-align: center;"><code>layers</code></td>
 <td style="text-align: center;">list[str]/str</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Слои подсветки; если не заданы, включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code>, доступные источнику; <code>"all"</code> - все доступные</td>
+<td style="text-align: center;">Слои подсветки; если не заданы, включаются слои по умолчанию, доступные источнику; <code>"all"</code> - все доступные</td>
 </tr>
+</tbody>
+</table>
+<p>Источник, который не строка и не <code>Doc</code>, дает <code>SourceTypeError</code>, источник без слов - <code>SourceError</code>; слои, которые не имя и не список имен, неизвестный слой или слой, которому нужна разметка, отсутствующая у источника, дают <code>ParameterError</code>.</p>
+<p>Параметры слоев ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td style="text-align: center;"><code>long_sent_word_factor</code></td>
 <td style="text-align: center;">int</td>
@@ -3055,25 +3117,27 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов; если не задан, стоп-слова определяются по части речи с помощью pymorphy3</td>
+<td style="text-align: center;">Список или множество стоп-слов; если не задан, стоп-слова определяются по части речи с помощью pymorphy3</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
+<td style="text-align: center;">Список или множество штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>alliteration_threshold</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.001</code></td>
-<td style="text-align: center;">Порог вероятности повтора согласной, ниже которого повтор считается аллитерацией</td>
+<td style="text-align: center;">Порог вероятности повтора согласной при независимом распределении букв, ниже которого повтор считается аллитерацией</td>
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Порог, который не целое число не меньше единицы, или вероятность вне интервала (0, 1] дают <code>ParameterError</code>, стоп-слова или штампы, которые не строки, - <code>SourceTypeError</code>.</p>
+<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/highlight.md:HighlightedText-attributes d9379e7 -->
 <table>
 <thead>
 <tr>
@@ -3091,12 +3155,12 @@
 <tr>
 <td style="text-align: center;"><code>layers</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Включенные слои подсветки в порядке отрисовки</td>
+<td style="text-align: center;">Включенные слои в порядке отрисовки</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>highlights</code></td>
 <td style="text-align: center;">tuple[Highlight]</td>
-<td style="text-align: center;">Подсвеченные фрагменты в порядке появления в тексте</td>
+<td style="text-align: center;">Подсвеченные фрагменты, упорядоченные по началу, затем по убыванию конца</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>counts</code></td>
@@ -3105,11 +3169,13 @@
 </tr>
 </tbody>
 </table>
-<p>Фрагмент <code>Highlight</code> - неизменяемый объект с полями <code>start</code> и <code>end</code> (позиции в тексте), <code>layer</code> (слой) и <code>note</code> (пояснение для всплывающей подсказки: число слов в предложении, слогов в слове, длина цепочки, согласная аллитерации).</p>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/highlight.md:Highlight 58d8a45 -->
+<p>Фрагмент <code>Highlight</code> - неизменяемый объект с полями <code>start</code> и <code>end</code> (позиции в тексте), <code>layer</code> (слой) и <code>note</code> (пояснение для всплывающей подсказки).</p>
+<p>Пояснение фрагмента - число слов в предложении, слогов в слове, длина цепочки или согласная аллитерации.</p>
+<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="to_html">to_html<a class="headerlink" href="#to_html" title="Permanent link">&para;</a></h3>
-<p>Возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>ruts-highlight</code>, внутри легенда со счетчиками и текст, в котором подсвеченные отрезки обернуты в <code>span</code> с классами <code>ruts-hl</code> и <code>ruts-hl-&lt;слой&gt;</code>, пояснения выводятся в атрибут <code>title</code>. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами. Переносы строк сохраняются как символьные ссылки, поэтому разметку можно вставлять в Markdown.</p>
-<p>Параметры:</p>
+<!-- core: visualizers/highlight.md:HighlightedText-to_html a16305c -->
+<p>Возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>&lt;префикс&gt;-highlight</code>, в котором легенда со счетчиками и текст, где подсвеченные отрезки обернуты в <code>span</code> с классами <code>&lt;префикс&gt;-hl</code> и <code>&lt;префикс&gt;-hl-&lt;слой&gt;</code>, а пояснения выводятся в атрибут <code>title</code>; <code>&lt;префикс&gt;</code> - префикс классов CSS. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) сохраняются как символьные ссылки, по одной на перенос, поэтому разметку можно вставлять в Markdown.</p>
 <table>
 <thead>
 <tr>
@@ -3134,7 +3200,10 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_6">Пример использования<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h3 id="css">css<a class="headerlink" href="#css" title="Permanent link">&para;</a></h3>
+<!-- core: visualizers/highlight.md:HighlightedText-css 42034ba -->
+<p>Метод класса <code>css()</code> возвращает стили, которые добавляет <code>to_html</code>: стили контейнера, легенды и текста под классами <code>css_prefix</code>, объявления <code>layer_styles</code> для каждого слоя и темный цвет текста на слоях с фоном.</p>
+<h2 id="_7">Пример использования<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>

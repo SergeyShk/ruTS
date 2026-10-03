@@ -2830,11 +2830,9 @@
 <p><strong>ruts.visualizers.fingerprinting()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Literature Fingerprinting visualization.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Literature fingerprinting is described in detail in this <a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">paper</a>.</p>
-</div>
+<p>Visualization of literature fingerprinting (<a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">Keim and Oelke 2007</a>).</p>
+<p>Every text is cut into segments of <code>segment_len</code> words with a sliding step of a tenth of a segment, and a measure of lexical diversity is computed for every segment. A text is a block of squares in the order of its segments, row by row, 8 rows high, or a single column when it has at most 8 segments; a block wider than a row of the drawing area wraps into rows of that width. The blocks are laid out left to right and wrap between the rows of an area <code>2 · x_size</code> wide, which grows downwards from <code>2 · y_size</code> when they need more height. The colour of a square is the value of the measure on the scale of the colorbar, from its smallest to its greatest finite value over all the texts. Segments where the measure is undefined (<code>nan</code> on segments too short for it) and the empty cells of a block are light grey, apart from every value, zero included. Every segment is <code>segment_len</code> words long, so the values are comparable: when the step leaves words after the last segment, one more segment ends with the text, and a text not longer than a segment is one segment. A list without texts or a text without words raises <code>SourceError</code>.</p>
+<p>The function is that of the <a href="https://sergeyshk.github.io/anyTS/visualizers/fingerprinting/">anyTS</a> core with the Russian title of <code>ruts.constants.VISUALIZER_LABELS</code> by default, which <code>labels</code> replaces; the measures of <a href="../../stats/diversity_stats/">lexical diversity</a> of ruTS, functions of a list of words such as <code>calc_ttr</code> or <code>calc_simpson_index</code>, serve as the <code>metric</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2848,49 +2846,59 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>texts</code></td>
-<td style="text-align: center;">List[List[str]]</td>
+<td style="text-align: center;">list[list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">List of word lists</td>
+<td style="text-align: center;">List of lists of words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>segment_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Segment size</td>
+<td style="text-align: center;">Size of a segment</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>metric</code></td>
 <td style="text-align: center;">Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Function computing a <a href="../../stats/diversity_stats/">lexical diversity</a> metric</td>
+<td style="text-align: center;">Function of a measure of lexical diversity; <code>calc_ttr</code> by default</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>x_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>800</code></td>
-<td style="text-align: center;">Width of the drawing area</td>
+<td style="text-align: center;">Half the width of the drawing area, greater than 25 (the margin between the blocks)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>y_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>600</code></td>
-<td style="text-align: center;">Height of the drawing area</td>
+<td style="text-align: center;">Half the height of the drawing area, which grows when the blocks need more</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cmap</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>'PuOr'</code></td>
-<td style="text-align: center;">Color map</td>
+<td style="text-align: center;"><code>'viridis'</code></td>
+<td style="text-align: center;">Colour map</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
 <td style="text-align: center;">Axes</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">matplotlib axes for the plot; if not given, a 15×10 figure is created</td>
+<td style="text-align: center;">Axes of matplotlib for the plot; if not given, a 15×10 figure is created</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code></td>
 </tr>
 </tbody>
 </table>
-<p>The function returns the <code>Axes</code> with the visualization; the figure is available as <code>ax.figure</code>. The color of a square is the metric value of the segment relative to the maximum over all texts; segments where the metric is undefined (<code>nan</code> on segments too short for it) are drawn as zeros rather than disappearing from the plot.</p>
+<p>The function returns the <code>Axes</code> with the visualization, set to an equal aspect so that the squares stay square; the figure is <code>ax.figure</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In ruTS the colour map is <code>PuOr</code> by default.</p>
+</div>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <p>Let us look at the visualizer on 100 texts of the <a href="../../datasets/sovchlit/">SovChLit</a> dataset.</p>
 <div class="admonition example">

@@ -816,7 +816,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -825,6 +825,17 @@
       
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2815,7 +2826,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2824,6 +2835,17 @@
       
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2886,13 +2908,14 @@
 <p><strong>ruts.extractors.CharNgramsExtractor</strong></p>
 </div>
 <h2 id="_1">Описание<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>Модуль для извлечения символьных N-грамм из текста - последовательностей из N символов, взятых окном по строке. Символьные N-граммы - стандартный признак стилометрии и атрибуции авторства (Stamatatos 2009): они захватывают морфологию, пунктуацию и типичные сочетания букв, не требуя лемматизации. Список N-грамм подается в <a href="../../corpus/stylometry/"><code>delta</code></a> как единицы текста вместо слов.</p>
-<p>Пробельные символы предварительно схлопываются в один пробел, знаки препинания сохраняются: пробел и знак внутри N-граммы - тоже стилистический сигнал. При <code>within_words=True</code> N-граммы не пересекают границ слов: текст режется токенизатором на слова, знаки препинания отбрасываются, слова короче N N-грамм не дают.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>В качестве токенизатора слов для <code>within_words</code> по умолчанию используется функция <code>tokenize</code> из библиотеки <a href="https://github.com/natasha/razdel">razdel</a>.</p>
-</div>
-<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor 1e07a7f -->
+<p>Класс для извлечения символьных N-грамм из текста - последовательностей из N символов, взятых окном по строке. Символьные N-граммы - стандартный признак стилометрии и атрибуции авторства (Stamatatos 2009), они могут заменять слова в роли единиц текста в мерах вроде дельты Барроуза.</p>
+<p>Пробельные символы предварительно схлопываются в один пробел, знаки препинания сохраняются. При <code>within_words=True</code> N-граммы не пересекают границ слов: текст режется токенизатором на слова, знаки препинания отбрасываются, слова короче N N-грамм не дают.</p>
+<p>Список N-грамм подается в <a href="../../corpus/stylometry/"><code>delta</code></a> как единицы текста вместо слов.</p>
+<h2 id="_2">Языковые крючки<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>CharNgramsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/char_ngrams/">anyTS</a> крючком русского языка: его токенизатор слов по умолчанию для <code>within_words</code>, метод <code>tokenize(text)</code>, - токенизатор по умолчанию <a href="../words/"><code>WordsExtractor</code></a>, функция <code>tokenize</code> библиотеки <a href="https://github.com/natasha/razdel">razdel</a> с отделением приклеенных к словам тире реплик (<code>ruts.utils.iter_tokens</code>).</p>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor-parameters 5154c6d -->
 <table>
 <thead>
 <tr>
@@ -2923,14 +2946,15 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>tokenizer</code></td>
-<td style="text-align: center;">Pattern/Сallable</td>
+<td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Токенизатор слов для <code>within_words</code> или регулярное выражение</td>
+<td style="text-align: center;">Токенизатор слов для <code>within_words</code> или регулярное выражение; по умолчанию метод <code>tokenize</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="_3">Методы<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor-extract a0b664c -->
 <p>Выполняет извлечение N-грамм из текста.</p>
 <table>
 <thead>
@@ -2969,7 +2993,8 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Возвращает список самых частых N-грамм последнего извлечения.</p>
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor-get_most_common 80bd729 -->
+<p>Возвращает топ-N-граммы текста списком пар (N-грамма, частота), начиная с самой частой.</p>
 <table>
 <thead>
 <tr>
@@ -2984,10 +3009,14 @@
 <td style="text-align: center;"><code>n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Количество N-грамм</td>
+<td style="text-align: center;">Количество топ-N-грамм</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Метод должен вызываться после извлечения N-грамм методом <code>extract</code>.</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="n">ce</span> <span class="o">=</span> <span class="n">CharNgramsExtractor</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

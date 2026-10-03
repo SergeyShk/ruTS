@@ -1975,7 +1975,7 @@
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Эталон по частотам
       
     </span>
   </a>
@@ -1984,6 +1984,17 @@
       
         <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Результат
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример
@@ -2831,7 +2842,7 @@
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Эталон по частотам
       
     </span>
   </a>
@@ -2840,6 +2851,17 @@
       
         <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Результат
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример
@@ -2871,14 +2893,16 @@
 
 <h1 id="_1">Ключевые слова<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong></p>
+<p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong>, <strong>ruts.corpus.FrequencyReference</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном. Стандартный инструмент корпусной лингвистики для сравнения жанров, авторов, переводов и периодов (<a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a>, <a href="https://www.sketchengine.eu/">Sketch Engine</a>, quanteda <code>textstat_keyness</code>).</p>
-<p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (значимость различия - есть ли оно) и Log Ratio (размер эффекта - насколько велико). Дополнительно считается выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC, ELL) получают знак: отрицательный, если слово чаще в эталоне; меры эффекта (%DIFF, Log Ratio, отношение шансов) направленные по построению.</p>
-<p>Эталоном может быть <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> (<code>FreqDict</code>): целевые слова - словоформы (готовые леммы - с <code>lemmatize=False</code>), они приводятся к леммам словаря так же, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a>, а числа и слова не из русских букв отбрасываются. Частота в эталоне - ipm, умноженная на объем корпуса словаря (92 млн словоупотреблений); слово, которого в словаре нет, получает его наименьшую частоту (0.4 ipm) и может быть только положительным ключевым словом.</p>
-<p>С эталоном-списком слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>, и обе стороны должны быть подготовлены одинаково.</p>
+<!-- core: corpus/keyness.md:keyness 0018a96 -->
+<p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном.</p>
+<p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (значимость различия - есть ли оно) и Log Ratio (размер эффекта - насколько оно велико). Также считается выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC) и ELL, размер эффекта <span class="arithmatex">\(G^2\)</span>, получают знак: отрицательный, если слово чаще в эталоне; остальные меры эффекта (%DIFF, Log Ratio, отношение шансов) направленные по построению.</p>
+<p>Эталоном может быть список слов, справочник частот (его объем - сумма частот) или <code>FrequencyReference</code>. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково.</p>
+<p>Функция оборачивает <code>keyness</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> и принимает эталоном также <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> <code>FreqDict</code>; <code>FrequencyReference</code> лежит рядом с ней в <code>ruts.corpus</code>, а функции мер - в <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>). Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/keyness.md:keyness-measures 7d98aa3 -->
 <p>Для слова с частотой <span class="arithmatex">\(a\)</span> в целевом корпусе объемом <span class="arithmatex">\(c\)</span> и частотой <span class="arithmatex">\(b\)</span> в эталонном корпусе объемом <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
 <table>
 <thead>
@@ -2894,7 +2918,7 @@
 <td style="text-align: left;">Логарифм правдоподобия</td>
 <td style="text-align: left;"><code>log_likelihood</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})\)</span>, <span class="arithmatex">\(E_1 = \frac{c\,(a+b)}{N}\)</span>, <span class="arithmatex">\(E_2 = \frac{d\,(a+b)}{N}\)</span></td>
-<td style="text-align: left;"><a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson и Garside (2000)</a>; критические значения <code>G2_CRITICAL_VALUES</code>: 3.84 для p &lt; 0.05, 6.63 для p &lt; 0.01, 10.83 для p &lt; 0.001, 15.13 для p &lt; 0.0001</td>
+<td style="text-align: left;"><a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson и Garside (2000)</a>; критические значения <code>anyts.constants.G2_CRITICAL_VALUES</code>: 3.84 для p &lt; 0.05, 6.63 для p &lt; 0.01, 10.83 для p &lt; 0.001, 15.13 для p &lt; 0.0001</td>
 </tr>
 <tr>
 <td style="text-align: left;">Хи-квадрат</td>
@@ -2924,7 +2948,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnson, Culpeper и Rayson (2007); размер эффекта для <span class="arithmatex">\(G^2\)</span> от 0 до 1, но неограниченно растет, когда минимальная ожидаемая частота приближается к единице; <code>nan</code> при минимальной ожидаемой частоте не больше 1</td>
+<td style="text-align: left;">Johnston, Berry и Mielke (2006); размер эффекта <span class="arithmatex">\(G^2\)</span>, доля наибольшего возможного отклонения от ожидаемых частот, от 0 до 1; <code>nan</code>, когда наименьшая ожидаемая частота не больше единицы - тогда логарифм нулевой или отрицательный; чуть выше единицы мера неограниченно растет</td>
 </tr>
 <tr>
 <td style="text-align: left;">Отношение шансов</td>
@@ -2934,8 +2958,9 @@
 </tr>
 </tbody>
 </table>
-<p>Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> считается по распределению хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Меры доступны как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code>, <code>calc_odds_ratio</code> с аргументами <code>(a, b, c, d)</code> из модуля <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>; имя <code>ruts.corpus.keyness</code> в пакете занято одноименной функцией, поэтому импорт модуля целиком не работает); названия и описания - в <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
+<p>Нулевая частота в одном из корпусов для %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> берется из распределения хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Меры доступны как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> и <code>calc_odds_ratio</code> с аргументами <code>(a, b, c, d)</code> из модуля <code>anyts.corpus.keyness</code>; их названия и описания - в <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/keyness.md:keyness-parameters 6f31f0b -->
 <table>
 <thead>
 <tr>
@@ -2954,15 +2979,15 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>reference</code></td>
-<td style="text-align: center;">list[str]/dict[str, float]/FreqDict</td>
+<td style="text-align: center;">list[str]/dict[str, float]/FrequencyReference</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слова эталонного корпуса, их частоты или частотный словарь</td>
+<td style="text-align: center;">Слова эталонного корпуса, их частоты или эталон по частотам</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>measure</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>log_likelihood</code></td>
-<td style="text-align: center;">Мера из <code>KEYNESS_MEASURES</code> для <code>score</code> и сортировки</td>
+<td style="text-align: center;">Мера из <code>anyts.constants.KEYNESS_MEASURES</code> для <code>score</code> и сортировки</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>min_freq</code></td>
@@ -2982,6 +3007,19 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Количество ключевых слов; <code>None</code> - все</td>
 </tr>
+</tbody>
+</table>
+<p><code>reference</code> может быть и <code>FreqDict</code>, и еще один параметр говорит, из чего при нем целевой корпус:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td style="text-align: center;"><code>lemmatize</code></td>
 <td style="text-align: center;">bool</td>
@@ -2990,7 +3028,85 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_5">Результат<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_5">Эталон по частотам<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/keyness.md:FrequencyReference 3fc867c -->
+<p><code>FrequencyReference(counts, size, missing=0.0, key=None, keep=None)</code> описывает эталонный корпус одними частотами - например, частотный словарь, построенный по корпусу, слишком большому, чтобы передать его словами:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Поле</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>counts</code></td>
+<td style="text-align: center;">dict[str, float]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: left;">Частоты ключей в эталонном корпусе</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: left;">Объем эталонного корпуса в словах</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>missing</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.0</code></td>
+<td style="text-align: left;">Частота ключа, которого нет в <code>counts</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>key</code></td>
+<td style="text-align: center;">callable</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: left;">Ключ слова целевого корпуса в <code>counts</code>, например его лемма; <code>None</code> - само слово</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>keep</code></td>
+<td style="text-align: center;">callable</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: left;">Учитывается ли слово целевого корпуса; <code>None</code> - каждое слово</td>
+</tr>
+</tbody>
+</table>
+<p>Слова целевого корпуса, которые пропускает <code>keep</code>, считаются под своим <code>key</code>, а отброшенные не входят и в его объем; отрицательные ключевые слова берутся только из ключей <code>counts</code>, которые пропускает <code>keep</code>. Частота ключа, которого нет в <code>counts</code>, - <code>missing</code>: словарь дает свою наименьшую частоту, верхнюю границу истинной, поэтому такое слово может быть положительным ключевым словом, но никогда - отрицательным.</p>
+<p>Частотный словарь <code>FreqDict</code>, переданный как <code>reference</code>, превращается в такой эталон:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Поле</th>
+<th style="text-align: left;"><code>FreqDict</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>counts</code></td>
+<td style="text-align: left;">ipm лемм <code>FreqDict.entries</code>, переведенные в число употреблений в корпусе словаря</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>size</code></td>
+<td style="text-align: left;"><code>CORPUS_SIZE</code> из <code>ruts.datasets.freq2011</code>, 92 млн словоупотреблений современного подкорпуса Национального корпуса русского языка</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>missing</code></td>
+<td style="text-align: left;">наименьшая частота словаря <code>FreqDict.min_ipm</code>, 0.4 ipm (около 37 употреблений)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>key</code></td>
+<td style="text-align: left;">лемма словаря: словоформа лемматизируется pymorphy3 (с <code>lemmatize=False</code> берется как лемма) и приводится к соглашениям словаря функцией <code>ruts.lexical_stats.dictionary_lemma</code>, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>keep</code></td>
+<td style="text-align: left;">слова из кириллических букв <code>ruts.lexical_stats.DICTIONARY_WORD</code>; числа и слова с латиницей отбрасываются</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_6">Результат<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/keyness.md:Keyword 33ab9a7 -->
 <p>Список именованных кортежей <code>Keyword</code> по убыванию ключевости (при равенстве - по убыванию частоты и по алфавиту, слова с неопределенной мерой в конце); <code>pd.DataFrame(keywords)</code> дает таблицу.</p>
 <table>
 <thead>
@@ -3014,7 +3130,7 @@
 <tr>
 <td style="text-align: center;"><code>freq_reference</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: left;">Частота в эталонном корпусе (по словарю - дробная)</td>
+<td style="text-align: left;">Частота в эталонном корпусе</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ipm_target</code></td>
@@ -3048,7 +3164,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_6">Пример<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h2 id="_7">Пример<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>

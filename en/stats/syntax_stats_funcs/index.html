@@ -3070,7 +3070,7 @@
 
 
 <h1 id="statistic-functions">Statistic functions<a class="headerlink" href="#statistic-functions" title="Permanent link">&para;</a></h1>
-<p>All functions work with spaCy <code>Token</code> objects: the <code>calc_*</code> functions take a sequence of tokens (<code>Doc</code>, <code>Span</code> or a list), the <code>is_*</code> and <code>count_*</code> functions - a single token. Punctuation and whitespace tokens are skipped. Syntactic relations and morphological features are taken from the <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> annotation; relation subtypes (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) are counted by the base relation where noted.</p>
+<p>All functions work with spaCy <code>Token</code> objects: the <code>calc_*</code> functions take a sequence of tokens (<code>Doc</code>, <code>Span</code> or a list), the <code>is_*</code> and <code>count_*</code> functions - a single token. Punctuation, symbols and whitespace tokens are skipped. The dependency tree helpers come from the <a href="https://sergeyshk.github.io/anyTS/stats/syntax/">anyTS</a> core; with <code>join_hyphens=True</code>, which <code>SyntaxStats</code> passes, a hyphenated word that spaCy splits (<code>во-первых</code>) is one word. Syntactic relations and morphological features are taken from the <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> annotation; relation subtypes (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) are counted by the base relation where noted.</p>
 <p>The feature definitions follow <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev (2018)</a>; the original feature names and their correlation coefficients with the textbook grade from that paper are given in parentheses.</p>
 <h2 id="calc_dependency_distances">Dependency distances<a class="headerlink" href="#calc_dependency_distances" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
@@ -3093,6 +3093,12 @@
 <td style="text-align: center;">Doc/Span/list[Token]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Take a hyphenated word for one position</td>
 </tr>
 </tbody>
 </table>
@@ -3154,6 +3160,12 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Token</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Take a hyphenated word for one word</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_valency">Valency<a class="headerlink" href="#calc_valency" title="Permanent link">&para;</a></h2>
@@ -3178,13 +3190,19 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Token</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Take a hyphenated word for one word</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_coordination_chains">Coordination chains<a class="headerlink" href="#calc_coordination_chains" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.syntax_stats.calc_coordination_chains()</strong></p>
 </div>
-<p>Computation of coordination chain lengths. In Universal Dependencies all coordinated members attach with the <code>conj</code> relation to the first of them, so a chain is a word with <code>conj</code> dependents, and its length is the number of coordinated members including the first: the sentence «Он купил хлеб, молоко и сыр» has one chain of length 3. The number of chains per sentence (<code>SOCHIN_NUMBER</code>, r = 0.93) and their mean length (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) are the strongest syntactic predictors of textbook complexity.</p>
+<p>Computation of coordination chain lengths. A chain is a group of words linked by the <code>conj</code> relation, whichever word each coordinated member attaches to, so a nested coordination and an enumeration that the parser splits between several heads are one chain as well; its length is the number of its words: the sentence «Он купил хлеб, молоко и сыр» has one chain of length 3. The number of chains per sentence (<code>SOCHIN_NUMBER</code>, r = 0.93) and their mean length (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) are the strongest syntactic predictors of textbook complexity.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3411,11 +3429,11 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>is_word(token)</code></td>
-<td style="text-align: left;">The token is neither punctuation nor whitespace</td>
+<td style="text-align: left;">The token is neither punctuation, a symbol nor whitespace</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>get_words(tokens)</code></td>
-<td style="text-align: left;">List of words of a token sequence</td>
+<td style="text-align: left;"><code>get_words(tokens, join_hyphens=False)</code></td>
+<td style="text-align: left;">List of words of a token sequence; with <code>join_hyphens=True</code> a hyphenated word is one word, given by its first part</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>is_root(token)</code></td>
@@ -3426,8 +3444,8 @@
 <td style="text-align: left;">Base relation without the subtype: <code>acl:relcl</code> → <code>acl</code></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>get_children(token)</code></td>
-<td style="text-align: left;">List of the token's dependent words</td>
+<td style="text-align: left;"><code>get_children(token, join_hyphens=False)</code></td>
+<td style="text-align: left;">List of the token's dependent words; with <code>join_hyphens=True</code> - of the whole hyphenated word</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>has_feature(token, field, value)</code></td>

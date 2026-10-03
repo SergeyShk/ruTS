@@ -2034,6 +2034,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2795,6 +2806,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2852,9 +2874,9 @@
 <p><strong>ruts.corpus.kwic()</strong>, <strong>ruts.corpus.format_kwic()</strong>, <strong>ruts.corpus.print_kwic()</strong>, <strong>ruts.corpus.Concordance</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A KWIC (keyword in context) concordance - all occurrences of a word or phrase with left and right context, as in <a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a> and textacy <code>keyword_in_context</code>. It shows how a word is used in the text: what it combines with, in which forms and senses.</p>
-<p>Occurrences are searched among the words of the text by word form ignoring case and the letter ё, case-sensitively (<code>ignore_case=False</code>) or by pymorphy3 lemma (<code>by_lemma=True</code>: «кота», «коту» are found by «кот», a phrase is given by lemmas - «рабочий класс»); for a <code>Doc</code> with part-of-speech annotation the lemma of a word is taken with the token's part of speech, so «стали» is found by «сталь» or by «стать» depending on the annotation, while the keyword is lemmatized without a part of speech. A phrase does not run across the end of a sentence or a paragraph unless the keyword has such a boundary itself. The context is <code>window</code> words to the left and to the right as written in the text, with punctuation between them; whitespace runs are collapsed into a single space, occurrences do not overlap. The source is a string (razdel words) or a <code>Doc</code> object.</p>
-<p><code>format_kwic</code> aligns the lines on the keyword: the left context is truncated on the left and right-aligned, the right one is truncated on the right; <code>print_kwic</code> prints the result.</p>
+<p>A KWIC concordance (keyword in context) - every occurrence of a word or a phrase with its context on the left and on the right. The occurrences are looked for among the words of the text by the word form, ignoring case or respecting it (<code>ignore_case=False</code>), or by the lemma (<code>by_lemma=True</code>), where the words of the keyword are lemmatized as words of a string: with a lemmatizer a phrase may be written in any form, without one it is given by lemmas. The words of a string and of the keyword come from the tokenizer, those of a <code>Doc</code> from its tokens, so a tokenizer that splits a string as the pipeline does finds in a <code>Doc</code> what it finds in its text; punctuation and symbols are not words. The forms are compared in the composed form of Unicode (NFC), without soft hyphens. A phrase does not run across the end of a paragraph or of a sentence - a boundary of a <code>Doc</code> anywhere between its words, an opening mark included, or in a text without boundaries the start of a sentence of the sentence splitter, by default a final mark before whitespace - unless the keyword has a final mark or the start of a sentence in the same place (<code>U.S. Army</code>). The context is <code>window</code> words on each side as they are written in the text, with the punctuation between them; whitespace collapses into one space, and occurrences do not overlap.</p>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The function calls the <code>kwic</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/kwic/">anyTS</a> core with the hooks of Russian: the words and the sentences of a string and of the keyword are those of <a href="https://github.com/natasha/razdel">razdel</a>, the lemma of a word is the pymorphy3 one, in a <code>Doc</code> with part-of-speech annotation taken with the part of speech of the token (<code>ruts.utils.lemmatize</code>), so «стали» is found by «сталь» or by «стать» depending on the annotation, and the word forms (with <code>ignore_case</code>) and the lemmas are compared in lower case with ё as е. The parts of a hyphenated word that spaCy splits are joined (<code>кто-то</code> is one word).</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2876,13 +2898,13 @@
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word or phrase (words separated by spaces)</td>
+<td style="text-align: center;">Word or phrase</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>window</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>5</code></td>
-<td style="text-align: center;">Number of context words on each side</td>
+<td style="text-align: center;">Number of words of context on each side</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>by_lemma</code></td>
@@ -2894,13 +2916,15 @@
 <td style="text-align: center;"><code>ignore_case</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Ignore case and the letter ё when comparing word forms</td>
+<td style="text-align: center;">Ignore case when comparing word forms</td>
 </tr>
 </tbody>
 </table>
-<p><code>format_kwic(concordances, width=40)</code> and <code>print_kwic(concordances, width=40)</code>: <code>width</code> is the context width in characters, at least one; line breaks inside the keyword phrase are replaced with spaces.</p>
+<p>A keyword without words and a negative window raise <code>ParameterError</code>; a source that is neither a string nor a <code>Doc</code>, a keyword that is not a string and a hook that is not callable raise <code>SourceTypeError</code>.</p>
+<p><code>format_kwic(concordances, width=40)</code> aligns the lines on the keyword: the left context is cut on the left and aligned to the right, the right one is cut on the right; <code>width</code> is the width of a context in characters, at least one. The lines may come from any iterable and are taken in the composed form of Unicode (NFC), so that the widths count the characters as they are shown.</p>
+<p><code>print_kwic(concordances, width=40)</code> prints the result of <code>format_kwic</code>.</p>
 <h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
-<p>A list of <code>Concordance</code> named tuples in text order.</p>
+<p>A list of <code>Concordance</code> named tuples in the order of the text.</p>
 <table>
 <thead>
 <tr>
@@ -2923,17 +2947,17 @@
 <tr>
 <td style="text-align: center;"><code>left</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: left;">Left context</td>
+<td style="text-align: left;">Context on the left</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: left;">The occurrence as in the text</td>
+<td style="text-align: left;">Occurrence as written in the text</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>right</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: left;">Right context</td>
+<td style="text-align: left;">Context on the right</td>
 </tr>
 </tbody>
 </table>

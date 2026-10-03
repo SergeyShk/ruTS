@@ -2896,10 +2896,17 @@
 <p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.delta_profiles()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Меры стилометрии и атрибуции авторства: расстояния между текстами по частотам самых частых слов (дельта Барроуза и ее варианты, как в <a href="https://github.com/computationalstylistics/stylo">stylo</a>), маркеры предпочитаемых и избегаемых слов (Zeta), расстояние хи-квадрат Килгарриффа между корпусами, кривая Менденхолла и профиль служебных слов как признаки автора. Функции работают со списками единиц текста: словоформ в нижнем регистре (обычный выбор для дельты), лемм или символьных N-грамм (<a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>) - регистр и лемматизация на стороне экстрактора.</p>
+<!-- core: corpus/stylometry.md:stylometry 280727d -->
+<p>Меры стилометрии и атрибуции авторства: расстояния между текстами по частотам самых частых слов (дельта Барроуза и ее варианты, как в <a href="https://github.com/computationalstylistics/stylo">stylo</a>), маркеры предпочитаемых и избегаемых слов (Zeta), расстояние хи-квадрат Килгарриффа между корпусами и кривая Менденхолла. Функции работают со списками единиц текста: словоформ в нижнем регистре (обычный выбор для дельты), лемм или символьных N-грамм - регистр и лемматизация на стороне экстракторов.</p>
+<p>Функции - это функции ядра <a href="https://sergeyshk.github.io/anyTS/corpus/stylometry/">anyTS</a>, к которым добавлен <a href="#function_words_profile">профиль служебных слов</a> русского языка как признак автора. Единицы текста дают <a href="../../extractors/words/"><code>WordsExtractor</code></a> - словоформы и леммы - и <a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>.</p>
 <h2 id="delta">Дельта Барроуза<a class="headerlink" href="#delta" title="Permanent link">&para;</a></h2>
-<p>Корпус - словарь «имя текста → единицы». <code>frequency_table</code> строит таблицу относительных частот: строки - тексты, столбцы - <code>n_mfw</code> самых частых единиц по убыванию средней относительной частоты (при равенстве - по алфавиту); <code>culling</code> оставляет единицы, встречающиеся хотя бы в заданной доле текстов, как в stylo. <code>z_scores</code> стандартизирует столбцы с выборочным стандартным отклонением, как <code>scale()</code> в R; столбец с одинаковыми частотами во всех текстах дает нули. <code>delta</code> считает по z-оценкам симметричную матрицу расстояний (<code>DataFrame</code> с именами текстов), пригодную для кластеризации и PCA; нужно не меньше трех текстов - на двух z-оценки вырождаются в ±1 и все расстояния одинаковы.</p>
-<p>Варианты (<code>DELTA_VARIANTS</code>), формулы по исходникам stylo, <span class="arithmatex">\(n\)</span> - число единиц, <span class="arithmatex">\(z_A\)</span>, <span class="arithmatex">\(z_B\)</span> - векторы z-оценок текстов:</p>
+<!-- core: corpus/stylometry.md:frequency_table 69b1455 -->
+<p>Корпус - словарь «имя текста → единицы». <code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> строит таблицу относительных частот: строки - тексты, столбцы - <code>n_mfw</code> самых частых единиц по убыванию средней относительной частоты (при равенстве - по алфавиту); <code>culling</code> оставляет единицы, встречающиеся хотя бы в заданной доле текстов, как в stylo.</p>
+<!-- core: corpus/stylometry.md:z_scores 410148c -->
+<p><code>z_scores(table)</code> стандартизирует столбцы с выборочным стандартным отклонением, как <code>scale()</code> в R; столбец с одинаковой частотой во всех текстах дает нули.</p>
+<!-- core: corpus/stylometry.md:delta 8a87278 -->
+<p><code>delta</code> считает по z-оценкам симметричную матрицу расстояний (<code>DataFrame</code> с именами текстов); нужно не меньше трех текстов - на двух z-оценки вырождаются в ±1/√2 и расстояния не зависят от частот.</p>
+<p>Варианты (<code>anyts.constants.DELTA_VARIANTS</code>), формулы по исходникам stylo; <span class="arithmatex">\(n\)</span> - число единиц, <span class="arithmatex">\(z_A\)</span> и <span class="arithmatex">\(z_B\)</span> - векторы z-оценок текстов:</p>
 <table>
 <thead>
 <tr>
@@ -2936,7 +2943,7 @@
 </tr>
 </tbody>
 </table>
-<p>Косинусная дельта дает лучшее качество кластеризации по авторам в экспериментах Evert и др.; дельта Барроуза - классический выбор. Число единиц берут от 100 до 500 самых частых слов; для символьных N-грамм - 100-200.</p>
+<p>Косинусная дельта лучше всего кластеризует тексты по авторам в экспериментах Evert и др. Число единиц обычно от 100 до 500 самых частых слов, для символьных N-грамм - 100-200.</p>
 <p>Параметры <code>delta</code>:</p>
 <table>
 <thead>
@@ -2964,7 +2971,7 @@
 <td style="text-align: center;"><code>variant</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>burrows</code></td>
-<td style="text-align: center;">Вариант дельты из <code>DELTA_VARIANTS</code></td>
+<td style="text-align: center;">Вариант дельты из <code>anyts.constants.DELTA_VARIANTS</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>culling</code></td>
@@ -2974,8 +2981,8 @@
 </tr>
 </tbody>
 </table>
-<p><code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> и <code>z_scores(table)</code> принимают те же параметры и таблицу.</p>
-<p>Для атрибуции авторства есть <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: самые частые единицы, отсев и статистики для z-оценок берутся из эталонных текстов <code>reference</code> (профилей авторов) или из отдельного набора <code>statistics</code> - например, из обучающих окон, когда профили склеены из них и самих профилей слишком мало, чтобы оценивать разброс частот; проверяемые тексты <code>samples</code> описываются в тех же единицах и нормируются теми же статистиками; результат - расстояния проверяемых текстов до эталонных, ближайший эталон в строке - предполагаемый автор. В отличие от <code>delta</code> по объединенному словарю, проверяемые тексты не влияют ни на список единиц, ни на нормировку, и результат для текста не зависит от того, какие еще тексты поданы вместе с ним.</p>
+<!-- core: corpus/stylometry.md:delta_profiles 0675201 -->
+<p>Для атрибуции авторства есть <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: самые частые единицы, отсев и статистики z-оценок берутся из эталонных текстов <code>reference</code> (профилей авторов) или из отдельного набора <code>statistics</code> - например, из обучающих окон, когда профилей слишком мало, чтобы оценить разброс частот; проверяемые тексты <code>samples</code> описываются теми же единицами и нормируются теми же статистиками. Результат - расстояния от проверяемых текстов до эталонных, и ближайший эталон в строке - предполагаемый автор. В отличие от <code>delta</code>, проверяемые тексты не влияют ни на единицы, ни на нормировку, так что результат для текста не зависит от текстов, поданных вместе с ним.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
@@ -3014,7 +3021,8 @@
 </code></pre></div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
-<p>Маркеры предпочитаемых и избегаемых слов по Burrows (2007) и Craig и Kinney (2009). Каждый текст обоих корпусов делится на сегменты примерно по <code>segment_size</code> слов (число сегментов - округленное отношение длины к размеру, не меньше одного); для слова считается доля сегментов каждого корпуса, в которых оно встречается (<span class="arithmatex">\(DP\)</span>). Zeta - разность долей <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span> от −1 до 1 (в записи stylo <code>zeta.craig</code>; классическая Zeta Крейга <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span> больше на единицу), логарифмическая Zeta - <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch и др. 2018</a>), нулевая доля заменяется на половину сегмента. В начале списка слова, предпочитаемые целевым корпусом, в конце - избегаемые.</p>
+<!-- core: corpus/stylometry.md:zeta 8dd3de6 -->
+<p>Маркеры предпочитаемых и избегаемых слов по Burrows (2007) и Craig и Kinney (2009). Каждый текст обоих корпусов делится на сегменты примерно по <code>segment_size</code> слов (число сегментов - отношение длины к размеру, округленное до целого с половиной вверх, не меньше одного), и для слова считается доля сегментов каждого корпуса, в которых оно встречается (<span class="arithmatex">\(DP\)</span>). Zeta - разность долей <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span> от −1 до 1 (в записи stylo <code>zeta.craig</code>; классическая Zeta Крейга <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span> больше на единицу), логарифмическая Zeta - <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch и др. 2018</a>), нулевая доля заменяется на половину сегмента. В начале списка слова, которые предпочитает целевой корпус, в конце - избегаемые.</p>
 <table>
 <thead>
 <tr>
@@ -3065,7 +3073,8 @@
 </code></pre></div>
 </div>
 <h2 id="kilgarriff_chi2">Хи-квадрат Килгарриффа<a class="headerlink" href="#kilgarriff_chi2" title="Permanent link">&para;</a></h2>
-<p>Расстояние между двумя корпусами по <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: для <code>n_mfw</code> самых частых слов объединенного корпуса ожидаемые частоты в корпусах пропорциональны их объемам, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> по словам и обоим корпусам. Чем больше значение, тем сильнее корпуса различаются; величина растет с объемом корпусов, поэтому пары корпусов сравнимы между собой при равных объемах, как в экспериментах Килгарриффа.</p>
+<!-- core: corpus/stylometry.md:kilgarriff_chi2 0e5a690 -->
+<p>Расстояние между двумя корпусами по <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: для <code>n_mfw</code> самых частых слов объединенного корпуса ожидаемые частоты в корпусах пропорциональны их объемам, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> по словам и обоим корпусам. Чем больше значение, тем сильнее корпуса различаются; величина растет с объемом корпусов, поэтому пары корпусов сравнимы между собой при равных объемах.</p>
 <table>
 <thead>
 <tr>
@@ -3105,7 +3114,10 @@
 </code></pre></div>
 </div>
 <h2 id="mendenhall">Кривая Менденхолла<a class="headerlink" href="#mendenhall" title="Permanent link">&para;</a></h2>
-<p><code>mendenhall_curve(words)</code> - доли слов каждой длины в символах (Mendenhall 1887), профиль автора, сравнимый между текстами независимо от их объема; <code>mendenhall_distance(words_a, words_b)</code> - расстояние Йенсена-Шеннона с основанием 2 между кривыми, от 0 (распределения совпадают) до 1.</p>
+<!-- core: corpus/stylometry.md:mendenhall_curve a7a66c3 -->
+<p><code>mendenhall_curve(words)</code> - доли слов каждой длины в символах (Mendenhall 1887), профиль автора, сравнимый между текстами независимо от их объема.</p>
+<!-- core: corpus/stylometry.md:mendenhall_distance 60f301b -->
+<p><code>mendenhall_distance(words_a, words_b)</code> - расстояние Йенсена-Шеннона с основанием 2 между кривыми, от 0 (распределения совпадают) до 1.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">mendenhall_curve</span><span class="p">,</span> <span class="n">mendenhall_distance</span>
@@ -3118,7 +3130,25 @@
 </code></pre></div>
 </div>
 <h2 id="function_words_profile">Профиль служебных слов<a class="headerlink" href="#function_words_profile" title="Permanent link">&para;</a></h2>
-<p>Доли предлогов, сочинительных и подчинительных союзов, частиц, местоимений, детерминативов и междометий (<code>FUNCTION_UD_POS</code>: <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>) среди слов текста - по первому разбору pymorphy3 для списка слов и по разметке для <code>Doc</code> с частями речи. Служебные слова не зависят от темы, поэтому их профиль - классический признак авторства (школа Марусенко).</p>
+<p>Доли предлогов, сочинительных и подчинительных союзов, частиц, местоимений, детерминативов и междометий (<code>ruts.constants.FUNCTION_UD_POS</code>: <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>) среди слов текста - по первому разбору pymorphy3 для списка слов и по разметке для <code>Doc</code> с частями речи; знаки препинания не считаются. Служебные слова не зависят от темы, поэтому их профиль - классический признак авторства (школа Марусенко).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>source</code></td>
+<td style="text-align: center;">list[str]/Doc</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Слова текста или объект Doc</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_words_profile</span>

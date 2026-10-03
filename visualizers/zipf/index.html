@@ -2827,15 +2827,18 @@
 
 <h1 id="_1">Закон Ципфа<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.visualizers.zipf()</strong></p>
+<p><strong>ruts.visualizers.zipf()</strong>, <strong>ruts.visualizers.zipf_theory()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Построение графика <a href="https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BA%D0%BE%D0%BD_%D0%A6%D0%B8%D0%BF%D1%84%D0%B0">Закона Ципфа</a> (Zipf's law) на основе справочника частотности слов.</p>
+<!-- core: visualizers/zipf.md:zipf 2fecb35 -->
+<p>Построение графика <a href="https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BA%D0%BE%D0%BD_%D0%A6%D0%B8%D0%BF%D1%84%D0%B0">закона Ципфа</a> по справочнику частотности слов.</p>
 <div class="admonition quote">
 <p class="admonition-title">Определение</p>
-<p>Зако́н Ци́пфа («ранг-частота») - эмпирическая закономерность распределения частоты слов естественного языка: если все слова языка (или просто достаточно длинного текста) упорядочить по убыванию частоты их использования, то частота n-го слова в таком списке окажется приблизительно обратно пропорциональной его порядковому номеру n (так называемому рангу этого слова, см. шкала порядка). Например, второе по используемости слово встречается примерно в два раза реже, чем первое, третье - в три раза реже, чем первое, и так далее.</p>
+<p>Зако́н Ци́пфа («ранг-частота») - эмпирическая закономерность распределения частоты слов естественного языка: если все слова языка или достаточно длинного текста упорядочить по убыванию частоты, частота n-го слова в списке окажется приблизительно обратно пропорциональной его номеру n - рангу слова. Второе по частоте слово встречается примерно в два раза реже первого, третье - в три раза реже, и так далее.</p>
 </div>
+<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/zipf/">anyTS</a> с русскими подписями из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них, например <code>labels={"title": "Закон Ципфа в SovChLit"}</code>.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/zipf.md:zipf-parameters 0d42d39 -->
 <table>
 <thead>
 <tr>
@@ -2862,7 +2865,7 @@
 <td style="text-align: center;"><code>num_labels</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Количество слов, отображаемых на графике</td>
+<td style="text-align: center;">Количество слов, подписанных на графике</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>log</code></td>
@@ -2874,19 +2877,19 @@
 <td style="text-align: center;"><code>show_theory</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Отображать график теоретического Закону Ципфа</td>
+<td style="text-align: center;">Отображать теоретический закон Ципфа</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>alpha</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.5</code></td>
-<td style="text-align: center;">Коэффициент α теоретического Закона Ципфа, больше нуля</td>
+<td style="text-align: center;">Показатель α теоретического закона Ципфа, больше нуля</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>show_fit</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Отображать кривую подгонки закона Ципфа-Мандельброта <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> по <a href="../../stats/diversity_stats_funcs/#fit_zipf_mandelbrot"><code>fit_zipf_mandelbrot</code></a></td>
+<td style="text-align: center;">Отображать кривую подгонки закона Ципфа-Мандельброта <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> по <code>fit_zipf_mandelbrot</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2894,9 +2897,18 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси matplotlib для графика; если не заданы, создается новая фигура</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи графика поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code>, <code>ylabel</code>, <code>experimental</code> и <code>theoretical</code> (кривые), <code>fit</code> (строка формата с <code>q</code> и <code>s</code>)</td>
+</tr>
 </tbody>
 </table>
-<p>Функция возвращает оси <code>Axes</code> с графиком; <code>num_words</code> больше числа лексем не удлиняет кривые за пределы данных, пустой справочник - <code>SourceError</code>. <code>zipf_theory(size, num_ranks, alpha, ax)</code> строит только теоретическую кривую <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> для рангов от 1 до <code>num_ranks</code>.</p>
+<p>Функция возвращает оси <code>Axes</code> с графиком; <code>num_words</code> больше числа лексем не удлиняет кривые за пределы данных, справочник со словами не строками дает <code>SourceTypeError</code>, пустой справочник или частота не больше нуля - <code>SourceError</code>, а <code>num_words</code> меньше единицы или показатель, который не конечное число больше нуля, - <code>ParameterError</code>, все до создания фигуры.</p>
+<p>Подгонка закона Ципфа-Мандельброта описана в <a href="../../stats/diversity_stats_funcs/#fit_zipf_mandelbrot"><code>fit_zipf_mandelbrot</code></a>.</p>
+<!-- core: visualizers/zipf.md:zipf_theory bce12a7 -->
+<p><code>zipf_theory(size, num_ranks, alpha=1.5, ax=None, labels=None)</code> строит только теоретическую кривую, <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> для рангов от 1 до <code>num_ranks</code>; ее подпись - ключ <code>theoretical</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">

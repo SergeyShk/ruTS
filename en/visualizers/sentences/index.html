@@ -2830,7 +2830,9 @@
 <p><strong>ruts.visualizers.sentence_lengths_plot()</strong>, <strong>ruts.visualizers.sentence_lengths()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The sentence length curve - the rhythm of a text: the length of every sentence in words in order, a moving average over a window of <code>window</code> sentences and an inset with the histogram of lengths. Alternation of short and long sentences is an editorial sign of lively text, a flat curve - of monotonous text. <code>sentence_lengths</code> extracts the lengths: sentences of a string - by razdel, of a <code>Doc</code> object - by sentence boundaries (without boundaries - from the text), ready lengths - any sequence of integers, including a numpy array and a Series - are used as they are; sentences without words are skipped. The function takes axes <code>ax</code> and returns <code>Axes</code>.</p>
+<p>The curve of the lengths of the sentences - the rhythm of a text: the length of every sentence in words in order, the moving average over a window of <code>window</code> sentences and an inset with the histogram of the lengths. Short and long sentences in turn are an editorial sign of a lively text, a flat curve - of a monotonous one. The function takes the axes <code>ax</code> and returns <code>Axes</code>.</p>
+<p><code>sentence_lengths(source, sents_extractor=None, words_extractor=None)</code> extracts the lengths: a string is split into sentences by the sentence extractor and every sentence into words by the word extractor; the sentences of a <code>Doc</code> come from its boundaries and its words from its tokens, punctuation and symbols left out and the parts of a hyphenated word joined (<code>во-первых</code> is one word), while a <code>Doc</code> without boundaries is counted as its text, by the extractors; sentences without words are skipped. Ready lengths - a sequence or an iterator of integers that are not negative - are used as they are; a table, a set, a mapping, bytes or a length that is not an integer raise <code>SourceTypeError</code>, a negative length <code>SourceError</code>.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a> core; for a string ruTS passes its Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, and the <code>sents_extractor</code> and <code>words_extractor</code> parameters replace them. The default labels are the Russian ones of <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> puts the given labels over them.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2846,25 +2848,43 @@
 <td style="text-align: center;"><code>source</code></td>
 <td style="text-align: center;">str/Doc/Iterable[int]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Text, Doc object or sentence lengths (list, numpy array, Series)</td>
+<td style="text-align: center;">Text, Doc object or lengths of the sentences (a list, a numpy array, a Series)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>window</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Moving average window in sentences</td>
+<td style="text-align: center;">Window of the moving average in sentences</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>inset</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Show the histogram inset</td>
+<td style="text-align: center;">Show the inset with the histogram</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
 <td style="text-align: center;">Axes</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code>, <code>ylabel</code>, <code>length</code> (the curve), <code>average</code> (a format string with <code>window</code>), <code>distribution</code> (the inset)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>sents_extractor</code></td>
+<td style="text-align: center;">SentsExtractor</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Extractor of the sentences of a string; the sentence extractor of the library by default</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>words_extractor</code></td>
+<td style="text-align: center;">WordsExtractor</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Extractor of the words of a sentence of a string; the word extractor of the library by default</td>
 </tr>
 </tbody>
 </table>

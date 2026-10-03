@@ -2126,6 +2126,17 @@
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
+        Функции статистик
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         Пример использования
       
     </span>
@@ -2842,6 +2853,17 @@
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
+        Функции статистик
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
         Пример использования
       
     </span>
@@ -2871,11 +2893,13 @@
 
 <h1 id="_1">Сравнение корпусов<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.corpus.compare_corpora()</strong>, <strong>ruts.corpus.compare_features()</strong>, <strong>ruts.corpus.corpus_features()</strong>, <strong>ruts.corpus.text_features()</strong>, <strong>ruts.corpus.split_windows()</strong>, <strong>ruts.corpus.sentence_rhythm()</strong></p>
+<p><strong>ruts.corpus.compare_corpora()</strong>, <strong>ruts.corpus.compare_features()</strong>, <strong>ruts.corpus.check_comparison_params()</strong>, <strong>ruts.corpus.corpus_features()</strong>, <strong>ruts.corpus.text_features()</strong>, <strong>ruts.corpus.split_windows()</strong>, <strong>ruts.corpus.sentence_rhythm()</strong>, <strong>ruts.corpus.calc_cohen_d()</strong>, <strong>ruts.corpus.calc_cliff_delta()</strong>, <strong>ruts.corpus.bootstrap_median_diff()</strong>, <strong>ruts.corpus.holm_correction()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Сравнение двух корпусов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>.</p>
-<p>Тексты обоих корпусов режутся на окна одинакового размера (<code>split_windows</code>), чтобы убрать зависимость признаков от длины текста; окна короче <code>min_words</code> слов отбрасываются. Для каждого окна считаются признаки (<code>text_features</code> или своя функция), для каждого признака сравниваются два набора значений. Результат - <code>DataFrame</code> признак × статистики, отсортированный по убыванию модуля дельты Клиффа.</p>
+<p><code>compare_corpora</code> сравнивает два корпуса русских текстов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>. Функция строит таблицы признаков окон обоих корпусов и сравнивает их функцией <code>compare_features</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>:</p>
+<!-- core: corpus/compare.md:compare_features 9eaeeac -->
+<p>Сравнение двух корпусов признак за признаком. Каждый корпус приходит таблицей признаков своих окон - текстов, разрезанных на части примерно одинакового размера, чтобы признаки не зависели от длины текстов. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> сравнивает таблицы по столбцам и возвращает по строке на признак, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса таблицы; в таблице без этого уровня каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
+<p>Тексты режутся на окна одинакового размера функцией <code>split_windows</code>; окна короче <code>min_words</code> слов отбрасываются. Признаки каждого окна считает <code>text_features</code> или своя функция.</p>
 <h2 id="_3">Признаки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p><code>text_features(text)</code> возвращает 108 признаков с префиксом по источнику:</p>
 <table>
@@ -2919,9 +2943,11 @@
 </tr>
 </tbody>
 </table>
-<p>На окно в 1000 слов уходит около 0.1 с. Признаки по разбору spaCy (<code>SyntaxStats</code>, <code>CohesionStats</code>) в набор по умолчанию не входят - функция работает по строкам; их можно добавить своей функцией признаков через <code>features</code>, см. пример ниже. <code>corpus_features(texts, window, features)</code> отдает матрицу признаков окон с индексом (номер текста, номер окна) - для своих классификаторов, а <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> сравнивает две такие таблицы: <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>. Разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
+<p>На окно в 1000 слов уходит около 0.02 с. Признаки по разбору spaCy (<code>SyntaxStats</code>, <code>CohesionStats</code>) в набор по умолчанию не входят - функция работает по строкам; их можно добавить своей функцией признаков через <code>features</code>, см. пример ниже.</p>
+<p><code>corpus_features(texts, window, features)</code> отдает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; уровень <code>text</code> этого индекса и пересэмплирует бутстрэп <code>compare_features</code>. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
 <p>Доли пробелов, букв и знаков (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) считаются по символам как есть: отступы строк, двойные и неразрывные пробелы в файлах отражают верстку издания, а не текст. В корпусе из разных источников их стоит схлопнуть заранее, например <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
 <h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/compare.md:compare_features-statistics 42e948a -->
 <p>Для признака со значениями <span class="arithmatex">\(x_1 \dots x_{n_A}\)</span> в корпусе A и <span class="arithmatex">\(y_1 \dots y_{n_B}\)</span> в корпусе B (неопределенные и бесконечные значения отброшены; при менее чем двух значениях на стороне - <code>nan</code>):</p>
 <table>
 <thead>
@@ -2949,7 +2975,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>auc</code></td>
-<td style="text-align: left;">признак как одиночный классификатор: доля пар окон, где значение в A больше, чем в B, ничьи за половину; <span class="arithmatex">\(\delta = 2 \cdot AUC - 1\)</span>, 0.5 - признак не различает корпуса</td>
+<td style="text-align: left;">признак как классификатор сам по себе: доля пар окон, где значение в A больше, чем в B, ничьи за половину; <span class="arithmatex">\(\delta = 2 \cdot AUC - 1\)</span>, 0.5 - признак не различает корпуса</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>u</code>, <code>p_value</code></td>
@@ -2957,16 +2983,25 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>p_holm</code></td>
-<td style="text-align: left;">p-значение с поправкой Холма на число признаков (<code>holm_correction</code>): таблица из сотни строк без поправки приглашает к ложным открытиям</td>
+<td style="text-align: left;">p-значение с поправкой Холма на число признаков (<code>holm_correction</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_A</code>, <code>n_B</code></td>
 <td style="text-align: left;">число окон с определенным значением</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>n_texts_A</code>, <code>n_texts_B</code></td>
+<td style="text-align: left;">число текстов, из которых взяты эти окна</td>
+</tr>
 </tbody>
 </table>
-<p>Дельта Клиффа и AUC считаются из той же U-статистики, поэтому согласованы между собой; d Коэна чувствителен к выбросам и ненормальности, его стоит смотреть рядом с дельтой.</p>
+<p>Имена столбцов - <code>anyts.corpus.COMPARISON_COLUMNS</code>, где <code>A</code> и <code>B</code> заменены метками корпусов. Дельта Клиффа и AUC считаются из той же U-статистики и согласованы между собой; d Коэна чувствителен к выбросам и отклонениям от нормальности, его стоит смотреть рядом с дельтой.</p>
+<div class="admonition warning">
+<p class="admonition-title">Окна одного текста не независимы</p>
+<p>Критерий и размеры эффекта считают каждое окно независимым наблюдением, а окна одного текста не независимы. При небольшом числе текстов в корпусе p-значения слишком малы и отражают выбор текстов не меньше, чем сами корпуса. Бутстрэп же пересэмплирует целые тексты (кластерный бутстрэп), так что его интервал учитывает разброс между текстами; ему нужно не меньше двух текстов с каждой стороны, а при немногих текстах он груб.</p>
+</div>
 <h2 id="_5">Параметры<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>Параметры <code>compare_corpora</code>:</p>
 <table>
 <thead>
 <tr>
@@ -3002,10 +3037,42 @@
 <td style="text-align: center;">Функция признаков текста; <code>None</code> - <code>text_features</code></td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>min_words</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Наименьшее число слов в окне; <code>None</code> - половина окна, при <code>window=None</code> - одно слово</td>
+</tr>
+</tbody>
+</table>
+<p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <code>compare_features</code>, параметры которой:</p>
+<!-- core: corpus/compare.md:compare_features-parameters 7c141e7 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>table_a</code></td>
+<td style="text-align: center;">DataFrame</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Признаки окон первого корпуса, по строке на окно</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>table_b</code></td>
+<td style="text-align: center;">DataFrame</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Признаки окон второго корпуса</td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>labels</code></td>
 <td style="text-align: center;">tuple[str, str]</td>
 <td style="text-align: center;"><code>("A", "B")</code></td>
-<td style="text-align: center;">Имена корпусов для столбцов</td>
+<td style="text-align: center;">Имена корпусов для столбцов, две строки, дающие разные столбцы</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_bootstrap</code></td>
@@ -3015,20 +3082,27 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>seed</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">int/Generator</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Зерно генератора случайных чисел; <code>None</code> - случайное</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>min_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Наименьшее число слов в окне; <code>None</code> - половина окна, при <code>window=None</code> - одно слово</td>
+<td style="text-align: center;">Зерно генератора случайных чисел, неотрицательное целое число, или <code>Generator</code> numpy; <code>None</code> - случайное</td>
 </tr>
 </tbody>
 </table>
-<h2 id="_6">Пример использования<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 289 и 1444 окна по 1000 слов, около двух минут.</p>
+<!-- core: corpus/compare.md:check_comparison_params f445b8d -->
+<p><code>check_comparison_params(labels=("A", "B"), n_bootstrap=1000, seed=0)</code> проверяет параметры <code>compare_features</code> и дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy. Вызванная до построения таблиц из текстов, она сообщает о неверном параметре до обработки текстов.</p>
+<p><code>compare_corpora</code> вызывает ее первой, так что неверное имя корпуса или зерно дает ошибку до обработки текстов.</p>
+<h2 id="_6">Функции статистик<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<p>Статистики строки доступны по отдельности из <code>ruts.corpus</code>:</p>
+<!-- core: corpus/compare.md:calc_cohen_d c27397e -->
+<p><code>calc_cohen_d(values_a, values_b)</code> - d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса.</p>
+<!-- core: corpus/compare.md:calc_cliff_delta 896afa2 -->
+<p><code>calc_cliff_delta(values_a, values_b)</code> - дельта Клиффа, доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью.</p>
+<!-- core: corpus/compare.md:bootstrap_median_diff e93949a -->
+<p><code>bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None)</code> - перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, и медиана выборки - медиана значений вытянутых текстов вместе; при менее чем двух текстах на стороне интервал - <code>nan</code>.</p>
+<!-- core: corpus/compare.md:holm_correction e61edf0 -->
+<p><code>holm_correction(p_values)</code> - поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>, а p-значение вне [0, 1] дает <code>ParameterError</code>.</p>
+<h2 id="_7">Пример использования<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 289 и 1444 окна по 1000 слов, меньше минуты.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
@@ -3051,22 +3125,27 @@
     <span class="s2">"p_holm"</span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">result</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"sents_mean"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"n_Чехов"</span><span class="p">,</span> <span class="s2">"n_Толстой"</span><span class="p">,</span> <span class="s2">"n_texts_Чехов"</span><span class="p">,</span> <span class="s2">"n_texts_Толстой"</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="w">                               </span>median_Чехов<span class="w">  </span>median_Толстой<span class="w">  </span>ci_low<span class="w">  </span>ci_high<span class="w">  </span>cohen_d<span class="w">  </span>cliff_delta<span class="w">    </span>auc<span class="w">  </span>p_holm
-punct_ellipsis<span class="w">                       </span><span class="m">15</span>.748<span class="w">           </span><span class="m">2</span>.000<span class="w">  </span><span class="m">10</span>.935<span class="w">   </span><span class="m">18</span>.110<span class="w">    </span><span class="m">1</span>.864<span class="w">        </span><span class="m">0</span>.722<span class="w">  </span><span class="m">0</span>.861<span class="w">     </span><span class="m">0</span>.0
-punct_exclamation<span class="w">                    </span><span class="m">14</span>.881<span class="w">           </span><span class="m">3</span>.996<span class="w">   </span><span class="m">9</span>.145<span class="w">   </span><span class="m">12</span>.651<span class="w">    </span><span class="m">1</span>.702<span class="w">        </span><span class="m">0</span>.673<span class="w">  </span><span class="m">0</span>.836<span class="w">     </span><span class="m">0</span>.0
-morph_verb_form_Fin<span class="w">                   </span><span class="m">0</span>.760<span class="w">           </span><span class="m">0</span>.695<span class="w">   </span><span class="m">0</span>.055<span class="w">    </span><span class="m">0</span>.076<span class="w">    </span><span class="m">1</span>.146<span class="w">        </span><span class="m">0</span>.590<span class="w">  </span><span class="m">0</span>.795<span class="w">     </span><span class="m">0</span>.0
-punct_yo_share<span class="w">                        </span><span class="m">0</span>.007<span class="w">           </span><span class="m">0</span>.000<span class="w">   </span><span class="m">0</span>.006<span class="w">    </span><span class="m">0</span>.008<span class="w">    </span><span class="m">1</span>.069<span class="w">        </span><span class="m">0</span>.558<span class="w">  </span><span class="m">0</span>.779<span class="w">     </span><span class="m">0</span>.0
-readability_gunning_fog_index<span class="w">         </span><span class="m">6</span>.011<span class="w">           </span><span class="m">7</span>.970<span class="w">  </span>-2.249<span class="w">   </span>-1.668<span class="w">   </span>-0.953<span class="w">       </span>-0.535<span class="w">  </span><span class="m">0</span>.232<span class="w">     </span><span class="m">0</span>.0
-readability_matskovsky_index<span class="w">          </span><span class="m">8</span>.609<span class="w">          </span><span class="m">11</span>.234<span class="w">  </span>-3.100<span class="w">   </span>-2.290<span class="w">   </span>-0.938<span class="w">       </span>-0.526<span class="w">  </span><span class="m">0</span>.237<span class="w">     </span><span class="m">0</span>.0
-sents_mean<span class="w">                           </span><span class="m">11</span>.172<span class="w">          </span><span class="m">15</span>.136<span class="w">  </span>-4.606<span class="w">   </span>-3.374<span class="w">   </span>-0.934<span class="w">       </span>-0.526<span class="w">  </span><span class="m">0</span>.237<span class="w">     </span><span class="m">0</span>.0
-readability_dale_chall_index<span class="w">          </span><span class="m">5</span>.200<span class="w">           </span><span class="m">6</span>.676<span class="w">  </span>-1.748<span class="w">   </span>-1.206<span class="w">   </span>-0.923<span class="w">       </span>-0.523<span class="w">  </span><span class="m">0</span>.239<span class="w">     </span><span class="m">0</span>.0
-readability_sis_grade<span class="w">                 </span><span class="m">0</span>.893<span class="w">           </span><span class="m">3</span>.418<span class="w">  </span>-2.894<span class="w">   </span>-2.136<span class="w">   </span>-0.901<span class="w">       </span>-0.516<span class="w">  </span><span class="m">0</span>.242<span class="w">     </span><span class="m">0</span>.0
-readability_smog_index<span class="w">                </span><span class="m">5</span>.746<span class="w">           </span><span class="m">7</span>.294<span class="w">  </span>-1.858<span class="w">   </span>-1.271<span class="w">   </span>-0.889<span class="w">       </span>-0.512<span class="w">  </span><span class="m">0</span>.244<span class="w">     </span><span class="m">0</span>.0
+punct_ellipsis<span class="w">                       </span><span class="m">15</span>.748<span class="w">           </span><span class="m">2</span>.000<span class="w">   </span><span class="m">6</span>.567<span class="w">   </span><span class="m">23</span>.363<span class="w">    </span><span class="m">1</span>.864<span class="w">        </span><span class="m">0</span>.722<span class="w">  </span><span class="m">0</span>.861<span class="w">     </span><span class="m">0</span>.0
+punct_exclamation<span class="w">                    </span><span class="m">14</span>.881<span class="w">           </span><span class="m">3</span>.996<span class="w">   </span><span class="m">7</span>.901<span class="w">   </span><span class="m">13</span>.972<span class="w">    </span><span class="m">1</span>.702<span class="w">        </span><span class="m">0</span>.673<span class="w">  </span><span class="m">0</span>.836<span class="w">     </span><span class="m">0</span>.0
+morph_verb_form_Fin<span class="w">                   </span><span class="m">0</span>.760<span class="w">           </span><span class="m">0</span>.695<span class="w">   </span><span class="m">0</span>.039<span class="w">    </span><span class="m">0</span>.102<span class="w">    </span><span class="m">1</span>.146<span class="w">        </span><span class="m">0</span>.590<span class="w">  </span><span class="m">0</span>.795<span class="w">     </span><span class="m">0</span>.0
+punct_yo_share<span class="w">                        </span><span class="m">0</span>.007<span class="w">           </span><span class="m">0</span>.000<span class="w">   </span><span class="m">0</span>.004<span class="w">    </span><span class="m">0</span>.009<span class="w">    </span><span class="m">1</span>.069<span class="w">        </span><span class="m">0</span>.558<span class="w">  </span><span class="m">0</span>.779<span class="w">     </span><span class="m">0</span>.0
+readability_gunning_fog_index<span class="w">         </span><span class="m">6</span>.011<span class="w">           </span><span class="m">7</span>.970<span class="w">  </span>-2.902<span class="w">   </span>-1.240<span class="w">   </span>-0.953<span class="w">       </span>-0.535<span class="w">  </span><span class="m">0</span>.232<span class="w">     </span><span class="m">0</span>.0
+readability_matskovsky_index<span class="w">          </span><span class="m">8</span>.609<span class="w">          </span><span class="m">11</span>.234<span class="w">  </span>-4.018<span class="w">   </span>-1.703<span class="w">   </span>-0.938<span class="w">       </span>-0.526<span class="w">  </span><span class="m">0</span>.237<span class="w">     </span><span class="m">0</span>.0
+sents_mean<span class="w">                           </span><span class="m">11</span>.172<span class="w">          </span><span class="m">15</span>.136<span class="w">  </span>-5.911<span class="w">   </span>-2.385<span class="w">   </span>-0.934<span class="w">       </span>-0.526<span class="w">  </span><span class="m">0</span>.237<span class="w">     </span><span class="m">0</span>.0
+readability_dale_chall_index<span class="w">          </span><span class="m">5</span>.200<span class="w">           </span><span class="m">6</span>.676<span class="w">  </span>-2.218<span class="w">   </span>-0.940<span class="w">   </span>-0.923<span class="w">       </span>-0.523<span class="w">  </span><span class="m">0</span>.239<span class="w">     </span><span class="m">0</span>.0
+readability_sis_grade<span class="w">                 </span><span class="m">0</span>.893<span class="w">           </span><span class="m">3</span>.418<span class="w">  </span>-3.610<span class="w">   </span>-1.450<span class="w">   </span>-0.901<span class="w">       </span>-0.516<span class="w">  </span><span class="m">0</span>.242<span class="w">     </span><span class="m">0</span>.0
+readability_smog_index<span class="w">                </span><span class="m">5</span>.746<span class="w">           </span><span class="m">7</span>.294<span class="w">  </span>-2.400<span class="w">   </span>-0.972<span class="w">   </span>-0.889<span class="w">       </span>-0.512<span class="w">  </span><span class="m">0</span>.244<span class="w">     </span><span class="m">0</span>.0
+
+<span class="o">{</span><span class="s1">'n_Чехов'</span>:<span class="w"> </span><span class="m">289</span>,<span class="w"> </span><span class="s1">'n_Толстой'</span>:<span class="w"> </span><span class="m">1444</span>,<span class="w"> </span><span class="s1">'n_texts_Чехов'</span>:<span class="w"> </span><span class="m">74</span>,<span class="w"> </span><span class="s1">'n_texts_Толстой'</span>:<span class="w"> </span><span class="m">42</span><span class="o">}</span>
 </code></pre></div>
 </div>
-<p>У Чехова в разы больше многоточий и восклицаний на 1000 слов, короче предложения и выше доля личных форм глагола; Толстой сложнее по всем формулам удобочитаемости. Из 108 признаков у 87 поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 14 - на тысячах окон значимость дешева, размер эффекта важнее.</p>
+<p>У Чехова в разы больше многоточий и восклицаний на 1000 слов, короче предложения и выше доля личных форм глагола; Толстой сложнее по всем формулам удобочитаемости. Три коротких произведения Чехова не дают ни одного окна, так что его окна - из 74 произведений.</p>
+<p>p-значения считают 1733 окна независимыми (см. предупреждение выше): у 87 из 108 признаков поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 14. Интервал разности медиан пересэмплирует целые произведения и надежнее: он не включает нуль у 65 из этих 87 признаков, а для длины предложения охватывает от −5.9 до −2.4 слова, тогда как по одним окнам вышло бы от −4.6 до −3.4. Для многоточий он охватывает от 6.6 до 23.4 на 1000 слов: произведения Чехова сильно различаются по ним - от ни одного до сотни с лишним на 1000 слов.</p>
 <p>Свои признаки, например синтаксические по spaCy, передаются функцией:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>

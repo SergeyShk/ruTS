@@ -925,6 +925,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -959,21 +970,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#count_words_by_syllables" class="md-nav__link">
+  <a href="#count_words_by_syllables-count_words_by_letters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        count_words_by_syllables
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#count_words_by_letters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        count_words_by_letters
+        count_words_by_syllables, count_words_by_letters
       
     </span>
   </a>
@@ -2856,6 +2856,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2890,21 +2901,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#count_words_by_syllables" class="md-nav__link">
+  <a href="#count_words_by_syllables-count_words_by_letters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        count_words_by_syllables
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#count_words_by_letters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        count_words_by_letters
+        count_words_by_syllables, count_words_by_letters
       
     </span>
   </a>
@@ -2974,13 +2974,14 @@
 <p><strong>ruts.basic_stats.BasicStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing basic text statistics. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The module allows using pre-built <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> objects for the sentence and word tokenization needed before computing the statistics.</p>
-<p>For a <code>Doc</code> object words are taken from the tokens (hyphenated words split by spaCy are glued back), sentences - from the annotation; without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) sentences are extracted from the text by <code>SentsExtractor</code>.</p>
+<p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source can be either a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
+<p>The words of a string come from the word extractor and its sentences from the sentence extractor. The words of a <code>Doc</code> come from its tokens (punctuation marks and symbols such as <code>€</code> or <code>%</code> dropped) and its sentences from its boundaries, or from the sentence extractor when it has none; an extractor passed explicitly is used on the text of the <code>Doc</code>. A sentence of punctuation alone holds no word and is not counted.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The statistics are computed when the <code>BasicStats</code> object is initialized.</p>
 </div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). A <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) takes its sentences from the text by <code>SentsExtractor</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3002,13 +3003,13 @@
 <td style="text-align: center;"><code>sents_extractor</code></td>
 <td style="text-align: center;">SentsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Sentence extraction tool</td>
+<td style="text-align: center;">Sentence extraction tool; used for a Doc too, on its text</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool</td>
+<td style="text-align: center;">Word extraction tool; used for a Doc too, on its text</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>normalize</code></td>
@@ -3019,17 +3020,22 @@
 <tr>
 <td style="text-align: center;"><code>complex_syl_factor</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>4</code></td>
+<td style="text-align: center;"><code>COMPLEX_SYL_FACTOR</code></td>
 <td style="text-align: center;">Minimum number of syllables in a complex word</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>long_word_letter_factor</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>6</code></td>
+<td style="text-align: center;"><code>LONG_WORD_LETTER_FACTOR</code></td>
 <td style="text-align: center;">Minimum number of letters in a long word</td>
 </tr>
 </tbody>
 </table>
+<p>A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, a source without words <code>SourceError</code>, a threshold that is not an integer of at least one <code>ParameterError</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In ruTS a complex word has four or more syllables and a long word six or more letters: <code>COMPLEX_SYL_FACTOR = 4</code> and <code>LONG_WORD_LETTER_FACTOR = 6</code> of <code>ruts.constants</code>.</p>
+</div>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3053,7 +3059,7 @@
 <tr>
 <td style="text-align: center;"><code>n_sents</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of sentences</td>
+<td style="text-align: center;">Number of sentences containing words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3063,7 +3069,7 @@
 <tr>
 <td style="text-align: center;"><code>n_unique_words</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of unique words</td>
+<td style="text-align: center;">Number of unique words, case ignored</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_long_words</code></td>
@@ -3078,7 +3084,7 @@
 <tr>
 <td style="text-align: center;"><code>n_simple_words</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of simple words</td>
+<td style="text-align: center;">Number of simple words: with a syllable, below the complex ones</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_monosyllable_words</code></td>
@@ -3093,7 +3099,7 @@
 <tr>
 <td style="text-align: center;"><code>n_chars</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of characters</td>
+<td style="text-align: center;">Number of characters without the line breaks</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_letters</code></td>
@@ -3103,7 +3109,7 @@
 <tr>
 <td style="text-align: center;"><code>n_spaces</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of spaces</td>
+<td style="text-align: center;">Number of spaces and tabs</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_syllables</code></td>
@@ -3167,59 +3173,16 @@
 </tr>
 </tbody>
 </table>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The normalized statistics attributes <code>p_*</code> are available only when the object is initialized with <code>normalize=True</code>.</p>
-</div>
+<p>The counts of the words are normalized by the number of words, those of the characters by the number of characters; the normalized statistics are computed with <code>normalize=True</code>.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="count_words_by_syllables">count_words_by_syllables<a class="headerlink" href="#count_words_by_syllables" title="Permanent link">&para;</a></h3>
-<p>Returns the number of words with at least the given number of syllables.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>min_syllables</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Minimum number of syllables in a word</td>
-</tr>
-</tbody>
-</table>
-<h3 id="count_words_by_letters">count_words_by_letters<a class="headerlink" href="#count_words_by_letters" title="Permanent link">&para;</a></h3>
-<p>Returns the number of words with at least the given number of letters.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>min_letters</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Minimum number of letters in a word</td>
-</tr>
-</tbody>
-</table>
+<h3 id="count_words_by_syllables-count_words_by_letters">count_words_by_syllables, count_words_by_letters<a class="headerlink" href="#count_words_by_syllables-count_words_by_letters" title="Permanent link">&para;</a></h3>
+<p><code>count_words_by_syllables(min_syllables)</code> and <code>count_words_by_letters(min_letters)</code> return the number of words with at least the given number of syllables or letters; a minimum that is not an integer raises <code>ParameterError</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>These methods recount complex and long words with a threshold different from the one set at initialization. For instance, <a href="../readability_stats/"><code>ReadabilityStats</code></a> uses them for the SMOG index (a complex word has 5+ syllables) and the LIX index (a long word has 7+ letters).</p>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed text statistics.</p>
+<p>Returns a dictionary with the computed statistics - a copy: editing it does not change the object.</p>
 <p>An example of computing basic text statistics with normalization:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3263,7 +3226,7 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed text statistics.</p>
+<p>Prints a table with the counts of the statistics, their descriptions from <code>stats_desc</code> and the headers from <code>stats_headers</code>.</p>
 <p>To illustrate the method, we reuse the code from the previous example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3299,7 +3262,8 @@
 <div class="admonition info">
 <p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>
 </div>
-<p><code>count_punctuations(text)</code> counts punctuation marks by the types of <code>anyts.constants.PUNCTUATION_TYPES</code> - the same distribution lives in the <code>c_punctuations</code> attribute: commas, periods, question and exclamation marks, ellipses («Кто там?..» is a question and an ellipsis), colons, semicolons, dashes (including those typed with a hyphen: «- Ушли, - сказал он»), hyphens inside words («кто-то») and hanging ones («двух- и трёхкомнатные»), guillemets, straight and curly quotation marks, brackets and other marks. <code>punctuation_profile(text, n_words=None)</code> turns them into frequencies per 1000 words and adds <code>yo_share</code> - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.</p>
+<p><code>count_punctuations(text, marks, dash_pattern)</code> counts punctuation marks by their types - the same distribution lives in the <code>c_punctuations</code> attribute: commas, periods, question and exclamation marks, ellipses, colons, semicolons, dashes, hyphens, guillemets, quotation marks, parentheses and the other marks. The dashes typed with hyphens (<code>dash_pattern</code>) are counted first, then the ellipses - the <code>…</code> character, three or more periods, or two periods after <code>?</code> and <code>!</code>, one mark whose periods do not count as periods (<code>Who?..</code> is a question and an ellipsis) - and then every mark by its type in <code>marks</code>; any other character of the Unicode categories P and S is another mark (<code>§</code>, <code>€</code>, <code>°</code>). <code>marks</code> maps every mark, a single character, to one of the types, otherwise <code>ParameterError</code>, and <code>dash_pattern</code> is a compiled regular expression; a text that is not a string, marks that are not a mapping and dashes that are not a compiled expression raise <code>SourceTypeError</code>.</p>
+<p>In ruTS <code>count_punctuations(text)</code> takes the marks of the core with the low quotation mark <code>„</code> as a quotation mark, and a hanging hyphen before <code>и</code>, <code>или</code>, <code>либо</code> or a comma stays a hyphen (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), while a dialogue dash typed with a hyphen is a dash (<code>- Ушли, - сказал он</code>). <code>punctuation_profile(text, n_words=None)</code> turns the counts into frequencies per 1000 words and adds <code>yo_share</code> - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.</p>
 <p>The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see <a href="../../corpus/compare/">corpus comparison</a>). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

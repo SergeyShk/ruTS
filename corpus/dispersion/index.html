@@ -2874,10 +2874,13 @@
 <p><strong>ruts.corpus.dispersion()</strong>, <strong>ruts.corpus.Dispersion</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной; меры дисперсии (<a href="https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf">Gries 2008</a>, <a href="https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf">2020</a>) дополняют частоту и используются при отборе лексики для словарей и учебных минимумов.</p>
+<!-- core: corpus/dispersion.md:dispersion 14e4623 -->
+<p>Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной из них; меры дисперсии (<a href="https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf">Gries 2008</a>, <a href="https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf">2020</a>) дополняют частоту.</p>
 <p>Текст делится на части: <code>parts</code> - число частей примерно равного размера или размеры частей по порядку (предложения, абзацы, главы, документы корпуса), в сумме равные числу слов. Для каждого слова считаются частоты по частям и шесть мер; Gries рекомендует DP как основную.</p>
-<p>Слова сравниваются как есть: регистр и лемматизация - на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
+<p>Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.</p>
+<p>Модуль <code>ruts.corpus.dispersion</code> реэкспортирует функцию и меры ядра <a href="https://sergeyshk.github.io/anyTS/corpus/dispersion/">anyTS</a> (<code>from ruts.corpus.dispersion import calc_dp</code>). Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:dispersion-measures 09abba3 -->
 <p>Для <span class="arithmatex">\(n\)</span> частей с долями <span class="arithmatex">\(s_i\)</span> в тексте, частотами слова по частям <span class="arithmatex">\(v_i\)</span> и общей частотой <span class="arithmatex">\(f = \sum v_i\)</span>; <span class="arithmatex">\(p_i = v_i / n_i\)</span> - относительная частота в части размером <span class="arithmatex">\(n_i\)</span>:</p>
 <table>
 <thead>
@@ -2893,7 +2896,7 @@
 <td style="text-align: left;">Отклонение пропорций DP</td>
 <td style="text-align: left;"><code>dp</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{1}{2} \sum \left\lvert \frac{v_i}{f} - s_i \right\rvert\)</span></td>
-<td style="text-align: left;">0 - пропорционально размерам частей, стремится к 1 - в одной части; Gries (2008)</td>
+<td style="text-align: left;">0 - пропорционально размерам частей, <span class="arithmatex">\(1 - s_i\)</span> - все в части <span class="arithmatex">\(i\)</span>, так что не больше <span class="arithmatex">\(1 - \min s_i\)</span>; Gries (2008)</td>
 </tr>
 <tr>
 <td style="text-align: left;">Нормированное DP</td>
@@ -2905,7 +2908,7 @@
 <td style="text-align: left;">D Жюйана</td>
 <td style="text-align: left;"><code>juilland_d</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(1 - \frac{V}{\sqrt{n - 1}}\)</span>, <span class="arithmatex">\(V = \frac{\sigma(p)}{\mu(p)}\)</span></td>
-<td style="text-align: left;">1 - равномерно, 0 - в одной части; Juilland и Chang-Rodríguez (1964)</td>
+<td style="text-align: left;">1 - равномерно, 0 - в одной части; Juilland и Chang-Rodríguez (1964), со стандартным отклонением генеральной совокупности <span class="arithmatex">\(\sigma\)</span>, как в Gries (2020); Gries (2008) берет выборочное</td>
 </tr>
 <tr>
 <td style="text-align: left;">D2 Кэрролла</td>
@@ -2927,8 +2930,9 @@
 </tr>
 </tbody>
 </table>
-<p>Меры доступны как функции <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code>, <code>calc_kl_divergence</code> с аргументами <code>(frequencies, sizes)</code> - частоты слова по частям и размеры частей - из модуля <code>ruts.corpus.dispersion</code> (<code>from ruts.corpus.dispersion import calc_dp</code>); названия - в <code>anyts.constants.DISPERSION_STATS_DESC</code>. Для слова с нулевой частотой все меры <code>nan</code>. Функция <code>dispersion</code> считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.</p>
+<p>Меры доступны как функции <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code> и <code>calc_kl_divergence</code> с аргументами <code>(frequencies, sizes)</code> - частоты слова по частям и размеры частей - из модуля <code>anyts.corpus.dispersion</code>; их названия - в <code>anyts.constants.DISPERSION_STATS_DESC</code>. Для слова с нулевой частотой все меры <code>nan</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:dispersion-parameters a7f9e1c -->
 <table>
 <thead>
 <tr>
@@ -2966,6 +2970,7 @@
 </tbody>
 </table>
 <h2 id="_5">Результат<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:Dispersion c55ea86 -->
 <p>Список именованных кортежей <code>Dispersion</code> по убыванию частоты: <code>word</code>, <code>freq</code> и шесть мер из таблицы; <code>pd.DataFrame(result)</code> дает таблицу.</p>
 <h2 id="_6">Пример<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <div class="admonition example">

@@ -3114,17 +3114,19 @@
 
 
 <h1 id="_1">Функции вычисления метрик<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Коэффициенты формул - параметры; значения по умолчанию ниже адаптированы для русского языка. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю.</p>
 <h2 id="-">Тест Флеша-Кинкайда<a class="headerlink" href="#-" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_flesch_kincaid_grade()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch–Kincaid_grade_level">теста Флеша-Кинкайда</a>.</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
-<p>Коэффициенты по умолчанию взяты из актуальной версии проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. Альтернативные коэффициенты для русского языка доступны через <a href="../readability_stats/#presets">пресеты</a>: Оборнева (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) и FKG_SIS Соловьёва, Иванова и Солнышкиной (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
+<!-- core: stats/readability_stats_funcs.md:calc_flesch_kincaid_grade 21c7276 -->
+<p>Вычисление теста Флеша-Кинкайда (Kincaid et al., 1975).</p>
+<p>Число лет обучения, необходимых для чтения текста; чем выше показатель, тем сложнее текст.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-a\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+b\times\frac{\textrm{Количество слогов}}{\textrm{Количество слов}}–C
+a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}} - c
 \]</div>
+<p>Коэффициенты по умолчанию взяты из актуальной версии проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. Альтернативные коэффициенты для русского языка доступны через <a href="../readability_stats/#presets">пресеты</a>: Оборнева (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) и FKG_SIS Соловьёва, Иванова и Солнышкиной (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3156,21 +3158,21 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.318</code></td>
-<td style="text-align: center;">Коэффициент a</td>
+<td style="text-align: center;">Коэффициент a, при средней длине предложения</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>14.2</code></td>
-<td style="text-align: center;">Коэффициент b</td>
+<td style="text-align: center;">Коэффициент b, при средней длине слова</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>30.5</code></td>
-<td style="text-align: center;">Коэффициент c</td>
+<td style="text-align: center;">Коэффициент c, свободный член</td>
 </tr>
 </tbody>
 </table>
@@ -3178,8 +3180,14 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_flesch_reading_easy()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch_reading_ease">индекса удобочитаемости Флеша</a>.</p>
-<p>Чем выше показатель, тем легче текст для чтения. Значения индекса лежат в пределах от 0 до 100 и могут интерпретироваться следующим образом:</p>
+<!-- core: stats/readability_stats_funcs.md:calc_flesch_reading_easy 978f8ef -->
+<p>Вычисление индекса удобочитаемости Флеша (Flesch, 1948).</p>
+<p>Чем выше показатель, тем легче текст; шкала номинально идет от 0 до 100, хотя простейшие тексты выходят выше 100, а сложнейшие - ниже 0.</p>
+<p>Формула:</p>
+<div class="arithmatex">\[
+c - a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
+\]</div>
+<p>Значения индекса могут интерпретироваться следующим образом:</p>
 <table>
 <thead>
 <tr>
@@ -3219,10 +3227,6 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 </tbody>
 </table>
 <p>Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), которым пользуется казанская группа, доступен через пресет <code>academic</code>.</p>
-<p>Формула:</p>
-<div class="arithmatex">\[
-c–a\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}-b\times\frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
-\]</div>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3254,21 +3258,21 @@ c–a\times\frac{\textrm{Количество слов}}{\textrm{Количес�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.3</code></td>
-<td style="text-align: center;">Коэффициент a</td>
+<td style="text-align: center;">Коэффициент a, при средней длине предложения</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>60.1</code></td>
-<td style="text-align: center;">Коэффициент b</td>
+<td style="text-align: center;">Коэффициент b, при средней длине слова</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>206.835</code></td>
-<td style="text-align: center;">Коэффициент c</td>
+<td style="text-align: center;">Коэффициент c, свободный член</td>
 </tr>
 </tbody>
 </table>
@@ -3276,12 +3280,14 @@ c–a\times\frac{\textrm{Количество слов}}{\textrm{Количес�
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_coleman_liau_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Coleman–Liau_index">индекса Колман-Лиау</a>.</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
+<!-- core: stats/readability_stats_funcs.md:calc_coleman_liau_index 75795aa -->
+<p>Вычисление индекса Колман-Лиау (Coleman, Liau, 1975).</p>
+<p>Число лет обучения, необходимых для чтения текста, по буквам и предложениям на 100 слов; чем выше показатель, тем сложнее текст.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-a\times\frac{\textrm{Количество букв}}{\textrm{Количество слов}}+b\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}–c
+a \cdot \frac{100 \cdot \textrm{Количество букв}}{\textrm{Количество слов}} - b \cdot \frac{100 \cdot \textrm{Количество предложений}}{\textrm{Количество слов}} - c
 \]</div>
+<p>Коэффициенты по умолчанию взяты из проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3297,7 +3303,7 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Количество букв</td>
+<td style="text-align: center;">Количество букв в словах</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3313,21 +3319,21 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>6.26</code></td>
-<td style="text-align: center;">Коэффициент a</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.055</code></td>
+<td style="text-align: center;">Коэффициент a, при буквах на 100 слов</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>0.2805</code></td>
-<td style="text-align: center;">Коэффициент b</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.35</code></td>
+<td style="text-align: center;">Коэффициент b, при предложениях на 100 слов</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>31.04</code></td>
-<td style="text-align: center;">Коэффициент c</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>20.33</code></td>
+<td style="text-align: center;">Коэффициент c, свободный член</td>
 </tr>
 </tbody>
 </table>
@@ -3335,16 +3341,17 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_smog_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/SMOG">индекса SMOG</a> (Simple Measure of Gobbledygook, «Простое измерение разглагольствований»). Наиболее авторитетная метрика читабельности.</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Коэффициенты формулы получены для порога сложного слова в 5 слогов, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5, а не атрибут <code>n_complex_words</code> объекта класса <code>BasicStats</code>.</p>
-</div>
+<!-- core: stats/readability_stats_funcs.md:calc_smog_index b721fe1 -->
+<p>Вычисление индекса SMOG (McLaughlin, 1969).</p>
+<p>Число лет обучения, необходимых для чтения текста, по сложным словам на предложение; чем выше показатель, тем сложнее текст. В исходной формуле сложные слова - от трех слогов, а <code>b</code> приводит их количество к выборке из 30 предложений.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-a\times\sqrt{b\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество предложений}}}+c
+a \cdot \sqrt{b \cdot \frac{\textrm{Количество сложных слов}}{\textrm{Количество предложений}}} + c
 \]</div>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Коэффициенты по умолчанию проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> получены для сложных слов от пяти слогов, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5 (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), а не атрибут <code>n_complex_words</code> объекта класса <code>BasicStats</code>.</p>
+</div>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3370,21 +3377,21 @@ a\times\sqrt{b\times\frac{\textrm{Количество сложных слов}}
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.1</code></td>
-<td style="text-align: center;">Коэффициент a</td>
+<td style="text-align: center;">Коэффициент a, при квадратном корне</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>64.6</code></td>
-<td style="text-align: center;">Коэффициент b</td>
+<td style="text-align: center;">Коэффициент b, под квадратным корнем</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.05</code></td>
-<td style="text-align: center;">Коэффициент c</td>
+<td style="text-align: center;">Коэффициент c, свободный член</td>
 </tr>
 </tbody>
 </table>
@@ -3392,8 +3399,14 @@ a\times\sqrt{b\times\frac{\textrm{Количество сложных слов}}
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_automated_readability_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Automated_readability_index">автоматического индекса удобочитаемости</a>.</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является возраст, необходимый для понимания текста. Значения индекса могут интерпретироваться следующим образом:</p>
+<!-- core: stats/readability_stats_funcs.md:calc_automated_readability_index d1ff631 -->
+<p>Вычисление автоматического индекса удобочитаемости (Smith, Senter, 1967).</p>
+<p>Число лет обучения, необходимых для чтения текста, по буквам на слово и словам на предложение; чем выше показатель, тем сложнее текст.</p>
+<p>Формула:</p>
+<div class="arithmatex">\[
+a \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}} + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - c
+\]</div>
+<p>Класс можно читать как возраст читателя:</p>
 <table>
 <thead>
 <tr>
@@ -3460,10 +3473,7 @@ a\times\sqrt{b\times\frac{\textrm{Количество сложных слов}}
 </tr>
 </tbody>
 </table>
-<p>Формула:</p>
-<div class="arithmatex">\[
-a\times\frac{\textrm{Количество букв}}{\textrm{Количество слов}}+b\times\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}–c
-\]</div>
+<p>Коэффициенты по умолчанию взяты из проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3479,7 +3489,7 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Количество букв</td>
+<td style="text-align: center;">Количество букв в словах</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3495,21 +3505,21 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>6.26</code></td>
-<td style="text-align: center;">Коэффициент a</td>
+<td style="text-align: center;">Коэффициент a, при буквах на слово</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.2805</code></td>
-<td style="text-align: center;">Коэффициент b</td>
+<td style="text-align: center;">Коэффициент b, при средней длине предложения</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>31.04</code></td>
-<td style="text-align: center;">Коэффициент c</td>
+<td style="text-align: center;">Коэффициент c, свободный член</td>
 </tr>
 </tbody>
 </table>
@@ -3517,49 +3527,42 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_lix()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Lix_(readability_test)">индекса удобочитаемости LIX</a>.</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Значения индекса лежат в пределах от 0 до 100 и могут интерпретироваться следующим образом:</p>
+<!-- core: stats/readability_stats_funcs.md:calc_lix 65d7ed6 -->
+<p>Вычисление индекса удобочитаемости LIX (Björnsson, 1968).</p>
+<p>Средняя длина предложения плюс процент длинных слов - слов длиннее шести букв; подбираемых коэффициентов нет. Чем выше показатель, тем сложнее текст:</p>
 <table>
 <thead>
 <tr>
-<th>Показатель</th>
-<th>Уровень сложности</th>
+<th style="text-align: center;">Показатель</th>
+<th style="text-align: left;">Текст</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>4.9 и меньше</code></td>
-<td>до 4 класса включительно</td>
+<td style="text-align: center;"><code>0-30</code></td>
+<td style="text-align: left;">очень простые тексты, детские книги</td>
 </tr>
 <tr>
-<td><code>5.0-5.9</code></td>
-<td>5-6 класс</td>
+<td style="text-align: center;"><code>30-40</code></td>
+<td style="text-align: left;">простые тексты, художественная литература, газетные статьи</td>
 </tr>
 <tr>
-<td><code>6.0-6.9</code></td>
-<td>7-8 класс</td>
+<td style="text-align: center;"><code>40-50</code></td>
+<td style="text-align: left;">тексты средней сложности, журнальные статьи</td>
 </tr>
 <tr>
-<td><code>7.0-7.9</code></td>
-<td>9-10 класс</td>
+<td style="text-align: center;"><code>50-60</code></td>
+<td style="text-align: left;">сложные тексты, научно-популярная литература, официальные тексты</td>
 </tr>
 <tr>
-<td><code>8.0-8.9</code></td>
-<td>11-12 класс</td>
-</tr>
-<tr>
-<td><code>9.0-9.9</code></td>
-<td>Университет</td>
+<td style="text-align: center;"><code>60-100</code></td>
+<td style="text-align: left;">очень сложные тексты, законы и канцелярский язык</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>В канонической формуле длинным считается слово длиннее 6 букв, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7, а не атрибут <code>n_long_words</code> объекта класса <code>BasicStats</code>.</p>
-</div>
 <p>Формула:</p>
 <div class="arithmatex">\[
-\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+100\times\frac{\textrm{Количество длинных слов}}{\textrm{Количество слов}}
+\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + \frac{100 \cdot \textrm{Количество длинных слов}}{\textrm{Количество слов}}
 \]</div>
 <p>Параметры:</p>
 <table>
@@ -3592,78 +3595,79 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Атрибут <code>n_long_words</code> объекта класса <code>BasicStats</code> ruTS считает слова от шести букв, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7.</p>
+</div>
 <h2 id="rix">Индекс удобочитаемости RIX<a class="headerlink" href="#rix" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_rix()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Lix_(readability_test)">индекса удобочитаемости RIX</a>.</p>
-<p>Упрощенный спутник индекса LIX (1983, Anderson), не зависящий от языка. Чем выше показатель, тем сложнее текст для чтения. Значения индекса могут интерпретироваться следующим образом:</p>
+<!-- core: stats/readability_stats_funcs.md:calc_rix ab7c550 -->
+<p>Вычисление индекса удобочитаемости RIX (Anderson, 1983).</p>
+<p>Количество длинных слов, длиннее шести букв, на предложение; подбираемых коэффициентов нет. Чем выше показатель, тем сложнее текст:</p>
 <table>
 <thead>
 <tr>
-<th>Показатель</th>
-<th>Уровень сложности</th>
+<th style="text-align: center;">Показатель</th>
+<th style="text-align: center;">Класс</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>&lt; 0.2</code></td>
-<td>1-й класс</td>
+<td style="text-align: center;"><code>&lt; 0.2</code></td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
-<td><code>0.2-0.5</code></td>
-<td>2-й класс</td>
+<td style="text-align: center;"><code>0.2-0.5</code></td>
+<td style="text-align: center;">2</td>
 </tr>
 <tr>
-<td><code>0.5-0.8</code></td>
-<td>3-й класс</td>
+<td style="text-align: center;"><code>0.5-0.8</code></td>
+<td style="text-align: center;">3</td>
 </tr>
 <tr>
-<td><code>0.8-1.3</code></td>
-<td>4-й класс</td>
+<td style="text-align: center;"><code>0.8-1.3</code></td>
+<td style="text-align: center;">4</td>
 </tr>
 <tr>
-<td><code>1.3-1.8</code></td>
-<td>5-й класс</td>
+<td style="text-align: center;"><code>1.3-1.8</code></td>
+<td style="text-align: center;">5</td>
 </tr>
 <tr>
-<td><code>1.8-2.4</code></td>
-<td>6-й класс</td>
+<td style="text-align: center;"><code>1.8-2.4</code></td>
+<td style="text-align: center;">6</td>
 </tr>
 <tr>
-<td><code>2.4-3.0</code></td>
-<td>7-й класс</td>
+<td style="text-align: center;"><code>2.4-3.0</code></td>
+<td style="text-align: center;">7</td>
 </tr>
 <tr>
-<td><code>3.0-3.7</code></td>
-<td>8-й класс</td>
+<td style="text-align: center;"><code>3.0-3.7</code></td>
+<td style="text-align: center;">8</td>
 </tr>
 <tr>
-<td><code>3.7-4.5</code></td>
-<td>9-й класс</td>
+<td style="text-align: center;"><code>3.7-4.5</code></td>
+<td style="text-align: center;">9</td>
 </tr>
 <tr>
-<td><code>4.5-5.3</code></td>
-<td>10-й класс</td>
+<td style="text-align: center;"><code>4.5-5.3</code></td>
+<td style="text-align: center;">10</td>
 </tr>
 <tr>
-<td><code>5.3-6.2</code></td>
-<td>11-й класс</td>
+<td style="text-align: center;"><code>5.3-6.2</code></td>
+<td style="text-align: center;">11</td>
 </tr>
 <tr>
-<td><code>6.2-7.2</code></td>
-<td>12-й класс</td>
+<td style="text-align: center;"><code>6.2-7.2</code></td>
+<td style="text-align: center;">12</td>
 </tr>
 <tr>
-<td><code>&gt; 7.2</code></td>
-<td>Университет</td>
+<td style="text-align: center;"><code>&gt; 7.2</code></td>
+<td style="text-align: center;">университет</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Как и для LIX, длинным считается слово длиннее 6 букв, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7.</p>
-</div>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество длинных слов}}{\textrm{Количество предложений}}
@@ -3693,6 +3697,10 @@ a\times\frac{\textrm{Количество букв}}{\textrm{Количеств�
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Как и для LIX, класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7.</p>
+</div>
 <h2 id="_4">Формула Соловьёва, Иванова, Солнышкиной<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_sis_grade()</strong></p>
@@ -3753,7 +3761,7 @@ a+b\times\frac{\textrm{Количество слов}}{\textrm{Количест�
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Количество букв</td>
+<td style="text-align: center;">Количество букв в словах</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3769,19 +3777,19 @@ a+b\times\frac{\textrm{Количество слов}}{\textrm{Количест�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>-17.5</code></td>
 <td style="text-align: center;">Коэффициент a (свободный член)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.56</code></td>
 <td style="text-align: center;">Коэффициент b (при средней длине предложения)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>2.45</code></td>
 <td style="text-align: center;">Коэффициент c (при средней длине слова)</td>
 </tr>
@@ -3846,7 +3854,7 @@ a+b\times\frac{\textrm{Количество слов}}{\textrm{Количест�
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Количество букв</td>
+<td style="text-align: center;">Количество букв в словах</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3937,19 +3945,19 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.62</code></td>
 <td style="text-align: center;">Коэффициент a (при средней длине предложения)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.123</code></td>
 <td style="text-align: center;">Коэффициент b (при доле сложных слов)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.051</code></td>
 <td style="text-align: center;">Коэффициент c (свободный член)</td>
 </tr>
@@ -3964,7 +3972,7 @@ a\times\frac{\textrm{Количество слов}}{\textrm{Количеств�
 <p>Оригинальная формула использует список из 3000 знакомых слов, для русского языка такого свободного списка нет, поэтому применяется адаптация проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, где вместо доли незнакомых слов используется доля сложных слов. Оригинальные коэффициенты формулы: <code>0.1579</code> и <code>0.0496</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Сложным считается слово с числом слогов больше четырех, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5.</p>
+<p>Сложным считается слово от пяти слогов, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5 (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>).</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4001,13 +4009,13 @@ a\times100\times\frac{\textrm{Количество сложных слов}}{\te
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.552</code></td>
 <td style="text-align: center;">Коэффициент a (при доле сложных слов)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.273</code></td>
 <td style="text-align: center;">Коэффициент b (при средней длине предложения)</td>
 </tr>
@@ -4017,16 +4025,18 @@ a\times100\times\frac{\textrm{Количество сложных слов}}{\te
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_gunning_fog_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Gunning_fog_index">индекса туманности Ганнинга</a> (1952, Gunning).</p>
-<p>Чем выше показатель, тем сложнее текст для чтения. Результатом является число лет обучения в американской системе образования, необходимых для понимания текста. Используется в адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. SEO-сервисы дополнительно умножают результат на <code>0.78</code>, обоснование этого множителя не опубликовано.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Сложным считается слово с числом слогов больше четырех, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5.</p>
-</div>
+<!-- core: stats/readability_stats_funcs.md:calc_gunning_fog_index 4225cdb -->
+<p>Вычисление индекса туманности Ганнинга (Gunning, 1952).</p>
+<p>Число лет обучения, необходимых для чтения текста, по средней длине предложения и проценту сложных слов, в исходной формуле - слов от трех слогов; чем выше показатель, тем сложнее текст.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}}+100\times\frac{\textrm{Количество сложных слов}}{\textrm{Количество слов}}\right)
+a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}}\right)
 \]</div>
+<p>Используется в адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. SEO-сервисы дополнительно умножают результат на <code>0.78</code>, обоснование этого множителя не опубликовано.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Сложным считается слово от пяти слогов, поэтому класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом слогов не меньше 5 (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>).</p>
+</div>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4058,7 +4068,7 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.4</code></td>
 <td style="text-align: center;">Коэффициент a</td>
 </tr>
@@ -4068,7 +4078,9 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 <div class="admonition info">
 <p><strong>ruts.readability_stats.flesch_reading_easy_to_grade()</strong></p>
 </div>
-<p>Перевод индекса удобочитаемости Флеша в класс школы для включения в <a href="#calc_consensus_grade">сводный класс</a> по аналогии с <code>text_standard</code> библиотеки <a href="https://github.com/textstat/textstat">textstat</a>:</p>
+<!-- core: stats/readability_stats_funcs.md:flesch_reading_easy_to_grade b88a235 -->
+<p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону.</p>
+<p>Диапазоны по умолчанию - диапазоны <code>text_standard</code> библиотеки <a href="https://github.com/textstat/textstat">textstat</a> (<code>anyts.constants.READING_EASE_GRADES</code>):</p>
 <table>
 <thead>
 <tr>
@@ -4111,7 +4123,6 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 </tr>
 </tbody>
 </table>
-<p>Значения больше 100 относятся к 5-му классу.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4129,14 +4140,26 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Значение индекса удобочитаемости Флеша</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>grades</code></td>
+<td style="text-align: center;">list[tuple[float, float]]</td>
+<td style="text-align: center;"><code>READING_EASE_GRADES</code></td>
+<td style="text-align: center;">Нижние границы и их классы по убыванию границ</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>below</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>13</code></td>
+<td style="text-align: center;">Класс ниже последней границы</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_consensus_grade">Сводный класс<a class="headerlink" href="#calc_consensus_grade" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_consensus_grade()</strong></p>
 </div>
-<p>Вычисление сводного класса - медианы округлённых значений формул класса. Аналог <code>text_standard</code> библиотеки textstat, где вместо медианы используется мода; медиана устойчивее к выбросам отдельных формул. Значения формул округляются арифметически (половина - вверх). Индекс Флеша <a href="#flesch_reading_easy_to_grade">переводится в класс</a> и добавляется без округления, поэтому для диапазона 60-70 он голосует за 8.5.</p>
-<p>Класс <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a> передаёт в функцию тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формулу Соловьёва, Иванова, Солнышкиной и индекс Флеша.</p>
+<!-- core: stats/readability_stats_funcs.md:calc_consensus_grade 80761d1 -->
+<p>Вычисление сводного класса: медианы значений формул класса, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения функцией <code>to_grade</code> и добавленным без округления, - поэтому диапазон с классом 8.5 голосует за 8.5. Отсутствие значений и класс, который не конечное число, дают <code>ParameterError</code>, <code>to_grade</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4160,13 +4183,22 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Значение индекса удобочитаемости Флеша</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>to_grade</code></td>
+<td style="text-align: center;">Callable</td>
+<td style="text-align: center;"><code>flesch_reading_easy_to_grade</code></td>
+<td style="text-align: center;">Перевод индекса Флеша в число лет обучения</td>
+</tr>
 </tbody>
 </table>
+<p>Аналог <code>text_standard</code> библиотеки textstat, где вместо медианы используется мода; медиана устойчивее к выбросам отдельных формул. Класс <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a> передаёт в функцию тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга, формулу Соловьёва, Иванова, Солнышкиной и индекс Флеша.</p>
 <h2 id="grade_to_age">Класс и возраст читателя<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.grade_to_age()</strong></p>
 </div>
-<p>Получение класса школы и возраста читателя по значению формулы класса. Соответствие взято из таблицы <code>GRADE_TEXT</code> проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> и доступно в справочнике <code>ruts.constants.GRADE_AGE_LEVELS</code>:</p>
+<!-- core: stats/readability_stats_funcs.md:grade_to_age b61534b -->
+<p>Ступень обучения и возраст читателя по значению формулы класса: значение округляется арифметически и попадает в первую ступень, последний год которой оно не превышает, значения меньше 1 - в первую ступень; после последней ступени лежит <code>above</code>. Класс, который не конечное число, дает <code>ParameterError</code>.</p>
+<p>Ступени ruTS по умолчанию взяты из таблицы <code>GRADE_TEXT</code> проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (<code>ruts.constants.GRADE_AGE_LEVELS</code> и <code>POSTGRADUATE_LEVEL</code>):</p>
 <table>
 <thead>
 <tr>
@@ -4213,7 +4245,6 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 </tr>
 </tbody>
 </table>
-<p>Значение округляется арифметически, значения меньше 1 относятся к 1-3-му классу.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4231,13 +4262,27 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Значение формулы класса</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>levels</code></td>
+<td style="text-align: center;">list[tuple[int, int, str, str]]</td>
+<td style="text-align: center;"><code>GRADE_AGE_LEVELS</code></td>
+<td style="text-align: center;">Ступени - первый и последний год, ступень и возраст - по возрастанию</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>above</code></td>
+<td style="text-align: center;">tuple[str, str]</td>
+<td style="text-align: center;"><code>POSTGRADUATE_LEVEL</code></td>
+<td style="text-align: center;">Ступень и возраст после последней ступени</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_reading_time">Время чтения<a class="headerlink" href="#calc_reading_time" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_reading_time()</strong></p>
 </div>
-<p>Вычисление времени чтения текста в минутах. Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию используется верхняя граница. Нормы чтения вслух для начальной школы по ФГОС доступны в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>:</p>
+<!-- core: stats/readability_stats_funcs.md:calc_reading_time 725bd9c -->
+<p>Вычисление времени чтения текста в минутах: количество слов, деленное на скорость чтения; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
+<p>Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию используется верхняя граница. Нормы чтения вслух для начальной школы по ФГОС доступны в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>:</p>
 <table>
 <thead>
 <tr>
@@ -4268,10 +4313,6 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 </tr>
 </tbody>
 </table>
-<p>Формула:</p>
-<div class="arithmatex">\[
-\frac{\textrm{Количество слов}}{\textrm{Скорость чтения}}
-\]</div>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4291,7 +4332,7 @@ a\times\left(\frac{\textrm{Количество слов}}{\textrm{Количе�
 </tr>
 <tr>
 <td style="text-align: center;"><code>wpm</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>180</code></td>
 <td style="text-align: center;">Скорость чтения, слов в минуту</td>
 </tr>

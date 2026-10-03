@@ -1005,6 +1005,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2902,6 +2913,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3064,7 +3086,9 @@
 <p><strong>ruts.readability_stats.ReadabilityStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing the main text <a href="https://en.wikipedia.org/wiki/Readability">readability</a> metrics. The data source can be a text, a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library, or already computed <a href="../basic_stats/">basic statistics</a> <code>BasicStats</code> - then the text is not parsed again.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Readability">readability</a> metrics of a text from its basic statistics: the mean sentence length in words, the mean word length in syllables or letters, the share of polysyllabic and of long words and the variability of word length. The data source can be a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or ready basic statistics - then the text is not counted again; the extractors are passed on to the basic statistics of a text or a <code>Doc</code>, while ready ones are taken as they are. The letters of the formulas are those of the counted words, so a word extractor that drops words does not lengthen the mean word.</p>
+<p>The metrics are properties computed on each access, so a change of the <code>coefficients</code> of an object applies at once.</p>
+<p>A source that is neither a string, a <code>Doc</code> nor basic statistics, basic statistics of a class other than those of the library and an extractor of another type raise <code>SourceTypeError</code>, a source without words or sentences <code>SourceError</code>, an unknown preset or one that is not a string <code>ParameterError</code>.</p>
 <div class="admonition quote">
 <p class="admonition-title">Definition</p>
 <p>Readability is a property of text material characterizing how easily a person perceives it while reading.</p>
@@ -3074,18 +3098,16 @@
 <li>the linguistic features of the text material (complexity of syntactic constructions, vocabulary hard to perceive, etc.).</li>
 </ul>
 </div>
-<p>Readability in this module is computed from various linguistic metrics. The coefficients of the formulas adapted for Russian are set by a preset (see <a href="#presets">below</a>): by default the coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.</p>
+<p>The coefficients of the formulas adapted for Russian are set by a preset (see <a href="#presets">below</a>): by default the coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.</p>
 <p>The main presumptions of readability metrics:</p>
 <ul>
 <li>short sentences are easier to read than long ones;</li>
 <li>long words make reading harder;</li>
 <li>a reader slows down at low-frequency and/or unfamiliar words.</li>
 </ul>
-<p>The module allows using pre-built <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> objects for the sentence and word tokenization needed before computing the statistics.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>ReadabilityStats</code> object.</p>
-</div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core with the hooks of Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS, which take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient presets of <code>ruts.constants.READABILITY_PRESETS</code>, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade <code>ruts.constants.READABILITY_GRADE_STATS</code>, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), the grades and ages of the plainrussian table and the reading speeds of Russian readers.</p>
+<p>The <code>mu_index</code> attribute of the core (Legibilidad µ) stays outside <code>get_stats</code>: it was fitted on Spanish texts.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3199,6 +3221,11 @@
 <td style="text-align: center;">Reading time in minutes at 180 words per minute</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>mu_index</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Legibilidad µ of the core, outside <code>get_stats</code></td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>bs</code></td>
 <td style="text-align: center;">BasicStats</td>
 <td style="text-align: center;">Basic text statistics</td>
@@ -3211,7 +3238,7 @@
 <tr>
 <td style="text-align: center;"><code>coefficients</code></td>
 <td style="text-align: center;">dict[str, tuple[float, float, float]]</td>
-<td style="text-align: center;">Formula coefficients of the preset</td>
+<td style="text-align: center;">Formula coefficients of the preset, a copy that can be changed for one object</td>
 </tr>
 </tbody>
 </table>
@@ -3270,7 +3297,8 @@
 <p>Every metric can be computed separately by calling the corresponding function. Detailed information on the readability metrics and the functions used to compute them is available in the corresponding <a href="../readability_stats_funcs/">section</a>.</p>
 </div>
 <h2 id="interpretation">Interpretation<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
-<p>The formulas that yield a school grade (the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula) are summarized in the <code>consensus_grade</code> attribute - the median of the rounded values plus the Flesch index converted to a grade. The <a href="#describe_grade"><code>describe_grade</code></a> method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:</p>
+<p>The formulas that give years of schooling (<code>grade_stats</code>) are summarized in the <code>consensus_grade</code> attribute: the median of their values rounded half up, together with the reading ease converted into years of schooling (<code>reading_ease_to_grade</code>) without rounding.</p>
+<p>The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">converted to a grade</a> by the bands of textstat. The <a href="#describe_grade"><code>describe_grade</code></a> method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:</p>
 <table>
 <thead>
 <tr>
@@ -3320,7 +3348,7 @@
 <p>The <code>reading_time</code> attribute estimates silent reading time at 180 words per minute (the upper bound of the adult norm by Kuznetsov and Khromov, 1991). A different speed is accepted by the <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a> method, and the <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> method computes the time within the norm bounds from the <code>ruts.constants.READING_SPEED_NORMS</code> table, including the school reading-aloud norms of the Russian federal standard.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
-<p>Returns the school grade and reader age for the consensus grade or an individual grade formula.</p>
+<p>Returns the school stage and reader age for the consensus grade or a grade formula; another metric raises <code>ParameterError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3353,7 +3381,7 @@
 </code></pre></div>
 </div>
 <h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>
-<p>Returns the reading time of the text in minutes at the given speed.</p>
+<p>Returns the reading time of the text in minutes at the given speed; a speed that is not a positive number raises <code>ParameterError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3367,14 +3395,14 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>wpm</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Reading speed, words per minute</td>
 </tr>
 </tbody>
 </table>
 <h3 id="reading_time_by_norm">reading_time_by_norm<a class="headerlink" href="#reading_time_by_norm" title="Permanent link">&para;</a></h3>
-<p>Returns the reading time of the text in minutes at the upper and lower bounds of a reading speed norm from the <code>ruts.constants.READING_SPEED_NORMS</code> table (<code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code>, <code>grade_4</code>).</p>
+<p>Returns the reading times of the text in minutes at the speeds of a norm of <code>reading_speed_norms</code>, in their order; an unknown norm raises <code>ParameterError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3394,6 +3422,7 @@
 </tr>
 </tbody>
 </table>
+<p>The norms of the <code>ruts.constants.READING_SPEED_NORMS</code> table are <code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code> and <code>grade_4</code>, each with a lower and an upper bound, and the method returns the reading times at the upper and at the lower bound.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
@@ -3465,7 +3494,7 @@
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed readability metrics.</p>
+<p>Returns a dictionary with the computed readability metrics of <code>stats_desc</code>.</p>
 <p>An example of computing text readability metrics:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3497,7 +3526,7 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed readability metrics.</p>
+<p>Prints a table with the computed readability metrics, their descriptions from <code>stats_desc</code> and the headers from <code>stats_headers</code>.</p>
 <p>To illustrate the method, we reuse the code from the previous example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

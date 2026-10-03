@@ -3536,8 +3536,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_ttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_ttr 0ca7ff2 -->
 <p>Вычисление метрики Type-Token Ratio (TTR).</p>
-<p>Самый простой и самый критикуемый способ вычисления лексического разнообразия, не принимающий во внимание влияние эффекта длины текста.</p>
+<p>Самая простая мера лексического разнообразия, не делающая поправки на длину текста.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество лексем}}{\textrm{Количество слов}}
@@ -3565,8 +3566,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_rttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_rttr af268fd -->
 <p>Вычисление метрики Root Type-Token Ratio (RTTR).</p>
-<p>Модификация метрики TTR (1960, Giraud).</p>
+<p>Модификация метрики TTR (Guiraud, 1960).</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество лексем}}{\sqrt{\textrm{(Количество слов)}}}
@@ -3594,8 +3596,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_cttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_cttr 30b14c8 -->
 <p>Вычисление метрики Corrected Type-Token Ratio (CTTR).</p>
-<p>Модификация метрики TTR (1964, Carrol).</p>
+<p>Модификация метрики TTR (Carroll, 1964).</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество лексем}}{\sqrt{2\times\textrm{(Количество слов)}}}
@@ -3623,8 +3626,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_httr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_httr 30a5b0b -->
 <p>Вычисление метрики Herdan Type-Token Ratio (HTTR).</p>
-<p>Модификация метрики TTR с использованием логарифмической функции (1960, Herdan).</p>
+<p>Модификация метрики TTR с использованием логарифмической функции (Herdan, 1960).</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{\log_{10} {\textrm{(Количество лексем)}}}{\log_{10} {{\textrm{(Количество слов)}}}}
@@ -3652,11 +3656,12 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_sttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_sttr 90d42f8 -->
 <p>Вычисление метрики Summer Type-Token Ratio (STTR).</p>
-<p>Модификация метрики TTR с использованием логарифмической функции (1966, Summer).</p>
+<p>Модификация метрики TTR с использованием логарифмической функции (Summer, 1966).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма: по умолчанию 10, как в koRpus и lexical-diversity, в LexicalRichness, textcomplexity и zipfR - натуральный. См. <a href="../diversity_stats/#conventions">соглашения</a>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. Для текста из одной лексемы числитель не определен, а для текста не длиннее основания знаменатель <span class="arithmatex">\(\log \log N\)</span> равен нулю или отрицателен, поэтому значение в этих случаях - <code>nan</code>, как и в каждом столь же коротком окне <code>calc_windowed</code>.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -3691,11 +3696,12 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_mttr 0e1fcfb -->
 <p>Вычисление метрики Maas Type-Token Ratio (MTTR).</p>
-<p>Модификация метрики TTR с использованием логарифмической функции (1972, Maas). Наиболее стабильная метрика в отношении длины текста.</p>
+<p>Модификация метрики TTR с использованием логарифмической функции (Maas, 1972).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма: по умолчанию 10, как в koRpus и lexical-diversity, в LexicalRichness, textcomplexity и zipfR - натуральный. См. <a href="../diversity_stats/#conventions">соглашения</a>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -3730,11 +3736,12 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_dttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_dttr 5a40f62 -->
 <p>Вычисление метрики Dugast Type-Token Ratio (DTTR).</p>
-<p>Модификация метрики TTR с использованием логарифмической функции (1978, Dugast).</p>
+<p>Модификация метрики TTR с использованием логарифмической функции (Dugast, 1978), обратная величина к метрике Maas.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма: по умолчанию 10, как в koRpus и lexical-diversity, в LexicalRichness, textcomplexity и zipfR - натуральный. См. <a href="../diversity_stats/#conventions">соглашения</a>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. У текста без повторяющихся слов значение бесконечно, как и у других обратных мер.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -3769,8 +3776,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mattr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_mattr 57fa7d4 -->
 <p>Вычисление метрики Moving Average Type-Token Ratio (MATTR).</p>
-<p>Модификация метрики TTR с использованием скользящей средней (2010, Covington &amp; McFall). Не зависит от длины текста.</p>
+<p>Модификация метрики TTR с использованием скользящей средней (Covington &amp; McFall, 2010). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
 <ol>
 <li>Проход по тексту окном фиксированного размера</li>
@@ -3779,7 +3787,7 @@
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Окно по умолчанию 50 слов, как в lexical-diversity, TAALED и textacy, quanteda и koRpus используют 100. Для текстов короче окна возвращается TTR всего текста.</p>
+<p>Для текстов короче окна возвращается TTR всего текста.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -3810,8 +3818,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_msttr()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_msttr 14ba8f3 -->
 <p>Вычисление метрики Mean Segmental Type-Token Ratio (MSTTR).</p>
-<p>Модификация метрики TTR с использованием сегментирования (1944, Johnson). Не зависит от длины текста.</p>
+<p>Модификация метрики TTR с использованием сегментирования (Johnson, 1944). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
 <ol>
 <li>Разделение текста на сегменты фиксированного размера</li>
@@ -3820,7 +3829,7 @@
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Сегмент по умолчанию 50 слов, как в lexical-diversity, TAALED и textacy, quanteda и koRpus используют 100. Для текстов короче сегмента возвращается TTR всего текста, неполный последний сегмент отбрасывается.</p>
+<p>Для текстов короче сегмента возвращается TTR всего текста, неполный последний сегмент отбрасывается.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -3851,18 +3860,19 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mtld()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_mtld 0c88867 -->
 <p>Вычисление метрики Measure of Textual Lexical Diversity (MTLD).</p>
-<p>Модификация метрики MSTTR (2005, McCarthy). Не зависит от длины текста.</p>
+<p>Модификация метрики MSTTR (McCarthy, 2005). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
 <ol>
-<li>Текст делится на факторы - отрезки, на которых TTR опускается до порога 0.72 включительно (<code>TTR &lt;= 0.72</code>; в lexical-diversity и TAALED сравнение строгое, см. <a href="../diversity_stats/#conventions">соглашения</a>)</li>
+<li>Текст делится на факторы - отрезки, на которых TTR опускается до порога 0.72 включительно (<code>TTR &lt;= 0.72</code>, см. <a href="../diversity_stats/#conventions">соглашения</a>)</li>
 <li>Незавершенный фактор в конце текста учитывается частично, пропорционально тому, насколько его TTR приблизился к порогу</li>
 <li>Количество слов делится на количество факторов</li>
 </ol>
-<p>Доработанная версия алгоритма предполагает два прохода по тексту - в прямом и обратном порядке, и дальнейшее усреднение значения метрики (2010, McCarthy &amp; Jarvis).</p>
+<p>Доработанная версия алгоритма предполагает два прохода по тексту - в прямом и обратном порядке, и дальнейшее усреднение значения метрики (McCarthy &amp; Jarvis, 2010).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Минимальная длина фактора взята из lexical-diversity Кайла и нестандартна: koRpus применяет ее только к MA-MTLD, LexicalRichness и textcomplexity не применяют вовсе. Порог 0.72 в литературе варьируется от 0.66 до 0.75. Если ни один фактор не завершен и TTR не опускается ниже 1, возвращается бесконечность.</p>
+<p>Минимальная длина фактора нестандартна (lexical-diversity Кайла). Если ни один фактор не завершен и TTR не опускается ниже 1, возвращается бесконечность.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -3899,13 +3909,13 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mamtld()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_mamtld e26f25e -->
 <p>Вычисление метрики Moving Average Measure of Textual Lexical Diversity (MA-MTLD).</p>
-<p>Модификация метрики MTLD с использованием скользящего окна (koRpus MTLD-MA): фактор начинается с каждой позиции текста, значение метрики - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. Факторы, не завершенные до конца текста, не учитываются.</p>
+<p>Модификация метрики MTLD с использованием скользящего окна по образцу MTLD-MA из koRpus: фактор начинается с каждой позиции текста, значение метрики - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. Факторы, не завершенные до конца текста, не учитываются. Значения отличаются от значений koRpus, который делает только прямой проход, закрывает фактор при TTR строго ниже порога и отбрасывает факторы короче минимальной длины, а не продлевает их до нее.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Если ни один фактор не завершен, функция возвращает <code>nan</code>. Метрика нестабильна на коротких текстах.</p>
 </div>
-<p>Факторы со всех стартов считаются по массиву предыдущих вхождений слов блоками стартов через numpy, а не перебором множеств лексем (<code>_mtld_factor_lengths</code>): число лексем на отрезке равно числу позиций, чье предыдущее вхождение лежит раньше начала отрезка. Время линейно по длине текста; значения совпадают с прямым перебором.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3941,6 +3951,7 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mtldw()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_mtldw e98c64b -->
 <p>Вычисление метрики MTLD-W (lexical-diversity <code>mtld_ma_wrap</code>, TAALED).</p>
 <p>Модификация метрики MA-MTLD: фактор начинается с каждой позиции текста, а факторы, не завершенные до конца текста, продолжаются с его начала, поэтому все позиции получают равный вес. Фактор не может быть длиннее текста.</p>
 <div class="admonition warning">
@@ -3982,17 +3993,12 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_hdd()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_hdd 6bf82ff -->
 <p>Вычисление метрики Hypergeometric Distribution D (HD-D).</p>
-<p>Наиболее достоверная реализация алгоритма VocD (2010, McCarthy &amp; Jarvis).</p>
-<p>Алгоритм:</p>
-<ol>
-<li>Случайный отбор из текста сегментов длиной от 32 до 50 слов</li>
-<li>Вычисление метрики TTR для каждого сегмента</li>
-<li>Усреднение метрик</li>
-</ol>
+<p>Альтернатива vocd-D (McCarthy &amp; Jarvis, 2010): вместо случайного отбора сегментов текста она точно вычисляет ожидаемый TTR случайной выборки из <code>sample_size</code> слов. Для каждой лексемы гипергеометрическое распределение дает вероятность того, что лексема попадет в выборку хотя бы раз; сумма этих вероятностей - ожидаемое количество лексем в выборке, а HD-D - это количество, деленное на размер выборки. Случайности в значении нет.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
-<p>Для текстов короче 50 слов и для текстов короче размера выборки метрика не определена, функция возвращает <code>nan</code>.</p>
+<p>Для текстов короче 50 слов или короче размера выборки метрика не определена, функция возвращает <code>nan</code>.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -4015,7 +4021,7 @@
 <td style="text-align: center;"><code>sample_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>42</code></td>
-<td style="text-align: center;">Длина сегмента, в литературе от 35 до 50</td>
+<td style="text-align: center;">Размер выборки в словах, в литературе от 35 до 50</td>
 </tr>
 </tbody>
 </table>
@@ -4023,9 +4029,9 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_simpson_index()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_simpson_index e0e51fd -->
 <p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Simpson_index">индекса Симпсона</a>.</p>
-<p>Индекс широко применяется в биологии для описания вероятности принадлежности любых двух особей, случайно отобранных из неопределенно большого сообщества, к разным видам. С определенными допущениями применим и для описания лексического разнообразия текста.</p>
-<p>Вычисляется в классической форме без возвращения, как в quanteda, LexicalRichness и zipfR. Чем ниже показатель, тем богаче словарь текста.</p>
+<p>Вероятность того, что два слова, случайно извлеченные из текста без возвращения, окажутся одной лексемой. Чем ниже показатель, тем богаче словарь текста.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Для текстов короче двух слов индекс не определен, функция возвращает <code>nan</code>. То же относится к обратному индексу Симпсона и индексу Джини-Симпсона.</p>
@@ -4058,7 +4064,8 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_inverse_simpson_index()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Inverse_Simpson_index">обратного индекса Симпсона</a>, числа Хилла второго порядка.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_inverse_simpson_index 1fdfcd2 -->
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Inverse_Simpson_index">обратного индекса Симпсона</a> - оценки числа Хилла второго порядка (<span class="arithmatex">\(1/\sum_k p_k^2\)</span>) по парам слов, извлеченным без возвращения.</p>
 <p>Чем выше показатель, тем богаче словарь текста.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4091,6 +4098,7 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_gini_simpson_index()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_gini_simpson_index 144c629 -->
 <p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Gini–Simpson_index">индекса Джини-Симпсона</a>.</p>
 <p>Вероятность того, что два случайно выбранных слова текста окажутся разными. Чем выше показатель, тем богаче словарь текста.</p>
 <p>Формула:</p>
@@ -4120,13 +4128,13 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_hapax_index()</strong>, псевдоним <strong>ruts.diversity_stats.calc_honore_r()</strong></p>
 </div>
-<p>Вычисление <a href="https://ru.wikipedia.org/wiki/Гапакс">Гапакс-индекса</a>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_hapax_index 4a5bc5c -->
+<p>Вычисление <a href="https://ru.wikipedia.org/wiki/Гапакс">гапакс-индекса</a>.</p>
 <div class="admonition quote">
 <p class="admonition-title">Определение</p>
-<p>Гапакс (греч. ἅπαξ λεγόμενον - «только раз названное») - слово, встретившееся в некотором корпусе текстов только один раз. Так, можно сказать, что боливар («шляпа определённого фасона») - гапакс языка Пушкина (оно встречается только в знаменитом месте из «Евгения Онегина»). Термин «гапакс» популярен в исследованиях Библии, в которой обнаружено несколько сотен подобных слов.</p>
+<p>Гапакс (греч. ἅπαξ λεγόμενον - «только раз названное») - слово, встретившееся в некотором корпусе текстов только один раз. Так, <em>baciyelmo</em> - словечко Санчо Пансы для цирюльничьего тазика, который Дон Кихот принимает за шлем, - гапакс Сервантеса (оно встречается один раз, в главе 44 первой части «Дон Кихота»).</p>
 </div>
-<p>Гапаксы того или иного автора нередко используют для атрибуции ему некоторого другого произведения, где встречаются такие слова.</p>
-<p>Метрика совпадает с мерой Оноре (1979). Используется натуральный логарифм, как в zipfR и textcomplexity.</p>
+<p>Метрика совпадает с мерой Оноре (1979) и использует натуральный логарифм.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 100\times\frac{\ln {\textrm{(Количество слов)}}}{1-\frac{\textrm{Количество гапаксов}}{\textrm{Количество лексем}}}
@@ -4154,11 +4162,16 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Русский пример: боливар («шляпа определённого фасона») - гапакс языка Пушкина, оно встречается только в знаменитом месте из «Евгения Онегина».</p>
+</div>
 <h2 id="frequency_spectrum">Спектр частот<a class="headerlink" href="#frequency_spectrum" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_frequency_spectrum()</strong></p>
 </div>
-<p>Вычисление спектра частот - количества лексем <span class="arithmatex">\(V_i\)</span>, встретившихся в тексте ровно <span class="arithmatex">\(i\)</span> раз. Основа для мер Юла, Хердана, Сишела, Мишеа, Баайена и LNRE-моделей zipfR. Все меры ниже считаются из спектра частот за линейное время; формулы сверены с Tweedie и Baayen (1998), zipfR, quanteda, koRpus, LexicalRichness и textcomplexity.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_frequency_spectrum bd17b84 -->
+<p>Вычисление спектра частот - количества лексем <span class="arithmatex">\(V_i\)</span>, встретившихся в тексте ровно <span class="arithmatex">\(i\)</span> раз. Меры ниже считаются по нему; их формулы сверены с Tweedie и Baayen (1998).</p>
 <p>Обозначения: <span class="arithmatex">\(N\)</span> - количество слов, <span class="arithmatex">\(V\)</span> - количество лексем, <span class="arithmatex">\(V_i\)</span> - количество лексем с частотой <span class="arithmatex">\(i\)</span>, <span class="arithmatex">\(V_1\)</span> - гапаксы, <span class="arithmatex">\(V_2\)</span> - дислегомены, <span class="arithmatex">\(p_k\)</span> - относительная частота лексемы.</p>
 <p>Параметры:</p>
 <table>
@@ -4183,7 +4196,8 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_yule_k()</strong></p>
 </div>
-<p>Вычисление характеристики Юла (1944, Yule). Одна из немногих мер, теоретически не зависящих от длины текста (Tweedie &amp; Baayen, 1998), на практике сходится с ростом текста. Чем ниже показатель, тем богаче словарь текста. Пропорциональна индексу Симпсона: <span class="arithmatex">\(K \approx 10^4 \cdot D\)</span>. Стилометрический маркер, есть во всех библиотеках-аналогах.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_yule_k c6ce18b -->
+<p>Вычисление характеристики Юла (Yule, 1944). Одна из немногих мер, теоретически не зависящих от длины текста (Tweedie &amp; Baayen, 1998), на практике сходится с ростом текста. Чем ниже показатель, тем богаче словарь текста. Пропорциональна индексу Симпсона: <span class="arithmatex">\(K \approx 10^4 \cdot D\)</span>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 K = 10^4\times\frac{\sum_i i^2 V_i - N}{N^2}
@@ -4211,6 +4225,7 @@ K = 10^4\times\frac{\sum_i i^2 V_i - N}{N^2}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_yule_i()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_yule_i ec2e097 -->
 <p>Вычисление обратной характеристики Юла. Чем выше показатель, тем богаче словарь текста; если все слова текста уникальны, значение равно бесконечности.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4239,7 +4254,8 @@ I = \frac{V^2}{\sum_i i^2 V_i - V}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_herdan_vm()</strong></p>
 </div>
-<p>Вычисление меры Хердана (1955, Herdan). Теоретически не зависит от длины текста, чем ниже показатель, тем богаче словарь.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_herdan_vm a64c307 -->
+<p>Вычисление меры Хердана (Herdan, 1955). Теоретически не зависит от длины текста, чем ниже показатель, тем богаче словарь.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 V_m = \sqrt{\sum_i V_i \left(\frac{i}{N}\right)^2 - \frac{1}{V}}
@@ -4267,7 +4283,8 @@ V_m = \sqrt{\sum_i V_i \left(\frac{i}{N}\right)^2 - \frac{1}{V}}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_sichel_s()</strong></p>
 </div>
-<p>Вычисление меры Сишела (1975, Sichel) - доли дислегоменов, лексем с частотой 2, среди всех лексем. Стабильна на текстах разной длины.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_sichel_s 524b27a -->
+<p>Вычисление меры Сишела (Sichel, 1975) - доли дислегоменов, лексем с частотой 2, среди всех лексем. Стабильна на текстах разной длины.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 S = \frac{V_2}{V}
@@ -4295,7 +4312,8 @@ S = \frac{V_2}{V}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_michea_m()</strong></p>
 </div>
-<p>Вычисление меры Мишеа (1969, Michéa) - обратной величины к мере Сишела. Если в тексте нет дислегоменов, значение равно бесконечности.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_michea_m 2ad5820 -->
+<p>Вычисление меры Мишеа (Michéa, 1969) - обратной величины к мере Сишела. Если в тексте нет дислегоменов, значение равно бесконечности.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 M = \frac{V}{V_2}
@@ -4323,7 +4341,8 @@ M = \frac{V}{V_2}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_brunet_w()</strong></p>
 </div>
-<p>Вычисление меры Брюне (1978, Brunet). Значения для текстов обычно лежат в пределах 10-20, чем ниже показатель, тем богаче словарь.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_brunet_w 4e786ba -->
+<p>Вычисление меры Брюне (Brunet, 1978). Значения для текстов обычно лежат в пределах 10-20, чем ниже показатель, тем богаче словарь.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 W = N^{V^{-a}}, \quad a = 0.172
@@ -4357,10 +4376,11 @@ W = N^{V^{-a}}, \quad a = 0.172
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_dugast_k()</strong></p>
 </div>
-<p>Вычисление меры Дюга (1979, Dugast). Не путать с Dugast's U - метрикой <a href="#dugast-type-token-ratio-dttr">DTTR</a>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_dugast_k 7933070 -->
+<p>Вычисление меры Дюга (Dugast, 1979). Не путать с Dugast's U - метрикой <a href="#dugast-type-token-ratio-dttr">DTTR</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма: по умолчанию 10, как для метрик Summer, Maas и Dugast's U, в textcomplexity - натуральный. Мера не определена, если <span class="arithmatex">\(\log N \le 1\)</span>, то есть для текстов не длиннее основания логарифма; в этом случае функция возвращает <code>nan</code>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. Мера не определена, если <span class="arithmatex">\(\log N \le 1\)</span>, то есть для текстов не длиннее основания логарифма; в этом случае функция возвращает <code>nan</code>.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4395,7 +4415,8 @@ k = \frac{\log V}{\log \log N}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_baayen_p()</strong></p>
 </div>
-<p>Вычисление меры Баайена (1991, Baayen) - доли гапаксов среди всех слов текста. Равна наклону кривой роста словаря в конце текста: вероятность того, что следующее слово окажется новым (Evert, 2004).</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_baayen_p ca8ba21 -->
+<p>Вычисление меры Баайена (Baayen, 1991) - доли гапаксов среди всех слов текста. Равна наклону кривой роста словаря в конце текста: вероятность того, что следующее слово окажется новым (Evert, 2004).</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 P = \frac{V_1}{N}
@@ -4423,6 +4444,7 @@ P = \frac{V_1}{N}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_hapax_ratio()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_hapax_ratio 90c48e4 -->
 <p>Вычисление доли гапаксов среди всех лексем текста.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4451,6 +4473,7 @@ P = \frac{V_1}{N}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_alpha2()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_alpha2 9da8e4e -->
 <p>Вычисление показателя <span class="arithmatex">\(\alpha_2\)</span> - оценки параметра Ципфа-Мандельброта по нижней части спектра частот (Evert, 2004). Если в тексте нет гапаксов, функция возвращает <code>nan</code>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4479,7 +4502,8 @@ P = \frac{V_1}{N}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_entropy()</strong></p>
 </div>
-<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">энтропии Шеннона</a> распределения лексем в битах. Чем выше показатель, тем богаче словарь текста. Число Хилла первого порядка равно <span class="arithmatex">\(2^H\)</span> (<a href="#perplexity">перплексия</a>), нулевого - <span class="arithmatex">\(V\)</span>, второго - <a href="#inverse_simpson_index">обратный индекс Симпсона</a>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_entropy 6da50d2 -->
+<p>Вычисление <a href="https://en.wikipedia.org/wiki/Diversity_index#Shannon_index">энтропии Шеннона</a> распределения лексем в битах. Чем выше показатель, тем богаче словарь текста. Число Хилла первого порядка равно <span class="arithmatex">\(2^H\)</span> (<a href="#perplexity">перплексия</a>), нулевого - <span class="arithmatex">\(V\)</span>; число второго порядка оценивает <a href="#inverse_simpson_index">обратный индекс Симпсона</a>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 H = -\sum_k p_k \log_2 p_k
@@ -4507,6 +4531,7 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_evenness()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_evenness ae195ae -->
 <p>Вычисление выравненности (выравненность Пиелу) - отношения энтропии Шеннона к ее максимуму при данном количестве лексем. Лежит в пределах от 0 до 1; для текстов из одной лексемы не определена, функция возвращает <code>nan</code>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4535,6 +4560,7 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_perplexity()</strong></p>
 </div>
+<!-- core: stats/diversity_stats_funcs.md:calc_perplexity 1533b66 -->
 <p>Вычисление перплексии - числа Хилла первого порядка, эффективного количества лексем текста.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4563,10 +4589,11 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_zipf_alpha()</strong></p>
 </div>
-<p>Вычисление показателя <span class="arithmatex">\(\alpha\)</span> <a href="https://en.wikipedia.org/wiki/Zipf's_law">закона Ципфа</a> <span class="arithmatex">\(f(r) \propto r^{-\alpha}\)</span>, где <span class="arithmatex">\(r\)</span> - ранг лексемы по частоте. Оценивается линейной регрессией логарифма частоты по логарифму ранга. Для естественных текстов <span class="arithmatex">\(\alpha\)</span> близка к 1; тот же показатель используется в визуализаторе <a href="../../visualizers/zipf/">закона Ципфа</a>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_zipf_alpha f6b5205 -->
+<p>Вычисление показателя <span class="arithmatex">\(\alpha\)</span> <a href="https://en.wikipedia.org/wiki/Zipf's_law">закона Ципфа</a> <span class="arithmatex">\(f(r) \propto r^{-\alpha}\)</span>, где <span class="arithmatex">\(r\)</span> - ранг лексемы по частоте. Оценивается линейной регрессией логарифма частоты по логарифму ранга. Для естественных текстов <span class="arithmatex">\(\alpha\)</span> близка к 1.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Оценка по рангам методом наименьших квадратов смещена, для точной оценки используют метод максимального правдоподобия (например, библиотека powerlaw). Для текстов из одной лексемы функция возвращает <code>nan</code>.</p>
+<p>Оценка по рангам методом наименьших квадратов смещена, метод максимального правдоподобия точнее. Для текстов из одной лексемы функция возвращает <code>nan</code>.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -4591,7 +4618,8 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.fit_zipf_mandelbrot()</strong>, <strong>ruts.diversity_stats.ZipfMandelbrot</strong></p>
 </div>
-<p>Подгонка <a href="https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law">закона Ципфа-Мандельброта</a> <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> к распределению частот по рангам. При <span class="arithmatex">\(q = 0\)</span> закон сводится к закону Ципфа с показателем <span class="arithmatex">\(s\)</span>; сдвиг <span class="arithmatex">\(q\)</span> описывает выполаживание кривой на самых частых словах, которое закон Ципфа не передает. Параметры подбираются методом наименьших квадратов в логарифмических координатах (<code>scipy.optimize.curve_fit</code>) с начальным приближением <span class="arithmatex">\(C = f(1)\)</span>, <span class="arithmatex">\(q = 1\)</span>, <span class="arithmatex">\(s = 1\)</span> и ограничениями <span class="arithmatex">\(q \ge 0\)</span>, <span class="arithmatex">\(s \ge 0\)</span>. Возвращает именованный кортеж <code>ZipfMandelbrot</code> с полями <code>c</code>, <code>q</code>, <code>s</code> и <code>r2</code> - коэффициентом детерминации подгонки в логарифмических координатах.</p>
+<!-- core: stats/diversity_stats_funcs.md:fit_zipf_mandelbrot 56dd01c -->
+<p>Подгонка <a href="https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law">закона Ципфа-Мандельброта</a> <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> к распределению частот по рангам. При <span class="arithmatex">\(q = 0\)</span> закон сводится к закону Ципфа с показателем <span class="arithmatex">\(s\)</span>; сдвиг <span class="arithmatex">\(q\)</span> описывает выполаживание кривой на самых частых словах, которое закон Ципфа не передает. Параметры подбираются методом наименьших квадратов в логарифмических координатах с ограничениями <span class="arithmatex">\(q \ge 0\)</span>, <span class="arithmatex">\(s \ge 0\)</span>. Возвращает именованный кортеж <code>ZipfMandelbrot</code> с полями <code>c</code>, <code>q</code>, <code>s</code> и <code>r2</code> - коэффициентом детерминации подгонки в логарифмических координатах.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Для текстов из менее чем трех лексем, при одинаковых частотах всех лексем и при расходящейся подгонке все поля <code>nan</code>. На коротких текстах параметры неустойчивы: закон описывает распределение частот больших корпусов.</p>
@@ -4609,12 +4637,13 @@ H = -\sum_k p_k \log_2 p_k
 <tbody>
 <tr>
 <td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/Counter</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Список слов</td>
+<td style="text-align: center;">Список слов или справочник их частот</td>
 </tr>
 </tbody>
 </table>
+<p>Визуализатор <a href="../../visualizers/zipf/">закона Ципфа</a> строит эту подгонку при <code>show_fit=True</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.diversity_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_zipf_mandelbrot</span>
@@ -4630,7 +4659,8 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_heaps_beta()</strong>, <strong>ruts.diversity_stats.fit_heaps()</strong>, <strong>ruts.diversity_stats.vocabulary_growth()</strong></p>
 </div>
-<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span>, описывающего рост словаря с ростом длины текста. Оценивается линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста словаря (<code>vocabulary_growth</code> - размер словаря после каждого слова). На корпусах в миллионы слов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6; регрессия по всей кривой роста отдельного текста дает больше (0.6-0.9), так как в начале текста почти каждое слово новое, поэтому значения сравнимы только между текстами близкой длины. <code>fit_heaps</code> возвращает именованный кортеж <code>HeapsFit</code> с обоими параметрами <code>k</code>, <code>beta</code> и коэффициентом детерминации <code>r2</code>; по нему строится график <a href="../../visualizers/vocabulary/">закона Хипса</a>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_heaps_beta 1ed3900 -->
+<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span>, описывающего рост словаря с ростом длины текста. Оценивается линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста словаря. На корпусах в миллионы слов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6, по кривой роста отдельного текста - выше (0.6-0.9), поэтому значения сравнимы только между текстами близкой длины.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Значение зависит от порядка слов и требует от нескольких сотен слов. Для текстов короче двух слов функция возвращает <code>nan</code>.</p>
@@ -4654,11 +4684,17 @@ H = -\sum_k p_k \log_2 p_k
 </tr>
 </tbody>
 </table>
+<!-- core: stats/diversity_stats_funcs.md:vocabulary_growth 39c0cb0 -->
+<p><code>vocabulary_growth</code> возвращает кривую роста словаря: размер словаря после каждого слова текста.</p>
+<!-- core: stats/diversity_stats_funcs.md:fit_heaps 2c0021b -->
+<p><code>fit_heaps</code> подгоняет закон по этой кривой и возвращает именованный кортеж <code>HeapsFit</code> с параметрами <code>k</code>, <code>beta</code> и коэффициентом детерминации <code>r2</code>.</p>
+<p>По <code>fit_heaps</code> строится график <a href="../../visualizers/vocabulary/">закона Хипса</a>.</p>
 <h2 id="calc_windowed">Оконный расчет<a class="headerlink" href="#calc_windowed" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_windowed()</strong></p>
 </div>
-<p>Оконный расчет любой метрики: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины (textcomplexity <code>bootstrap</code>, характеристические кривые koRpus); STTR Кубата и Милички - оконный расчет TTR с окном 1000 слов и 95% доверительным интервалом. Для текстов короче окна метрика считается по всему тексту как по единственному окну, окна с неопределенным значением метрики (<code>nan</code>) не учитываются. Если хотя бы в одном окне метрика бесконечна (например, обратный индекс Симпсона на окне из уникальных слов), среднее равно бесконечности, а стандартное отклонение и доверительный интервал не определены. Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_windowed b59de2a -->
+<p>Оконный расчет любой метрики: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины; стандартизированный TTR Кубата и Милички (не STTR Summer) - оконный расчет TTR с окном 1000 слов и 95% доверительным интервалом. Для текстов короче окна метрика считается по всему тексту как по единственному окну, окна с неопределенным значением метрики (<code>nan</code>) не учитываются. Если хотя бы в одном окне метрика бесконечна (например, обратный индекс Симпсона на окне из уникальных слов), среднее равно бесконечности, а стандартное отклонение и доверительный интервал не определены. Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>

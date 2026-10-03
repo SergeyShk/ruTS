@@ -785,6 +785,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2812,6 +2823,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2886,15 +2908,9 @@
 <p><strong>ruts.extractors.WordsExtractor</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for extracting words from a text. It allows using different tokenizers, filtering stop words, numbers and punctuation, lemmatizing, building N-grams, and setting the minimum and maximum length of extracted words.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default tokenizer is the <code>tokenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default morphological analyzer for lemmatization is the <code>MorphAnalyzer</code> class of the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> library.</p>
-</div>
+<p>A class for extracting words from a text. It allows using different tokenizers, filtering stop words, numbers and punctuation, lemmatizing, building N-grams, and setting the minimum and maximum length of extracted words.</p>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>WordsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/words/">anyTS</a> core with the hooks of Russian: the tokenizer <code>tokenize(text)</code> is the <code>tokenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library with the dialogue dashes glued to words split off (<code>ruts.utils.iter_tokens</code>), the lemma <code>lemmatize(word)</code> is the first parse of the <code>MorphAnalyzer</code> of the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> library, and the number pattern <code>number_pattern</code> also matches ranges, fractions and ordinals: <code>2020-2021</code>, <code>5.5</code>, <code>1,5</code>, <code>3-й</code>, <code>90-х</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2910,7 +2926,7 @@
 <td style="text-align: center;"><code>tokenizer</code></td>
 <td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Tokenizer or regular expression</td>
+<td style="text-align: center;">Tokenizer or regular expression; by default the <code>tokenize</code> method</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>filter_punct</code></td>
@@ -2922,19 +2938,19 @@
 <td style="text-align: center;"><code>filter_nums</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Filter numbers, including ranges, fractions and ordinals (2020-2021, 5.5, 1,5, 3-й)</td>
+<td style="text-align: center;">Filter numbers matched by <code>number_pattern</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>use_lexemes</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Use word lemmas</td>
+<td style="text-align: center;">Use word lemmas of the <code>lemmatize</code> method</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">Collection[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stop words (a list or a set)</td>
+<td style="text-align: center;">Stop words, compared case-insensitively</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>lowercase</code></td>
@@ -2952,19 +2968,19 @@
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Minimum length of an extracted word</td>
+<td style="text-align: center;">Minimum length of an extracted word in characters, <code>0</code> for no bound</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Maximum length of an extracted word</td>
+<td style="text-align: center;">Maximum length of an extracted word in characters, <code>0</code> for no bound</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared case-insensitively: «И» at the start of a sentence is dropped along with «и».</p>
+<p>A regular expression as the tokenizer is a separator: the text is split with <code>re.split</code>. The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. A lower-case stop word list also filters a capitalized word at the start of a sentence. A punctuation mark is a token consisting entirely of marks and symbols, including multi-character ones: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (see <code>anyts.utils.is_punctuation</code>). Empty and whitespace tokens are dropped before the filters. N-grams join the words with <code>_</code>.</p>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
@@ -2987,12 +3003,11 @@
 </tr>
 </tbody>
 </table>
-<p>An example of word extraction with bigrams as tokens, after filtering stop words and lemmatizing:</p>
+<p>An example of word extraction with bigrams as tokens, after filtering stop words and numbers and lemmatizing:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 
 <span class="c1"># Prepare the data</span>
@@ -3009,7 +3024,29 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Returns a counter of the top words of the text. It takes the number of top words to return as a parameter.</p>
+<p>Returns the top words of the text as a list of (word, frequency) pairs, the most frequent first.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Number of top words</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The method must be called after words have been extracted with <code>extract</code>.</p>
+</div>
 <p>To illustrate the method, we reuse the code from the previous example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3022,10 +3059,6 @@
 <p><em>Result</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">[(</span><span class="s1">'иметь'</span>,<span class="w"> </span><span class="m">2</span><span class="o">)</span>,<span class="w"> </span><span class="o">(</span><span class="s1">'рубль'</span>,<span class="w"> </span><span class="m">1</span><span class="o">)</span>,<span class="w"> </span><span class="o">(</span><span class="s1">'друг'</span>,<span class="w"> </span><span class="m">1</span><span class="o">)]</span>
 </code></pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The method must be called after words have been extracted with <code>extract</code>.</p>
 </div>
 
 

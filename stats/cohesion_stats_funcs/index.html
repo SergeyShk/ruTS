@@ -3011,7 +3011,7 @@
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.calc_proportional_overlap()</strong></p>
 </div>
-<p>Вычисление средней доли общих элементов в парах предложений (<code>CRFCWO1</code>, <code>CRFCWOa</code>): коэффициент Дайса множеств лемм, усредненный по соседним или всем парам; пара без элементов получает 0.</p>
+<p>Вычисление средней доли общих элементов в парах предложений (<code>CRFCWO1</code>, <code>CRFCWOa</code>): коэффициент Дайса множеств лемм, усредненный по соседним или всем парам; пара без элементов получает 0. Для текста короче двух предложений возвращается <code>nan</code>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 \frac{1}{|\{(i, j)\}|} \sum_{(i, j)} \frac{2 \cdot |S_i \cap S_j|}{|S_i| + |S_j|}
@@ -3045,7 +3045,7 @@
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.calc_overlaps()</strong>, <strong>ruts.cohesion_stats.dice()</strong>, <strong>ruts.cohesion_stats.Overlap</strong></p>
 </div>
-<p>Вычисление бинарного и пропорционального повторов по соседним и всем парам предложений; возвращает <code>Overlap(adjacent, all, prop_adjacent, prop_all)</code> с теми же значениями, что <a href="#calc_overlap"><code>calc_overlap</code></a> и <a href="#calc_proportional_overlap"><code>calc_proportional_overlap</code></a>. Соседние пары обходятся напрямую. Число всех пар с общим элементом считается по битовым маскам вхождений элементов в предложения (блоками по 4096 предложений), сумма коэффициентов Дайса - по гистограммам длин предложений для каждого элемента: <span class="arithmatex">\((h W h - h \cdot \mathrm{diag}(W)) / 2\)</span>, где <span class="arithmatex">\(h\)</span> - гистограмма длин предложений с элементом, <span class="arithmatex">\(W_{kl} = 2/(k+l)\)</span>. Время линейно по числу вхождений. Функция <code>dice</code> считает коэффициент Дайса двух множеств.</p>
+<p>Вычисление бинарного и пропорционального повторов по соседним и всем парам предложений; возвращает <code>Overlap(adjacent, all, prop_adjacent, prop_all)</code> с теми же значениями, что <a href="#calc_overlap"><code>calc_overlap</code></a> и <a href="#calc_proportional_overlap"><code>calc_proportional_overlap</code></a>. С <code>proportional=False</code> пропорциональные повторы не вычисляются, а <code>prop_adjacent</code> и <code>prop_all</code> равны <code>nan</code>. Функция <code>dice</code> считает коэффициент Дайса двух множеств.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3062,6 +3062,12 @@
 <td style="text-align: center;">list[set[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Множества элементов каждого предложения</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>proportional</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>True</code></td>
+<td style="text-align: center;">Вычислять также пропорциональные повторы</td>
 </tr>
 </tbody>
 </table>

@@ -2830,12 +2830,12 @@
 <p><strong>ruts.visualizers.fingerprinting()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Визуализация литературной дактилоскопии (Literature Fingerprinting).</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Более подробно с литературной дактилоскопией можно ознакомиться в данной <a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">публикации</a>.</p>
-</div>
+<!-- core: visualizers/fingerprinting.md:fingerprinting 142b0c1 -->
+<p>Визуализация литературной дактилоскопии (<a href="https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf">Keim и Oelke 2007</a>).</p>
+<p>Каждый текст режется на сегменты по <code>segment_len</code> слов со скользящим шагом в десятую часть сегмента, и для каждого сегмента считается мера лексического разнообразия. Текст - блок квадратов в порядке его сегментов, по строкам, высотой 8 строк или в один столбец, если сегментов не больше 8; блок шире строки области визуализации переносится на строки этой ширины. Блоки раскладываются слева направо и переносятся между строками области шириной <code>2 · x_size</code>, которая растет вниз от <code>2 · y_size</code>, если блокам нужно больше высоты. Цвет квадрата - значение меры по цветовой шкале, от наименьшего до наибольшего конечного значения по всем текстам. Сегменты, на которых мера не определена (<code>nan</code> на слишком коротких для нее сегментах), и пустые клетки блока - светло-серые, в отличие от всех значений, включая ноль. Каждый сегмент длиной <code>segment_len</code> слов, поэтому значения сопоставимы: если шаг оставляет слова после последнего сегмента, еще один сегмент заканчивается вместе с текстом, а текст не длиннее сегмента - один сегмент. Список без текстов или текст без слов дает <code>SourceError</code>.</p>
+<p>Это функция ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/fingerprinting/">anyTS</a> с русским заголовком из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию, <code>labels</code> заменяет его; в роли <code>metric</code> выступают меры <a href="../../stats/diversity_stats/">лексического разнообразия</a> ruTS - функции списка слов, например <code>calc_ttr</code> или <code>calc_simpson_index</code>.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: visualizers/fingerprinting.md:fingerprinting-parameters d8f7f8a -->
 <table>
 <thead>
 <tr>
@@ -2848,7 +2848,7 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>texts</code></td>
-<td style="text-align: center;">List[List[str]]</td>
+<td style="text-align: center;">list[list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Список списков слов</td>
 </tr>
@@ -2862,24 +2862,24 @@
 <td style="text-align: center;"><code>metric</code></td>
 <td style="text-align: center;">Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Функция для подсчета метрики <a href="../../stats/diversity_stats/">лексического разнообразия</a></td>
+<td style="text-align: center;">Функция меры лексического разнообразия; по умолчанию <code>calc_ttr</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>x_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>800</code></td>
-<td style="text-align: center;">Ширина области для визуализации</td>
+<td style="text-align: center;">Половина ширины области визуализации, больше 25 (отступа между блоками)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>y_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>600</code></td>
-<td style="text-align: center;">Высота области для визуализации</td>
+<td style="text-align: center;">Половина высоты области визуализации, которая растет, если блокам нужно больше</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cmap</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>'PuOr'</code></td>
+<td style="text-align: center;"><code>'viridis'</code></td>
 <td style="text-align: center;">Цветовая карта</td>
 </tr>
 <tr>
@@ -2888,9 +2888,19 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси matplotlib для графика; если не заданы, создается фигура 15×10</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code></td>
+</tr>
 </tbody>
 </table>
-<p>Функция возвращает оси <code>Axes</code> с визуализацией; фигура доступна как <code>ax.figure</code>. Цвет квадрата - значение метрики сегмента относительно максимума по всем текстам; сегменты, на которых метрика не определена (<code>nan</code> на слишком коротких для нее сегментах), рисуются как нулевые, а не пропадают с графика.</p>
+<p>Функция возвращает оси <code>Axes</code> с визуализацией в равном масштабе осей, чтобы квадраты оставались квадратами; фигура - <code>ax.figure</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>В ruTS цветовая карта по умолчанию - <code>PuOr</code>.</p>
+</div>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">

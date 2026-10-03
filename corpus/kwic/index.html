@@ -2037,7 +2037,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2048,7 +2048,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Параметры
       
     </span>
   </a>
@@ -2057,6 +2057,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Результат
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример
@@ -2798,7 +2809,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2809,7 +2820,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Параметры
       
     </span>
   </a>
@@ -2818,6 +2829,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Результат
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Пример
@@ -2852,10 +2874,12 @@
 <p><strong>ruts.corpus.kwic()</strong>, <strong>ruts.corpus.format_kwic()</strong>, <strong>ruts.corpus.print_kwic()</strong>, <strong>ruts.corpus.Concordance</strong></p>
 </div>
 <h2 id="_1">Описание<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p>Конкорданс KWIC (keyword in context) - все вхождения слова или словосочетания с контекстом слева и справа, как в <a href="https://www.laurenceanthony.net/software/antconc/">AntConc</a> и textacy <code>keyword_in_context</code>. Показывает, как слово употребляется в тексте: с чем сочетается, в каких формах и значениях.</p>
-<p>Вхождения ищутся среди слов текста по словоформе без учета регистра и буквы ё, с учетом регистра (<code>ignore_case=False</code>) или по лемме pymorphy3 (<code>by_lemma=True</code>: «кота», «коту» находятся по «кот», словосочетание задается леммами - «рабочий класс»); для <code>Doc</code> с разметкой частей речи лемма слова берется с частью речи токена, так «стали» находится по «сталь» или по «стать» в зависимости от разметки, ключевое слово лемматизируется без части речи. Словосочетание не переходит через конец предложения или абзаца, если такой границы нет в самом ключевом слове. Контекст - <code>window</code> слов слева и справа, как они записаны в тексте, со знаками препинания между ними; пробельные символы схлопываются в один пробел, вхождения не пересекаются. Источник - строка (слова razdel) или объект <code>Doc</code>.</p>
-<p><code>format_kwic</code> выравнивает строки по ключевому слову: левый контекст обрезается слева и прижимается к правому краю, правый обрезается справа; <code>print_kwic</code> печатает результат.</p>
-<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/kwic.md:kwic dadc1ee -->
+<p>Конкорданс KWIC (keyword in context) - все вхождения слова или словосочетания с контекстом слева и справа. Вхождения ищутся среди слов текста по словоформе без учета регистра или с его учетом (<code>ignore_case=False</code>) или по лемме (<code>by_lemma=True</code>), причем слова ключевого слова лемматизируются как слова строки: с лемматизатором словосочетание можно записать в любой форме, без него оно задается леммами. Слова строки и ключевого слова дает токенизатор, слова <code>Doc</code> - его токены, так что токенизатор, который режет строку так же, как пайплайн, находит в <code>Doc</code> то же, что в его тексте; знаки препинания и символы словами не считаются. Словоформы сравниваются в нормальной форме композиции Unicode (NFC), без мягких переносов. Словосочетание не переходит через конец абзаца или предложения - границу <code>Doc</code> в любом месте между его словами, включая открывающий знак, или в тексте без границ начало предложения сегментатора предложений, по умолчанию конечный знак перед пробелом, - если в ключевом слове нет конечного знака или начала предложения на том же месте (<code>U.S. Army</code>). Контекст - <code>window</code> слов с каждой стороны, как они записаны в тексте, со знаками препинания между ними; пробельные символы схлопываются в один пробел, вхождения не пересекаются.</p>
+<h2 id="_2">Языковые крючки<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>Функция вызывает <code>kwic</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/kwic/">anyTS</a> с крючками русского языка: слова и предложения строки и ключевого слова дает <a href="https://github.com/natasha/razdel">razdel</a>, лемма слова - pymorphy3, в <code>Doc</code> с разметкой частей речи - с частью речи токена (<code>ruts.utils.lemmatize</code>), так что «стали» находится по «сталь» или по «стать» в зависимости от разметки, а словоформы (с <code>ignore_case</code>) и леммы сравниваются в нижнем регистре с ё как е. Части дефисного слова, разрезанного spaCy, склеиваются (<code>кто-то</code> - одно слово).</p>
+<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/kwic.md:kwic-parameters e17a79b -->
 <table>
 <thead>
 <tr>
@@ -2876,7 +2900,7 @@
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слово или словосочетание (слова через пробел)</td>
+<td style="text-align: center;">Слово или словосочетание</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>window</code></td>
@@ -2894,12 +2918,17 @@
 <td style="text-align: center;"><code>ignore_case</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Не учитывать регистр и букву ё при сравнении словоформ</td>
+<td style="text-align: center;">Не учитывать регистр при сравнении словоформ</td>
 </tr>
 </tbody>
 </table>
-<p><code>format_kwic(concordances, width=40)</code> и <code>print_kwic(concordances, width=40)</code>: <code>width</code> - ширина контекста в символах, не меньше единицы; переносы строк внутри ключевого словосочетания заменяются пробелами.</p>
-<h2 id="_3">Результат<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Ключевое слово без слов и отрицательное окно дают <code>ParameterError</code>; источник, который не строка и не <code>Doc</code>, ключевое слово, которое не строка, и крючок, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
+<!-- core: corpus/kwic.md:format_kwic 532aaaa -->
+<p><code>format_kwic(concordances, width=40)</code> выравнивает строки по ключевому слову: левый контекст обрезается слева и прижимается к правому краю, правый обрезается справа; <code>width</code> - ширина контекста в символах, не меньше единицы. Строки могут прийти из любого итерируемого объекта и берутся в нормальной форме композиции Unicode (NFC), чтобы ширина считала символы так, как они показываются.</p>
+<!-- core: corpus/kwic.md:print_kwic 92f3d36 -->
+<p><code>print_kwic(concordances, width=40)</code> печатает результат <code>format_kwic</code>.</p>
+<h2 id="_4">Результат<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/kwic.md:Concordance f0916bd -->
 <p>Список именованных кортежей <code>Concordance</code> по порядку в тексте.</p>
 <table>
 <thead>
@@ -2928,7 +2957,7 @@
 <tr>
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: left;">Вхождение как в тексте</td>
+<td style="text-align: left;">Вхождение, как оно записано в тексте</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>right</code></td>
@@ -2937,7 +2966,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Пример<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_5">Пример<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">kwic</span><span class="p">,</span> <span class="n">print_kwic</span>

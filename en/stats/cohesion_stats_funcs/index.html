@@ -3011,7 +3011,7 @@
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.calc_proportional_overlap()</strong></p>
 </div>
-<p>Computation of the mean share of shared elements in sentence pairs (<code>CRFCWO1</code>, <code>CRFCWOa</code>): the Dice coefficient of the lemma sets averaged over adjacent or all pairs; a pair without elements gets 0.</p>
+<p>Computation of the mean share of shared elements in sentence pairs (<code>CRFCWO1</code>, <code>CRFCWOa</code>): the Dice coefficient of the lemma sets averaged over adjacent or all pairs; a pair without elements gets 0. For a text shorter than two sentences <code>nan</code> is returned.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
 \frac{1}{|\{(i, j)\}|} \sum_{(i, j)} \frac{2 \cdot |S_i \cap S_j|}{|S_i| + |S_j|}
@@ -3045,7 +3045,7 @@
 <div class="admonition info">
 <p><strong>ruts.cohesion_stats.calc_overlaps()</strong>, <strong>ruts.cohesion_stats.dice()</strong>, <strong>ruts.cohesion_stats.Overlap</strong></p>
 </div>
-<p>Computation of the binary and proportional overlaps over adjacent and all sentence pairs; returns <code>Overlap(adjacent, all, prop_adjacent, prop_all)</code> with the same values as <a href="#calc_overlap"><code>calc_overlap</code></a> and <a href="#calc_proportional_overlap"><code>calc_proportional_overlap</code></a>. Adjacent pairs are traversed directly. The number of all pairs with a shared element is computed from bit masks of element occurrences in sentences (in blocks of 4096 sentences), the sum of Dice coefficients - from histograms of sentence lengths for every element: <span class="arithmatex">\((h W h - h \cdot \mathrm{diag}(W)) / 2\)</span>, where <span class="arithmatex">\(h\)</span> is the histogram of lengths of sentences containing the element, <span class="arithmatex">\(W_{kl} = 2/(k+l)\)</span>. Time is linear in the number of occurrences. The <code>dice</code> function computes the Dice coefficient of two sets.</p>
+<p>Computation of the binary and proportional overlaps over adjacent and all sentence pairs; returns <code>Overlap(adjacent, all, prop_adjacent, prop_all)</code> with the same values as <a href="#calc_overlap"><code>calc_overlap</code></a> and <a href="#calc_proportional_overlap"><code>calc_proportional_overlap</code></a>. With <code>proportional=False</code> the proportional overlaps are not computed, and <code>prop_adjacent</code> and <code>prop_all</code> are <code>nan</code>. The <code>dice</code> function computes the Dice coefficient of two sets.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3062,6 +3062,12 @@
 <td style="text-align: center;">list[set[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Sets of elements of every sentence</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>proportional</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>True</code></td>
+<td style="text-align: center;">Compute the proportional overlaps as well</td>
 </tr>
 </tbody>
 </table>

@@ -2512,6 +2512,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2550,6 +2561,17 @@
     <span class="md-ellipsis">
       
         to_html
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        css
       
     </span>
   </a>
@@ -2823,6 +2845,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2867,6 +2900,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#css" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        css
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2905,11 +2949,11 @@
 
 <h1 id="text-highlighting">Text highlighting<a class="headerlink" href="#text-highlighting" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p><strong>ruts.visualizers.highlight()</strong></p>
+<p><strong>ruts.visualizers.highlight()</strong>, <strong>ruts.visualizers.HighlightedText</strong>, <strong>ruts.visualizers.Highlight</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Highlighting of the text fragments that the library statistics are computed from, in the style of the <a href="https://glvrd.ru/">Glavred</a> and <a href="https://turgenev.ashmanov.com/">Turgenev</a> services: long sentences, complex and rare words, passive voice, participial and adverbial clauses, genitive chains, split predicates, verbal nouns, compound prepositions, clichés, stop words, parentheticals, connectives, alliterations. One picture explains what the metric values are made of better than a table of numbers. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The function returns a <code>HighlightedText</code> object, which is displayed in Jupyter as HTML with styles and a legend; the <code>to_html</code> method returns the same markup for documentation and web applications. The fragments are stored in the <code>highlights</code> attribute and are available for your own rendering.</p>
+<p>The machinery of the highlighting of a text by layers, in the manner of the style checkers: every layer marks the fragments of a text that a statistic counts - long sentences, complex words, the passive. The data source can be either a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. The result shows in Jupyter as HTML with styles and a legend; the method <code>to_html</code> returns the same markup for documentation and web applications, and the fragments are kept in the attribute <code>highlights</code> for a rendering of one's own. Fragments of different layers may overlap.</p>
+<p>The function <code>highlight</code> returns a <code>HighlightedText</code> object of ruTS with the layers in the style of the <a href="https://glvrd.ru/">Glavred</a> and <a href="https://turgenev.ashmanov.com/">Turgenev</a> services: long sentences, complex and rare words, passive voice, participial and adverbial clauses, genitive chains, split predicates, verbal nouns, compound prepositions, clichés, stop words, parentheticals, connectives, alliterations. One picture explains what the metric values are made of better than a table of numbers.</p>
 <p>Highlighting layers:</p>
 <table>
 <thead>
@@ -3013,11 +3057,13 @@
 </tr>
 </tbody>
 </table>
-<p>The groups are defined in <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. The layers of the "Syntax" group are computed over the dependency tree and are available only for a <code>Doc</code> object with a dependency parse (the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code> models); a <code>Doc</code> without sentence boundaries is split into sentences the same way as a string. By default the <code>HIGHLIGHT_DEFAULT_LAYERS</code> layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; <code>layers="all"</code> enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.</p>
+<p>The groups are defined in <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. The layers of the "Syntax" group are computed over the dependency tree and are available only for a <code>Doc</code> object with a dependency parse (the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code> models). By default the <code>HIGHLIGHT_DEFAULT_LAYERS</code> layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; <code>layers="all"</code> enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Alliteration is searched within a sentence as a chain of two or more adjacent words each of whose stems contains the same consonant letter. The stem is the common initial part of the word form and its pymorphy3 lemma (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>): endings agree with neighboring words and repeat consonants by grammar rather than by sound (<em>этих крупных</em>, <em>своим целям и нуждам</em>). The probability of a chain under an independent letter distribution is the product over the words of the probabilities of meeting the consonant among the stem letters, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, where <span class="arithmatex">\(f\)</span> is the <a href="https://ru.wikipedia.org/wiki/Частотность">frequency of the consonant</a> in Russian texts and <span class="arithmatex">\(n\)</span> the number of stem letters; a chain is highlighted if the probability is below the <code>alliteration_threshold</code>. About twenty consonants are checked at every position, so the threshold is strict: in prose about 5% of words are highlighted at 0.001, about 20% at 0.01, mostly random coincidences of frequent letters. A repeat of a rare consonant (<em>слышно, бесшумно шуршат камыши</em>) is noticeable in two or three words, a repeat of a frequent one in long words is expected and not highlighted. Words shorter than three letters, stop words and words without vowels neither break nor continue a chain, the letter <em>й</em> is not counted, since in the nominative case it is part of the adjective lemma. The alliteration index of <a href="../../stats/phon_stats/">PhonStats</a> measures how clustered the repeats are across the whole text; the highlighting shows where they are.</p>
 </div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>HighlightedText</code> of the <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/">anyTS</a> core with the hooks of Russian from <code>ruts.constants</code>: the layers with their names in the legend are <code>HIGHLIGHT_LAYERS_DESC</code>, the layers on by default <code>HIGHLIGHT_DEFAULT_LAYERS</code>, the annotations of a <code>Doc</code> a layer needs <code>HIGHLIGHT_LAYER_ANNOTATIONS</code> (the syntactic layers need only a dependency parse, as the lemmas come from pymorphy3) and the styles of the layers <code>HIGHLIGHT_LAYER_STYLES</code>; the prefix of the CSS classes is <code>ruts</code>. The words of a string are split as by <a href="../../extractors/words/"><code>WordsExtractor</code></a> and its sentences by razdel; a <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) is split into sentences by razdel too, so the <code>long_sents</code> layer is available for it, and the parts of a hyphenated word of a <code>Doc</code> make one word.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3039,8 +3085,22 @@
 <td style="text-align: center;"><code>layers</code></td>
 <td style="text-align: center;">list[str]/str</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Highlighting layers; if not given, the <code>HIGHLIGHT_DEFAULT_LAYERS</code> layers available to the source are enabled; <code>"all"</code> - all available</td>
+<td style="text-align: center;">Layers of the highlighting; if not given, the default layers the source allows; <code>"all"</code> - every layer allowed</td>
 </tr>
+</tbody>
+</table>
+<p>A source that is neither a string nor a <code>Doc</code> raises <code>SourceTypeError</code>, a source without words <code>SourceError</code>; layers that are not a name or a list of names, a layer that is unknown or one that needs an annotation the source lacks raise <code>ParameterError</code>.</p>
+<p>The parameters of the layers of ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td style="text-align: center;"><code>long_sent_word_factor</code></td>
 <td style="text-align: center;">int</td>
@@ -3055,24 +3115,25 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of stop words; if not given, stop words are determined by part of speech with pymorphy3</td>
+<td style="text-align: center;">List or set of stop words; if not given, stop words are determined by part of speech with pymorphy3</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
-<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of clichés; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
+<td style="text-align: center;">List or set of clichés; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>alliteration_threshold</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.001</code></td>
-<td style="text-align: center;">Probability threshold of a consonant repeat below which the repeat counts as alliteration</td>
+<td style="text-align: center;">Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration</td>
 </tr>
 </tbody>
 </table>
+<p>A threshold that is not an integer of at least one or a probability outside (0, 1] raises <code>ParameterError</code>, stop words or clichés that are not strings <code>SourceTypeError</code>.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3091,25 +3152,25 @@
 <tr>
 <td style="text-align: center;"><code>layers</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Enabled highlighting layers in drawing order</td>
+<td style="text-align: center;">Layers turned on, in the order of drawing</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>highlights</code></td>
 <td style="text-align: center;">tuple[Highlight]</td>
-<td style="text-align: center;">Highlighted fragments in order of appearance in the text</td>
+<td style="text-align: center;">Highlighted fragments, sorted by their start and then by descending end</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>counts</code></td>
 <td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Number of fragments of each layer</td>
+<td style="text-align: center;">Number of fragments of every layer</td>
 </tr>
 </tbody>
 </table>
-<p>A <code>Highlight</code> fragment is an immutable object with the fields <code>start</code> and <code>end</code> (positions in the text), <code>layer</code> (the layer) and <code>note</code> (an explanation for the tooltip: the number of words in the sentence, syllables in the word, chain length, the alliteration consonant).</p>
+<p>A <code>Highlight</code> fragment is an immutable object with the fields <code>start</code> and <code>end</code> (positions in the text), <code>layer</code> (the layer) and <code>note</code> (the explanation for the tooltip).</p>
+<p>The note of a fragment gives the number of words in the sentence, of syllables in the word, the length of the chain or the consonant of the alliteration.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="to_html">to_html<a class="headerlink" href="#to_html" title="Permanent link">&para;</a></h3>
-<p>Returns the HTML markup of the highlighted text: a <code>div</code> block with the class <code>ruts-highlight</code>, inside it a legend with counters and the text in which highlighted spans are wrapped in <code>span</code> elements with the classes <code>ruts-hl</code> and <code>ruts-hl-&lt;layer&gt;</code>, explanations go into the <code>title</code> attribute. Overlapping fragments of different layers give spans with several classes. Line breaks are kept as character references, so the markup can be inserted into Markdown.</p>
-<p>Parameters:</p>
+<p>Returns the HTML markup of the highlighted text: a <code>div</code> of the class <code>&lt;prefix&gt;-highlight</code> with the legend and its counts and the text, where the highlighted segments are wrapped in a <code>span</code> of the classes <code>&lt;prefix&gt;-hl</code> and <code>&lt;prefix&gt;-hl-&lt;layer&gt;</code>, the notes going to the attribute <code>title</code>; <code>&lt;prefix&gt;</code> is the prefix of the CSS classes. Overlapping fragments of different layers give segments with several classes, in the order of drawing. Line breaks (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) are kept as character references, one per break, so the markup can be put into Markdown.</p>
 <table>
 <thead>
 <tr>
@@ -3124,16 +3185,18 @@
 <td style="text-align: center;"><code>legend</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Add a legend with fragment counters</td>
+<td style="text-align: center;">Add the legend with the counts of the fragments</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>css</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Add the layer styles</td>
+<td style="text-align: center;">Add the styles of the layers</td>
 </tr>
 </tbody>
 </table>
+<h3 id="css">css<a class="headerlink" href="#css" title="Permanent link">&para;</a></h3>
+<p>The class method <code>css()</code> returns the styles <code>to_html</code> adds: the container, the legend and the text under the classes of <code>css_prefix</code>, the declarations of <code>layer_styles</code> for every layer, and a dark colour of the text on the layers with a background.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

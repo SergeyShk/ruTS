@@ -757,6 +757,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2801,6 +2812,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2864,10 +2886,12 @@
 <p><strong>ruts.extractors.SentsExtractor</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for extracting sentences from a text. It allows using different tokenizers and setting the minimum and maximum length of extracted sentences.</p>
+<p>A class for extracting sentences from a text. It allows using different tokenizers and setting the minimum and maximum length of extracted sentences.</p>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>SentsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/sentences/">anyTS</a> core with the hook of Russian: its default tokenizer, the method <code>sentenize(text)</code>, is the <code>sentenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The default tokenizer is the <code>sentenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library.</p>
+<p>A spaCy pipeline can be passed as the tokenizer: <code>tokenizer=lambda text: (sent.text for sent in nlp(text).sents)</code>.</p>
 </div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -2884,26 +2908,29 @@
 <td style="text-align: center;"><code>tokenizer</code></td>
 <td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Tokenizer or regular expression</td>
+<td style="text-align: center;">Tokenizer or regular expression; by default the <code>sentenize</code> method</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Minimum length of an extracted sentence</td>
+<td style="text-align: center;">Minimum length of an extracted sentence in characters, <code>0</code> for no bound</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Maximum length of an extracted sentence</td>
+<td style="text-align: center;">Maximum length of an extracted sentence in characters, <code>0</code> for no bound</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A regular expression as the tokenizer is a separator: the text is split with <code>re.split</code>. The sentences of any tokenizer are stripped of whitespace at the edges, before the length bounds, and empty ones are dropped.</p>
+</div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Extracts sentences from a text.</p>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
@@ -2922,11 +2949,29 @@
 </tr>
 </tbody>
 </table>
-<p>An example of sentence extraction with a regular expression as the tokenizer:</p>
+<p>An example of sentence extraction with the default tokenizer:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
+
+<span class="c1"># Prepare the data</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Не имей 100 рублей, а имей 100 друзей. Так говорил проф. Иванов... А вы?"</span>
+
+<span class="c1"># Extract sentences</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">()</span>
+<span class="n">se</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'Не имей 100 рублей, а имей 100 друзей.'</span>,<span class="w"> </span><span class="s1">'Так говорил проф. Иванов...'</span>,<span class="w"> </span><span class="s1">'А вы?'</span><span class="o">)</span>
+</code></pre></div>
+</div>
+<p>An example of sentence extraction with a regular expression as the tokenizer:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
 

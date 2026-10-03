@@ -813,6 +813,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2812,6 +2823,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2886,12 +2908,11 @@
 <p><strong>ruts.extractors.CharNgramsExtractor</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for extracting character N-grams from a text - sequences of N characters taken with a sliding window over the string. Character N-grams are a standard feature of stylometry and authorship attribution (Stamatatos 2009): they capture morphology, punctuation and typical letter combinations without lemmatization. The list of N-grams is passed to <a href="../../corpus/stylometry/"><code>delta</code></a> as text units instead of words.</p>
-<p>Whitespace runs are collapsed into a single space beforehand, punctuation marks are kept: a space or a mark inside an N-gram is a stylistic signal too. With <code>within_words=True</code> N-grams do not cross word boundaries: the text is split into words by the tokenizer, punctuation is dropped, and words shorter than N yield no N-grams.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The default word tokenizer for <code>within_words</code> is the <code>tokenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library.</p>
-</div>
+<p>A class for extracting character N-grams from a text - sequences of N characters taken with a sliding window over the string. Character N-grams are a standard feature of stylometry and authorship attribution (Stamatatos 2009) and can replace words as the units of a text in measures such as Burrows's Delta.</p>
+<p>Whitespace runs are collapsed into a single space beforehand, punctuation marks are kept. With <code>within_words=True</code> N-grams do not cross word boundaries: the text is split into words by the tokenizer, punctuation is dropped, and words shorter than N yield no N-grams.</p>
+<p>The list of N-grams is passed to <a href="../../corpus/stylometry/"><code>delta</code></a> as text units instead of words.</p>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>CharNgramsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/char_ngrams/">anyTS</a> core with the hook of Russian: its default word tokenizer for <code>within_words</code>, the method <code>tokenize(text)</code>, is the default tokenizer of <a href="../words/"><code>WordsExtractor</code></a>, the <code>tokenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library with the dialogue dashes glued to words split off (<code>ruts.utils.iter_tokens</code>).</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2925,7 +2946,7 @@
 <td style="text-align: center;"><code>tokenizer</code></td>
 <td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word tokenizer for <code>within_words</code> or a regular expression</td>
+<td style="text-align: center;">Word tokenizer for <code>within_words</code> or a regular expression; by default the <code>tokenize</code> method</td>
 </tr>
 </tbody>
 </table>
@@ -2969,7 +2990,7 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Returns the most frequent N-grams of the last extraction.</p>
+<p>Returns the top N-grams of the text as a list of (N-gram, frequency) pairs, the most frequent first.</p>
 <table>
 <thead>
 <tr>
@@ -2984,10 +3005,14 @@
 <td style="text-align: center;"><code>n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Number of N-grams</td>
+<td style="text-align: center;">Number of top N-grams</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The method must be called after N-grams have been extracted with <code>extract</code>.</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="n">ce</span> <span class="o">=</span> <span class="n">CharNgramsExtractor</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

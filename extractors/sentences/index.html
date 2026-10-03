@@ -760,7 +760,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -769,6 +769,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2804,7 +2815,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2813,6 +2824,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2864,12 +2886,17 @@
 <p><strong>ruts.extractors.SentsExtractor</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для извлечения предложений из текста. Позволяет использовать различные токенизаторы, а также настраивать минимальную и максимальную длину извлекаемых предложений.</p>
+<!-- core: extractors/sentences.md:SentsExtractor 491dff1 -->
+<p>Класс для извлечения предложений из текста. Позволяет использовать различные токенизаторы, а также настраивать минимальную и максимальную длину извлекаемых предложений.</p>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>SentsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/sentences/">anyTS</a> крючком русского языка: его токенизатор по умолчанию, метод <code>sentenize(text)</code>, - функция <code>sentenize</code> библиотеки <a href="https://github.com/natasha/razdel">razdel</a>.</p>
+<!-- core: extractors/sentences.md:SentsExtractor-pipeline 13ed66c -->
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>В качестве токенизитора по умолчанию используется функция <code>sentenize</code> из библиотеки <a href="https://github.com/natasha/razdel">razdel</a>.</p>
+<p>В качестве токенизатора можно передать пайплайн spaCy: <code>tokenizer=lambda text: (sent.text for sent in nlp(text).sents)</code>.</p>
 </div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: extractors/sentences.md:SentsExtractor-parameters d136320 -->
 <table>
 <thead>
 <tr>
@@ -2882,28 +2909,32 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>tokenizer</code></td>
-<td style="text-align: center;">Pattern/Сallable</td>
+<td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Токенизатор или регулярное выражение</td>
+<td style="text-align: center;">Токенизатор или регулярное выражение; по умолчанию метод <code>sentenize</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Минимальная длина извлекаемого предложения</td>
+<td style="text-align: center;">Минимальная длина извлекаемого предложения в символах, <code>0</code> - без ограничения</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Максимальная длина извлекаемого предложения</td>
+<td style="text-align: center;">Максимальная длина извлекаемого предложения в символах, <code>0</code> - без ограничения</td>
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Регулярное выражение в роли токенизатора - разделитель: текст режется через <code>re.split</code>. С краев предложений любого токенизатора до проверки границ длины срезаются пробельные символы, а пустые предложения отбрасываются.</p>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
+<!-- core: extractors/sentences.md:SentsExtractor-extract 6c0a509 -->
 <p>Выполняет извлечение предложений из текста.</p>
-<p>Параметры:</p>
 <table>
 <thead>
 <tr>
@@ -2922,7 +2953,25 @@
 </tr>
 </tbody>
 </table>
-<p>Рассмотрим пример извлечения предложений, используя в качестве токенизитора регулярное выражение:</p>
+<p>Рассмотрим пример извлечения предложений токенизатором по умолчанию:</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<p><em>Код</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотеки</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
+
+<span class="c1"># Подготовка данных</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Не имей 100 рублей, а имей 100 друзей. Так говорил проф. Иванов... А вы?"</span>
+
+<span class="c1"># Извлечение предложений</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">()</span>
+<span class="n">se</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Результат</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'Не имей 100 рублей, а имей 100 друзей.'</span>,<span class="w"> </span><span class="s1">'Так говорил проф. Иванов...'</span>,<span class="w"> </span><span class="s1">'А вы?'</span><span class="o">)</span>
+</code></pre></div>
+</div>
+<p>Рассмотрим пример извлечения предложений, используя в качестве токенизатора регулярное выражение:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>

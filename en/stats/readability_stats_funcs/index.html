@@ -3114,17 +3114,18 @@
 
 
 <h1 id="metric-functions">Metric functions<a class="headerlink" href="#metric-functions" title="Permanent link">&para;</a></h1>
+<p>The coefficients of the formulas are parameters; the defaults below are those adapted for Russian. A formula of counts gives <code>nan</code> when the number of words or of sentences it divides by is zero.</p>
 <h2 id="flesch-kincaid-test">Flesch-Kincaid test<a class="headerlink" href="#flesch-kincaid-test" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_flesch_kincaid_grade()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch–Kincaid_grade_level">Flesch-Kincaid test</a>.</p>
-<p>The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.</p>
-<p>The default coefficients come from the current version of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project. Alternative coefficients for Russian are available through <a href="../readability_stats/#presets">presets</a>: Oborneva (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) and FKG_SIS of Solovyev, Ivanov and Solnyshkina (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
+<p>Computation of the Flesch-Kincaid grade (Kincaid et al., 1975).</p>
+<p>The years of schooling needed to read the text; the higher the value, the harder the text.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times\frac{\textrm{Number of syllables}}{\textrm{Number of words}}–C
+a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot \frac{\textrm{Number of syllables}}{\textrm{Number of words}} - c
 \]</div>
+<p>The default coefficients come from the current version of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project. Alternative coefficients for Russian are available through <a href="../readability_stats/#presets">presets</a>: Oborneva (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) and FKG_SIS of Solovyev, Ivanov and Solnyshkina (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3156,21 +3157,21 @@ a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times\fra
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.318</code></td>
-<td style="text-align: center;">Coefficient a</td>
+<td style="text-align: center;">Coefficient a, at the mean sentence length</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>14.2</code></td>
-<td style="text-align: center;">Coefficient b</td>
+<td style="text-align: center;">Coefficient b, at the mean word length</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>30.5</code></td>
-<td style="text-align: center;">Coefficient c</td>
+<td style="text-align: center;">Coefficient c, the constant</td>
 </tr>
 </tbody>
 </table>
@@ -3178,8 +3179,13 @@ a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times\fra
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_flesch_reading_easy()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch_reading_ease">Flesch reading ease</a>.</p>
-<p>The higher the value, the easier the text is to read. The index ranges from 0 to 100 and can be interpreted as follows:</p>
+<p>Computation of the Flesch reading ease (Flesch, 1948).</p>
+<p>The higher the value, the easier the text; the scale runs nominally from 0 to 100, though the simplest texts go above 100 and the hardest below 0.</p>
+<p>Formula:</p>
+<div class="arithmatex">\[
+c - a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} - b \cdot \frac{\textrm{Number of syllables}}{\textrm{Number of words}}
+\]</div>
+<p>The values can be interpreted as follows:</p>
 <table>
 <thead>
 <tr>
@@ -3219,10 +3225,6 @@ a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times\fra
 </tbody>
 </table>
 <p>The default coefficients are Oborneva's (2005/2006, variant A). Variant B of the same works (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), used by the Kazan group, is available through the <code>academic</code> preset.</p>
-<p>Formula:</p>
-<div class="arithmatex">\[
-c–a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}-b\times\frac{\textrm{Number of syllables}}{\textrm{Number of words}}
-\]</div>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3254,21 +3256,21 @@ c–a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}-b\times
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.3</code></td>
-<td style="text-align: center;">Coefficient a</td>
+<td style="text-align: center;">Coefficient a, at the mean sentence length</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>60.1</code></td>
-<td style="text-align: center;">Coefficient b</td>
+<td style="text-align: center;">Coefficient b, at the mean word length</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>206.835</code></td>
-<td style="text-align: center;">Coefficient c</td>
+<td style="text-align: center;">Coefficient c, the constant</td>
 </tr>
 </tbody>
 </table>
@@ -3276,12 +3278,13 @@ c–a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}-b\times
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_coleman_liau_index()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Coleman–Liau_index">Coleman-Liau index</a>.</p>
-<p>The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.</p>
+<p>Computation of the Coleman-Liau index (Coleman and Liau, 1975).</p>
+<p>The years of schooling needed to read the text from the letters and the sentences per 100 words; the higher the value, the harder the text.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}–c
+a \cdot \frac{100 \cdot \textrm{Number of letters}}{\textrm{Number of words}} - b \cdot \frac{100 \cdot \textrm{Number of sentences}}{\textrm{Number of words}} - c
 \]</div>
+<p>The default coefficients come from the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3297,7 +3300,7 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Number of letters</td>
+<td style="text-align: center;">Number of letters of the words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3313,21 +3316,21 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>6.26</code></td>
-<td style="text-align: center;">Coefficient a</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.055</code></td>
+<td style="text-align: center;">Coefficient a, at the letters per 100 words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>0.2805</code></td>
-<td style="text-align: center;">Coefficient b</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>0.35</code></td>
+<td style="text-align: center;">Coefficient b, at the sentences per 100 words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>31.04</code></td>
-<td style="text-align: center;">Coefficient c</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>20.33</code></td>
+<td style="text-align: center;">Coefficient c, the constant</td>
 </tr>
 </tbody>
 </table>
@@ -3335,16 +3338,16 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_smog_index()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/SMOG">SMOG index</a> (Simple Measure of Gobbledygook). The most authoritative readability metric.</p>
-<p>The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The formula coefficients were derived for a complex word threshold of 5 syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables to the function rather than the <code>n_complex_words</code> attribute of <code>BasicStats</code>.</p>
-</div>
+<p>Computation of the SMOG index (McLaughlin, 1969).</p>
+<p>The years of schooling needed to read the text from the polysyllabic words per sentence; the higher the value, the harder the text. In the original formula the polysyllabic words have three or more syllables and <code>b</code> brings their number to a sample of 30 sentences.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-a\times\sqrt{b\times\frac{\textrm{Number of complex words}}{\textrm{Number of sentences}}}+c
+a \cdot \sqrt{b \cdot \frac{\textrm{Number of polysyllabic words}}{\textrm{Number of sentences}}} + c
 \]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project were fitted for complex words of five or more syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>) to the function rather than the <code>n_complex_words</code> attribute of <code>BasicStats</code>.</p>
+</div>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3370,21 +3373,21 @@ a\times\sqrt{b\times\frac{\textrm{Number of complex words}}{\textrm{Number of se
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>1.1</code></td>
-<td style="text-align: center;">Coefficient a</td>
+<td style="text-align: center;">Coefficient a, at the square root</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>64.6</code></td>
-<td style="text-align: center;">Coefficient b</td>
+<td style="text-align: center;">Coefficient b, under the square root</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.05</code></td>
-<td style="text-align: center;">Coefficient c</td>
+<td style="text-align: center;">Coefficient c, the constant</td>
 </tr>
 </tbody>
 </table>
@@ -3392,8 +3395,13 @@ a\times\sqrt{b\times\frac{\textrm{Number of complex words}}{\textrm{Number of se
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_automated_readability_index()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Automated_readability_index">automated readability index</a>.</p>
-<p>The higher the value, the harder the text is to read. The result is the age needed to understand the text. The index can be interpreted as follows:</p>
+<p>Computation of the automated readability index (Smith and Senter, 1967).</p>
+<p>The years of schooling needed to read the text from the letters per word and the words per sentence; the higher the value, the harder the text.</p>
+<p>Formula:</p>
+<div class="arithmatex">\[
+a \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} - c
+\]</div>
+<p>The grade can be read as reader age:</p>
 <table>
 <thead>
 <tr>
@@ -3460,10 +3468,7 @@ a\times\sqrt{b\times\frac{\textrm{Number of complex words}}{\textrm{Number of se
 </tr>
 </tbody>
 </table>
-<p>Formula:</p>
-<div class="arithmatex">\[
-a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}–c
-\]</div>
+<p>The default coefficients come from the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3479,7 +3484,7 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Number of letters</td>
+<td style="text-align: center;">Number of letters of the words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3495,21 +3500,21 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>6.26</code></td>
-<td style="text-align: center;">Coefficient a</td>
+<td style="text-align: center;">Coefficient a, at the letters per word</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.2805</code></td>
-<td style="text-align: center;">Coefficient b</td>
+<td style="text-align: center;">Coefficient b, at the mean sentence length</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>31.04</code></td>
-<td style="text-align: center;">Coefficient c</td>
+<td style="text-align: center;">Coefficient c, the constant</td>
 </tr>
 </tbody>
 </table>
@@ -3517,49 +3522,41 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_lix()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Lix_(readability_test)">LIX readability index</a>.</p>
-<p>The higher the value, the harder the text is to read. The index ranges from 0 to 100 and can be interpreted as follows:</p>
+<p>Computation of the LIX readability index (Björnsson, 1968).</p>
+<p>The mean sentence length plus the percentage of long words, the words of more than six letters; there are no coefficients to fit. The higher the value, the harder the text:</p>
 <table>
 <thead>
 <tr>
-<th>Value</th>
-<th>Difficulty level</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: left;">Text</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>4.9 and below</code></td>
-<td>up to grade 4</td>
+<td style="text-align: center;"><code>0-30</code></td>
+<td style="text-align: left;">very easy texts, children's books</td>
 </tr>
 <tr>
-<td><code>5.0-5.9</code></td>
-<td>grades 5-6</td>
+<td style="text-align: center;"><code>30-40</code></td>
+<td style="text-align: left;">easy texts, fiction, newspaper articles</td>
 </tr>
 <tr>
-<td><code>6.0-6.9</code></td>
-<td>grades 7-8</td>
+<td style="text-align: center;"><code>40-50</code></td>
+<td style="text-align: left;">texts of medium difficulty, magazine articles</td>
 </tr>
 <tr>
-<td><code>7.0-7.9</code></td>
-<td>grades 9-10</td>
+<td style="text-align: center;"><code>50-60</code></td>
+<td style="text-align: left;">hard texts, popular science, official texts</td>
 </tr>
 <tr>
-<td><code>8.0-8.9</code></td>
-<td>grades 11-12</td>
-</tr>
-<tr>
-<td><code>9.0-9.9</code></td>
-<td>College</td>
+<td style="text-align: center;"><code>60-100</code></td>
+<td style="text-align: left;">very hard texts, laws and bureaucratic language</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the canonical formula a long word is longer than 6 letters, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 7 letters to the function rather than the <code>n_long_words</code> attribute of <code>BasicStats</code>.</p>
-</div>
 <p>Formula:</p>
 <div class="arithmatex">\[
-\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\times\frac{\textrm{Number of long words}}{\textrm{Number of words}}
+\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \frac{100 \cdot \textrm{Number of long words}}{\textrm{Number of words}}
 \]</div>
 <p>Parameters:</p>
 <table>
@@ -3592,78 +3589,78 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>n_long_words</code> attribute of the ruTS <code>BasicStats</code> counts words of six or more letters, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 7 letters to the function instead.</p>
+</div>
 <h2 id="rix-readability-index">RIX readability index<a class="headerlink" href="#rix-readability-index" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_rix()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Lix_(readability_test)">RIX readability index</a>.</p>
-<p>A simplified, language-independent companion of the LIX index (Anderson, 1983). The higher the value, the harder the text is to read. The index can be interpreted as follows:</p>
+<p>Computation of the RIX readability index (Anderson, 1983).</p>
+<p>The long words, of more than six letters, per sentence; there are no coefficients to fit. The higher the value, the harder the text:</p>
 <table>
 <thead>
 <tr>
-<th>Value</th>
-<th>Difficulty level</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Grade</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>&lt; 0.2</code></td>
-<td>grade 1</td>
+<td style="text-align: center;"><code>&lt; 0.2</code></td>
+<td style="text-align: center;">1</td>
 </tr>
 <tr>
-<td><code>0.2-0.5</code></td>
-<td>grade 2</td>
+<td style="text-align: center;"><code>0.2-0.5</code></td>
+<td style="text-align: center;">2</td>
 </tr>
 <tr>
-<td><code>0.5-0.8</code></td>
-<td>grade 3</td>
+<td style="text-align: center;"><code>0.5-0.8</code></td>
+<td style="text-align: center;">3</td>
 </tr>
 <tr>
-<td><code>0.8-1.3</code></td>
-<td>grade 4</td>
+<td style="text-align: center;"><code>0.8-1.3</code></td>
+<td style="text-align: center;">4</td>
 </tr>
 <tr>
-<td><code>1.3-1.8</code></td>
-<td>grade 5</td>
+<td style="text-align: center;"><code>1.3-1.8</code></td>
+<td style="text-align: center;">5</td>
 </tr>
 <tr>
-<td><code>1.8-2.4</code></td>
-<td>grade 6</td>
+<td style="text-align: center;"><code>1.8-2.4</code></td>
+<td style="text-align: center;">6</td>
 </tr>
 <tr>
-<td><code>2.4-3.0</code></td>
-<td>grade 7</td>
+<td style="text-align: center;"><code>2.4-3.0</code></td>
+<td style="text-align: center;">7</td>
 </tr>
 <tr>
-<td><code>3.0-3.7</code></td>
-<td>grade 8</td>
+<td style="text-align: center;"><code>3.0-3.7</code></td>
+<td style="text-align: center;">8</td>
 </tr>
 <tr>
-<td><code>3.7-4.5</code></td>
-<td>grade 9</td>
+<td style="text-align: center;"><code>3.7-4.5</code></td>
+<td style="text-align: center;">9</td>
 </tr>
 <tr>
-<td><code>4.5-5.3</code></td>
-<td>grade 10</td>
+<td style="text-align: center;"><code>4.5-5.3</code></td>
+<td style="text-align: center;">10</td>
 </tr>
 <tr>
-<td><code>5.3-6.2</code></td>
-<td>grade 11</td>
+<td style="text-align: center;"><code>5.3-6.2</code></td>
+<td style="text-align: center;">11</td>
 </tr>
 <tr>
-<td><code>6.2-7.2</code></td>
-<td>grade 12</td>
+<td style="text-align: center;"><code>6.2-7.2</code></td>
+<td style="text-align: center;">12</td>
 </tr>
 <tr>
-<td><code>&gt; 7.2</code></td>
-<td>College</td>
+<td style="text-align: center;"><code>&gt; 7.2</code></td>
+<td style="text-align: center;">college</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>As for LIX, a long word is longer than 6 letters, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 7 letters to the function.</p>
-</div>
 <p>Formula:</p>
 <div class="arithmatex">\[
 \frac{\textrm{Number of long words}}{\textrm{Number of sentences}}
@@ -3693,6 +3690,10 @@ a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As for LIX, <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 7 letters to the function.</p>
+</div>
 <h2 id="solovyev-ivanov-and-solnyshkina-formula">Solovyev, Ivanov and Solnyshkina formula<a class="headerlink" href="#solovyev-ivanov-and-solnyshkina-formula" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_sis_grade()</strong></p>
@@ -3753,7 +3754,7 @@ a+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+c\times\f
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Number of letters</td>
+<td style="text-align: center;">Number of letters of the words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3769,19 +3770,19 @@ a+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+c\times\f
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>-17.5</code></td>
 <td style="text-align: center;">Coefficient a (intercept)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.56</code></td>
 <td style="text-align: center;">Coefficient b (of the mean sentence length)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>2.45</code></td>
 <td style="text-align: center;">Coefficient c (of the mean word length)</td>
 </tr>
@@ -3846,7 +3847,7 @@ a+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+c\times\f
 <td style="text-align: center;"><code>n_letters</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Number of letters</td>
+<td style="text-align: center;">Number of letters of the words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_words</code></td>
@@ -3937,19 +3938,19 @@ a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times100\
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.62</code></td>
 <td style="text-align: center;">Coefficient a (of the mean sentence length)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.123</code></td>
 <td style="text-align: center;">Coefficient b (of the share of complex words)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.051</code></td>
 <td style="text-align: center;">Coefficient c (intercept)</td>
 </tr>
@@ -3964,7 +3965,7 @@ a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times100\
 <p>The original formula uses a list of 3000 familiar words; no such free list exists for Russian, so the adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project is applied, where the share of complex words replaces the share of unfamiliar words. The original formula coefficients are <code>0.1579</code> and <code>0.0496</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A complex word has more than four syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables to the function.</p>
+<p>A complex word has five or more syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>) to the function.</p>
 </div>
 <p>Formula:</p>
 <div class="arithmatex">\[
@@ -4001,13 +4002,13 @@ a\times100\times\frac{\textrm{Number of complex words}}{\textrm{Number of words}
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.552</code></td>
 <td style="text-align: center;">Coefficient a (of the share of complex words)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.273</code></td>
 <td style="text-align: center;">Coefficient b (of the mean sentence length)</td>
 </tr>
@@ -4017,16 +4018,17 @@ a\times100\times\frac{\textrm{Number of complex words}}{\textrm{Number of words}
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_gunning_fog_index()</strong></p>
 </div>
-<p>Computation of the <a href="https://en.wikipedia.org/wiki/Gunning_fog_index">Gunning fog index</a> (Gunning, 1952).</p>
-<p>The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text. The adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project is used. SEO services additionally multiply the result by <code>0.78</code>; no justification for this multiplier has been published.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A complex word has more than four syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables to the function.</p>
-</div>
+<p>Computation of the Gunning fog index (Gunning, 1952).</p>
+<p>The years of schooling needed to read the text from the mean sentence length and the percentage of complex words, in the original formula the words of three or more syllables; the higher the value, the harder the text.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\times\frac{\textrm{Number of complex words}}{\textrm{Number of words}}\right)
+a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \frac{100 \cdot \textrm{Number of complex words}}{\textrm{Number of words}}\right)
 \]</div>
+<p>The adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project is used. SEO services additionally multiply the result by <code>0.78</code>; no justification for this multiplier has been published.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A complex word has five or more syllables, so <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 5 syllables (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>) to the function.</p>
+</div>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -4058,7 +4060,7 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 </tr>
 <tr>
 <td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.4</code></td>
 <td style="text-align: center;">Coefficient a</td>
 </tr>
@@ -4068,7 +4070,8 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 <div class="admonition info">
 <p><strong>ruts.readability_stats.flesch_reading_easy_to_grade()</strong></p>
 </div>
-<p>Conversion of the Flesch reading ease into a school grade for inclusion in the <a href="#calc_consensus_grade">consensus grade</a>, by analogy with <code>text_standard</code> of the <a href="https://github.com/textstat/textstat">textstat</a> library:</p>
+<p>Conversion of the Flesch reading ease into years of schooling for the consensus grade: the grade of the first band whose lower bound the value reaches, or <code>below</code> under the last bound; values above 100 belong to the first band.</p>
+<p>The default bands are those of <code>text_standard</code> of the <a href="https://github.com/textstat/textstat">textstat</a> library (<code>anyts.constants.READING_EASE_GRADES</code>):</p>
 <table>
 <thead>
 <tr>
@@ -4111,7 +4114,6 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 </tr>
 </tbody>
 </table>
-<p>Values above 100 map to grade 5.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -4129,14 +4131,25 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Flesch reading ease value</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>grades</code></td>
+<td style="text-align: center;">list[tuple[float, float]]</td>
+<td style="text-align: center;"><code>READING_EASE_GRADES</code></td>
+<td style="text-align: center;">Lower bounds and their grades in descending order of the bounds</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>below</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>13</code></td>
+<td style="text-align: center;">Grade below the last bound</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_consensus_grade">Consensus grade<a class="headerlink" href="#calc_consensus_grade" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_consensus_grade()</strong></p>
 </div>
-<p>Computation of the consensus grade - the median of the rounded grade formula values. An analog of <code>text_standard</code> in textstat, which uses the mode instead of the median; the median is more robust to outliers of individual formulas. Formula values are rounded arithmetically (half up). The Flesch index is <a href="#flesch_reading_easy_to_grade">converted to a grade</a> and added without rounding, so for the 60-70 range it votes for 8.5.</p>
-<p><a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a> passes the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula and the Flesch index to the function.</p>
+<p>Computation of the consensus grade: the median of the values of the grade formulas rounded half up, together with the reading ease converted into years of schooling by <code>to_grade</code> and added without rounding - so a band of 8.5 votes for 8.5. No values at all and a grade that is not a finite number raise <code>ParameterError</code>, a <code>to_grade</code> that is not callable <code>SourceTypeError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -4152,21 +4165,29 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 <td style="text-align: center;"><code>grades</code></td>
 <td style="text-align: center;">list[float]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Grade formula values</td>
+<td style="text-align: center;">Values of the grade formulas</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>flesch_reading_easy</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Flesch reading ease value</td>
+<td style="text-align: center;">Value of the reading ease</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>to_grade</code></td>
+<td style="text-align: center;">Callable</td>
+<td style="text-align: center;"><code>flesch_reading_easy_to_grade</code></td>
+<td style="text-align: center;">Conversion of the reading ease into years of schooling</td>
 </tr>
 </tbody>
 </table>
+<p>An analog of <code>text_standard</code> in textstat, which uses the mode instead of the median; the median is more robust to outliers of individual formulas. <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a> passes the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula and the Flesch index to the function.</p>
 <h2 id="grade_to_age">Grade and reader age<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.grade_to_age()</strong></p>
 </div>
-<p>Getting the school grade and reader age from a grade formula value. The mapping is taken from the <code>GRADE_TEXT</code> table of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project and is available in the <code>ruts.constants.GRADE_AGE_LEVELS</code> table:</p>
+<p>The school stage and reader age by the value of a grade formula: the value is rounded half up and falls into the first stage whose last year it does not exceed, values below 1 into the first stage; above the last stage lies <code>above</code>. A grade that is not a finite number raises <code>ParameterError</code>.</p>
+<p>The default stages of ruTS are taken from the <code>GRADE_TEXT</code> table of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project (<code>ruts.constants.GRADE_AGE_LEVELS</code> and <code>POSTGRADUATE_LEVEL</code>):</p>
 <table>
 <thead>
 <tr>
@@ -4213,7 +4234,6 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 </tr>
 </tbody>
 </table>
-<p>The value is rounded arithmetically, values below 1 map to grades 1-3.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -4231,13 +4251,26 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Grade formula value</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>levels</code></td>
+<td style="text-align: center;">list[tuple[int, int, str, str]]</td>
+<td style="text-align: center;"><code>GRADE_AGE_LEVELS</code></td>
+<td style="text-align: center;">Stages as the first and the last year, the stage and the age, in ascending order</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>above</code></td>
+<td style="text-align: center;">tuple[str, str]</td>
+<td style="text-align: center;"><code>POSTGRADUATE_LEVEL</code></td>
+<td style="text-align: center;">Stage and age above the last stage</td>
+</tr>
 </tbody>
 </table>
 <h2 id="calc_reading_time">Reading time<a class="headerlink" href="#calc_reading_time" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_reading_time()</strong></p>
 </div>
-<p>Computation of the reading time of a text in minutes. The silent reading norm for an adult is 120-180 words per minute (Kuznetsov and Khromov, 1991); the upper bound is used by default. The reading-aloud norms for primary school by the Russian federal standard are available in the <code>ruts.constants.READING_SPEED_NORMS</code> table:</p>
+<p>Computation of the reading time of a text in minutes: the number of words divided by the reading speed; a speed that is not a positive number raises <code>ParameterError</code>.</p>
+<p>The silent reading norm for an adult is 120-180 words per minute (Kuznetsov and Khromov, 1991); the upper bound is used by default. The reading-aloud norms for primary school by the Russian federal standard are available in the <code>ruts.constants.READING_SPEED_NORMS</code> table:</p>
 <table>
 <thead>
 <tr>
@@ -4268,10 +4301,6 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 </tr>
 </tbody>
 </table>
-<p>Formula:</p>
-<div class="arithmatex">\[
-\frac{\textrm{Number of words}}{\textrm{Reading speed}}
-\]</div>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -4291,7 +4320,7 @@ a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\t
 </tr>
 <tr>
 <td style="text-align: center;"><code>wpm</code></td>
-<td style="text-align: center;">int</td>
+<td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>180</code></td>
 <td style="text-align: center;">Reading speed, words per minute</td>
 </tr>

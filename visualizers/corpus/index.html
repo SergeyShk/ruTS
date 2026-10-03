@@ -2875,8 +2875,10 @@
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Графики к <a href="../../corpus/keyness/">корпусным мерам</a>: лексическая дисперсия - где в тексте встречается слово, диаграмма ключевых слов по результатам <a href="../../corpus/keyness/"><code>keyness</code></a> и сеть коллокаций по результатам <a href="../../corpus/collocations/"><code>collocations</code></a>. Функции matplotlib принимают оси <code>ax</code> и возвращают <code>Axes</code>: без <code>ax</code> создается новая фигура, с <code>ax</code> график ложится в сетку пользователя; сеть коллокаций строится graphviz и возвращает <code>Graph</code>, как <a href="../word_tree/">дерево слов</a>.</p>
+<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/corpus/">anyTS</a> с русскими подписями графиков matplotlib из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них, а пара строк, переданная <code>keyness_plot</code>, заменяет две подписи легенды, остальные остаются русскими.</p>
 <h2 id="dispersion_plot">Лексическая дисперсия<a class="headerlink" href="#dispersion_plot" title="Permanent link">&para;</a></h2>
-<p>Строка на каждое слово из <code>targets</code>, штрих на позиции каждого его вхождения в текст - как <code>dispersion_plot</code> в NLTK и <code>textplot_xray</code> в quanteda. Слова сравниваются как есть: регистр и лемматизация на стороне <a href="../../extractors/words/"><code>WordsExtractor</code></a>, поиск по лемме - через <code>use_lexemes=True</code>.</p>
+<!-- core: visualizers/corpus.md:dispersion_plot 604b589 -->
+<p>Строка на каждое слово из <code>targets</code> и штрих на позиции каждого его вхождения в текст. Слова сравниваются как есть: регистр и лемматизация - на стороне извлечения слов.</p>
 <table>
 <thead>
 <tr>
@@ -2897,7 +2899,7 @@
 <td style="text-align: center;"><code>targets</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слова, вхождения которых нужно показать</td>
+<td style="text-align: center;">Слова, вхождения которых показываются</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2905,10 +2907,18 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси для графика</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code></td>
+</tr>
 </tbody>
 </table>
+<p>Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>: в нижнем регистре - с <code>lowercase=True</code>, леммы - с <code>use_lexemes=True</code>.</p>
 <h2 id="keyness_plot">Диаграмма ключевых слов<a class="headerlink" href="#keyness_plot" title="Permanent link">&para;</a></h2>
-<p>Расходящиеся горизонтальные столбцы (quanteda <code>textplot_keyness</code>): слова из <code>positive</code> вправо, из <code>negative</code> (результат <code>keyness</code> с <code>positive=False</code>) влево, длина столбца - модуль значения поля <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), так что сторона задается списком, а не знаком меры; по <code>top_n</code> слов с каждой стороны, слова с неопределенным или бесконечным значением пропускаются. Для отношения шансов (<code>score</code> от 0 до бесконечности, единица - шансы равны) задайте <code>log=True</code>: откладывается модуль <span class="arithmatex">\(\log_2\)</span> значения, симметричный относительно единицы.</p>
+<!-- core: visualizers/corpus.md:keyness_plot e860f91 -->
+<p>Расходящиеся горизонтальные столбцы: слова из <code>positive</code> вправо, из <code>negative</code> - результата <code>keyness</code> с <code>positive=False</code> - влево, длина столбца - модуль значения поля <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), так что сторона задается списком, а не знаком меры; по <code>top_n</code> слов с каждой стороны, слова с неопределенным или бесконечным значением пропускаются. Для отношения шансов (<code>score</code> от 0 до бесконечности, единица - шансы равны) задайте <code>log=True</code>: откладывается модуль <span class="arithmatex">\(\log_2\)</span> значения, симметричный относительно единицы.</p>
 <table>
 <thead>
 <tr>
@@ -2939,9 +2949,9 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>labels</code></td>
-<td style="text-align: center;">tuple[str, str]</td>
-<td style="text-align: center;"><code>("целевой корпус", "эталонный корпус")</code></td>
-<td style="text-align: center;">Подписи легенды</td>
+<td style="text-align: center;">dict[str, str]/tuple[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code> и <code>xlabel_log</code> (строки формата с <code>field</code>), <code>target</code> и <code>reference</code> (легенда); пара строк задает только легенду</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>field</code></td>
@@ -2964,7 +2974,8 @@
 </tbody>
 </table>
 <h2 id="collocation_network">Сеть коллокаций<a class="headerlink" href="#collocation_network" title="Permanent link">&para;</a></h2>
-<p>Неориентированный граф (quanteda <code>textplot_network</code>): узлы - слова с размером шрифта по частоте, ребра - пары с толщиной по значению меры и подписью; раскладка <code>neato</code>. Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>; в Jupyter граф отображается сам, <code>graph.render("network", format="png")</code> сохраняет файл.</p>
+<!-- core: visualizers/corpus.md:collocation_network 080cdcf -->
+<p>Неориентированный граф: узлы - слова с размером шрифта по частоте, ребра - пары с толщиной и подписью по значению меры; раскладка <code>neato</code>. Пара слова с самим собой - слово, повторенное внутри окна, - была бы петлей и отбрасывается до того, как берутся <code>top_n</code> пар. Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>; в Jupyter граф отображается сам, а <code>graph.render("network")</code> сохраняет файл png.</p>
 <table>
 <thead>
 <tr>

@@ -788,7 +788,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -797,6 +797,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2815,7 +2826,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2824,6 +2835,17 @@
       
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Параметры
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2886,16 +2908,12 @@
 <p><strong>ruts.extractors.WordsExtractor</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для извлечения слов из текста. Позволяет использовать различные токенизаторы, фильтровать стоп-слова, числа и знаки препинания, проводить лемматизацию, формировать N-граммы, а также настраивать минимальную и максимальную длину извлекаемых слов.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>В качестве токенизитора по умолчанию используется функция <code>tokenize</code> из библиотеки <a href="https://github.com/natasha/razdel">razdel</a>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>В качестве морфологического анализитора для лемматизации по умолчанию используется класс <code>MorphAnalyzer</code> из библиотеки <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>.</p>
-</div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: extractors/words.md:WordsExtractor 912c6ba -->
+<p>Класс для извлечения слов из текста. Позволяет использовать различные токенизаторы, фильтровать стоп-слова, числа и знаки препинания, проводить лемматизацию, формировать N-граммы, а также настраивать минимальную и максимальную длину извлекаемых слов.</p>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>WordsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/words/">anyTS</a> крючками русского языка: токенизатор <code>tokenize(text)</code> - функция <code>tokenize</code> библиотеки <a href="https://github.com/natasha/razdel">razdel</a> с отделением приклеенных к словам тире реплик (<code>ruts.utils.iter_tokens</code>), лемма <code>lemmatize(word)</code> - первый разбор <code>MorphAnalyzer</code> библиотеки <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>, а шаблон чисел <code>number_pattern</code> подходит и к диапазонам, дробям и порядковым числительным: <code>2020-2021</code>, <code>5.5</code>, <code>1,5</code>, <code>3-й</code>, <code>90-х</code>.</p>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: extractors/words.md:WordsExtractor-parameters a447ca0 -->
 <table>
 <thead>
 <tr>
@@ -2908,9 +2926,9 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>tokenizer</code></td>
-<td style="text-align: center;">Pattern/Сallable</td>
+<td style="text-align: center;">Pattern/Callable</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Токенизатор или регулярное выражение</td>
+<td style="text-align: center;">Токенизатор или регулярное выражение; по умолчанию метод <code>tokenize</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>filter_punct</code></td>
@@ -2922,19 +2940,19 @@
 <td style="text-align: center;"><code>filter_nums</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Фильтровать числа, в том числе диапазоны, дроби и порядковые числительные (2020-2021, 5.5, 1,5, 3-й)</td>
+<td style="text-align: center;">Фильтровать числа, подходящие под <code>number_pattern</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>use_lexemes</code></td>
 <td style="text-align: center;">bool</td>
 <td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Использовать леммы слов</td>
+<td style="text-align: center;">Использовать леммы слов метода <code>lemmatize</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">Collection[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Стоп-слова (список или множество)</td>
+<td style="text-align: center;">Стоп-слова, сравниваются без учета регистра</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>lowercase</code></td>
@@ -2952,22 +2970,23 @@
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Минимальная длина извлекаемого слова</td>
+<td style="text-align: center;">Минимальная длина извлекаемого слова в символах, <code>0</code> - без ограничения</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Максимальная длина извлекаемого слова</td>
+<td style="text-align: center;">Максимальная длина извлекаемого слова в символах, <code>0</code> - без ограничения</td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Стоп-слова сравниваются без учета регистра: «И» в начале предложения отбрасывается вместе с «и».</p>
+<p>Регулярное выражение в роли токенизатора - разделитель: текст режется через <code>re.split</code>. Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Список стоп-слов в нижнем регистре отбрасывает и слово с заглавной буквы в начале предложения. Знак препинания - токен целиком из знаков и символов, в том числе многосимвольный: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (см. <code>anyts.utils.is_punctuation</code>). Пустые и пробельные токены отбрасываются до фильтров. N-граммы соединяют слова через <code>_</code>.</p>
 </div>
-<h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
+<!-- core: extractors/words.md:WordsExtractor-extract 67c60e1 -->
 <p>Выполняет извлечение слов из текста.</p>
 <table>
 <thead>
@@ -2987,18 +3006,17 @@
 </tr>
 </tbody>
 </table>
-<p>Рассмотрим пример извлечения слов, используя в качестве токенов биграммы, а также выполнив предварительную фильтрацию стоп-слов и лемматизацию:</p>
+<p>Рассмотрим пример извлечения слов, используя в качестве токенов биграммы, а также выполнив предварительную фильтрацию стоп-слов и чисел и лемматизацию:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотеки</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 
 <span class="c1"># Подготовка данных</span>
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Не имей 100 рублей, а имей 100 друзей"</span>
 
-<span class="c1"># Извлечение предложений</span>
+<span class="c1"># Извлечение слов</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span>
     <span class="n">use_lexemes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="p">[</span><span class="s2">"не"</span><span class="p">,</span> <span class="s2">"а"</span><span class="p">],</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="p">)</span>
@@ -3009,7 +3027,30 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Позволяет получить счетчик топ-слов текста. В качестве параметров принимает количество выводимых топ-слов.</p>
+<!-- core: extractors/words.md:WordsExtractor-get_most_common a834177 -->
+<p>Возвращает топ-слова текста списком пар (слово, частота), начиная с самого частого.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Количество топ-слов</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Предупреждение</p>
+<p>Метод должен вызываться после извлечения слов методом <code>extract</code>.</p>
+</div>
 <p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -3022,10 +3063,6 @@
 <p><em>Результат</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">[(</span><span class="s1">'иметь'</span>,<span class="w"> </span><span class="m">2</span><span class="o">)</span>,<span class="w"> </span><span class="o">(</span><span class="s1">'рубль'</span>,<span class="w"> </span><span class="m">1</span><span class="o">)</span>,<span class="w"> </span><span class="o">(</span><span class="s1">'друг'</span>,<span class="w"> </span><span class="m">1</span><span class="o">)]</span>
 </code></pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для корректной работы метода, он должен вызываться после извлечения слов методом <code>extract</code>.</p>
 </div>
 
 

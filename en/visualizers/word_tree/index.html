@@ -2830,11 +2830,8 @@
 <p><strong>ruts.visualizers.wordtree()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Building a <a href="https://www.weblyzard.com/word-tree/">word tree</a> (Word Tree) that shows the context of a given keyword in a text.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The word tree is described in detail in this <a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">paper</a>.</p>
-</div>
+<p>Building a <a href="https://www.weblyzard.com/word-tree/">word tree</a> that shows the contexts of a keyword in a text: the N-grams of up to <code>max_n</code> words that start or end with the keyword are counted in every list of words - a sentence, for instance. Every level of the tree keeps the <code>max_per_n</code> most frequent N-grams that continue a kept shorter one, alphabetically when equal. The kept N-grams are joined into two trees, the words after the keyword and before it, with the size of the font by frequency (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg and Viégas 2008</a>). Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>.</p>
+<p>The function is that of the <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a> core.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2848,43 +2845,43 @@
 <tbody>
 <tr>
 <td style="text-align: center;"><code>texts</code></td>
-<td style="text-align: center;">List[List[str]]</td>
+<td style="text-align: center;">list[list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">List of word lists</td>
+<td style="text-align: center;">List of lists of words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>keyword</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Keyword whose context is searched</td>
+<td style="text-align: center;">Keyword whose contexts are shown</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>5</code></td>
-<td style="text-align: center;">Maximum context size</td>
+<td style="text-align: center;">Largest size of the context</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_per_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>8</code></td>
-<td style="text-align: center;">Maximum number of examples for each context size</td>
+<td style="text-align: center;">Largest number of examples for every size of the context</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>**kwargs</code></td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Drawing parameters: <code>max_font_size</code> (default <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - a function interpolating the font size from frequency</td>
+<td style="text-align: center;">Drawing parameters: <code>max_font_size</code> (default <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - a function of the relative frequency of a node, its frequency over the greatest one (0 to 1], that gives the share of the range from <code>min_font_size</code> to <code>max_font_size</code>, from 0 to 1; the cube root by default</td>
 </tr>
 </tbody>
 </table>
+<p>The function returns a <code>Digraph</code> of graphviz.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
-<p>Let us look at the visualizer on 100 texts of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset.</p>
+<p>Let us look at the visualizer on the sentences of 50 texts of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span><span class="p">,</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StalinWorks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">wordtree</span>
@@ -2894,7 +2891,6 @@
 <span class="n">se</span> <span class="o">=</span> <span class="n">SentsExtractor</span><span class="p">()</span>
 <span class="n">we</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">sw</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)]</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
 
 <span class="c1"># Build the list of word lists</span>
 <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2907,14 +2903,10 @@
 <span class="n">g</span> <span class="o">=</span> <span class="n">wordtree</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="s2">"рабочий"</span><span class="p">,</span> <span class="n">max_n</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 
 <span class="c1"># Save the visualization to disk</span>
-<span class="n">g</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="s2">".gv"</span><span class="p">))</span>
+<span class="n">g</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">"wordtree"</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"png"</span><span class="p">)</span>
 </code></pre></div>
 <p><em>Result</em>:</p>
 <p><img alt="ruts" class="center" src="../../../img/wordtree.png" /></p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Viewing the visualization requires the <code>Graphviz</code> tool to be installed.</p>
 </div>
 
 

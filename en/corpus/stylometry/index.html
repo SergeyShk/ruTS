@@ -2896,10 +2896,13 @@
 <p><strong>ruts.corpus.delta()</strong>, <strong>ruts.corpus.delta_profiles()</strong>, <strong>ruts.corpus.frequency_table()</strong>, <strong>ruts.corpus.z_scores()</strong>, <strong>ruts.corpus.zeta()</strong>, <strong>ruts.corpus.kilgarriff_chi2()</strong>, <strong>ruts.corpus.mendenhall_curve()</strong>, <strong>ruts.corpus.mendenhall_distance()</strong>, <strong>ruts.corpus.function_words_profile()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Measures of stylometry and authorship attribution: distances between texts by the frequencies of the most frequent words (Burrows's Delta and its variants, as in <a href="https://github.com/computationalstylistics/stylo">stylo</a>), markers of preferred and avoided words (Zeta), Kilgarriff's chi-square distance between corpora, the Mendenhall curve and the function word profile as author features. The functions work on lists of text units: lowercased word forms (the usual choice for Delta), lemmas or character N-grams (<a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>) - case and lemmatization are up to the extractor.</p>
+<p>Measures of stylometry and authorship attribution: distances between texts by the frequencies of the most frequent words (Burrows's Delta and its variants, as in <a href="https://github.com/computationalstylistics/stylo">stylo</a>), markers of preferred and avoided words (Zeta), Kilgarriff's chi-square distance between corpora and the Mendenhall curve. The functions work on lists of units of a text: lower-case word forms (the usual choice for Delta), lemmas or character N-grams - case and lemmatization belong to the extractors.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/corpus/stylometry/">anyTS</a> core, with the <a href="#function_words_profile">profile of the function words</a> of Russian added as a feature of an author. The units of a text come from <a href="../../extractors/words/"><code>WordsExtractor</code></a> - word forms and lemmas - and <a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>.</p>
 <h2 id="delta">Burrows's Delta<a class="headerlink" href="#delta" title="Permanent link">&para;</a></h2>
-<p>A corpus is a dictionary "text name → units". <code>frequency_table</code> builds a table of relative frequencies: rows are texts, columns are the <code>n_mfw</code> most frequent units in descending order of mean relative frequency (ties broken alphabetically); <code>culling</code> keeps units occurring in at least the given share of texts, as in stylo. <code>z_scores</code> standardizes the columns with the sample standard deviation, like <code>scale()</code> in R; a column with identical frequencies in all texts gives zeros. <code>delta</code> computes a symmetric distance matrix from the z-scores (a <code>DataFrame</code> with text names) suitable for clustering and PCA; at least three texts are needed - with two, the z-scores degenerate to ±1 and all distances are equal.</p>
-<p>Variants (<code>DELTA_VARIANTS</code>), formulas after the stylo sources, <span class="arithmatex">\(n\)</span> - number of units, <span class="arithmatex">\(z_A\)</span>, <span class="arithmatex">\(z_B\)</span> - z-score vectors of the texts:</p>
+<p>A corpus is a dictionary "name of a text → units". <code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> builds the table of relative frequencies: rows are the texts, columns the <code>n_mfw</code> most frequent units by descending mean relative frequency (alphabetically when equal); <code>culling</code> keeps the units that occur in at least the given share of the texts, as in stylo.</p>
+<p><code>z_scores(table)</code> standardizes the columns with the sample standard deviation, like <code>scale()</code> of R; a column with the same frequency in every text gives zeros.</p>
+<p><code>delta</code> computes a symmetric matrix of distances from the z-scores (a <code>DataFrame</code> with the names of the texts); at least three texts are needed - with two, the z-scores degenerate to ±1/√2 and the distances do not depend on the frequencies.</p>
+<p>Variants (<code>anyts.constants.DELTA_VARIANTS</code>), with the formulas of the sources of stylo; <span class="arithmatex">\(n\)</span> is the number of units, <span class="arithmatex">\(z_A\)</span> and <span class="arithmatex">\(z_B\)</span> the vectors of z-scores of the texts:</p>
 <table>
 <thead>
 <tr>
@@ -2925,7 +2928,7 @@
 <tr>
 <td style="text-align: left;">Eder's Delta</td>
 <td style="text-align: left;"><code>eder</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\sum_i \frac{n - i + 2}{n} \lvert z_{A,i} - z_{B,i} \rvert\)</span>, <span class="arithmatex">\(i\)</span> - frequency rank of the unit</td>
+<td style="text-align: left;"><span class="arithmatex">\(\sum_i \frac{n - i + 2}{n} \lvert z_{A,i} - z_{B,i} \rvert\)</span>, <span class="arithmatex">\(i\)</span> - rank of the unit by frequency</td>
 <td style="text-align: left;">Eder, <code>dist.eder</code></td>
 </tr>
 <tr>
@@ -2936,7 +2939,7 @@
 </tr>
 </tbody>
 </table>
-<p>Cosine Delta gives the best clustering quality by author in the experiments of Evert et al.; Burrows's Delta is the classic choice. The number of units is usually 100 to 500 most frequent words; for character N-grams - 100-200.</p>
+<p>Cosine Delta clusters the texts by author best in the experiments of Evert et al. The usual number of units is 100 to 500 most frequent words, 100-200 for character N-grams.</p>
 <p>Parameters of <code>delta</code>:</p>
 <table>
 <thead>
@@ -2952,30 +2955,29 @@
 <td style="text-align: center;"><code>corpus</code></td>
 <td style="text-align: center;">dict[str, list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Units of the texts by text name</td>
+<td style="text-align: center;">Units of the texts by the names of the texts</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_mfw</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>100</code></td>
-<td style="text-align: center;">Number of the most frequent units; <code>None</code> - all</td>
+<td style="text-align: center;">Number of the most frequent units; <code>None</code> - all of them</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>variant</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>burrows</code></td>
-<td style="text-align: center;">Delta variant from <code>DELTA_VARIANTS</code></td>
+<td style="text-align: center;">Variant of Delta of <code>anyts.constants.DELTA_VARIANTS</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>culling</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.0</code></td>
-<td style="text-align: center;">Minimum share of texts a unit must occur in</td>
+<td style="text-align: center;">Smallest share of the texts a unit occurs in</td>
 </tr>
 </tbody>
 </table>
-<p><code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> and <code>z_scores(table)</code> take the same parameters and the table.</p>
-<p>For authorship attribution there is <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: the most frequent units, culling and the statistics for the z-scores are taken from the reference texts <code>reference</code> (author profiles) or from a separate set <code>statistics</code> - for example, from the training windows when the profiles are concatenated from them and the profiles themselves are too few to estimate the spread of frequencies; the texts under test <code>samples</code> are described in the same units and normalized with the same statistics; the result is the distances from the tested texts to the reference ones, the nearest reference in a row is the presumed author. Unlike <code>delta</code> over a joint vocabulary, the tested texts affect neither the unit list nor the normalization, and the result for a text does not depend on which other texts are passed along with it.</p>
+<p>For authorship attribution there is <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: the most frequent units, the culling and the statistics of the z-scores come from the reference texts <code>reference</code> (the profiles of the authors) or from a separate set <code>statistics</code> - for instance, the training windows when the profiles are too few to estimate the spread of the frequencies; the texts under test <code>samples</code> are described by the same units and scaled by the same statistics. The result is the distances from the texts under test to the reference ones, and the nearest reference in a row is the presumed author. Unlike in <code>delta</code>, the texts under test affect neither the units nor the scaling, so the result for a text does not depend on the texts passed along with it.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
@@ -3014,7 +3016,7 @@
 </code></pre></div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
-<p>Markers of preferred and avoided words after Burrows (2007) and Craig and Kinney (2009). Every text of both corpora is divided into segments of about <code>segment_size</code> words (the number of segments is the rounded ratio of the length to the size, at least one); for a word the share of segments of each corpus in which it occurs (<span class="arithmatex">\(DP\)</span>) is computed. Zeta is the difference of shares <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span> from −1 to 1 (<code>zeta.craig</code> in stylo notation; the classic Craig's Zeta <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span> is larger by one), logarithmic Zeta is <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch et al. 2018</a>), a zero share is replaced with half a segment. The list starts with the words preferred by the target corpus and ends with the avoided ones.</p>
+<p>Markers of preferred and avoided words after Burrows (2007) and Craig and Kinney (2009). Every text of both corpora is split into segments of about <code>segment_size</code> words (the number of segments is the ratio of the length to the size rounded half up, at least one), and for a word the share of the segments of each corpus where it occurs (<span class="arithmatex">\(DP\)</span>) is computed. Zeta is the difference of the shares <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span> from −1 to 1 (<code>zeta.craig</code> in the notation of stylo; the classic Zeta of Craig <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span> is greater by one), the logarithmic Zeta is <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch et al. 2018</a>), a zero share replaced by half a segment. The list starts with the words the target corpus prefers and ends with the avoided ones.</p>
 <table>
 <thead>
 <tr>
@@ -3041,17 +3043,17 @@
 <td style="text-align: center;"><code>segment_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>2000</code></td>
-<td style="text-align: center;">Segment size in words</td>
+<td style="text-align: center;">Size of a segment in words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>top_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of words from the start of the list; <code>None</code> - all</td>
+<td style="text-align: center;">Number of words from the start of the list; <code>None</code> - all of them</td>
 </tr>
 </tbody>
 </table>
-<p>The result is a list of <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> named tuples in descending Zeta order, ties broken by descending logarithmic Zeta and alphabetically.</p>
+<p>The result is a list of <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> named tuples by descending Zeta, by descending logarithmic Zeta and alphabetically when equal.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta</span>
@@ -3065,7 +3067,7 @@
 </code></pre></div>
 </div>
 <h2 id="kilgarriff_chi2">Kilgarriff's chi-square<a class="headerlink" href="#kilgarriff_chi2" title="Permanent link">&para;</a></h2>
-<p>The distance between two corpora after <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: for the <code>n_mfw</code> most frequent words of the joint corpus the expected frequencies in the corpora are proportional to their sizes, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> over the words and both corpora. The larger the value, the more the corpora differ; the value grows with corpus size, so pairs of corpora are comparable with each other at equal sizes, as in Kilgarriff's experiments.</p>
+<p>The distance between two corpora after <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: for the <code>n_mfw</code> most frequent words of the joint corpus the expected frequencies in the corpora are proportional to their sizes, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> over the words and both corpora. The greater the value, the more the corpora differ; the value grows with the size of the corpora, so pairs of corpora are comparable with each other at equal sizes.</p>
 <table>
 <thead>
 <tr>
@@ -3105,7 +3107,8 @@
 </code></pre></div>
 </div>
 <h2 id="mendenhall">Mendenhall curve<a class="headerlink" href="#mendenhall" title="Permanent link">&para;</a></h2>
-<p><code>mendenhall_curve(words)</code> - the shares of words of each length in characters (Mendenhall 1887), an author profile comparable between texts regardless of their size; <code>mendenhall_distance(words_a, words_b)</code> - the Jensen-Shannon distance with base 2 between the curves, from 0 (identical distributions) to 1.</p>
+<p><code>mendenhall_curve(words)</code> - the shares of the words of every length in characters (Mendenhall 1887), a profile of the author comparable between texts whatever their size.</p>
+<p><code>mendenhall_distance(words_a, words_b)</code> - the Jensen-Shannon distance with base 2 between the curves, from 0 (the distributions coincide) to 1.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">mendenhall_curve</span><span class="p">,</span> <span class="n">mendenhall_distance</span>
@@ -3118,7 +3121,25 @@
 </code></pre></div>
 </div>
 <h2 id="function_words_profile">Function word profile<a class="headerlink" href="#function_words_profile" title="Permanent link">&para;</a></h2>
-<p>The shares of adpositions, coordinating and subordinating conjunctions, particles, pronouns, determiners and interjections (<code>FUNCTION_UD_POS</code>: <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>) among the words of the text - by the first pymorphy3 analysis for a list of words and by the annotation for a <code>Doc</code> with parts of speech. Function words do not depend on the topic, so their profile is a classic authorship feature (the Marusenko school).</p>
+<p>The shares of adpositions, coordinating and subordinating conjunctions, particles, pronouns, determiners and interjections (<code>ruts.constants.FUNCTION_UD_POS</code>: <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>) among the words of the text - by the first pymorphy3 analysis for a list of words and by the annotation for a <code>Doc</code> with parts of speech; punctuation is not counted. Function words do not depend on the topic, so their profile is a classic authorship feature (the Marusenko school).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>source</code></td>
+<td style="text-align: center;">list[str]/Doc</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Words of the text or Doc object</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_words_profile</span>

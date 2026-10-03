@@ -2696,6 +2696,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Имена
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basicstatscomponent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2848,6 +2859,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#names" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Имена
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basicstatscomponent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2978,15 +3000,24 @@
 
 
 <h1 id="_1">Компоненты<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Набор модулей для создания компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>. Каждый модуль представляет собой класс с двумя реализованными методами: <code>__init__</code> (добавляет новое расширение в пайплайн при инициализации) и <code>__call__</code> (принимает объект класса <code>Doc</code> и возвращает его модифицированную версию). Компонент также настраивает токенизатор (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами.</p>
+<!-- core: components.md:StatsComponent e3962ed -->
+<p>Основа компонентов <a href="https://github.com/explosion/spaCy">spaCy</a>, которые кладут статистики текста в расширение <code>Doc</code>: компонент регистрирует расширение при добавлении в пайплайн, а для каждого документа вычисляет статистики и кладет их в <code>doc._.&lt;name&gt;</code>. Разработка компонентов в целом описана в <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации spaCy</a>.</p>
+<p>Компоненты ruTS - подклассы <code>StatsComponent</code> ядра <a href="https://sergeyshk.github.io/anyTS/components/">anyTS</a>, по одному на каждый класс статистик.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Подробную информацию о разработке пользовательских компонентов для spaCy можно узнать в соответствующем разделе <a href="https://spacy.io/usage/processing-pipelines#custom-components">документации</a>. Примеры ниже используют модель <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
+<p>Примеры ниже используют модель <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
 </div>
+<h2 id="names">Имена<a class="headerlink" href="#names" title="Permanent link">&para;</a></h2>
+<p>Фабрики носят префикс библиотеки: <code>ruts_basic</code>, <code>ruts_readability</code>, <code>ruts_diversity</code>, <code>ruts_morph</code>, <code>ruts_syntax</code>, <code>ruts_cohesion</code>, <code>ruts_lexical</code>, <code>ruts_style</code>, <code>ruts_phon</code>, <code>ruts_verse</code>. Они объявлены точками входа <code>spacy_factories</code>, поэтому пайплайн, сохраненный с этими компонентами (<code>nlp.to_disk(path)</code>), загружается через <code>spacy.load(path)</code> без <code>import ruts</code>.</p>
+<!-- core: components.md:StatsComponent-names 9314eeb -->
+<p>Имя компонента в пайплайне - это имя расширения: <code>nlp.add_pipe(factory, name="basic")</code> кладет статистики в <code>doc._.basic</code>. Без <code>name</code> компонент и расширение получают имя фабрики. Расширение следует за компонентом, когда пайплайн переименовывает его (<code>nlp.rename_pipe</code>), а имя, занятое расширением другого пакета, дает <code>ParameterError</code> вместо замены. Компонент, взятый из другого пайплайна (<code>add_pipe(name, source=other)</code>), - один и тот же объект в обоих, поэтому под новым именем он пишет и в то расширение в другом пайплайне; собственный компонент дает фабрика, <code>add_pipe(factory, name=...)</code>. Один и тот же компонент можно добавить дважды под разными именами, с разными параметрами. Документ без слов - пустая строка, пробелы, одни знаки препинания - проходит компонент нетронутым, а его расширение остается <code>None</code>.</p>
+<p>У <code>ruts_lexical</code> нетронутым проходит и документ из одних чисел, у <code>ruts_verse</code> - документ без букв.</p>
+<!-- core: components.md:StatsComponent-serialization d6d5068 -->
 <div class="admonition warning">
 <p class="admonition-title">Сериализация</p>
-<p>Компоненты кладут в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code> без компонентов ruTS.</p>
+<p>Компонент кладет в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code>, без компонентов.</p>
 </div>
+<p>Добавление компонента расширяет токенизатор его пайплайна правилами для приклеенных к словам тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами.</p>
 <h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.components.BasicStatsComponent</strong></p>

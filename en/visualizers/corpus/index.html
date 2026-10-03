@@ -2875,8 +2875,9 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Plots for the <a href="../../corpus/keyness/">corpus measures</a>: lexical dispersion - where in the text a word occurs, a keyness chart from the results of <a href="../../corpus/keyness/"><code>keyness</code></a> and a collocation network from the results of <a href="../../corpus/collocations/"><code>collocations</code></a>. The matplotlib functions take axes <code>ax</code> and return <code>Axes</code>: without <code>ax</code> a new figure is created, with <code>ax</code> the plot goes into the user's grid; the collocation network is built by graphviz and returns a <code>Graph</code>, like the <a href="../word_tree/">word tree</a>.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/corpus/">anyTS</a> core with the Russian labels of the matplotlib plots of <code>ruts.constants.VISUALIZER_LABELS</code> by default; <code>labels</code> puts the given labels over them, and a pair of strings given to <code>keyness_plot</code> replaces the two labels of the legend, the others staying Russian.</p>
 <h2 id="dispersion_plot">Lexical dispersion<a class="headerlink" href="#dispersion_plot" title="Permanent link">&para;</a></h2>
-<p>A row for every word of <code>targets</code>, a tick at the position of each of its occurrences in the text - like <code>dispersion_plot</code> in NLTK and <code>textplot_xray</code> in quanteda. Words are compared as they are: case and lemmatization are up to <a href="../../extractors/words/"><code>WordsExtractor</code></a>, lemma search - via <code>use_lexemes=True</code>.</p>
+<p>A row for every word of <code>targets</code> and a tick at the position of each of its occurrences in the text. Words are compared as they are: case and lemmatization belong to the extraction of the words.</p>
 <table>
 <thead>
 <tr>
@@ -2897,7 +2898,7 @@
 <td style="text-align: center;"><code>targets</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words whose occurrences to show</td>
+<td style="text-align: center;">Words whose occurrences are shown</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2905,10 +2906,17 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code></td>
+</tr>
 </tbody>
 </table>
+<p>The words are extracted by <a href="../../extractors/words/"><code>WordsExtractor</code></a>: lower case with <code>lowercase=True</code>, lemmas with <code>use_lexemes=True</code>.</p>
 <h2 id="keyness_plot">Keyness chart<a class="headerlink" href="#keyness_plot" title="Permanent link">&para;</a></h2>
-<p>Diverging horizontal bars (quanteda <code>textplot_keyness</code>): words from <code>positive</code> to the right, from <code>negative</code> (the result of <code>keyness</code> with <code>positive=False</code>) to the left, bar length is the absolute value of the <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), so the side is set by the list, not by the sign of the measure; <code>top_n</code> words on each side, words with an undefined or infinite value are skipped. For the odds ratio (<code>score</code> from 0 to infinity, one means equal odds) set <code>log=True</code>: the absolute <span class="arithmatex">\(\log_2\)</span> of the value is plotted, symmetric around one.</p>
+<p>Diverging horizontal bars: the words of <code>positive</code> to the right, of <code>negative</code> - the result of <code>keyness</code> with <code>positive=False</code> - to the left, the length of a bar is the absolute value of the <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), so the side is set by the list and not by the sign of the measure; <code>top_n</code> words on each side, the words with an undefined or infinite value are skipped. For the odds ratio (<code>score</code> from 0 to infinity, one - equal odds) set <code>log=True</code>: the absolute <span class="arithmatex">\(\log_2\)</span> of the value is plotted, symmetric around one.</p>
 <table>
 <thead>
 <tr>
@@ -2939,15 +2947,15 @@
 </tr>
 <tr>
 <td style="text-align: center;"><code>labels</code></td>
-<td style="text-align: center;">tuple[str, str]</td>
-<td style="text-align: center;"><code>("целевой корпус", "эталонный корпус")</code></td>
-<td style="text-align: center;">Legend labels</td>
+<td style="text-align: center;">dict[str, str]/tuple[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code> and <code>xlabel_log</code> (format strings with <code>field</code>), <code>target</code> and <code>reference</code> (the legend); a pair of strings sets the legend alone</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>field</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>score</code></td>
-<td style="text-align: center;"><code>Keyword</code> field whose values are plotted</td>
+<td style="text-align: center;">Field of <code>Keyword</code> whose values are plotted</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>log</code></td>
@@ -2964,7 +2972,7 @@
 </tbody>
 </table>
 <h2 id="collocation_network">Collocation network<a class="headerlink" href="#collocation_network" title="Permanent link">&para;</a></h2>
-<p>An undirected graph (quanteda <code>textplot_network</code>): nodes are words with font size by frequency, edges are pairs with width by the measure value and a label; <code>neato</code> layout. Rendering requires the <a href="https://graphviz.org/download/">Graphviz</a> executables; in Jupyter the graph displays itself, <code>graph.render("network", format="png")</code> saves a file.</p>
+<p>An undirected graph: the nodes are the words with the size of the font by frequency, the edges the pairs with the width and the label by the value of the measure; the <code>neato</code> layout. A pair of a word with itself - a word repeated within the window - would be a loop and is left out before <code>top_n</code> pairs are taken. Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>; in Jupyter the graph displays itself, and <code>graph.render("network")</code> saves a png file.</p>
 <table>
 <thead>
 <tr>
@@ -2985,7 +2993,7 @@
 <td style="text-align: center;"><code>top_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of pairs from the start of the list; <code>None</code> - all</td>
+<td style="text-align: center;">Number of pairs from the start of the list; <code>None</code> - all of them</td>
 </tr>
 </tbody>
 </table>

@@ -2897,8 +2897,10 @@
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Графики к <a href="../../corpus/stylometry/">стилометрии</a>: дендрограмма и многомерное шкалирование по матрице расстояний <a href="../../corpus/stylometry/#delta"><code>delta</code></a>, диаграмма главных компонент по частотам самых частых слов и кривые Менденхолла нескольких текстов - набор, которым в stylo смотрят на кластеризацию текстов по авторам. Функции принимают оси <code>ax</code> и возвращают <code>Axes</code>.</p>
+<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/stylometry/">anyTS</a> с русскими подписями из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них. Частоты для главных компонент дает <a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a>, кривые - <a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>.</p>
 <h2 id="dendrogram_plot">Дендрограмма<a class="headerlink" href="#dendrogram_plot" title="Permanent link">&para;</a></h2>
-<p>Иерархическая кластеризация <code>scipy.cluster.hierarchy</code> по матрице расстояний между текстами; метод Уорда по умолчанию, как в stylo и у <a href="https://aclanthology.org/W15-0709.pdf">Evert и др. (2015)</a>, подписи листьев - имена текстов из индекса матрицы.</p>
+<!-- core: visualizers/stylometry.md:dendrogram_plot 1c08ea8 -->
+<p>Иерархическая кластеризация <code>scipy.cluster.hierarchy</code> по матрице расстояний между текстами; метод Уорда по умолчанию, как у <a href="https://aclanthology.org/W15-0709.pdf">Evert и др. (2015)</a>; подписи листьев - имена текстов из индекса матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры.</p>
 <table>
 <thead>
 <tr>
@@ -2913,13 +2915,13 @@
 <td style="text-align: center;"><code>distances</code></td>
 <td style="text-align: center;">DataFrame</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Симметричная матрица расстояний с именами текстов</td>
+<td style="text-align: center;">Симметричная матрица расстояний с именами текстов в строках и столбцах, в любом порядке</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>method</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>ward</code></td>
-<td style="text-align: center;">Метод объединения кластеров <code>scipy.cluster.hierarchy.linkage</code></td>
+<td style="text-align: center;">Метод объединения кластеров <code>scipy.cluster.hierarchy.linkage</code>: <code>single</code>, <code>complete</code>, <code>average</code>, <code>weighted</code>, <code>centroid</code>, <code>median</code> или <code>ward</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2927,10 +2929,17 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси для графика</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="pca_plot">Главные компоненты<a class="headerlink" href="#pca_plot" title="Permanent link">&para;</a></h2>
-<p>Метод главных компонент по z-оценкам относительных частот самых частых единиц (<a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a>, <code>z_scores</code>) через сингулярное разложение, как <code>pca.visualization</code> в stylo: тексты на плоскости двух первых компонент с подписями, в подписях осей - доля объясненной дисперсии.</p>
+<!-- core: visualizers/stylometry.md:pca_plot 5872373 -->
+<p>Метод главных компонент по z-оценкам относительных частот самых частых единиц (<code>frequency_table</code>, <code>z_scores</code>): тексты на плоскости двух первых компонент с их именами, доли объясненной дисперсии - в подписях осей.</p>
 <table>
 <thead>
 <tr>
@@ -2965,10 +2974,17 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси для графика</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code> и <code>ylabel</code> (строки формата с объясненной долей <code>share</code>)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="mds_plot">Многомерное шкалирование<a class="headerlink" href="#mds_plot" title="Permanent link">&para;</a></h2>
-<p>Классическое многомерное шкалирование (Torgerson 1952) по любой матрице расстояний: двойное центрирование матрицы квадратов расстояний и два главных собственных вектора; расстояния между точками приближают расстояния матрицы.</p>
+<!-- core: visualizers/stylometry.md:mds_plot 3309106 -->
+<p>Классическое многомерное шкалирование (Torgerson 1952) по любой матрице расстояний: двойное центрирование матрицы квадратов расстояний и два главных собственных вектора; расстояния между точками приближают расстояния матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры.</p>
 <table>
 <thead>
 <tr>
@@ -2983,7 +2999,7 @@
 <td style="text-align: center;"><code>distances</code></td>
 <td style="text-align: center;">DataFrame</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Симметричная матрица расстояний с именами текстов</td>
+<td style="text-align: center;">Симметричная матрица расстояний с именами текстов в строках и столбцах, в любом порядке</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2991,10 +3007,17 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси для графика</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code>, <code>ylabel</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="mendenhall_plot">Кривые Менденхолла<a class="headerlink" href="#mendenhall_plot" title="Permanent link">&para;</a></h2>
-<p>Доли слов по длине в символах (<a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>) для каждого текста на одном графике - сравнение профилей авторов.</p>
+<!-- core: visualizers/stylometry.md:mendenhall_plot fadc7a5 -->
+<p>Доли слов по длине в символах (<code>mendenhall_curve</code>) для каждого текста на одном графике; длина, которой нет ни у одного слова, рисуется в нуле.</p>
 <table>
 <thead>
 <tr>
@@ -3016,6 +3039,12 @@
 <td style="text-align: center;">Axes</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Оси для графика</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Подписи поверх подписей по умолчанию: <code>title</code>, <code>xlabel</code>, <code>ylabel</code></td>
 </tr>
 </tbody>
 </table>

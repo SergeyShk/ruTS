@@ -2897,8 +2897,9 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Plots for <a href="../../corpus/stylometry/">stylometry</a>: a dendrogram and multidimensional scaling from the <a href="../../corpus/stylometry/#delta"><code>delta</code></a> distance matrix, a principal component chart from the frequencies of the most frequent words and Mendenhall curves of several texts - the set used in stylo to look at the clustering of texts by author. The functions take axes <code>ax</code> and return <code>Axes</code>.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/stylometry/">anyTS</a> core with the Russian labels of <code>ruts.constants.VISUALIZER_LABELS</code> by default; <code>labels</code> puts the given labels over them. The frequencies of the principal components come from <a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a> and the curves from <a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>.</p>
 <h2 id="dendrogram_plot">Dendrogram<a class="headerlink" href="#dendrogram_plot" title="Permanent link">&para;</a></h2>
-<p>Hierarchical clustering by <code>scipy.cluster.hierarchy</code> from the distance matrix between texts; Ward's method by default, as in stylo and <a href="https://aclanthology.org/W15-0709.pdf">Evert et al. (2015)</a>, leaf labels are the text names from the matrix index.</p>
+<p>Hierarchical clustering by <code>scipy.cluster.hierarchy</code> over the matrix of distances between texts; Ward's method by default, as in <a href="https://aclanthology.org/W15-0709.pdf">Evert et al. (2015)</a>; the labels of the leaves are the names of the texts of the index of the matrix. The columns are taken in the order of the rows; a matrix with other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raises <code>SourceError</code> before a figure is created.</p>
 <table>
 <thead>
 <tr>
@@ -2913,13 +2914,13 @@
 <td style="text-align: center;"><code>distances</code></td>
 <td style="text-align: center;">DataFrame</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Symmetric distance matrix with text names</td>
+<td style="text-align: center;">Symmetric matrix of distances with the names of the texts in the rows and the columns, in any order</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>method</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>ward</code></td>
-<td style="text-align: center;">Cluster linkage method of <code>scipy.cluster.hierarchy.linkage</code></td>
+<td style="text-align: center;">Method of <code>scipy.cluster.hierarchy.linkage</code> to join the clusters: <code>single</code>, <code>complete</code>, <code>average</code>, <code>weighted</code>, <code>centroid</code>, <code>median</code> or <code>ward</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2927,10 +2928,16 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="pca_plot">Principal components<a class="headerlink" href="#pca_plot" title="Permanent link">&para;</a></h2>
-<p>Principal component analysis of the z-scores of the relative frequencies of the most frequent units (<a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a>, <code>z_scores</code>) via singular value decomposition, like <code>pca.visualization</code> in stylo: the texts on the plane of the first two components with labels, the axis labels show the share of explained variance.</p>
+<p>Principal component analysis of the z-scores of the relative frequencies of the most frequent units (<code>frequency_table</code>, <code>z_scores</code>): the texts on the plane of the first two components with their names, the shares of the explained variance in the labels of the axes.</p>
 <table>
 <thead>
 <tr>
@@ -2945,19 +2952,19 @@
 <td style="text-align: center;"><code>corpus</code></td>
 <td style="text-align: center;">dict[str, list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Units of the texts by text name</td>
+<td style="text-align: center;">Units of the texts by the names of the texts</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_mfw</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>100</code></td>
-<td style="text-align: center;">Number of the most frequent units; <code>None</code> - all</td>
+<td style="text-align: center;">Number of the most frequent units; <code>None</code> - all of them</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>culling</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.0</code></td>
-<td style="text-align: center;">Minimum share of texts a unit must occur in</td>
+<td style="text-align: center;">Smallest share of the texts a unit occurs in</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2965,10 +2972,16 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code> and <code>ylabel</code> (format strings with the explained <code>share</code>)</td>
+</tr>
 </tbody>
 </table>
 <h2 id="mds_plot">Multidimensional scaling<a class="headerlink" href="#mds_plot" title="Permanent link">&para;</a></h2>
-<p>Classical multidimensional scaling (Torgerson 1952) from any distance matrix: double centering of the squared distance matrix and the two leading eigenvectors; the distances between the points approximate the distances of the matrix.</p>
+<p>Classical multidimensional scaling (Torgerson 1952) of any matrix of distances: the double centering of the matrix of squared distances and the two leading eigenvectors; the distances between the points approximate the distances of the matrix. The columns are taken in the order of the rows; a matrix with other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raises <code>SourceError</code> before a figure is created.</p>
 <table>
 <thead>
 <tr>
@@ -2983,7 +2996,7 @@
 <td style="text-align: center;"><code>distances</code></td>
 <td style="text-align: center;">DataFrame</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Symmetric distance matrix with text names</td>
+<td style="text-align: center;">Symmetric matrix of distances with the names of the texts in the rows and the columns, in any order</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
@@ -2991,10 +3004,16 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code>, <code>ylabel</code></td>
+</tr>
 </tbody>
 </table>
 <h2 id="mendenhall_plot">Mendenhall curves<a class="headerlink" href="#mendenhall_plot" title="Permanent link">&para;</a></h2>
-<p>The shares of words by length in characters (<a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>) for every text on one plot - a comparison of author profiles.</p>
+<p>The shares of the words by length in characters (<code>mendenhall_curve</code>) of every text on one plot; a length no word has is drawn at zero.</p>
 <table>
 <thead>
 <tr>
@@ -3009,13 +3028,19 @@
 <td style="text-align: center;"><code>corpus</code></td>
 <td style="text-align: center;">dict[str, list[str]]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words of the texts by text name</td>
+<td style="text-align: center;">Words of the texts by the names of the texts</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>ax</code></td>
 <td style="text-align: center;">Axes</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Axes for the plot</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>labels</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Labels over the defaults: <code>title</code>, <code>xlabel</code>, <code>ylabel</code></td>
 </tr>
 </tbody>
 </table>
