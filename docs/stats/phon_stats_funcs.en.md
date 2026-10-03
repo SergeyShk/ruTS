@@ -88,18 +88,11 @@ $$
 !!! info ""
     **ruts.phon_stats.calc_alliteration()**
 
-Computation of the alliteration index - the ratio of the observed number of windows of `window_len` adjacent words in which the same consonant occurs in at least two words to the number expected if the words stood in random order (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.
+The index is `calc_repetition_index` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phonetics/) core over the consonant letters of the words:
 
-A window of shuffled words is a sample of them without replacement, so for a letter found in $K$ of the $N$ words of the text, a window of $w$ words holds it in at least two words with the hypergeometric probability
+--8<-- "stats/phonetics.md:calc_repetition_index"
 
-$$
-P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
-$$
-
-and the expected number of windows is the sum of these probabilities over the letters times the $N - w + 1$ windows; the index equals $\sum O / \sum E$.
-
-!!! warning "Warning"
-    For texts shorter than the window and texts where no consonant occurs in two words the function returns `nan`.
+Letters are compared, not sounds: devoicing is not accounted for.
 
 Parameters:
 

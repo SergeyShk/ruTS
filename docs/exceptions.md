@@ -13,12 +13,12 @@
 | `SourceTypeError` | `TypeError` | Источник данных не строка и не `Doc`, справочник не `Counter`, список текстов не список списков, путь не строка и не `Path`, токенизатор не вызываемый объект |
 | `SourceError` | `ValueError` | В источнике нет слов, предложений, текстов или коллокаций, нет разбора зависимостей, текстов меньше, чем нужно мере, после отсева не осталось единиц |
 | `ParameterError` | `ValueError` | Порог, окно, размер сегмента или число элементов вне допустимого диапазона; неизвестная мера, вариант, пресет, слой, ступень, категория набора данных |
-| `UnknownStatError` | `ParameterError`, `KeyError` | В `MorphStats.explain_text` запрошена неизвестная статистика |
+| `UnknownStatError` | `ParameterError`, `KeyError` | По имени запрошена неизвестная статистика (`MorphStats.explain_text`, `DiversityStats.windowed`) |
 | `DatasetNotFoundError` | `OSError` | Набор данных не загружен; текст подсказывает команду загрузки |
 | `DataFileError` | `ValueError` | Файл набора данных поврежден, имеет неожиданный формат или не декодируется |
 | `DownloadError` | `RuntimeError` | Файл не удалось скачать или он не прошел проверку контрольной суммы |
 
-Классы доступны из `ruts` и из `ruts.exceptions`.
+Классы доступны из `ruts` и из `ruts.exceptions`. Это классы ядра [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) под теми же именами, а `RutsError` - его `anyts.exceptions.AnyTSError`: псевдонимы, а не подклассы, поэтому `except RutsError` ловит и ошибки, поднятые кодом ядра, а в трассировке стоит `anyts.exceptions.SourceError`. Сообщения кода ядра - на английском, кода ruTS - на русском.
 
 !!! example "Пример"
 
@@ -30,7 +30,7 @@
         BasicStats("...")
     except SourceError as e:
         print(e)
-    # В источнике данных отсутствуют слова
+    # The data source has no words
 
     try:
         list(PoetryCorpus(data_dir="/nowhere").get_texts(limit=1))

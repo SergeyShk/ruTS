@@ -21,6 +21,7 @@ coverage.xml
 # Данные и документация
 ruts_data
 site/
+docs/core/
 
 # Редакторы и ОС
 .vscode

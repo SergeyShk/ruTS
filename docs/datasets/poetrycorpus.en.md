@@ -80,8 +80,8 @@ Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `author` | str | `-` | Author (case-insensitive substring) |
-| `theme` | str | `-` | Theme (case-insensitive substring) |
+| `author` | str | `-` | Author (substring, ignoring case and ё) |
+| `theme` | str | `-` | Theme (substring, ignoring case and ё) |
 | `year_from` | int | `-` | Earliest year of writing |
 | `year_to` | int | `-` | Latest year of writing |
 | `min_len` | int | `-` | Minimum text length (in characters) |

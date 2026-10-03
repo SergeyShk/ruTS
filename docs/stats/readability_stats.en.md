@@ -5,7 +5,7 @@
 
 ## Description
 
-A module for computing the main text [readability](https://en.wikipedia.org/wiki/Readability) metrics. The data source can be a text, a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library, or already computed [basic statistics](basic_stats.md) `BasicStats` - then the text is not parsed again.
+--8<-- "stats/readability_stats.md:ReadabilityStats"
 
 !!! quote "Definition"
 
@@ -16,7 +16,7 @@ A module for computing the main text [readability](https://en.wikipedia.org/wiki
     *   the typographic design of the text;
     *   the linguistic features of the text material (complexity of syntactic constructions, vocabulary hard to perceive, etc.).
 
-Readability in this module is computed from various linguistic metrics. The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.
+The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.
 
 The main presumptions of readability metrics:
 
@@ -24,10 +24,11 @@ The main presumptions of readability metrics:
 *   long words make reading harder;
 *   a reader slows down at low-frequency and/or unfamiliar words.
 
-The module allows using pre-built [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) objects for the sentence and word tokenization needed before computing the statistics.
+## Language hooks
 
-!!! note "Note"
-    The metrics are computed by accessing the corresponding attribute or by calling the `get_stats` method of the `ReadabilityStats` object.
+The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core with the hooks of Russian: the [basic statistics](basic_stats.md) of ruTS, which take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient presets of `ruts.constants.READABILITY_PRESETS`, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade `ruts.constants.READABILITY_GRADE_STATS`, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), the grades and ages of the plainrussian table and the reading speeds of Russian readers.
+
+The `mu_index` attribute of the core (Legibilidad µ) stays outside `get_stats`: it was fitted on Spanish texts.
 
 ## Parameters
 
@@ -55,9 +56,10 @@ The module allows using pre-built [`SentsExtractor`](../extractors/sentences.md)
 | `gunning_fog_index` | float | Gunning fog index in the plainrussian adaptation |
 | `consensus_grade` | float | Consensus grade over all grade formulas and the Flesch index |
 | `reading_time` | float | Reading time in minutes at 180 words per minute |
+| `mu_index` | float | Legibilidad µ of the core, outside `get_stats` |
 | `bs` | BasicStats | Basic text statistics |
 | `preset` | str | Name of the coefficient preset |
-| `coefficients` | dict[str, tuple[float, float, float]] | Formula coefficients of the preset |
+| `coefficients` | dict[str, tuple[float, float, float]] | Formula coefficients of the preset, a copy that can be changed for one object |
 
 ## Coefficient presets { #presets }
 
@@ -90,7 +92,9 @@ Here ASL is the mean number of words per sentence, ASW the mean number of syllab
 
 ## Interpretation { #interpretation }
 
-The formulas that yield a school grade (the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula) are summarized in the `consensus_grade` attribute - the median of the rounded values plus the Flesch index converted to a grade. The [`describe_grade`](#describe_grade) method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:
+--8<-- "stats/readability_stats.md:ReadabilityStats-consensus"
+
+The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is [converted to a grade](readability_stats_funcs.md#flesch_reading_easy_to_grade) by the bands of textstat. The [`describe_grade`](#describe_grade) method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:
 
 | Grade | Stage | Age |
 | :---: | :---: | :-: |
@@ -108,13 +112,7 @@ The `reading_time` attribute estimates silent reading time at 180 words per minu
 
 ### describe_grade
 
-Returns the school grade and reader age for the consensus grade or an individual grade formula.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `stat` | str | `consensus_grade` | Name of the grade formula |
+--8<-- "stats/readability_stats.md:ReadabilityStats-describe_grade"
 
 !!! example "Example"
 
@@ -131,23 +129,13 @@ Parameters:
 
 ### reading_time_by_speed
 
-Returns the reading time of the text in minutes at the given speed.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `wpm` | int | `-` | Reading speed, words per minute |
+--8<-- "stats/readability_stats.md:ReadabilityStats-reading_time_by_speed"
 
 ### reading_time_by_norm
 
-Returns the reading time of the text in minutes at the upper and lower bounds of a reading speed norm from the `ruts.constants.READING_SPEED_NORMS` table (`adult_silent`, `grade_1`, `grade_2`, `grade_3`, `grade_4`).
+--8<-- "stats/readability_stats.md:ReadabilityStats-reading_time_by_norm"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `norm` | str | `-` | Name of the reading speed norm |
+The norms of the `ruts.constants.READING_SPEED_NORMS` table are `adult_silent`, `grade_1`, `grade_2`, `grade_3` and `grade_4`, each with a lower and an upper bound, and the method returns the reading times at the upper and at the lower bound.
 
 !!! example "Example"
 
@@ -196,7 +184,7 @@ Parameters:
 
 ### get_stats
 
-Returns a dictionary with the computed readability metrics.
+--8<-- "stats/readability_stats.md:ReadabilityStats-get_stats"
 
 An example of computing text readability metrics:
 
@@ -236,7 +224,7 @@ An example of computing text readability metrics:
 
 ### print_stats
 
-Prints a table with the computed readability metrics.
+--8<-- "stats/readability_stats.md:ReadabilityStats-print_stats"
 
 To illustrate the method, we reuse the code from the previous example:
 

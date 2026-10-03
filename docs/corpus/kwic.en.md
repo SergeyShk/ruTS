@@ -5,35 +5,23 @@
 
 ## Description
 
-A KWIC (keyword in context) concordance - all occurrences of a word or phrase with left and right context, as in [AntConc](https://www.laurenceanthony.net/software/antconc/) and textacy `keyword_in_context`. It shows how a word is used in the text: what it combines with, in which forms and senses.
+--8<-- "corpus/kwic.md:kwic"
 
-Occurrences are searched among the words of the text by word form ignoring case and the letter ё, case-sensitively (`ignore_case=False`) or by pymorphy3 lemma (`by_lemma=True`: «кота», «коту» are found by «кот», a phrase is given by lemmas - «рабочий класс»); for a `Doc` with part-of-speech annotation the lemma of a word is taken with the token's part of speech, so «стали» is found by «сталь» or by «стать» depending on the annotation, while the keyword is lemmatized without a part of speech. A phrase does not run across the end of a sentence or a paragraph unless the keyword has such a boundary itself. The context is `window` words to the left and to the right as written in the text, with punctuation between them; whitespace runs are collapsed into a single space, occurrences do not overlap. The source is a string (razdel words) or a `Doc` object.
+## Language hooks
 
-`format_kwic` aligns the lines on the keyword: the left context is truncated on the left and right-aligned, the right one is truncated on the right; `print_kwic` prints the result.
+The function calls the `kwic` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/kwic/) core with the hooks of Russian: the words and the sentences of a string and of the keyword are those of [razdel](https://github.com/natasha/razdel), the lemma of a word is the pymorphy3 one, in a `Doc` with part-of-speech annotation taken with the part of speech of the token (`ruts.utils.lemmatize`), so «стали» is found by «сталь» or by «стать» depending on the annotation, and the word forms (with `ignore_case`) and the lemmas are compared in lower case with ё as е. The parts of a hyphenated word that spaCy splits are joined (`кто-то` is one word).
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `source` | str/Doc | `-` | Text or Doc object |
-| `keyword` | str | `-` | Word or phrase (words separated by spaces) |
-| `window` | int | `5` | Number of context words on each side |
-| `by_lemma` | bool | `False` | Compare lemmas instead of word forms |
-| `ignore_case` | bool | `True` | Ignore case and the letter ё when comparing word forms |
+--8<-- "corpus/kwic.md:kwic-parameters"
 
-`format_kwic(concordances, width=40)` and `print_kwic(concordances, width=40)`: `width` is the context width in characters, at least one; line breaks inside the keyword phrase are replaced with spaces.
+--8<-- "corpus/kwic.md:format_kwic"
+
+--8<-- "corpus/kwic.md:print_kwic"
 
 ## Result
 
-A list of `Concordance` named tuples in text order.
-
-| Field | Type | Description |
-| :---: | :--: | :---------- |
-| `start` | int | Position of the first character of the occurrence in the text |
-| `end` | int | Position after the last character of the occurrence |
-| `left` | str | Left context |
-| `keyword` | str | The occurrence as in the text |
-| `right` | str | Right context |
+--8<-- "corpus/kwic.md:Concordance"
 
 ## Example
 

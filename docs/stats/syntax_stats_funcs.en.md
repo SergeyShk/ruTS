@@ -1,6 +1,6 @@
 # Statistic functions
 
-All functions work with spaCy `Token` objects: the `calc_*` functions take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions - a single token. Punctuation and whitespace tokens are skipped. Syntactic relations and morphological features are taken from the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation; relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation where noted.
+All functions work with spaCy `Token` objects: the `calc_*` functions take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions - a single token. Punctuation, symbols and whitespace tokens are skipped. The dependency tree helpers come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax/) core; with `join_hyphens=True`, which `SyntaxStats` passes, a hyphenated word that spaCy splits (`во-первых`) is one word. Syntactic relations and morphological features are taken from the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation; relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation where noted.
 
 The feature definitions follow [Ivanov, Solnyshkina and Solovyev (2018)](https://dialogue-conf.org/media/4302/ivanovvv.pdf); the original feature names and their correlation coefficients with the textbook grade from that paper are given in parentheses.
 
@@ -16,6 +16,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one position |
 
 !!! example "Example"
 
@@ -55,6 +56,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `token` | Token | `-` | Token |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Valency { #calc_valency }
 
@@ -68,13 +70,14 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `token` | Token | `-` | Token |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Coordination chains { #calc_coordination_chains }
 
 !!! info ""
     **ruts.syntax_stats.calc_coordination_chains()**
 
-Computation of coordination chain lengths. In Universal Dependencies all coordinated members attach with the `conj` relation to the first of them, so a chain is a word with `conj` dependents, and its length is the number of coordinated members including the first: the sentence «Он купил хлеб, молоко и сыр» has one chain of length 3. The number of chains per sentence (`SOCHIN_NUMBER`, r = 0.93) and their mean length (`AVERAGE_SOCHIN_LENGTH`, r = 0.87) are the strongest syntactic predictors of textbook complexity.
+Computation of coordination chain lengths. A chain is a group of words linked by the `conj` relation, whichever word each coordinated member attaches to, so a nested coordination and an enumeration that the parser splits between several heads are one chain as well; its length is the number of its words: the sentence «Он купил хлеб, молоко и сыр» has one chain of length 3. The number of chains per sentence (`SOCHIN_NUMBER`, r = 0.93) and their mean length (`AVERAGE_SOCHIN_LENGTH`, r = 0.87) are the strongest syntactic predictors of textbook complexity.
 
 Parameters:
 
@@ -195,10 +198,10 @@ Parameters:
 
 | Function | Description |
 | :------- | :---------- |
-| `is_word(token)` | The token is neither punctuation nor whitespace |
-| `get_words(tokens)` | List of words of a token sequence |
+| `is_word(token)` | The token is neither punctuation, a symbol nor whitespace |
+| `get_words(tokens, join_hyphens=False)` | List of words of a token sequence; with `join_hyphens=True` a hyphenated word is one word, given by its first part |
 | `is_root(token)` | The token is the sentence root |
 | `base_dep(token)` | Base relation without the subtype: `acl:relcl` → `acl` |
-| `get_children(token)` | List of the token's dependent words |
+| `get_children(token, join_hyphens=False)` | List of the token's dependent words; with `join_hyphens=True` - of the whole hyphenated word |
 | `has_feature(token, field, value)` | The token has the morphological feature `field` with the value `value` |
 | `get_lemma(token)` | Lowercased lemma of the token from pymorphy3 by the token's part of speech |

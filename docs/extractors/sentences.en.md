@@ -5,30 +5,47 @@
 
 ## Description
 
-A module for extracting sentences from a text. It allows using different tokenizers and setting the minimum and maximum length of extracted sentences.
+--8<-- "extractors/sentences.md:SentsExtractor"
 
-!!! note "Note"
-    The default tokenizer is the `sentenize` function of the [razdel](https://github.com/natasha/razdel) library.
+## Language hooks
+
+The class extends the `SentsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/sentences/) core with the hook of Russian: its default tokenizer, the method `sentenize(text)`, is the `sentenize` function of the [razdel](https://github.com/natasha/razdel) library.
+
+--8<-- "extractors/sentences.md:SentsExtractor-pipeline"
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `tokenizer` | Pattern/Callable | `None` | Tokenizer or regular expression |
-| `min_len` | int | `0` | Minimum length of an extracted sentence |
-| `max_len` | int | `0` | Maximum length of an extracted sentence |
+--8<-- "extractors/sentences.md:SentsExtractor-parameters"
 
 ## Methods
 
 ### extract
 
-Extracts sentences from a text.
+--8<-- "extractors/sentences.md:SentsExtractor-extract"
 
-Parameters:
+An example of sentence extraction with the default tokenizer:
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `text` | str | `-` | Text string |
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    # Import the library
+    from ruts import SentsExtractor
+
+    # Prepare the data
+    text = "Не имей 100 рублей, а имей 100 друзей. Так говорил проф. Иванов... А вы?"
+
+    # Extract sentences
+    se = SentsExtractor()
+    se.extract(text)
+    ```
+
+    _Result_:
+
+    ``` bash
+    ('Не имей 100 рублей, а имей 100 друзей.', 'Так говорил проф. Иванов...', 'А вы?')
+    ```
 
 An example of sentence extraction with a regular expression as the tokenizer:
 
@@ -37,7 +54,7 @@ An example of sentence extraction with a regular expression as the tokenizer:
     _Code_:
 
     ``` python
-    # Import the library
+    # Import the libraries
     import re
     from ruts import SentsExtractor
 

@@ -5,87 +5,38 @@
 
 ## Description
 
-A module for computing basic text statistics. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
-
-The module allows using pre-built [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) objects for the sentence and word tokenization needed before computing the statistics.
-
-For a `Doc` object words are taken from the tokens (hyphenated words split by spaCy are glued back), sentences - from the annotation; without sentence boundaries (`spacy.blank`, a pipeline without `parser` and `senter`) sentences are extracted from the text by `SentsExtractor`.
+--8<-- "stats/basic_stats.md:BasicStats"
 
 !!! note "Note"
     The statistics are computed when the `BasicStats` object is initialized.
 
+## Language hooks
+
+The class extends the `BasicStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) core with the hooks of Russian: the syllables of a word are counted by [`count_syllables`](../syllables.md#count_syllables), the default extractors are the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md), and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). A `Doc` without sentence boundaries (`spacy.blank`, a pipeline without `parser` and `senter`) takes its sentences from the text by `SentsExtractor`.
+
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
-| `normalize` | bool | `False` | Compute normalized statistics |
-| `complex_syl_factor` | int | `4` | Minimum number of syllables in a complex word |
-| `long_word_letter_factor` | int | `6` | Minimum number of letters in a long word |
+--8<-- "stats/basic_stats.md:BasicStats-parameters"
+
+!!! note "Note"
+    In ruTS a complex word has four or more syllables and a long word six or more letters: `COMPLEX_SYL_FACTOR = 4` and `LONG_WORD_LETTER_FACTOR = 6` of `ruts.constants`.
 
 ## Attributes
 
-| Attribute | Type | Description |
-| :-------: | :--: | :---------: |
-| `c_letters` | dict[int, int] | Distribution of words by number of letters |
-| `c_syllables` | dict[int, int] | Distribution of words by number of syllables |
-| `n_sents` | int | Number of sentences |
-| `n_words` | int | Number of words |
-| `n_unique_words` | int | Number of unique words |
-| `n_long_words` | int | Number of long words |
-| `n_complex_words` | int | Number of complex words |
-| `n_simple_words` | int | Number of simple words |
-| `n_monosyllable_words` | int | Number of monosyllabic words |
-| `n_polysyllable_words` | int | Number of polysyllabic words |
-| `n_chars` | int | Number of characters |
-| `n_letters` | int | Number of letters |
-| `n_spaces` | int | Number of spaces |
-| `n_syllables` | int | Number of syllables |
-| `n_punctuations` | int | Number of punctuation marks |
-| `c_punctuations` | dict[str, int] | Distribution of punctuation marks by type |
-| `p_unique_words` | float | Normalized number of unique words |
-| `p_long_words` | float | Normalized number of long words |
-| `p_complex_words` | float | Normalized number of complex words |
-| `p_simple_words` | float | Normalized number of simple words |
-| `p_monosyllable_words` | float | Normalized number of monosyllabic words |
-| `p_polysyllable_words` | float | Normalized number of polysyllabic words |
-| `p_letters` | float | Normalized number of letters |
-| `p_spaces` | float | Normalized number of spaces |
-| `p_punctuations` | float | Normalized number of punctuation marks |
-
-!!! warning "Warning"
-    The normalized statistics attributes `p_*` are available only when the object is initialized with `normalize=True`.
+--8<-- "stats/basic_stats.md:BasicStats-attributes"
 
 ## Methods
 
-### count_words_by_syllables
+### count_words_by_syllables, count_words_by_letters
 
-Returns the number of words with at least the given number of syllables.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `min_syllables` | int | `-` | Minimum number of syllables in a word |
-
-### count_words_by_letters
-
-Returns the number of words with at least the given number of letters.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `min_letters` | int | `-` | Minimum number of letters in a word |
+--8<-- "stats/basic_stats.md:BasicStats-count_words_by"
 
 !!! note "Note"
     These methods recount complex and long words with a threshold different from the one set at initialization. For instance, [`ReadabilityStats`](readability_stats.md) uses them for the SMOG index (a complex word has 5+ syllables) and the LIX index (a long word has 7+ letters).
 
 ### get_stats
 
-Returns a dictionary with the computed text statistics.
+--8<-- "stats/basic_stats.md:BasicStats-get_stats"
 
 An example of computing basic text statistics with normalization:
 
@@ -137,7 +88,7 @@ An example of computing basic text statistics with normalization:
 
 ### print_stats
 
-Prints a table with the computed text statistics.
+--8<-- "stats/basic_stats.md:BasicStats-print_stats"
 
 To illustrate the method, we reuse the code from the previous example:
 
@@ -180,7 +131,9 @@ To illustrate the method, we reuse the code from the previous example:
 !!! info ""
     **ruts.basic_stats.count_punctuations()**, **ruts.basic_stats.punctuation_profile()**
 
-`count_punctuations(text)` counts punctuation marks by the types of `anyts.constants.PUNCTUATION_TYPES` - the same distribution lives in the `c_punctuations` attribute: commas, periods, question and exclamation marks, ellipses («Кто там?..» is a question and an ellipsis), colons, semicolons, dashes (including those typed with a hyphen: «- Ушли, - сказал он»), hyphens inside words («кто-то») and hanging ones («двух- и трёхкомнатные»), guillemets, straight and curly quotation marks, brackets and other marks. `punctuation_profile(text, n_words=None)` turns them into frequencies per 1000 words and adds `yo_share` - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.
+--8<-- "stats/basic_stats.md:count_punctuations"
+
+In ruTS `count_punctuations(text)` takes the marks of the core with the low quotation mark `„` as a quotation mark, and a hanging hyphen before `и`, `или`, `либо` or a comma stays a hyphen (`двух- и трёхкомнатные`, `сорока-, пятидесятилетние`), while a dialogue dash typed with a hyphen is a dash (`- Ушли, - сказал он`). `punctuation_profile(text, n_words=None)` turns the counts into frequencies per 1000 words and adds `yo_share` - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.
 
 The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see [corpus comparison](../corpus/compare.md)). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.
 

@@ -41,7 +41,7 @@ Parameters:
 !!! info ""
     **ruts.cohesion_stats.calc_proportional_overlap()**
 
-Computation of the mean share of shared elements in sentence pairs (`CRFCWO1`, `CRFCWOa`): the Dice coefficient of the lemma sets averaged over adjacent or all pairs; a pair without elements gets 0.
+Computation of the mean share of shared elements in sentence pairs (`CRFCWO1`, `CRFCWOa`): the Dice coefficient of the lemma sets averaged over adjacent or all pairs; a pair without elements gets 0. For a text shorter than two sentences `nan` is returned.
 
 Formula:
 
@@ -61,13 +61,14 @@ Parameters:
 !!! info ""
     **ruts.cohesion_stats.calc_overlaps()**, **ruts.cohesion_stats.dice()**, **ruts.cohesion_stats.Overlap**
 
-Computation of the binary and proportional overlaps over adjacent and all sentence pairs; returns `Overlap(adjacent, all, prop_adjacent, prop_all)` with the same values as [`calc_overlap`](#calc_overlap) and [`calc_proportional_overlap`](#calc_proportional_overlap). Adjacent pairs are traversed directly. The number of all pairs with a shared element is computed from bit masks of element occurrences in sentences (in blocks of 4096 sentences), the sum of Dice coefficients - from histograms of sentence lengths for every element: $(h W h - h \cdot \mathrm{diag}(W)) / 2$, where $h$ is the histogram of lengths of sentences containing the element, $W_{kl} = 2/(k+l)$. Time is linear in the number of occurrences. The `dice` function computes the Dice coefficient of two sets.
+Computation of the binary and proportional overlaps over adjacent and all sentence pairs; returns `Overlap(adjacent, all, prop_adjacent, prop_all)` with the same values as [`calc_overlap`](#calc_overlap) and [`calc_proportional_overlap`](#calc_proportional_overlap). With `proportional=False` the proportional overlaps are not computed, and `prop_adjacent` and `prop_all` are `nan`. The `dice` function computes the Dice coefficient of two sets.
 
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `sets` | list[set[str]] | `-` | Sets of elements of every sentence |
+| `proportional` | bool | `True` | Compute the proportional overlaps as well |
 
 ## Givenness { #count_given }
 

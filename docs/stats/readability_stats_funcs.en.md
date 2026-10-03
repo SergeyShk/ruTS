@@ -1,21 +1,15 @@
 # Metric functions
 
+The coefficients of the formulas are parameters; the defaults below are those adapted for Russian. A formula of counts gives `nan` when the number of words or of sentences it divides by is zero.
+
 ## Flesch-Kincaid test
 
 !!! info ""
     **ruts.readability_stats.calc_flesch_kincaid_grade()**
 
-Computation of the [Flesch-Kincaid test](https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch–Kincaid_grade_level).
-
-The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.
+--8<-- "stats/readability_stats_funcs.md:calc_flesch_kincaid_grade"
 
 The default coefficients come from the current version of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project. Alternative coefficients for Russian are available through [presets](readability_stats.md#presets): Oborneva (`0.5`, `8.4`, `15.59`) and FKG_SIS of Solovyev, Ivanov and Solnyshkina (`0.36`, `5.76`, `11.97`).
-
-Formula:
-
-$$
-a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+b\times\frac{\textrm{Number of syllables}}{\textrm{Number of words}}–C
-$$
 
 Parameters:
 
@@ -24,18 +18,18 @@ Parameters:
 | `n_syllables` | int | `-` | Number of syllables |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `0.318` | Coefficient a |
-| `b` | int | `14.2` | Coefficient b |
-| `c` | int | `30.5` | Coefficient c |
+| `a` | float | `0.318` | Coefficient a, at the mean sentence length |
+| `b` | float | `14.2` | Coefficient b, at the mean word length |
+| `c` | float | `30.5` | Coefficient c, the constant |
 
 ## Flesch reading ease
 
 !!! info ""
     **ruts.readability_stats.calc_flesch_reading_easy()**
 
-Computation of the [Flesch reading ease](https://en.wikipedia.org/wiki/Flesch–Kincaid_readability_tests#Flesch_reading_ease).
+--8<-- "stats/readability_stats_funcs.md:calc_flesch_reading_easy"
 
-The higher the value, the easier the text is to read. The index ranges from 0 to 100 and can be interpreted as follows:
+The values can be interpreted as follows:
 
 | Value | Difficulty level |
 |----------|----------|
@@ -49,12 +43,6 @@ The higher the value, the easier the text is to read. The index ranges from 0 to
 
 The default coefficients are Oborneva's (2005/2006, variant A). Variant B of the same works (`1.52`, `65.14`, `206.836`), used by the Kazan group, is available through the `academic` preset.
 
-Formula:
-
-$$
-c–a\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}-b\times\frac{\textrm{Number of syllables}}{\textrm{Number of words}}
-$$
-
 Parameters:
 
 | Parameter | Type | Default | Description |
@@ -62,53 +50,39 @@ Parameters:
 | `n_syllables` | int | `-` | Number of syllables |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `1.3` | Coefficient a |
-| `b` | int | `60.1` | Coefficient b |
-| `c` | int | `206.835` | Coefficient c |
+| `a` | float | `1.3` | Coefficient a, at the mean sentence length |
+| `b` | float | `60.1` | Coefficient b, at the mean word length |
+| `c` | float | `206.835` | Coefficient c, the constant |
 
 ## Coleman-Liau index
 
 !!! info ""
     **ruts.readability_stats.calc_coleman_liau_index()**
 
-Computation of the [Coleman-Liau index](https://en.wikipedia.org/wiki/Coleman–Liau_index).
+--8<-- "stats/readability_stats_funcs.md:calc_coleman_liau_index"
 
-The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.
-
-Formula:
-
-$$
-a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}–c
-$$
+The default coefficients come from the [Plain Russian Language](https://github.com/infoculture/plainrussian) project.
 
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `n_letters` | int | `-` | Number of letters |
+| `n_letters` | int | `-` | Number of letters of the words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `6.26` | Coefficient a |
-| `b` | int | `0.2805` | Coefficient b |
-| `c` | int | `31.04` | Coefficient c |
+| `a` | float | `0.055` | Coefficient a, at the letters per 100 words |
+| `b` | float | `0.35` | Coefficient b, at the sentences per 100 words |
+| `c` | float | `20.33` | Coefficient c, the constant |
 
 ## SMOG index
 
 !!! info ""
     **ruts.readability_stats.calc_smog_index()**
 
-Computation of the [SMOG index](https://en.wikipedia.org/wiki/SMOG) (Simple Measure of Gobbledygook). The most authoritative readability metric.
-
-The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text.
+--8<-- "stats/readability_stats_funcs.md:calc_smog_index"
 
 !!! note "Note"
-    The formula coefficients were derived for a complex word threshold of 5 syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables to the function rather than the `n_complex_words` attribute of `BasicStats`.
-
-Formula:
-
-$$
-a\times\sqrt{b\times\frac{\textrm{Number of complex words}}{\textrm{Number of sentences}}}+c
-$$
+    The default coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project were fitted for complex words of five or more syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`) to the function rather than the `n_complex_words` attribute of `BasicStats`.
 
 Parameters:
 
@@ -116,18 +90,18 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `n_complex` | int | `-` | Number of complex words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `1.1` | Coefficient a |
-| `b` | int | `64.6` | Coefficient b |
-| `c` | int | `0.05` | Coefficient c |
+| `a` | float | `1.1` | Coefficient a, at the square root |
+| `b` | float | `64.6` | Coefficient b, under the square root |
+| `c` | float | `0.05` | Coefficient c, the constant |
 
 ## Automated readability index
 
 !!! info ""
     **ruts.readability_stats.calc_automated_readability_index()**
 
-Computation of the [automated readability index](https://en.wikipedia.org/wiki/Automated_readability_index).
+--8<-- "stats/readability_stats_funcs.md:calc_automated_readability_index"
 
-The higher the value, the harder the text is to read. The result is the age needed to understand the text. The index can be interpreted as follows:
+The grade can be read as reader age:
 
 | Value | Age |
 |----------|----------|
@@ -146,98 +120,38 @@ The higher the value, the harder the text is to read. The result is the age need
 |`13`|	18-24 years|
 |`14`|	24+ years|
 
-Formula:
-
-$$
-a\times\frac{\textrm{Number of letters}}{\textrm{Number of words}}+b\times\frac{\textrm{Number of words}}{\textrm{Number of sentences}}–c
-$$
+The default coefficients come from the [Plain Russian Language](https://github.com/infoculture/plainrussian) project.
 
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `n_letters` | int | `-` | Number of letters |
+| `n_letters` | int | `-` | Number of letters of the words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `6.26` | Coefficient a |
-| `b` | int | `0.2805` | Coefficient b |
-| `c` | int | `31.04` | Coefficient c |
+| `a` | float | `6.26` | Coefficient a, at the letters per word |
+| `b` | float | `0.2805` | Coefficient b, at the mean sentence length |
+| `c` | float | `31.04` | Coefficient c, the constant |
 
 ## LIX readability index
 
 !!! info ""
     **ruts.readability_stats.calc_lix()**
 
-Computation of the [LIX readability index](https://en.wikipedia.org/wiki/Lix_(readability_test)).
-
-The higher the value, the harder the text is to read. The index ranges from 0 to 100 and can be interpreted as follows:
-
-| Value | Difficulty level |
-|---|---|
-|`4.9 and below`| up to grade 4 |
-|`5.0-5.9`|	grades 5-6|
-|`6.0-6.9`|	grades 7-8|
-|`7.0-7.9`|	grades 9-10|
-|`8.0-8.9`|	grades 11-12|
-|`9.0-9.9`|	College|
+--8<-- "stats/readability_stats_funcs.md:calc_lix"
 
 !!! note "Note"
-    In the canonical formula a long word is longer than 6 letters, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 7 letters to the function rather than the `n_long_words` attribute of `BasicStats`.
-
-Formula:
-
-$$
-\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\times\frac{\textrm{Number of long words}}{\textrm{Number of words}}
-$$
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `n_long_words` | int | `-` | Number of long words |
-| `n_words` | int | `-` | Number of words |
-| `n_sents` | int | `-` | Number of sentences |
+    The `n_long_words` attribute of the ruTS `BasicStats` counts words of six or more letters, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 7 letters to the function instead.
 
 ## RIX readability index
 
 !!! info ""
     **ruts.readability_stats.calc_rix()**
 
-Computation of the [RIX readability index](https://en.wikipedia.org/wiki/Lix_(readability_test)).
-
-A simplified, language-independent companion of the LIX index (Anderson, 1983). The higher the value, the harder the text is to read. The index can be interpreted as follows:
-
-| Value | Difficulty level |
-|---|---|
-|`< 0.2`| grade 1 |
-|`0.2-0.5`| grade 2 |
-|`0.5-0.8`| grade 3 |
-|`0.8-1.3`| grade 4 |
-|`1.3-1.8`| grade 5 |
-|`1.8-2.4`| grade 6 |
-|`2.4-3.0`| grade 7 |
-|`3.0-3.7`| grade 8 |
-|`3.7-4.5`| grade 9 |
-|`4.5-5.3`| grade 10 |
-|`5.3-6.2`| grade 11 |
-|`6.2-7.2`| grade 12 |
-|`> 7.2`| College |
+--8<-- "stats/readability_stats_funcs.md:calc_rix"
 
 !!! note "Note"
-    As for LIX, a long word is longer than 6 letters, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 7 letters to the function.
-
-Formula:
-
-$$
-\frac{\textrm{Number of long words}}{\textrm{Number of sentences}}
-$$
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `n_long_words` | int | `-` | Number of long words |
-| `n_sents` | int | `-` | Number of sentences |
+    As for LIX, [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 7 letters to the function.
 
 ## Solovyev, Ivanov and Solnyshkina formula
 
@@ -269,12 +183,12 @@ Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `n_letters` | int | `-` | Number of letters |
+| `n_letters` | int | `-` | Number of letters of the words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `-17.5` | Coefficient a (intercept) |
-| `b` | int | `0.56` | Coefficient b (of the mean sentence length) |
-| `c` | int | `2.45` | Coefficient c (of the mean word length) |
+| `a` | float | `-17.5` | Coefficient a (intercept) |
+| `b` | float | `0.56` | Coefficient b (of the mean sentence length) |
+| `c` | float | `2.45` | Coefficient c (of the mean word length) |
 
 ## Solovyev, Ivanov and Solnyshkina formula with frequency { #calc_sis_grade_freq }
 
@@ -301,7 +215,7 @@ Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `n_letters` | int | `-` | Number of letters |
+| `n_letters` | int | `-` | Number of letters of the words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
 | `mean_ipm` | float | `-` | Mean frequency of content words (ipm) |
@@ -335,9 +249,9 @@ Parameters:
 | `n_complex` | int | `-` | Number of complex words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `0.62` | Coefficient a (of the mean sentence length) |
-| `b` | int | `0.123` | Coefficient b (of the share of complex words) |
-| `c` | int | `0.051` | Coefficient c (intercept) |
+| `a` | float | `0.62` | Coefficient a (of the mean sentence length) |
+| `b` | float | `0.123` | Coefficient b (of the share of complex words) |
+| `c` | float | `0.051` | Coefficient c (intercept) |
 
 ## Dale-Chall index
 
@@ -351,7 +265,7 @@ The higher the value, the harder the text is to read. The result is the number o
 The original formula uses a list of 3000 familiar words; no such free list exists for Russian, so the adaptation of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project is applied, where the share of complex words replaces the share of unfamiliar words. The original formula coefficients are `0.1579` and `0.0496`.
 
 !!! note "Note"
-    A complex word has more than four syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables to the function.
+    A complex word has five or more syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`) to the function.
 
 Formula:
 
@@ -366,26 +280,20 @@ Parameters:
 | `n_complex` | int | `-` | Number of complex words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `0.552` | Coefficient a (of the share of complex words) |
-| `b` | int | `0.273` | Coefficient b (of the mean sentence length) |
+| `a` | float | `0.552` | Coefficient a (of the share of complex words) |
+| `b` | float | `0.273` | Coefficient b (of the mean sentence length) |
 
 ## Gunning fog index
 
 !!! info ""
     **ruts.readability_stats.calc_gunning_fog_index()**
 
-Computation of the [Gunning fog index](https://en.wikipedia.org/wiki/Gunning_fog_index) (Gunning, 1952).
+--8<-- "stats/readability_stats_funcs.md:calc_gunning_fog_index"
 
-The higher the value, the harder the text is to read. The result is the number of years of schooling in the US system needed to understand the text. The adaptation of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project is used. SEO services additionally multiply the result by `0.78`; no justification for this multiplier has been published.
+The adaptation of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project is used. SEO services additionally multiply the result by `0.78`; no justification for this multiplier has been published.
 
 !!! note "Note"
-    A complex word has more than four syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables to the function.
-
-Formula:
-
-$$
-a\times\left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}}+100\times\frac{\textrm{Number of complex words}}{\textrm{Number of words}}\right)
-$$
+    A complex word has five or more syllables, so [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 5 syllables (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`) to the function.
 
 Parameters:
 
@@ -394,14 +302,16 @@ Parameters:
 | `n_complex` | int | `-` | Number of complex words |
 | `n_words` | int | `-` | Number of words |
 | `n_sents` | int | `-` | Number of sentences |
-| `a` | int | `0.4` | Coefficient a |
+| `a` | float | `0.4` | Coefficient a |
 
 ## Flesch index to grade { #flesch_reading_easy_to_grade }
 
 !!! info ""
     **ruts.readability_stats.flesch_reading_easy_to_grade()**
 
-Conversion of the Flesch reading ease into a school grade for inclusion in the [consensus grade](#calc_consensus_grade), by analogy with `text_standard` of the [textstat](https://github.com/textstat/textstat) library:
+--8<-- "stats/readability_stats_funcs.md:flesch_reading_easy_to_grade"
+
+The default bands are those of `text_standard` of the [textstat](https://github.com/textstat/textstat) library (`anyts.constants.READING_EASE_GRADES`):
 
 | Flesch index | Grade |
 |---|---|
@@ -414,36 +324,31 @@ Conversion of the Flesch reading ease into a school grade for inclusion in the [
 |`30-40`| 12 |
 |`below 30`| 13 |
 
-Values above 100 map to grade 5.
-
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `flesch_reading_easy` | float | `-` | Flesch reading ease value |
+| `grades` | list[tuple[float, float]] | `READING_EASE_GRADES` | Lower bounds and their grades in descending order of the bounds |
+| `below` | float | `13` | Grade below the last bound |
 
 ## Consensus grade { #calc_consensus_grade }
 
 !!! info ""
     **ruts.readability_stats.calc_consensus_grade()**
 
-Computation of the consensus grade - the median of the rounded grade formula values. An analog of `text_standard` in textstat, which uses the mode instead of the median; the median is more robust to outliers of individual formulas. Formula values are rounded arithmetically (half up). The Flesch index is [converted to a grade](#flesch_reading_easy_to_grade) and added without rounding, so for the 60-70 range it votes for 8.5.
+--8<-- "stats/readability_stats_funcs.md:calc_consensus_grade"
 
-[`ReadabilityStats`](readability_stats.md#interpretation) passes the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula and the Flesch index to the function.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `grades` | list[float] | `-` | Grade formula values |
-| `flesch_reading_easy` | float | `None` | Flesch reading ease value |
+An analog of `text_standard` in textstat, which uses the mode instead of the median; the median is more robust to outliers of individual formulas. [`ReadabilityStats`](readability_stats.md#interpretation) passes the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices, the Solovyev, Ivanov and Solnyshkina formula and the Flesch index to the function.
 
 ## Grade and reader age { #grade_to_age }
 
 !!! info ""
     **ruts.readability_stats.grade_to_age()**
 
-Getting the school grade and reader age from a grade formula value. The mapping is taken from the `GRADE_TEXT` table of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project and is available in the `ruts.constants.GRADE_AGE_LEVELS` table:
+--8<-- "stats/readability_stats_funcs.md:grade_to_age"
+
+The default stages of ruTS are taken from the `GRADE_TEXT` table of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project (`ruts.constants.GRADE_AGE_LEVELS` and `POSTGRADUATE_LEVEL`):
 
 | Grade | Stage | Age |
 | :---: | :---: | :-: |
@@ -455,20 +360,22 @@ Getting the school grade and reader age from a grade formula value. The mapping 
 | 15-17 | university years 4-6 | 20-22 years |
 | above 17 | postgraduate | over 22 years |
 
-The value is rounded arithmetically, values below 1 map to grades 1-3.
-
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `grade` | float | `-` | Grade formula value |
+| `levels` | list[tuple[int, int, str, str]] | `GRADE_AGE_LEVELS` | Stages as the first and the last year, the stage and the age, in ascending order |
+| `above` | tuple[str, str] | `POSTGRADUATE_LEVEL` | Stage and age above the last stage |
 
 ## Reading time { #calc_reading_time }
 
 !!! info ""
     **ruts.readability_stats.calc_reading_time()**
 
-Computation of the reading time of a text in minutes. The silent reading norm for an adult is 120-180 words per minute (Kuznetsov and Khromov, 1991); the upper bound is used by default. The reading-aloud norms for primary school by the Russian federal standard are available in the `ruts.constants.READING_SPEED_NORMS` table:
+--8<-- "stats/readability_stats_funcs.md:calc_reading_time"
+
+The silent reading norm for an adult is 120-180 words per minute (Kuznetsov and Khromov, 1991); the upper bound is used by default. The reading-aloud norms for primary school by the Russian federal standard are available in the `ruts.constants.READING_SPEED_NORMS` table:
 
 | Norm | Words per minute |
 |---|---|
@@ -478,15 +385,9 @@ Computation of the reading time of a text in minutes. The silent reading norm fo
 | `grade_3` | 80-100 |
 | `grade_4` | 90-110 |
 
-Formula:
-
-$$
-\frac{\textrm{Number of words}}{\textrm{Reading speed}}
-$$
-
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `n_words` | int | `-` | Number of words |
-| `wpm` | int | `180` | Reading speed, words per minute |
+| `wpm` | float | `180` | Reading speed, words per minute |

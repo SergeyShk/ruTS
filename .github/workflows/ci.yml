@@ -59,6 +59,8 @@ jobs:
       - name: Check DAWG extension
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: uv run --no-sync python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
+      - name: Fetch the pages of anyTS
+        run: uv run --no-sync python scripts/core_docs.py
       - name: Run tests
         # Архивы наборов качаются с master, поэтому сетевые тесты - в задаче network
         run: uv run --no-sync pytest -m "not network" --cov ruts
@@ -81,6 +83,8 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: uv sync --locked --no-default-groups --group test
+      - name: Fetch the pages of anyTS
+        run: uv run --no-sync python scripts/core_docs.py
       - name: Run the network tests
         run: uv run --no-sync pytest -m network
 
@@ -96,5 +100,7 @@ jobs:
           python-version: "3.13"
       - name: Install dependencies
         run: uv sync --locked --only-group docs
+      - name: Fetch the pages of anyTS
+        run: uv run --no-sync python scripts/core_docs.py
       - name: Build docs
         run: uv run --no-sync mkdocs build --strict

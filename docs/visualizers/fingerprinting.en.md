@@ -5,24 +5,16 @@
 
 ## Description
 
-Literature Fingerprinting visualization.
+--8<-- "visualizers/fingerprinting.md:fingerprinting"
 
-!!! note "Note"
-    Literature fingerprinting is described in detail in this [paper](https://www.uni-konstanz.de/mmsp/pubsys/publishedFiles/KeOe07.pdf).
+The function is that of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/fingerprinting/) core with the Russian title of `ruts.constants.VISUALIZER_LABELS` by default, which `labels` replaces; the measures of [lexical diversity](../stats/diversity_stats.md) of ruTS, functions of a list of words such as `calc_ttr` or `calc_simpson_index`, serve as the `metric`.
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `texts` | List[List[str]] | `-` | List of word lists |
-| `segment_len` | int | `10` | Segment size |
-| `metric` | Callable | `None` | Function computing a [lexical diversity](../stats/diversity_stats.md) metric |
-| `x_size` | int | `800` | Width of the drawing area |
-| `y_size` | int | `600` | Height of the drawing area |
-| `cmap` | str | `'PuOr'` | Color map |
-| `ax` | Axes | `None` | matplotlib axes for the plot; if not given, a 15×10 figure is created |
+--8<-- "visualizers/fingerprinting.md:fingerprinting-parameters"
 
-The function returns the `Axes` with the visualization; the figure is available as `ax.figure`. The color of a square is the metric value of the segment relative to the maximum over all texts; segments where the metric is undefined (`nan` on segments too short for it) are drawn as zeros rather than disappearing from the plot.
+!!! note "Note"
+    In ruTS the colour map is `PuOr` by default.
 
 ## Usage example
 

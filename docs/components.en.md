@@ -1,12 +1,23 @@
 # Components
 
-A set of modules for building [spaCy](https://github.com/explosion/spaCy) components. Each module is a class with two implemented methods: `__init__` (adds a new extension to the pipeline on initialization) and `__call__` (takes a `Doc` object and returns its modified version). A component also sets up the tokenizer (`ruts.utils.add_dash_rules`) so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.
+--8<-- "components.md:StatsComponent"
+
+The components of ruTS are subclasses of the `StatsComponent` of the [anyTS](https://sergeyshk.github.io/anyTS/components/) core, one for every class of statistics.
 
 !!! note "Note"
-    Detailed information on developing custom spaCy components is available in the corresponding section of the [documentation](https://spacy.io/usage/processing-pipelines#custom-components). The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
+    The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
 
-!!! warning "Serialization"
-    The components store a statistics object in `doc._.<name>`, which spaCy cannot serialize: `Doc.to_bytes()`, `DocBin(store_user_data=True)` and `nlp.pipe(..., n_process>1)` with such components fail. To save a document, exclude the user data (`doc.to_bytes(exclude=["user_data"])`) or store `doc._.<name>.get_stats()` separately; for multiprocessing compute the statistics in the main process after `nlp.pipe` without the ruTS components.
+## Names { #names }
+
+The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`. They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`.
+
+--8<-- "components.md:StatsComponent-names"
+
+In `ruts_lexical` a document of numbers alone passes untouched as well, and in `ruts_verse` a document without letters.
+
+--8<-- "components.md:StatsComponent-serialization"
+
+Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.
 
 ## BasicStatsComponent
 

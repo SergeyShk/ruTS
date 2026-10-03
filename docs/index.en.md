@@ -110,6 +110,7 @@ A walkthrough of one short story with every tool of the library is in the notebo
         *   phon_stats.py - phonostatistics
         *   readability_stats.py - readability metrics
         *   style_stats.py - SEO style metrics
+        *   syllables.py - syllables and stress
         *   syntax_stats.py - syntactic statistics
         *   utils.py - helper tools
         *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
@@ -140,5 +141,6 @@ A walkthrough of one short story with every tool of the library is in the notebo
             *   word_tree.py - Word Tree
             *   zipf.py - Zipf's law
     *   **tests** - tests mirroring the package structure
+    *   **scripts** - a script that fetches the anyTS documentation pages
     *   **examples** - example notebooks
     *   **demo** - Gradio demo for Hugging Face Spaces

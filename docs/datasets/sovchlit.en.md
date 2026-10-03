@@ -27,7 +27,7 @@ The dataset is built from digitized editions of the ["School textbooks of the US
 
 ### download
 
-Downloads the dataset from the network and extracts the files.
+Downloads the archive `sov_chrest_lit_v1.tar.xz` from the network with checksum verification and extracts the files into the `sov_chrest_lit_v1` directory.
 
 Parameters:
 
@@ -73,12 +73,12 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `grade` | int | `-` | Grade level of the texts |
-| `book` | str | `-` | Book title |
+| `book` | str | `-` | Book title (substring, ignoring case and ё) |
 | `year` | int | `-` | Year of publication |
-| `category` | str | `-` | Text category |
+| `category` | str | `-` | Text category (substring, ignoring case and ё) |
 | `text_type` | str | `-` | Text type |
-| `subject` | str | `-` | Text title |
-| `author` | str | `-` | Text author |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
+| `author` | str | `-` | Text author (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |
@@ -117,12 +117,12 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `grade` | int | `-` | Grade level of the texts |
-| `book` | str | `-` | Book title |
+| `book` | str | `-` | Book title (substring, ignoring case and ё) |
 | `year` | int | `-` | Year of publication |
-| `category` | str | `-` | Text category |
+| `category` | str | `-` | Text category (substring, ignoring case and ё) |
 | `text_type` | str | `-` | Text type |
-| `subject` | str | `-` | Text title |
-| `author` | str | `-` | Text author |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
+| `author` | str | `-` | Text author (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |

@@ -13,12 +13,12 @@ All library exceptions inherit the base class `RutsError` and one of the built-i
 | `SourceTypeError` | `TypeError` | The data source is neither a string nor a `Doc`, the frequency counter is not a `Counter`, the list of texts is not a list of lists, the path is neither a string nor a `Path`, the tokenizer is not callable |
 | `SourceError` | `ValueError` | The source has no words, sentences, texts or collocations, lacks a dependency parse, has fewer texts than the measure needs, or nothing is left after culling |
 | `ParameterError` | `ValueError` | A threshold, window, segment size or number of items is out of range; an unknown measure, variant, preset, layer, stage or dataset category |
-| `UnknownStatError` | `ParameterError`, `KeyError` | An unknown statistic is requested from `MorphStats.explain_text` |
+| `UnknownStatError` | `ParameterError`, `KeyError` | An unknown statistic is requested by name (`MorphStats.explain_text`, `DiversityStats.windowed`) |
 | `DatasetNotFoundError` | `OSError` | The dataset is not downloaded; the message shows the download command |
 | `DataFileError` | `ValueError` | A dataset file is corrupted, has an unexpected format or cannot be decoded |
 | `DownloadError` | `RuntimeError` | The file could not be downloaded or failed the checksum verification |
 
-The classes are available from `ruts` and from `ruts.exceptions`.
+The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of the core code are in English, those of the ruTS code in Russian.
 
 !!! example "Example"
 
@@ -30,7 +30,7 @@ The classes are available from `ruts` and from `ruts.exceptions`.
         BasicStats("...")
     except SourceError as e:
         print(e)
-    # В источнике данных отсутствуют слова
+    # The data source has no words
 
     try:
         list(PoetryCorpus(data_dir="/nowhere").get_texts(limit=1))

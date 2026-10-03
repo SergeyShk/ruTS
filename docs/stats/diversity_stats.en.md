@@ -5,99 +5,39 @@
 
 ## Description
 
-A module for computing the main [lexical diversity](https://en.wikipedia.org/wiki/Lexical_diversity) metrics of a text. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
+--8<-- "stats/diversity_stats.md:DiversityStats"
 
-The module allows using a pre-built [`WordsExtractor`](../extractors/words.md) object for the word tokenization needed before computing the statistics.
+## Language hooks
 
-!!! note "Note"
-    The metrics are computed by accessing the corresponding attribute or by calling the `get_stats` method of the `DiversityStats` object.
+The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/) core: instead of a list of words it takes a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library. The words of a text are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given one, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The words are always lower-cased. The `print_stats` table has Russian headers and the Russian descriptions of the metrics from `ruts.constants.DIVERSITY_STATS_DESC`.
 
 ## Parameters
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; for a Doc it is applied to its text when given |
 | `window_len` | int | `50` | Window size for MATTR and segment size for MSTTR |
 | `mtld_threshold` | float | `0.72` | TTR threshold for MTLD, MA-MTLD and MTLD-W |
 | `mtld_min_len` | int | `10` | Minimum factor length for MTLD, MA-MTLD and MTLD-W |
 | `hdd_sample_size` | int | `42` | Sample size for HD-D |
 | `log_base` | float | `10` | Logarithm base for the Summer, Maas and Dugast metrics |
 
+--8<-- "stats/diversity_stats.md:check_params"
+
 ## Conventions { #conventions }
 
-The values of some metrics depend on parameters that different libraries choose differently. The defaults match koRpus and Kyle's lexical-diversity, and all of them are class parameters. The comparison with the MTLD threshold is the only convention that is not a parameter:
-
-| Parameter | ruTS | Other libraries |
-| :-------: | :--: | :-------------: |
-| Logarithm base for Summer, Maas, Dugast's U and Dugast's k | 10 | LexicalRichness, textcomplexity and zipfR - natural |
-| MATTR window and MSTTR segment | 50 | quanteda and koRpus - 100 |
-| TTR threshold for MTLD | 0.72 | 0.66-0.75 in the literature |
-| Comparison with the MTLD threshold | a factor closes at TTR ≤ 0.72 - in McCarthy and Jarvis (2010) a factor ends when TTR "reaches" 0.720 | lexical-diversity and TAALED - strict `<`, so on factors where TTR hits the threshold exactly (18/25, 36/50) the MTLD, MA-MTLD and MTLD-W values diverge |
-| Minimum MTLD factor length | 10 | koRpus applies it only to MA-MTLD, LexicalRichness and textcomplexity do not apply it |
-| HD-D sample size | 42 | 35-50 in the literature |
-
-By Zenker and Kyle (2021) MATTR, MTLD and HD-D are stable on texts of 50-200 words and longer, MTLD-W, MA-MTLD and Maas are unstable on short texts, and the TTR family never stabilizes. To compare texts of different lengths use the [windowed computation](#windowed) with confidence intervals.
+--8<-- "stats/diversity_stats.md:DiversityStats-conventions"
 
 ## Attributes
 
-| Attribute | Type | Description |
-| :-------: | :--: | :---------: |
-| `words` | tuple[str] | Tuple of extracted words |
-| `frequency_spectrum` | dict[int, int] | Frequency spectrum - the number of lexemes with a given frequency |
-| `ttr` | float | Type-Token Ratio (TTR) |
-| `rttr` | float | Root Type-Token Ratio (RTTR) |
-| `cttr` | float | Corrected Type-Token Ratio (CTTR) |
-| `httr` | float | Herdan Type-Token Ratio (HTTR) |
-| `sttr` | float | Summer Type-Token Ratio (STTR) |
-| `mttr` | float | Maas Type-Token Ratio (MTTR) |
-| `dttr` | float | Dugast Type-Token Ratio (DTTR) |
-| `mattr` | float | Moving Average Type-Token Ratio (MATTR) |
-| `msttr` | float | Mean Segmental Type-Token Ratio (MSTTR) |
-| `mtld` | float | Measure of Textual Lexical Diversity (MTLD) |
-| `mamtld` | float | Moving Average Measure of Textual Lexical Diversity (MA-MTLD) |
-| `mtldw` | float | MTLD with a moving window and text wrap (MTLD-W) |
-| `hdd` | float | Hypergeometric Distribution D (HD-D) |
-| `simpson_index` | float | Simpson's index (D) |
-| `inverse_simpson_index` | float | Inverse Simpson's index (1/D) |
-| `gini_simpson_index` | float | Gini-Simpson index (1-D) |
-| `hapax_index` | float | Hapax index, a.k.a. Honoré's R |
-| `honore_r` | float | Alias for the hapax index |
-| `yule_k` | float | Yule's characteristic (Yule's K) |
-| `yule_i` | float | Inverse Yule's characteristic (Yule's I) |
-| `herdan_vm` | float | Herdan's Vm |
-| `sichel_s` | float | Sichel's S |
-| `michea_m` | float | Michéa's M |
-| `brunet_w` | float | Brunet's W |
-| `dugast_k` | float | Dugast's k |
-| `baayen_p` | float | Baayen's P |
-| `hapax_ratio` | float | Share of hapaxes among lexemes |
-| `alpha2` | float | The α₂ exponent |
-| `entropy` | float | Shannon entropy in bits |
-| `evenness` | float | Evenness - the ratio of entropy to its maximum |
-| `perplexity` | float | Perplexity |
-| `zipf_alpha` | float | Zipf's law slope |
-| `heaps_beta` | float | Heaps' law exponent |
-
-!!! note "Note"
-    Every metric can be computed separately by calling the corresponding function. Detailed information on the lexical diversity metrics and the functions used to compute them is available in the corresponding [section](diversity_stats_funcs.md).
+--8<-- "stats/diversity_stats.md:DiversityStats-attributes"
 
 ## Methods
 
 ### windowed
 
-Windowed computation of a metric: its value over consecutive text windows of equal length, the mean, the sample standard deviation and the confidence interval of the mean by Student's distribution. The standard way to compare texts of different lengths; Kubát and Milička's STTR is a windowed TTR with a 1000-word window and a 95% confidence interval. For texts shorter than the window the metric is computed over the whole text as a single window; windows with an undefined metric value (`nan`) are ignored. If the metric is infinite in at least one window, the mean is infinite and the standard deviation and confidence interval are undefined.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `stat` | str | `-` | Metric name from `get_stats` |
-| `window_len` | int | `100` | Window size |
-| `step` | int | `None` | Window step, by default equal to the window size (windows do not overlap) |
-| `confidence` | float | `0.95` | Confidence level |
-
-Returns a `WindowStats` named tuple with the fields `mean`, `std`, `lower`, `upper` and `n_windows`.
+--8<-- "stats/diversity_stats.md:DiversityStats-windowed"
 
 !!! example "Example"
 
@@ -114,7 +54,7 @@ Returns a `WindowStats` named tuple with the fields `mean`, `std`, `lower`, `upp
 
 ### get_stats
 
-Returns a dictionary with the computed lexical diversity metrics.
+--8<-- "stats/diversity_stats.md:DiversityStats-get_stats"
 
 An example of computing lexical diversity metrics:
 
@@ -173,7 +113,7 @@ An example of computing lexical diversity metrics:
 
 ### print_stats
 
-Prints a table with the computed lexical diversity metrics.
+--8<-- "stats/diversity_stats.md:DiversityStats-print_stats"
 
 To illustrate the method, we reuse the code from the previous example:
 

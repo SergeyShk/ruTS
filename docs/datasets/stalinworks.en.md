@@ -42,7 +42,7 @@ The dataset is built from the 16 main volumes of the digitized complete collecte
 
 ### download
 
-Downloads the dataset from the network and extracts the files.
+Downloads the archive `stalin_works_v1.tar.xz` from the network with checksum verification and extracts the files into the `stalin_works_v1` directory.
 
 Parameters:
 
@@ -91,9 +91,9 @@ Parameters:
 | `year` | int | `-` | Year of writing |
 | `text_type` | str | `-` | Text type |
 | `is_translation` | bool | `-` | Translation flag |
-| `source` | str | `-` | Original source of the texts |
-| `subject` | str | `-` | Text title |
-| `topic` | str | `-` | Text subsection title |
+| `source` | str | `-` | Original source of the texts (substring, ignoring case and ё) |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
+| `topic` | str | `-` | Text subsection title (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |
@@ -140,9 +140,9 @@ Parameters:
 | `year` | int | `-` | Year of writing |
 | `text_type` | str | `-` | Text type |
 | `is_translation` | bool | `-` | Translation flag |
-| `source` | str | `-` | Original source of the texts |
-| `subject` | str | `-` | Text title |
-| `topic` | str | `-` | Text subsection title |
+| `source` | str | `-` | Original source of the texts (substring, ignoring case and ё) |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
+| `topic` | str | `-` | Text subsection title (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |

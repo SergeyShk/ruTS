@@ -5,29 +5,34 @@
 
 ## Описание
 
-Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной; меры дисперсии ([Gries 2008](https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf), [2020](https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf)) дополняют частоту и используются при отборе лексики для словарей и учебных минимумов.
+<!-- core: corpus/dispersion.md:dispersion 14e4623 -->
+Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной из них; меры дисперсии ([Gries 2008](https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf), [2020](https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf)) дополняют частоту.
 
 Текст делится на части: `parts` - число частей примерно равного размера или размеры частей по порядку (предложения, абзацы, главы, документы корпуса), в сумме равные числу слов. Для каждого слова считаются частоты по частям и шесть мер; Gries рекомендует DP как основную.
 
-Слова сравниваются как есть: регистр и лемматизация - на стороне [`WordsExtractor`](../extractors/words.md).
+Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.
+
+Модуль `ruts.corpus.dispersion` реэкспортирует функцию и меры ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) (`from ruts.corpus.dispersion import calc_dp`). Слова извлекает [`WordsExtractor`](../extractors/words.md).
 
 ## Меры
 
+<!-- core: corpus/dispersion.md:dispersion-measures 09abba3 -->
 Для $n$ частей с долями $s_i$ в тексте, частотами слова по частям $v_i$ и общей частотой $f = \sum v_i$; $p_i = v_i / n_i$ - относительная частота в части размером $n_i$:
 
 | Мера | Поле | Формула | Значения |
 | :--- | :--- | :------ | :------- |
-| Отклонение пропорций DP | `dp` | $\frac{1}{2} \sum \left\lvert \frac{v_i}{f} - s_i \right\rvert$ | 0 - пропорционально размерам частей, стремится к 1 - в одной части; Gries (2008) |
+| Отклонение пропорций DP | `dp` | $\frac{1}{2} \sum \left\lvert \frac{v_i}{f} - s_i \right\rvert$ | 0 - пропорционально размерам частей, $1 - s_i$ - все в части $i$, так что не больше $1 - \min s_i$; Gries (2008) |
 | Нормированное DP | `dp_norm` | $\frac{DP}{1 - \min s_i}$ | наибольшее значение равно единице при любом делении; Lijffijt и Gries (2012) |
-| D Жюйана | `juilland_d` | $1 - \frac{V}{\sqrt{n - 1}}$, $V = \frac{\sigma(p)}{\mu(p)}$ | 1 - равномерно, 0 - в одной части; Juilland и Chang-Rodríguez (1964) |
+| D Жюйана | `juilland_d` | $1 - \frac{V}{\sqrt{n - 1}}$, $V = \frac{\sigma(p)}{\mu(p)}$ | 1 - равномерно, 0 - в одной части; Juilland и Chang-Rodríguez (1964), со стандартным отклонением генеральной совокупности $\sigma$, как в Gries (2020); Gries (2008) берет выборочное |
 | D2 Кэрролла | `carroll_d2` | $\frac{H(p)}{\log_2 n}$ | энтропия распределения $p_i$; 1 - равномерно, 0 - в одной части; Carroll (1970) |
 | S Розенгрена | `rosengren_s` | $\frac{(\sum \sqrt{s_i v_i})^2}{f}$ | 1 - пропорционально, стремится к $1/n$ при сосредоточении в одной из равных частей; Rosengren (1971) |
 | Дивергенция Кульбака-Лейблера | `kl_divergence` | $\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}$ | в битах; 0 - пропорционально, растет при сосредоточении в малых частях; Gries (2020) |
 
-Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s`, `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей - из модуля `ruts.corpus.dispersion` (`from ruts.corpus.dispersion import calc_dp`); названия - в `anyts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`. Функция `dispersion` считает те же меры для всех слов сразу по ненулевым ячейкам матрицы «слово × часть», так что память линейна по числу слов и деление на предложения не накладно: 260 тысяч слов, 13 тысяч лексем и 15 тысяч предложений - 0.13 с и 28 МБ.
+Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s` и `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей - из модуля `anyts.corpus.dispersion`; их названия - в `anyts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`.
 
 ## Параметры
 
+<!-- core: corpus/dispersion.md:dispersion-parameters a7f9e1c -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `words` | list[str] | `-` | Слова текста по порядку |
@@ -37,6 +42,7 @@
 
 ## Результат
 
+<!-- core: corpus/dispersion.md:Dispersion c55ea86 -->
 Список именованных кортежей `Dispersion` по убыванию частоты: `word`, `freq` и шесть мер из таблицы; `pd.DataFrame(result)` дает таблицу.
 
 ## Пример

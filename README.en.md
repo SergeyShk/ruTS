@@ -846,9 +846,9 @@ make lint        # ruff + mypy
 
 Run `make help` for the full list of commands.
 
-The documentation is bilingual: Russian pages are `docs/*.md`, English ones are `docs/*.en.md` next to them ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); when editing a page, update both versions.
+The documentation is bilingual: Russian pages are `docs/*.md`, English ones are `docs/*.en.md` next to them ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); when editing a page, update both versions. The English pages of the parts that come from the anyTS core include its text and the Russian ones translate it - see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-The installed version is `ruts.__version__`. All exceptions inherit `ruts.RutsError` and one of the built-in classes (`SourceError` and `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), so `except ValueError` keeps working. Messages about downloading and extracting datasets go to the `ruts` logger (`logging.getLogger("ruts")`) and are silent by default.
+The installed version is `ruts.__version__`. All exceptions are classes of the anyTS core: they inherit `ruts.RutsError` (which is `anyts.exceptions.AnyTSError`) and one of the built-in classes (`SourceError` and `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), so `except ValueError` keeps working. Messages about downloading and extracting datasets go from the core to the `anyts` logger (`logging.getLogger("anyts")`) and are silent by default.
 
 Before submitting changes, install the hooks that run the linters on commit and the tests on push:
 

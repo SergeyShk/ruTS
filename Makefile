@@ -1,4 +1,4 @@
-.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-build docs-serve docs-deploy notebooks demo demo-login demo-upload
+.PHONY: help uv deps lock lint ruff format mypy test test-cov clean clean-build clean-pyc clean-test build publish publish-test docs-core docs-build docs-serve docs-deploy notebooks demo demo-login demo-upload
 .DEFAULT_GOAL := help
 APP_PATH := ruts
 TESTS_PATH := tests
@@ -42,10 +42,10 @@ format: deps ## Отформатировать код
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy
 
-test: deps ## Запустить тесты
+test: docs-core ## Запустить тесты
 	uv run pytest
 
-test-cov: deps ## Запустить тесты с проверкой покрытия
+test-cov: docs-core ## Запустить тесты с проверкой покрытия
 	uv run pytest --cov $(APP_PATH)
 
 clean: clean-build clean-pyc clean-test ## Удалить все артефакты
@@ -74,7 +74,10 @@ publish: build ## Опубликовать релиз на PyPI
 publish-test: build ## Опубликовать релиз на TestPyPI
 	uv publish --index testpypi
 
-docs-build: deps ## Собрать документацию
+docs-core: deps ## Загрузить страницы anyTS, которые подключает документация; ANYTS_DIR=../anyTS берет локальный клон
+	uv run python scripts/core_docs.py $(ANYTS_DIR)
+
+docs-build: docs-core ## Собрать документацию
 	rm -fr site/
 	uv run mkdocs build --strict
 
@@ -83,10 +86,10 @@ notebooks: uv ## Выполнить ноутбуки из examples/ и запи�
 	uv run pytest --nbmake --overwrite $(EXAMPLES_PATH) -p no:cacheprovider
 	uv run nbstripout --keep-output --keep-count --extra-keys metadata.language_info.version $(EXAMPLES_PATH)/*.ipynb
 
-docs-serve: deps ## Запустить сервер документации
+docs-serve: docs-core ## Запустить сервер документации
 	uv run mkdocs serve
 
-docs-deploy: deps ## Задеплоить документацию
+docs-deploy: docs-core ## Задеплоить документацию
 	uv run mkdocs gh-deploy
 
 demo: deps ## Запустить демо локально

@@ -3,6 +3,10 @@ site_description: "Библиотека для извлечения статис
 site_url: https://sergeyshk.github.io/ruTS/
 repo_url: https://github.com/SergeyShk/ruTS
 
+# Страницы anyTS, секции которых подключают страницы; см. scripts/core_docs.py
+exclude_docs: |
+  core/
+
 nav:
     - Главная:
       - О проекте: index.md
@@ -176,6 +180,9 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: [docs/core]
+      check_paths: true
   - pymdownx.arithmatex:
       generic: True
   - pymdownx.emoji:

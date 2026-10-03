@@ -79,7 +79,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `genre` | str | `-` | Genre: `prose`, `poems` or `publicism` |
-| `author` | str | `-` | Author (case-insensitive substring of the Russian name) |
+| `author` | str | `-` | Author (substring of the Russian name, ignoring case and ё) |
 | `year_from` | int | `-` | Earliest year of writing |
 | `year_to` | int | `-` | Latest year of writing |
 | `min_len` | int | `-` | Minimum text length (in characters) |
