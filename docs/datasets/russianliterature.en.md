@@ -13,7 +13,7 @@ A module for working with the [RusLit](https://github.com/d0rj/RusLit) collectio
 | Poetry | `poems` | Pushkin (35), Lermontov (18), Nekrasov (15), Blok (10) | 78 |
 | Publicism | `publicism` | Tolstoy | 26 |
 
-The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. The year of writing is taken from the collection's `info.csv` files (`1825` or `1824-1825`); 28 works have none. The collection's folder names are in Latin script; records give authors by their Russian names from the `AUTHORS` table (`Chekhov` → «Антон Чехов»). The collection suits authorship attribution and genre comparison: texts of one author in different genres and of one genre by different authors.
+The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. The year of writing is taken from the collection's `info.csv` files (`1825` or `1824-1825`); 27 works have none. The collection's folder names are in Latin script; records give authors by their Russian names from the `AUTHORS` table (`Chekhov` → «Антон Чехов»). The collection suits authorship attribution and genre comparison: texts of one author in different genres and of one genre by different authors.
 
 The repository archive (20 MB) is downloaded at a pinned commit, verified against a SHA-256 checksum and extracted; texts are read one at a time, the single cp1251 file is decoded automatically.
 
