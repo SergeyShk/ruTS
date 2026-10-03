@@ -5,24 +5,17 @@
 
 ## Description
 
-Building a [word tree](https://www.weblyzard.com/word-tree/) (Word Tree) that shows the context of a given keyword in a text.
+--8<-- "visualizers/word_tree.md:wordtree"
 
-!!! note "Note"
-    The word tree is described in detail in this [paper](https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf).
+The function is that of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/word_tree/) core.
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `texts` | List[List[str]] | `-` | List of word lists |
-| `keyword` | str | `-` | Keyword whose context is searched |
-| `max_n` | int | `5` | Maximum context size |
-| `max_per_n` | int | `8` | Maximum number of examples for each context size |
-| `**kwargs` | - | `-` | Drawing parameters: `max_font_size` (default `30`), `min_font_size` (`12`), `font_interp` - a function interpolating the font size from frequency |
+--8<-- "visualizers/word_tree.md:wordtree-parameters"
 
 ## Usage example
 
-Let us look at the visualizer on 100 texts of the [StalinWorks](../datasets/stalinworks.md) dataset.
+Let us look at the visualizer on the sentences of 50 texts of the [StalinWorks](../datasets/stalinworks.md) dataset.
 
 !!! example "Example"
 
@@ -30,7 +23,6 @@ Let us look at the visualizer on 100 texts of the [StalinWorks](../datasets/stal
 
     ``` python
     # Import the libraries
-    import tempfile
     from ruts import SentsExtractor, WordsExtractor
     from ruts.datasets import StalinWorks
     from ruts.visualizers import wordtree
@@ -40,7 +32,6 @@ Let us look at the visualizer on 100 texts of the [StalinWorks](../datasets/stal
     se = SentsExtractor()
     we = WordsExtractor(min_len=3)
     texts = [text for text in sw.get_texts(limit=50)]
-    text = "\n".join(texts)
 
     # Build the list of word lists
     words = []
@@ -53,12 +44,9 @@ Let us look at the visualizer on 100 texts of the [StalinWorks](../datasets/stal
     g = wordtree(words, "рабочий", max_n=6)
 
     # Save the visualization to disk
-    g.view(tempfile.mktemp(".gv"))
+    g.render("wordtree", format="png")
     ```
 
     _Result_:
 
     ![ruts](../img/wordtree.png){: .center }
-
-!!! warning "Warning"
-    Viewing the visualization requires the `Graphviz` tool to be installed.
