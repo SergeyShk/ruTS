@@ -9,7 +9,7 @@ from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, 
 from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
 from ..utils import normalize_yo
-from .dataset import Dataset, substring_filter
+from .dataset import Dataset, is_complete, substring_filter
 
 NAME = "russian_literature"
 META = {
@@ -38,6 +38,27 @@ AUTHORS = {
     "Turgenev": "Иван Тургенев",
 }
 ENCODINGS = ("utf-8", "cp1251")
+# Архив закреплен коммитом, неполный набор узнается по числу текстов в папках авторов
+TEXT_COUNTS = {
+    "prose/Blok": 4,
+    "prose/Bryusov": 30,
+    "prose/Chekhov": 77,
+    "prose/Dostoevsky": 33,
+    "prose/Gogol": 16,
+    "prose/Gorky": 33,
+    "prose/Herzen": 11,
+    "prose/Lermontov": 3,
+    "prose/Pushkin": 10,
+    "prose/Tolstoy": 42,
+    "prose/Turgenev": 10,
+    "poems/Blok": 10,
+    "poems/Lermontov": 18,
+    "poems/Nekrasov": 15,
+    "poems/Pushkin": 35,
+    "publicism/Tolstoy": 26,
+}
+# В собрании нет info.csv только у стихов Лермонтова
+WITHOUT_INFO = ("poems/Lermontov",)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -95,7 +116,7 @@ class RussianLiterature(Dataset):
         authors (dict[str, str]): Русские имена авторов по названиям папок
 
     Методы:
-        check_data: Проверка наличия всех необходимых директорий в наборе данных
+        check_data: Проверка наличия всех необходимых директорий и файлов в наборе данных
         download: Загрузка набора данных из сети
         get_texts: Получение текстов (без заголовков) из набора данных
         get_records: Получение записей (с заголовками) из набора данных
@@ -120,23 +141,22 @@ class RussianLiterature(Dataset):
 
     def check_data(self) -> bool:
         """
-        Проверка наличия всех необходимых директорий в наборе данных
+        Проверка наличия всех необходимых директорий и файлов в наборе данных
 
         Вывод:
             bool: Результат проверки
 
         Исключения:
-            DatasetNotFoundError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен или неполон
         """
-        for genre in self.genres:
-            if not self._dirpath.joinpath(genre).is_dir():
-                msg = (
-                    f"Набор данных {NAME} не обнаружен\n"
-                    "Загрузите его, выполнив команды:\n"
-                    ">>> rl = RussianLiterature()\n"
-                    ">>> rl.download()"
-                )
-                raise DatasetNotFoundError(msg)
+        if not self.__is_complete():
+            msg = (
+                f"Набор данных {NAME} не обнаружен или неполон\n"
+                "Загрузите его, выполнив команды:\n"
+                ">>> rl = RussianLiterature()\n"
+                ">>> rl.download()"
+            )
+            raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -147,9 +167,9 @@ class RussianLiterature(Dataset):
             Архив репозитория по закрепленному коммиту сверяется с контрольной
             суммой SHA-256; поврежденный или подмененный файл (например, после
             оборванной загрузки) удаляется и загружается заново в том же вызове.
-            Если архив уже есть, а какой-то из папок жанров нет, архив извлекается
-            заново; извлеченные файлы заменяют директорию набора, только когда
-            извлечение завершено
+            Если архив уже есть, а набор неполон (нет папки, текстов или info.csv),
+            архив извлекается заново; извлеченные файлы заменяют директорию набора,
+            только когда извлечение завершено
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
@@ -158,9 +178,22 @@ class RussianLiterature(Dataset):
             DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
             DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self._dirpath.joinpath(genre).is_dir() for genre in self.genres)
+        missing = not self.__is_complete()
         fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
+
+    def __is_complete(self) -> bool:
+        """
+        Проверка, что в папке каждого автора есть все тексты и info.csv
+
+        Вывод:
+            bool: Результат проверки
+        """
+        return is_complete(self._dirpath, TEXT_COUNTS, lambda path: path.suffix == ".txt") and all(
+            self._dirpath.joinpath(author, "info.csv").is_file()
+            for author in TEXT_COUNTS
+            if author not in WITHOUT_INFO
+        )
 
     def get_texts(
         self,

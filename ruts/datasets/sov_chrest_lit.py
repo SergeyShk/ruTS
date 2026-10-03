@@ -7,7 +7,7 @@ from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, 
 
 from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from .dataset import Dataset, substring_filter
+from .dataset import Dataset, is_complete, is_numbered, substring_filter
 
 NAME = "sov_chrest_lit"
 META = {
@@ -31,6 +31,8 @@ TEXT_TYPES = [
     "Шутка",
 ]
 GRADES = (1,)
+# Опубликованный архив не меняется, неполный набор узнается по числу файлов
+FILE_COUNTS = {"grade_1": 179}
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -108,18 +110,16 @@ class SovChLit(Dataset):
             bool: Результат проверки
 
         Исключения:
-            DatasetNotFoundError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен или неполон
         """
-        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
-        for dirpath in dirpaths:
-            if not dirpath.is_dir():
-                msg = (
-                    f"Набор данных {NAME} не обнаружен\n"
-                    "Загрузите его, выполнив команды:\n"
-                    ">>> svc = SovChLit()\n"
-                    ">>> svc.download()"
-                )
-                raise DatasetNotFoundError(msg)
+        if not is_complete(self._dirpath, FILE_COUNTS):
+            msg = (
+                f"Набор данных {NAME} не обнаружен или неполон\n"
+                "Загрузите его, выполнив команды:\n"
+                ">>> svc = SovChLit()\n"
+                ">>> svc.download()"
+            )
+            raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -128,8 +128,8 @@ class SovChLit(Dataset):
 
         Описание:
             Архив сверяется с контрольной суммой SHA-256 и при несовпадении
-            загружается заново один раз; если архив уже есть, а какой-то
-            из директорий уровней нет, архив извлекается заново
+            загружается заново один раз; если архив уже есть, а набор
+            неполон (нет директории или части файлов), архив извлекается заново
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
@@ -138,7 +138,7 @@ class SovChLit(Dataset):
             DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
             DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self._dirpath.joinpath(label).is_dir() for label in self.labels)
+        missing = not is_complete(self._dirpath, FILE_COUNTS)
         fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
@@ -227,7 +227,7 @@ class SovChLit(Dataset):
         self.check_data()
         dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
-            filepaths = (path for path in dirpath.iterdir() if path.name.isdigit())
+            filepaths = filter(is_numbered, dirpath.iterdir())
             for filepath in sorted(filepaths, key=lambda path: int(path.name)):
                 yield self.__load_record(filepath)
 
