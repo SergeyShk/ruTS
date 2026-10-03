@@ -1,61 +1,45 @@
 # Keywords
 
 !!! info ""
-    **ruts.corpus.keyness()**, **ruts.corpus.Keyword**
+    **ruts.corpus.keyness()**, **ruts.corpus.Keyword**, **ruts.corpus.FrequencyReference**
 
 ## Description
 
-Keyword extraction (keyness) for a target corpus relative to a reference corpus: words that occur significantly more often in the target corpus than in the reference. A standard corpus linguistics tool for comparing genres, authors, translations and periods ([AntConc](https://www.laurenceanthony.net/software/antconc/), [Sketch Engine](https://www.sketchengine.eu/), quanteda `textstat_keyness`).
+--8<-- "corpus/keyness.md:keyness"
 
-For every word two values are computed that [Gabrielatos and Marchi](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf) and [Hardie](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/) recommend reading together: the log-likelihood $G^2$ with its p-value (significance of the difference - whether it exists) and Log Ratio (effect size - how large it is). Additionally the chosen measure `score` is computed and used for sorting. Significance measures ($G^2$, chi-square, BIC, ELL) are signed: negative if the word is more frequent in the reference; effect measures (%DIFF, Log Ratio, odds ratio) are directional by construction.
-
-The reference can be the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) (`FreqDict`): the target words are word forms (ready lemmas - with `lemmatize=False`), they are brought to the lemmas of the dictionary the same way as in [`LexicalStats`](../stats/lexical_stats.md), and numbers and words not of Russian letters are dropped. The reference frequency is ipm multiplied by the dictionary corpus size (92 million tokens); a word absent from the dictionary gets its smallest frequency (0.4 ipm) and can only be a positive keyword.
-
-Against a reference list words are compared as they are: case, lemmatization and stop words are up to [`WordsExtractor`](../extractors/words.md), and both sides must be prepared the same way.
+The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/keyness/) core and also takes the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md) `FreqDict` as the reference; `FrequencyReference` is in `ruts.corpus` next to it, and the functions of the measures in `ruts.corpus.keyness` (`from ruts.corpus.keyness import calc_log_likelihood`). Words are extracted with [`WordsExtractor`](../extractors/words.md).
 
 ## Measures
 
-For a word with frequency $a$ in a target corpus of size $c$ and frequency $b$ in a reference corpus of size $d$, $N = c + d$:
-
-| Measure | Key | Formula | Description |
-| :------ | :-- | :------ | :---------- |
-| Log-likelihood | `log_likelihood` | $G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})$, $E_1 = \frac{c\,(a+b)}{N}$, $E_2 = \frac{d\,(a+b)}{N}$ | [Rayson and Garside (2000)](https://ucrel.lancs.ac.uk/llwizard.html); critical values `G2_CRITICAL_VALUES`: 3.84 for p < 0.05, 6.63 for p < 0.01, 10.83 for p < 0.001, 15.13 for p < 0.0001 |
-| Chi-square | `chi2` | $\chi^2 = \frac{N\,\max(\lvert a(d-b) - b(c-a) \rvert - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}$ | with Yates's correction over the 2×2 contingency table; if the correction exceeds the difference, the statistic is zero |
-| %DIFF | `diff` | $\frac{NF_a - NF_b}{NF_b} \cdot 100$ | [Gabrielatos and Marchi (2011)](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf); $NF$ - frequency per million words |
-| Log Ratio | `log_ratio` | $\log_2 \frac{NF_a}{NF_b}$ | [Hardie (2014)](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/); one means the word is twice as frequent in the target corpus |
-| BIC | `bic` | $\operatorname{sign}(G^2) \cdot (\lvert G^2 \rvert - \ln N)$ | Wilson (2013); in absolute value above 2 - positive evidence of a difference, above 6 - strong, above 10 - very strong; a negative value with $\lvert G^2 \rvert < \ln N$ means no evidence, not the opposite direction |
-| ELL | `ell` | $\frac{G^2}{N \ln \min(E_1, E_2)}$ | Johnson, Culpeper and Rayson (2007); effect size for $G^2$ from 0 to 1, though it grows without bound as the minimum expected frequency nears one; `nan` when the minimum expected frequency is at most 1 |
-| Odds ratio | `odds_ratio` | $\frac{a / (c - a)}{b / (d - b)}$ | one means equal odds; `inf` if the word fills the whole target corpus, 0 - the whole reference |
-
-A zero frequency in one of the corpora is replaced with 0.5 when computing %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of $G^2$ is computed from the chi-square distribution with one degree of freedom (`calc_p_value`). The measures are available as functions `calc_log_likelihood`, `calc_chi2`, `calc_diff`, `calc_log_ratio`, `calc_bic`, `calc_ell`, `calc_odds_ratio` with arguments `(a, b, c, d)` from the module `ruts.corpus.keyness` (`from ruts.corpus.keyness import calc_log_likelihood`; the name `ruts.corpus.keyness` in the package is taken by the function of the same name, so importing the whole module does not work); names and descriptions are in `anyts.constants.KEYNESS_MEASURES`.
+--8<-- "corpus/keyness.md:keyness-measures"
 
 ## Parameters
 
+--8<-- "corpus/keyness.md:keyness-parameters"
+
+`reference` may also be `FreqDict`, and one more parameter tells what the target corpus is against it:
+
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `target` | list[str]/dict[str, int] | `-` | Words of the target corpus or their frequencies |
-| `reference` | list[str]/dict[str, float]/FreqDict | `-` | Words of the reference corpus, their frequencies or a frequency dictionary |
-| `measure` | str | `log_likelihood` | Measure from `KEYNESS_MEASURES` for `score` and sorting |
-| `min_freq` | int | `1` | Minimum frequency of a keyword in its own corpus |
-| `positive` | bool | `True` | Positive keywords (more frequent in the target corpus) or negative (more frequent in the reference) |
-| `top_n` | int | `None` | Number of keywords; `None` - all |
 | `lemmatize` | bool | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
+
+## Reference by frequencies
+
+--8<-- "corpus/keyness.md:FrequencyReference"
+
+The frequency dictionary `FreqDict` passed as `reference` is turned into such a reference:
+
+| Field | `FreqDict` |
+| :---: | :--------- |
+| `counts` | the ipm of the lemmas of `FreqDict.entries` converted to occurrences in the corpus of the dictionary |
+| `size` | `CORPUS_SIZE` of `ruts.datasets.freq2011`, 92 million tokens of the modern subcorpus of the Russian National Corpus |
+| `missing` | the least frequency of the dictionary `FreqDict.min_ipm`, 0.4 ipm (about 37 occurrences) |
+| `key` | the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with `lemmatize=False` it is taken as a lemma) and brought to the conventions of the dictionary by `ruts.lexical_stats.dictionary_lemma`, as in [`LexicalStats`](../stats/lexical_stats.md) |
+| `keep` | the words of the Cyrillic letters of `ruts.lexical_stats.DICTIONARY_WORD`; numbers and words with Latin letters are left out |
 
 ## Result
 
-A list of `Keyword` named tuples in descending keyness order (ties broken by descending frequency and alphabetically, words with an undefined measure last); `pd.DataFrame(keywords)` gives a table.
-
-| Field | Type | Description |
-| :---: | :--: | :---------- |
-| `word` | str | Word |
-| `freq_target` | int | Frequency in the target corpus |
-| `freq_reference` | float | Frequency in the reference corpus (fractional for a dictionary) |
-| `ipm_target` | float | Frequency in the target corpus per million words |
-| `ipm_reference` | float | Frequency in the reference corpus per million words |
-| `g2` | float | Signed $G^2$ |
-| `p_value` | float | p-value of $G^2$ |
-| `log_ratio` | float | Log Ratio |
-| `score` | float | Value of the chosen measure |
+--8<-- "corpus/keyness.md:Keyword"
 
 ## Example
 
