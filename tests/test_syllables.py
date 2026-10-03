@@ -6,6 +6,7 @@ from ruts.datasets import StressDict
 from ruts.datasets.stress_dict import FILENAME
 from ruts.exceptions import SourceTypeError
 from ruts.syllables import (
+    _default_stress_dict,
     count_syllables,
     stress_type,
     syllabify,
@@ -149,10 +150,17 @@ def test_word_type_error(function, word):
 
 
 def test_default_stress_dict(stress_dict, monkeypatch):
-    monkeypatch.setattr("ruts.syllables.StressDict", lambda: stress_dict)
-    assert word_stress("корова") == 1
-    assert word_stresses("корова") == [1]
-    assert stress_type("корова") == "женская"
+    created = []
+    monkeypatch.setattr("ruts.syllables.StressDict", lambda: created.append(1) or stress_dict)
+    _default_stress_dict.cache_clear()
+    try:
+        assert word_stress("корова") == 1
+        assert word_stresses("корова") == [1]
+        assert stress_type("корова") == "женская"
+        assert created == [1]
+    finally:
+        # Тестовый словарь не должен остаться словарем по умолчанию для других тестов
+        _default_stress_dict.cache_clear()
 
 
 def test_previous_modules():
