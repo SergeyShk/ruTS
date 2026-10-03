@@ -3012,7 +3012,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"basic"</code></td>
+<td style="text-align: center;"><code>"ruts_basic"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -3029,7 +3029,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"basic"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_basic"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"basic"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3064,7 +3064,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"morph"</code></td>
+<td style="text-align: center;"><code>"ruts_morph"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -3081,7 +3081,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"morph"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_morph"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"morph"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3116,7 +3116,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"readability"</code></td>
+<td style="text-align: center;"><code>"ruts_readability"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3124,6 +3124,12 @@
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>"plainrussian"</code></td>
 <td style="text-align: center;"><a href="../stats/readability_stats/#presets">Пресет коэффициентов</a> (<code>plainrussian</code>, <code>fiction</code>, <code>academic</code>)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>basic</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета</td>
 </tr>
 </tbody>
 </table>
@@ -3139,7 +3145,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"readability"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3152,7 +3158,9 @@
 <p>Пресет коэффициентов передается через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"readability"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"preset"</span><span class="p">:</span> <span class="s2">"fiction"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
+    <span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability_fiction"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"preset"</span><span class="p">:</span> <span class="s2">"fiction"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="diversitystatscomponent">DiversityStatsComponent<a class="headerlink" href="#diversitystatscomponent" title="Permanent link">&para;</a></h2>
@@ -3180,7 +3188,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"diversity"</code></td>
+<td style="text-align: center;"><code>"ruts_diversity"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3227,7 +3235,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"diversity"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_diversity"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"diversity"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3240,7 +3248,12 @@
 <p>Окна, пороги и основание логарифма передаются через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"diversity"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
+    <span class="s2">"ruts_diversity"</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"diversity_ln"</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">},</span>
+    <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="stylestatscomponent">StyleStatsComponent<a class="headerlink" href="#stylestatscomponent" title="Permanent link">&para;</a></h2>
@@ -3268,7 +3281,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"style"</code></td>
+<td style="text-align: center;"><code>"ruts_style"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3297,7 +3310,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным метрикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3310,7 +3323,9 @@
 <p>Список стоп-слов и количество самых частых слов передаются через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
+    <span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style_short"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="phonstatscomponent">PhonStatsComponent<a class="headerlink" href="#phonstatscomponent" title="Permanent link">&para;</a></h2>
@@ -3338,7 +3353,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"phon"</code></td>
+<td style="text-align: center;"><code>"ruts_phon"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3361,7 +3376,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным статистикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
@@ -3374,7 +3389,7 @@
 <p>Размер окна передается через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon_windowed"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="syntaxstatscomponent">SyntaxStatsComponent<a class="headerlink" href="#syntaxstatscomponent" title="Permanent link">&para;</a></h2>
@@ -3402,7 +3417,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"syntax"</code></td>
+<td style="text-align: center;"><code>"ruts_syntax"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -3419,7 +3434,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"syntax"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным статистикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Дом, построенный рабочими в прошлом году, был продан"</span><span class="p">)</span>
@@ -3454,7 +3469,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"cohesion"</code></td>
+<td style="text-align: center;"><code>"ruts_cohesion"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 </tbody>
@@ -3471,7 +3486,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"cohesion"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным статистикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул."</span><span class="p">)</span>
@@ -3506,7 +3521,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"lexical"</code></td>
+<td style="text-align: center;"><code>"ruts_lexical"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3529,7 +3544,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"lexical"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным статистикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц"</span><span class="p">)</span>
@@ -3542,7 +3557,9 @@
 <p>Директория со словарем передается через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"lexical"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
+    <span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical_dicts"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 <h2 id="versestatscomponent">VerseStatsComponent<a class="headerlink" href="#versestatscomponent" title="Permanent link">&para;</a></h2>
@@ -3570,7 +3587,7 @@
 <tr>
 <td style="text-align: center;"><code>name</code></td>
 <td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"verse"</code></td>
+<td style="text-align: center;"><code>"ruts_verse"</code></td>
 <td style="text-align: center;">Наименование компонента в пайплайне</td>
 </tr>
 <tr>
@@ -3593,7 +3610,7 @@
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 
 <span class="c1"># Добавление компонента</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Доступ к посчитанным статистикам</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span>
@@ -3608,7 +3625,7 @@
 <p>Директория со словарем передается через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse_dicts"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
 

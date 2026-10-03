@@ -3073,15 +3073,15 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.phon_stats.calc_alliteration()</strong></p>
 </div>
-<p>Computation of the alliteration index - the ratio of the observed number of windows of <code>window_len</code> adjacent words in which the same consonant occurs in at least two words to the number expected under an independent distribution of consonants over words (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.</p>
-<p>The formula for one letter with the share <span class="arithmatex">\(p\)</span> of words containing it and a window of <span class="arithmatex">\(w\)</span> words:</p>
+<p>Computation of the alliteration index - the ratio of the observed number of windows of <code>window_len</code> adjacent words in which the same consonant occurs in at least two words to the number expected if the words stood in random order (summed over all consonants). The expectation is computed from the consonant frequencies in the text itself, so the index shows whether repeats are clustered in adjacent words, not the overall frequency of a sound. A value around 1 - consonant repeats are random, noticeably above 1 - alliteration. Computed over letters without accounting for devoicing.</p>
+<p>A window of shuffled words is a sample of them without replacement, so for a letter found in <span class="arithmatex">\(K\)</span> of the <span class="arithmatex">\(N\)</span> words of the text, a window of <span class="arithmatex">\(w\)</span> words holds it in at least two words with the hypergeometric probability</p>
 <div class="arithmatex">\[
-E = N_w\left(1-(1-p)^w-w\,p\,(1-p)^{w-1}\right)
+P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 \]</div>
-<p>where <span class="arithmatex">\(N_w\)</span> is the number of windows; the index equals <span class="arithmatex">\(\sum O / \sum E\)</span> over all letters.</p>
+<p>and the expected number of windows is the sum of these probabilities over the letters times the <span class="arithmatex">\(N - w + 1\)</span> windows; the index equals <span class="arithmatex">\(\sum O / \sum E\)</span>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>For texts shorter than the window the function returns <code>nan</code>.</p>
+<p>For texts shorter than the window and texts where no consonant occurs in two words the function returns <code>nan</code>.</p>
 </div>
 <p>Parameters:</p>
 <table>

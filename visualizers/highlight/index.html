@@ -3013,7 +3013,7 @@
 </tr>
 </tbody>
 </table>
-<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>); слой <code>long_sents</code> для <code>Doc</code> требует границ предложений. По умолчанию включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code> - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; <code>layers="all"</code> включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.</p>
+<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта <code>Doc</code> с разбором зависимостей (модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>); <code>Doc</code> без границ предложений делится на предложения так же, как строка. По умолчанию включаются слои <code>HIGHLIGHT_DEFAULT_LAYERS</code> - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; <code>layers="all"</code> включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Аллитерация ищется внутри предложения как цепочка из двух и более соседних слов, в основе каждого из которых есть одна и та же согласная буква. Основа - общая начальная часть словоформы и ее леммы по pymorphy3 (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>): окончания согласуются с соседними словами и повторяют согласные по грамматике, а не по звучанию (<em>этих крупных</em>, <em>своим целям и нуждам</em>). Вероятность цепочки при независимом распределении букв - произведение по словам вероятностей встретить согласную среди букв основы, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, где <span class="arithmatex">\(f\)</span> - <a href="https://ru.wikipedia.org/wiki/Частотность">частота согласной</a> в русских текстах, <span class="arithmatex">\(n\)</span> - число букв основы; цепочка подсвечивается, если вероятность ниже порога <code>alliteration_threshold</code>. На каждой позиции проверяется около двадцати согласных, поэтому порог строгий: на прозе при 0.001 подсвечено около 5% слов, при 0.01 - около 20%, в основном случайные совпадения частых букв. Повтор редкой согласной (<em>слышно, бесшумно шуршат камыши</em>) заметен в двух-трех словах, повтор частой в длинных словах ожидаем и не подсвечивается. Слова короче трех букв, стоп-слова и слова без гласных цепочку не прерывают и не продолжают, буква <em>й</em> не учитывается, так как в именительном падеже входит в лемму прилагательного. Индекс аллитерации <a href="../../stats/phon_stats/">PhonStats</a> измеряет сгруппированность повторов во всем тексте, подсветка показывает их места.</p>
@@ -3182,15 +3182,15 @@
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
 .ruts-highlight-count { opacity: 0.6; margin-left: 0.3em; }
 .ruts-highlight-text { white-space: pre-wrap; }
-.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
+.ruts-highlight .ruts-hl.ruts-hl-long_sents, .ruts-highlight .ruts-hl.ruts-hl-stopwords, .ruts-highlight .ruts-hl.ruts-hl-complex_words, .ruts-highlight .ruts-hl.ruts-hl-rare_words, .ruts-highlight .ruts-hl.ruts-hl-passive, .ruts-highlight .ruts-hl.ruts-hl-verbal_nouns, .ruts-highlight .ruts-hl.ruts-hl-compound_prepositions, .ruts-highlight .ruts-hl.ruts-hl-cliches, .ruts-highlight .ruts-hl.ruts-hl-parentheticals { color: #1f2328; border-radius: 2px; }
 .ruts-hl-long_sents { background: #fef9c3; }
+.ruts-hl-stopwords { background: #bae6fd; }
 .ruts-hl-complex_words { background: #fed7aa; }
 .ruts-hl-rare_words { background: #e5e7eb; }
 .ruts-hl-passive { background: #fecaca; }
 .ruts-hl-verbal_nouns { background: #e9d5ff; }
 .ruts-hl-compound_prepositions { background: #a7f3d0; }
 .ruts-hl-cliches { background: #fbcfe8; }
-.ruts-hl-stopwords { background: #bae6fd; }
 .ruts-hl-parentheticals { background: #d9f99d; }
 .ruts-hl-participle_clauses { border-bottom: 2px solid #7c3aed; }
 .ruts-hl-converb_clauses { border-bottom: 2px solid #0d9488; }

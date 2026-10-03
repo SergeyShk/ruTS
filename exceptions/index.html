@@ -2880,7 +2880,7 @@
 </code></pre></div>
 </div>
 <h2 id="_3">Логирование<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (<code>download_file</code>, <code>extract_archive</code>, методы <code>download()</code>) отправляются в логгер <code>ruts</code> уровня <code>INFO</code>. По умолчанию у логгера стоит <code>NullHandler</code>, и сообщения не видны; чтобы включить их, настройте логирование в приложении:</p>
+<p>Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (методы <code>download()</code>) ядро anyTS отправляет в логгер <code>anyts</code> уровня <code>INFO</code>. По умолчанию у логгера стоит <code>NullHandler</code>, и сообщения не видны; чтобы включить их, настройте логирование в приложении:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -2889,9 +2889,9 @@
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">RussianLiterature</span><span class="p">()</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-<span class="c1"># ruts.utils: Загрузка файла https://github.com/d0rj/RusLit/archive/....zip</span>
-<span class="c1"># ruts.utils: Файл загружен: .../ruts_data/texts/russian_literature.zip</span>
-<span class="c1"># ruts.utils: Извлечение файлов из архива .../ruts_data/texts/russian_literature.zip</span>
+<span class="c1"># anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip</span>
+<span class="c1"># anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip</span>
+<span class="c1"># anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip</span>
 </code></pre></div>
 </div>
 <p>Методы <code>print_stats()</code> классов статистик и <code>print_kwic()</code> печатают в стандартный вывод по своему назначению, логирование их не касается.</p>

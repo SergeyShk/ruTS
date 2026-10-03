@@ -2880,7 +2880,7 @@
 </code></pre></div>
 </div>
 <h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
-<p>The library prints nothing on its own: messages about downloading and extracting datasets (<code>download_file</code>, <code>extract_archive</code>, the <code>download()</code> methods) go to the <code>ruts</code> logger at the <code>INFO</code> level. The logger has a <code>NullHandler</code> by default, so the messages are silent; to see them, configure logging in your application:</p>
+<p>The library prints nothing on its own: the anyTS core sends messages about downloading and extracting datasets (the <code>download()</code> methods) to the <code>anyts</code> logger at the <code>INFO</code> level. The logger has a <code>NullHandler</code> by default, so the messages are silent; to see them, configure logging in your application:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -2889,9 +2889,9 @@
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"</span><span class="si">%(name)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">RussianLiterature</span><span class="p">()</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-<span class="c1"># ruts.utils: Загрузка файла https://github.com/d0rj/RusLit/archive/....zip</span>
-<span class="c1"># ruts.utils: Файл загружен: .../ruts_data/texts/russian_literature.zip</span>
-<span class="c1"># ruts.utils: Извлечение файлов из архива .../ruts_data/texts/russian_literature.zip</span>
+<span class="c1"># anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip</span>
+<span class="c1"># anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip</span>
+<span class="c1"># anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip</span>
 </code></pre></div>
 </div>
 <p>The <code>print_stats()</code> methods of the statistics classes and <code>print_kwic()</code> write to standard output by design; logging does not affect them.</p>
