@@ -18,7 +18,7 @@ All library exceptions inherit the base class `RutsError` and one of the built-i
 | `DataFileError` | `ValueError` | A dataset file is corrupted, has an unexpected format or cannot be decoded |
 | `DownloadError` | `RuntimeError` | The file could not be downloaded or failed the checksum verification |
 
-The classes are available from `ruts` and from `ruts.exceptions`.
+The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of the core code are in English, those of the ruTS code in Russian.
 
 !!! example "Example"
 
@@ -30,7 +30,7 @@ The classes are available from `ruts` and from `ruts.exceptions`.
         BasicStats("...")
     except SourceError as e:
         print(e)
-    # В источнике данных отсутствуют слова
+    # The data source has no words
 
     try:
         list(PoetryCorpus(data_dir="/nowhere").get_texts(limit=1))

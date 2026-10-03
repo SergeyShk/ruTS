@@ -110,6 +110,7 @@ pip install ruts
         *   phon_stats.py - фоностатистики текста
         *   readability_stats.py - метрики удобочитаемости текста
         *   style_stats.py - SEO-метрики стиля текста
+        *   syllables.py - слоги и ударение
         *   syntax_stats.py - синтаксические статистики текста
         *   utils.py - вспомогательные инструменты
         *   verse_stats.py - стиховедческие статистики: ударения, метр, рифма, строфика
@@ -140,5 +141,6 @@ pip install ruts
             *   word_tree.py - Дерево слов
             *   zipf.py - Закон Ципфа
     *   **tests** - тесты, повторяющие структуру пакета
+    *   **scripts** - скрипт загрузки страниц документации anyTS
     *   **examples** - ноутбуки с примерами
     *   **demo** - демонстрация на Gradio для Hugging Face Spaces

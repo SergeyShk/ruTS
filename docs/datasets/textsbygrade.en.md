@@ -58,7 +58,7 @@ The mean consensus grade grows with the label: 3.2 for grade 1, 5.8 for grades 3
 
 ### download
 
-Downloads the dataset from the network and extracts the files.
+Downloads the archive `texts_by_grade_v1.tar.xz` from the network with checksum verification and extracts the files into the `texts_by_grade_v1` directory.
 
 Parameters:
 
@@ -103,7 +103,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `grade` | int | `-` | Grade level of the texts (1, 3-12, 15, 17) |
-| `subject` | str | `-` | Text title |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |
@@ -139,7 +139,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `grade` | int | `-` | Grade level of the texts (1, 3-12, 15, 17) |
-| `subject` | str | `-` | Text title |
+| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
 | `min_len` | int | `-` | Minimum text length (in characters) |
 | `max_len` | int | `-` | Maximum text length (in characters) |
 | `limit` | int | `-` | Number of texts |
