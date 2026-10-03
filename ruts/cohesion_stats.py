@@ -100,10 +100,11 @@ class CohesionStats:
         части речи, время и вид берутся из token.pos_ и token.morph, лемма - из разбора
         pymorphy3 с частью речи токена (lemmatize): лемматизатор моделей ru_core_news
         возвращает словоформу для AUX и при расхождении признаков (были, них, стихли);
-        для строки и Doc без разметки - из первого разбора pymorphy3. Слова Doc
-        берутся из токенов, дефисные слова, разрезанные spaCy, склеиваются
-        (iter_doc_units); Doc без границ предложений разбивается на предложения
-        через sents_extractor по тексту (split_doc_units)
+        для строки, Doc без разметки и Doc с заданным экстрактором слов - из первого
+        разбора pymorphy3. Без экстрактора слова Doc берутся из токенов, дефисные
+        слова, разрезанные spaCy, склеиваются (iter_doc_units); Doc без границ
+        предложений разбивается на предложения через sents_extractor по тексту
+        (split_doc_units)
         Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
         по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
         и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями

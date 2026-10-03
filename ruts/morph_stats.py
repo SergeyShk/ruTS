@@ -38,8 +38,9 @@ class MorphStats:
         так же animacy, aspect, gender, mood, number, person, tense, voice и verb_form
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, то есть с учетом контекста (стали - глагол или существительное);
-        для строки и Doc без разметки используется первый разбор pymorphy3, граммемы
-        OpenCorpora переводятся в UD по таблицам в constants
+        для строки, Doc без разметки и Doc с заданным экстрактором слов используется
+        первый разбор pymorphy3, граммемы OpenCorpora переводятся в UD по таблицам
+        в constants
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
         которых в русском UD нет; они считаются через pymorphy3 для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
