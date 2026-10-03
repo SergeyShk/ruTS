@@ -43,6 +43,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Leaves, subtrees and branching { #count_children }
 
@@ -84,6 +85,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Clauses { #is_clause_head }
 

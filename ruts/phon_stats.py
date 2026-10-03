@@ -74,7 +74,8 @@ class PhonStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         window_len (int): Размер окна в словах для аллитерации и ассонанса
 
     Атрибуты:
@@ -121,6 +122,9 @@ class PhonStats:
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         check_params(window_len)
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             text = source.text
             words = tuple(word.lower() for _, _, word in iter_doc_words(source, join_hyphens=True))

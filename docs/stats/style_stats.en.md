@@ -19,7 +19,7 @@ Lexical officialese markers: verbal nouns, compound prepositions, parentheticals
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `stopwords` | list[str] | `None` | Stop word list for water content; if not given, stop words are determined by part of speech with pymorphy3 |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
 | `cliches` | list[str] | `None` | List of clichés; if not given, `OFFICIALESE_CLICHES` is used |

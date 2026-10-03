@@ -39,7 +39,8 @@ class LexicalStats:
         слов из частотных полос топ-1000, 2000, 5000 и 10000 по вшитому списку Шарова,
         сюрпризал и перплексия по униграммной модели словаря, лексическая плотность
         Леммы для Doc с разметкой частей речи берутся из разбора pymorphy3 с частью
-        речи токена, для строки и Doc без разметки - из первого разбора pymorphy3;
+        речи токена, для строки, Doc без разметки и Doc с заданным экстрактором
+        слов - из первого разбора pymorphy3;
         дефисные слова, разрезанные spaCy, склеиваются (iter_doc_units)
         Числа (2020, 5.5, 3-й) словами не считаются: в словаре и списке их нет,
         и они выглядели бы как самые редкие слова текста
@@ -75,7 +76,8 @@ class LexicalStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         freq_dict (FreqDict): Частотный словарь; если не задан, используется FreqDict()
             из директории по умолчанию
 
@@ -125,6 +127,9 @@ class LexicalStats:
         if freq_dict is not None and not isinstance(freq_dict, FreqDict):
             raise SourceTypeError("Частотный словарь должен быть FreqDict")
         infos: list[WordInfo]
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             units = [
                 unit

@@ -83,7 +83,8 @@ class StyleStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         stopwords (list[str]): Список стоп-слов для водности; если не задан, стоп-слова
             определяются по части речи с помощью pymorphy3
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
@@ -128,6 +129,9 @@ class StyleStats:
             check_words(stopwords, "stopwords", ordered=False)
         if cliches is not None:
             check_words(cliches, "clichés", ordered=False)
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             self.words = tuple(
                 text.lower() for _, _, text in iter_doc_words(source, join_hyphens=True)

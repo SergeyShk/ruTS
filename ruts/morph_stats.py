@@ -38,8 +38,9 @@ class MorphStats:
         так же animacy, aspect, gender, mood, number, person, tense, voice и verb_form
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, то есть с учетом контекста (стали - глагол или существительное);
-        для строки и Doc без разметки используется первый разбор pymorphy3, граммемы
-        OpenCorpora переводятся в UD по таблицам в constants
+        для строки, Doc без разметки и Doc с заданным экстрактором слов используется
+        первый разбор pymorphy3, граммемы OpenCorpora переводятся в UD по таблицам
+        в constants
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
         которых в русском UD нет; они считаются через pymorphy3 для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
@@ -72,7 +73,8 @@ class MorphStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
@@ -108,6 +110,9 @@ class MorphStats:
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         features: list[dict[str, str | None]]
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             units = list(iter_doc_units(source, join_hyphens=True))
             self.words = tuple("".join(token.text for token in unit) for unit in units)

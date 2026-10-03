@@ -7,7 +7,7 @@
 
 A module for computing lexical sophistication statistics of a text (modeled on [TAALES](https://doi.org/10.3758/s13428-017-0924-4)) - how rare the words of the text are relative to the language: the mean frequency, range and dispersion of lemmas by the [Lyashevskaya and Sharoff frequency dictionary](../datasets/freq2011.md), the shares of words from the top-1000, 2000, 5000 and 10000 frequency bands by the embedded Sharoff list, surprisal and perplexity by the unigram model of the dictionary, lexical density. Unlike the [lexical diversity metrics](diversity_stats.md), which compare the words of the text with each other, here words are compared with the frequencies of the language. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
 
-Lemmas for a `Doc` with part-of-speech annotation are taken from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`), for a string and a `Doc` without annotation - from the first pymorphy3 analysis; hyphenated words split by spaCy are glued back. Content words are defined as in [`CohesionStats`](cohesion_stats.md). Numbers (2020, 5.5, 3-й) do not count as words: they are absent from the dictionary and the list and would look like the rarest words of the text. The dictionary was not lemmatized with pymorphy3, so lemmas are brought to its conventions: должна - должен, денег - деньги, ночью - ночь.
+Lemmas for a `Doc` with part-of-speech annotation are taken from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`), for a string, a `Doc` without annotation and a `Doc` with a words extractor given - from the first pymorphy3 analysis; hyphenated words split by spaCy are glued back. Content words are defined as in [`CohesionStats`](cohesion_stats.md). Numbers (2020, 5.5, 3-й) do not count as words: they are absent from the dictionary and the list and would look like the rarest words of the text. The dictionary was not lemmatized with pymorphy3, so lemmas are brought to its conventions: должна - должен, денег - деньги, ночью - ночь.
 
 Resources:
 
@@ -23,7 +23,7 @@ Resources:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `freq_dict` | FreqDict | `None` | Frequency dictionary; if not given, `FreqDict()` from the default directory is used |
 
 ## Attributes

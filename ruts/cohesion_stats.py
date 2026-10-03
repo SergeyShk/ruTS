@@ -100,10 +100,11 @@ class CohesionStats:
         части речи, время и вид берутся из token.pos_ и token.morph, лемма - из разбора
         pymorphy3 с частью речи токена (lemmatize): лемматизатор моделей ru_core_news
         возвращает словоформу для AUX и при расхождении признаков (были, них, стихли);
-        для строки и Doc без разметки - из первого разбора pymorphy3. Слова Doc
-        берутся из токенов, дефисные слова, разрезанные spaCy, склеиваются
-        (iter_doc_units); Doc без границ предложений разбивается на предложения
-        через sents_extractor по тексту (split_doc_units)
+        для строки, Doc без разметки и Doc с заданным экстрактором слов - из первого
+        разбора pymorphy3. Без экстрактора слова Doc берутся из токенов, дефисные
+        слова, разрезанные spaCy, склеиваются (iter_doc_units); Doc без границ
+        предложений разбивается на предложения через sents_extractor по тексту
+        (split_doc_units)
         Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
         по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
         и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями
@@ -160,8 +161,10 @@ class CohesionStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
+            если задан, применяется и к тексту Doc
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
             по коннектору; если не задан, используется словарь из resources
 
@@ -228,8 +231,12 @@ class CohesionStats:
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
-        if isinstance(source, Doc):
-            if source.has_annotation("SENT_START"):
+        # Экстракторы применяются к тексту Doc, как в классах ядра
+        doc_sents = (
+            isinstance(source, Doc) and source.has_annotation("SENT_START") and not sents_extractor
+        )
+        if isinstance(source, Doc) and words_extractor is None:
+            if doc_sents:
                 units = [list(iter_doc_units(sent, join_hyphens=True)) for sent in source.sents]
             else:
                 units = split_doc_units(source, sents_extractor or SentsExtractor())
@@ -240,14 +247,14 @@ class CohesionStats:
             else:
                 infos = [[word_info(word) for word in sent] for sent in sents]
                 pos = [[connector_pos(word) for word in sent] for sent in sents]
-        elif isinstance(source, str):
-            if not sents_extractor:
-                sents_extractor = SentsExtractor()
-            if not words_extractor:
-                words_extractor = WordsExtractor()
-            sents = [
-                tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(source)
-            ]
+        elif isinstance(source, str | Doc):
+            if isinstance(source, Doc) and doc_sents:
+                texts = tuple(sent.text for sent in source.sents)
+            else:
+                text = source.text if isinstance(source, Doc) else source
+                texts = (sents_extractor or SentsExtractor()).extract(text)
+            words_extractor = words_extractor or WordsExtractor()
+            sents = [tuple(words_extractor.extract(sent)) for sent in texts]
             infos = [[word_info(word) for word in sent] for sent in sents]
             pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:
