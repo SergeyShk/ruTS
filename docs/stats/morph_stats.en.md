@@ -40,7 +40,7 @@ Transitivity (`transitivity`: `Tran`, `Intr`) and clusivity (`involvement`: `In`
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 
 ## Attributes
 

@@ -42,8 +42,8 @@ Connective type: primary - conjunctions, adverbs and particles (потому ч�
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool; when given, it is applied to the text of a Doc too |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `connectors` | dict[str, tuple[str, str]] | `None` | Connective dictionary - class and type by connective; if not given, the dictionary from `resources` is used |
 
 ## Attributes

@@ -23,7 +23,7 @@ Resources:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `freq_dict` | FreqDict | `None` | Frequency dictionary; if not given, `FreqDict()` from the default directory is used |
 
 ## Attributes

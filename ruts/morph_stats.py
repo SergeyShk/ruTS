@@ -72,7 +72,8 @@ class MorphStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
@@ -108,6 +109,9 @@ class MorphStats:
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         features: list[dict[str, str | None]]
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             units = list(iter_doc_units(source, join_hyphens=True))
             self.words = tuple("".join(token.text for token in unit) for unit in units)

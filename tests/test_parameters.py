@@ -1,6 +1,7 @@
 """Функции библиотеки проверяют свои числа и списки слов так же, как ядро"""
 
 import pytest
+import spacy
 
 from ruts import (
     BasicStats,
@@ -10,6 +11,7 @@ from ruts import (
     MorphStats,
     PhonStats,
     ReadabilityStats,
+    SentsExtractor,
     StyleStats,
     WordsExtractor,
 )
@@ -192,3 +194,42 @@ def test_keyness_checks_before_the_dictionary(tmp_path):
         keyness("кот спит", freq_dict)
     with pytest.raises(SourceTypeError):
         keyness({"кот": 1.5}, freq_dict)
+
+
+EXTRACTED_WORDS = {
+    "BasicStats": lambda source, extractor: BasicStats(source, words_extractor=extractor).n_words,
+    "DiversityStats": lambda source, extractor: (
+        DiversityStats(source, words_extractor=extractor).words
+    ),
+    "StyleStats": lambda source, extractor: StyleStats(source, words_extractor=extractor).words,
+    "MorphStats": lambda source, extractor: MorphStats(source, words_extractor=extractor).words,
+    "PhonStats": lambda source, extractor: PhonStats(source, words_extractor=extractor).words,
+    "LexicalStats": lambda source, extractor: (
+        LexicalStats(source, words_extractor=extractor).words
+    ),
+    "CohesionStats": lambda source, extractor: (
+        CohesionStats(source, words_extractor=extractor).words
+    ),
+}
+
+
+@pytest.fixture(scope="module")
+def doc():
+    return spacy.load("ru_core_news_sm")(TEXT)
+
+
+@pytest.mark.parametrize("words", EXTRACTED_WORDS.values(), ids=EXTRACTED_WORDS)
+def test_words_extractor_applies_to_doc(doc, words):
+    extractor = WordsExtractor(stopwords=["и", "на"], lowercase=True)
+    assert words(doc, extractor) == words(TEXT, extractor)
+    assert words(doc, extractor) != words(doc, None)
+
+
+def test_sents_extractor_applies_to_doc(doc):
+    extractor = SentsExtractor(min_len=20)
+    assert CohesionStats(doc, sents_extractor=extractor).n_sents == 1
+    assert (
+        CohesionStats(doc, sents_extractor=extractor).words
+        == CohesionStats(TEXT, sents_extractor=extractor).words
+    )
+    assert CohesionStats(doc).n_sents == 2

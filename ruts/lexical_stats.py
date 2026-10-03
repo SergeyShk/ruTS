@@ -75,7 +75,8 @@ class LexicalStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         freq_dict (FreqDict): Частотный словарь; если не задан, используется FreqDict()
             из директории по умолчанию
 
@@ -125,6 +126,9 @@ class LexicalStats:
         if freq_dict is not None and not isinstance(freq_dict, FreqDict):
             raise SourceTypeError("Частотный словарь должен быть FreqDict")
         infos: list[WordInfo]
+        if isinstance(source, Doc) and words_extractor is not None:
+            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+            source = source.text
         if isinstance(source, Doc):
             units = [
                 unit

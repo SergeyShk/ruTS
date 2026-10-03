@@ -160,8 +160,10 @@ class CohesionStats:
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
-        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
+            если задан, применяется и к тексту Doc
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
             по коннектору; если не задан, используется словарь из resources
 
@@ -228,8 +230,12 @@ class CohesionStats:
         sents: list[tuple[str, ...]]
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
-        if isinstance(source, Doc):
-            if source.has_annotation("SENT_START"):
+        # Экстракторы применяются к тексту Doc, как в классах ядра
+        doc_sents = (
+            isinstance(source, Doc) and source.has_annotation("SENT_START") and not sents_extractor
+        )
+        if isinstance(source, Doc) and words_extractor is None:
+            if doc_sents:
                 units = [list(iter_doc_units(sent, join_hyphens=True)) for sent in source.sents]
             else:
                 units = split_doc_units(source, sents_extractor or SentsExtractor())
@@ -240,14 +246,14 @@ class CohesionStats:
             else:
                 infos = [[word_info(word) for word in sent] for sent in sents]
                 pos = [[connector_pos(word) for word in sent] for sent in sents]
-        elif isinstance(source, str):
-            if not sents_extractor:
-                sents_extractor = SentsExtractor()
-            if not words_extractor:
-                words_extractor = WordsExtractor()
-            sents = [
-                tuple(words_extractor.extract(sent)) for sent in sents_extractor.extract(source)
-            ]
+        elif isinstance(source, str | Doc):
+            if isinstance(source, Doc) and doc_sents:
+                texts = tuple(sent.text for sent in source.sents)
+            else:
+                text = source.text if isinstance(source, Doc) else source
+                texts = (sents_extractor or SentsExtractor()).extract(text)
+            words_extractor = words_extractor or WordsExtractor()
+            sents = [tuple(words_extractor.extract(sent)) for sent in texts]
             infos = [[word_info(word) for word in sent] for sent in sents]
             pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:

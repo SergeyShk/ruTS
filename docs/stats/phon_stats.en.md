@@ -29,7 +29,7 @@ The computation time grows linearly with text length.
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `window_len` | int | `3` | Window size in words for alliteration and assonance |
 
 ## Attributes
