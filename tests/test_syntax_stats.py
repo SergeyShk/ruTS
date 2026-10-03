@@ -509,6 +509,30 @@ def test_model(nlp):
     assert ss.n_participle_clauses == ss.n_converb_clauses == ss.n_passive == 0
 
 
+@pytest.mark.parametrize(
+    ("hyphenated", "plain"),
+    [
+        ("Затем я понял кое-что и другое.", "Затем я понял всё и другое."),
+        (
+            "В углу стоял диван-кровать, который купили вчера.",
+            "В углу стоял диван, который купили вчера.",
+        ),
+    ],
+)
+def test_model_hyphenated_words(nlp, hyphenated, plain):
+    # Парсер вешает зависимое на вторую часть дефисного слова, деревья пар одинаковые
+    first, second = SyntaxStats(nlp(hyphenated)), SyntaxStats(nlp(plain))
+    for name in (
+        "mean_dependency_distance",
+        "max_dependency_distance",
+        "tree_depth",
+        "n_coordination_chains",
+        "n_leaves",
+        "c_children",
+    ):
+        assert getattr(first, name) == getattr(second, name), name
+
+
 def test_model_parataxis(nlp):
     ss = SyntaxStats(
         nlp("Во-первых, он не пришёл. Он, например, не пришёл. Он, конечно, не пришёл.")
