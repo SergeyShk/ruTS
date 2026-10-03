@@ -41,7 +41,7 @@
 
 ## Логирование
 
-Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (`download_file`, `extract_archive`, методы `download()`) отправляются в логгер `ruts` уровня `INFO`. По умолчанию у логгера стоит `NullHandler`, и сообщения не видны; чтобы включить их, настройте логирование в приложении:
+Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (методы `download()`) ядро anyTS отправляет в логгер `anyts` уровня `INFO`. По умолчанию у логгера стоит `NullHandler`, и сообщения не видны; чтобы включить их, настройте логирование в приложении:
 
 !!! example "Пример"
 
@@ -52,9 +52,9 @@
 
     logging.basicConfig(level=logging.INFO, format="%(name)s: %(message)s")
     RussianLiterature().download()
-    # ruts.utils: Загрузка файла https://github.com/d0rj/RusLit/archive/....zip
-    # ruts.utils: Файл загружен: .../ruts_data/texts/russian_literature.zip
-    # ruts.utils: Извлечение файлов из архива .../ruts_data/texts/russian_literature.zip
+    # anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip
+    # anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip
+    # anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip
     ```
 
 Методы `print_stats()` классов статистик и `print_kwic()` печатают в стандартный вывод по своему назначению, логирование их не касается.

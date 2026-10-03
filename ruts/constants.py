@@ -1,5 +1,4 @@
 import os
-import string
 from pathlib import Path
 from typing import TypedDict
 
@@ -14,6 +13,8 @@ DEFAULT_DATA_DIR = (
     if os.environ.get("RUTS_DATA_DIR")
     else Path(__file__).parent.parent.resolve() / "ruts_data"
 )
+# Заголовок User-Agent загрузок наборов данных
+USER_AGENT = "ruTS"
 # Правила токенизатора spaCy для тире реплик - как utils.iter_tokens для строки
 # Буква с комбинирующими знаками: ударение и NFD-запись й и ё - не \w
 LETTER = r"(?:[^\W\d_]|[\u0300-\u036f])"
@@ -42,27 +43,9 @@ RU_CONSONANTS_YET = ["й", "Й"]
 RU_CONSONANTS = RU_CONSONANTS_HIGH + RU_CONSONANTS_LOW + RU_CONSONANTS_SONOR + RU_CONSONANTS_YET
 RU_MARKS = ["ь", "ъ", "Ь", "Ъ"]
 RU_LETTERS = RU_CONSONANTS + RU_MARKS + RU_VOWELS
-PUNCTUATIONS = string.punctuation + "—–…«»„“”‘’№"
-PUNCTUATION_TYPES = {
-    "comma": "Запятые",
-    "period": "Точки",
-    "question": "Вопросительные знаки",
-    "exclamation": "Восклицательные знаки",
-    "ellipsis": "Многоточия",
-    "colon": "Двоеточия",
-    "semicolon": "Точки с запятой",
-    "dash": "Тире",
-    "hyphen": "Дефисы",
-    "angle_quotes": "Кавычки-ёлочки",
-    "straight_quotes": "Прямые кавычки и лапки",
-    "parentheses": "Скобки",
-    "other": "Прочие знаки",
-}
-SPACES = [" ", "\t"]
 COMPLEX_SYL_FACTOR = 4
 LONG_WORD_LETTER_FACTOR = 6
 SMOG_COMPLEX_SYL_FACTOR = 5
-LIX_LONG_WORD_LETTER_FACTOR = 7
 BASIC_STATS_DESC = {
     "n_sents": "Предложения",
     "n_words": "Слова",
@@ -952,6 +935,66 @@ DEMONSTRATIVE_LEMMAS = frozenset(
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 NAUSEA_TOP_N = 10
+# Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS
+VISUALIZER_LABELS = {
+    "zipf": {
+        "title": "Закон Ципфа",
+        "xlabel": "Ранк слова",
+        "ylabel": "Частота слова",
+        "experimental": "Экспериментальный закон",
+        "theoretical": "Теоретический закон",
+        "fit": "Ципф-Мандельброт: q={q:.2f}, s={s:.2f}",
+    },
+    "zipf_theory": {"theoretical": "Теоретический закон"},
+    "heaps_plot": {
+        "title": "Закон Хипса",
+        "xlabel": "Длина текста, слов",
+        "ylabel": "Размер словаря",
+        "growth": "Рост словаря",
+        "fit": "K·N^β: K={k:.2f}, β={beta:.2f}",
+    },
+    "frequency_spectrum_plot": {
+        "title": "Спектр частот",
+        "xlabel": "Частота лексемы m",
+        "ylabel": "Число лексем V(m)",
+    },
+    "sentence_lengths_plot": {
+        "title": "Длины предложений",
+        "xlabel": "Номер предложения",
+        "ylabel": "Слов в предложении",
+        "length": "Длина предложения",
+        "average": "Скользящее среднее ({window})",
+        "distribution": "Распределение",
+    },
+    "fingerprinting": {"title": "Литературная дактилоскопия"},
+    "dispersion_plot": {
+        "title": "Лексическая дисперсия",
+        "xlabel": "Позиция слова в тексте",
+    },
+    "keyness_plot": {
+        "title": "Ключевые слова",
+        "xlabel": "|{field}|",
+        "xlabel_log": "|log2({field})|",
+        "target": "целевой корпус",
+        "reference": "эталонный корпус",
+    },
+    "dendrogram_plot": {"title": "Кластеризация текстов", "xlabel": "Расстояние"},
+    "pca_plot": {
+        "title": "Главные компоненты",
+        "xlabel": "Компонента 1 ({share:.1%})",
+        "ylabel": "Компонента 2 ({share:.1%})",
+    },
+    "mds_plot": {
+        "title": "Многомерное шкалирование",
+        "xlabel": "Измерение 1",
+        "ylabel": "Измерение 2",
+    },
+    "mendenhall_plot": {
+        "title": "Кривые Менденхолла",
+        "xlabel": "Длина слова, символов",
+        "ylabel": "Доля слов",
+    },
+}
 HIGHLIGHT_LAYERS_DESC = {
     "long_sents": "Длинные предложения",
     "complex_words": "Сложные слова",
@@ -990,9 +1033,36 @@ HIGHLIGHT_DEFAULT_LAYERS = (
     "split_predicates",
     "cliches",
 )
-HIGHLIGHT_SYNTAX_LAYERS = frozenset(
-    {"passive", "participle_clauses", "converb_clauses", "genitive_chains", "split_predicates"}
-)
+# Разметка Doc, которая нужна слою; леммы ruTS берет из pymorphy3, а не из spaCy
+HIGHLIGHT_LAYER_ANNOTATIONS = {
+    "passive": ("DEP",),
+    "participle_clauses": ("DEP",),
+    "converb_clauses": ("DEP",),
+    "genitive_chains": ("DEP",),
+    "split_predicates": ("DEP",),
+}
+# Стили CSS слоев; где фоны слоев пересекаются, побеждает более поздний
+HIGHLIGHT_LAYER_STYLES = {
+    "long_sents": "background: #fef9c3;",
+    "stopwords": "background: #bae6fd;",
+    "complex_words": "background: #fed7aa;",
+    "rare_words": "background: #e5e7eb;",
+    "passive": "background: #fecaca;",
+    "verbal_nouns": "background: #e9d5ff;",
+    "compound_prepositions": "background: #a7f3d0;",
+    "cliches": "background: #fbcfe8;",
+    "parentheticals": "background: #d9f99d;",
+    "participle_clauses": "border-bottom: 2px solid #7c3aed;",
+    "converb_clauses": "border-bottom: 2px solid #0d9488;",
+    "genitive_chains": "border-bottom: 2px solid #b45309;",
+    "split_predicates": "border-bottom: 2px solid #dc2626;",
+    "connectors": "border-bottom: 2px dashed #2563eb;",
+    "alliteration": (
+        "text-decoration-line: underline; text-decoration-style: dotted; "
+        "text-decoration-color: #db2777; text-decoration-thickness: 2px; "
+        "text-underline-offset: 3px;"
+    ),
+}
 LONG_SENT_WORD_FACTOR = 20
 ALLITERATION_THRESHOLD = 0.001
 ALLITERATION_MIN_WORD_LEN = 3

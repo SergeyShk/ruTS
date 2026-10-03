@@ -1,10 +1,11 @@
 from math import isnan
 
 import pytest
+from anyts.constants import PUNCTUATION_TYPES
 
 from ruts import BasicStats
 from ruts.basic_stats import count_punctuations, punctuation_profile
-from ruts.constants import BASIC_STATS_DESC, PUNCTUATION_TYPES
+from ruts.constants import BASIC_STATS_DESC
 
 
 @pytest.fixture(scope="module")
@@ -167,6 +168,22 @@ def test_count_punctuations_spaced_hyphen_as_dash():
     assert (counts["dash"], counts["hyphen"]) == (1, 0)
     assert count_punctuations("какого-либо")["hyphen"] == 1
     assert count_punctuations("дом -\nмузей")["dash"] == 1
+
+
+@pytest.mark.parametrize(
+    ("text", "dashes", "hyphens"),
+    [
+        ("двух- и трёхкомнатные квартиры", 0, 1),
+        ("лево- или правосторонний", 0, 1),
+        ("сорока-, пятидесяти- и шестидесятилетние", 0, 2),
+        ("10- или 8-часовой рабочий день", 0, 2),
+        # Дефис реплики, приклеенный к слову, - тире
+        ("Ушли- сказал он", 1, 0),
+    ],
+)
+def test_count_punctuations_hanging_hyphen(text, dashes, hyphens):
+    counts = count_punctuations(text)
+    assert (counts["dash"], counts["hyphen"]) == (dashes, hyphens)
 
 
 def test_punctuation_profile():

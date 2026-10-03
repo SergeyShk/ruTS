@@ -168,7 +168,7 @@ An example of extracting records from the dataset, taking only one letter of 193
     _Result_:
 
     ``` bash
-    {'file': PosixPath('../ruTS/ruts_data/texts/stalin_works/volume_14/59'),
+    {'file': PosixPath('../ruTS/ruts_data/texts/stalin_works_v1/volume_14/59'),
     'is_translation': False,
     'source': 'Книга "Иосиф Сталин в объятиях семьи"',
     'subject': 'Письмо матери 10 марта 1937 года',

@@ -3,14 +3,17 @@
 import pytest
 
 from ruts import (
+    BasicStats,
     CohesionStats,
     DiversityStats,
     LexicalStats,
     MorphStats,
     PhonStats,
+    ReadabilityStats,
     StyleStats,
     WordsExtractor,
 )
+from ruts.basic_stats import count_punctuations, punctuation_profile
 from ruts.cohesion_stats import find_connectors
 from ruts.corpus import compare_corpora, corpus_features, function_words_profile, keyness, kwic
 from ruts.corpus.compare import sentence_rhythm, split_windows, text_features
@@ -39,7 +42,7 @@ from ruts.style_stats import (
 )
 from ruts.syllables import count_syllables, stress_type, syllabify
 from ruts.utils import find_phrases
-from ruts.visualizers import highlight
+from ruts.visualizers import fingerprinting, highlight, sentence_lengths, sentence_lengths_plot
 
 TEXT = "Кот спит на окне. Собака ест на полу, и кот на нее смотрит."
 WORDS = ["кот", "спит", "на", "окне", "собака", "ест", "на", "полу"]
@@ -58,6 +61,11 @@ INTEGERS = {
     "corpus_features(window)": lambda: corpus_features([TEXT], window=2.5),
     "compare_corpora(n_bootstrap)": lambda: compare_corpora([TEXT], [TEXT], n_bootstrap=1.5),
     "find_connectors(pos)": lambda: find_connectors(["но", "не"], pos=["CCONJ"]),
+    "BasicStats(complex_syl_factor)": lambda: BasicStats(TEXT, complex_syl_factor=2.5),
+    "punctuation_profile(n_words)": lambda: punctuation_profile(TEXT, n_words=2.5),
+    "highlight(long_sent_word_factor)": lambda: highlight(TEXT, long_sent_word_factor=2.5),
+    "sentence_lengths_plot(window)": lambda: sentence_lengths_plot(TEXT, window=1.5),
+    "fingerprinting(segment_len)": lambda: fingerprinting([WORDS], segment_len=1.5),
 }
 
 NOT_STRINGS = [1, 2]
@@ -112,6 +120,11 @@ WORD_LISTS = {
     "WordsExtractor(stopwords)": lambda: WordsExtractor(stopwords=NOT_STRINGS),
     "highlight(stopwords)": lambda: highlight(TEXT, stopwords=NOT_STRINGS),
     "highlight(cliches)": lambda: highlight(TEXT, cliches="в связи с"),
+    "BasicStats(words_extractor)": lambda: BasicStats(TEXT, words_extractor="x"),
+    "ReadabilityStats(sents_extractor)": lambda: ReadabilityStats(TEXT, sents_extractor="x"),
+    "sentence_lengths(words_extractor)": lambda: sentence_lengths(TEXT, words_extractor="x"),
+    "count_punctuations": lambda: count_punctuations(None),
+    "punctuation_profile": lambda: punctuation_profile(None),
 }
 
 

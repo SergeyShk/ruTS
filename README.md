@@ -717,7 +717,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 {'author': 'С. Маршак',
  'book': 'Родная речь. Книга для чтения в I классе начальной школы',
  'category': 'Весна',
- 'file': PosixPath('.../ruts_data/texts/sov_chrest_lit/grade_1/114'),
+ 'file': PosixPath('.../ruts_data/texts/sov_chrest_lit_v1/grade_1/114'),
  'grade': 1,
  'subject': 'Март',
  'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
@@ -815,7 +815,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> import spacy
 
 >>> nlp = spacy.load('ru_core_news_sm')
->>> nlp.add_pipe('basic', last=True)
+>>> nlp.add_pipe("ruts_basic", name="basic", last=True)
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")
 >>> doc._.basic.c_letters

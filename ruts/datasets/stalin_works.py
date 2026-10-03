@@ -3,10 +3,11 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from ..constants import DEFAULT_DATA_DIR
+from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, to_path
+
+from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from ..utils import to_path
-from .dataset import Dataset, Filters, check_limit, fetch_archive, length_filters, substring_filter
+from .dataset import Dataset, substring_filter
 
 NAME = "stalin_works"
 META = {
@@ -14,9 +15,10 @@ META = {
     "description": "Полное собрание сочинений И.В. Сталина",
     "author": "Шкарин С.С.",
 }
-DOWNLOAD_URL = (
-    "https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/stalin_works.tar.xz"
-)
+VERSION = 1
+ARCHIVE = f"{NAME}_v{VERSION}.tar.xz"
+DOWNLOAD_URL = f"https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/{ARCHIVE}"
+ARCHIVE_SHA256 = "124e9c45c486ab913af8a60c283e77ad5151f27151ce37c8eba0d5fd688b064b"
 TEXT_TYPES = [
     "Протокол",
     "Прошение",
@@ -80,7 +82,7 @@ class StalinWorks(Dataset):
     Итерация по набору данных:
         >>> for record in sw.get_records(year=1937, text_type='Письмо', limit=1):
         ...     pprint(record)
-        {'file': ...Path('.../texts/stalin_works/volume_14/59'),
+        {'file': ...Path('.../texts/stalin_works_v1/volume_14/59'),
          'is_translation': False,
          'source': 'Книга "Иосиф Сталин в объятиях семьи"',
          'subject': 'Письмо матери 10 марта 1937 года',
@@ -107,8 +109,8 @@ class StalinWorks(Dataset):
         super().__init__(NAME, meta=META)
         self.data_dir = to_path(data_dir).resolve()
         self.labels = tuple(f"volume_{i}" for i in range(1, 17))
-        self._filename = NAME + ".tar.xz"
-        self._filepath = self.data_dir.joinpath(self._filename)
+        self._filepath = self.data_dir.joinpath(ARCHIVE)
+        self._dirpath = self.data_dir.joinpath(f"{NAME}_v{VERSION}")
 
     @property
     def filepath(self) -> str | None:
@@ -129,7 +131,7 @@ class StalinWorks(Dataset):
         Исключения:
             DatasetNotFoundError: Если набор данных не обнаружен
         """
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             if not dirpath.is_dir():
                 msg = (
@@ -146,19 +148,19 @@ class StalinWorks(Dataset):
         Загрузка набора данных из сети и извлечение файлов
 
         Описание:
-            Если архив уже есть, а какой-то из директорий томов нет, архив
-            извлекается заново; архив, который не удалось извлечь, удаляется
-            и загружается заново в том же вызове
+            Архив сверяется с контрольной суммой SHA-256 и при несовпадении
+            загружается заново один раз; если архив уже есть, а какой-то
+            из директорий томов нет, архив извлекается заново
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
 
         Исключения:
-            DownloadError: Если не удалось загрузить архив
-            DataFileError: Если загруженный архив не удалось извлечь
+            DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
+            DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self.data_dir.joinpath(NAME, label).is_dir() for label in self.labels)
-        fetch_archive(DOWNLOAD_URL, self._filepath, missing, force)
+        missing = any(not self._dirpath.joinpath(label).is_dir() for label in self.labels)
+        fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
     def get_texts(
@@ -260,7 +262,7 @@ class StalinWorks(Dataset):
             generator[dict[str, object]]: Генератор записей
         """
         self.check_data()
-        dirpaths = (self.data_dir.joinpath(NAME, label) for label in self.labels)
+        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
             filepaths = (path for path in dirpath.iterdir() if path.name.isdigit())
             for filepath in sorted(filepaths, key=lambda path: int(path.name)):

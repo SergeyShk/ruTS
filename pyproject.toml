@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.15.0.dev8"
+version = "0.15.0.dev9"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -42,7 +42,7 @@ classifiers = [
     "Natural Language :: Russian",
 ]
 dependencies = [
-    "anyts>=0.2.5,<0.3",
+    "anyts>=0.2.6,<0.3",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
     "numpy>=1.26",
@@ -63,6 +63,18 @@ Issues = "https://github.com/SergeyShk/ruTS/issues"
 [build-system]
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
+
+[project.entry-points.spacy_factories]
+ruts_basic = "ruts.components:BasicStatsComponent"
+ruts_readability = "ruts.components:ReadabilityStatsComponent"
+ruts_diversity = "ruts.components:DiversityStatsComponent"
+ruts_morph = "ruts.components:MorphStatsComponent"
+ruts_syntax = "ruts.components:SyntaxStatsComponent"
+ruts_cohesion = "ruts.components:CohesionStatsComponent"
+ruts_lexical = "ruts.components:LexicalStatsComponent"
+ruts_style = "ruts.components:StyleStatsComponent"
+ruts_phon = "ruts.components:PhonStatsComponent"
+ruts_verse = "ruts.components:VerseStatsComponent"
 
 [tool.hatch.build.targets.wheel]
 packages = ["ruts"]

@@ -87,9 +87,11 @@ def test_mendenhall_plot():
     ax = mendenhall_plot(corpus)
     assert isinstance(ax, Axes)
     assert [line.get_label() for line in ax.get_lines()] == ["А", "Б", "В"]
+    # Длины без слов - нули, кривая не перескакивает через них
     curve = mendenhall_curve(corpus["А"])
-    assert list(ax.get_lines()[0].get_xdata()) == list(curve)
-    assert list(ax.get_lines()[0].get_ydata()) == list(curve.values())
+    lengths = range(min(curve), max(curve) + 1)
+    assert list(ax.get_lines()[0].get_xdata()) == list(lengths)
+    assert list(ax.get_lines()[0].get_ydata()) == [curve.get(length, 0.0) for length in lengths]
     assert ax.get_legend() is not None
     with pytest.raises(ValueError):
         mendenhall_plot({})

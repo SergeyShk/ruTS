@@ -20,7 +20,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"basic"` | Component name in the pipeline |
+| `name` | str | `"ruts_basic"` | Component name in the pipeline |
 
 Usage example:
 
@@ -37,7 +37,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("basic", last=True)
+    nlp.add_pipe("ruts_basic", name="basic", last=True)
 
     # Access the computed metrics
     doc = nlp("мама мыла раму")
@@ -62,7 +62,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"morph"` | Component name in the pipeline |
+| `name` | str | `"ruts_morph"` | Component name in the pipeline |
 
 Usage example:
 
@@ -79,7 +79,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("morph", last=True)
+    nlp.add_pipe("ruts_morph", name="morph", last=True)
 
     # Access the computed metrics
     doc = nlp("мама мыла раму")
@@ -104,8 +104,9 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"readability"` | Component name in the pipeline |
+| `name` | str | `"ruts_readability"` | Component name in the pipeline |
 | `preset` | str | `"plainrussian"` | [Coefficient preset](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`) |
+| `basic` | str | `None` | Extension of a basic statistics component to reuse instead of counting again |
 
 Usage example:
 
@@ -122,7 +123,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("readability", last=True)
+    nlp.add_pipe("ruts_readability", name="readability", last=True)
 
     # Access the computed metrics
     doc = nlp("мама мыла раму")
@@ -140,7 +141,9 @@ The coefficient preset is passed via `config`:
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("readability", config={"preset": "fiction"}, last=True)
+    nlp.add_pipe(
+        "ruts_readability", name="readability_fiction", config={"preset": "fiction"}, last=True
+    )
     ```
 
 ## DiversityStatsComponent
@@ -155,7 +158,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"diversity"` | Component name in the pipeline |
+| `name` | str | `"ruts_diversity"` | Component name in the pipeline |
 | `window_len` | int | `50` | Window size for MATTR and segment size for MSTTR |
 | `mtld_threshold` | float | `0.72` | TTR threshold for MTLD, MA-MTLD and MTLD-W |
 | `mtld_min_len` | int | `10` | Minimum factor length for MTLD, MA-MTLD and MTLD-W |
@@ -177,7 +180,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("diversity", last=True)
+    nlp.add_pipe("ruts_diversity", name="diversity", last=True)
 
     # Access the computed metrics
     doc = nlp("мама мыла раму")
@@ -195,7 +198,12 @@ Windows, thresholds and the logarithm base are passed via `config`:
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("diversity", config={"window_len": 100, "log_base": 2.718281828459045}, last=True)
+    nlp.add_pipe(
+        "ruts_diversity",
+        name="diversity_ln",
+        config={"window_len": 100, "log_base": 2.718281828459045},
+        last=True,
+    )
     ```
 
 ## StyleStatsComponent
@@ -210,7 +218,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"style"` | Component name in the pipeline |
+| `name` | str | `"ruts_style"` | Component name in the pipeline |
 | `stopwords` | list[str] | `None` | Stop word list for water content; if not given, pymorphy3 tags are used |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
 
@@ -229,7 +237,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("style", last=True)
+    nlp.add_pipe("ruts_style", name="style", last=True)
 
     # Access the computed metrics
     doc = nlp("мама мыла раму")
@@ -247,7 +255,9 @@ The stop word list and the number of the most frequent words are passed via `con
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("style", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True)
+    nlp.add_pipe(
+        "ruts_style", name="style_short", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True
+    )
     ```
 
 ## PhonStatsComponent
@@ -262,7 +272,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"phon"` | Component name in the pipeline |
+| `name` | str | `"ruts_phon"` | Component name in the pipeline |
 | `window_len` | int | `3` | Window size in words for alliteration and assonance |
 
 Usage example:
@@ -280,7 +290,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("phon", last=True)
+    nlp.add_pipe("ruts_phon", name="phon", last=True)
 
     # Access the computed statistics
     doc = nlp("мама мыла раму")
@@ -298,7 +308,7 @@ The window size is passed via `config`:
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("phon", config={"window_len": 5}, last=True)
+    nlp.add_pipe("ruts_phon", name="phon_windowed", config={"window_len": 5}, last=True)
     ```
 
 ## SyntaxStatsComponent
@@ -313,7 +323,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"syntax"` | Component name in the pipeline |
+| `name` | str | `"ruts_syntax"` | Component name in the pipeline |
 
 Usage example:
 
@@ -330,7 +340,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("syntax", last=True)
+    nlp.add_pipe("ruts_syntax", name="syntax", last=True)
 
     # Access the computed statistics
     doc = nlp("Дом, построенный рабочими в прошлом году, был продан")
@@ -355,7 +365,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"cohesion"` | Component name in the pipeline |
+| `name` | str | `"ruts_cohesion"` | Component name in the pipeline |
 
 Usage example:
 
@@ -372,7 +382,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("cohesion", last=True)
+    nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
 
     # Access the computed statistics
     doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул.")
@@ -397,7 +407,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"lexical"` | Component name in the pipeline |
+| `name` | str | `"ruts_lexical"` | Component name in the pipeline |
 | `data_dir` | str | `None` | Path to the frequency dictionary directory; if not given, the default directory is used |
 
 Usage example:
@@ -415,7 +425,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("lexical", last=True)
+    nlp.add_pipe("ruts_lexical", name="lexical", last=True)
 
     # Access the computed statistics
     doc = nlp("Кот сидел на окне и смотрел на птиц")
@@ -433,7 +443,9 @@ The dictionary directory is passed via `config`:
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("lexical", config={"data_dir": "/path/to/dicts"}, last=True)
+    nlp.add_pipe(
+        "ruts_lexical", name="lexical_dicts", config={"data_dir": "/path/to/dicts"}, last=True
+    )
     ```
 
 ## VerseStatsComponent
@@ -448,7 +460,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
-| `name` | str | `"verse"` | Component name in the pipeline |
+| `name` | str | `"ruts_verse"` | Component name in the pipeline |
 | `data_dir` | str | `None` | Path to the stress dictionary directory; if not given, the default directory is used |
 
 Usage example:
@@ -466,7 +478,7 @@ Usage example:
     nlp = spacy.load("ru_core_news_sm")
 
     # Add the component
-    nlp.add_pipe("verse", last=True)
+    nlp.add_pipe("ruts_verse", name="verse", last=True)
 
     # Access the computed statistics
     doc = nlp(
@@ -486,5 +498,5 @@ The dictionary directory is passed via `config`:
 !!! example "Example"
 
     ``` python
-    nlp.add_pipe("verse", config={"data_dir": "/path/to/dicts"}, last=True)
+    nlp.add_pipe("ruts_verse", name="verse_dicts", config={"data_dir": "/path/to/dicts"}, last=True)
     ```

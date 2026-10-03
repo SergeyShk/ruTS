@@ -1,13 +1,16 @@
 import shutil
 from pathlib import Path
 
+import anyts.datasets as dataset_module
 import pytest
 
-from ruts.datasets import dataset as dataset_module
+from ruts.datasets import stalin_works as stalin_works_module
 from ruts.datasets.stalin_works import StalinWorks
-from ruts.exceptions import DataFileError, ParameterError
+from ruts.exceptions import DownloadError, ParameterError
 
-BUNDLED_ARCHIVE = Path(__file__).parents[2] / "ruts" / "datasets" / "data" / "stalin_works.tar.xz"
+BUNDLED_ARCHIVE = (
+    Path(__file__).parents[2] / "ruts" / "datasets" / "data" / stalin_works_module.ARCHIVE
+)
 
 
 @pytest.fixture(scope="module")
@@ -39,7 +42,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     dataset._filepath.write_bytes(b"\x00" * 40)
     calls = []
 
-    def fake_download(url, filename, dirpath, force=False):
+    def fake_download(url, dirpath, filename, force=False, user_agent=None):
         calls.append(force)
         if not force and (Path(dirpath) / filename).is_file():
             return ""
@@ -54,7 +57,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     other._filepath.parent.mkdir()
     other._filepath.write_bytes(b"\x00" * 40)
 
-    def broken_download(url, filename, dirpath, force=False):
+    def broken_download(url, dirpath, filename, force=False, user_agent=None):
         path = Path(dirpath) / filename
         if not force and path.is_file():
             return ""
@@ -62,7 +65,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
         return str(path)
 
     monkeypatch.setattr(dataset_module, "download_file", broken_download)
-    with pytest.raises(DataFileError):
+    with pytest.raises(DownloadError):
         other.download()
 
 

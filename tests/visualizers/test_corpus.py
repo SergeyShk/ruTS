@@ -96,19 +96,19 @@ def test_collocation_network():
     graph = collocation_network(found, top_n=3)
     assert graph.engine == "neato"
     assert graph.source.count("--") == 3
-    assert '"кот" [fontsize=24]' in graph.source
-    assert '"сидел" [fontsize=10]' in graph.source
+    assert '[label="кот" fontsize=24]' in graph.source
+    assert '[label="сидел" fontsize=10]' in graph.source
     assert "label=13.00 penwidth=4.00" in graph.source
     assert graph.source.count("penwidth=0.50") == 2
     assert collocation_network(found).source.count("--") == len(found)
     single = collocation_network([Collocation("а", "б", 1, 1, 1, nan)])
     assert "label=0.00 penwidth=2.25" in single.source
-    assert '"а" [fontsize=17]' in single.source
+    assert '[label="а" fontsize=17]' in single.source
     with pytest.raises(ValueError):
         collocation_network([])
     html_like = collocation_network([Collocation("<b>", "кот", 2, 2, 2, 1.0)])
-    assert '"<b>" [fontsize=17]' in html_like.source
-    assert '"<b>" -- "кот"' in html_like.source
+    assert '[label="<b>" fontsize=17]' in html_like.source
+    assert "n0 -- n1" in html_like.source
     for top_n in (0, -1):
         with pytest.raises(ValueError):
             collocation_network(found, top_n=top_n)

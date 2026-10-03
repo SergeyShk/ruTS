@@ -1,15 +1,6 @@
-import hashlib
-import logging
-import os
 import re
-import shutil
-import tarfile
-import urllib.parse
-import urllib.request
-import zipfile
 from collections.abc import Iterable, Iterator, Sequence
 from functools import lru_cache
-from pathlib import Path, PurePosixPath
 
 import pymorphy3
 from anyts.utils import check_words, is_punctuation
@@ -18,7 +9,6 @@ from spacy.language import Language
 from spacy.tokenizer import Tokenizer
 
 from .constants import (
-    DEFAULT_DATA_DIR,
     LETTER,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
@@ -27,9 +17,6 @@ from .constants import (
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
-from .exceptions import DataFileError, DownloadError, SourceTypeError
-
-logger = logging.getLogger(__name__)
 
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
@@ -267,169 +254,3 @@ def _extend_rules(method: object, rules: list[str]) -> re.Pattern[str] | None:
         return None
     missing = [rule for rule in rules if rule not in pattern]
     return re.compile("|".join([pattern, *missing]))
-
-
-def to_path(path: str | Path) -> Path:
-    """
-    Перевод строкового представления пути в объект Path
-
-    Аргументы:
-        path (str): Cтроковое представление пути
-
-    Вывод:
-        Path: Объект Path
-
-    Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Path
-    """
-    if isinstance(path, str):
-        return Path(path)
-    if isinstance(path, Path):
-        return path
-    raise SourceTypeError("Некорректно указан путь")
-
-
-DOWNLOAD_TIMEOUT = 60
-
-
-def download_file(
-    url: str,
-    filename: str | None = None,
-    dirpath: str | Path = DEFAULT_DATA_DIR,
-    force: bool = False,
-) -> str:
-    """
-    Загрузка файла из сети
-
-    Аргументы:
-        url (str): Адрес загружаемого файла
-        filename (str): Название файла после загрузки
-        dirpath (str|Path): Путь к директории для загруженного файла
-        force (bool): Загрузить набор данных, даже если он уже загружен
-
-    Вывод:
-        str: Путь к загруженному файлу
-
-    Описание:
-        Файл пишется во временное имя рядом с целевым и переименовывается после
-        полной загрузки, поэтому оборванная загрузка не оставляет частичного файла,
-        который следующий вызов принял бы за загруженный. Соединение ждет ответа
-        не дольше DOWNLOAD_TIMEOUT секунд
-
-    Исключения:
-        DownloadError: Если не удалось создать директорию или загрузить файл
-    """
-    dirpath = to_path(dirpath)
-    try:
-        dirpath.mkdir(parents=True, exist_ok=True)
-    except OSError as e:
-        raise DownloadError(f"Не удалось создать директорию {dirpath}") from e
-    if not filename:
-        filename = Path(urllib.parse.urlparse(urllib.parse.unquote_plus(url)).path).name
-    filepath = dirpath.resolve() / filename
-    if filepath.is_file() and force is False:
-        logger.info("Файл %s уже загружен", filepath)
-        return ""
-    partial = filepath.with_name(filepath.name + ".part")
-    try:
-        logger.info("Загрузка файла %s", url)
-        req = urllib.request.Request(url)
-        with (
-            urllib.request.urlopen(req, timeout=DOWNLOAD_TIMEOUT) as response,
-            partial.open("wb") as out_file,
-        ):
-            shutil.copyfileobj(response, out_file)
-        partial.replace(filepath)
-    except Exception as e:
-        partial.unlink(missing_ok=True)
-        raise DownloadError("Не удалось загрузить файл") from e
-    logger.info("Файл загружен: %s", filepath)
-    return str(filepath)
-
-
-def _is_outside(member: str) -> bool:
-    """Проверка, что путь члена архива ведет за пределы директории извлечения"""
-    parts = PurePosixPath(member.replace("\\", "/")).parts
-    return bool(parts) and (parts[0] in ("/", "..") or ".." in parts)
-
-
-def extract_archive(archive_file: str | Path, extract_dir: str | Path | None = None) -> str:
-    """
-    Извлечение файлов из архива в формате ZIP или TAR
-
-    Описание:
-        Архив ZIP извлекается через ZipFile.extractall: shutil.unpack_archive в части
-        версий Python пропускает файлы, в имени которых есть две точки подряд
-        («Ма-аленькая!....txt»), а не только компоненты пути «..». Если корень
-        архива отличается от имени архива без расширений, он переименовывается,
-        а прежняя директория с этим именем удаляется, иначе повторное извлечение
-        положило бы копию внутрь нее
-
-    Аргументы:
-        archive_file (str|Path): Путь к файлу архива
-        extract_dir (str|Path): Путь к директории для извлеченных файлов
-
-    Вывод:
-        str: Путь к директории с извлеченными файлами
-
-    Исключения:
-        DataFileError: Если файл не архив ZIP или TAR, архив поврежден, содержит пути
-            за пределами директории извлечения или директорию не удалось создать
-    """
-    archive_path = to_path(archive_file).resolve()
-    extract_path = to_path(extract_dir) if extract_dir else archive_path.parent
-    try:
-        extract_path.mkdir(parents=True, exist_ok=True)
-    except OSError as e:
-        raise DataFileError(f"Не удалось создать директорию {extract_path}") from e
-    is_zip = zipfile.is_zipfile(archive_path)
-    is_tar = tarfile.is_tarfile(archive_path)
-    if not is_zip and not is_tar:
-        raise DataFileError(f"Файл {archive_path} не является архивом в формате ZIP или TAR")
-    logger.info("Извлечение файлов из архива %s", archive_path)
-    try:
-        if is_zip:
-            with zipfile.ZipFile(archive_path, mode="r") as zip_file:
-                members = zip_file.namelist()
-                if any(_is_outside(member) for member in members):
-                    raise DataFileError(
-                        f"Архив {archive_path} содержит пути за пределами директории"
-                    )
-                zip_file.extractall(extract_path)
-        else:
-            shutil.unpack_archive(archive_path, extract_dir=extract_path, filter="data")
-            with tarfile.open(archive_path, mode="r") as tar_file:
-                members = tar_file.getnames()
-    except (OSError, zipfile.BadZipFile, tarfile.TarError, shutil.ReadError) as e:
-        raise DataFileError(f"Не удалось извлечь архив {archive_path}") from e
-    src_basename = os.path.commonpath(members)
-    if src_basename and not (extract_path / src_basename).is_dir():
-        src_basename = str(Path(src_basename).parent)
-    if not src_basename or src_basename == ".":
-        return str(extract_path)
-    # Отбрасываем все расширения: stalin_works.tar.xz -> stalin_works
-    dest_basename = archive_path.name
-    while (stem := Path(dest_basename).stem) != dest_basename:
-        dest_basename = stem
-    if src_basename != dest_basename:
-        destination = extract_path / dest_basename
-        if destination.is_dir():
-            shutil.rmtree(destination)
-        return str(shutil.move(extract_path / src_basename, destination))
-    return str(extract_path / src_basename)
-
-
-def sha256(path: Path) -> str:
-    """
-    Вычисление контрольной суммы SHA-256 файла
-
-    Аргументы:
-        path (Path): Путь к файлу
-
-    Вывод:
-        str: Контрольная сумма в шестнадцатеричном виде, пустая строка для отсутствующего файла
-    """
-    if not path.is_file():
-        return ""
-    with path.open("rb") as file:
-        return hashlib.file_digest(file, "sha256").hexdigest()

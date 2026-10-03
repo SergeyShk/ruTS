@@ -1,6 +1,11 @@
+import subprocess
+import sys
+
 import pytest
 import spacy
-from anyts.utils import iter_doc_words
+from anyts.utils import is_punctuation, iter_doc_words
+from spacy.language import Language
+from spacy.tokens import Doc
 
 from ruts import (
     BasicStats,
@@ -10,6 +15,7 @@ from ruts import (
     PhonStats,
     ReadabilityStats,
     StyleStats,
+    StyleStatsComponent,
     SyntaxStats,
     VerseStats,
 )
@@ -20,7 +26,6 @@ from ruts.constants import (
     LEXICAL_STATS_DESC,
     MORPHOLOGY_STATS_DESC,
     PHON_STATS_DESC,
-    PUNCTUATIONS,
     READABILITY_STATS_DESC,
     STYLE_STATS_DESC,
     SYNTAX_STATS_DESC,
@@ -28,6 +33,7 @@ from ruts.constants import (
 )
 from ruts.datasets import FreqDict, StressDict
 from ruts.datasets.stress_dict import FILENAME as STRESS_FILENAME
+from ruts.exceptions import ParameterError, SourceError, SourceTypeError
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -42,13 +48,13 @@ text = (
 def spacy_nlp():
     spacy_nlp = spacy.blank("ru")
     spacy_nlp.add_pipe("sentencizer")
-    spacy_nlp.add_pipe("basic", last=True)
-    spacy_nlp.add_pipe("morph", last=True)
-    spacy_nlp.add_pipe("readability", last=True)
-    spacy_nlp.add_pipe("diversity", last=True)
-    spacy_nlp.add_pipe("style", last=True)
-    spacy_nlp.add_pipe("phon", last=True)
-    spacy_nlp.add_pipe("cohesion", last=True)
+    spacy_nlp.add_pipe("ruts_basic", name="basic", last=True)
+    spacy_nlp.add_pipe("ruts_morph", name="morph", last=True)
+    spacy_nlp.add_pipe("ruts_readability", name="readability", last=True)
+    spacy_nlp.add_pipe("ruts_diversity", name="diversity", last=True)
+    spacy_nlp.add_pipe("ruts_style", name="style", last=True)
+    spacy_nlp.add_pipe("ruts_phon", name="phon", last=True)
+    spacy_nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
 
     yield spacy_nlp
 
@@ -79,7 +85,7 @@ def test_components_names(spacy_nlp):
 def test_components_add_dash_rules():
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
-    nlp.add_pipe("basic")
+    nlp.add_pipe("ruts_basic", name="basic")
     dialogue = "-Нет -сказал он. -Да -сказал она. Нет- сказал он."
     assert nlp(dialogue)._.basic.get_stats() == BasicStats(dialogue).get_stats()
 
@@ -107,7 +113,7 @@ def test_component_diversity(spacy_doc):
 def test_component_readability_preset(spacy_doc):
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
-    nlp.add_pipe("readability", name="readability_fiction", config={"preset": "fiction"})
+    nlp.add_pipe("ruts_readability", name="readability_fiction", config={"preset": "fiction"})
     doc = nlp(text)
     assert doc._.readability_fiction.preset == "fiction"
     assert (
@@ -141,7 +147,7 @@ def test_component_cohesion(spacy_doc):
 
 def test_component_phon_params(spacy_doc):
     nlp = spacy.blank("ru")
-    nlp.add_pipe("phon", name="phon_custom", config={"window_len": 5})
+    nlp.add_pipe("ruts_phon", name="phon_custom", config={"window_len": 5})
     doc = nlp(text)
     assert doc._.phon_custom.window_len == 5
     assert doc._.phon_custom.alliteration == pytest.approx(
@@ -152,7 +158,7 @@ def test_component_phon_params(spacy_doc):
 
 def test_component_style_params(spacy_doc):
     nlp = spacy.blank("ru")
-    nlp.add_pipe("style", name="style_custom", config={"stopwords": ["и", "или"], "top_n": 3})
+    nlp.add_pipe("ruts_style", name="style_custom", config={"stopwords": ["и", "или"], "top_n": 3})
     doc = nlp(text)
     custom = doc._.style_custom
     assert custom.stopwords == ("и", "или")
@@ -165,7 +171,7 @@ def test_component_diversity_params(spacy_doc):
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
     nlp.add_pipe(
-        "diversity",
+        "ruts_diversity",
         name="diversity_custom",
         config={"window_len": 20, "mtld_threshold": 0.9, "log_base": 2.718281828459045},
     )
@@ -192,14 +198,14 @@ def test_components_filter_punctuation(spacy_doc):
     assert len(spacy_doc._.phon.words) == n_words
     assert spacy_doc._.cohesion.n_words == n_words
     assert "какого-либо" in spacy_doc._.diversity.words
-    assert not any(word in PUNCTUATIONS for word in spacy_doc._.diversity.words)
+    assert not any(map(is_punctuation, spacy_doc._.diversity.words))
 
 
 @pytest.fixture(scope="module")
 def parsed_nlp():
     pytest.importorskip("ru_core_news_sm")
     parsed_nlp = spacy.load("ru_core_news_sm")
-    parsed_nlp.add_pipe("syntax", last=True)
+    parsed_nlp.add_pipe("ruts_syntax", name="syntax", last=True)
 
     yield parsed_nlp
 
@@ -219,7 +225,7 @@ def test_component_lexical(tmp_path):
 
     write_dict(tmp_path)
     nlp = spacy.blank("ru")
-    nlp.add_pipe("lexical", config={"data_dir": str(tmp_path)})
+    nlp.add_pipe("ruts_lexical", name="lexical", config={"data_dir": str(tmp_path)})
     doc = nlp(text)
     for key in LEXICAL_STATS_DESC:
         assert hasattr(doc._.lexical, key)
@@ -235,7 +241,7 @@ def test_component_verse(tmp_path):
     lines = "\n".join("\t".join(row) for row in sorted(ROWS)) + "\n"
     tmp_path.joinpath(STRESS_FILENAME).write_text(lines, encoding="utf-8")
     nlp = spacy.blank("ru")
-    nlp.add_pipe("verse", config={"data_dir": str(tmp_path)})
+    nlp.add_pipe("ruts_verse", name="verse", config={"data_dir": str(tmp_path)})
     doc = nlp(STORM)
     for key in VERSE_STATS_DESC:
         assert hasattr(doc._.verse, key)
@@ -249,6 +255,116 @@ def test_component_verse(tmp_path):
 def test_component_syntax_requires_parser():
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
-    nlp.add_pipe("syntax", last=True)
+    nlp.add_pipe("ruts_syntax", name="syntax", last=True)
     with pytest.raises(ValueError):
         nlp(text)
+
+
+FACTORIES = (
+    "ruts_basic",
+    "ruts_readability",
+    "ruts_diversity",
+    "ruts_morph",
+    "ruts_syntax",
+    "ruts_cohesion",
+    "ruts_lexical",
+    "ruts_style",
+    "ruts_phon",
+    "ruts_verse",
+)
+# Компоненты, которым не нужна разметка модели и словари
+BLANK_FACTORIES = (
+    "ruts_basic",
+    "ruts_readability",
+    "ruts_diversity",
+    "ruts_morph",
+    "ruts_cohesion",
+    "ruts_style",
+    "ruts_phon",
+)
+
+
+@pytest.mark.parametrize("factory", FACTORIES)
+def test_factory_is_registered(factory):
+    assert Language.has_factory(factory)
+    assert not Language.has_factory(factory.removeprefix("ruts_"))
+
+
+def test_default_name_is_the_factory():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_basic")
+    assert nlp("мама мыла раму")._.ruts_basic.n_words == 3
+
+
+@pytest.mark.parametrize("factory", BLANK_FACTORIES)
+@pytest.mark.parametrize("doc_text", ["", "   ", "?!", "...", "%"])
+def test_component_of_a_document_without_words(factory, doc_text):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe(factory, name="stats")
+    assert nlp(doc_text)._.stats is None
+
+
+@pytest.mark.parametrize("doc_text", ["", "?!", "12 345"])
+def test_lexical_component_of_a_document_of_numbers(tmp_path, doc_text):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_lexical", name="lexical", config={"data_dir": str(tmp_path)})
+    assert nlp(doc_text)._.lexical is None
+
+
+@pytest.mark.parametrize("doc_text", ["", "?!", "1812"])
+def test_verse_component_of_a_document_without_letters(tmp_path, doc_text):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_verse", name="verse", config={"data_dir": str(tmp_path)})
+    assert nlp(doc_text)._.verse is None
+
+
+def test_readability_reuses_the_basic_statistics():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe("ruts_basic", name="basic")
+    nlp.add_pipe("ruts_readability", name="readability", config={"basic": "basic"})
+    doc = nlp(text)
+    assert doc._.readability.bs is doc._.basic
+    assert doc._.readability.get_stats() == ReadabilityStats(doc).get_stats()
+
+
+def test_readability_reuse_of_a_missing_component():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe("ruts_readability", name="readability", config={"basic": "missing_basic"})
+    with pytest.raises(SourceError, match="holds no BasicStats"):
+        nlp(text)
+
+
+def test_wrong_parameters_fail_at_add_pipe():
+    nlp = spacy.blank("ru")
+    with pytest.raises(ParameterError):
+        nlp.add_pipe("ruts_readability", name="readability_wrong", config={"preset": "x"})
+    # config проверяет spaCy, прямой вызов класса - сам компонент
+    with pytest.raises(SourceTypeError):
+        StyleStatsComponent(nlp, name="style_wrong", stopwords=iter(["и"]))
+
+
+def test_extension_of_another_package():
+    Doc.set_extension("foreign_stats", getter=lambda doc: len(doc))
+    try:
+        with pytest.raises(ParameterError, match="another package"):
+            spacy.blank("ru").add_pipe("ruts_basic", name="foreign_stats")
+    finally:
+        Doc.remove_extension("foreign_stats")
+
+
+def test_pipeline_is_loaded_without_importing_the_package(tmp_path):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_basic", name="basic")
+    nlp.to_disk(tmp_path)
+    code = (
+        "import spacy;"
+        f"nlp = spacy.load({str(tmp_path)!r});"
+        "print(nlp('Кот спит на окне')._.basic.n_words)"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True
+    )
+    assert result.stdout.strip() == "4"

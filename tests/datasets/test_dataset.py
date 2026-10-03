@@ -2,9 +2,13 @@ import os
 import subprocess
 import sys
 
+import anyts.datasets
 import pytest
 
-from ruts.datasets.dataset import Dataset
+from ruts import datasets
+from ruts.datasets import freq2011, poetry_corpus, stress_dict
+from ruts.datasets.dataset import Dataset, substring_filter
+from ruts.exceptions import DownloadError, ParameterError
 
 
 class TestErrorDataset(Dataset):
@@ -78,3 +82,30 @@ def test_data_directory_of_the_environment(tmp_path):
         str((tmp_path / "dicts").resolve()),
         str((tmp_path / "texts").resolve()),
     ]
+
+
+def test_substring_filter_folds_case_and_yo():
+    match = substring_filter("author", "федор")
+    assert match({"author": "Фёдор Достоевский"})
+    assert substring_filter("author", "ФЁДОР")({"author": "Федор Сологуб"})
+    assert not match({"author": None})
+    # й - отдельная буква, а не и с диакритикой
+    assert not substring_filter("author", "николаи")({"author": "Николай Некрасов"})
+    with pytest.raises(ParameterError):
+        substring_filter("author", 42)
+
+
+def test_downloads_send_the_user_agent_of_ruts(tmp_path, monkeypatch):
+    agents = []
+
+    def fake_download(url, dirpath, filename=None, force=False, user_agent=None):
+        agents.append(user_agent)
+        raise DownloadError("Нет сети")
+
+    for module in (anyts.datasets, freq2011, poetry_corpus, stress_dict):
+        monkeypatch.setattr(module, "download_file", fake_download)
+    names = datasets.__all__
+    for name in names:
+        with pytest.raises(DownloadError):
+            getattr(datasets, name)(data_dir=tmp_path).download()
+    assert agents == ["ruTS"] * len(names)

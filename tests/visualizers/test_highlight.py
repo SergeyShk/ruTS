@@ -1,13 +1,16 @@
 import pytest
 import spacy
+from anyts.visualizers.highlight import get_text_sents as count_sent_words, iter_doc_sents
+from razdel import sentenize
 from spacy.tokens import Doc
 
 from ruts.constants import (
     HIGHLIGHT_DEFAULT_LAYERS,
+    HIGHLIGHT_LAYER_ANNOTATIONS,
     HIGHLIGHT_LAYER_GROUPS,
     HIGHLIGHT_LAYERS_DESC,
-    HIGHLIGHT_SYNTAX_LAYERS,
 )
+from ruts.utils import iter_text_words
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
     Sent,
@@ -24,14 +27,10 @@ from ruts.visualizers.highlight import (
     find_split_predicate_highlights,
     find_stopwords,
     find_verbal_nouns,
-    get_doc_sents,
     get_doc_words,
     get_stem,
-    get_text_sents,
-    get_text_words,
     group_words_by_sents,
     plural,
-    split_segments,
 )
 
 text = "Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."
@@ -65,6 +64,16 @@ TOKENS = [
     ("рамки", False, 18, "obl", "NOUN", "Case=Acc"),
     (".", False, 15, "punct", "PUNCT", ""),
 ]
+
+
+def get_text_words(source):
+    return [Word(start, end, word) for start, end, word in iter_text_words(source)]
+
+
+def get_text_sents(source, words):
+    return count_sent_words(
+        ((sent.start, sent.stop, sent.text) for sent in sentenize(source)), words
+    )
 
 
 def build_doc(tokens):
@@ -142,7 +151,7 @@ def test_highlight_returns_highlighted_text(ht):
 def test_layers_default_str():
     assert highlight(text).layers == ("long_sents", "complex_words", "cliches")
     assert highlight(text, layers="all").layers == tuple(
-        layer for layer in HIGHLIGHT_LAYERS_DESC if layer not in HIGHLIGHT_SYNTAX_LAYERS
+        layer for layer in HIGHLIGHT_LAYERS_DESC if layer not in HIGHLIGHT_LAYER_ANNOTATIONS
     )
 
 
@@ -152,9 +161,13 @@ def test_layers_default_doc(doc):
 
 
 def test_layers_default_blank_doc():
-    blank = spacy.blank("ru")(text)
-    assert highlight(blank).layers == ("complex_words", "cliches")
-    assert "long_sents" not in highlight(blank, layers="all").layers
+    # Doc без границ предложений делится на предложения razdel
+    blank = spacy.blank("ru")(long_text)
+    assert highlight(blank).layers == ("long_sents", "complex_words", "cliches")
+    assert (
+        highlight(blank, layers=["long_sents"]).highlights
+        == highlight(long_text, layers=["long_sents"]).highlights
+    )
 
 
 def test_layer_groups():
@@ -164,7 +177,7 @@ def test_layer_groups():
     assert set(HIGHLIGHT_DEFAULT_LAYERS) < set(HIGHLIGHT_LAYERS_DESC)
     assert 5 <= len(HIGHLIGHT_DEFAULT_LAYERS) <= 6
     assert HIGHLIGHT_LAYER_GROUPS["Синтаксис"] == tuple(
-        layer for layer in HIGHLIGHT_LAYERS_DESC if layer in HIGHLIGHT_SYNTAX_LAYERS
+        layer for layer in HIGHLIGHT_LAYERS_DESC if layer in HIGHLIGHT_LAYER_ANNOTATIONS
     )
 
 
@@ -178,15 +191,22 @@ def test_layers_selection(doc):
 
 
 def test_layers_unknown():
-    with pytest.raises(ValueError, match="Неизвестный слой"):
+    with pytest.raises(ValueError, match="Unknown layer"):
         highlight(text, layers=["typos"])
 
 
 def test_layers_unavailable():
-    with pytest.raises(ValueError, match="passive"):
+    with pytest.raises(ValueError, match="passive needs a Doc with a dependency parse"):
         highlight(text, layers=["passive"])
-    with pytest.raises(ValueError, match="long_sents"):
-        highlight(spacy.blank("ru")(text), layers=["long_sents"])
+    with pytest.raises(ValueError, match="passive"):
+        highlight(spacy.blank("ru")(text), layers=["passive"])
+
+
+def test_params_checked_before_the_source():
+    with pytest.raises(ValueError):
+        highlight(123, long_sent_word_factor=0)
+    with pytest.raises(ValueError):
+        highlight(text, long_sent_word_factor=2.5)
 
 
 def test_counts(ht):
@@ -255,10 +275,6 @@ def test_doc_sents_whitespace_start():
         "Дом продан.",
         "Чуть слышно шуршат камыши.",
     ]
-
-
-def test_get_text_sents_no_words():
-    assert get_text_sents("...", []) == [(0, 3, 0)]
 
 
 def test_plural():
@@ -471,30 +487,6 @@ def test_doc_text_layers(doc):
         "не",
         "за",
     ]
-
-
-def test_split_segments():
-    highlights = [
-        Highlight(0, 10, "long_sents", "a"),
-        Highlight(2, 5, "complex_words", "b"),
-        Highlight(4, 8, "alliteration", "c"),
-    ]
-    segments = [
-        (start, end, [h.layer for h in active])
-        for start, end, active in split_segments(12, highlights)
-    ]
-    assert segments == [
-        (0, 2, ["long_sents"]),
-        (2, 4, ["long_sents", "complex_words"]),
-        (4, 5, ["long_sents", "complex_words", "alliteration"]),
-        (5, 8, ["long_sents", "alliteration"]),
-        (8, 10, ["long_sents"]),
-        (10, 12, []),
-    ]
-
-
-def test_split_segments_empty():
-    assert list(split_segments(3, [])) == [(0, 3, [])]
 
 
 def test_to_html(ht):
@@ -716,7 +708,9 @@ def test_hyphenated_words_doc(nlp):
     assert [f for f, _ in fragments(doc, "parentheticals")] == expected
     assert [f for f, _ in fragments(source, "parentheticals")] == expected
     assert "Во" not in [f for f, _ in fragments(doc, "stopwords")]
-    assert [sent.n_words for sent in get_doc_sents(doc)] == [3, 3, 3]
+    assert [
+        sent.n_words for sent in count_sent_words(iter_doc_sents(doc), get_doc_words(doc))
+    ] == [3, 3, 3]
 
 
 def test_alliteration_runs_skip_stopwords():

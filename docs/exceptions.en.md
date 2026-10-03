@@ -41,7 +41,7 @@ The classes are available from `ruts` and from `ruts.exceptions`.
 
 ## Logging
 
-The library prints nothing on its own: messages about downloading and extracting datasets (`download_file`, `extract_archive`, the `download()` methods) go to the `ruts` logger at the `INFO` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
+The library prints nothing on its own: the anyTS core sends messages about downloading and extracting datasets (the `download()` methods) to the `anyts` logger at the `INFO` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
 
 !!! example "Example"
 
@@ -52,9 +52,9 @@ The library prints nothing on its own: messages about downloading and extracting
 
     logging.basicConfig(level=logging.INFO, format="%(name)s: %(message)s")
     RussianLiterature().download()
-    # ruts.utils: Загрузка файла https://github.com/d0rj/RusLit/archive/....zip
-    # ruts.utils: Файл загружен: .../ruts_data/texts/russian_literature.zip
-    # ruts.utils: Извлечение файлов из архива .../ruts_data/texts/russian_literature.zip
+    # anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip
+    # anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip
+    # anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip
     ```
 
 The `print_stats()` methods of the statistics classes and `print_kwic()` write to standard output by design; logging does not affect them.

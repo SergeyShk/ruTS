@@ -14,7 +14,7 @@ from anyts.corpus.compare import (
     compare_features as compare_features,
     holm_correction as holm_correction,
 )
-from anyts.utils import check_integer, check_sequence, check_words
+from anyts.utils import check_integer, check_sequence, check_words, count_words_by_spans
 from razdel import sentenize
 
 from ..basic_stats import BasicStats, punctuation_profile
@@ -25,7 +25,6 @@ from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
 from ..utils import iter_text_words
-from ..visualizers.sentences import count_words_by_spans
 
 Features = Callable[[str], Mapping[str, float]]
 

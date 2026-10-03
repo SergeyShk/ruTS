@@ -1,48 +1,21 @@
-import re
-from collections import Counter
-from collections.abc import Iterable
-from typing import Any
+from collections.abc import Mapping
+from re import Pattern
 
-from anyts.utils import count_letters, iter_doc_words
-from spacy.tokens import Doc, Span
+import anyts.basic_stats
+from anyts.basic_stats import dash_pattern
+from anyts.utils import check_integer
+from spacy.tokens import Doc
 
-from .constants import (
-    BASIC_STATS_DESC,
-    COMPLEX_SYL_FACTOR,
-    LONG_WORD_LETTER_FACTOR,
-    PUNCTUATION_TYPES,
-    PUNCTUATIONS,
-    SPACES,
-)
-from .exceptions import SourceError, SourceTypeError
+from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, LONG_WORD_LETTER_FACTOR
+from .exceptions import ParameterError
 from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
 
-ELLIPSIS_PATTERN = re.compile(r"…|\.{3,}|(?<=[?!])\.{2}")
-DASH_PATTERN = re.compile(r"(?:(?<=\s)|^)-(?=\s|$)|(?<=\s)-(?:(?=\s)|$)", re.MULTILINE)
-_DELETE_SPACES = str.maketrans("", "", "".join(SPACES))
-PUNCTUATION_CHARS = {
-    ",": "comma",
-    ".": "period",
-    "?": "question",
-    "!": "exclamation",
-    ":": "colon",
-    ";": "semicolon",
-    "—": "dash",
-    "–": "dash",
-    "-": "hyphen",
-    "«": "angle_quotes",
-    "»": "angle_quotes",
-    '"': "straight_quotes",
-    "„": "straight_quotes",
-    "“": "straight_quotes",
-    "”": "straight_quotes",
-    "(": "parentheses",
-    ")": "parentheses",
-}
+PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
+DASH_PATTERN = dash_pattern(("и", "или", "либо"), hanging_before_comma=True)
 
 
-class BasicStats:
+class BasicStats(anyts.basic_stats.BasicStats):
     """
     Класс для вычисления основных статистик текста
 
@@ -83,9 +56,11 @@ class BasicStats:
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc); для Doc слова
             берутся из токенов (дефисные слова склеиваются), предложения - из разметки,
-            без границ предложений - через sents_extractor
-        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+            без границ предложений - через SentsExtractor
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
+            если задан, применяется и к тексту Doc
+        words_extractor (WordsExtractor): Инструмент для извлечения слов;
+            если задан, применяется и к тексту Doc
         normalize (bool): Вычислять нормализованные статистики
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         long_word_letter_factor (int): Минимальное количество букв в длинном слове
@@ -93,7 +68,7 @@ class BasicStats:
     Атрибуты:
         c_letters (dict[int, int]): Распределение слов по количеству букв
         c_syllables (dict[int, int]): Распределение слов по количеству слогов
-        n_sents (int): Количество предложений
+        n_sents (int): Количество предложений со словами
         n_words (int): Количество слов
         n_unique_words (int): Количество уникальных слов
         n_long_words (int): Количество длинных слов
@@ -118,15 +93,25 @@ class BasicStats:
         p_punctuations (float): Нормализованное количество знаков препинания
 
     Методы:
-        get_stats: Получение вычисленных статистик текста
-        print_stats: Отображение вычисленных статистик текста с описанием на экран
+        count_syllables: Количество слогов слова по правилам русского языка
+        count_punctuations: Количество знаков препинания текста по типам
         count_words_by_syllables: Количество слов с заданным минимальным числом слогов
         count_words_by_letters: Количество слов с заданным минимальным числом букв
+        get_stats: Получение вычисленных статистик текста
+        print_stats: Отображение вычисленных статистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка и не объект Doc или экстрактор
+            другого типа
         SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если порог не целое число или меньше 1
     """
+
+    sents_extractor_class = SentsExtractor
+    words_extractor_class = WordsExtractor
+    join_hyphens = True
+    stats_desc = BASIC_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
 
     def __init__(
         self,
@@ -137,136 +122,76 @@ class BasicStats:
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,
     ):
-        sents: Iterable[Span] | Iterable[str]
-        if isinstance(source, Doc):
-            text = source.text
-            if source.has_annotation("SENT_START"):
-                sents = source.sents
-            else:
-                sents = (sents_extractor or SentsExtractor()).extract(text)
-            words = tuple(word for _, _, word in iter_doc_words(source, join_hyphens=True))
-        elif isinstance(source, str):
-            text = source
-            if not sents_extractor:
-                sents_extractor = SentsExtractor()
-            sents = sents_extractor.extract(text)
-            if not words_extractor:
-                words_extractor = WordsExtractor()
-            words = words_extractor.extract(text)
-        else:
-            raise SourceTypeError("Некорректный источник данных")
-        if not words:
-            raise SourceError("В источнике данных отсутствуют слова")
-
-        letters_per_word = tuple(count_letters(word) for word in words)
-        syllables_per_word = tuple(count_syllables(word) for word in words)
-        self.c_letters = dict(sorted(Counter(letters_per_word).items()))
-        self.c_syllables = dict(sorted(Counter(syllables_per_word).items()))
-        self.n_sents = sum(1 for sent in sents)
-        self.n_words = len(words)
-        self.n_unique_words = len({word.lower() for word in words})
-        self.n_long_words = self.count_words_by_letters(long_word_letter_factor)
-        self.n_complex_words = self.count_words_by_syllables(complex_syl_factor)
-        self.n_simple_words = sum(
-            count for spw, count in self.c_syllables.items() if complex_syl_factor > spw > 0
+        super().__init__(
+            source,
+            sents_extractor,
+            words_extractor,
+            normalize,
+            complex_syl_factor,
+            long_word_letter_factor,
         )
-        self.n_monosyllable_words = self.c_syllables.get(1, 0)
-        self.n_polysyllable_words = (
-            self.n_words - self.c_syllables.get(1, 0) - self.c_syllables.get(0, 0)
-        )
-        self.n_chars = len(text) - text.count("\n") - text.count("\r")
-        # Без count_letters: кэш по словоформам не должен хранить целые тексты
-        self.n_letters = sum(map(str.isalpha, text))
-        self.n_spaces = len(text) - len(text.translate(_DELETE_SPACES))
-        self.n_syllables = sum(syllables_per_word)
-        punctuations = count_punctuations(text)
-        self.n_punctuations = sum(punctuations.values())
-        self.c_punctuations = punctuations
 
-        if normalize:
-            self.p_unique_words = self.n_unique_words / self.n_words
-            self.p_long_words = self.n_long_words / self.n_words
-            self.p_complex_words = self.n_complex_words / self.n_words
-            self.p_simple_words = self.n_simple_words / self.n_words
-            self.p_monosyllable_words = self.n_monosyllable_words / self.n_words
-            self.p_polysyllable_words = self.n_polysyllable_words / self.n_words
-            self.p_letters = self.n_letters / self.n_chars
-            self.p_spaces = self.n_spaces / self.n_chars
-            self.p_punctuations = self.n_punctuations / self.n_chars
-
-    def count_words_by_syllables(self, min_syllables: int) -> int:
+    def count_syllables(self, word: str) -> int:
         """
-        Получение количества слов с заданным минимальным числом слогов
+        Подсчет слогов слова по правилам русского языка
 
         Аргументы:
-            min_syllables (int): Минимальное количество слогов в слове
+            word (str): Слово
 
         Вывод:
-            int: Количество слов
+            int: Количество слогов
         """
-        return sum(count for spw, count in self.c_syllables.items() if spw >= min_syllables)
+        return count_syllables(word)
 
-    def count_words_by_letters(self, min_letters: int) -> int:
+    def count_punctuations(self, text: str) -> dict[str, int]:
         """
-        Получение количества слов с заданным минимальным числом букв
+        Подсчет знаков препинания текста по типам (count_punctuations)
 
         Аргументы:
-            min_letters (int): Минимальное количество букв в слове
+            text (str): Строка текста
 
         Вывод:
-            int: Количество слов
+            dict[str, int]: Число знаков каждого типа в порядке PUNCTUATION_TYPES
         """
-        return sum(count for cpw, count in self.c_letters.items() if cpw >= min_letters)
-
-    def get_stats(self) -> dict[str, Any]:
-        """
-        Получение вычисленных статистик текста
-
-        Вывод:
-            dict[str, Any]: Справочник вычисленных статистик текста - копия, правка
-                которой не меняет объект
-        """
-        return {
-            key: dict(value) if isinstance(value, dict) else value
-            for key, value in vars(self).items()
-        }
-
-    def print_stats(self):
-        """Отображение вычисленных статистик текста с описанием на экран"""
-        print(f"{'Статистика':^20}|{'Значение':^10}")
-        print("-" * 30)
-        for stat, value in BASIC_STATS_DESC.items():
-            print(f"{value:20}|{self.get_stats().get(stat):^10}")
+        return count_punctuations(text)
 
 
-def count_punctuations(text: str) -> dict[str, int]:
+def count_punctuations(
+    text: str,
+    marks: Mapping[str, str] = PUNCTUATION_MARKS,
+    dash_pattern: Pattern[str] = DASH_PATTERN,
+) -> dict[str, int]:
     """
     Подсчет знаков препинания по типам
 
     Описание:
         Типы из PUNCTUATION_TYPES: запятые, точки, вопросительные и восклицательные
-        знаки, многоточия (символ …, три и более точек или две точки после ? и !
-        считаются одним знаком, их точки в точки не входят: «Кто там?..» - вопрос
-        и многоточие), двоеточия, точки с запятой, тире (— и –, а также дефис
-        с пробелами по сторонам или в начале строки, которым тире набирают
-        в текстовых корпусах: «- Ушли, - сказал он»), дефисы между буквами,
-        кавычки-ёлочки «», прямые кавычки и лапки „“”, скобки и прочие знаки
-        из PUNCTUATIONS
+        знаки, многоточия («Кто там?..» - вопрос и многоточие), двоеточия, точки
+        с запятой, тире (в том числе дефис, которым тире набирают в текстовых
+        корпусах: «- Ушли, - сказал он»), дефисы в словах и висячие дефисы
+        («двух- и трёхкомнатные»), кавычки-ёлочки, прямые кавычки и лапки, скобки
+        и прочие знаки. Знаки ядра anyTS дополнены нижней кавычкой „
 
     Аргументы:
         text (str): Строка текста
+        marks (dict[str, str]): Тип каждого знака
+        dash_pattern (Pattern): Тире, набранные дефисами
 
     Вывод:
         dict[str, int]: Число знаков каждого типа в порядке PUNCTUATION_TYPES
+
+    Исключения:
+        SourceTypeError: Если текст не строка, знаки не словарь или тире
+            не скомпилированное регулярное выражение
+        ParameterError: Если знак не один символ или его тип неизвестен
+
+    Пример использования:
+        >>> from ruts.basic_stats import count_punctuations
+        >>> counts = count_punctuations("- Кто там?.. - спросил он. „Никого“")
+        >>> {kind: count for kind, count in counts.items() if count}
+        {'period': 1, 'question': 1, 'ellipsis': 1, 'dash': 2, 'straight_quotes': 2}
     """
-    counts = dict.fromkeys(PUNCTUATION_TYPES, 0)
-    rest, counts["ellipsis"] = ELLIPSIS_PATTERN.subn("", text)
-    rest, counts["dash"] = DASH_PATTERN.subn("", rest)
-    chars = Counter(rest)
-    for char, kind in PUNCTUATION_CHARS.items():
-        counts[kind] += chars[char]
-    counts["other"] = sum(chars[char] for char in PUNCTUATIONS if char not in PUNCTUATION_CHARS)
-    return counts
+    return anyts.basic_stats.count_punctuations(text, marks, dash_pattern)
 
 
 def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, float]:
@@ -287,10 +212,18 @@ def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, floa
     Вывод:
         dict[str, float]: Частоты типов на 1000 слов и yo_share; nan без слов
             или без букв е и ё
+
+    Исключения:
+        SourceTypeError: Если текст не строка
+        ParameterError: Если число слов не целое или отрицательно
     """
+    if n_words is not None:
+        check_integer(n_words, "number of words")
+        if n_words < 0:
+            raise ParameterError("Число слов не может быть отрицательным")
+    counts = count_punctuations(text)
     if n_words is None:
         n_words = len(WordsExtractor().extract(text))
-    counts = count_punctuations(text)
     profile = {
         kind: count / n_words * 1000 if n_words else float("nan") for kind, count in counts.items()
     }

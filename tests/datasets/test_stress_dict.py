@@ -3,6 +3,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+from anyts.datasets import sha256
 
 from ruts.datasets import StressDict, stress_dict as stress_dict_module
 from ruts.datasets.stress_dict import (
@@ -13,7 +14,6 @@ from ruts.datasets.stress_dict import (
     stress_from_accented,
 )
 from ruts.exceptions import DatasetNotFoundError, ParameterError
-from ruts.utils import sha256
 
 ROWS = (
     ("-де", "-д^е"),
@@ -174,7 +174,7 @@ def make_archive(path: Path, content: bytes | None = None) -> Path:
 
 
 def test_download_corrupted(tmp_path, monkeypatch):
-    def fake_download(url, filename, dirpath, force):
+    def fake_download(url, dirpath, filename, force, user_agent):
         return str(make_archive(Path(dirpath), b"<html>not an archive</html>"))
 
     monkeypatch.setattr(stress_dict_module, "download_file", fake_download)
