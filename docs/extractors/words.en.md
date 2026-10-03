@@ -5,50 +5,30 @@
 
 ## Description
 
-A module for extracting words from a text. It allows using different tokenizers, filtering stop words, numbers and punctuation, lemmatizing, building N-grams, and setting the minimum and maximum length of extracted words.
+--8<-- "extractors/words.md:WordsExtractor"
 
-!!! note "Note"
-    The default tokenizer is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library.
+## Language hooks
 
-!!! note "Note"
-    The default morphological analyzer for lemmatization is the `MorphAnalyzer` class of the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) library.
+The class extends the `WordsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) core with the hooks of Russian: the tokenizer `tokenize(text)` is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library with the dialogue dashes glued to words split off (`ruts.utils.iter_tokens`), the lemma `lemmatize(word)` is the first parse of the `MorphAnalyzer` of the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) library, and the number pattern `number_pattern` also matches ranges, fractions and ordinals: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `tokenizer` | Pattern/Callable | `None` | Tokenizer or regular expression |
-| `filter_punct` | bool | `True` | Filter punctuation marks |
-| `filter_nums` | bool | `False` | Filter numbers, including ranges, fractions and ordinals (2020-2021, 5.5, 1,5, 3-й) |
-| `use_lexemes` | bool | `False` | Use word lemmas |
-| `stopwords` | Collection[str] | `None` | Stop words (a list or a set) |
-| `lowercase` | bool | `False` | Convert words to lower case |
-| `ngram_range` | Tuple[int, int] | `(1, 1)` | Lower and upper bound of the N-gram size |
-| `min_len` | int | `0` | Minimum length of an extracted word |
-| `max_len` | int | `0` | Maximum length of an extracted word |
-
-!!! note "Note"
-    The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. Stop words are compared case-insensitively: «И» at the start of a sentence is dropped along with «и».
+--8<-- "extractors/words.md:WordsExtractor-parameters"
 
 ## Methods
 
 ### extract
 
-Extracts words from a text.
+--8<-- "extractors/words.md:WordsExtractor-extract"
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `text` | str | `-` | Text string |
-
-An example of word extraction with bigrams as tokens, after filtering stop words and lemmatizing:
+An example of word extraction with bigrams as tokens, after filtering stop words and numbers and lemmatizing:
 
 !!! example "Example"
 
     _Code_:
 
     ``` python
-    # Import the libraries
-    import re
+    # Import the library
     from ruts import WordsExtractor
 
     # Prepare the data
@@ -67,10 +47,9 @@ An example of word extraction with bigrams as tokens, after filtering stop words
     ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
     ```
 
-
 ### get_most_common
 
-Returns a counter of the top words of the text. It takes the number of top words to return as a parameter.
+--8<-- "extractors/words.md:WordsExtractor-get_most_common"
 
 To illustrate the method, we reuse the code from the previous example:
 
@@ -90,6 +69,3 @@ To illustrate the method, we reuse the code from the previous example:
     ``` bash
     [('иметь', 2), ('рубль', 1), ('друг', 1)]
     ```
-
-!!! warning "Warning"
-    The method must be called after words have been extracted with `extract`.
