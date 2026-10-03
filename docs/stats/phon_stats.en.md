@@ -19,7 +19,7 @@ The statistics are computed over letters without accounting for devoicing, reduc
 
 Words are divided into syllables by the rising sonority rule (Avanesov), see the [`syllabify`](../syllables.md#syllabify) function.
 
-Syllables, CV patterns, clusters and hiatuses are computed once per word form and cached, the rest is aggregated over a counter of word forms, the alliteration and assonance indices - by [`calc_repetition_index`](phon_stats_funcs.md#calc_alliteration) of the anyTS core over a word × letter matrix, so the time grows linearly with text length and on a corpus is dominated by tokenization.
+The computation time grows linearly with text length.
 
 !!! note "Note"
     The statistics are computed when the `PhonStats` object is initialized.
