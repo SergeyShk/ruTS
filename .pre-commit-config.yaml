@@ -51,6 +51,6 @@ repos:
         name: pytest
         stages: [pre-push]
         language: system
-        entry: uv run pytest -m "not network" --cov ruts
+        entry: bash -c 'uv run python scripts/core_docs.py && uv run pytest -m "not network" --cov ruts'
         pass_filenames: false
         always_run: true
