@@ -3583,7 +3583,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.15.0.dev9"
+version = "0.15.0.dev10"
 source = { editable = "." }
 dependencies = [
     { name = "anyts" },
