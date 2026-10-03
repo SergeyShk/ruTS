@@ -215,7 +215,12 @@ def readability_summary(rs: ReadabilityStats) -> str:
     )
 
 
-def lexical_table(ls: LexicalStats) -> pd.DataFrame:
+def lexical_table(doc: Doc) -> pd.DataFrame:
+    try:
+        ls = LexicalStats(doc, freq_dict=freq_dict)
+    except SourceError:
+        # Числа словами не считаются, в тексте из одних чисел слов нет
+        return pd.DataFrame(columns=["Метрика", "Значение"])
     if freq_dict.filepath:
         return stats_table(ls.get_stats(), LEXICAL_STATS_DESC)
     bands = {
@@ -253,6 +258,9 @@ def keywords_table(words: tuple[str, ...]) -> pd.DataFrame:
 
 
 def collocations_table(words: tuple[str, ...]) -> pd.DataFrame:
+    columns = ["Пара", "Вместе", "logDice"]
+    if not words:
+        return pd.DataFrame(columns=columns)
     found = [
         collocation
         for collocation in collocations(words, window=COLLOCATION_WINDOW, min_freq=2)
@@ -267,14 +275,17 @@ def collocations_table(words: tuple[str, ...]) -> pd.DataFrame:
             )
             for collocation in found[:KEYWORDS_TOP_N]
         ],
-        columns=["Пара", "Вместе", "logDice"],
+        columns=columns,
     )
 
 
 def verse_tables(doc: Doc) -> tuple[pd.DataFrame, str]:
     if not stress_dict.filepath:
         return pd.DataFrame(columns=["Метрика", "Значение"]), "*Словарь ударений недоступен.*"
-    vs = VerseStats(doc, stress_dict=stress_dict)
+    try:
+        vs = VerseStats(doc, stress_dict=stress_dict)
+    except SourceError:
+        return pd.DataFrame(columns=["Метрика", "Значение"]), "*В тексте нет русских слов.*"
     if not vs.n_lines:
         return stats_table(vs.get_stats(), VERSE_STATS_DESC), "*В тексте нет русских слов.*"
     accented = [line for stanza in vs.accentuate().split("\n\n") for line in stanza.split("\n")]
@@ -353,7 +364,6 @@ def compute(text: str, layers: list[str]) -> dict:
     ps = PhonStats(doc)
     xs = SyntaxStats(doc)
     cs = CohesionStats(doc)
-    ls = LexicalStats(doc, freq_dict=freq_dict)
     words = WordsExtractor(use_lexemes=True, lowercase=True, filter_nums=True).extract(text)
     pos_table, morph_table = morph_tables(ms)
     verse_table, verse_lines = verse_tables(doc)
@@ -371,7 +381,7 @@ def compute(text: str, layers: list[str]) -> dict:
         "morph": morph_table,
         "syntax": stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
         "cohesion": stats_table(cs.get_stats(), COHESION_STATS_DESC),
-        "lexical": lexical_table(ls),
+        "lexical": lexical_table(doc),
         "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
         "verse": verse_table,
@@ -389,6 +399,9 @@ def compute(text: str, layers: list[str]) -> dict:
 def analyze(text: str, *groups: list[str]):
     try:
         result = compute(text, [layer for group in groups for layer in group])
+    except SourceError as error:
+        # Сообщения ядра английские, интерфейс русский
+        raise gr.Error("В тексте нет слов для разбора") from error
     except ValueError as error:
         raise gr.Error(str(error)) from error
     return (
