@@ -45,6 +45,7 @@ from ..syntax_stats import (
     is_genitive_modifier,
     is_participle_clause,
     is_passive,
+    subtree_len,
 )
 from ..utils import (
     BYTE_ORDER_MARK,
@@ -696,6 +697,37 @@ def _word_tokens(doc: Doc) -> Callable[[Iterable[Token]], list[Token]]:
     return lambda tokens: [part for token in tokens for part in units.get(token.i, [token])]
 
 
+def _clause_span(token: Token, units: Mapping[int, list[Token]]) -> tuple[int, int]:
+    """
+    Позиции фрагмента оборота: слова поддерева токена, представленные в нем
+    своей частью (get_words), со всеми частями
+
+    Аргументы:
+        token (Token): Вершина оборота
+        units (Mapping[int, list[Token]]): Токены слов по номеру представляющей части
+
+    Вывод:
+        tuple[int, int]: Позиция первого символа и позиция за последним символом
+    """
+    return tokens_span([part for child in token.subtree for part in units.get(child.i, ())])
+
+
+def _units_by_word(doc: Doc) -> dict[int, list[Token]]:
+    """
+    Токены каждого слова Doc по номеру части, которой слово представлено (get_words)
+
+    Аргументы:
+        doc (Doc): Объект Doc
+
+    Вывод:
+        dict[int, list[Token]]: Токены слов
+    """
+    return {
+        get_words(unit, join_hyphens=True)[0].i: unit
+        for unit in iter_doc_units(doc, join_hyphens=True)
+    }
+
+
 def find_passive(doc: Doc) -> list[Highlight]:
     """
     Поиск пассивных глагольных форм
@@ -737,10 +769,11 @@ def find_participle_clauses(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя participle_clauses
     """
     highlights = []
+    units = _units_by_word(doc)
     for token in get_words(doc, join_hyphens=True):
         if is_participle_clause(token):
-            start, end = tokens_span(token.subtree)
-            n_words = len(get_words(token.subtree, join_hyphens=True))
+            start, end = _clause_span(token, units)
+            n_words = subtree_len(token, join_hyphens=True)
             note = f"причастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "participle_clauses", note))
     return highlights
@@ -757,10 +790,11 @@ def find_converb_clauses(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя converb_clauses
     """
     highlights = []
+    units = _units_by_word(doc)
     for token in get_words(doc, join_hyphens=True):
         if is_converb_clause(token):
-            start, end = tokens_span(token.subtree)
-            n_words = len(get_words(token.subtree, join_hyphens=True))
+            start, end = _clause_span(token, units)
+            n_words = subtree_len(token, join_hyphens=True)
             note = f"деепричастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "converb_clauses", note))
     return highlights

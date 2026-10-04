@@ -482,6 +482,26 @@ def test_syntax_layers_of_hyphenated_words(nlp, text, fragments):
     assert ht.counts.get("passive", 0) == ss.n_passive
 
 
+def test_participle_clause_without_a_hyphenated_word_hanging_outside():
+    # Руки кое-как прикрепленные сзади висели: «кое-как» висит на «висели» частью «кое»
+    doc = build_doc(
+        [
+            ("Руки", True, 6, "nsubj", "NOUN", "Case=Nom"),
+            ("кое", False, 6, "advmod", "ADV", ""),
+            ("-", False, 1, "punct", "PUNCT", ""),
+            ("как", True, 4, "advmod", "ADV", ""),
+            ("прикрепленные", True, 0, "acl", "VERB", "VerbForm=Part"),
+            ("сзади", True, 4, "advmod", "ADV", ""),
+            ("висели", False, 6, "ROOT", "VERB", "VerbForm=Fin"),
+            (".", False, 6, "punct", "PUNCT", ""),
+        ]
+    )
+    ht = highlight(doc, layers=["participle_clauses"])
+    assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [
+        ("прикрепленные сзади", "причастный оборот, 2 слова")
+    ]
+
+
 def test_genitive_chains_single_modifier():
     doc = build_doc(
         [
