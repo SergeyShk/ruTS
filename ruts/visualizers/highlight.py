@@ -37,6 +37,7 @@ from ..style_stats import expand_phrases, is_parenthetical, is_stopword
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     find_split_predicates,
+    get_children,
     get_lemma,
     get_words,
     is_agentless,
@@ -44,7 +45,6 @@ from ..syntax_stats import (
     is_genitive_modifier,
     is_participle_clause,
     is_passive,
-    is_word,
 )
 from ..utils import (
     BYTE_ORDER_MARK,
@@ -682,6 +682,20 @@ def find_alliteration(
     return highlights
 
 
+def _word_tokens(doc: Doc) -> Callable[[Iterable[Token]], list[Token]]:
+    """
+    Функция, дополняющая токены слов всеми частями их дефисных слов
+
+    Аргументы:
+        doc (Doc): Объект Doc
+
+    Вывод:
+        Callable[[Iterable[Token]], list[Token]]: Токены вместе с частями их слов
+    """
+    units = {token.i: unit for unit in iter_doc_units(doc, join_hyphens=True) for token in unit}
+    return lambda tokens: [part for token in tokens for part in units.get(token.i, [token])]
+
+
 def find_passive(doc: Doc) -> list[Highlight]:
     """
     Поиск пассивных глагольных форм
@@ -698,10 +712,15 @@ def find_passive(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя passive
     """
     highlights = []
-    for token in doc:
-        if is_word(token) and is_passive(token):
-            auxiliaries = [child for child in token.children if child.dep_ == "aux:pass"]
-            start, end = tokens_span([token, *auxiliaries])
+    word_tokens = _word_tokens(doc)
+    for token in get_words(doc, join_hyphens=True):
+        if is_passive(token):
+            auxiliaries = [
+                child
+                for child in get_children(token, join_hyphens=True)
+                if child.dep_ == "aux:pass"
+            ]
+            start, end = tokens_span(word_tokens([token, *auxiliaries]))
             note = "пассив без агенса" if is_agentless(token) else "пассив"
             highlights.append(Highlight(start, end, "passive", note))
     return highlights
@@ -718,7 +737,7 @@ def find_participle_clauses(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя participle_clauses
     """
     highlights = []
-    for token in doc:
+    for token in get_words(doc, join_hyphens=True):
         if is_participle_clause(token):
             start, end = tokens_span(token.subtree)
             n_words = len(get_words(token.subtree, join_hyphens=True))
@@ -738,7 +757,7 @@ def find_converb_clauses(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя converb_clauses
     """
     highlights = []
-    for token in doc:
+    for token in get_words(doc, join_hyphens=True):
         if is_converb_clause(token):
             start, end = tokens_span(token.subtree)
             n_words = len(get_words(token.subtree, join_hyphens=True))
@@ -772,7 +791,7 @@ def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
 def _genitive_chain(token: Token) -> tuple[list[Token], int]:
     tokens = [token]
     depth = 1
-    for child in token.children:
+    for child in get_children(token, join_hyphens=True):
         if is_genitive_modifier(child):
             child_tokens, child_depth = _genitive_chain(child)
             tokens += child_tokens
@@ -796,13 +815,14 @@ def find_genitive_chains(doc: Doc) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя genitive_chains
     """
     highlights = []
-    for token in doc:
+    word_tokens = _word_tokens(doc)
+    for token in get_words(doc, join_hyphens=True):
         if not is_genitive_modifier(token) or is_genitive_modifier(token.head):
             continue
         chain, depth = _genitive_chain(token)
         if depth < 2:
             continue
-        start, end = tokens_span([token.head, *chain])
+        start, end = tokens_span(word_tokens([token.head, *chain]))
         note = f"цепочка из {plural(depth, 'родительного', 'родительных', 'родительных')}"
         highlights.append(Highlight(start, end, "genitive_chains", note))
     return highlights

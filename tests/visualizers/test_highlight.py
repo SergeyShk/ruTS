@@ -4,6 +4,7 @@ from anyts.visualizers.highlight import get_text_sents as count_sent_words, iter
 from razdel import sentenize
 from spacy.tokens import Doc
 
+from ruts import SyntaxStats
 from ruts.constants import (
     HIGHLIGHT_DEFAULT_LAYERS,
     HIGHLIGHT_LAYER_ANNOTATIONS,
@@ -458,6 +459,27 @@ def test_genitive_chains(doc):
     assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [
         ("Повышение эффективности использования ресурсов", "цепочка из 3 родительных")
     ]
+
+
+@pytest.mark.parametrize(
+    ("text", "fragments"),
+    [
+        (
+            "Осуществление программы-минимум большевиков является декламацией.",
+            ["Осуществление программы-минимум большевиков"],
+        ),
+        ("Это дело немногих интеллигентов – социал-демократов.", []),
+        ("Он занял кресло вице-губернатора области.", ["кресло вице-губернатора области"]),
+    ],
+)
+def test_syntax_layers_of_hyphenated_words(nlp, text, fragments):
+    # Слои считают слова, как SyntaxStats, и покрывают дефисное слово целиком
+    doc = nlp(text)
+    ss = SyntaxStats(doc)
+    ht = highlight(doc, layers=["genitive_chains", "passive"])
+    assert [text[h.start : h.end] for h in ht.highlights] == fragments
+    assert ht.counts.get("genitive_chains", 0) == ss.n_genitive_chains
+    assert ht.counts.get("passive", 0) == ss.n_passive
 
 
 def test_genitive_chains_single_modifier():
