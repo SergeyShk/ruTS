@@ -2911,7 +2911,7 @@
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Модуль для вычисления статистик связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы существительных, аргументов (существительных и местоимений) и знаменательных слов между соседними предложениями и всеми парами предложений; данность - доля местоимений, отношение местоимений к существительным, доля указательных и доля знаменательных слов, уже встречавшихся в тексте; темпоральная связность - повтор времени и вида глаголов в соседних предложениях; плотность коннекторов по классам и типам на 1000 слов. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Пары предложений сравниваются по леммам. Для объекта <code>Doc</code> с разметкой частей речи части речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, лемма - из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>): лемматизатор моделей <code>ru_core_news</code> возвращает словоформу для <code>AUX</code> и при расхождении признаков теггера и pymorphy3 (были, них, стихли). Для строки и <code>Doc</code> без разметки используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>. Слова <code>Doc</code> берутся из токенов (дефисные слова, разрезанные spaCy на части, склеиваются); <code>Doc</code> без границ предложений разбивается на предложения <code>SentsExtractor</code> по тексту, слово относится к предложению по позиции первого токена.</p>
+<p>Пары предложений сравниваются по леммам. Для объекта <code>Doc</code> с разметкой частей речи части речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, лемма - из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>): лемматизатор моделей <code>ru_core_news</code> возвращает словоформу для <code>AUX</code> и при расхождении признаков теггера и pymorphy3 (были, них, стихли). Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>. Без экстрактора слова <code>Doc</code> берутся из токенов (дефисные слова, разрезанные spaCy на части, склеиваются); <code>Doc</code> без границ предложений разбивается на предложения <code>SentsExtractor</code> по тексту, слово относится к предложению по позиции первого токена.</p>
 <table>
 <thead>
 <tr>
@@ -3027,13 +3027,13 @@
 <td style="text-align: center;"><code>sents_extractor</code></td>
 <td style="text-align: center;">SentsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения предложений</td>
+<td style="text-align: center;">Инструмент для извлечения предложений; если задан, применяется и к тексту Doc</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения слов</td>
+<td style="text-align: center;">Инструмент для извлечения слов; если задан, применяется и к тексту Doc</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>connectors</code></td>

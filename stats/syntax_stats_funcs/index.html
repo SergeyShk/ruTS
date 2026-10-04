@@ -3136,6 +3136,12 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Последовательность токенов</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Считать дефисное слово одним словом</td>
+</tr>
 </tbody>
 </table>
 <h2 id="count_children">Листья, поддеревья и ветвление<a class="headerlink" href="#count_children" title="Permanent link">&para;</a></h2>
@@ -3219,6 +3225,12 @@
 <td style="text-align: center;">Doc/Span/list[Token]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Считать дефисное слово одним словом</td>
 </tr>
 </tbody>
 </table>
@@ -3433,7 +3445,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>get_words(tokens, join_hyphens=False)</code></td>
-<td style="text-align: left;">Список слов последовательности токенов; с <code>join_hyphens=True</code> дефисное слово - одно слово, представленное первой частью</td>
+<td style="text-align: left;">Список слов последовательности токенов; с <code>join_hyphens=True</code> дефисное слово - одно слово, представленное частью, которая держит его связь</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>is_root(token)</code></td>

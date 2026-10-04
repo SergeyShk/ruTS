@@ -2911,7 +2911,7 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>A module for computing text cohesion statistics modeled on <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: overlap of nouns, arguments (nouns and pronouns) and content words between adjacent sentences and all sentence pairs; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - repetition of verb tense and aspect in adjacent sentences; connective density by class and type per 1000 words. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>Sentence pairs are compared by lemmas. For a <code>Doc</code> object with part-of-speech annotation, parts of speech, tense and aspect are taken from <code>token.pos_</code> and <code>token.morph</code>, the lemma - from the pymorphy3 analysis with the token's part of speech (<code>ruts.utils.lemmatize</code>): the lemmatizer of the <code>ru_core_news</code> models returns the word form for <code>AUX</code> and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string and a <code>Doc</code> without annotation the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used. <code>Doc</code> words are taken from the tokens (hyphenated words split by spaCy are glued back); a <code>Doc</code> without sentence boundaries is split into sentences by <code>SentsExtractor</code> over the text, a word belongs to a sentence by the position of its first token.</p>
+<p>Sentence pairs are compared by lemmas. For a <code>Doc</code> object with part-of-speech annotation, parts of speech, tense and aspect are taken from <code>token.pos_</code> and <code>token.morph</code>, the lemma - from the pymorphy3 analysis with the token's part of speech (<code>ruts.utils.lemmatize</code>): the lemmatizer of the <code>ru_core_news</code> models returns the word form for <code>AUX</code> and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used. Without an extractor <code>Doc</code> words are taken from the tokens (hyphenated words split by spaCy are glued back); a <code>Doc</code> without sentence boundaries is split into sentences by <code>SentsExtractor</code> over the text, a word belongs to a sentence by the position of its first token.</p>
 <table>
 <thead>
 <tr>
@@ -3027,13 +3027,13 @@
 <td style="text-align: center;"><code>sents_extractor</code></td>
 <td style="text-align: center;">SentsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Sentence extraction tool</td>
+<td style="text-align: center;">Sentence extraction tool; when given, it is applied to the text of a Doc too</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool</td>
+<td style="text-align: center;">Word extraction tool; when given, it is applied to the text of a Doc too</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>connectors</code></td>

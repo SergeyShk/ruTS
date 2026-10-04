@@ -3136,6 +3136,12 @@
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Sequence of tokens</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Take a hyphenated word for one word</td>
+</tr>
 </tbody>
 </table>
 <h2 id="count_children">Leaves, subtrees and branching<a class="headerlink" href="#count_children" title="Permanent link">&para;</a></h2>
@@ -3219,6 +3225,12 @@
 <td style="text-align: center;">Doc/Span/list[Token]</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>join_hyphens</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Take a hyphenated word for one word</td>
 </tr>
 </tbody>
 </table>
@@ -3433,7 +3445,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>get_words(tokens, join_hyphens=False)</code></td>
-<td style="text-align: left;">List of words of a token sequence; with <code>join_hyphens=True</code> a hyphenated word is one word, given by its first part</td>
+<td style="text-align: left;">List of words of a token sequence; with <code>join_hyphens=True</code> a hyphenated word is one word, given by its part that holds its relation</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>is_root(token)</code></td>
