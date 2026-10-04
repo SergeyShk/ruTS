@@ -43,6 +43,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Leaves, subtrees and branching { #count_children }
 
@@ -84,6 +85,7 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Clauses { #is_clause_head }
 
@@ -199,7 +201,7 @@ Parameters:
 | Function | Description |
 | :------- | :---------- |
 | `is_word(token)` | The token is neither punctuation, a symbol nor whitespace |
-| `get_words(tokens, join_hyphens=False)` | List of words of a token sequence; with `join_hyphens=True` a hyphenated word is one word, given by its first part |
+| `get_words(tokens, join_hyphens=False)` | List of words of a token sequence; with `join_hyphens=True` a hyphenated word is one word, given by its part that holds its relation |
 | `is_root(token)` | The token is the sentence root |
 | `base_dep(token)` | Base relation without the subtype: `acl:relcl` → `acl` |
 | `get_children(token, join_hyphens=False)` | List of the token's dependent words; with `join_hyphens=True` - of the whole hyphenated word |

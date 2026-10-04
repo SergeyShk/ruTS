@@ -1,4 +1,3 @@
-import re
 from collections.abc import Generator
 from itertools import islice
 from pathlib import Path
@@ -8,7 +7,7 @@ from anyts.datasets import Filters, check_limit, fetch_archive, length_filters, 
 
 from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, ParameterError
-from .dataset import Dataset, substring_filter
+from .dataset import Dataset, is_complete, is_numbered, substring_filter
 
 NAME = "texts_by_grade"
 META = {
@@ -22,6 +21,22 @@ ARCHIVE = f"{NAME}_v{VERSION}.tar.xz"
 DOWNLOAD_URL = f"https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/{ARCHIVE}"
 ARCHIVE_SHA256 = "ea49d6153c08414a30e50cc76e39c16da2adf437c78dbf88630472fd5f855952"
 GRADES = (1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 17)
+# Опубликованный архив не меняется, неполный набор узнается по числу файлов
+FILE_COUNTS = {
+    "grade_1": 11,
+    "grade_3": 3,
+    "grade_4": 7,
+    "grade_5": 1,
+    "grade_6": 4,
+    "grade_7": 2,
+    "grade_8": 3,
+    "grade_9": 2,
+    "grade_10": 3,
+    "grade_11": 15,
+    "grade_12": 1,
+    "grade_15": 1,
+    "grade_17": 15,
+}
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -102,18 +117,16 @@ class TextsByGrade(Dataset):
             bool: Результат проверки
 
         Исключения:
-            DatasetNotFoundError: Если набор данных не обнаружен
+            DatasetNotFoundError: Если набор данных не обнаружен или неполон
         """
-        dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
-        for dirpath in dirpaths:
-            if not dirpath.is_dir():
-                msg = (
-                    f"Набор данных {NAME} не обнаружен\n"
-                    "Загрузите его, выполнив команды:\n"
-                    ">>> tbg = TextsByGrade()\n"
-                    ">>> tbg.download()"
-                )
-                raise DatasetNotFoundError(msg)
+        if not is_complete(self._dirpath, FILE_COUNTS):
+            msg = (
+                f"Набор данных {NAME} не обнаружен или неполон\n"
+                "Загрузите его, выполнив команды:\n"
+                ">>> tbg = TextsByGrade()\n"
+                ">>> tbg.download()"
+            )
+            raise DatasetNotFoundError(msg)
         return True
 
     def download(self, force: bool = False) -> None:
@@ -122,8 +135,8 @@ class TextsByGrade(Dataset):
 
         Описание:
             Архив сверяется с контрольной суммой SHA-256 и при несовпадении
-            загружается заново один раз; если архив уже есть, а какой-то
-            из директорий уровней нет, архив извлекается заново
+            загружается заново один раз; если архив уже есть, а набор
+            неполон (нет директории или части файлов), архив извлекается заново
 
         Аргументы:
             force (bool): Загрузить набор данных, даже если он уже загружен
@@ -132,7 +145,7 @@ class TextsByGrade(Dataset):
             DownloadError: Если архив не удалось загрузить или он дважды не прошел проверку
             DataFileError: Если проверенный архив не удалось извлечь
         """
-        missing = any(not self._dirpath.joinpath(label).is_dir() for label in self.labels)
+        missing = not is_complete(self._dirpath, FILE_COUNTS)
         fetch_archive(DOWNLOAD_URL, self._filepath, ARCHIVE_SHA256, missing, force, USER_AGENT)
         self.check_data()
 
@@ -197,7 +210,7 @@ class TextsByGrade(Dataset):
         self.check_data()
         dirpaths = (self._dirpath.joinpath(label) for label in self.labels)
         for dirpath in dirpaths:
-            filepaths = (path for path in dirpath.iterdir() if re.fullmatch(r"[0-9]+", path.name))
+            filepaths = filter(is_numbered, dirpath.iterdir())
             for filepath in sorted(filepaths, key=lambda path: int(path.name)):
                 yield self.__load_record(filepath)
 

@@ -4,6 +4,7 @@ from anyts.visualizers.highlight import get_text_sents as count_sent_words, iter
 from razdel import sentenize
 from spacy.tokens import Doc
 
+from ruts import SyntaxStats
 from ruts.constants import (
     HIGHLIGHT_DEFAULT_LAYERS,
     HIGHLIGHT_LAYER_ANNOTATIONS,
@@ -457,6 +458,47 @@ def test_genitive_chains(doc):
     ht = highlight(doc, layers=["genitive_chains"])
     assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [
         ("Повышение эффективности использования ресурсов", "цепочка из 3 родительных")
+    ]
+
+
+@pytest.mark.parametrize(
+    ("text", "fragments"),
+    [
+        (
+            "Осуществление программы-минимум большевиков является декламацией.",
+            ["Осуществление программы-минимум большевиков"],
+        ),
+        ("Это дело немногих интеллигентов – социал-демократов.", []),
+        ("Он занял кресло вице-губернатора области.", ["кресло вице-губернатора области"]),
+    ],
+)
+def test_syntax_layers_of_hyphenated_words(nlp, text, fragments):
+    # Слои считают слова, как SyntaxStats, и покрывают дефисное слово целиком
+    doc = nlp(text)
+    ss = SyntaxStats(doc)
+    ht = highlight(doc, layers=["genitive_chains", "passive"])
+    assert [text[h.start : h.end] for h in ht.highlights] == fragments
+    assert ht.counts.get("genitive_chains", 0) == ss.n_genitive_chains
+    assert ht.counts.get("passive", 0) == ss.n_passive
+
+
+def test_participle_clause_without_a_hyphenated_word_hanging_outside():
+    # Руки кое-как прикрепленные сзади висели: «кое-как» висит на «висели» частью «кое»
+    doc = build_doc(
+        [
+            ("Руки", True, 6, "nsubj", "NOUN", "Case=Nom"),
+            ("кое", False, 6, "advmod", "ADV", ""),
+            ("-", False, 1, "punct", "PUNCT", ""),
+            ("как", True, 4, "advmod", "ADV", ""),
+            ("прикрепленные", True, 0, "acl", "VERB", "VerbForm=Part"),
+            ("сзади", True, 4, "advmod", "ADV", ""),
+            ("висели", False, 6, "ROOT", "VERB", "VerbForm=Fin"),
+            (".", False, 6, "punct", "PUNCT", ""),
+        ]
+    )
+    ht = highlight(doc, layers=["participle_clauses"])
+    assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [
+        ("прикрепленные сзади", "причастный оборот, 2 слова")
     ]
 
 

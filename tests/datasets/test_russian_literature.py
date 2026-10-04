@@ -15,11 +15,14 @@ from ruts.datasets.russian_literature import (
     AUTHORS,
     GENRES,
     NAME,
+    TEXT_COUNTS,
+    WITHOUT_INFO,
     load_years,
     parse_years,
     read_text,
     strip_header,
 )
+from ruts.exceptions import DatasetNotFoundError
 
 TEXTS = {
     "prose/Chekhov/Агафья.txt": "Антон Чехов\nАГАФЬЯ\nАгафья. Рассказ о деревне.",
@@ -34,6 +37,18 @@ INFOS = {
     "poems/Pushkin/info.csv": 'name,year\n19 октября,1825\n"Борис Годунов",1824-1825\n',
     "publicism/Tolstoy/info.csv": "name,year\nНе могу молчать,без даты\n",
 }
+
+SYNTHETIC_COUNTS = {
+    "prose/Chekhov": 2,
+    "poems/Lermontov": 1,
+    "poems/Pushkin": 2,
+    "publicism/Tolstoy": 1,
+}
+
+
+@pytest.fixture(autouse=True)
+def synthetic_counts(monkeypatch):
+    monkeypatch.setattr(russian_literature_module, "TEXT_COUNTS", SYNTHETIC_COUNTS)
 
 
 def write_dataset(path: Path) -> Path:
@@ -80,6 +95,36 @@ def test_oserror(tmp_path):
     assert dataset.filepath is None
     with pytest.raises(OSError):
         _ = list(dataset.get_texts())
+
+
+def test_text_counts():
+    assert sum(TEXT_COUNTS.values()) == 373
+    assert {
+        genre: sum(n for name, n in TEXT_COUNTS.items() if name.startswith(genre))
+        for genre in GENRES
+    } == {
+        "prose": 269,
+        "poems": 78,
+        "publicism": 26,
+    }
+    assert {name.split("/")[1] for name in TEXT_COUNTS} == set(AUTHORS)
+    assert set(WITHOUT_INFO) <= set(TEXT_COUNTS)
+
+
+def test_incomplete_dataset(tmp_path):
+    dataset = RussianLiterature(data_dir=tmp_path)
+    root = write_dataset(tmp_path)
+    assert dataset.check_data()
+    (root / "prose/Chekhov/info.csv").unlink()
+    with pytest.raises(DatasetNotFoundError, match="неполон"):
+        dataset.check_data()
+    write_dataset(tmp_path)
+    (root / "publicism/Tolstoy/Не могу молчать.txt").unlink()
+    with pytest.raises(DatasetNotFoundError, match="неполон"):
+        list(dataset.get_texts())
+    shutil.rmtree(root / "poems/Lermontov")
+    write_dataset(tmp_path)
+    assert dataset.check_data()
 
 
 def test_info(dataset):
@@ -252,6 +297,11 @@ def test_download_extracts(tmp_path, monkeypatch):
     monkeypatch.setattr(anyts.datasets, "download_file", lambda **kwargs: "")
     dataset.download()
     assert len(list(dataset)) == len(TEXTS)
+    (dataset._dirpath / "prose/Chekhov/Альбом.txt").unlink()
+    (dataset._dirpath / "poems/Pushkin/info.csv").unlink()
+    dataset.download()
+    assert len(list(dataset)) == len(TEXTS)
+    assert dataset._dirpath.joinpath("poems/Pushkin/info.csv").is_file()
 
 
 def test_download_retries_corrupted_archive(tmp_path, monkeypatch):

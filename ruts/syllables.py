@@ -137,7 +137,7 @@ def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
     """
     _check_word(word)
     if stress_dict is None:
-        stress_dict = StressDict()
+        stress_dict = _default_stress_dict()
     return _word_stress(word.lower(), stress_dict)
 
 
@@ -164,7 +164,7 @@ def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]
     """
     _check_word(word)
     if stress_dict is None:
-        stress_dict = StressDict()
+        stress_dict = _default_stress_dict()
     return list(_word_stresses(word.lower(), stress_dict))
 
 
@@ -194,6 +194,12 @@ def stress_type(word: str, stress_dict: StressDict | None = None) -> str | None:
         return None
     tail = _count_vowels(word.lower()) - stress - 1
     return VERSE_CLAUSULAS[min(tail, len(VERSE_CLAUSULAS) - 1)]
+
+
+@lru_cache(maxsize=1)
+def _default_stress_dict() -> StressDict:
+    """Словарь ударений по умолчанию, один на процесс: функции слова вызываются на каждом слове"""
+    return StressDict()
 
 
 def _check_word(word: object) -> None:

@@ -7,7 +7,7 @@
 
 A module for computing text cohesion statistics modeled on [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) and [TAACO](https://doi.org/10.3758/s13428-015-0651-7): overlap of nouns, arguments (nouns and pronouns) and content words between adjacent sentences and all sentence pairs; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - repetition of verb tense and aspect in adjacent sentences; connective density by class and type per 1000 words. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
 
-Sentence pairs are compared by lemmas. For a `Doc` object with part-of-speech annotation, parts of speech, tense and aspect are taken from `token.pos_` and `token.morph`, the lemma - from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`): the lemmatizer of the `ru_core_news` models returns the word form for `AUX` and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string and a `Doc` without annotation the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used. `Doc` words are taken from the tokens (hyphenated words split by spaCy are glued back); a `Doc` without sentence boundaries is split into sentences by `SentsExtractor` over the text, a word belongs to a sentence by the position of its first token.
+Sentence pairs are compared by lemmas. For a `Doc` object with part-of-speech annotation, parts of speech, tense and aspect are taken from `token.pos_` and `token.morph`, the lemma - from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`): the lemmatizer of the `ru_core_news` models returns the word form for `AUX` and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used. Without an extractor `Doc` words are taken from the tokens (hyphenated words split by spaCy are glued back); a `Doc` without sentence boundaries is split into sentences by `SentsExtractor` over the text, a word belongs to a sentence by the position of its first token.
 
 | Notion | pymorphy3 | Universal Dependencies (`Doc`) |
 | :----- | :-------- | :----------------------------- |
@@ -42,8 +42,8 @@ Connective type: primary - conjunctions, adverbs and particles (потому ч�
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool |
+| `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool; when given, it is applied to the text of a Doc too |
+| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
 | `connectors` | dict[str, tuple[str, str]] | `None` | Connective dictionary - class and type by connective; if not given, the dictionary from `resources` is used |
 
 ## Attributes

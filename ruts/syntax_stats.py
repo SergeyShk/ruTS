@@ -167,32 +167,35 @@ class SyntaxStats:
             raise SourceTypeError("Некорректный источник данных")
         if not source.has_annotation("DEP"):
             raise SourceError("В источнике данных отсутствует разбор зависимостей")
-        sents = [
-            sent_words
-            for sent in source.sents
-            if (sent_words := get_words(sent, join_hyphens=True))
-        ]
+        spans, sents = [], []
+        for span in source.sents:
+            if sent_words := get_words(span, join_hyphens=True):
+                spans.append(span)
+                sents.append(sent_words)
         if not sents:
             raise SourceError("В источнике данных отсутствуют слова")
         words = [token for sent in sents for token in sent]
         self.n_sents = len(sents)
         self.n_words = len(words)
 
-        distances = [calc_dependency_distances(sent, join_hyphens=True) for sent in sents]
+        # Предложение целиком: зависимое может висеть на второй части дефисного слова
+        distances = [calc_dependency_distances(span, join_hyphens=True) for span in spans]
         all_distances = [distance for sent in distances for distance in sent]
-        depths = [calc_tree_depth(sent) for sent in sents]
-        leaves = [
-            sum(1 for token in sent if not count_children(token, join_hyphens=True))
-            for sent in sents
-        ]
+        depths = [calc_tree_depth(span, join_hyphens=True) for span in spans]
+        children = [[count_children(token, join_hyphens=True) for token in sent] for sent in sents]
+        leaves = [sum(1 for count in sent if not count) for sent in children]
         self.c_children = dict(
-            sorted(Counter(count_children(token, join_hyphens=True) for token in words).items())
+            sorted(Counter(count for sent in children for count in sent).items())
         )
         self.c_deps = dict(sorted(Counter(token.dep_ for token in words).items()))
         self.n_leaves = sum(leaves)
         self.n_subtrees = self.n_words - self.n_leaves
         finite_verbs = [token for token in words if is_finite_verb(token)]
-        chains = [length for sent in sents for length in calc_coordination_chains(sent)]
+        chains = [
+            length
+            for span in spans
+            for length in calc_coordination_chains(span, join_hyphens=True)
+        ]
         self.n_coordination_chains = len(chains)
         self.n_clauses = sum(1 for token in words if is_clause_head(token))
         subordinate = [
@@ -472,12 +475,16 @@ def is_genitive_modifier(token: Token) -> bool:
     """
     if base_dep(token) != "nmod" or not has_feature(token, "Case", "Gen"):
         return False
-    return not any(child.dep_ == "case" for child in token.children)
+    return not any(child.dep_ == "case" for child in get_children(token, join_hyphens=True))
 
 
 def _genitive_chain_len(token: Token) -> int:
     return 1 + max(
-        (_genitive_chain_len(child) for child in token.children if is_genitive_modifier(child)),
+        (
+            _genitive_chain_len(child)
+            for child in get_children(token, join_hyphens=True)
+            if is_genitive_modifier(child)
+        ),
         default=0,
     )
 
@@ -558,7 +565,7 @@ def is_passive(token: Token) -> bool:
     if token.pos_ != "VERB":
         return False
     return has_feature(token, "Voice", "Pass") or any(
-        child.dep_ in PASSIVE_DEPS for child in token.children
+        child.dep_ in PASSIVE_DEPS for child in get_children(token, join_hyphens=True)
     )
 
 
@@ -575,7 +582,9 @@ def is_agentless(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return is_passive(token) and not any(child.dep_ == "obl:agent" for child in token.children)
+    return is_passive(token) and not any(
+        child.dep_ == "obl:agent" for child in get_children(token, join_hyphens=True)
+    )
 
 
 def get_lemma(token: Token) -> str:
@@ -725,7 +734,7 @@ def _is_nominal_part(child: Token, verb: Token) -> bool:
     if dep != "obl":
         return True
     if child.dep_ == "obl:agent" or any(
-        grandchild.dep_ == "case" for grandchild in child.children
+        grandchild.dep_ == "case" for grandchild in get_children(child, join_hyphens=True)
     ):
         return False
     return not (is_reflexive(verb) and has_feature(child, "Case", "Ins"))

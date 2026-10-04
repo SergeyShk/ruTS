@@ -477,8 +477,8 @@ The library counts by letters, without devoicing or stress:
 >>> ps = PhonStats(text)
 
 >>> pprint(ps.get_stats())
-{'alliteration': 0.9149440867502556,
- 'assonance': 0.802520508857449,
+{'alliteration': 1.0916179337231968,
+ 'assonance': 0.8305084745762712,
  'consonant_vowel_ratio': 1.48,
  'cv_entropy': 3.1395722619867223,
  'hardness': 0.5625,

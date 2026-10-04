@@ -1,14 +1,28 @@
 import os
+import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import anyts.datasets
 import pytest
 
 from ruts import datasets
-from ruts.datasets import freq2011, poetry_corpus, stress_dict
+from ruts.datasets import (
+    SovChLit,
+    StalinWorks,
+    TextsByGrade,
+    freq2011,
+    poetry_corpus,
+    sov_chrest_lit,
+    stalin_works,
+    stress_dict,
+    texts_by_grade,
+)
 from ruts.datasets.dataset import Dataset, substring_filter
-from ruts.exceptions import DownloadError, ParameterError
+from ruts.exceptions import DatasetNotFoundError, DownloadError, ParameterError
+
+BUNDLED_DIR = Path(__file__).parents[2] / "ruts" / "datasets" / "data"
 
 
 class TestErrorDataset(Dataset):
@@ -109,3 +123,25 @@ def test_downloads_send_the_user_agent_of_ruts(tmp_path, monkeypatch):
         with pytest.raises(DownloadError):
             getattr(datasets, name)(data_dir=tmp_path).download()
     assert agents == ["ruTS"] * len(names)
+
+
+@pytest.mark.parametrize(
+    ("module", "dataset_class"),
+    [(sov_chrest_lit, SovChLit), (stalin_works, StalinWorks), (texts_by_grade, TextsByGrade)],
+)
+def test_incomplete_dataset_is_extracted_again(tmp_path, module, dataset_class):
+    dataset = dataset_class(data_dir=tmp_path)
+    shutil.copy(BUNDLED_DIR / module.ARCHIVE, dataset._filepath)
+    dataset.download()
+    assert sum(1 for _ in dataset) == sum(module.FILE_COUNTS.values())
+    # Директории уровней остаются, как после очистки временных файлов системой
+    files = sorted(path for path in dataset._dirpath.rglob("*") if path.is_file())
+    files[0].unlink()
+    with pytest.raises(DatasetNotFoundError, match="неполон"):
+        dataset.check_data()
+    for path in files[1:]:
+        path.unlink()
+    with pytest.raises(DatasetNotFoundError):
+        list(dataset.get_texts())
+    dataset.download()
+    assert sum(1 for _ in dataset) == sum(module.FILE_COUNTS.values())
