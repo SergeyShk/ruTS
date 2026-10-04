@@ -475,12 +475,16 @@ def is_genitive_modifier(token: Token) -> bool:
     """
     if base_dep(token) != "nmod" or not has_feature(token, "Case", "Gen"):
         return False
-    return not any(child.dep_ == "case" for child in token.children)
+    return not any(child.dep_ == "case" for child in get_children(token, join_hyphens=True))
 
 
 def _genitive_chain_len(token: Token) -> int:
     return 1 + max(
-        (_genitive_chain_len(child) for child in token.children if is_genitive_modifier(child)),
+        (
+            _genitive_chain_len(child)
+            for child in get_children(token, join_hyphens=True)
+            if is_genitive_modifier(child)
+        ),
         default=0,
     )
 
@@ -561,7 +565,7 @@ def is_passive(token: Token) -> bool:
     if token.pos_ != "VERB":
         return False
     return has_feature(token, "Voice", "Pass") or any(
-        child.dep_ in PASSIVE_DEPS for child in token.children
+        child.dep_ in PASSIVE_DEPS for child in get_children(token, join_hyphens=True)
     )
 
 
@@ -578,7 +582,9 @@ def is_agentless(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return is_passive(token) and not any(child.dep_ == "obl:agent" for child in token.children)
+    return is_passive(token) and not any(
+        child.dep_ == "obl:agent" for child in get_children(token, join_hyphens=True)
+    )
 
 
 def get_lemma(token: Token) -> str:
@@ -728,7 +734,7 @@ def _is_nominal_part(child: Token, verb: Token) -> bool:
     if dep != "obl":
         return True
     if child.dep_ == "obl:agent" or any(
-        grandchild.dep_ == "case" for grandchild in child.children
+        grandchild.dep_ == "case" for grandchild in get_children(child, join_hyphens=True)
     ):
         return False
     return not (is_reflexive(verb) and has_feature(child, "Case", "Ins"))

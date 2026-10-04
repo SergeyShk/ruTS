@@ -517,10 +517,12 @@ def test_model(nlp):
             "В углу стоял диван-кровать, который купили вчера.",
             "В углу стоял диван, который купили вчера.",
         ),
+        ("Он занял кресло вице-губернатора области.", "Он занял кресло губернатора области."),
+        ("Он вице-губернатор.", "Он губернатор."),
     ],
 )
 def test_model_hyphenated_words(nlp, hyphenated, plain):
-    # Парсер вешает зависимое на вторую часть дефисного слова, деревья пар одинаковые
+    # Связь дефисного слова держит не первая часть, деревья пар одинаковые
     first, second = SyntaxStats(nlp(hyphenated)), SyntaxStats(nlp(plain))
     for name in (
         "mean_dependency_distance",
@@ -529,6 +531,9 @@ def test_model_hyphenated_words(nlp, hyphenated, plain):
         "n_coordination_chains",
         "n_leaves",
         "c_children",
+        "c_deps",
+        "n_clauses",
+        "n_genitive_chains",
     ):
         assert getattr(first, name) == getattr(second, name), name
 
