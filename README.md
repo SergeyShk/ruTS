@@ -846,7 +846,7 @@ make lint        # ruff + mypy
 
 Полный список команд - `make help`.
 
-Документация двуязычная: русские страницы `docs/*.md`, английские - `docs/*.en.md` рядом с ними ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); при правке страницы обновляйте обе версии. Английские страницы того, что пришло из ядра anyTS, подключают его текст, а русские переводят его - подробнее в [CONTRIBUTING.md](CONTRIBUTING.md).
+Документация двуязычная: русские страницы `docs/*.md`, английские - `docs/*.en.md` рядом с ними ([mkdocs-static-i18n](https://github.com/ultrabug/mkdocs-static-i18n)); при правке страницы обновляйте обе версии. Английские страницы того, что пришло из ядра anyTS, подключают его текст, а русские переводят его - подробнее в [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md).
 
 Версия установленной библиотеки - `ruts.__version__`. Все исключения - классы ядра anyTS: они наследуют `ruts.RutsError` (это `anyts.exceptions.AnyTSError`) и один из встроенных классов (`SourceError` и `ParameterError` - `ValueError`, `SourceTypeError` - `TypeError`, `DatasetNotFoundError` - `OSError`, `DownloadError` - `RuntimeError`), так что `except ValueError` продолжает работать. Сообщения о загрузке и извлечении наборов данных ядро пишет в логгер `anyts` (`logging.getLogger("anyts")`), по умолчанию они не выводятся.
 
