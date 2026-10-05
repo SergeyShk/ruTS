@@ -1187,6 +1187,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Band of a scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_reading_time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3083,6 +3094,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Band of a scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_reading_time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3224,6 +3246,7 @@ c - a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} - b \c
 </tr>
 </tbody>
 </table>
+<p>Values above 100 belong to the first band and below 0 to the last; the scale is <code>ruts.constants.READING_EASE_LEVELS</code>, by which <code>describe_level</code> and <code>describe</code> read the index.</p>
 <p>The default coefficients are Oborneva's (2005/2006, variant A). Variant B of the same works (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), used by the Kazan group, is available through the <code>academic</code> preset.</p>
 <p>Parameters:</p>
 <table>
@@ -4265,6 +4288,47 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tr>
 </tbody>
 </table>
+<h2 id="scale_level">Band of a scale<a class="headerlink" href="#scale_level" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.scale_level()</strong></p>
+</div>
+<p>The band of a scale for a value: the scale is given as the lower bounds of its bands in descending order, the value falls into the first band whose bound it reaches, and the lowest band is open below. A value that is not a finite number and an empty scale raise <code>ParameterError</code>.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>value</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Value of a metric</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>scale</code></td>
+<td style="text-align: center;">list[tuple[float, Any]]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Lower bounds and their bands in descending order</td>
+</tr>
+</tbody>
+</table>
+<p>The scales of ruTS are <code>ruts.constants.READING_EASE_LEVELS</code> and <code>LIX_LEVELS</code>, the RIX grades of the core are <code>anyts.constants.RIX_GRADES</code>.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_flesch_reading_easy</span><span class="p">,</span> <span class="n">scale_level</span>
+
+<span class="n">flesch</span> <span class="o">=</span> <span class="n">calc_flesch_reading_easy</span><span class="p">(</span><span class="n">n_syllables</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_sents</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">flesch</span><span class="p">,</span> <span class="n">scale_level</span><span class="p">(</span><span class="n">flesch</span><span class="p">,</span> <span class="n">READING_EASE_LEVELS</span><span class="p">)</span>
+<span class="c1"># (67.135, '8-й и 9-й класс')</span>
+</code></pre></div>
+</div>
 <h2 id="calc_reading_time">Reading time<a class="headerlink" href="#calc_reading_time" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_reading_time()</strong></p>

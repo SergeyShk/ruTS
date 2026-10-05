@@ -1187,6 +1187,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Полоса шкалы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_reading_time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3083,6 +3094,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Полоса шкалы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_reading_time" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3226,6 +3248,7 @@ c - a \cdot \frac{\textrm{Количество слов}}{\textrm{Количес
 </tr>
 </tbody>
 </table>
+<p>Значения выше 100 относятся к первой полосе, ниже 0 - к последней; эта шкала - <code>ruts.constants.READING_EASE_LEVELS</code>, по ней индекс читают <code>describe_level</code> и <code>describe</code>.</p>
 <p>Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), которым пользуется казанская группа, доступен через пресет <code>academic</code>.</p>
 <p>Параметры:</p>
 <table>
@@ -4276,6 +4299,48 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 </tbody>
 </table>
+<h2 id="scale_level">Полоса шкалы<a class="headerlink" href="#scale_level" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.scale_level()</strong></p>
+</div>
+<!-- core: stats/readability_stats_funcs.md:scale_level 2322dde -->
+<p>Полоса шкалы для значения: шкала задается нижними границами полос по убыванию, значение попадает в первую полосу, границы которой достигает, а нижняя полоса открыта вниз. Значение, которое не конечное число, и пустая шкала дают <code>ParameterError</code>.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>value</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Значение метрики</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>scale</code></td>
+<td style="text-align: center;">list[tuple[float, Any]]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Нижние границы и их полосы по убыванию</td>
+</tr>
+</tbody>
+</table>
+<p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code> и <code>LIX_LEVELS</code>, классы RIX ядра - <code>anyts.constants.RIX_GRADES</code>.</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_flesch_reading_easy</span><span class="p">,</span> <span class="n">scale_level</span>
+
+<span class="n">flesch</span> <span class="o">=</span> <span class="n">calc_flesch_reading_easy</span><span class="p">(</span><span class="n">n_syllables</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_sents</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">flesch</span><span class="p">,</span> <span class="n">scale_level</span><span class="p">(</span><span class="n">flesch</span><span class="p">,</span> <span class="n">READING_EASE_LEVELS</span><span class="p">)</span>
+<span class="c1"># (67.135, '8-й и 9-й класс')</span>
+</code></pre></div>
+</div>
 <h2 id="calc_reading_time">Время чтения<a class="headerlink" href="#calc_reading_time" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_reading_time()</strong></p>
