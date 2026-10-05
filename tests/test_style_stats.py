@@ -35,6 +35,7 @@ riddle = (
     "ног", "нет", "а", "хожу", "рта", "нет", "а", "скажу",
     "когда", "спать", "когда", "вставать", "когда", "работу", "начинать",
 )  # fmt: skip
+ZIPF_HALF = ["кот"] * 11 + ["пес"] * 8 + ["дом"] * 8 + ["лес"] * 2 + ["сад"] * 2
 
 
 @pytest.fixture(scope="module")
@@ -140,6 +141,8 @@ def test_zipf_naturalness(ss):
     assert calc_zipf_naturalness(riddle) == pytest.approx(100 * (1 - (1 / 3 + 1) / 2))
     assert calc_zipf_naturalness(["а"] * 12 + ["б"] * 6 + ["в"] * 4 + ["г"] * 3) == 100.0
     assert calc_zipf_naturalness(["а"] * 6 + ["б"] * 6 + ["в"] * 6 + ["г"] * 6) == 0.0
+    # отклонения 5/11, 13/11, 3/11 и 1/11 - ровно 50%, без ошибки округления
+    assert calc_zipf_naturalness(ZIPF_HALF) == 50.0
     # равномерные частоты дают 0 независимо от их величины
     assert calc_zipf_naturalness(["а", "б", "в", "г"] * 2) == 0.0
     assert calc_zipf_naturalness(["а", "б", "в"] * 3) == 0.0
@@ -260,6 +263,9 @@ def test_describe():
     assert isnan(hapaxes.zipf_naturalness)
     assert hapaxes.describe("zipf_naturalness") is None
     assert StyleStats("слово " * 49).describe("classic_nausea") == "у верхней границы нормы Advego"
+    assert (
+        StyleStats(" ".join(ZIPF_HALF)).describe("zipf_naturalness") == "норма pr-cy и megaindex"
+    )
     for stat in ("flesch_reading_easy", "words", ["water"]):
         with pytest.raises(UnknownStatError):
             ss.describe(stat)
