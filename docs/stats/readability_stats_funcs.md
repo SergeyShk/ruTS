@@ -59,6 +59,8 @@ $$
 |`50.0-30.0`|	Университет|
 |`30.0-0.0`|	Выпускник университета|
 
+Значения выше 100 относятся к первой полосе, ниже 0 - к последней; эта шкала - `ruts.constants.READING_EASE_LEVELS`, по ней индекс читают `describe_level` и `describe`.
+
 Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (`1.52`, `65.14`, `206.836`), которым пользуется казанская группа, доступен через пресет `academic`.
 
 Параметры:
@@ -489,6 +491,34 @@ $$
 | `grade` | float | `-` | Значение формулы класса |
 | `levels` | list[tuple[int, int, str, str]] | `GRADE_AGE_LEVELS` | Ступени - первый и последний год, ступень и возраст - по возрастанию |
 | `above` | tuple[str, str] | `POSTGRADUATE_LEVEL` | Ступень и возраст после последней ступени |
+
+## Полоса шкалы { #scale_level }
+
+!!! info ""
+    **ruts.readability_stats.scale_level()**
+
+<!-- core: stats/readability_stats_funcs.md:scale_level 2322dde -->
+Полоса шкалы для значения: шкала задается нижними границами полос по убыванию, значение попадает в первую полосу, границы которой достигает, а нижняя полоса открыта вниз. Значение, которое не конечное число, и пустая шкала дают `ParameterError`.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `value` | float | `-` | Значение метрики |
+| `scale` | list[tuple[float, Any]] | `-` | Нижние границы и их полосы по убыванию |
+
+Шкалы ruTS - `ruts.constants.READING_EASE_LEVELS` и `LIX_LEVELS`, классы RIX ядра - `anyts.constants.RIX_GRADES`.
+
+!!! example "Пример"
+
+    ``` python
+    from ruts.constants import READING_EASE_LEVELS
+    from ruts.readability_stats import calc_flesch_reading_easy, scale_level
+
+    flesch = calc_flesch_reading_easy(n_syllables=60, n_words=30, n_sents=2)
+    flesch, scale_level(flesch, READING_EASE_LEVELS)
+    # (67.135, '8-й и 9-й класс')
+    ```
 
 ## Время чтения { #calc_reading_time }
 

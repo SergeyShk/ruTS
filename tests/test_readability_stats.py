@@ -1,4 +1,6 @@
+import re
 from math import isnan
+from pathlib import Path
 
 import anyts.basic_stats
 import pytest
@@ -31,6 +33,7 @@ from ruts.readability_stats import (
     check_preset,
     flesch_reading_easy_to_grade,
     grade_to_age,
+    scale_level,
 )
 
 text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота\
@@ -228,6 +231,40 @@ def test_consensus_grade(rs):
     assert rs.consensus_grade == 23.5
     grades = [getattr(rs, stat) for stat in READABILITY_GRADE_STATS]
     assert rs.consensus_grade == calc_consensus_grade(grades, rs.flesch_reading_easy)
+
+
+def test_scale_level():
+    flesch = calc_flesch_reading_easy(n_syllables=60, n_words=30, n_sents=2)
+    assert scale_level(flesch, READING_EASE_LEVELS) == "8-й и 9-й класс"
+    assert scale_level(109.4, READING_EASE_LEVELS) == "5-й класс"
+    assert scale_level(-27.9, READING_EASE_LEVELS) == "выпускник университета"
+    with pytest.raises(ValueError):
+        scale_level(float("nan"), LIX_LEVELS)
+
+
+FUNCS_PAGE = Path(__file__).parent.parent / "docs" / "stats" / "readability_stats_funcs.md"
+
+
+def doc_scale(heading):
+    """Шкала из таблицы раздела страницы функций: нижние границы по убыванию и подписи"""
+    page = FUNCS_PAGE.read_text(encoding="utf-8")
+    section = page.split(f"## {heading}\n", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(r"^\|\s*`([\d.]+)-([\d.]+)`\s*\|\s*([^|]+?)\s*\|$", section, re.MULTILINE)
+    return tuple(
+        sorted(((min(float(a), float(b)), label.lower()) for a, b, label in rows), reverse=True)
+    )
+
+
+@pytest.mark.parametrize(
+    ("heading", "scale"),
+    [
+        ("Индекс удобочитаемости Флеша", READING_EASE_LEVELS),
+        ("Индекс удобочитаемости LIX", LIX_LEVELS),
+    ],
+)
+def test_level_scales_follow_docs(heading, scale):
+    """Шкалы прочтения совпадают с таблицами документации"""
+    assert scale == doc_scale(heading)
 
 
 def test_calc_consensus_grade():

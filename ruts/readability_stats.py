@@ -8,6 +8,7 @@ from anyts.readability_stats import (
     calc_lix as calc_lix,
     calc_rix as calc_rix,
     flesch_reading_easy_to_grade as flesch_reading_easy_to_grade,
+    scale_level as scale_level,
 )
 from anyts.utils import safe_divide
 from spacy.tokens import Doc
@@ -285,8 +286,9 @@ def calc_flesch_reading_easy(
     Вычисление индекса удобочитаемости Флеша
 
     Описание:
-        Чем выше показатель, тем легче текст для чтения; значения лежат в пределах
-        от 0 до 100, полосы шкалы Флеша - ruts.constants.READING_EASE_LEVELS
+        Чем выше показатель, тем легче текст для чтения; шкала номинально идет от 0 до 100,
+        простейшие тексты выходят выше 100, сложнейшие - ниже 0; полосы шкалы Флеша -
+        ruts.constants.READING_EASE_LEVELS
         Коэффициенты по умолчанию взяты из работы Оборневой (2005/2006, вариант А)
         Вариант Б тех же работ, используемый казанской группой: 1.52, 65.14, 206.836
 

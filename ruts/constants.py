@@ -95,7 +95,7 @@ GRADE_AGE_LEVELS: tuple[tuple[int, int, str, str], ...] = (
 )
 POSTGRADUATE_LEVEL = ("аспирантура", "старше 22 лет")
 # Шкалы describe_level: нижние границы по убыванию, последняя полоса открыта вниз.
-# Индекс Флеша - по таблице Флеша (1979) с классами российской школы
+# Индекс Флеша - по таблице документации ruTS: полосы Флеша с классами российской школы
 READING_EASE_LEVELS: tuple[tuple[float, str], ...] = (
     (90, "5-й класс"),
     (80, "6-й класс"),
@@ -113,7 +113,10 @@ LIX_LEVELS: tuple[tuple[float, str], ...] = (
     (30, "простые тексты, художественная литература, газетные статьи"),
     (0, "очень простые тексты, детские книги"),
 )
-READABILITY_LEVEL_SCALES = {"flesch_reading_easy": READING_EASE_LEVELS, "lix": LIX_LEVELS}
+READABILITY_LEVEL_SCALES: dict[str, tuple[tuple[float, str], ...]] = {
+    "flesch_reading_easy": READING_EASE_LEVELS,
+    "lix": LIX_LEVELS,
+}
 READING_SPEED_WPM = 180
 READING_SPEED_NORMS: dict[str, tuple[int, int]] = {
     "adult_silent": (120, 180),
