@@ -41,6 +41,8 @@ The values can be interpreted as follows:
 |`50.0-30.0`|	College|
 |`30.0-0.0`|	College graduate|
 
+Values above 100 belong to the first band and below 0 to the last; the scale is `ruts.constants.READING_EASE_LEVELS`, by which `describe_level` and `describe` read the index.
+
 The default coefficients are Oborneva's (2005/2006, variant A). Variant B of the same works (`1.52`, `65.14`, `206.836`), used by the Kazan group, is available through the `academic` preset.
 
 Parameters:
@@ -367,6 +369,26 @@ Parameters:
 | `grade` | float | `-` | Grade formula value |
 | `levels` | list[tuple[int, int, str, str]] | `GRADE_AGE_LEVELS` | Stages as the first and the last year, the stage and the age, in ascending order |
 | `above` | tuple[str, str] | `POSTGRADUATE_LEVEL` | Stage and age above the last stage |
+
+## Band of a scale { #scale_level }
+
+!!! info ""
+    **ruts.readability_stats.scale_level()**
+
+--8<-- "stats/readability_stats_funcs.md:scale_level"
+
+The scales of ruTS are `ruts.constants.READING_EASE_LEVELS` and `LIX_LEVELS`, the RIX grades of the core are `anyts.constants.RIX_GRADES`.
+
+!!! example "Example"
+
+    ``` python
+    from ruts.constants import READING_EASE_LEVELS
+    from ruts.readability_stats import calc_flesch_reading_easy, scale_level
+
+    flesch = calc_flesch_reading_easy(n_syllables=60, n_words=30, n_sents=2)
+    flesch, scale_level(flesch, READING_EASE_LEVELS)
+    # (67.135, '8-й и 9-й класс')
+    ```
 
 ## Reading time { #calc_reading_time }
 

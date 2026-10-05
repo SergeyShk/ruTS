@@ -3,7 +3,7 @@ from collections import Counter
 from functools import lru_cache
 from importlib.metadata import version
 from io import BytesIO
-from math import isnan
+from math import floor, isnan
 
 import gradio as gr
 import matplotlib
@@ -210,7 +210,8 @@ def readability_summary(rs: ReadabilityStats) -> str:
     return (
         f"### {rs.describe_grade()}\n\n"
         f"Сводный класс по семи формулам - **{rs.consensus_grade:.1f}**, "
-        f"индекс удобочитаемости Флеша - **{rs.flesch_reading_easy:.0f}**, "
+        f"индекс удобочитаемости Флеша - **{floor(rs.flesch_reading_easy)}** "
+        f"({rs.describe('flesch_reading_easy')}), "
         f"время чтения - **{format_reading_time(rs.reading_time)}**."
     )
 
