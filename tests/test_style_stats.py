@@ -1,11 +1,15 @@
-from math import isnan
+import re
+from collections import defaultdict
+from math import inf, isnan, nextafter
+from pathlib import Path
 
 import pytest
 import spacy
 
 from ruts import StyleStats, WordsExtractor
-from ruts.constants import STYLE_STATS_DESC
-from ruts.exceptions import ParameterError, SourceTypeError
+from ruts.constants import STYLE_NORMS, STYLE_STATS_DESC
+from ruts.exceptions import ParameterError, SourceTypeError, UnknownStatError
+from ruts.readability_stats import scale_level
 from ruts.style_stats import (
     calc_academic_nausea,
     calc_classic_nausea,
@@ -239,6 +243,75 @@ def test_print_stats(capsys, ss):
     ss.print_stats()
     captured = capsys.readouterr()
     assert captured.out.count("|") == len(STYLE_STATS_DESC) + 1
+
+
+def test_describe():
+    """Прочтение по полосам норм, None для метрик без нормы и неопределенных значений"""
+    ss = StyleStats(" ".join(riddle))
+    assert {stat: ss.describe(stat) for stat in STYLE_NORMS} == {
+        "classic_nausea": "норма Advego",
+        "academic_nausea": "выше нормы Advego",
+        "water": "высокая водность по Text.ru",
+        "spam": "естественный текст по Text.ru",
+        "zipf_naturalness": "ниже нормы pr-cy и megaindex",
+    }
+    assert ss.describe("cliches") is None
+    hapaxes = StyleStats("мама мыла раму")
+    assert isnan(hapaxes.zipf_naturalness)
+    assert hapaxes.describe("zipf_naturalness") is None
+    assert StyleStats("слово " * 49).describe("classic_nausea") == "у верхней границы нормы Advego"
+    for stat in ("flesch_reading_easy", "words", ["water"]):
+        with pytest.raises(UnknownStatError):
+            ss.describe(stat)
+
+
+@pytest.mark.parametrize(
+    ("stat", "value", "expected"),
+    [
+        ("classic_nausea", 7, "у верхней границы нормы Advego"),
+        ("classic_nausea", nextafter(7, inf), "выше нормы Advego"),
+        ("classic_nausea", 5, "норма Advego"),
+        ("academic_nausea", 15, "норма Advego"),
+        ("academic_nausea", 5, "норма Advego"),
+        ("water", 30, "избыточная водность по Text.ru"),
+        ("water", 15, "избыточная водность по Text.ru"),
+        ("spam", 60, "SEO-оптимизированный текст по Text.ru"),
+        ("spam", 30, "SEO-оптимизированный текст по Text.ru"),
+        ("zipf_naturalness", 50, "норма pr-cy и megaindex"),
+    ],
+)
+def test_style_norms_bounds(stat, value, expected):
+    """Полоса «больше X» не включает X"""
+    assert scale_level(value, STYLE_NORMS[stat]) == expected
+
+
+def doc_norms(page):
+    """Полосы норм из таблицы страницы: метрика - нижние границы по убыванию и подписи"""
+    text = (Path(__file__).parent.parent / "docs" / "stats" / page).read_text(encoding="utf-8")
+    section = text.split("{ #norms }", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(
+        r"^\| `(\w+)` \| `([\[(])([\d.]+)[;,] ([\d.]+|∞)([\])])` \| ([^|]+?) \|$",
+        section,
+        re.MULTILINE,
+    )
+    norms, lower = defaultdict(list), {}
+    for stat, opening, low, high, closing, label in rows:
+        if stat in lower:
+            # полосы смыкаются, и граница входит ровно в одну из них
+            assert high == lower[stat][0]
+            assert (lower[stat][1], closing) in {("(", "]"), ("[", ")")}
+        lower[stat] = (low, opening)
+        norms[stat].append((float(low) if opening == "[" else nextafter(float(low), inf), label))
+    return {stat: tuple(bands) for stat, bands in norms.items()}
+
+
+def test_style_norms_follow_docs():
+    """Полосы норм совпадают с таблицами документации на обоих языках"""
+    assert doc_norms("style_stats.md") == STYLE_NORMS
+    english = doc_norms("style_stats.en.md")
+    assert {stat: [low for low, _ in bands] for stat, bands in english.items()} == {
+        stat: [low for low, _ in bands] for stat, bands in STYLE_NORMS.items()
+    }
 
 
 def test_hyphenated_words_doc(nlp):

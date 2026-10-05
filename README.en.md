@@ -425,6 +425,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Naturalness by Zipf's law
 *   Keyword and phrase density
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
+*   Reading of the metrics by the service norms
 
 The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content are detected by part of speech with pymorphy3 or passed as a list.
 
@@ -448,6 +449,9 @@ The exact formulas of the services are not published, so the commonly accepted d
 
 >>> ss.keyword_density("когда", "нет а")
 {'когда': 20.0, 'нет а': 13.333333333333334}
+
+>>> ss.describe("water"), ss.describe("spam")
+('высокая водность по Text.ru', 'естественный текст по Text.ru')
 
 >>> ss = StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка")
 >>> ss.verbal_nouns, ss.compound_prepositions, ss.parentheticals, ss.cliches

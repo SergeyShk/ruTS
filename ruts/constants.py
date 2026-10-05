@@ -1,4 +1,5 @@
 import os
+from math import inf, nextafter
 from pathlib import Path
 from typing import TypedDict
 
@@ -440,6 +441,34 @@ STYLE_STATS_DESC = {
     "compound_prepositions": "Производные предлоги (на 100 слов)",
     "parentheticals": "Вводные слова (на 100 слов)",
     "cliches": "Штампы (на 100 слов)",
+}
+# Нормы SEO-сервисов для StyleStats.describe: нижние границы по убыванию, как шкалы
+# удобочитаемости; полоса «больше X» начинается с nextafter(X, inf), scale_level включает границу
+STYLE_NORMS: dict[str, tuple[tuple[float, str], ...]] = {
+    "classic_nausea": (
+        (nextafter(7, inf), "выше нормы Advego"),
+        (nextafter(5, inf), "у верхней границы нормы Advego"),
+        (0, "норма Advego"),
+    ),
+    "academic_nausea": (
+        (nextafter(15, inf), "выше нормы Advego"),
+        (5, "норма Advego"),
+        (0, "ниже нормы Advego"),
+    ),
+    "water": (
+        (nextafter(30, inf), "высокая водность по Text.ru"),
+        (15, "избыточная водность по Text.ru"),
+        (0, "естественная водность по Text.ru"),
+    ),
+    "spam": (
+        (nextafter(60, inf), "заспамленный текст по Text.ru"),
+        (30, "SEO-оптимизированный текст по Text.ru"),
+        (0, "естественный текст по Text.ru"),
+    ),
+    "zipf_naturalness": (
+        (50, "норма pr-cy и megaindex"),
+        (0, "ниже нормы pr-cy и megaindex"),
+    ),
 }
 VERBAL_NOUN_SUFFIXES = ("ние", "нье", "тие", "тье", "ствие", "ция")
 VERBAL_NOUN_LEMMAS = frozenset(
