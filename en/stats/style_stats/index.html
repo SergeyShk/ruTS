@@ -1283,6 +1283,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1299,6 +1310,17 @@
     <span class="md-ellipsis">
       
         keyword_density
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
       
     </span>
   </a>
@@ -2858,6 +2880,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2874,6 +2907,17 @@
     <span class="md-ellipsis">
       
         keyword_density
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
       
     </span>
   </a>
@@ -2937,7 +2981,7 @@
 <p>Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés - by the <code>COMPOUND_PREPOSITIONS</code>, <code>PARENTHETICALS</code> and <code>OFFICIALESE_CLICHES</code> lists of <code>ruts.constants</code>. They are counted over unfiltered word forms (<code>forms</code>) regardless of the extractor passed.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>StyleStats</code> object. The service norms are meant for texts of several hundred words; on short texts nausea and spam values are uninformative.</p>
+<p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>StyleStats</code> object.</p>
 </div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -3049,34 +3093,86 @@
 </tr>
 </tbody>
 </table>
-<p>Service norms:</p>
+<h2 id="norms">Service norms<a class="headerlink" href="#norms" title="Permanent link">&para;</a></h2>
+<p>The <a href="#describe"><code>describe</code></a> method reads a metric by the bands of the service norms - <code>ruts.constants.STYLE_NORMS</code>; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: center;">Metric</th>
-<th style="text-align: center;">Norm</th>
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Reading</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">Classic nausea</td>
-<td style="text-align: center;">at most 7, in practice 1-5 (Advego)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>(7, ∞)</code></td>
+<td style="text-align: center;">above the Advego norm</td>
 </tr>
 <tr>
-<td style="text-align: center;">Academic nausea</td>
-<td style="text-align: center;">5-15% (Advego)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>(5, 7]</code></td>
+<td style="text-align: center;">at the upper bound of the Advego norm</td>
 </tr>
 <tr>
-<td style="text-align: center;">Water content</td>
-<td style="text-align: center;">up to 15% - natural, 15-30% - excessive, above 30% - high (Text.ru)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>[0, 5]</code></td>
+<td style="text-align: center;">the Advego norm</td>
 </tr>
 <tr>
-<td style="text-align: center;">Spam score</td>
-<td style="text-align: center;">up to 30% - natural, 30-60% - SEO-optimized text, above 60% - spammed (Text.ru)</td>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>(15, 100]</code></td>
+<td style="text-align: center;">above the Advego norm</td>
 </tr>
 <tr>
-<td style="text-align: center;">Naturalness by Zipf's law</td>
-<td style="text-align: center;">at least 50% (pr-cy, megaindex)</td>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>[5, 15]</code></td>
+<td style="text-align: center;">the Advego norm</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>[0, 5)</code></td>
+<td style="text-align: center;">below the Advego norm</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>(30, 100]</code></td>
+<td style="text-align: center;">high water content by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>[15, 30]</code></td>
+<td style="text-align: center;">excessive water content by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>[0, 15)</code></td>
+<td style="text-align: center;">natural water content by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>(60, 100]</code></td>
+<td style="text-align: center;">spammed text by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>[30, 60]</code></td>
+<td style="text-align: center;">SEO-optimized text by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>[0, 30)</code></td>
+<td style="text-align: center;">natural text by Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>zipf_naturalness</code></td>
+<td style="text-align: center;"><code>[50, 100]</code></td>
+<td style="text-align: center;">the pr-cy and megaindex norm</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>zipf_naturalness</code></td>
+<td style="text-align: center;"><code>[0, 50)</code></td>
+<td style="text-align: center;">below the pr-cy and megaindex norm</td>
 </tr>
 </tbody>
 </table>
@@ -3110,6 +3206,39 @@
 <span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">keyword_density</span><span class="p">(</span><span class="s2">"когда"</span><span class="p">,</span> <span class="s2">"нет а"</span><span class="p">)</span>
 <span class="c1"># {'когда': 20.0, 'нет а': 13.333333333333334}</span>
+</code></pre></div>
+</div>
+<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
+<p>Returns the band of the <a href="#norms">service norm</a> for a metric; a metric without a norm and an undefined value (nan) give <code>None</code>, a name not in <code>STYLE_STATS_DESC</code> gives <code>UnknownStatError</code>.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Name of the metric</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"water"</span><span class="p">)</span>
+<span class="c1"># 'высокая водность по Text.ru'</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"cliches"</span><span class="p">)</span>
+<span class="c1"># None</span>
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>

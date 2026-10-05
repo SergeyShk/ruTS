@@ -1283,6 +1283,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Нормы сервисов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1299,6 +1310,17 @@
     <span class="md-ellipsis">
       
         keyword_density
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
       
     </span>
   </a>
@@ -2858,6 +2880,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Нормы сервисов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2874,6 +2907,17 @@
     <span class="md-ellipsis">
       
         keyword_density
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
       
     </span>
   </a>
@@ -2937,7 +2981,7 @@
 <p>Лексические маркеры канцелярита: отглагольные существительные, производные предлоги, вводные слова, штампы - по спискам <code>COMPOUND_PREPOSITIONS</code>, <code>PARENTHETICALS</code> и <code>OFFICIALESE_CLICHES</code> из <code>ruts.constants</code>. Считаются по словоформам без фильтрации (<code>forms</code>) независимо от переданного экстрактора.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>StyleStats</code>. Нормы сервисов рассчитаны на тексты в несколько сотен слов, на коротких текстах значения тошноты и заспамленности неинформативны.</p>
+<p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>StyleStats</code>.</p>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
@@ -3049,34 +3093,86 @@
 </tr>
 </tbody>
 </table>
-<p>Нормы сервисов:</p>
+<h2 id="norms">Нормы сервисов<a class="headerlink" href="#norms" title="Permanent link">&para;</a></h2>
+<p>Метод <a href="#describe"><code>describe</code></a> читает метрику по полосам норм сервисов - <code>ruts.constants.STYLE_NORMS</code>; у маркеров канцелярита норм нет. Нормы - ориентиры сервисов для текстов сайтов в несколько сотен слов: на коротких текстах значения тошноты и заспамленности неинформативны, к художественной прозе нормы неприменимы.</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: center;">Метрика</th>
-<th style="text-align: center;">Норма</th>
+<th style="text-align: center;">Значение</th>
+<th style="text-align: center;">Прочтение</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">Классическая тошнота</td>
-<td style="text-align: center;">не больше 7, на практике 1-5 (Advego)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>(7; ∞)</code></td>
+<td style="text-align: center;">выше нормы Advego</td>
 </tr>
 <tr>
-<td style="text-align: center;">Академическая тошнота</td>
-<td style="text-align: center;">5-15% (Advego)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>(5; 7]</code></td>
+<td style="text-align: center;">у верхней границы нормы Advego</td>
 </tr>
 <tr>
-<td style="text-align: center;">Водность</td>
-<td style="text-align: center;">до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое (Text.ru)</td>
+<td style="text-align: center;"><code>classic_nausea</code></td>
+<td style="text-align: center;"><code>[0; 5]</code></td>
+<td style="text-align: center;">норма Advego</td>
 </tr>
 <tr>
-<td style="text-align: center;">Заспамленность</td>
-<td style="text-align: center;">до 30% - естественное содержание, 30-60% - SEO-оптимизированный текст, больше 60% - заспамленный (Text.ru)</td>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>(15; 100]</code></td>
+<td style="text-align: center;">выше нормы Advego</td>
 </tr>
 <tr>
-<td style="text-align: center;">Естественность по Ципфу</td>
-<td style="text-align: center;">не меньше 50% (pr-cy, megaindex)</td>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>[5; 15]</code></td>
+<td style="text-align: center;">норма Advego</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>academic_nausea</code></td>
+<td style="text-align: center;"><code>[0; 5)</code></td>
+<td style="text-align: center;">ниже нормы Advego</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>(30; 100]</code></td>
+<td style="text-align: center;">высокая водность по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>[15; 30]</code></td>
+<td style="text-align: center;">избыточная водность по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>water</code></td>
+<td style="text-align: center;"><code>[0; 15)</code></td>
+<td style="text-align: center;">естественная водность по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>(60; 100]</code></td>
+<td style="text-align: center;">заспамленный текст по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>[30; 60]</code></td>
+<td style="text-align: center;">SEO-оптимизированный текст по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>spam</code></td>
+<td style="text-align: center;"><code>[0; 30)</code></td>
+<td style="text-align: center;">естественный текст по Text.ru</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>zipf_naturalness</code></td>
+<td style="text-align: center;"><code>[50; 100]</code></td>
+<td style="text-align: center;">норма pr-cy и megaindex</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>zipf_naturalness</code></td>
+<td style="text-align: center;"><code>[0; 50)</code></td>
+<td style="text-align: center;">ниже нормы pr-cy и megaindex</td>
 </tr>
 </tbody>
 </table>
@@ -3110,6 +3206,39 @@
 <span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">keyword_density</span><span class="p">(</span><span class="s2">"когда"</span><span class="p">,</span> <span class="s2">"нет а"</span><span class="p">)</span>
 <span class="c1"># {'когда': 20.0, 'нет а': 13.333333333333334}</span>
+</code></pre></div>
+</div>
+<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
+<p>Возвращает полосу <a href="#norms">нормы сервиса</a> для метрики; метрика без нормы и неопределенное значение (nan) дают <code>None</code>, имя не из <code>STYLE_STATS_DESC</code> - <code>UnknownStatError</code>.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Название метрики</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"water"</span><span class="p">)</span>
+<span class="c1"># 'высокая водность по Text.ru'</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"cliches"</span><span class="p">)</span>
+<span class="c1"># None</span>
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
