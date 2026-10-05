@@ -210,7 +210,8 @@ def readability_summary(rs: ReadabilityStats) -> str:
     return (
         f"### {rs.describe_grade()}\n\n"
         f"Сводный класс по семи формулам - **{rs.consensus_grade:.1f}**, "
-        f"индекс удобочитаемости Флеша - **{rs.flesch_reading_easy:.0f}**, "
+        f"индекс удобочитаемости Флеша - **{rs.flesch_reading_easy:.0f}** "
+        f"({rs.describe('flesch_reading_easy')}), "
         f"время чтения - **{format_reading_time(rs.reading_time)}**."
     )
 

@@ -31,7 +31,7 @@
 
 ## Языковые крючки
 
-Класс расширяет `ReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) крючками русского языка: [базовыми статистиками](basic_stats.md) ruTS, которые по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), пресетами коэффициентов `ruts.constants.READABILITY_PRESETS`, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса `ruts.constants.READABILITY_GRADE_STATS`, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), классами и возрастами таблицы plainrussian и скоростями чтения русских читателей.
+Класс расширяет `ReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) крючками русского языка: [базовыми статистиками](basic_stats.md) ruTS, которые по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), пресетами коэффициентов `ruts.constants.READABILITY_PRESETS`, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса `ruts.constants.READABILITY_GRADE_STATS`, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), классами и возрастами таблицы plainrussian, шкалами индекса Флеша и LIX с русскими подписями (`ruts.constants.READABILITY_LEVEL_SCALES`) и скоростями чтения русских читателей.
 
 Атрибут `mu_index` ядра (Legibilidad µ) не входит в `get_stats`: он получен на испанских текстах.
 
@@ -112,6 +112,8 @@
 | 15-17 | 4-6-й курс вуза | 20-22 года |
 | больше 17 | аспирантура | старше 22 лет |
 
+Метод [`describe_level`](#describe_level) читает индекс Флеша и LIX по их шкалам - таблицам страницы [функций вычисления метрик](readability_stats_funcs.md), а [`describe`](#describe) - любую метрику: формулу класса и сводный класс по таблице выше, RIX через классы Андерсона, индекс Флеша и LIX по их шкалам; для метрики без шкалы он возвращает `None`.
+
 Атрибут `reading_time` оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод [`reading_time_by_speed`](#reading_time_by_speed), а метод [`reading_time_by_norm`](#reading_time_by_norm) считает время в границах нормы из справочника `ruts.constants.READING_SPEED_NORMS`, в том числе школьных норм чтения вслух по ФГОС.
 
 ## Методы
@@ -138,6 +140,41 @@
     # '1-3-й класс (6-8 лет)'
     rs.describe_grade("gunning_fog_index")
     # '4-6-й класс (9-11 лет)'
+    ```
+
+### describe_level
+
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe_level cfbf0cd -->
+Возвращает полосу шкалы интерпретации метрики (`level_scale`); метрика без шкалы полос и неопределенное значение (nan) дают `ParameterError`.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `stat` | str | `flesch_reading_easy` | Название метрики |
+
+### describe
+
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe 0ef7130 -->
+Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (`describe_grade`), для метрики из `grade_scales` - ступень и возраст по числу лет обучения, которое дает ее шкала, для метрики со шкалой полос (`level_scale`) - ее полосу, и `None` для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в `stats_desc`, ни среди открытых свойств класса, дает `UnknownStatError`.
+
+Параметры:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------: | :-: | :----------: | :------: |
+| `stat` | str | `-` | Название метрики |
+
+!!! example "Пример"
+
+    ``` python
+    from ruts import ReadabilityStats
+
+    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+    rs = ReadabilityStats(text)
+    rs.describe("flesch_reading_easy"), rs.describe_level("lix")
+    # ('6-й класс', 'очень простые тексты, детские книги')
+    rs.describe("rix"), rs.describe("matskovsky_index")
+    # ('4-6-й класс (9-11 лет)', None)
     ```
 
 ### reading_time_by_speed

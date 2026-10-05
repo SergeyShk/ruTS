@@ -5,9 +5,12 @@ import pytest
 
 from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
 from ruts.constants import (
+    LIX_LEVELS,
     READABILITY_GRADE_STATS,
+    READABILITY_LEVEL_SCALES,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    READING_EASE_LEVELS,
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
 )
@@ -282,6 +285,24 @@ def test_describe_grade(rs):
     assert ReadabilityStats("Мама мыла раму").describe_grade() == "1-3-й класс (6-8 лет)"
     with pytest.raises(ValueError):
         rs.describe_grade("lix")
+
+
+def test_describe(rs):
+    """Шкалы индекса Флеша и LIX русские, RIX переводится в класс таблицей ядра"""
+    assert ReadabilityStats.level_scales is READABILITY_LEVEL_SCALES
+    assert [label for _, label in READING_EASE_LEVELS][-2:] == [
+        "университет",
+        "выпускник университета",
+    ]
+    # индекс Флеша текста ниже нуля, LIX выше 60, RIX выше 7.2
+    assert rs.describe("flesch_reading_easy") == rs.describe_level() == "выпускник университета"
+    assert rs.describe("lix") == LIX_LEVELS[0][1]
+    assert rs.describe("rix") == "1-3-й курс вуза (17-19 лет)"
+    assert rs.describe("consensus_grade") == rs.describe_grade()
+    assert rs.describe("matskovsky_index") is None
+    riddle = ReadabilityStats("Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать")
+    assert riddle.describe("flesch_reading_easy") == "5-й класс"
+    assert riddle.describe("lix") == "очень простые тексты, детские книги"
 
 
 def test_reading_time(rs):

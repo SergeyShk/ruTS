@@ -17,6 +17,7 @@ from .constants import (
     GRADE_AGE_LEVELS,
     POSTGRADUATE_LEVEL,
     READABILITY_GRADE_STATS,
+    READABILITY_LEVEL_SCALES,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
     READING_SPEED_NORMS,
@@ -61,7 +62,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         Пресет задает коэффициенты теста Флеша-Кинкайда и индекса Флеша, коэффициенты
         индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из plainrussian
         Интерпретирующий слой: сводный класс по медиане формул класса, соответствие
-        класса возрасту по таблице plainrussian и время чтения
+        класса возрасту по таблице plainrussian, шкалы индекса Флеша, LIX и RIX
+        и время чтения
 
     Пример использования:
         >>> from ruts import ReadabilityStats
@@ -83,6 +85,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         'reading_time': 0.08333333333333333}
         >>> rs.describe_grade()
         '1-3-й класс (6-8 лет)'
+        >>> rs.describe("flesch_reading_easy"), rs.describe("rix")
+        ('6-й класс', '4-6-й класс (9-11 лет)')
 
     Аргументы:
         source (str|Doc|BasicStats): Источник данных - строка, объект Doc или готовый
@@ -116,6 +120,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
         sis_grade_by_freq: Формула Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
         describe_grade: Класс школы и возраст читателя для сводного класса или отдельной формулы
+        describe_level: Полоса шкалы индекса Флеша или LIX
+        describe: Прочтение любой метрики по ее шкале, None для метрики без шкалы
         reading_time_by_speed: Время чтения при заданной скорости
         reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
         get_stats: Получение вычисленных метрик удобочитаемости текста
@@ -136,6 +142,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     smog_complex_syl_factor = SMOG_COMPLEX_SYL_FACTOR
     grade_age_levels = GRADE_AGE_LEVELS
     postgraduate_level = POSTGRADUATE_LEVEL
+    level_scales = READABILITY_LEVEL_SCALES
     reading_speed = READING_SPEED_WPM
     reading_speed_norms = _NORMS_FROM_MAX
 
@@ -278,15 +285,8 @@ def calc_flesch_reading_easy(
     Вычисление индекса удобочитаемости Флеша
 
     Описание:
-        Чем выше показатель, тем легче текст для чтения
-        Значения индекса лежат в пределах от 0 до 100 и могут интерпретироваться следующим образом:
-            100-90 - 5-й класс
-            90-80 - 6-й класс
-            80-70 - 7-й класс
-            70-60 - 8-й и 9-й класс
-            60-50 - 10-й и 11-й класс
-            50-30 - Студент университета
-            30-0 - Выпускник университета
+        Чем выше показатель, тем легче текст для чтения; значения лежат в пределах
+        от 0 до 100, полосы шкалы Флеша - ruts.constants.READING_EASE_LEVELS
         Коэффициенты по умолчанию взяты из работы Оборневой (2005/2006, вариант А)
         Вариант Б тех же работ, используемый казанской группой: 1.52, 65.14, 206.836
 
