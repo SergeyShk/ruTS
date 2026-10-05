@@ -1,11 +1,15 @@
-from math import isnan
+import re
+from collections import defaultdict
+from math import inf, isnan, nextafter
+from pathlib import Path
 
 import pytest
 import spacy
 
 from ruts import StyleStats, WordsExtractor
-from ruts.constants import STYLE_STATS_DESC
-from ruts.exceptions import ParameterError, SourceTypeError
+from ruts.constants import STYLE_NORMS, STYLE_STATS_DESC
+from ruts.exceptions import ParameterError, SourceTypeError, UnknownStatError
+from ruts.readability_stats import scale_level
 from ruts.style_stats import (
     calc_academic_nausea,
     calc_classic_nausea,
@@ -31,6 +35,7 @@ riddle = (
     "ног", "нет", "а", "хожу", "рта", "нет", "а", "скажу",
     "когда", "спать", "когда", "вставать", "когда", "работу", "начинать",
 )  # fmt: skip
+ZIPF_HALF = ["кот"] * 11 + ["пес"] * 8 + ["дом"] * 8 + ["лес"] * 2 + ["сад"] * 2
 
 
 @pytest.fixture(scope="module")
@@ -136,6 +141,8 @@ def test_zipf_naturalness(ss):
     assert calc_zipf_naturalness(riddle) == pytest.approx(100 * (1 - (1 / 3 + 1) / 2))
     assert calc_zipf_naturalness(["а"] * 12 + ["б"] * 6 + ["в"] * 4 + ["г"] * 3) == 100.0
     assert calc_zipf_naturalness(["а"] * 6 + ["б"] * 6 + ["в"] * 6 + ["г"] * 6) == 0.0
+    # отклонения 5/11, 13/11, 3/11 и 1/11 - ровно 50%, без ошибки округления
+    assert calc_zipf_naturalness(ZIPF_HALF) == 50.0
     # равномерные частоты дают 0 независимо от их величины
     assert calc_zipf_naturalness(["а", "б", "в", "г"] * 2) == 0.0
     assert calc_zipf_naturalness(["а", "б", "в"] * 3) == 0.0
@@ -239,6 +246,78 @@ def test_print_stats(capsys, ss):
     ss.print_stats()
     captured = capsys.readouterr()
     assert captured.out.count("|") == len(STYLE_STATS_DESC) + 1
+
+
+def test_describe():
+    """Прочтение по полосам норм, None для метрик без нормы и неопределенных значений"""
+    ss = StyleStats(" ".join(riddle))
+    assert {stat: ss.describe(stat) for stat in STYLE_NORMS} == {
+        "classic_nausea": "норма Advego",
+        "academic_nausea": "выше нормы Advego",
+        "water": "высокая водность по Text.ru",
+        "spam": "естественный текст по Text.ru",
+        "zipf_naturalness": "ниже нормы pr-cy и megaindex",
+    }
+    assert ss.describe("cliches") is None
+    hapaxes = StyleStats("мама мыла раму")
+    assert isnan(hapaxes.zipf_naturalness)
+    assert hapaxes.describe("zipf_naturalness") is None
+    assert StyleStats("слово " * 49).describe("classic_nausea") == "у верхней границы нормы Advego"
+    assert (
+        StyleStats(" ".join(ZIPF_HALF)).describe("zipf_naturalness") == "норма pr-cy и megaindex"
+    )
+    for stat in ("flesch_reading_easy", "words", ["water"]):
+        with pytest.raises(UnknownStatError):
+            ss.describe(stat)
+
+
+@pytest.mark.parametrize(
+    ("stat", "value", "expected"),
+    [
+        ("classic_nausea", 7, "у верхней границы нормы Advego"),
+        ("classic_nausea", nextafter(7, inf), "выше нормы Advego"),
+        ("classic_nausea", 5, "норма Advego"),
+        ("academic_nausea", 15, "норма Advego"),
+        ("academic_nausea", 5, "норма Advego"),
+        ("water", 30, "избыточная водность по Text.ru"),
+        ("water", 15, "избыточная водность по Text.ru"),
+        ("spam", 60, "SEO-оптимизированный текст по Text.ru"),
+        ("spam", 30, "SEO-оптимизированный текст по Text.ru"),
+        ("zipf_naturalness", 50, "норма pr-cy и megaindex"),
+    ],
+)
+def test_style_norms_bounds(stat, value, expected):
+    """Полоса «больше X» не включает X"""
+    assert scale_level(value, STYLE_NORMS[stat]) == expected
+
+
+def doc_norms(page):
+    """Полосы норм из таблицы страницы: метрика - нижние границы по убыванию и подписи"""
+    text = (Path(__file__).parent.parent / "docs" / "stats" / page).read_text(encoding="utf-8")
+    section = text.split("{ #norms }", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(
+        r"^\| `(\w+)` \| `([\[(])([\d.]+)[;,] ([\d.]+|∞)([\])])` \| ([^|]+?) \|$",
+        section,
+        re.MULTILINE,
+    )
+    norms, lower = defaultdict(list), {}
+    for stat, opening, low, high, closing, label in rows:
+        if stat in lower:
+            # полосы смыкаются, и граница входит ровно в одну из них
+            assert high == lower[stat][0]
+            assert (lower[stat][1], closing) in {("(", "]"), ("[", ")")}
+        lower[stat] = (low, opening)
+        norms[stat].append((float(low) if opening == "[" else nextafter(float(low), inf), label))
+    return {stat: tuple(bands) for stat, bands in norms.items()}
+
+
+def test_style_norms_follow_docs():
+    """Полосы норм совпадают с таблицами документации на обоих языках"""
+    assert doc_norms("style_stats.md") == STYLE_NORMS
+    english = doc_norms("style_stats.en.md")
+    assert {stat: [low for low, _ in bands] for stat, bands in english.items()} == {
+        stat: [low for low, _ in bands] for stat, bands in STYLE_NORMS.items()
+    }
 
 
 def test_hyphenated_words_doc(nlp):

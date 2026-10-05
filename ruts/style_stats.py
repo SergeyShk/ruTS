@@ -1,9 +1,10 @@
 from collections import Counter
 from collections.abc import Collection, Iterable, Sequence
 from functools import lru_cache
-from math import nan, sqrt
+from math import isnan, nan, sqrt
 
 import anyts
+from anyts.readability_stats import scale_level
 from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
@@ -14,9 +15,10 @@ from .constants import (
     PARENTHETICALS,
     STOPWORD_GRAMMEMES,
     STOPWORD_POS,
+    STYLE_NORMS,
     STYLE_STATS_DESC,
 )
-from .exceptions import ParameterError, SourceError, SourceTypeError
+from .exceptions import ParameterError, SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
 from .utils import find_phrases, get_morph_analyzer, is_verbal_noun, normalize_yo, parse_word
 
@@ -44,7 +46,8 @@ class StyleStats:
         SEO-метрики повторяют показатели сервисов Advego и Text.ru: тошнота, водность,
         заспамленность, естественность распределения слов по закону Ципфа и плотность
         ключевых слов. Точные формулы сервисов не опубликованы, поэтому реализованы
-        общепринятые определения, они описаны в докстрингах функций
+        общепринятые определения, они описаны в докстрингах функций; прочтение метрик
+        по нормам сервисов (describe) - по полосам STYLE_NORMS
         Лексические маркеры канцелярита: отглагольные существительные, производные
         предлоги, вводные слова, штампы - по спискам из constants
         Слова по умолчанию извлекаются в нижнем регистре без лемматизации; для расчета
@@ -105,6 +108,7 @@ class StyleStats:
 
     Методы:
         keyword_density: Плотность ключевых слов и фраз
+        describe: Прочтение метрики стиля по нормам SEO-сервисов
         get_stats: Получение вычисленных метрик стиля текста
         print_stats: Отображение вычисленных метрик стиля текста с описанием на экран
 
@@ -201,6 +205,45 @@ class StyleStats:
         """
         return calc_keyword_density(self.words, keywords)
 
+    def describe(self, stat: str) -> str | None:
+        """
+        Прочтение метрики стиля по нормам SEO-сервисов
+
+        Описание:
+            Полоса нормы метрики из STYLE_NORMS: тошнота - по Advego, водность
+            и заспамленность - по Text.ru, естественность по Ципфу - по pr-cy и megaindex
+            Метрика без нормы (маркеры канцелярита) и неопределенное значение (nan)
+            дают None
+            Нормы - ориентиры сервисов для текстов сайтов в несколько сотен слов,
+            к коротким текстам и художественной прозе они неприменимы
+
+        Аргументы:
+            stat (str): Название метрики
+
+        Вывод:
+            str | None: Полоса нормы; None для метрики без нормы или неопределенного значения
+
+        Исключения:
+            UnknownStatError: Если метрики нет в справочнике метрик стиля
+
+        Пример использования:
+            >>> from ruts import StyleStats
+            >>> ss = StyleStats("Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать")
+            >>> ss.describe("water"), ss.describe("spam")
+            ('высокая водность по Text.ru', 'естественный текст по Text.ru')
+            >>> ss.describe("cliches") is None
+            True
+        """
+        if not isinstance(stat, str) or stat not in STYLE_STATS_DESC:
+            raise UnknownStatError(
+                f"{stat} отсутствует в справочнике метрик стиля, "
+                f"доступны: {', '.join(STYLE_STATS_DESC)}"
+            )
+        if stat not in STYLE_NORMS:
+            return None
+        value = getattr(self, stat)
+        return None if isnan(value) else scale_level(value, STYLE_NORMS[stat])
+
     def get_stats(self) -> dict[str, float]:
         """
         Получение вычисленных метрик стиля текста
@@ -251,7 +294,7 @@ def calc_classic_nausea(text: Sequence[str]) -> float:
         Квадратный корень из количества вхождений самого частого слова (Advego)
         Характеризует навязчивость одного слова без учета длины текста, поэтому
         растет вместе с текстом
-        Норма Advego - не больше 7, на практике 1-5
+        Норма Advego - не больше 7, на практике 1-5; полосы - STYLE_NORMS
 
     Ссылки:
         https://advego.com/text/seo/
@@ -276,7 +319,7 @@ def calc_academic_nausea(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> floa
         Доля вхождений самых частых слов в тексте в процентах (Advego)
         Точная формула Advego не опубликована, реализовано как суммарная частота
         top_n самых частых слов, деленная на количество слов
-        Норма Advego - 5-15%
+        Норма Advego - 5-15%; полосы - STYLE_NORMS
 
     Ссылки:
         https://advego.com/text/seo/
@@ -303,7 +346,8 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
         Незначимыми считаются стоп-слова: союзы, частицы, предлоги, местоимения, междометия,
         предикативы, вводные слова, указательные и вопросительные наречия по разметке
         pymorphy3 (функция is_stopword) или слова из переданного списка стоп-слов
-        Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое
+        Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое;
+        полосы - STYLE_NORMS
         «Вода» Advego - другой показатель с нормой 55-75%, здесь не реализован
 
     Ссылки:
@@ -336,7 +380,7 @@ def calc_spam(text: Sequence[str]) -> float:
         кроме первого, считается повтором, то есть заспамленность равна 100 · (1 - TTR)
         Для расчета по леммам извлекайте слова с лемматизацией
         Нормы Text.ru: до 30% - естественное содержание, 30-60% - SEO-оптимизированный текст,
-        больше 60% - заспамленный текст
+        больше 60% - заспамленный текст; полосы - STYLE_NORMS
 
     Ссылки:
         https://text.ru/seo
@@ -363,7 +407,8 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
         по рангам от 2 до min(top_n, V, f_1): ранг 1 совпадает с идеалом по построению,
         а при рангах больше f_1 идеальная частота меньше единицы и отклонение
         гапаксов растет без ограничения
-        Отрицательные значения обрезаются до 0; норма сервисов - не меньше 50%
+        Отрицательные значения обрезаются до 0; норма сервисов - не меньше 50%,
+        полосы - STYLE_NORMS
         Не определена, если рангов для сравнения нет: все слова - гапаксы,
         одна лексема или top_n меньше 2
 
@@ -386,11 +431,12 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
     n_ranks = min(top_n, len(frequencies), top_freq)
     if n_ranks < 2:
         return nan
+    # Отклонения в целых числах (|f_r · r - f_1| / f_1), иначе точные 50% выходят чуть ниже нормы
     deviation = sum(
-        abs(freq - top_freq / rank) / (top_freq / rank)
-        for rank, freq in enumerate(frequencies[1:n_ranks], start=2)
-    ) / (n_ranks - 1)
-    return max(0.0, 100 * (1 - deviation))
+        abs(freq * rank - top_freq) for rank, freq in enumerate(frequencies[1:n_ranks], start=2)
+    )
+    span = top_freq * (n_ranks - 1)
+    return max(0.0, 100 * (span - deviation) / span)
 
 
 def calc_keyword_density(text: Sequence[str], keywords: Collection[str]) -> dict[str, float]:

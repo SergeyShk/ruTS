@@ -12,7 +12,7 @@ The exact formulas of the services are not published, so the commonly accepted d
 Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés - by the `COMPOUND_PREPOSITIONS`, `PARENTHETICALS` and `OFFICIALESE_CLICHES` lists of `ruts.constants`. They are counted over unfiltered word forms (`forms`) regardless of the extractor passed.
 
 !!! note "Note"
-    The metrics are computed by accessing the corresponding attribute or by calling the `get_stats` method of the `StyleStats` object. The service norms are meant for texts of several hundred words; on short texts nausea and spam values are uninformative.
+    The metrics are computed by accessing the corresponding attribute or by calling the `get_stats` method of the `StyleStats` object.
 
 ## Parameters
 
@@ -40,15 +40,26 @@ Lexical officialese markers: verbal nouns, compound prepositions, parentheticals
 | `parentheticals` | float | Parentheticals per 100 words |
 | `cliches` | float | Clichés per 100 words |
 
-Service norms:
+## Service norms { #norms }
 
-| Metric | Norm |
-| :----: | :--: |
-| Classic nausea | at most 7, in practice 1-5 (Advego) |
-| Academic nausea | 5-15% (Advego) |
-| Water content | up to 15% - natural, 15-30% - excessive, above 30% - high (Text.ru) |
-| Spam score | up to 30% - natural, 30-60% - SEO-optimized text, above 60% - spammed (Text.ru) |
-| Naturalness by Zipf's law | at least 50% (pr-cy, megaindex) |
+The [`describe`](#describe) method reads a metric by the bands of the service norms - `ruts.constants.STYLE_NORMS`; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.
+
+| Metric | Value | Reading |
+| :-----: | :------: | :-------: |
+| `classic_nausea` | `(7, ∞)` | above the Advego norm |
+| `classic_nausea` | `(5, 7]` | at the upper bound of the Advego norm |
+| `classic_nausea` | `[0, 5]` | the Advego norm |
+| `academic_nausea` | `(15, 100]` | above the Advego norm |
+| `academic_nausea` | `[5, 15]` | the Advego norm |
+| `academic_nausea` | `[0, 5)` | below the Advego norm |
+| `water` | `(30, 100]` | high water content by Text.ru |
+| `water` | `[15, 30]` | excessive water content by Text.ru |
+| `water` | `[0, 15)` | natural water content by Text.ru |
+| `spam` | `(60, 100]` | spammed text by Text.ru |
+| `spam` | `[30, 60]` | SEO-optimized text by Text.ru |
+| `spam` | `[0, 30)` | natural text by Text.ru |
+| `zipf_naturalness` | `[50, 100]` | the pr-cy and megaindex norm |
+| `zipf_naturalness` | `[0, 50)` | below the pr-cy and megaindex norm |
 
 ## Methods
 
@@ -71,6 +82,29 @@ Parameters:
     ss = StyleStats(text)
     ss.keyword_density("когда", "нет а")
     # {'когда': 20.0, 'нет а': 13.333333333333334}
+    ```
+
+### describe
+
+Returns the band of the [service norm](#norms) for a metric; a metric without a norm and an undefined value (nan) give `None`, a name not in `STYLE_STATS_DESC` gives `UnknownStatError`.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `stat` | str | `-` | Name of the metric |
+
+!!! example "Example"
+
+    ``` python
+    from ruts import StyleStats
+
+    text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
+    ss = StyleStats(text)
+    ss.describe("water")
+    # 'высокая водность по Text.ru'
+    ss.describe("cliches")
+    # None
     ```
 
 ### get_stats
