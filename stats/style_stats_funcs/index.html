@@ -3212,9 +3212,9 @@
 </table>
 <h2 id="calc_verbal_nouns">Отглагольные существительные<a class="headerlink" href="#calc_verbal_nouns" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_verbal_nouns()</strong></p>
+<p><strong>ruts.style_stats.calc_verbal_nouns()</strong>, <strong>ruts.style_stats.find_verbal_nouns()</strong></p>
 </div>
-<p>Вычисление доли существительных (по первому разбору pymorphy3), лемма которых оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; функция <code>ruts.utils.is_verbal_noun</code>), в процентах от всех существительных; <code>nan</code> для текста без существительных. Суффикс -ство в список не входит: он в основном не отглагольный (правительство, общество, средство). Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание).</p>
+<p>Вычисление доли существительных (по первому разбору pymorphy3), лемма которых оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; функция <code>ruts.utils.is_verbal_noun</code>), в процентах от всех существительных; <code>nan</code> для текста без существительных. Суффикс -ство в список не входит: он в основном не отглагольный (правительство, общество, средство). Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). Функция <code>find_verbal_nouns</code> возвращает границы найденных слов как срезы списка.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3266,9 +3266,9 @@
 </table>
 <h2 id="calc_parentheticals">Вводные слова<a class="headerlink" href="#calc_parentheticals" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
+<p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.find_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
 </div>
-<p>Вычисление числа вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) плюс одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical</code>) вне найденных словосочетаний.</p>
+<p>Вычисление числа вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) плюс одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical</code>) вне найденных словосочетаний. Функция <code>find_parentheticals</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
 <p>Параметры:</p>
 <table>
 <thead>

@@ -3212,9 +3212,9 @@
 </table>
 <h2 id="calc_verbal_nouns">Verbal nouns<a class="headerlink" href="#calc_verbal_nouns" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_verbal_nouns()</strong></p>
+<p><strong>ruts.style_stats.calc_verbal_nouns()</strong>, <strong>ruts.style_stats.find_verbal_nouns()</strong></p>
 </div>
-<p>Computation of the share of nouns (by the first pymorphy3 analysis) whose lemma ends with a suffix from <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; the <code>ruts.utils.is_verbal_noun</code> function), in percent of all nouns; <code>nan</code> for a text without nouns. The suffix -ство is not in the list: it is mostly non-verbal (правительство, общество, средство). The heuristic also catches non-verbal words with the same suffixes (здание).</p>
+<p>Computation of the share of nouns (by the first pymorphy3 analysis) whose lemma ends with a suffix from <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; the <code>ruts.utils.is_verbal_noun</code> function), in percent of all nouns; <code>nan</code> for a text without nouns. The suffix -ство is not in the list: it is mostly non-verbal (правительство, общество, средство). The heuristic also catches non-verbal words with the same suffixes (здание). The <code>find_verbal_nouns</code> function returns the bounds of the words found as slices of the list.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3266,9 +3266,9 @@
 </table>
 <h2 id="calc_parentheticals">Parentheticals<a class="headerlink" href="#calc_parentheticals" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
+<p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.find_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
 </div>
-<p>Computation of the number of parentheticals per 100 words: phrases from <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) plus single words with the pymorphy3 grammeme <code>Prnt</code> (конечно, например, впрочем; the <code>is_parenthetical</code> function) outside the matched phrases.</p>
+<p>Computation of the number of parentheticals per 100 words: phrases from <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) plus single words with the pymorphy3 grammeme <code>Prnt</code> (конечно, например, впрочем; the <code>is_parenthetical</code> function) outside the matched phrases. The <code>find_parentheticals</code> function returns the bounds of the words and phrases found as slices of the list.</p>
 <p>Parameters:</p>
 <table>
 <thead>
