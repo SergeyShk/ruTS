@@ -3,6 +3,8 @@ import re
 import unicodedata
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import pytest
 import spacy
 from spacy.tokens import Doc
@@ -155,19 +157,29 @@ def test_custom_tokenizer():
     assert extractor.extract("Моро́з и со­лнце") == ("Мороз", "и", "солнце")
 
 
+PLAIN_WORDS = ["глаза", "смотрели", "на", "глаза", "и", "глаза", "смотрели"]
+MARKED_WORDS = ["гла́за", "смо́трели", "на", "гла́за", "и", "гла\u00adза", "смотрели"]
+
+
 @pytest.mark.parametrize("node", ["глаза", "гла́за"])
-@pytest.mark.parametrize("marked", [False, True], ids=["plain", "marked"])
-def test_core_queries(node, marked):
+@pytest.mark.parametrize(
+    "words",
+    [
+        PLAIN_WORDS,
+        MARKED_WORDS,
+        tuple(MARKED_WORDS),
+        np.array(MARKED_WORDS),
+        pd.Series(MARKED_WORDS),
+    ],
+    ids=["plain", "marked", "tuple", "array", "series"],
+)
+def test_core_queries(node, words):
     """Слова и слово запроса со знаками и без находятся одинаково"""
-    plain = ["глаза", "смотрели", "на", "глаза", "и", "глаза", "смотрели"]
-    words = (
-        ["гла́за", "смо́трели", "на", "гла́за", "и", "гла\u00adза", "смотрели"] if marked else plain
-    )
     assert collocations(words, node=node, min_freq=1) == collocations(
-        plain, node="глаза", min_freq=1
+        PLAIN_WORDS, node="глаза", min_freq=1
     )
     assert dispersion(words, parts=2, word=node)[0].freq == 3
-    assert wordtree([words], node).source == wordtree([plain], "глаза").source
+    assert wordtree([words], node).source == wordtree([PLAIN_WORDS], "глаза").source
     ax = dispersion_plot(words, [node])
     assert ax.get_yticklabels()[0].get_text() == "глаза"
     plt.close("all")

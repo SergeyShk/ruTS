@@ -6,7 +6,7 @@ from functools import lru_cache
 from typing import Any, TypeVar, cast
 
 import pymorphy3
-from anyts.utils import check_words, is_punctuation
+from anyts.utils import check_sequence, check_words, is_punctuation
 from razdel import sentenize, tokenize
 from spacy.language import Language
 from spacy.tokenizer import Tokenizer
@@ -21,6 +21,7 @@ from .constants import (
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
+from .exceptions import SourceTypeError
 
 F = TypeVar("F", bound=Callable[..., Any])
 DASHES = frozenset("-—–―")
@@ -126,16 +127,19 @@ def _strip_words(value: Any) -> Any:
     """Строка, список строк или список списков строк без знаков (with_stripped_marks)"""
     if isinstance(value, str):
         return strip_marks(value)
-    if not isinstance(value, list | tuple):
-        return value
     try:
+        check_sequence(value)
         # Одна проверка склеенных слов вместо поиска знаков в каждом
         joined = "".join(value)
-    except TypeError:
-        if all(isinstance(item, list | tuple) for item in value):
-            return type(value)(_strip_words(item) for item in value)
+    except SourceTypeError:
         return value
-    return type(value)(map(strip_marks, value)) if MARKED.search(joined) else value
+    except TypeError:
+        items: Iterable[Any] = (_strip_words(item) for item in value)
+    else:
+        if not MARKED.search(joined):
+            return value
+        items = map(strip_marks, value)
+    return type(value)(items) if isinstance(value, list | tuple) else list(items)
 
 
 def take_marks(text: str, positions: bool = True) -> tuple[str, list[int], set[int]]:
