@@ -84,6 +84,23 @@ Parameters:
     # {'когда': 20.0, 'нет а': 13.333333333333334}
     ```
 
+### markers
+
+Returns the officialese markers found: for each of the metrics `verbal_nouns`, `compound_prepositions`, `parentheticals` and `cliches`, the words and phrases it was computed from, in the order of the text and as written in `forms`. Phrases are searched as in [`calc_phrase_density`](style_stats_funcs.md#calc_phrase_density).
+
+!!! example "Example"
+
+    ``` python
+    from ruts import StyleStats
+
+    text = "В целях повышения качества в кратчайшие сроки, как правило, проводится проверка"
+    StyleStats(text).markers()
+    # {'verbal_nouns': ('повышения',),
+    #  'compound_prepositions': ('в целях',),
+    #  'parentheticals': ('как правило',),
+    #  'cliches': ('в кратчайшие сроки',)}
+    ```
+
 ### describe
 
 Returns the band of the [service norm](#norms) for a metric; a metric without a norm and an undefined value (nan) give `None`, a name not in `STYLE_STATS_DESC` gives `UnknownStatError`.
