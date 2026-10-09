@@ -1,6 +1,6 @@
 from collections.abc import Callable, Mapping, Sequence
 from itertools import pairwise
-from math import floor, isnan, nan
+from math import isnan, nan
 from numbers import Integral
 
 import numpy as np
@@ -60,23 +60,25 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
     Разбиение текста на окна по словам
 
     Описание:
-        Число окон - отношение числа слов к размеру окна, округленное вверх
-        от половины, не меньше одного; окна равные, окна короче min_words слов
-        (по умолчанию половина окна) отбрасываются. Граница проходит перед первым
+        Текст режется подряд на окна ровно по window слов; неполный остаток в конце
+        становится окном, только если в нем не меньше min_words слов (по умолчанию
+        окно целиком, то есть остаток отбрасывается), так что окна разных текстов
+        одной длины и признаки, зависящие от длины, сравнимы. Граница проходит перед первым
         словом окна и открывающими знаками перед ним (кавычки, скобки, тире), так
         что пунктуация остается в окнах; при window=None окно - весь текст
 
     Аргументы:
         text (str): Строка текста
         window (int): Размер окна в словах; None - текст целиком
-        min_words (int): Наименьшее число слов в окне; None - половина окна,
+        min_words (int): Наименьшее число слов в окне; None - окно целиком,
             при window=None - одно слово
 
     Вывод:
         list[str]: Окна текста; пустой список для текста без слов или короче min_words
 
     Исключения:
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
     """
     if not isinstance(text, str):
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
@@ -85,8 +87,10 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
     words = list(iter_text_words(text))
     if not words:
         return []
-    n_windows = 1 if window is None else max(1, floor(len(words) / window + 0.5))
-    chunks = np.array_split(np.arange(len(words)), n_windows)
+    size = len(words) if window is None else window
+    chunks = [
+        np.arange(start, min(start + size, len(words))) for start in range(0, len(words), size)
+    ]
     boundaries = [0]
     for chunk in chunks[1:]:
         start = words[chunk[0]][0]
@@ -113,10 +117,10 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
 
 
 def _min_words(window: int | None, min_words: int | None) -> int:
-    """Наименьшее число слов в окне: заданное, половина окна или одно слово при window=None"""
+    """Наименьшее число слов в окне: заданное, окно целиком или одно слово при window=None"""
     if min_words is not None:
         return min_words
-    return 1 if window is None else max(1, window // 2)
+    return 1 if window is None else window
 
 
 def _check_windows(window: int | None, min_words: int | None) -> None:
@@ -129,6 +133,8 @@ def _check_windows(window: int | None, min_words: int | None) -> None:
         check_integer(min_words, "smallest number of words in a window")
         if min_words < 1:
             raise ParameterError("Наименьшее число слов в окне должно быть больше 0")
+        if window is not None and min_words > window:
+            raise ParameterError("Наименьшее число слов в окне не может быть больше окна")
 
 
 def text_features(text: str) -> dict[str, float]:
@@ -282,7 +288,7 @@ def corpus_features(
         texts (list[str]): Тексты корпуса
         window (int): Размер окна в словах; None - тексты целиком
         features (callable): Функция признаков текста; по умолчанию text_features
-        min_words (int): Наименьшее число слов в окне; None - половина окна,
+        min_words (int): Наименьшее число слов в окне; None - окно целиком,
             при window=None - одно слово
 
     Вывод:
@@ -290,7 +296,8 @@ def corpus_features(
 
     Исключения:
         SourceError: Если в корпусе нет окна из min_words и более слов
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
     """
     check_words(texts, "texts")
     if not callable(features):
@@ -303,9 +310,10 @@ def corpus_features(
     if not rows:
         if not any(next(iter_text_words(text), None) for text in texts):
             raise SourceError("В источнике данных отсутствуют слова")
+        advice = "уменьшите window" if min_words is None else "уменьшите min_words"
         raise SourceError(
             f"В источнике данных нет окна из {_min_words(window, min_words)} и более слов: "
-            "уменьшите min_words или window"
+            f"{advice}"
         )
     table = pd.DataFrame.from_dict(rows, orient="index").astype(float)
     table.index = pd.MultiIndex.from_tuples(table.index, names=["text", "window"])
@@ -353,7 +361,7 @@ def compare_corpora(
         labels (tuple[str, str]): Имена корпусов для столбцов (mean_<a>, ...)
         n_bootstrap (int): Число выборок бутстрэпа
         seed (int): Зерно генератора случайных чисел; None - случайное
-        min_words (int): Наименьшее число слов в окне; None - половина окна,
+        min_words (int): Наименьшее число слов в окне; None - окно целиком,
             при window=None - одно слово
 
     Вывод:
@@ -362,7 +370,8 @@ def compare_corpora(
 
     Исключения:
         SourceError: Если в одном из корпусов нет окна из min_words и более слов
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)
