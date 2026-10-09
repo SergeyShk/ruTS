@@ -27,17 +27,19 @@ long = [
 
 
 def test_split_windows():
-    assert split_windows(text, 5) == [
+    windows = [
         "Кот сидел на окне. Он",
         "смотрел на птиц, а птицы",
         "улетели. Кот уснул. Завтра он",
         "снова будет сидеть на окне",
-        "и смотреть на птиц.",
     ]
+    assert split_windows(text, 5) == windows
+    assert split_windows(text, 5, min_words=4) == [*windows, "и смотреть на птиц."]
     assert split_windows(text, None) == [text]
     assert split_windows(text, 100) == []
     assert split_windows(text, 100, min_words=1) == [text]
-    assert split_windows(text, 40) == [text]
+    assert split_windows(text, 40) == []
+    assert split_windows(text, 40, min_words=20) == [text]
     assert split_windows(" \n" + text + "\n ", None) == [text]
     assert len(split_windows(text, 8)) == 3
     assert split_windows("Кто там?! Никого… Ушли!!!", None) == ["Кто там?! Никого… Ушли!!!"]
@@ -45,7 +47,7 @@ def test_split_windows():
         "— Ушли, — сказал он. — Все ушли."
     ]
     assert split_windows("(Кот) спал. «Пёс» ел.", 2) == ["(Кот) спал.", "«Пёс» ел."]
-    assert split_windows("— Ушли, — сказал он. — Все ушли.", 3) == [
+    assert split_windows("— Ушли, — сказал он. — Все ушли.", 3, min_words=1) == [
         "— Ушли, — сказал он.",
         "— Все ушли.",
     ]
@@ -54,14 +56,13 @@ def test_split_windows():
         text_features("— Ушли, — сказал он.")["punct_dash"]
         == (corpus_features(["— Ушли, — сказал он."], None)["punct_dash"].iloc[0])
     )
-    assert [len(chunk.split()) for chunk in split_windows(" ".join(["а"] * 1500), 1000)] == [
-        750,
-        750,
-    ]
-    assert len(split_windows(" ".join(["а"] * 2500), 1000)) == 3
-    assert len(split_windows(" ".join(["а"] * 3500), 1000)) == 4
-    assert len(split_windows(" ".join(["а"] * 1499), 1000)) == 1
-    assert split_windows("Кто там?! Никого… Ушли, все ушли!!! Вот так.", 3) == [
+    assert [len(chunk.split()) for chunk in split_windows(" ".join(["а"] * 1500), 1000)] == [1000]
+    lengths = [len(chunk.split()) for chunk in split_windows(" ".join(["а"] * 1500), 1000, 500)]
+    assert lengths == [1000, 500]
+    assert len(split_windows(" ".join(["а"] * 2500), 1000)) == 2
+    assert len(split_windows(" ".join(["а"] * 3999), 1000)) == 3
+    assert split_windows(" ".join(["а"] * 999), 1000) == []
+    assert split_windows("Кто там?! Никого… Ушли, все ушли!!! Вот так.", 3, min_words=1) == [
         "Кто там?! Никого…",
         "Ушли, все ушли!!!",
         "Вот так.",
@@ -154,10 +155,10 @@ def test_text_features_lowercase_diversity():
 
 
 def test_compare_corpora_short_texts():
-    with pytest.raises(SourceError, match=r"Корпус Чехов: .* 500 и более слов"):
+    with pytest.raises(SourceError, match=r"Корпус Чехов: .* 1000 и более слов"):
         compare_corpora(["Кот спал."], ["Пёс ел."], labels=("Чехов", "Толстой"))
     with pytest.raises(SourceError, match=r"Корпус Толстой: .*отсутствуют слова"):
-        compare_corpora([" ".join(["кот"] * 600)], ["...", ""], labels=("Чехов", "Толстой"))
+        compare_corpora([" ".join(["кот"] * 1000)], ["...", ""], labels=("Чехов", "Толстой"))
 
 
 def test_corpus_features():

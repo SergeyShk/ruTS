@@ -9,7 +9,7 @@
 
 --8<-- "corpus/compare.md:compare_features"
 
-The texts are cut into windows of equal size by `split_windows`; windows of fewer than `min_words` words are dropped. The features of every window are computed by `text_features` or a function of one's own.
+The texts are cut in a row into windows of exactly `window` words by `split_windows`, so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by `text_features` or a function of one's own.
 
 ## Features
 
@@ -44,7 +44,7 @@ Parameters of `compare_corpora`:
 | `b` | list[str] | `-` | Texts of the second corpus |
 | `window` | int | `1000` | Window size in words; `None` - whole texts |
 | `features` | callable | `None` | Text feature function; `None` - `text_features` |
-| `min_words` | int | `None` | Smallest number of words in a window; `None` - half a window, one word with `window=None` |
+| `min_words` | int | `None` | Smallest number of words in a window; `None` - a whole window, one word with `window=None` |
 
 `labels`, `n_bootstrap` and `seed` go on to `compare_features`, whose parameters are:
 
@@ -68,7 +68,7 @@ The statistics of a row are available one by one from `ruts.corpus`:
 
 ## Usage example
 
-Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 289 and 1444 windows of 1000 words, under a minute.
+Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1423 windows of 1000 words, under a minute.
 
 !!! example "Example"
 
@@ -102,23 +102,23 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ``` bash
                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    punct_ellipsis                       15.748           2.000   6.567   23.363    1.864        0.722  0.861     0.0
-    punct_exclamation                    14.881           3.996   7.901   13.972    1.702        0.673  0.836     0.0
-    morph_verb_form_Fin                   0.760           0.695   0.039    0.102    1.146        0.590  0.795     0.0
-    punct_yo_share                        0.007           0.000   0.004    0.009    1.069        0.558  0.779     0.0
-    readability_gunning_fog_index         6.011           7.970  -2.902   -1.240   -0.953       -0.535  0.232     0.0
-    readability_matskovsky_index          8.609          11.234  -4.018   -1.703   -0.938       -0.526  0.237     0.0
-    sents_mean                           11.172          15.136  -5.911   -2.385   -0.934       -0.526  0.237     0.0
-    readability_dale_chall_index          5.200           6.676  -2.218   -0.940   -0.923       -0.523  0.239     0.0
-    readability_sis_grade                 0.893           3.418  -3.610   -1.450   -0.901       -0.516  0.242     0.0
-    readability_smog_index                5.746           7.294  -2.400   -0.972   -0.889       -0.512  0.244     0.0
+    punct_ellipsis                       14.000           2.000   5.000   25.000    1.869        0.707  0.853     0.0
+    punct_exclamation                    14.000           4.000   7.000   13.000    1.670        0.658  0.829     0.0
+    morph_verb_form_Fin                   0.756           0.695   0.037    0.100    1.123        0.573  0.786     0.0
+    punct_yo_share                        0.007           0.000   0.002    0.010    1.026        0.533  0.766     0.0
+    readability_gunning_fog_index         6.088           7.962  -2.881   -1.007   -0.934       -0.521  0.240     0.0
+    readability_dale_chall_index          5.280           6.702  -2.378   -0.833   -0.914       -0.518  0.241     0.0
+    readability_smog_index                5.880           7.314  -2.447   -0.936   -0.883       -0.508  0.246     0.0
+    readability_matskovsky_index          8.660          11.281  -4.101   -1.178   -0.910       -0.503  0.249     0.0
+    sents_mean                           11.236          15.152  -6.141   -1.669   -0.902       -0.501  0.250     0.0
+    readability_sis_grade                 0.974           3.478  -3.858   -1.138   -0.879       -0.499  0.251     0.0
 
-    {'n_Чехов': 289, 'n_Толстой': 1444, 'n_texts_Чехов': 74, 'n_texts_Толстой': 42}
+    {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Three short works of Chekhov give no window, so his windows come from 74 works.
+Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Twenty stories of Chekhov are shorter than 1000 words and give no window, so his windows come from 57 works; with a smaller window they would be compared too.
 
-The p-values take the 1733 windows for independent (see the warning above): 87 of the 108 features have a corrected p-value below 0.01, but only 14 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 65 of those 87 features, and for the length of a sentence it spans −5.9 to −2.4 words, where the windows alone would give −4.6 to −3.4. For the ellipses it spans 6.6 to 23.4 per 1000 words: the works of Chekhov differ in them a lot, from none to over a hundred per 1000 words.
+The p-values take the 1672 windows for independent (see the warning above): 84 of the 108 features have a corrected p-value below 0.01, but only 14 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 63 of those 84 features, and for the length of a sentence it spans −6.1 to −1.7 words, where the windows alone would give −4.6 to −3.2. For the ellipses it spans 5 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 Your own features, for example syntactic ones by spaCy, are passed as a function:
 
