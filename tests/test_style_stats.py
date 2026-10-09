@@ -21,6 +21,8 @@ from ruts.style_stats import (
     calc_water,
     calc_zipf_naturalness,
     expand_phrases,
+    find_parentheticals,
+    find_verbal_nouns,
     is_parenthetical,
     is_stopword,
 )
@@ -374,3 +376,30 @@ def test_phrase_density_iterator():
 
 def test_phrase_density_all_lexemes():
     assert calc_phrase_density(["они", "стоят", "того"], ["стоить того"]) == pytest.approx(100 / 3)
+
+
+def test_markers():
+    """Найденные маркеры - те, по которым считаются метрики: их число сходится с плотностью"""
+    text = (
+        "В связи с этим, таким образом, мы, конечно, на сегодняшний день довели до сведения. "
+        "Ввиду чего и ввиду этого, с точки зрения закона, организация и решение вопросов."
+    )
+    ss = StyleStats(text)
+    markers = ss.markers()
+    assert list(markers) == ["verbal_nouns", "compound_prepositions", "parentheticals", "cliches"]
+    assert markers["compound_prepositions"] == ("в связи с", "ввиду", "ввиду")
+    assert markers["parentheticals"] == ("таким образом", "конечно")
+    assert markers["cliches"] == ("на сегодняшний день", "довели до сведения", "с точки зрения")
+    assert markers["verbal_nouns"] == ("сведения", "зрения", "организация", "решение")
+    for name in ("compound_prepositions", "parentheticals", "cliches"):
+        assert getattr(ss, name) == pytest.approx(100 * len(markers[name]) / len(ss.forms))
+
+
+def test_markers_custom_cliches():
+    ss = StyleStats("Мы довели дело до конца и довели до сведения", cliches=["довести дело"])
+    assert ss.markers()["cliches"] == ("довели дело",)
+
+
+def test_find_markers_empty():
+    assert find_verbal_nouns([]) == []
+    assert find_parentheticals(["мама", "мыла", "раму"]) == []

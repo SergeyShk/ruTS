@@ -148,9 +148,9 @@ Parameters:
 ## Verbal nouns { #calc_verbal_nouns }
 
 !!! info ""
-    **ruts.style_stats.calc_verbal_nouns()**
+    **ruts.style_stats.calc_verbal_nouns()**, **ruts.style_stats.find_verbal_nouns()**
 
-Computation of the share of nouns (by the first pymorphy3 analysis) whose lemma ends with a suffix from `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство, строительство; the `ruts.utils.is_verbal_noun` function), in percent of all nouns; `nan` for a text without nouns. The suffix -ство is not in the list: it is mostly non-verbal (правительство, общество, средство). The heuristic also catches non-verbal words with the same suffixes (здание).
+Computation of the share of nouns (by the first pymorphy3 analysis) whose lemma ends with a suffix from `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство, строительство; the `ruts.utils.is_verbal_noun` function), in percent of all nouns; `nan` for a text without nouns. The suffix -ство is not in the list: it is mostly non-verbal (правительство, общество, средство). The heuristic also catches non-verbal words with the same suffixes (здание). The `find_verbal_nouns` function returns the bounds of the words found as slices of the list.
 
 Parameters:
 
@@ -175,9 +175,9 @@ Parameters:
 ## Parentheticals { #calc_parentheticals }
 
 !!! info ""
-    **ruts.style_stats.calc_parentheticals()**, **ruts.style_stats.is_parenthetical()**
+    **ruts.style_stats.calc_parentheticals()**, **ruts.style_stats.find_parentheticals()**, **ruts.style_stats.is_parenthetical()**
 
-Computation of the number of parentheticals per 100 words: phrases from `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) plus single words with the pymorphy3 grammeme `Prnt` (конечно, например, впрочем; the `is_parenthetical` function) outside the matched phrases.
+Computation of the number of parentheticals per 100 words: phrases from `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) plus single words with the pymorphy3 grammeme `Prnt` (конечно, например, впрочем; the `is_parenthetical` function) outside the matched phrases. The `find_parentheticals` function returns the bounds of the words and phrases found as slices of the list.
 
 Parameters:
 

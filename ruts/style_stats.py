@@ -108,6 +108,7 @@ class StyleStats:
 
     Методы:
         keyword_density: Плотность ключевых слов и фраз
+        markers: Найденные маркеры канцелярита
         describe: Прочтение метрики стиля по нормам SEO-сервисов
         get_stats: Получение вычисленных метрик стиля текста
         print_stats: Отображение вычисленных метрик стиля текста с описанием на экран
@@ -204,6 +205,42 @@ class StyleStats:
             dict[str, float]: Плотность каждого ключевого слова в процентах
         """
         return calc_keyword_density(self.words, keywords)
+
+    def markers(self) -> dict[str, tuple[str, ...]]:
+        """
+        Найденные маркеры канцелярита
+
+        Описание:
+            Слова и словосочетания, по которым считаются метрики verbal_nouns,
+            compound_prepositions, parentheticals и cliches, в порядке текста,
+            как они записаны в forms; словосочетание с глаголом находится в любой
+            его форме (expand_phrases)
+
+        Вывод:
+            dict[str, tuple[str, ...]]: Название метрики - найденные слова и словосочетания
+
+        Пример использования:
+            >>> from ruts import StyleStats
+            >>> text = "В целях повышения качества в кратчайшие сроки, как правило, проводится проверка"
+            >>> StyleStats(text).markers()
+            {'verbal_nouns': ('повышения',),
+            'compound_prepositions': ('в целях',),
+            'parentheticals': ('как правило',),
+            'cliches': ('в кратчайшие сроки',)}
+        """
+        forms = self.forms
+        found = {
+            "verbal_nouns": find_verbal_nouns(forms),
+            "compound_prepositions": find_phrases(
+                forms, expand_phrases(forms, COMPOUND_PREPOSITIONS)
+            ),
+            "parentheticals": find_parentheticals(forms),
+            "cliches": find_phrases(forms, expand_phrases(forms, self.cliches_list)),
+        }
+        return {
+            name: tuple(" ".join(forms[start:end]) for start, end in spans)
+            for name, spans in found.items()
+        }
 
     def describe(self, stat: str) -> str | None:
         """
@@ -505,9 +542,35 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
         float: Доля в процентах
     """
     check_words(text)
-    nouns = [parse for parse in map(parse_word, text) if parse.tag.POS == "NOUN"]
-    verbal = sum(1 for parse in nouns if is_verbal_noun(parse.normal_form))
-    return safe_divide(verbal, len(nouns), nan) * 100
+    nouns = sum(1 for word in text if parse_word(word).tag.POS == "NOUN")
+    return safe_divide(len(find_verbal_nouns(text)), nouns, nan) * 100
+
+
+def find_verbal_nouns(text: Sequence[str]) -> list[tuple[int, int]]:
+    """
+    Поиск отглагольных существительных
+
+    Описание:
+        Существительные (по первому разбору pymorphy3), лемма которых - отглагольное
+        существительное по is_verbal_noun, как в calc_verbal_nouns
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        list[tuple[int, int]]: Границы найденных слов как срезы text
+
+    Пример использования:
+        >>> from ruts.style_stats import find_verbal_nouns
+        >>> find_verbal_nouns(["организация", "работы", "и", "решение", "вопросов"])
+        [(0, 1), (3, 4)]
+    """
+    check_words(text)
+    return [
+        (position, position + 1)
+        for position, parse in enumerate(map(parse_word, text))
+        if parse.tag.POS == "NOUN" and is_verbal_noun(parse.normal_form)
+    ]
 
 
 def calc_phrase_density(text: Sequence[str], phrases: Iterable[str]) -> float:
@@ -595,11 +658,35 @@ def calc_parentheticals(text: Sequence[str]) -> float:
         float: Вводных слов на 100 слов
     """
     check_words(text)
+    return safe_divide(len(find_parentheticals(text)), len(text)) * 100
+
+
+def find_parentheticals(text: Sequence[str]) -> list[tuple[int, int]]:
+    """
+    Поиск вводных слов и словосочетаний
+
+    Описание:
+        Вводные словосочетания из PARENTHETICALS и одиночные вводные слова
+        по граммеме Prnt pymorphy3 вне найденных словосочетаний, как в calc_parentheticals
+
+    Аргументы:
+        text (list[str]): Список слов
+
+    Вывод:
+        list[tuple[int, int]]: Границы найденных слов и словосочетаний как срезы text,
+            по порядку
+
+    Пример использования:
+        >>> from ruts.style_stats import find_parentheticals
+        >>> find_parentheticals(["таким", "образом", "мы", "конечно", "правы"])
+        [(0, 2), (3, 4)]
+    """
+    check_words(text)
     spans = find_phrases(text, PARENTHETICALS)
     covered = {position for start, end in spans for position in range(start, end)}
-    singles = sum(
-        1
+    singles = [
+        (position, position + 1)
         for position, word in enumerate(text)
         if position not in covered and is_parenthetical(word)
-    )
-    return safe_divide(len(spans) + singles, len(text)) * 100
+    ]
+    return sorted(spans + singles)
