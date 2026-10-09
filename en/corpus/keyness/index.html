@@ -3101,6 +3101,7 @@
 </tr>
 </tbody>
 </table>
+<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text.</p>
 <h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
 <p>A list of <code>Keyword</code> named tuples by descending keyness (ties broken by descending frequency and alphabetically, words of an undefined measure last); <code>pd.DataFrame(keywords)</code> gives a table.</p>
 <table>
