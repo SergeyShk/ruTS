@@ -173,7 +173,7 @@ class PhonStats:
         self.p_heavy_clusters = safe_divide(
             sum(count for size, count in self.c_clusters.items() if size >= 3), n_clusters, nan
         )
-        self.p_hiatus = _hiatus(counts) / len(words)
+        self.p_hiatus = _hiatus(counts) / len(words) if n_sounds else nan
         self.cv_entropy = _cv_entropy(counts)
         self.hardness = safe_divide(self.n_voiceless, self.n_vowels + self.n_sonorants, nan)
         self.alliteration = calc_repetition_index(words, window_len, CONSONANTS)
