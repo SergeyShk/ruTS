@@ -98,9 +98,9 @@ def with_stripped_marks(func: F, *names: str) -> F:
     Функция ядра, которая снимает знаки ударения и мягкие переносы с аргументов
 
     Описание:
-        Строка или список строк в аргументах names проходит через strip_marks:
-        слово запроса со знаком ищется среди слов, извлеченных без знаков.
-        Неверные значения передаются как есть - их отвергает ядро
+        Строка, список строк или список списков строк в аргументах names проходит
+        через strip_marks: слова и слово запроса со знаками и без находятся
+        одинаково. Неверные значения передаются как есть - их отвергает ядро
 
     Аргументы:
         func (Callable): Функция ядра
@@ -115,14 +115,27 @@ def with_stripped_marks(func: F, *names: str) -> F:
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         bound = signature.bind(*args, **kwargs)
         for name in names:
-            value = bound.arguments.get(name)
-            if isinstance(value, str):
-                bound.arguments[name] = strip_marks(value)
-            elif isinstance(value, list | tuple) and all(isinstance(item, str) for item in value):
-                bound.arguments[name] = type(value)(strip_marks(item) for item in value)
+            if name in bound.arguments:
+                bound.arguments[name] = _strip_words(bound.arguments[name])
         return func(*bound.args, **bound.kwargs)
 
     return cast(F, wrapper)
+
+
+def _strip_words(value: Any) -> Any:
+    """Строка, список строк или список списков строк без знаков (with_stripped_marks)"""
+    if isinstance(value, str):
+        return strip_marks(value)
+    if not isinstance(value, list | tuple):
+        return value
+    try:
+        # Одна проверка склеенных слов вместо поиска знаков в каждом
+        joined = "".join(value)
+    except TypeError:
+        if all(isinstance(item, list | tuple) for item in value):
+            return type(value)(_strip_words(item) for item in value)
+        return value
+    return type(value)(map(strip_marks, value)) if MARKED.search(joined) else value
 
 
 def take_marks(text: str, positions: bool = True) -> tuple[str, list[int], set[int]]:
@@ -419,9 +432,9 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         yield from ((sent.start, sent.stop, sent.text) for sent in sentenize(text))
         return
     clean, origin, _ = take_marks(text)
+    origin.append(len(text))
     for sent in sentenize(clean):
-        start = origin[sent.start]
-        stop = origin[sent.stop] if sent.stop < len(clean) else len(text)
+        start, stop = origin[sent.start], origin[sent.stop]
         yield start, stop, text[start:stop]
 
 

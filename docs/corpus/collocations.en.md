@@ -7,7 +7,7 @@
 
 --8<-- "corpus/collocations.md:collocations"
 
-The module `ruts.corpus.collocations` re-exports the function and the measures of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/) core (`from ruts.corpus.collocations import calc_logdice`). Words are extracted with [`WordsExtractor`](../extractors/words.md); for Russian fixed expressions such as «точка зрения» or «рабочий класс» take its lemmas (`use_lexemes=True`). A `node` word with stress marks is looked for without them.
+The module `ruts.corpus.collocations` re-exports the function and the measures of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/) core (`from ruts.corpus.collocations import calc_logdice`). Words are extracted with [`WordsExtractor`](../extractors/words.md); for Russian fixed expressions such as «точка зрения» or «рабочий класс» take its lemmas (`use_lexemes=True`). Stress marks are stripped from the words and from `node`.
 
 ## Measures
 

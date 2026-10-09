@@ -7,7 +7,7 @@
 
 --8<-- "corpus/dispersion.md:dispersion"
 
-The module `ruts.corpus.dispersion` re-exports the function and the measures of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) core (`from ruts.corpus.dispersion import calc_dp`). Words are extracted with [`WordsExtractor`](../extractors/words.md); a `word` with stress marks is looked for without them.
+The module `ruts.corpus.dispersion` re-exports the function and the measures of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) core (`from ruts.corpus.dispersion import calc_dp`). Words are extracted with [`WordsExtractor`](../extractors/words.md); stress marks are stripped from the words and from `word`.
 
 ## Measures
 

@@ -13,4 +13,4 @@ from anyts.corpus.collocations import (
 
 from ..utils import with_stripped_marks
 
-collocations = with_stripped_marks(core_collocations, "node")
+collocations = with_stripped_marks(core_collocations, "words", "node")

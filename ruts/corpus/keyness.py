@@ -21,7 +21,7 @@ from anyts.corpus.keyness import (
 from ..constants import RESOURCES_DIR
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import get_morph_analyzer, normalize_yo, parse_all, parse_word, strip_marks
+from ..utils import normalize_yo, parse_all, parse_word, strip_marks
 
 UNREACHABLE_FILES = {
     True: RESOURCES_DIR / "freqrnc2011_unreachable_forms.txt",
@@ -139,9 +139,8 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
         леммы форм по первому разбору), поэтому медленный: результат хранится
         в ресурсах UNREACHABLE_FILES. Сравнительная степень и краткие формы
         прилагательных на -щий не считаются (обязаннее, действующ - в тексте
-        таких форм не бывает), известные pymorphy3 написания статьи через ё -
-        считаются; слов, которые pymorphy3 только предсказывает (Михайлыч,
-        дитё), поиск не видит
+        таких форм не бывает); слов, которые pymorphy3 только предсказывает
+        (Михайлыч, дитё), поиск не видит
 
     Аргументы:
         freq_dict (FreqDict): Частотный словарь
@@ -163,23 +162,15 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     def reachable(entry: str) -> bool:
         if key(target(entry)) == entry:
             return True
-        analyzer = get_morph_analyzer()
-        spellings = {entry} | {
-            spelling
-            for index, letter in enumerate(entry)
-            if letter == "е"
-            and analyzer.word_is_known(spelling := f"{entry[:index]}ё{entry[index + 1 :]}")
-        }
         forms = {
             form.word
-            for spelling in spellings
-            for parse in parse_all(spelling)
+            for parse in parse_all(entry)
             for form in parse.lexeme
             if counted(form, entry)
         }
         return any(
             key(target(spelling)) == entry
-            for form in forms | spellings
+            for form in forms
             for spelling in {form, normalize_yo(form)}
         )
 

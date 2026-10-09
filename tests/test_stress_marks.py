@@ -122,6 +122,7 @@ def test_sentences():
     assert [strip_marks(sent) for _, _, sent in sents] == list(SentsExtractor().extract(SENTS))
     assert len(SentsExtractor().extract(MARKED_SENTS)) == 4
     assert kwic(MARKED_SENTS, "нос серое") == []
+    assert SentsExtractor().extract("\u00ad\u00ad") == ()
 
 
 @pytest.mark.parametrize(
@@ -154,15 +155,20 @@ def test_custom_tokenizer():
     assert extractor.extract("Моро́з и со­лнце") == ("Мороз", "и", "солнце")
 
 
-def test_core_queries():
-    """Слово запроса со знаком ищется среди слов без знаков"""
-    words = ["глаза", "смотрели", "на", "глаза", "и", "глаза", "смотрели"]
-    assert collocations(words, node="гла́за", min_freq=1) == collocations(
-        words, node="глаза", min_freq=1
+@pytest.mark.parametrize("node", ["глаза", "гла́за"])
+@pytest.mark.parametrize("marked", [False, True], ids=["plain", "marked"])
+def test_core_queries(node, marked):
+    """Слова и слово запроса со знаками и без находятся одинаково"""
+    plain = ["глаза", "смотрели", "на", "глаза", "и", "глаза", "смотрели"]
+    words = (
+        ["гла́за", "смо́трели", "на", "гла́за", "и", "гла\u00adза", "смотрели"] if marked else plain
     )
-    assert dispersion(words, parts=2, word="гла́за")[0].freq == 3
-    assert wordtree([words], "гла́за").source == wordtree([words], "глаза").source
-    ax = dispersion_plot(words, ["гла́за"])
+    assert collocations(words, node=node, min_freq=1) == collocations(
+        plain, node="глаза", min_freq=1
+    )
+    assert dispersion(words, parts=2, word=node)[0].freq == 3
+    assert wordtree([words], node).source == wordtree([plain], "глаза").source
+    ax = dispersion_plot(words, [node])
     assert ax.get_yticklabels()[0].get_text() == "глаза"
     plt.close("all")
 

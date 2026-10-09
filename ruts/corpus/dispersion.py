@@ -11,4 +11,4 @@ from anyts.corpus.dispersion import (
 
 from ..utils import with_stripped_marks
 
-dispersion = with_stripped_marks(core_dispersion, "word")
+dispersion = with_stripped_marks(core_dispersion, "words", "word")
