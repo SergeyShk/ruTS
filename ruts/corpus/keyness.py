@@ -45,9 +45,11 @@ def keyness(
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная
         на объем корпуса словаря (92 млн); слово вне словаря получает его
         наименьшую частоту (min_ipm) и бывает только положительным ключевым словом;
-        отрицательным ключевым словом бывает только статья, к которой приводится
-        хотя бы одна форма ее лексем pymorphy3: статьи «его», «во», «со», к которым
-        не приводится ни одно слово (это формы лемм «он», «в», «с»), не выдаются
+        статья, которой нет в цели, бывает отрицательным ключевым словом, только если
+        к ней приводится хотя бы одна форма ее лексем pymorphy3 (с lemmatize=False -
+        лемма формы по первому разбору, как у WordsExtractor(use_lexemes=True)):
+        словоформы «его», «во», «со» pymorphy3 приводит к «он», «в», «с», и статьи
+        словаря «его», «во», «со» без этого выходили бы у любого текста
         Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения
         шансов заменяется на 0.5 (Hardie 2014)
         Положительные ключевые слова чаще в целевом корпусе, отрицательные -
@@ -87,7 +89,8 @@ def keyness(
         return anyts.corpus.keyness(target, frequency, measure, min_freq, positive, top_n)
     found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive)
     reachable = _reachable(key, lemmatize)
-    return list(islice((keyword for keyword in found if reachable(keyword.word)), top_n))
+    kept = (keyword for keyword in found if keyword.freq_target or reachable(keyword.word))
+    return list(islice(kept, top_n))
 
 
 def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[str], str]:

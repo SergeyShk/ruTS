@@ -165,3 +165,9 @@ def test_keyness_freq_dict_yo(pronoun_dict):
     """«Её» и «ее» - одна статья «она», как в тексте без ё"""
     assert keyness(["Её", "кот"], pronoun_dict) == keyness(["ее", "кот"], pronoun_dict)
     assert {keyword.word for keyword in keyness(["её"], pronoun_dict)} == {"она"}
+
+
+def test_keyness_freq_dict_found_entry(pronoun_dict):
+    """Статья, которая есть в цели, остается, даже если формы pymorphy3 к ней не приводят"""
+    negative = keyness(["его"] + ["кот"] * 2000, pronoun_dict, positive=False, lemmatize=False)
+    assert {keyword.word: keyword.freq_target for keyword in negative}["его"] == 1
