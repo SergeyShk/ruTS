@@ -21,7 +21,7 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import get_morph_analyzer, lemmatize, parse_word
+from .utils import lemmatize, parse_all, parse_word
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 VERBAL_POS = frozenset({"VERB", "AUX"})
@@ -437,7 +437,7 @@ def parse_verb(word: str, lemma: str = "") -> pymorphy3.analyzer.Parse | None:
     Вывод:
         Parse|None: Разбор словоформы, None если глагольных разборов нет
     """
-    parses = [parse for parse in get_morph_analyzer().parse(word) if parse.tag.POS in VERB_POS]
+    parses = [parse for parse in parse_all(word) if parse.tag.POS in VERB_POS]
     if not parses:
         return None
     return next((parse for parse in parses if parse.normal_form == lemma), parses[0])

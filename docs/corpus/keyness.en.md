@@ -37,6 +37,8 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 | `key` | the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with `lemmatize=False` it is taken as a lemma) and brought to the conventions of the dictionary by `ruts.lexical_stats.dictionary_lemma`, as in [`LexicalStats`](../stats/lexical_stats.md) |
 | `keep` | the words of the Cyrillic letters of `ruts.lexical_stats.DICTIONARY_WORD`; numbers and words with Latin letters are left out |
 
+A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text.
+
 ## Result
 
 --8<-- "corpus/keyness.md:Keyword"
