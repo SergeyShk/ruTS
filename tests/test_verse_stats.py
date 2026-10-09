@@ -476,3 +476,19 @@ def test_ending_key():
     assert not _rhymes(("а", "в", 1), ("а", "в", 2))
     assert not _rhymes(("а", "в", 1), ("а", "н", 1))
     assert not _rhymes(None, ("а", "в", 1))
+
+
+def test_stress_marks(stress_dict):
+    """Знак ударения в тексте важнее словаря, а в строки не попадает, как и мягкий перенос"""
+    marked = ONEGIN.replace("дядя", "дя\u0301дя").replace("честных", "че\u00adстных")
+    vs = VerseStats(marked, stress_dict)
+    assert vs.lines == VerseStats(ONEGIN, stress_dict).lines
+    assert vs.get_stats() == VerseStats(ONEGIN, stress_dict).get_stats()
+    assert accentuate("За\u0301мок и замок", stress_dict) == "За\u0301мок и замо\u0301к"
+    assert accentuate("Ѐлка", stress_dict) == "Е\u0301лка"
+    # Знак после согласной или в начале текста ударения не дает
+    assert accentuate("Зам\u0301ок", stress_dict) == "Замо\u0301к"
+    assert accentuate("\u0301замок", stress_dict) == "замо\u0301к"
+    # Ударение по знаку, как по ё, метр не переносит: без знаков «реки воды» переносятся на икты
+    vs = VerseStats(f"{ONEGIN}\nКогда ре\u0301ки во\u0301ды текут", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Когда\u0301 ре\u0301ки во\u0301ды текут"

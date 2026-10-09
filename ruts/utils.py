@@ -1,4 +1,5 @@
 import re
+import unicodedata
 from collections.abc import Iterable, Iterator, Sequence
 from functools import lru_cache
 
@@ -21,6 +22,9 @@ from .constants import (
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
 SPELLINGS = {"её": "ее"}
+INVISIBLE_MARKS = dict.fromkeys(map(ord, "\u0300\u0301\u00ad"))
+# Ударение и мягкий перенос, в том числе в составе букв ѐ и ѝ
+MARKED = re.compile("[\u0300\u0301\u00ad\u0400\u040d\u0450\u045d]")
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -37,13 +41,42 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
     return pymorphy3.MorphAnalyzer()
 
 
+def strip_marks(text: str) -> str:
+    """
+    Текст без знаков ударения и мягких переносов
+
+    Описание:
+        Снимаются акут U+0301 и гравис U+0300 (в том числе у букв ѐ и ѝ)
+        и мягкий перенос U+00AD: в написание слова они не входят, а pymorphy3
+        и словари слов с ними не узнают. Текст со знаками приводится к NFC,
+        буквы й и ё не меняются
+
+    Аргументы:
+        text (str): Текст или слово
+
+    Вывод:
+        str: Текст без знаков
+
+    Пример использования:
+        >>> from ruts.utils import strip_marks
+        >>> strip_marks("Моро\u0301з и со\u00adлнце, ёлка")
+        'Мороз и солнце, ёлка'
+    """
+    if not MARKED.search(text):
+        return text
+    return unicodedata.normalize(
+        "NFC", unicodedata.normalize("NFD", text).translate(INVISIBLE_MARKS)
+    )
+
+
 @lru_cache(maxsize=131072)
 def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
     """
     Морфологические разборы словоформы pymorphy3 с кэшированием
 
     Описание:
-        Разборы по убыванию вероятности. Словоформа «её» разбирается как «ее»:
+        Разборы по убыванию вероятности; знаки ударения и мягкие переносы
+        снимаются (strip_marks). Словоформа «её» разбирается как «ее»:
         pymorphy3 дает у нее только притяжательное местоимение, без личного
         «она», и текст с буквой ё разбирался бы иначе, чем без нее
 
@@ -58,6 +91,7 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         >>> [parse.normal_form for parse in parse_all("её")][:2]
         ['она', 'её']
     """
+    word = strip_marks(word)
     return tuple(get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word)))
 
 
@@ -129,13 +163,17 @@ def normalize_yo(word: str) -> str:
     """
     Замена буквы ё на е в нижнем регистре
 
+    Описание:
+        Форма слова для сравнения: знаки ударения и мягкие переносы тоже
+        снимаются (strip_marks)
+
     Аргументы:
         word (str): Слово
 
     Вывод:
         str: Слово без буквы ё
     """
-    return word.lower().replace("ё", "е")
+    return strip_marks(word).lower().replace("ё", "е")
 
 
 def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int, int]]:
@@ -188,7 +226,8 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         razdel оставляет в слове приклеенные тире реплик и ремарок (-Нет -сказал он,
         —сказал); они становятся отдельными токенами, а дефис внутри слова (кто-то),
         минус перед числом и тире в сокращенном имени (N—ский) остаются; метка порядка
-        байтов (BOM) в начале токена отбрасывается
+        байтов (BOM) в начале токена отбрасывается. В тексте токена сняты знаки
+        ударения и мягкие переносы (strip_marks), позиции - по исходной строке
 
     Аргументы:
         text (str): Строка текста
@@ -197,6 +236,14 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого токена
     """
+    for start, stop, token in _iter_razdel_tokens(text):
+        word = strip_marks(token)
+        if word:
+            yield start, stop, word
+
+
+def _iter_razdel_tokens(text: str) -> Iterator[tuple[int, int, str]]:
+    """Токены razdel с отделенными тире и без BOM, как написаны в тексте"""
     for token in tokenize(text):
         word = token.text.lstrip(BYTE_ORDER_MARK)
         if not word:

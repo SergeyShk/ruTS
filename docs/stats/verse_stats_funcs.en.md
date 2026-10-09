@@ -18,7 +18,7 @@ The accuracy was checked on the [RIFMA](https://github.com/Koziev/Rifma) dataset
 !!! info ""
     **ruts.verse_stats.accentuate()**
 
-Places stresses in a text by the dictionary: an acute accent (U+0301) is put after the stressed vowel of every word; monosyllabic prepositions, conjunctions and particles and words without a found stress stay unmarked. The meter is not taken into account: for verse with stresses fitted to the meter use the [`VerseStats.accentuate`](verse_stats.md#accentuate) method.
+Places stresses in a text by the dictionary: an acute accent (U+0301) is put after the stressed vowel of every word, a stress mark already in the text is kept; monosyllabic prepositions, conjunctions and particles and words without a found stress stay unmarked. The meter is not taken into account: for verse with stresses fitted to the meter use the [`VerseStats.accentuate`](verse_stats.md#accentuate) method.
 
 Parameters:
 

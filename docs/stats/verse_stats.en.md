@@ -7,7 +7,7 @@
 
 A module for computing verse statistics of a text: stress placement, meter and number of feet, pyrrhics and the stress profile, rhyme schemes, line ending types and stanzas. The data source can be either a text with line breaks or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
 
-The text is split into lines and stanzas (by blank lines), the words are accented with the [`StressDict`](../datasets/stressdict.md) dictionary, then a syllabo-tonic meter is fitted with the algorithm of Barakhnin, Kozhemyakina and Kuznetsova and the remaining stress ambiguity is resolved; rhymes are found by the phonetic key of the line ending. The details of the algorithm and its accuracy on the RIFMA dataset are in the [functions](verse_stats_funcs.md) section.
+The text is split into lines and stanzas (by blank lines), the words are accented with the [`StressDict`](../datasets/stressdict.md) dictionary (a stress mark in the text, an acute or grave after a vowel, overrides the dictionary, while the marks and soft hyphens do not get into the lines), then a syllabo-tonic meter is fitted with the algorithm of Barakhnin, Kozhemyakina and Kuznetsova and the remaining stress ambiguity is resolved; rhymes are found by the phonetic key of the line ending. The details of the algorithm and its accuracy on the RIFMA dataset are in the [functions](verse_stats_funcs.md) section.
 
 The stress dictionary is downloaded once: `StressDict().download()` (10 MB). Without it the class raises `DatasetNotFoundError` with a hint.
 

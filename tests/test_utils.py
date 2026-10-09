@@ -12,6 +12,7 @@ from ruts.utils import (
     normalize_yo,
     parse_all,
     parse_word,
+    strip_marks,
 )
 
 
@@ -94,8 +95,8 @@ def test_iter_text_words():
         ("-5 1990—1995", ["-", "5", "1990—1995"]),
         ("Г—в и N—ский", ["Г—в", "и", "N—ский"]),
         ("Нет-сказал", ["Нет-сказал"]),
-        ("Он сказа́л—и ушёл", ["Он", "сказа́л", "—", "и", "ушёл"]),
-        ("Да́- сказал", ["Да́", "-", "сказал"]),
+        ("Он сказа\u0301л—и ушёл", ["Он", "сказал", "—", "и", "ушёл"]),
+        ("Да\u0301- сказал", ["Да", "-", "сказал"]),
         (
             unicodedata.normalize("NFD", "мой—её"),
             [unicodedata.normalize("NFD", "мой"), "—", unicodedata.normalize("NFD", "её")],
@@ -105,7 +106,7 @@ def test_iter_text_words():
 def test_iter_tokens(text, expected):
     tokens = list(iter_tokens(text))
     assert [token for _, _, token in tokens] == expected
-    assert all(text[start:stop] == token for start, stop, token in tokens)
+    assert all(strip_marks(text[start:stop]) == token for start, stop, token in tokens)
 
 
 def test_add_dash_rules():
@@ -121,12 +122,13 @@ def test_add_dash_rules():
         "сказал:—Нет",
         "«-Нет»",
         "да--сказал",
-        "Да́- нет",
-        "Да́,-нет",
+        "Да\u0301- нет",
+        "Да\u0301,-нет",
         "Он—«Нет»",
         "он—(тихо)—сказал",
     ):
-        assert [token.text for token in nlp(text)] == [token for _, _, token in iter_tokens(text)]
+        tokens = [strip_marks(token.text) for token in nlp(text)]
+        assert tokens == [token for _, _, token in iter_tokens(text)]
     assert [token.text for token in nlp("во-первых")] == ["во", "-", "первых"]
 
 
@@ -141,3 +143,29 @@ def test_add_dash_rules_other_tokenizer():
 
 def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Моро\u0301з и со\u00adлнце", "Мороз и солнце"),
+        ("чуде\u0300сный, ѐлка, Ѝгорь", "чудесный, елка, Игорь"),
+        ("ёлка и йод", "ёлка и йод"),
+        ("Е\u0308лка\u0301", "Ёлка"),
+    ],
+)
+def test_strip_marks(text, expected):
+    assert strip_marks(text) == expected
+
+
+def test_iter_tokens_soft_hyphen():
+    """Токен из одного мягкого переноса - не токен"""
+    assert [token for _, _, token in iter_tokens("кот \u00ad спит")] == ["кот", "спит"]
+
+
+def test_marks_in_parse_and_folding():
+    """Знаки ударения не мешают разбору и сравнению слов"""
+    assert parse_word("Моро\u0301з").normal_form == "мороз"
+    assert lemmatize("сказа\u0301л", "VERB") == "сказать"
+    assert normalize_yo("Ёлка\u0301") == "елка"
+    assert find_phrases(["в", "свя\u0301зи", "с"], ["в связи с"]) == [(0, 3)]

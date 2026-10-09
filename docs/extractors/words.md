@@ -10,7 +10,7 @@
 
 ## Языковые крючки
 
-Класс расширяет `WordsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) крючками русского языка: токенизатор `tokenize(text)` - функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик (`ruts.utils.iter_tokens`), лемма `lemmatize(word)` - первый разбор `MorphAnalyzer` библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3), а шаблон чисел `number_pattern` подходит и к диапазонам, дробям и порядковым числительным: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
+Класс расширяет `WordsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) крючками русского языка: токенизатор `tokenize(text)` - функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик и без знаков ударения и мягких переносов в словах (`ruts.utils.iter_tokens`), лемма `lemmatize(word)` - первый разбор `MorphAnalyzer` библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3), а шаблон чисел `number_pattern` подходит и к диапазонам, дробям и порядковым числительным: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
 
 ## Параметры
 
