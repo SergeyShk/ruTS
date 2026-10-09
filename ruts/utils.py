@@ -1,5 +1,4 @@
 import re
-import unicodedata
 from collections.abc import Iterable, Iterator, Sequence
 from functools import lru_cache
 
@@ -22,9 +21,15 @@ from .constants import (
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
 SPELLINGS = {"её": "ее"}
-INVISIBLE_MARKS = dict.fromkeys(map(ord, "\u0300\u0301\u00ad"))
-# Ударение и мягкий перенос, в том числе в составе букв ѐ и ѝ
-MARKED = re.compile("[\u0300\u0301\u00ad\u0400\u040d\u0450\u045d]")
+GRAVE_VOWELS = str.maketrans("ѐѝЀЍ", "еиЕИ")
+LATIN_VOWELS = dict(zip("áéóýàèòÁÉÓÝÀÈÒ", "аеоуаеоАЕОУАЕО", strict=True))
+# Знак ударения после кириллической буквы (у й и ё - после ее собственного знака)
+CYRILLIC_STRESS = re.compile(
+    "(?<=[а-яёА-ЯЁ])[\u0300\u0301]+|(?<=[а-яА-Я][\u0306\u0308])[\u0300\u0301]+"
+)
+# Ударная гласная латиницей внутри русского слова: чтó, Домá
+LATIN_STRESS = re.compile("(?<=[а-яёА-ЯЁ])[áéóýàèòÁÉÓÝÀÈÒ]|[áéóýàèòÁÉÓÝÀÈÒ](?=[а-яёА-ЯЁ])")
+MARKED = re.compile("[\u0300\u0301\u00adѐѝЀЍáéóýàèòÁÉÓÝÀÈÒ]")
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -46,10 +51,12 @@ def strip_marks(text: str) -> str:
     Текст без знаков ударения и мягких переносов
 
     Описание:
-        Снимаются акут U+0301 и гравис U+0300 (в том числе у букв ѐ и ѝ)
-        и мягкий перенос U+00AD: в написание слова они не входят, а pymorphy3
-        и словари слов с ними не узнают. Текст со знаками приводится к NFC,
-        буквы й и ё не меняются
+        Снимаются акут U+0301 и гравис U+0300 после кириллической буквы, буквы
+        ѐ и ѝ становятся е и и, ударная гласная латиницей внутри русского слова
+        (чтó, Домá) - кириллической, мягкий перенос U+00AD снимается везде:
+        в написание слова все это не входит, а pymorphy3 и словари слов с ними
+        не узнают. Знаки над латиницей (Café) и форма нормализации Unicode
+        остаются как есть
 
     Аргументы:
         text (str): Текст или слово
@@ -59,14 +66,14 @@ def strip_marks(text: str) -> str:
 
     Пример использования:
         >>> from ruts.utils import strip_marks
-        >>> strip_marks("Моро\u0301з и со\u00adлнце, ёлка")
-        'Мороз и солнце, ёлка'
+        >>> strip_marks("Моро\u0301з и со\u00adлнце, чтó, Café")
+        'Мороз и солнце, что, Café'
     """
     if not MARKED.search(text):
         return text
-    return unicodedata.normalize(
-        "NFC", unicodedata.normalize("NFD", text).translate(INVISIBLE_MARKS)
-    )
+    text = text.replace("\u00ad", "").translate(GRAVE_VOWELS)
+    text = LATIN_STRESS.sub(lambda match: LATIN_VOWELS[match.group()], text)
+    return CYRILLIC_STRESS.sub("", text)
 
 
 @lru_cache(maxsize=131072)

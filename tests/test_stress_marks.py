@@ -5,6 +5,7 @@ import spacy
 
 from ruts import (
     BasicStats,
+    CharNgramsExtractor,
     CohesionStats,
     DiversityStats,
     LexicalStats,
@@ -87,3 +88,15 @@ def test_kwic():
 def test_keyness(freq_dict):
     keywords = {k.word: k.freq_target for k in keyness(["ко́т", "кот"], freq_dict)}
     assert keywords["кот"] == 2
+
+
+def test_char_ngrams():
+    for within_words in (False, True):
+        extractor = CharNgramsExtractor(n=3, lowercase=True, within_words=within_words)
+        assert extractor.extract(MARKED) == extractor.extract(PLAIN)
+
+
+def test_latin_stressed_vowels():
+    """Ударная гласная латиницей внутри русского слова - буква этого слова"""
+    assert WordsExtractor().extract("Он чтó-то сказал, Домá") == ("Он", "что-то", "сказал", "Дома")
+    assert MorphStats("чтó").get_stats() == MorphStats("что").get_stats()
