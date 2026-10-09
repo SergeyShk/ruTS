@@ -77,7 +77,8 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         list[str]: Окна текста; пустой список для текста без слов или короче min_words
 
     Исключения:
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
     """
     if not isinstance(text, str):
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
@@ -132,6 +133,8 @@ def _check_windows(window: int | None, min_words: int | None) -> None:
         check_integer(min_words, "smallest number of words in a window")
         if min_words < 1:
             raise ParameterError("Наименьшее число слов в окне должно быть больше 0")
+        if window is not None and min_words > window:
+            raise ParameterError("Наименьшее число слов в окне не может быть больше окна")
 
 
 def text_features(text: str) -> dict[str, float]:
@@ -293,7 +296,8 @@ def corpus_features(
 
     Исключения:
         SourceError: Если в корпусе нет окна из min_words и более слов
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
     """
     check_words(texts, "texts")
     if not callable(features):
@@ -306,9 +310,10 @@ def corpus_features(
     if not rows:
         if not any(next(iter_text_words(text), None) for text in texts):
             raise SourceError("В источнике данных отсутствуют слова")
+        advice = "уменьшите window" if min_words is None else "уменьшите min_words"
         raise SourceError(
             f"В источнике данных нет окна из {_min_words(window, min_words)} и более слов: "
-            "уменьшите min_words или window"
+            f"{advice}"
         )
     table = pd.DataFrame.from_dict(rows, orient="index").astype(float)
     table.index = pd.MultiIndex.from_tuples(table.index, names=["text", "window"])
@@ -365,7 +370,8 @@ def compare_corpora(
 
     Исключения:
         SourceError: Если в одном из корпусов нет окна из min_words и более слов
-        ParameterError: Если размер окна или min_words меньше единицы
+        ParameterError: Если размер окна или min_words меньше единицы или min_words
+            больше окна
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)

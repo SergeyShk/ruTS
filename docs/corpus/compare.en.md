@@ -44,7 +44,7 @@ Parameters of `compare_corpora`:
 | `b` | list[str] | `-` | Texts of the second corpus |
 | `window` | int | `1000` | Window size in words; `None` - whole texts |
 | `features` | callable | `None` | Text feature function; `None` - `text_features` |
-| `min_words` | int | `None` | Smallest number of words in a window; `None` - a whole window, one word with `window=None` |
+| `min_words` | int | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
 
 `labels`, `n_bootstrap` and `seed` go on to `compare_features`, whose parameters are:
 
@@ -116,7 +116,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
     {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Twenty stories of Chekhov are shorter than 1000 words and give no window, so his windows come from 57 works; with a smaller window they would be compared too.
+Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
 The p-values take the 1672 windows for independent (see the warning above): 84 of the 108 features have a corrected p-value below 0.01, but only 14 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 63 of those 84 features, and for the length of a sentence it spans −6.1 to −1.7 words, where the windows alone would give −4.6 to −3.2. For the ellipses it spans 5 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 

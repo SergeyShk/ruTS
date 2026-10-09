@@ -11,7 +11,7 @@ from ruts.corpus import (
     text_features,
 )
 from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES
-from ruts.exceptions import SourceError
+from ruts.exceptions import ParameterError, SourceError
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
 short = [
@@ -155,8 +155,12 @@ def test_text_features_lowercase_diversity():
 
 
 def test_compare_corpora_short_texts():
-    with pytest.raises(SourceError, match=r"Корпус Чехов: .* 1000 и более слов"):
+    with pytest.raises(
+        SourceError, match=r"Корпус Чехов: .* 1000 и более слов: уменьшите window$"
+    ):
         compare_corpora(["Кот спал."], ["Пёс ел."], labels=("Чехов", "Толстой"))
+    with pytest.raises(SourceError, match=r"нет окна из 3 и более слов: уменьшите min_words$"):
+        corpus_features(["Кот спал."], window=5, min_words=3)
     with pytest.raises(SourceError, match=r"Корпус Толстой: .*отсутствуют слова"):
         compare_corpora([" ".join(["кот"] * 1000)], ["...", ""], labels=("Чехов", "Толстой"))
 
@@ -232,3 +236,12 @@ def test_compare_corpora_options():
     single = compare_corpora(short[:1], long, window=None, features=lengths, n_bootstrap=50)
     assert isnan(single.loc["length", "cliff_delta"])
     assert (single.loc["length", "n_A"], single.loc["length", "n_B"]) == (1, 3)
+
+
+def test_min_words_above_window():
+    """Окно не длиннее window, и min_words больше окна не оставил бы ни одного окна"""
+    with pytest.raises(
+        ParameterError, match=r"^Наименьшее число слов в окне не может быть больше окна$"
+    ):
+        split_windows(text, 5, min_words=6)
+    assert split_windows(text, None, min_words=100) == []
