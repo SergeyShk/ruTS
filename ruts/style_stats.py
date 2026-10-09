@@ -1,9 +1,10 @@
 from collections import Counter
-from collections.abc import Collection, Iterable, Sequence
+from collections.abc import Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
 from math import isnan, nan, sqrt
 
 import anyts
+import pymorphy3
 from anyts.readability_stats import scale_level
 from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
@@ -213,8 +214,7 @@ class StyleStats:
         Описание:
             Слова и словосочетания, по которым считаются метрики verbal_nouns,
             compound_prepositions, parentheticals и cliches, в порядке текста,
-            как они записаны в forms; словосочетание с глаголом находится в любой
-            его форме (expand_phrases)
+            как они записаны в forms; словосочетания ищутся, как в calc_phrase_density
 
         Вывод:
             dict[str, tuple[str, ...]]: Название метрики - найденные слова и словосочетания
@@ -542,8 +542,9 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
         float: Доля в процентах
     """
     check_words(text)
-    nouns = sum(1 for word in text if parse_word(word).tag.POS == "NOUN")
-    return safe_divide(len(find_verbal_nouns(text)), nouns, nan) * 100
+    nouns = list(_iter_nouns(text))
+    verbal = sum(1 for _, parse in nouns if is_verbal_noun(parse.normal_form))
+    return safe_divide(verbal, len(nouns), nan) * 100
 
 
 def find_verbal_nouns(text: Sequence[str]) -> list[tuple[int, int]]:
@@ -568,9 +569,16 @@ def find_verbal_nouns(text: Sequence[str]) -> list[tuple[int, int]]:
     check_words(text)
     return [
         (position, position + 1)
-        for position, parse in enumerate(map(parse_word, text))
-        if parse.tag.POS == "NOUN" and is_verbal_noun(parse.normal_form)
+        for position, parse in _iter_nouns(text)
+        if is_verbal_noun(parse.normal_form)
     ]
+
+
+def _iter_nouns(text: Sequence[str]) -> Iterator[tuple[int, pymorphy3.analyzer.Parse]]:
+    """Позиции и первые разборы существительных"""
+    for position, parse in enumerate(map(parse_word, text)):
+        if parse.tag.POS == "NOUN":
+            yield position, parse
 
 
 def calc_phrase_density(text: Sequence[str], phrases: Iterable[str]) -> float:

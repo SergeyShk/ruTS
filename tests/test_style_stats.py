@@ -26,6 +26,7 @@ from ruts.style_stats import (
     is_parenthetical,
     is_stopword,
 )
+from ruts.utils import parse_word
 
 text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота\
         значений словарного состава языка или какого-либо его сегмента; тематический, или идеографический способ\
@@ -403,3 +404,20 @@ def test_markers_custom_cliches():
 def test_find_markers_empty():
     assert find_verbal_nouns([]) == []
     assert find_parentheticals(["мама", "мыла", "раму"]) == []
+
+
+def test_markers_forms():
+    """Маркеры ищутся по словоформам forms, а не по словам экстрактора и не по токенам Doc"""
+    text = "В целях повышения качества проводится проверка решений, как правило, вовремя"
+    expected = StyleStats(text).markers()
+    assert expected["compound_prepositions"] == ("в целях",)
+    lexemes = StyleStats(text, words_extractor=WordsExtractor(use_lexemes=True, lowercase=True))
+    assert lexemes.words != lexemes.forms
+    assert lexemes.markers() == expected
+    assert StyleStats(spacy.blank("ru")(text)).markers() == expected
+
+
+def test_markers_verbal_nouns_share():
+    ss = StyleStats(text)
+    nouns = sum(1 for word in ss.forms if parse_word(word).tag.POS == "NOUN")
+    assert ss.verbal_nouns == pytest.approx(100 * len(ss.markers()["verbal_nouns"]) / nouns)

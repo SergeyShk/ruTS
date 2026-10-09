@@ -13,6 +13,7 @@ from anyts.visualizers.highlight import (
 from razdel import sentenize
 from spacy.tokens import Doc, Token
 
+from .. import style_stats
 from ..cohesion_stats import connector_pos, find_connectors, unit_pos, unit_text
 from ..constants import (
     ALLITERATION_IGNORED_LETTERS,
@@ -33,7 +34,7 @@ from ..constants import (
 )
 from ..exceptions import ParameterError
 from ..lexical_stats import get_rank
-from ..style_stats import expand_phrases, is_parenthetical, is_stopword
+from ..style_stats import expand_phrases, is_stopword
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     find_split_predicates,
@@ -50,7 +51,6 @@ from ..syntax_stats import (
 from ..utils import (
     BYTE_ORDER_MARK,
     find_phrases,
-    is_verbal_noun,
     iter_text_words,
     normalize_yo,
     parse_word,
@@ -406,8 +406,7 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     Поиск отглагольных существительных
 
     Описание:
-        Существительные по первому разбору pymorphy3 с отглагольной леммой
-        (is_verbal_noun), как в доле verbal_nouns класса StyleStats
+        Слова ruts.style_stats.find_verbal_nouns, как в доле verbal_nouns класса StyleStats
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -415,13 +414,12 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя verbal_nouns
     """
-    highlights = []
-    for word in words:
-        parse = parse_word(word.text)
-        if parse.tag.POS == "NOUN" and is_verbal_noun(parse.normal_form):
-            note = "отглагольное существительное"
-            highlights.append(Highlight(word.start, word.end, "verbal_nouns", note))
-    return highlights
+    words = list(words)
+    spans = style_stats.find_verbal_nouns([word.text for word in words])
+    note = "отглагольное существительное"
+    return [
+        Highlight(words[start].start, words[start].end, "verbal_nouns", note) for start, _ in spans
+    ]
 
 
 def find_phrase_highlights(
@@ -498,8 +496,8 @@ def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
     Поиск вводных слов
 
     Описание:
-        Вводные обороты из PARENTHETICALS и одиночные вводные слова по граммеме Prnt
-        pymorphy3 (is_parenthetical) вне найденных оборотов, как в calc_parentheticals
+        Вводные обороты и слова ruts.style_stats.find_parentheticals, как
+        в calc_parentheticals; у оборота в подсказке - его форма из PARENTHETICALS
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -508,9 +506,10 @@ def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя parentheticals
     """
     highlights = find_phrase_highlights(words, PARENTHETICALS, "parentheticals", "вводный оборот")
-    covered = {position for h in highlights for position in range(h.start, h.end)}
-    for word in words:
-        if word.start not in covered and is_parenthetical(word.text):
+    phrases = {highlight.start for highlight in highlights}
+    for start, _ in style_stats.find_parentheticals([word.text for word in words]):
+        if words[start].start not in phrases:
+            word = words[start]
             highlights.append(Highlight(word.start, word.end, "parentheticals", "вводное слово"))
     return sorted(highlights, key=lambda h: h.start)
 

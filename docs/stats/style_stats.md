@@ -86,7 +86,7 @@
 
 ### markers
 
-Возвращает найденные маркеры канцелярита: для каждой из метрик `verbal_nouns`, `compound_prepositions`, `parentheticals` и `cliches` - слова и словосочетания, по которым она посчитана, в порядке текста и как они записаны в `forms`. Словосочетание с глаголом находится в любой его форме.
+Возвращает найденные маркеры канцелярита: для каждой из метрик `verbal_nouns`, `compound_prepositions`, `parentheticals` и `cliches` - слова и словосочетания, по которым она посчитана, в порядке текста и как они записаны в `forms`. Словосочетания ищутся, как в [`calc_phrase_density`](style_stats_funcs.md#calc_phrase_density).
 
 !!! example "Пример"
 

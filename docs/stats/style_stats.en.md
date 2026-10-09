@@ -86,7 +86,7 @@ Parameters:
 
 ### markers
 
-Returns the officialese markers found: for each of the metrics `verbal_nouns`, `compound_prepositions`, `parentheticals` and `cliches`, the words and phrases it was computed from, in the order of the text and as written in `forms`. A phrase with a verb is found in any form of the verb.
+Returns the officialese markers found: for each of the metrics `verbal_nouns`, `compound_prepositions`, `parentheticals` and `cliches`, the words and phrases it was computed from, in the order of the text and as written in `forms`. Phrases are searched as in [`calc_phrase_density`](style_stats_funcs.md#calc_phrase_density).
 
 !!! example "Example"
 
