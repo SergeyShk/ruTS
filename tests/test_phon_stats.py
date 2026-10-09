@@ -177,3 +177,13 @@ def test_print_stats(capsys, ps):
     ps.print_stats()
     captured = capsys.readouterr()
     assert captured.out.count("|") == len(PHON_STATS_DESC) + 1
+
+
+def test_no_sounds():
+    """У текста без звуков доли и отношения не определены, а не равны нулю"""
+    stats = PhonStats("123 456 7.89 2024").get_stats()
+    for name in ("p_vowels", "p_sonorants", "p_voiced", "p_voiceless", "p_heavy_clusters"):
+        assert isnan(stats[name])
+    vowels = PhonStats("а и о")
+    assert vowels.p_vowels == 1.0
+    assert isnan(vowels.p_heavy_clusters)

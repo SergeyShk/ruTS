@@ -48,7 +48,9 @@ class PhonStats:
         Статистики считаются по буквам без учета оглушения, редукции и ударения:
         гласные - а, е, и, о, у, ы, э, ю, я, ё; сонорные - л, м, н, р, й;
         звонкие шумные - б, в, г, д, ж, з; глухие шумные - к, п, с, т, ф, х, ц, ч, ш, щ;
-        ь и ъ не являются звуками и не учитываются в долях
+        ь и ъ не являются звуками и не учитываются в долях; у текста без звуков
+        (числа, латиница) доли и отношения - nan, у текста без согласных - доля
+        тяжелых кластеров
         Слова делятся на слоги по правилу восходящей звучности (Аванесов)
 
     Пример использования:
@@ -162,14 +164,14 @@ class PhonStats:
             patterns[cv_pattern(syllable)] += count
         self.c_syllable_patterns = dict(sorted(patterns.items()))
 
-        self.p_vowels = safe_divide(self.n_vowels, n_sounds)
-        self.p_sonorants = safe_divide(self.n_sonorants, n_sounds)
-        self.p_voiced = safe_divide(self.n_voiced, n_sounds)
-        self.p_voiceless = safe_divide(self.n_voiceless, n_sounds)
+        self.p_vowels = safe_divide(self.n_vowels, n_sounds, nan)
+        self.p_sonorants = safe_divide(self.n_sonorants, n_sounds, nan)
+        self.p_voiced = safe_divide(self.n_voiced, n_sounds, nan)
+        self.p_voiceless = safe_divide(self.n_voiceless, n_sounds, nan)
         self.consonant_vowel_ratio = safe_divide(self.n_consonants, self.n_vowels, nan)
         n_clusters = sum(self.c_clusters.values())
         self.p_heavy_clusters = safe_divide(
-            sum(count for size, count in self.c_clusters.items() if size >= 3), n_clusters
+            sum(count for size, count in self.c_clusters.items() if size >= 3), n_clusters, nan
         )
         self.p_hiatus = _hiatus(counts) / len(words)
         self.cv_entropy = _cv_entropy(counts)

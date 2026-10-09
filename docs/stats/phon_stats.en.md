@@ -17,7 +17,7 @@ The statistics are computed over letters without accounting for devoicing, reduc
 | Voiceless obstruents | к, п, с, т, ф, х, ц, ч, ш, щ | `RU_CONSONANTS_LOW` |
 | Signs | ь, ъ - not sounds, not counted in the shares | `RU_MARKS` |
 
-Words are divided into syllables by the rising sonority rule (Avanesov), see the [`syllabify`](../syllables.md#syllabify) function.
+Words are divided into syllables by the rising sonority rule (Avanesov), see the [`syllabify`](../syllables.md#syllabify) function. For a text without sounds (numbers, Latin letters) the shares and ratios are undefined - `nan`.
 
 The computation time grows linearly with text length.
 
