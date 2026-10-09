@@ -1,12 +1,16 @@
+import functools
+import inspect
 import re
-from collections.abc import Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from functools import lru_cache
+from typing import Any, TypeVar, cast
 
 import pymorphy3
 from anyts.utils import check_words, is_punctuation
-from razdel import tokenize
+from razdel import sentenize, tokenize
 from spacy.language import Language
 from spacy.tokenizer import Tokenizer
+from spacy.tokens import Doc
 
 from .constants import (
     LETTER,
@@ -18,18 +22,33 @@ from .constants import (
     VERBAL_NOUN_SUFFIXES,
 )
 
+F = TypeVar("F", bound=Callable[..., Any])
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
 SPELLINGS = {"её": "ее"}
-GRAVE_VOWELS = str.maketrans("ѐѝЀЍ", "еиЕИ")
-LATIN_VOWELS = dict(zip("áéóýàèòÁÉÓÝÀÈÒ", "аеоуаеоАЕОУАЕО", strict=True))
-# Знак ударения после кириллической буквы (у й и ё - после ее собственного знака)
-CYRILLIC_STRESS = re.compile(
-    "(?<=[а-яёА-ЯЁ])[\u0300\u0301]+|(?<=[а-яА-Я][\u0306\u0308])[\u0300\u0301]+"
+CYRILLIC = "а-яёА-ЯЁ"
+LATIN_STRESSED = "áéóýàèòÁÉÓÝÀÈÒ"
+# Буквы вместо записей с отдельными знаками, ѐ и ѝ и ударных гласных латиницей
+MARKED_LETTERS = {
+    "и\u0306": "й",
+    "И\u0306": "Й",
+    "е\u0308": "ё",
+    "Е\u0308": "Ё",
+    **dict(zip("ѐѝЀЍ", "еиЕИ", strict=True)),
+    **dict(zip(LATIN_STRESSED, "аеоуаеоАЕОУАЕО", strict=True)),
+    **dict(zip("aeoyAEOY", "аеоуАЕОУ", strict=True)),
+}
+# Знаки, которых нет в написании русского слова; группа говорит, что с ними делать
+MARKS = re.compile(
+    "(?P<letter>[иИ]\u0306|[еЕ]\u0308)"
+    f"|(?P<stress>(?<=[{CYRILLIC}])[\u0300\u0301]+|(?<=[иеИЕ][\u0306\u0308])[\u0300\u0301]+)"
+    "|(?P<hyphen>\u00ad)"
+    "|(?P<grave>[ѐѝЀЍ])"
+    f"|(?P<latin>(?<=[{CYRILLIC}])[{LATIN_STRESSED}]|(?<=[{CYRILLIC}]\u00ad)[{LATIN_STRESSED}]"
+    f"|[{LATIN_STRESSED}](?=\u00ad?[{CYRILLIC}])"
+    f"|(?<=[{CYRILLIC}])[aeoyAEOY][\u0300\u0301]|[aeoyAEOY][\u0300\u0301](?=\u00ad?[{CYRILLIC}]))"
 )
-# Ударная гласная латиницей внутри русского слова: чтó, Домá
-LATIN_STRESS = re.compile("(?<=[а-яёА-ЯЁ])[áéóýàèòÁÉÓÝÀÈÒ]|[áéóýàèòÁÉÓÝÀÈÒ](?=[а-яёА-ЯЁ])")
-MARKED = re.compile("[\u0300\u0301\u00adѐѝЀЍáéóýàèòÁÉÓÝÀÈÒ]")
+MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -53,10 +72,10 @@ def strip_marks(text: str) -> str:
     Описание:
         Снимаются акут U+0301 и гравис U+0300 после кириллической буквы, буквы
         ѐ и ѝ становятся е и и, ударная гласная латиницей внутри русского слова
-        (чтó, Домá) - кириллической, мягкий перенос U+00AD снимается везде:
-        в написание слова все это не входит, а pymorphy3 и словари слов с ними
-        не узнают. Знаки над латиницей (Café) и форма нормализации Unicode
-        остаются как есть
+        (чтó, Домá) - кириллической, й и ё из двух символов (NFD) собираются
+        в одну букву, мягкий перенос U+00AD снимается везде: в написание слова
+        все это не входит, а pymorphy3 и словари слов с ними не узнают. Знаки
+        над латиницей (Café) остаются
 
     Аргументы:
         text (str): Текст или слово
@@ -66,14 +85,100 @@ def strip_marks(text: str) -> str:
 
     Пример использования:
         >>> from ruts.utils import strip_marks
-        >>> strip_marks("Моро\u0301з и со\u00adлнце, чтó, Café")
+        >>> strip_marks("Моро\\u0301з и со\\u00adлнце, чтó, Café")
         'Мороз и солнце, что, Café'
     """
     if not MARKED.search(text):
         return text
-    text = text.replace("\u00ad", "").translate(GRAVE_VOWELS)
-    text = LATIN_STRESS.sub(lambda match: LATIN_VOWELS[match.group()], text)
-    return CYRILLIC_STRESS.sub("", text)
+    return MARKS.sub(_replace_mark, text)
+
+
+def with_stripped_marks(func: F, *names: str) -> F:
+    """
+    Функция ядра, которая снимает знаки ударения и мягкие переносы с аргументов
+
+    Описание:
+        Строка или список строк в аргументах names проходит через strip_marks:
+        слово запроса со знаком ищется среди слов, извлеченных без знаков.
+        Неверные значения передаются как есть - их отвергает ядро
+
+    Аргументы:
+        func (Callable): Функция ядра
+        names (tuple[str]): Имена аргументов со словами
+
+    Вывод:
+        Callable: Функция с той же сигнатурой
+    """
+    signature = inspect.signature(func)
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        bound = signature.bind(*args, **kwargs)
+        for name in names:
+            value = bound.arguments.get(name)
+            if isinstance(value, str):
+                bound.arguments[name] = strip_marks(value)
+            elif isinstance(value, list | tuple) and all(isinstance(item, str) for item in value):
+                bound.arguments[name] = type(value)(strip_marks(item) for item in value)
+        return func(*bound.args, **bound.kwargs)
+
+    return cast(F, wrapper)
+
+
+def take_marks(text: str, positions: bool = True) -> tuple[str, list[int], set[int]]:
+    """
+    Текст без знаков ударения и мягких переносов с картой позиций и ударениями
+
+    Описание:
+        Текст тот же, что у strip_marks; для каждого его символа - позиция
+        в исходной строке, и номера символов, на которые падает ударение по знаку
+        (буква перед акутом или грависом, ѐ, ѝ, ударная гласная латиницей)
+
+    Аргументы:
+        text (str): Текст
+        positions (bool): Строить карту позиций; False - список позиций пуст
+
+    Вывод:
+        tuple[str, list[int], set[int]]: Текст без знаков, позиции его символов
+            в исходной строке и номера ударных символов
+
+    Пример использования:
+        >>> from ruts.utils import take_marks
+        >>> take_marks("Ма\\u0301ма")
+        ('Мама', [0, 1, 3, 4], {1})
+    """
+    pieces = []
+    origin: list[int] = []
+    stressed = set()
+    length = 0
+    position = 0
+    for match in MARKS.finditer(text):
+        pieces.append(text[position : match.start()])
+        length += match.start() - position
+        if positions:
+            origin.extend(range(position, match.start()))
+        if match.lastgroup == "stress":
+            stressed.add(length - 1)
+        elif match.lastgroup != "hyphen":
+            if match.lastgroup != "letter":
+                stressed.add(length)
+            pieces.append(_replace_mark(match))
+            length += 1
+            if positions:
+                origin.append(match.start())
+        position = match.end()
+    pieces.append(text[position:])
+    if positions:
+        origin.extend(range(position, len(text)))
+    return "".join(pieces), origin, stressed
+
+
+def _replace_mark(match: re.Match[str]) -> str:
+    """Замена знака из MARKS: пустая строка или буква"""
+    if match.lastgroup in ("stress", "hyphen"):
+        return ""
+    found = match.group()
+    return MARKED_LETTERS.get(found) or MARKED_LETTERS[found[0]]
 
 
 @lru_cache(maxsize=131072)
@@ -102,15 +207,14 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
     return tuple(get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word)))
 
 
-@lru_cache(maxsize=131072)
 def parse_word(word: str) -> pymorphy3.analyzer.Parse:
     """
-    Морфологический разбор словоформы с кэшированием
+    Морфологический разбор словоформы
 
     Описание:
-        Возвращает первый (наиболее вероятный) разбор parse_all
-        Результаты кэшируются по словоформе: в тексте на 75 тысяч токенов
-        всего около 14 тысяч уникальных форм, повторный разбор не нужен
+        Возвращает первый (наиболее вероятный) разбор parse_all, который
+        кэширует разборы по словоформе: в тексте на 75 тысяч токенов всего около
+        14 тысяч уникальных форм, повторный разбор не нужен
 
     Аргументы:
         word (str): Словоформа
@@ -166,6 +270,7 @@ def is_verbal_noun(lemma: str) -> bool:
     return lemma.endswith(VERBAL_NOUN_SUFFIXES) or lemma in VERBAL_NOUN_LEMMAS
 
 
+@lru_cache(maxsize=131072)
 def normalize_yo(word: str) -> str:
     """
     Замена буквы ё на е в нижнем регистре
@@ -286,6 +391,74 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     for start, stop, token in iter_tokens(text):
         if not is_punctuation(token):
             yield start, stop, token
+
+
+def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
+    """
+    Предложения razdel с позициями
+
+    Описание:
+        razdel делит текст без знаков ударения и мягких переносов (take_marks):
+        иначе хвост слова после знака («но́с.») он принимает за сокращение и не
+        видит конца предложения. Позиции и текст предложений - по исходной строке,
+        со знаками
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
+            символом и текст каждого предложения
+
+    Пример использования:
+        >>> from ruts.utils import iter_text_sents
+        >>> [sent for _, _, sent in iter_text_sents("Он кру\\u0301т. Мы тоже.")]
+        ['Он кру́т.', 'Мы тоже.']
+    """
+    if not MARKED.search(text):
+        yield from ((sent.start, sent.stop, sent.text) for sent in sentenize(text))
+        return
+    clean, origin, _ = take_marks(text)
+    for sent in sentenize(clean):
+        start = origin[sent.start]
+        stop = origin[sent.stop] if sent.stop < len(clean) else len(text)
+        yield start, stop, text[start:stop]
+
+
+def strip_doc_marks(doc: Doc) -> Doc:
+    """
+    Объект Doc со словами без знаков ударения и мягких переносов
+
+    Описание:
+        Новый Doc из текстов токенов после strip_marks с теми же пробелами
+        и границами предложений, без прочей разметки; токен из одних знаков
+        пропускается. Doc без знаков возвращается как есть
+
+    Аргументы:
+        doc (Doc): Объект Doc
+
+    Вывод:
+        Doc: Объект Doc без знаков
+    """
+    if not MARKED.search(doc.text):
+        return doc
+    sents = doc.has_annotation("SENT_START")
+    words: list[str] = []
+    spaces: list[bool] = []
+    starts: list[bool | int | None] = []
+    start = False
+    for token in doc:
+        start = start or bool(sents and token.is_sent_start)
+        word = strip_marks(token.text)
+        if not word:
+            if spaces:
+                spaces[-1] = spaces[-1] or bool(token.whitespace_)
+            continue
+        words.append(word)
+        spaces.append(bool(token.whitespace_))
+        starts.append(start)
+        start = False
+    return Doc(doc.vocab, words=words, spaces=spaces, sent_starts=starts if sents else None)
 
 
 def add_dash_rules(nlp: Language) -> None:

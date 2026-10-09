@@ -3,9 +3,8 @@ from collections.abc import Iterable
 from typing import ClassVar
 
 import anyts
-from razdel import sentenize
 
-from .utils import iter_tokens, parse_word, strip_marks
+from .utils import iter_text_sents, iter_tokens, parse_word, strip_marks
 
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
 
@@ -39,8 +38,8 @@ class SentsExtractor(anyts.SentsExtractor):
     """
 
     def sentenize(self, text: str) -> Iterable[str]:
-        """Разбиение текста на предложения razdel"""
-        return (sent.text for sent in sentenize(text))
+        """Разбиение текста на предложения razdel (ruts.utils.iter_text_sents)"""
+        return (sent for _, _, sent in iter_text_sents(text))
 
 
 class WordsExtractor(anyts.WordsExtractor):
@@ -91,6 +90,10 @@ class WordsExtractor(anyts.WordsExtractor):
     def tokenize(self, text: str) -> Iterable[str]:
         """Разбиение текста на слова ruts.utils.iter_tokens"""
         return (word for _, _, word in iter_tokens(text))
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        """Извлечение слов из текста без знаков ударения и мягких переносов (strip_marks)"""
+        return super().extract(strip_marks(text) if isinstance(text, str) else text)
 
     def lemmatize(self, word: str) -> str:
         """Лемма слова по первому разбору pymorphy3"""

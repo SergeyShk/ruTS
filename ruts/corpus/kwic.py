@@ -1,4 +1,4 @@
-from collections.abc import Iterator, Sequence
+from collections.abc import Sequence
 
 import anyts.corpus
 from anyts.corpus.kwic import (
@@ -6,10 +6,9 @@ from anyts.corpus.kwic import (
     format_kwic as format_kwic,
     print_kwic as print_kwic,
 )
-from razdel import sentenize
 from spacy.tokens import Doc, Token
 
-from ..utils import iter_text_words, lemmatize, normalize_yo
+from ..utils import iter_text_sents, iter_text_words, lemmatize, normalize_yo, strip_marks
 
 
 def kwic(
@@ -28,7 +27,8 @@ def kwic(
         («кота» находится по «кот»); для Doc с разметкой частей речи лемма слова
         берется с частью речи токена (lemmatize), так «стали» находится по «сталь»
         или «стать» в зависимости от разметки. Текст и ключевое слово режутся
-        на слова одинаково (razdel), знаки препинания и символы словами не считаются.
+        на слова одинаково (razdel), знаки препинания и символы словами не считаются,
+        знаки ударения и мягкие переносы при сравнении снимаются (strip_marks).
         Словосочетание не переходит через конец абзаца или предложения (границы Doc
         или razdel), если такой границы нет в самом ключевом слове. Контекст -
         window слов слева и справа, как они записаны в тексте, со знаками препинания
@@ -57,25 +57,22 @@ def kwic(
         >>> [line.keyword for line in kwic(text, "кот", by_lemma=True)]
         ['Кот', 'Коты']
     """
+    # Свертка ядра без ignore_case не вызывается, а знаки снимать нужно и с учетом регистра
+    case_sensitive = not by_lemma and not ignore_case
     return anyts.corpus.kwic(
         source,
         keyword,
         window,
         by_lemma,
-        ignore_case,
+        ignore_case or case_sensitive,
         tokenize=iter_text_words,
         lemmatize=_lemma,
-        fold=normalize_yo,
+        fold=strip_marks if case_sensitive else normalize_yo,
         join_hyphens=True,
-        sentenize=_sents,
+        sentenize=iter_text_sents,
     )
 
 
 def _lemma(word: str, tokens: Sequence[Token]) -> str:
     """Лемма pymorphy3 с частью речи токена для слова Doc из одного токена"""
     return lemmatize(word, tokens[0].pos_ if len(tokens) == 1 else "")
-
-
-def _sents(text: str) -> Iterator[tuple[int, int, str]]:
-    """Предложения razdel с позициями"""
-    return ((sent.start, sent.stop, sent.text) for sent in sentenize(text))

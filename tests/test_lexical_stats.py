@@ -293,3 +293,20 @@ def test_dictionary_lemma_proper_name():
 
 def test_dictionary_lemma_missing():
     assert dictionary_lemma("Фелинолога", "Фелинолог", entries(кот=40.3)) == "фелинолог"
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("Ивановной", "ивановна"),
+        ("Петровны", "петровна"),
+        ("Михайловичем", "михайлович"),
+        ("Ивановичу", "иванович"),
+    ],
+)
+def test_dictionary_lemma_patronymic(word, expected):
+    """Отчество - статья своего рода и написания, а не мужская форма pymorphy3 (михаилович)"""
+    vocabulary = entries(
+        иванович=80.0, ивановна=64.6, петрович=50.0, петровна=40.0, михайлович=49.8
+    )
+    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected

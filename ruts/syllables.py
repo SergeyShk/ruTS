@@ -14,7 +14,7 @@ from .constants import (
 )
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceTypeError
-from .utils import normalize_yo
+from .utils import MARKED, normalize_yo, strip_marks, take_marks
 
 CACHE_SIZE = 1 << 16
 VOWELS = frozenset(letter.lower() for letter in RU_VOWELS)
@@ -92,7 +92,7 @@ def syllabify(word: str) -> list[str]:
         SourceTypeError: Если слово не строка
     """
     _check_word(word)
-    return list(_syllables(word))
+    return list(_syllables(strip_marks(word)))
 
 
 def count_syllables(word: str) -> int:
@@ -112,7 +112,7 @@ def count_syllables(word: str) -> int:
         SourceTypeError: Если слово не строка
     """
     _check_word(word)
-    return _count_syllables(word)
+    return _count_syllables(strip_marks(word))
 
 
 def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
@@ -120,9 +120,10 @@ def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
     Определение ударного слога слова
 
     Описание:
-        Слоги считаются с нуля; ударение - по букве ё, у односложного слова -
-        на единственном слоге, иначе по словарю StressDict с поправками
-        STRESS_CORRECTIONS; у составного слова главное - последнее из word_stresses
+        Слоги считаются с нуля; ударение - по знаку ударения в слове (take_marks),
+        по букве ё, у односложного слова - на единственном слоге, иначе по словарю
+        StressDict с поправками STRESS_CORRECTIONS; у составного слова главное -
+        последнее из word_stresses
 
     Аргументы:
         word (str): Слово
@@ -136,9 +137,12 @@ def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
         DatasetNotFoundError: Если словарь ударений не загружен
     """
     _check_word(word)
+    marked = _marked_stress(word)
+    if marked is not None:
+        return marked
     if stress_dict is None:
         stress_dict = _default_stress_dict()
-    return _word_stress(word.lower(), stress_dict)
+    return _word_stress(strip_marks(word).lower(), stress_dict)
 
 
 def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]:
@@ -146,7 +150,8 @@ def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]
     Определение всех ударных слогов слова
 
     Описание:
-        Номера слогов с нуля по возрастанию; составное слово через дефис, которого
+        Номера слогов с нуля по возрастанию; слово со знаком ударения получает его
+        ударение (take_marks); составное слово через дефис, которого
         нет в словаре целиком, получает ударение каждой знаменательной части
         (сорок-воровка - 0 и 3), частицы (PARTICLES: -то, -либо, -нибудь и другие) безударны
 
@@ -163,9 +168,12 @@ def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]
         DatasetNotFoundError: Если словарь ударений не загружен
     """
     _check_word(word)
+    marked = _marked_stress(word)
+    if marked is not None:
+        return [marked]
     if stress_dict is None:
         stress_dict = _default_stress_dict()
-    return list(_word_stresses(word.lower(), stress_dict))
+    return list(_word_stresses(strip_marks(word).lower(), stress_dict))
 
 
 def stress_type(word: str, stress_dict: StressDict | None = None) -> str | None:
@@ -192,8 +200,17 @@ def stress_type(word: str, stress_dict: StressDict | None = None) -> str | None:
     stress = word_stress(word, stress_dict)
     if stress is None:
         return None
-    tail = _count_vowels(word.lower()) - stress - 1
+    tail = _count_vowels(strip_marks(word).lower()) - stress - 1
     return VERSE_CLAUSULAS[min(tail, len(VERSE_CLAUSULAS) - 1)]
+
+
+def _marked_stress(word: str) -> int | None:
+    """Номер слога с ударением по знаку (take_marks), None без знака"""
+    if not MARKED.search(word):
+        return None
+    clean, _, stressed = take_marks(word, positions=False)
+    vowels = [i for i, letter in enumerate(clean.lower()) if letter in VOWELS]
+    return next((n for n, position in enumerate(vowels) if position in stressed), None)
 
 
 @lru_cache(maxsize=1)

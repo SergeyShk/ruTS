@@ -1,7 +1,11 @@
 import math
+import re
+import unicodedata
 
+import matplotlib.pyplot as plt
 import pytest
 import spacy
+from spacy.tokens import Doc
 
 from ruts import (
     BasicStats,
@@ -11,11 +15,16 @@ from ruts import (
     LexicalStats,
     MorphStats,
     PhonStats,
+    ReadabilityStats,
+    SentsExtractor,
     StyleStats,
     WordsExtractor,
 )
-from ruts.corpus import keyness, kwic
+from ruts.basic_stats import punctuation_profile
+from ruts.corpus import collocations, dispersion, keyness, kwic
 from ruts.datasets import FreqDict
+from ruts.utils import iter_text_sents, strip_doc_marks, strip_marks
+from ruts.visualizers import dispersion_plot, wordtree
 from tests.datasets.test_freq2011 import write_dict
 
 PLAIN = (
@@ -100,3 +109,85 @@ def test_latin_stressed_vowels():
     """Ударная гласная латиницей внутри русского слова - буква этого слова"""
     assert WordsExtractor().extract("Он чтó-то сказал, Домá") == ("Он", "что-то", "сказал", "Дома")
     assert MorphStats("чтó").get_stats() == MorphStats("что").get_stats()
+
+
+SENTS = "У него уродливый нос. Серое чудище стоит. Он не найдёт. Разве можно найти?"
+MARKED_SENTS = "У него́ уро́дливый но́с. Се́рое чу́дище стои́т. Он не найдё́т. Ра́зве мо́жно найти́?"
+
+
+def test_sentences():
+    """Хвост слова после знака («но́с.») не принимается за сокращение"""
+    sents = list(iter_text_sents(MARKED_SENTS))
+    assert all(MARKED_SENTS[start:stop] == sent for start, stop, sent in sents)
+    assert [strip_marks(sent) for _, _, sent in sents] == list(SentsExtractor().extract(SENTS))
+    assert len(SentsExtractor().extract(MARKED_SENTS)) == 4
+    assert kwic(MARKED_SENTS, "нос серое") == []
+
+
+@pytest.mark.parametrize(
+    "text",
+    [MARKED, MARKED_SENTS, unicodedata.normalize("NFD", PLAIN)],
+    ids=["marks", "sentences", "nfd"],
+)
+def test_basic_readability(text):
+    """Знаки, мягкие переносы и NFD не меняют ни слов, ни символов, ни предложений"""
+    nlp = spacy.blank("ru")
+    plain = strip_marks(text)
+    for marked, clean in ((text, plain), (nlp(text), nlp(plain))):
+        assert same(
+            BasicStats(marked, normalize=True).get_stats(),
+            BasicStats(clean, normalize=True).get_stats(),
+        )
+        assert same(ReadabilityStats(marked).get_stats(), ReadabilityStats(clean).get_stats())
+    assert same(CohesionStats(text).get_stats(), CohesionStats(plain).get_stats())
+    assert punctuation_profile(text) == pytest.approx(punctuation_profile(plain), nan_ok=True)
+
+
+@pytest.mark.parametrize("stats", [DiversityStats, MorphStats, StyleStats, PhonStats])
+def test_nfd(stats):
+    """Й и ё из двух символов разбираются как одна буква"""
+    assert same(stats(unicodedata.normalize("NFD", PLAIN)).get_stats(), stats(PLAIN).get_stats())
+
+
+def test_custom_tokenizer():
+    extractor = WordsExtractor(tokenizer=re.compile(r"\W+"))
+    assert extractor.extract("Моро́з и со­лнце") == ("Мороз", "и", "солнце")
+
+
+def test_core_queries():
+    """Слово запроса со знаком ищется среди слов без знаков"""
+    words = ["глаза", "смотрели", "на", "глаза", "и", "глаза", "смотрели"]
+    assert collocations(words, node="гла́за", min_freq=1) == collocations(
+        words, node="глаза", min_freq=1
+    )
+    assert dispersion(words, parts=2, word="гла́за")[0].freq == 3
+    assert wordtree([words], "гла́за").source == wordtree([words], "глаза").source
+    ax = dispersion_plot(words, ["гла́за"])
+    assert ax.get_yticklabels()[0].get_text() == "глаза"
+    plt.close("all")
+
+
+def test_kwic_case_sensitive():
+    text = "Стои́т моро́з. Моро́з и солнце. Мороз крепчал. Домá стоят."
+    for source in (text, spacy.blank("ru")(text)):
+        assert len(kwic(source, "Мороз", ignore_case=False)) == 2
+        assert len(kwic(source, "Дома", ignore_case=False)) == 1
+        assert len(kwic(source, "мороз", ignore_case=False)) == 1
+
+
+def test_strip_doc_marks():
+    nlp = spacy.blank("ru")
+    doc = Doc(
+        nlp.vocab,
+        words=["Моро́з", "­", "и", "солнце", ".", "День", "."],
+        spaces=[True, True, True, False, True, False, False],
+        sent_starts=[True, False, False, False, False, True, False],
+    )
+    clean = strip_doc_marks(doc)
+    assert [token.text for token in clean] == ["Мороз", "и", "солнце", ".", "День", "."]
+    assert clean.text == "Мороз и солнце. День."
+    assert [sent.text for sent in clean.sents] == ["Мороз и солнце.", "День."]
+    plain = nlp("Мороз и солнце")
+    assert strip_doc_marks(plain) is plain
+    leading = Doc(nlp.vocab, words=["\u00ad", "Мороз"], spaces=[True, False])
+    assert strip_doc_marks(leading).text == "Мороз"

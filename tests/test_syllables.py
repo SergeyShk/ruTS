@@ -175,3 +175,17 @@ def test_compound_stresses_with_yo(stress_dict):
     assert word_stresses("всё-таки", stress_dict) == [0]
     assert word_stresses("ёлка-собака", stress_dict) == [0]
     assert stress_type("чёрно-белый", stress_dict) == "женская"
+
+
+def test_stress_marks():
+    """Знаки снимаются, а ударение по знаку важнее словаря - словарь не нужен"""
+    assert count_syllables("домá") == count_syllables("дома") == 2
+    assert syllabify("ѐлка") == syllabify("елка")
+    assert syllabify("зѝма") == syllabify("зима")
+    assert syllabify("со­лнце") == syllabify("солнце")
+    assert word_stress("за́мок") == 0
+    assert word_stress("замо́к") == 1
+    assert word_stress("си́роты") == 0
+    assert word_stresses("домá") == [1]
+    assert stress_type("домá") == "мужская"
+    assert stress_type("за́мок") == "женская"

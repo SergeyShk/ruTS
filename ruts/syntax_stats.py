@@ -32,7 +32,7 @@ from .constants import (
     SYNTAX_STATS_DESC,
 )
 from .exceptions import SourceError, SourceTypeError
-from .utils import is_verbal_noun, lemmatize, normalize_yo
+from .utils import is_verbal_noun, lemmatize, normalize_yo, strip_marks
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
@@ -361,7 +361,7 @@ def is_negation(token: Token) -> bool:
     """
     if token.pos_ != "PART":
         return False
-    return has_feature(token, "Polarity", "Neg") or token.lower_ in NEGATION_PARTICLES
+    return has_feature(token, "Polarity", "Neg") or strip_marks(token.lower_) in NEGATION_PARTICLES
 
 
 def is_clause_head(token: Token) -> bool:

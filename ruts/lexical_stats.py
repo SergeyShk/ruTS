@@ -339,7 +339,8 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
     Описание:
         Лемма приводится к нижнему регистру без ё и к соглашениям словаря,
         лемматизированного не pymorphy3: краткая форма (должна - должен), множественное
-        число (денег - деньги), написание слова (счастье и счастие - разные статьи);
+        число (денег - деньги), написание слова (счастье и счастие - разные статьи),
+        отчество своего рода (Ивановной - ивановна, Михайловичем - михайлович);
         лемма вне словаря или у его нижней границы (RARE_IPM) заменяется самой частотной
         леммой другого разбора (ночью - ночь, нашли - найти), имя собственное - только
         именем собственным
@@ -393,6 +394,9 @@ def _form_lemmas(word: str, key: str) -> tuple[str, str | None, str | None]:
         if found is None:
             return key, None, None
         parse = found
+    if "Patr" in parse.tag.grammemes:
+        form = parse.inflect({"nomn", "sing"})
+        return normalize_yo(form.word) if form else key, None, None
     if parse.tag.POS == "ADJS":
         form = parse.inflect({"masc", "sing"})
         return key, normalize_yo(form.word) if form else None, None

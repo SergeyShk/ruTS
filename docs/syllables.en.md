@@ -5,7 +5,7 @@
 
 ## Description
 
-A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions.
+A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (`ruts.utils.strip_marks`), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.
 
 ## Syllabification { #syllabify }
 

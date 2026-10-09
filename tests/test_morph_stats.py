@@ -14,7 +14,7 @@ from ruts.morph_stats import (
     token_to_ud,
     word_to_ud,
 )
-from ruts.utils import get_morph_analyzer
+from ruts.utils import get_morph_analyzer, parse_word
 
 text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
 
@@ -497,3 +497,11 @@ def test_print_markers(capsys):
     output = capsys.readouterr().out
     for desc in MORPHOLOGY_MARKERS_DESC.values():
         assert desc in output
+
+
+def test_ambiguous_grammeme():
+    """У слов на -кки pymorphy3 дает и anim, и inan: одушевленность не определена в любом процессе"""
+    grammemes = parse_word("бачокки").tag.grammemes
+    assert {"anim", "inan"} <= grammemes
+    assert word_to_ud("бачокки")["animacy"] is None
+    assert word_to_ud("бачокки")["case"] is not None

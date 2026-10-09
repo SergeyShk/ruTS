@@ -12,7 +12,7 @@
 
 Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов; для устойчивых сочетаний подходят леммы, для грамматических конструкций - словоформы.
 
-Модуль `ruts.corpus.collocations` реэкспортирует функцию и меры ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/) (`from ruts.corpus.collocations import calc_logdice`). Слова извлекает [`WordsExtractor`](../extractors/words.md); для русских устойчивых сочетаний вроде «точка зрения» или «рабочий класс» берут его леммы (`use_lexemes=True`).
+Модуль `ruts.corpus.collocations` реэкспортирует функцию и меры ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/) (`from ruts.corpus.collocations import calc_logdice`). Слова извлекает [`WordsExtractor`](../extractors/words.md); для русских устойчивых сочетаний вроде «точка зрения» или «рабочий класс» берут его леммы (`use_lexemes=True`). Слово `node` со знаками ударения ищется без них.
 
 ## Меры
 

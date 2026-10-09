@@ -10,6 +10,7 @@ from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, LONG_WORD_LETTER_FA
 from .exceptions import ParameterError
 from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
+from .utils import strip_doc_marks, strip_marks
 
 PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
 DASH_PATTERN = dash_pattern(("и", "или", "либо"), hanging_before_comma=True)
@@ -56,7 +57,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc); для Doc слова
             берутся из токенов (дефисные слова склеиваются), предложения - из разметки,
-            без границ предложений - через SentsExtractor
+            без границ предложений - через SentsExtractor; знаки ударения и мягкие
+            переносы не считаются ни символами, ни частями слов (strip_marks)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
             если задан, применяется и к тексту Doc
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
@@ -122,6 +124,10 @@ class BasicStats(anyts.basic_stats.BasicStats):
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,
     ):
+        if isinstance(source, str):
+            source = strip_marks(source)
+        elif isinstance(source, Doc):
+            source = strip_doc_marks(source)
         super().__init__(
             source,
             sents_extractor,
@@ -203,7 +209,8 @@ def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, floa
         буквы ё среди букв е и ё (yo_share) - пишет ли автор ё. Профиль - редакторский
         и стилометрический признак; он зависит от оформления текста (типографские
         кавычки и тире, буква ё) и легко подделывается, поэтому его стоит смотреть
-        отдельно от лингвистических признаков
+        отдельно от лингвистических признаков. Знаки ударения и мягкие переносы
+        снимаются (strip_marks): ѐ и ударное е латиницей считаются буквой е
 
     Аргументы:
         text (str): Строка текста
@@ -221,6 +228,8 @@ def punctuation_profile(text: str, n_words: int | None = None) -> dict[str, floa
         check_integer(n_words, "number of words")
         if n_words < 0:
             raise ParameterError("Число слов не может быть отрицательным")
+    if isinstance(text, str):
+        text = strip_marks(text)
     counts = count_punctuations(text)
     if n_words is None:
         n_words = len(WordsExtractor().extract(text))

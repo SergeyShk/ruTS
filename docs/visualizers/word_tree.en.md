@@ -7,7 +7,7 @@
 
 --8<-- "visualizers/word_tree.md:wordtree"
 
-The function is that of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/word_tree/) core.
+The function is that of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/word_tree/) core; a `keyword` with stress marks is looked for without them.
 
 ## Parameters
 

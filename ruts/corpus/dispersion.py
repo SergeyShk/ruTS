@@ -6,5 +6,9 @@ from anyts.corpus.dispersion import (
     calc_juilland_d as calc_juilland_d,
     calc_kl_divergence as calc_kl_divergence,
     calc_rosengren_s as calc_rosengren_s,
-    dispersion as dispersion,
+    dispersion as core_dispersion,
 )
+
+from ..utils import with_stripped_marks
+
+dispersion = with_stripped_marks(core_dispersion, "word")

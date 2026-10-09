@@ -12,7 +12,7 @@
 
 Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.
 
-Модуль `ruts.corpus.dispersion` реэкспортирует функцию и меры ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) (`from ruts.corpus.dispersion import calc_dp`). Слова извлекает [`WordsExtractor`](../extractors/words.md).
+Модуль `ruts.corpus.dispersion` реэкспортирует функцию и меры ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) (`from ruts.corpus.dispersion import calc_dp`). Слова извлекает [`WordsExtractor`](../extractors/words.md); слово `word` со знаками ударения ищется без них.
 
 ## Меры
 

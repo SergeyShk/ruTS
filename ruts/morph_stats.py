@@ -1,5 +1,6 @@
 from collections import Counter, OrderedDict
 from functools import cached_property, lru_cache
+from inspect import getattr_static
 from math import nan
 
 import anyts
@@ -26,6 +27,11 @@ from .utils import lemmatize, parse_all, parse_word, strip_marks
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 VERBAL_POS = frozenset({"VERB", "AUX"})
 REFLEXIVE_ENDINGS = ("ся", "сь")
+TAG_GRAMMEMES = {
+    stat: getattr_static(pymorphy3.tagset.OpencorporaTag, stat).grammeme_set
+    for stat in MORPHOLOGY_FEATURES
+    if stat != "verb_form"
+}
 
 
 class MorphStats:
@@ -402,7 +408,11 @@ def tag_to_ud(
         if stat == "verb_form":
             features[stat] = OPENCORPORA_VERB_FORMS.get(tag.POS or "")
         else:
-            features[stat] = OPENCORPORA_TO_UD_GRAMMEMES.get(getattr(tag, stat))
+            found = TAG_GRAMMEMES[stat] & tag.grammemes
+            # У слов на -кки pymorphy3 дает и anim, и inan: такой признак не определен
+            features[stat] = (
+                OPENCORPORA_TO_UD_GRAMMEMES.get(next(iter(found))) if len(found) == 1 else None
+            )
     if "ms-f" in tag.grammemes:
         features["gender"] = OPENCORPORA_TO_UD_GRAMMEMES["ms-f"]
     return features

@@ -7,7 +7,7 @@
 
 Plots for the [corpus measures](../corpus/keyness.md): lexical dispersion - where in the text a word occurs, a keyness chart from the results of [`keyness`](../corpus/keyness.md) and a collocation network from the results of [`collocations`](../corpus/collocations.md). The matplotlib functions take axes `ax` and return `Axes`: without `ax` a new figure is created, with `ax` the plot goes into the user's grid; the collocation network is built by graphviz and returns a `Graph`, like the [word tree](word_tree.md).
 
-The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/corpus/) core with the Russian labels of the matplotlib plots of `ruts.constants.VISUALIZER_LABELS` by default; `labels` puts the given labels over them, and a pair of strings given to `keyness_plot` replaces the two labels of the legend, the others staying Russian.
+The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/corpus/) core with the Russian labels of the matplotlib plots of `ruts.constants.VISUALIZER_LABELS` by default; `labels` puts the given labels over them, and a pair of strings given to `keyness_plot` replaces the two labels of the legend, the others staying Russian. The `targets` words of `dispersion_plot` with stress marks are looked for without them.
 
 ## Lexical dispersion { #dispersion_plot }
 

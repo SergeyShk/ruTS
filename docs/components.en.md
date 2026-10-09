@@ -19,6 +19,8 @@ In `ruts_lexical` a document of numbers alone passes untouched as well, and in `
 
 Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.
 
+ruTS removes stress marks from the words of a `Doc`, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after `accentuate` the `ru_core_news_sm` model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - `nlp(ruts.utils.strip_marks(text))`.
+
 ## BasicStatsComponent
 
 !!! info ""

@@ -505,3 +505,17 @@ def test_stress_marks(stress_dict):
     # Ударение по знаку, как по ё, метр не переносит: без знаков «реки воды» переносятся на икты
     vs = VerseStats(f"{ONEGIN}\nКогда ре\u0301ки во\u0301ды текут", stress_dict)
     assert vs.accentuate().split("\n")[4] == "Когда\u0301 ре\u0301ки во\u0301ды текут"
+
+
+def test_proclitic_only_before_word(stress_dict):
+    """Ударная проклитика снимает ударение только со слова сразу за ней через пробел"""
+    assert accentuate("На\u0301 воды", stress_dict) == "На\u0301 воды"
+    assert accentuate("На\u0301, воды", stress_dict) == "На\u0301, во\u0301ды"
+    assert accentuate("на\u0301\nводы", stress_dict) == "на\u0301\nво\u0301ды"
+    assert accentuate("на\u0301\n\nводы", stress_dict) == "на\u0301\n\nво\u0301ды"
+    vs = VerseStats(f"{ONEGIN}\nИ на\u0301, воды не мог", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "И на\u0301, воды\u0301 не мо\u0301г"
+
+
+def test_latin_vowel_before_soft_hyphen(stress_dict):
+    assert VerseStats("Ó\u00adблако плывёт", stress_dict).lines == ("Облако плывёт",)

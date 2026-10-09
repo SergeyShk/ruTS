@@ -174,8 +174,10 @@ RUSSIAN = {
     "calc_flesch_reading_easy",
     "calc_reading_time",
     "calc_smog_index",
+    "collocations",
     "count_punctuations",
     "dendrogram_plot",
+    "dispersion",
     "dispersion_plot",
     "fingerprinting",
     "frequency_spectrum_plot",
@@ -191,6 +193,7 @@ RUSSIAN = {
     "sentence_lengths",
     "sentence_lengths_plot",
     "substring_filter",
+    "wordtree",
     "zipf",
     "zipf_theory",
 }
