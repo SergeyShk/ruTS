@@ -372,7 +372,7 @@ def _take_stress_marks(text: str) -> tuple[str, list[int | None]]:
         в порядке текста; у слова без знака - None
     """
     if not MARKED.search(text):
-        return text, []
+        return unicodedata.normalize("NFC", text), []
     letters: list[str] = []
     stressed: set[int] = set()
     for position, char in enumerate(text):

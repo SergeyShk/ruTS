@@ -1,3 +1,4 @@
+import unicodedata
 from math import isnan
 
 import pytest
@@ -490,6 +491,12 @@ def test_stress_marks(stress_dict):
     assert accentuate("Зам\u0301ок", stress_dict) == "Замо\u0301к"
     assert VerseStats("Г\u0301ород", stress_dict).lines == ("Город",)
     assert VerseStats("Е\u0308лка\u0301 стоит", stress_dict).lines == ("Ёлка стоит",)
+    # Текст в NFD (й, ё из двух символов) разбирается так же, со знаками и без
+    decomposed = unicodedata.normalize("NFD", ONEGIN)
+    assert (
+        VerseStats(decomposed, stress_dict).get_stats()
+        == VerseStats(ONEGIN, stress_dict).get_stats()
+    )
     # Ударная гласная латиницей, ударная проклитика берет ударение следующего слова
     text = "Домá и чтó, на\u0301 воды, на воды"
     assert accentuate(text, stress_dict) == "Дома\u0301 и что\u0301, на\u0301 воды, на во\u0301ды"
