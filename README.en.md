@@ -456,6 +456,11 @@ The exact formulas of the services are not published, so the commonly accepted d
 >>> ss = StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка")
 >>> ss.verbal_nouns, ss.compound_prepositions, ss.parentheticals, ss.cliches
 (16.666666666666664, 9.090909090909092, 9.090909090909092, 9.090909090909092)
+>>> ss.markers()
+{'verbal_nouns': ('повышения',),
+ 'compound_prepositions': ('в целях',),
+ 'parentheticals': ('как правило',),
+ 'cliches': ('в кратчайшие сроки',)}
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/style_stats/).
@@ -612,7 +617,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/lexical_st
 
 Stresses, meter and rhyme for syllabo-tonic verse:
 
-*   Stresses by Ilya Koziev's dictionary (1.68 million word forms, downloaded once: `StressDict().download()`) with corrections, by the letter ё, for contractions (желанье) and converbs
+*   Stresses by a stress mark in the text, by Ilya Koziev's dictionary (1.68 million word forms, downloaded once: `StressDict().download()`) with corrections, by the letter ё, for contractions (желанье) and converbs
 *   Meter by the Barakhnin algorithm: iamb, trochee, dactyl, amphibrach, anapest or `None` for dolnik, free verse and prose; number of feet, pyrrhics, stress profile, stresses fitted to the meter
 *   Rhyme schemes by the phonetic key of the ending (`ABAB`, `-A-A`), ending types, stanzas
 *   On the RIFMA dataset stresses agree with the manual annotation for 97% of words, rhymes are found with 94% precision and 90% recall

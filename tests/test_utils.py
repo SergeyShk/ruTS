@@ -25,11 +25,11 @@ def test_parse_yo_pronoun():
 
 
 def test_parse_word_cached():
-    parse_word.cache_clear()
+    parse_all.cache_clear()
     assert parse_word("рублей").normal_form == "рубль"
     assert parse_word("рублей").tag.POS == "NOUN"
-    assert parse_word.cache_info().hits == 1
-    assert parse_word.cache_info().misses == 1
+    assert parse_all.cache_info().hits == 1
+    assert parse_all.cache_info().misses == 1
 
 
 @pytest.mark.parametrize(
@@ -99,7 +99,7 @@ def test_iter_text_words():
         ("Да\u0301- сказал", ["Да", "-", "сказал"]),
         (
             unicodedata.normalize("NFD", "мой—её"),
-            [unicodedata.normalize("NFD", "мой"), "—", unicodedata.normalize("NFD", "её")],
+            ["мой", "—", "её"],
         ),
     ],
 )
@@ -151,7 +151,8 @@ def test_iter_text_words_dialogue():
         ("Моро\u0301з и со\u00adлнце", "Мороз и солнце"),
         ("чуде\u0300сный, ѐлка, Ѝгорь", "чудесный, елка, Игорь"),
         ("ёлка и йод", "ёлка и йод"),
-        ("Е\u0308\u0301лка", "Е\u0308лка"),
+        ("Е\u0308\u0301лка и\u0306од", "Ёлка йод"),
+        ("Ó\u00adблако, Ниже\u0301", "Облако, Ниже"),
         ("Он сказа\u0301л: où, Café", "Он сказал: où, Café"),
         ("чтó, Домá, бóльшую; ó!", "что, Дома, большую; ó!"),
         ("г\u0301ород", "город"),

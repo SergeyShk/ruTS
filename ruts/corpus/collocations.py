@@ -8,5 +8,9 @@ from anyts.corpus.collocations import (
     calc_min_sensitivity as calc_min_sensitivity,
     calc_npmi as calc_npmi,
     calc_t_score as calc_t_score,
-    collocations as collocations,
+    collocations as core_collocations,
 )
+
+from ..utils import with_stripped_marks
+
+collocations = with_stripped_marks(core_collocations, "words", "node")

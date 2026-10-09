@@ -15,7 +15,6 @@ from anyts.corpus.compare import (
     holm_correction as holm_correction,
 )
 from anyts.utils import check_integer, check_sequence, check_words, count_words_by_spans
-from razdel import sentenize
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC, OPENING_MARKS, SYMMETRIC_MARKS
@@ -24,7 +23,7 @@ from ..exceptions import ParameterError, SourceError, SourceTypeError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
-from ..utils import iter_text_words
+from ..utils import iter_text_sents, iter_text_words
 
 Features = Callable[[str], Mapping[str, float]]
 
@@ -167,7 +166,7 @@ def text_features(text: str) -> dict[str, float]:
     if not isinstance(text, str):
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
     positions = list(iter_text_words(text))
-    spans = [(sent.start, sent.stop) for sent in sentenize(text) if sent.text.strip()]
+    spans = [(start, stop) for start, stop, sent in iter_text_sents(text) if sent.strip()]
     words = _FixedWordsExtractor(tuple(word for _, _, word in positions))
     sents = _FixedSentsExtractor(tuple(text[start:stop] for start, stop in spans))
     basic = BasicStats(text, sents, words, normalize=True)

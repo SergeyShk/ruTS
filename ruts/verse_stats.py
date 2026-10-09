@@ -1,6 +1,6 @@
 import re
 import string
-import unicodedata
+from bisect import bisect_left
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
@@ -26,11 +26,9 @@ from .constants import (
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
 from .syllables import VOWELS, _count_vowels, _word_stress, word_stress as word_stress
-from .utils import LATIN_VOWELS, MARKED
+from .utils import MARKED, take_marks
 
 ACUTE = "\u0301"
-GRAVE_LETTERS = {"ѐ": "е", "ѝ": "и", "Ѐ": "Е", "Ѝ": "И"}
-CYRILLIC = re.compile("[а-яёА-ЯЁ]")
 WORD_PATTERN = re.compile(r"[а-яё]+(?:-[а-яё]+)*", re.IGNORECASE)
 # Фонетический ключ рифмы: ударные гласные и редукция безударных
 STRESSED_VOWELS = {
@@ -365,42 +363,30 @@ def _take_stress_marks(text: str) -> tuple[str, list[int | None]]:
     Текст без знаков ударения и мягких переносов и ударения слов по знакам
 
     Описание:
-        Знаки - как в strip_marks: акут или гравис после кириллической буквы,
-        ѐ и ѝ, ударная гласная латиницей внутри русского слова. Буква с ее
-        прочими знаками (й, ё) приводится к NFC отдельно, так что г или к
-        со знаком не собираются в ѓ и ќ. Ударный слог каждого слова WORD_PATTERN
-        в порядке текста; у слова без знака - None
+        Знаки и ударения по ним - как в take_marks; ударный слог каждого слова
+        WORD_PATTERN в порядке текста, у слова без знака - None
     """
     if not MARKED.search(text):
-        return unicodedata.normalize("NFC", text), []
-    letters: list[str] = []
+        return text, []
+    pieces = []
     stressed: set[int] = set()
-    for position, char in enumerate(text):
-        previous = letters[-1][0] if letters else ""
-        if char == "\u00ad":
-            continue
-        if char in "\u0300\u0301" and CYRILLIC.fullmatch(previous):
-            stressed.add(len(letters) - 1)
-        elif unicodedata.combining(char) and letters:
-            letters[-1] += char
-        elif char in GRAVE_LETTERS or (
-            char in LATIN_VOWELS
-            and (CYRILLIC.fullmatch(previous) or CYRILLIC.match(text, position + 1))
-        ):
-            stressed.add(len(letters))
-            letters.append(GRAVE_LETTERS.get(char) or LATIN_VOWELS[char])
-        else:
-            letters.append(char)
-    composed = [unicodedata.normalize("NFC", letter) for letter in letters]
-    starts = [0]
-    for letter in composed:
-        starts.append(starts[-1] + len(letter))
-    clean = "".join(composed)
-    positions = {starts[index] for index in stressed}
-    stresses = []
+    length = 0
+    for line in text.splitlines(keepends=True):
+        if MARKED.search(line):
+            line, _, marks = take_marks(line, positions=False)
+            stressed.update(length + position for position in marks)
+        pieces.append(line)
+        length += len(line)
+    clean = "".join(pieces)
+    positions = sorted(stressed)
+    stresses: list[int | None] = []
     for match in WORD_PATTERN.finditer(clean):
+        index = bisect_left(positions, match.start())
+        if index == len(positions) or positions[index] >= match.end():
+            stresses.append(None)
+            continue
         vowels = [i for i in range(match.start(), match.end()) if clean[i].lower() in VOWELS]
-        marked = [n for n, position in enumerate(vowels) if position in positions]
+        marked = [n for n, position in enumerate(vowels) if position in stressed]
         stresses.append(marked[0] if marked else None)
     return clean, stresses
 
@@ -433,7 +419,12 @@ def _parse_lines(
                 offset += n_syllables
             # Ударная по знаку проклитика берет ударение слова за ней: на́ сердце, по́ саду
             for proclitic, host in pairwise(words):
-                if proclitic.marked and proclitic.text in VERSE_PROCLITICS and not host.marked:
+                if (
+                    proclitic.marked
+                    and proclitic.text in VERSE_PROCLITICS
+                    and not host.marked
+                    and line_text[proclitic.end : host.start].isspace()
+                ):
                     host.unstressed = True
                     host.stress = None
                     host.certain = host.fixed = False
@@ -521,8 +512,8 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
     Расстановка ударений в словах по метру
 
     Описание:
-        Ударение по знаку ставится как есть, а слово после ударной по знаку
-        проклитики безударно; клитики безударны; односложные слова ударны на икте; служебные слова
+        Ударение по знаку ставится как есть, а слово через пробел после ударной
+        по знаку проклитики безударно; клитики безударны; односложные слова ударны на икте; служебные слова
         ударны, если словарное ударение попадает на икт; у остальных слов
         словарное ударение сохраняется или переносится на икт (см. _movable);
         слово без словарного ударения получает единственный икт, при нескольких
@@ -801,15 +792,16 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
 
     text, marked = _take_stress_marks(text)
     marks = iter(marked)
-    host = False
+    proclitic_end = -1
 
     def mark(match: re.Match[str]) -> str:
-        nonlocal host
+        nonlocal proclitic_end
         word = match.group()
         stress = next(marks, None)
-        unstressed, host = (
-            host and stress is None,
-            stress is not None and word.lower() in VERSE_PROCLITICS,
+        gap = text[proclitic_end : match.start()]
+        unstressed = stress is None and proclitic_end >= 0 and gap.isspace() and "\n" not in gap
+        proclitic_end = (
+            match.end() if stress is not None and word.lower() in VERSE_PROCLITICS else -1
         )
         if stress is None and not unstressed and word.lower() not in VERSE_PROCLITICS:
             stress = _word_stress(word.lower(), stress_dict)

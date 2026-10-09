@@ -1,3 +1,4 @@
+import importlib
 from collections import Counter
 
 import pytest
@@ -171,3 +172,33 @@ def test_keyness_freq_dict_found_entry(pronoun_dict):
     """Статья, которая есть в цели, остается, даже если формы pymorphy3 к ней не приводят"""
     negative = keyness(["его"] + ["кот"] * 2000, pronoun_dict, positive=False, lemmatize=False)
     assert {keyword.word: keyword.freq_target for keyword in negative}["его"] == 1
+
+
+def test_find_unreachable_entries(pronoun_dict):
+    """Поиск недостижимых статей: «его», «ее», «во» - формы других лемм"""
+    from ruts.corpus.keyness import _find_unreachable_entries
+
+    assert _find_unreachable_entries(pronoun_dict, lemmatize=True) == ["во", "его", "ее"]
+    assert "его" in _find_unreachable_entries(pronoun_dict, lemmatize=False)
+
+
+def test_keyness_freq_dict_no_parsing(pronoun_dict, monkeypatch):
+    """Отрицательные ключевые слова берут недостижимые статьи из ресурса, без разбора словаря"""
+    monkeypatch.setattr(
+        importlib.import_module("ruts.corpus.keyness"), "_find_unreachable_entries", None
+    )
+    negative = keyness(["кот"] * 50, pronoun_dict, positive=False)
+    assert "его" not in {keyword.word for keyword in negative}
+
+
+@pytest.mark.network
+def test_unreachable_resource():
+    """Ресурс недостижимых статей совпадает с поиском по настоящему словарю"""
+    from ruts.corpus.keyness import _find_unreachable_entries, _unreachable_entries
+
+    freq_dict = FreqDict()
+    if freq_dict.filepath is None:
+        pytest.skip("частотный словарь не загружен")
+    for lemmatize in (True, False):
+        found = _find_unreachable_entries(freq_dict, lemmatize)
+        assert set(found) == _unreachable_entries(lemmatize)

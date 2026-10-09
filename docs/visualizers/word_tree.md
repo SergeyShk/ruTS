@@ -8,7 +8,7 @@
 <!-- core: visualizers/word_tree.md:wordtree 7b85f86 -->
 Построение [дерева слов](https://www.weblyzard.com/word-tree/), которое показывает контексты ключевого слова в тексте: в каждом списке слов - например, в предложении - считаются N-граммы длиной до `max_n` слов, которые начинаются или заканчиваются ключевым словом. Каждый уровень дерева сохраняет `max_per_n` самых частых N-грамм, продолжающих сохраненную более короткую, при равенстве - по алфавиту. Сохраненные N-граммы объединяются в два дерева, слов после ключевого слова и перед ним, с размером шрифта по частоте ([Wattenberg и Viégas 2008](https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf)). Для отрисовки нужны исполняемые файлы [Graphviz](https://graphviz.org/download/).
 
-Это функция ядра [anyTS](https://sergeyshk.github.io/anyTS/visualizers/word_tree/).
+Это функция ядра [anyTS](https://sergeyshk.github.io/anyTS/visualizers/word_tree/); знаки ударения снимаются с текстов и с `keyword`.
 
 ## Параметры
 

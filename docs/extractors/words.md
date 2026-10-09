@@ -10,7 +10,7 @@
 
 ## Языковые крючки
 
-Класс расширяет `WordsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) крючками русского языка: токенизатор `tokenize(text)` - функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик и без знаков ударения и мягких переносов в словах (`ruts.utils.iter_tokens`), лемма `lemmatize(word)` - первый разбор `MorphAnalyzer` библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3), а шаблон чисел `number_pattern` подходит и к диапазонам, дробям и порядковым числительным: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
+Класс расширяет `WordsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) крючками русского языка: токенизатор `tokenize(text)` - функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик (`ruts.utils.iter_tokens`), лемма `lemmatize(word)` - первый разбор `MorphAnalyzer` библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3) (`ruts.utils.parse_all`: «её» разбирается как «ее» - у pymorphy3 нет разбора «её» как личного местоимения), а шаблон чисел `number_pattern` подходит и к диапазонам, дробям и порядковым числительным: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`. До любого токенизатора из текста снимаются знаки ударения и мягкие переносы, а й и ё из двух символов собираются в одну букву (`ruts.utils.strip_marks`).
 
 ## Параметры
 
@@ -55,9 +55,7 @@
     text = "Не имей 100 рублей, а имей 100 друзей"
 
     # Извлечение слов
-    we = WordsExtractor(
-        use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2)
-    )
+    we = WordsExtractor(use_lexemes=True, stopwords=["не", "а"], filter_nums=True, ngram_range=(1, 2))
     we.extract(text)
     ```
 

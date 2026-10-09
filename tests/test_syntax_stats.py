@@ -616,3 +616,9 @@ def test_model_constructions(nlp):
     assert ss.mean_converb_clause_len == 2
     assert ss.n_passive == 2
     assert ss.n_agentless_passive == 1
+
+
+def test_negation_stress_mark():
+    """Частица «не» со знаком ударения без признака Polarity - тоже отрицание"""
+    doc = Doc(spacy.blank("ru").vocab, words=["не\u0301", "НЕ"], pos=["PART", "PART"])
+    assert [is_negation(token) for token in doc] == [True, True]

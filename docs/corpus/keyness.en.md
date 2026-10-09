@@ -37,7 +37,9 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 | `key` | the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with `lemmatize=False` it is taken as a lemma) and brought to the conventions of the dictionary by `ruts.lexical_stats.dictionary_lemma`, as in [`LexicalStats`](../stats/lexical_stats.md) |
 | `keep` | the words of the Cyrillic letters of `ruts.lexical_stats.DICTIONARY_WORD`; numbers and words with Latin letters are left out |
 
-A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text.
+A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,100 for word forms and 1,500 for lemmas - are listed in the resources of the package; words that pymorphy3 only predicts («Михайлыч», «дитё») are not seen by the rule.
+
+With `lemmatize=False` the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.
 
 ## Result
 

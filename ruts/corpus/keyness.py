@@ -1,8 +1,9 @@
 from collections.abc import Callable, Mapping, Sequence
-from functools import cache
+from functools import cache, lru_cache
 from itertools import islice
 
 import anyts.corpus
+import pymorphy3
 from anyts.corpus.keyness import (
     FrequencyReference as FrequencyReference,
     Keyword as Keyword,
@@ -17,9 +18,15 @@ from anyts.corpus.keyness import (
     check_keyness_params as check_keyness_params,
 )
 
+from ..constants import RESOURCES_DIR
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
 from ..utils import normalize_yo, parse_all, parse_word, strip_marks
+
+UNREACHABLE_FILES = {
+    True: RESOURCES_DIR / "freqrnc2011_unreachable_forms.txt",
+    False: RESOURCES_DIR / "freqrnc2011_unreachable_lemmas.txt",
+}
 
 
 def keyness(
@@ -88,8 +95,8 @@ def keyness(
     if positive:
         return anyts.corpus.keyness(target, frequency, measure, min_freq, positive, top_n)
     found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive)
-    reachable = _reachable(key, lemmatize)
-    kept = (keyword for keyword in found if keyword.freq_target or reachable(keyword.word))
+    unreachable = _unreachable_entries(lemmatize)
+    kept = (keyword for keyword in found if keyword.freq_target or keyword.word not in unreachable)
     return list(islice(kept, top_n))
 
 
@@ -116,25 +123,61 @@ def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> Freq
     )
 
 
-def _reachable(key: Callable[[str], str], lemmatize: bool) -> Callable[[str], bool]:
-    """Приводится ли к статье словаря хотя бы одна форма ее лексем (через лемму без lemmatize)"""
+@cache
+def _unreachable_entries(lemmatize: bool) -> frozenset[str]:
+    """Недостижимые статьи частотного словаря из ресурса (_find_unreachable_entries)"""
+    path = UNREACHABLE_FILES[lemmatize]
+    return frozenset(path.read_text(encoding="utf-8").split())
+
+
+def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]:
+    """
+    Поиск статей частотного словаря, к которым не приводится ни одна форма их лексем
+
+    Описание:
+        Разбирает все статьи и формы их лексем pymorphy3 (с lemmatize=False -
+        леммы форм по первому разбору), поэтому медленный: результат хранится
+        в ресурсах UNREACHABLE_FILES. Сравнительная степень и краткие формы
+        прилагательных на -щий не считаются (обязаннее, действующ - в тексте
+        таких форм не бывает); слов, которые pymorphy3 только предсказывает
+        (Михайлыч, дитё), поиск не видит
+
+    Аргументы:
+        freq_dict (FreqDict): Частотный словарь
+        lemmatize (bool): Цель из словоформ, False - из лемм
+
+    Вывод:
+        list[str]: Недостижимые статьи по алфавиту
+    """
+    key = _dictionary_key(freq_dict.entries, lemmatize)
 
     def target(form: str) -> str:
         return form if lemmatize else parse_word(form).normal_form
 
+    def counted(form: pymorphy3.analyzer.Parse, entry: str) -> bool:
+        return "COMP" not in form.tag.grammemes and not (
+            form.tag.POS == "ADJS" and entry.endswith("щий")
+        )
+
     def reachable(entry: str) -> bool:
         if key(target(entry)) == entry:
             return True
-        forms = {form.word for parse in parse_all(entry) for form in parse.lexeme}
+        forms = {
+            form.word
+            for parse in parse_all(entry)
+            for form in parse.lexeme
+            if counted(form, entry)
+        }
         return any(
             key(target(spelling)) == entry
             for form in forms
             for spelling in {form, normalize_yo(form)}
         )
 
-    return reachable
+    return sorted(entry for entry in freq_dict.entries if not reachable(entry))
 
 
+@lru_cache(maxsize=131072)
 def _is_dictionary_word(word: str) -> bool:
     """Состоит ли слово из букв словаря (DICTIONARY_WORD)"""
     return DICTIONARY_WORD.fullmatch(strip_marks(word)) is not None

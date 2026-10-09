@@ -10,7 +10,6 @@ from anyts.visualizers.highlight import (
     group_words_by_sents,
     tokens_span,
 )
-from razdel import sentenize
 from spacy.tokens import Doc, Token
 
 from .. import style_stats
@@ -51,6 +50,7 @@ from ..syntax_stats import (
 from ..utils import (
     BYTE_ORDER_MARK,
     find_phrases,
+    iter_text_sents,
     iter_text_words,
     normalize_yo,
     parse_word,
@@ -177,8 +177,8 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         return iter_text_words(text)
 
     def iter_sents(self, text: str) -> Iterator[tuple[int, int, str]]:
-        """Предложения строки с позициями по razdel"""
-        return ((sent.start, sent.stop, sent.text) for sent in sentenize(text))
+        """Предложения строки с позициями по iter_text_sents"""
+        return iter_text_sents(text)
 
     def doc_words(self, doc: Doc) -> list[Word]:
         """Слова объекта Doc с позициями по get_doc_words"""

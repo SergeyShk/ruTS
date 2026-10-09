@@ -104,7 +104,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
     punct_ellipsis                       14.000           2.000   5.000   25.000    1.869        0.707  0.853     0.0
     punct_exclamation                    14.000           4.000   7.000   13.000    1.670        0.658  0.829     0.0
-    morph_verb_form_Fin                   0.756           0.695   0.037    0.100    1.123        0.573  0.786     0.0
+    morph_verb_form_Fin                   0.756           0.695   0.037    0.100    1.123        0.572  0.786     0.0
     punct_yo_share                        0.007           0.000   0.002    0.010    1.026        0.533  0.766     0.0
     readability_gunning_fog_index         6.088           7.962  -2.881   -1.007   -0.934       -0.521  0.240     0.0
     readability_dale_chall_index          5.280           6.702  -2.378   -0.833   -0.914       -0.518  0.241     0.0

@@ -7,6 +7,8 @@
 
 --8<-- "stats/basic_stats.md:BasicStats"
 
+Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (`ruts.utils.strip_marks`): a text with stresses gives the same statistics as without them.
+
 !!! note "Note"
     The statistics are computed when the `BasicStats` object is initialized.
 
