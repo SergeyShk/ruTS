@@ -21,7 +21,7 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import lemmatize, parse_all, parse_word
+from .utils import lemmatize, parse_all, parse_word, strip_marks
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 VERBAL_POS = frozenset({"VERB", "AUX"})
@@ -115,7 +115,9 @@ class MorphStats:
             source = source.text
         if isinstance(source, Doc):
             units = list(iter_doc_units(source, join_hyphens=True))
-            self.words = tuple("".join(token.text for token in unit) for unit in units)
+            self.words = tuple(
+                strip_marks("".join(token.text for token in unit)) for unit in units
+            )
             if source.has_annotation("POS"):
                 features = [
                     token_to_ud(unit[0]) if len(unit) == 1 else word_to_ud(word)

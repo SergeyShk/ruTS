@@ -14,7 +14,7 @@
 
 ## Языковые крючки
 
-Класс расширяет `CharNgramsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) крючком русского языка: его токенизатор слов по умолчанию для `within_words`, метод `tokenize(text)`, - токенизатор по умолчанию [`WordsExtractor`](words.md), функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик (`ruts.utils.iter_tokens`).
+Класс расширяет `CharNgramsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) крючком русского языка: его токенизатор слов по умолчанию для `within_words`, метод `tokenize(text)`, - токенизатор по умолчанию [`WordsExtractor`](words.md), функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик (`ruts.utils.iter_tokens`). Перед извлечением из текста снимаются знаки ударения и мягкие переносы (`ruts.utils.strip_marks`).
 
 ## Параметры
 

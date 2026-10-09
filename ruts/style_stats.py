@@ -21,7 +21,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import find_phrases, is_verbal_noun, normalize_yo, parse_all, parse_word
+from .utils import find_phrases, is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
 
 
 def check_params(top_n: int) -> None:
@@ -140,7 +140,8 @@ class StyleStats:
             source = source.text
         if isinstance(source, Doc):
             self.words = tuple(
-                text.lower() for _, _, text in iter_doc_words(source, join_hyphens=True)
+                strip_marks(text).lower()
+                for _, _, text in iter_doc_words(source, join_hyphens=True)
             )
             self.forms = self.words
         elif isinstance(source, str):

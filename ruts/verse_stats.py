@@ -1,8 +1,10 @@
 import re
 import string
+import unicodedata
 from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from itertools import pairwise
 from math import nan
 from typing import Any
 
@@ -24,8 +26,11 @@ from .constants import (
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
 from .syllables import VOWELS, _count_vowels, _word_stress, word_stress as word_stress
+from .utils import LATIN_VOWELS, MARKED
 
 ACUTE = "\u0301"
+GRAVE_LETTERS = {"ѐ": "е", "ѝ": "и", "Ѐ": "Е", "Ѝ": "И"}
+CYRILLIC = re.compile("[а-яёА-ЯЁ]")
 WORD_PATTERN = re.compile(r"[а-яё]+(?:-[а-яё]+)*", re.IGNORECASE)
 # Фонетический ключ рифмы: ударные гласные и редукция безударных
 STRESSED_VOWELS = {
@@ -65,7 +70,9 @@ class _Word:
     n_syllables: int
     offset: int
     stress: int | None
-    yo: bool = False
+    certain: bool = False
+    marked: bool = False
+    unstressed: bool = False
     fixed: bool = False
     result: int = -1
     candidates: list[int] = field(default_factory=list)
@@ -93,7 +100,8 @@ class VerseStats:
 
     Описание:
         Текст делится на строки и строфы (по пустым строкам), в словах расставляются
-        ударения по словарю StressDict, затем по алгоритму Барахнина, Кожемякиной
+        ударения по словарю StressDict (знак ударения в тексте важнее словаря, а сам
+        знак и мягкие переносы в строки не попадают), затем по алгоритму Барахнина, Кожемякиной
         и Кузнецовой подбирается силлабо-тонический метр: у каждого из пяти метров
         свои позиции сильных слогов (иктов), выбирается тот, при котором меньше всего
         ударений многосложных слов попадает на слабые позиции. Найденный метр снимает
@@ -194,7 +202,8 @@ class VerseStats:
         self.stress_dict = stress_dict if stress_dict is not None else StressDict()
         if not re.search(r"[^\W\d_]", text):
             raise SourceError("В источнике данных отсутствуют слова")
-        lines = _parse_lines(text, self.stress_dict)
+        text, marked = _take_stress_marks(text)
+        lines = _parse_lines(text, self.stress_dict, marked)
         self._lines = lines
         self.lines = tuple(line.text for line in lines)
         n_stanzas = lines[-1].stanza + 1 if lines else 0
@@ -351,8 +360,56 @@ def split_stanzas(text: str) -> list[list[str]]:
     return stanzas
 
 
-def _parse_lines(text: str, stress_dict: StressDict) -> list[_Line]:
-    """Разбор текста на строки со словами и словарными ударениями"""
+def _take_stress_marks(text: str) -> tuple[str, list[int | None]]:
+    """
+    Текст без знаков ударения и мягких переносов и ударения слов по знакам
+
+    Описание:
+        Знаки - как в strip_marks: акут или гравис после кириллической буквы,
+        ѐ и ѝ, ударная гласная латиницей внутри русского слова. Буква с ее
+        прочими знаками (й, ё) приводится к NFC отдельно, так что г или к
+        со знаком не собираются в ѓ и ќ. Ударный слог каждого слова WORD_PATTERN
+        в порядке текста; у слова без знака - None
+    """
+    if not MARKED.search(text):
+        return unicodedata.normalize("NFC", text), []
+    letters: list[str] = []
+    stressed: set[int] = set()
+    for position, char in enumerate(text):
+        previous = letters[-1][0] if letters else ""
+        if char == "\u00ad":
+            continue
+        if char in "\u0300\u0301" and CYRILLIC.fullmatch(previous):
+            stressed.add(len(letters) - 1)
+        elif unicodedata.combining(char) and letters:
+            letters[-1] += char
+        elif char in GRAVE_LETTERS or (
+            char in LATIN_VOWELS
+            and (CYRILLIC.fullmatch(previous) or CYRILLIC.match(text, position + 1))
+        ):
+            stressed.add(len(letters))
+            letters.append(GRAVE_LETTERS.get(char) or LATIN_VOWELS[char])
+        else:
+            letters.append(char)
+    composed = [unicodedata.normalize("NFC", letter) for letter in letters]
+    starts = [0]
+    for letter in composed:
+        starts.append(starts[-1] + len(letter))
+    clean = "".join(composed)
+    positions = {starts[index] for index in stressed}
+    stresses = []
+    for match in WORD_PATTERN.finditer(clean):
+        vowels = [i for i in range(match.start(), match.end()) if clean[i].lower() in VOWELS]
+        marked = [n for n, position in enumerate(vowels) if position in positions]
+        stresses.append(marked[0] if marked else None)
+    return clean, stresses
+
+
+def _parse_lines(
+    text: str, stress_dict: StressDict, marked: Sequence[int | None] = ()
+) -> list[_Line]:
+    """Разбор текста на строки со словами и ударениями по знакам или словарю"""
+    marks = iter(marked)
     lines = []
     for number, stanza in enumerate(split_stanzas(text)):
         for line_text in stanza:
@@ -361,9 +418,11 @@ def _parse_lines(text: str, stress_dict: StressDict) -> list[_Line]:
             for match in WORD_PATTERN.finditer(line_text):
                 word_text = match.group().lower()
                 n_syllables = _count_vowels(word_text)
-                stress = _word_stress(word_text, stress_dict)
+                mark = next(marks, None)
+                stress = _word_stress(word_text, stress_dict) if mark is None else mark
                 word = _Word(word_text, match.start(), match.end(), n_syllables, offset, stress)
-                word.yo = "ё" in word_text
+                word.marked = mark is not None
+                word.certain = "ё" in word_text or word.marked
                 word.fixed = (
                     n_syllables > 1
                     and stress is not None
@@ -372,6 +431,12 @@ def _parse_lines(text: str, stress_dict: StressDict) -> list[_Line]:
                 )
                 words.append(word)
                 offset += n_syllables
+            # Ударная по знаку проклитика берет ударение слова за ней: на́ сердце, по́ саду
+            for proclitic, host in pairwise(words):
+                if proclitic.marked and proclitic.text in VERSE_PROCLITICS and not host.marked:
+                    host.unstressed = True
+                    host.stress = None
+                    host.certain = host.fixed = False
             lines.append(_Line(line_text, words, offset, number))
     return lines
 
@@ -456,7 +521,8 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
     Расстановка ударений в словах по метру
 
     Описание:
-        Клитики безударны; односложные слова ударны на икте; служебные слова
+        Ударение по знаку ставится как есть, а слово после ударной по знаку
+        проклитики безударно; клитики безударны; односложные слова ударны на икте; служебные слова
         ударны, если словарное ударение попадает на икт; у остальных слов
         словарное ударение сохраняется или переносится на икт (см. _movable);
         слово без словарного ударения получает единственный икт, при нескольких
@@ -467,7 +533,11 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
         movable = _movable(line, meter)
         for word in line.words:
             candidates = _ictuses(word, meter)
-            if not word.n_syllables or word.text in VERSE_PROCLITICS:
+            if word.unstressed or not word.n_syllables:
+                word.result = -1
+            elif word.marked:
+                word.result = word.stress if word.stress is not None else -1
+            elif word.text in VERSE_PROCLITICS:
                 word.result = -1
             elif word.n_syllables == 1:
                 word.result = 0 if candidates or meter is None else -1
@@ -481,7 +551,11 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
                 word.result = candidates[-1]
             else:
                 word.result = -1
-            word.candidates = candidates if word.stress is None and len(candidates) > 1 else []
+            word.candidates = (
+                candidates
+                if word.stress is None and not word.unstressed and len(candidates) > 1
+                else []
+            )
         _set_ending(line)
 
 
@@ -494,8 +568,8 @@ def _movable(line: _Line, meter: str | None) -> list[_Word]:
         если такое слово в строке одно или все они двусложные (формы с подвижным
         ударением: воды́ - во́ды), и только когда после переноса в строке
         не остается нарушений - иначе строка считается неметрической и ударения
-        сохраняются. Ударение по букве ё и ударение в анакрузе не переносятся:
-        первое надежнее словарного, второе отклонением не считается
+        сохраняются. Ударение по букве ё или знаку ударения и ударение в анакрузе
+        не переносятся: первое надежнее словарного, второе отклонением не считается
     """
     if meter is None:
         return []
@@ -503,7 +577,7 @@ def _movable(line: _Line, meter: str | None) -> list[_Word]:
     movable = [
         word
         for word in conflicts
-        if not word.yo
+        if not word.certain
         and len(_ictuses(word, meter)) == 1
         and (len(conflicts) == 1 or word.n_syllables == 2)
     ]
@@ -706,7 +780,8 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
 
     Описание:
         После ударной гласной каждого слова ставится знак акута (U+0301):
-        по букве ё, словарю StressDict с поправками и правилам word_stress;
+        по знаку ударения в тексте, букве ё, словарю StressDict с поправками
+        и правилам word_stress; мягкие переносы снимаются;
         односложные предлоги, союзы и частицы (VERSE_PROCLITICS) и слова
         без найденного ударения остаются без знака. Метр не учитывается:
         для стихов с подгонкой ударений под метр служит VerseStats.accentuate
@@ -724,11 +799,20 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
     if stress_dict is None:
         stress_dict = StressDict()
 
+    text, marked = _take_stress_marks(text)
+    marks = iter(marked)
+    host = False
+
     def mark(match: re.Match[str]) -> str:
+        nonlocal host
         word = match.group()
-        if word.lower() in VERSE_PROCLITICS:
-            return word
-        stress = _word_stress(word.lower(), stress_dict)
+        stress = next(marks, None)
+        unstressed, host = (
+            host and stress is None,
+            stress is not None and word.lower() in VERSE_PROCLITICS,
+        )
+        if stress is None and not unstressed and word.lower() not in VERSE_PROCLITICS:
+            stress = _word_stress(word.lower(), stress_dict)
         if stress is None:
             return word
         vowel = [i for i, letter in enumerate(word.lower()) if letter in VOWELS][stress]

@@ -17,6 +17,7 @@ from .constants import (
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
+from .utils import strip_marks
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
 VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
@@ -129,7 +130,10 @@ class PhonStats:
             source = source.text
         if isinstance(source, Doc):
             text = source.text
-            words = tuple(word.lower() for _, _, word in iter_doc_words(source, join_hyphens=True))
+            words = tuple(
+                strip_marks(word).lower()
+                for _, _, word in iter_doc_words(source, join_hyphens=True)
+            )
         elif isinstance(source, str):
             text = source
             if not words_extractor:

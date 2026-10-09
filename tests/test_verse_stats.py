@@ -1,3 +1,4 @@
+import unicodedata
 from math import isnan
 
 import pytest
@@ -476,3 +477,31 @@ def test_ending_key():
     assert not _rhymes(("а", "в", 1), ("а", "в", 2))
     assert not _rhymes(("а", "в", 1), ("а", "н", 1))
     assert not _rhymes(None, ("а", "в", 1))
+
+
+def test_stress_marks(stress_dict):
+    """Знак ударения в тексте важнее словаря, а в строки не попадает, как и мягкий перенос"""
+    marked = ONEGIN.replace("дядя", "дя\u0301дя").replace("честных", "че\u00adстных")
+    vs = VerseStats(marked, stress_dict)
+    assert vs.lines == VerseStats(ONEGIN, stress_dict).lines
+    assert vs.get_stats() == VerseStats(ONEGIN, stress_dict).get_stats()
+    assert accentuate("За\u0301мок и замок", stress_dict) == "За\u0301мок и замо\u0301к"
+    assert accentuate("Ѐлка", stress_dict) == "Е\u0301лка"
+    # Знак после согласной ударения не дает и не собирает с ней букву (ѓ)
+    assert accentuate("Зам\u0301ок", stress_dict) == "Замо\u0301к"
+    assert VerseStats("Г\u0301ород", stress_dict).lines == ("Город",)
+    assert VerseStats("Е\u0308лка\u0301 стоит", stress_dict).lines == ("Ёлка стоит",)
+    # Текст в NFD (й, ё из двух символов) разбирается так же, со знаками и без
+    decomposed = unicodedata.normalize("NFD", ONEGIN)
+    assert (
+        VerseStats(decomposed, stress_dict).get_stats()
+        == VerseStats(ONEGIN, stress_dict).get_stats()
+    )
+    # Ударная гласная латиницей, ударная проклитика берет ударение следующего слова
+    text = "Домá и чтó, на\u0301 воды, на воды"
+    assert accentuate(text, stress_dict) == "Дома\u0301 и что\u0301, на\u0301 воды, на во\u0301ды"
+    vs = VerseStats(f"{ONEGIN}\nИ на\u0301 воды не мог", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "И на\u0301 воды не мо\u0301г"
+    # Ударение по знаку, как по ё, метр не переносит: без знаков «реки воды» переносятся на икты
+    vs = VerseStats(f"{ONEGIN}\nКогда ре\u0301ки во\u0301ды текут", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "Когда\u0301 ре\u0301ки во\u0301ды текут"

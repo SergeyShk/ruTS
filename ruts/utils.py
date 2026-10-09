@@ -21,6 +21,15 @@ from .constants import (
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
 SPELLINGS = {"её": "ее"}
+GRAVE_VOWELS = str.maketrans("ѐѝЀЍ", "еиЕИ")
+LATIN_VOWELS = dict(zip("áéóýàèòÁÉÓÝÀÈÒ", "аеоуаеоАЕОУАЕО", strict=True))
+# Знак ударения после кириллической буквы (у й и ё - после ее собственного знака)
+CYRILLIC_STRESS = re.compile(
+    "(?<=[а-яёА-ЯЁ])[\u0300\u0301]+|(?<=[а-яА-Я][\u0306\u0308])[\u0300\u0301]+"
+)
+# Ударная гласная латиницей внутри русского слова: чтó, Домá
+LATIN_STRESS = re.compile("(?<=[а-яёА-ЯЁ])[áéóýàèòÁÉÓÝÀÈÒ]|[áéóýàèòÁÉÓÝÀÈÒ](?=[а-яёА-ЯЁ])")
+MARKED = re.compile("[\u0300\u0301\u00adѐѝЀЍáéóýàèòÁÉÓÝÀÈÒ]")
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -37,13 +46,44 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
     return pymorphy3.MorphAnalyzer()
 
 
+def strip_marks(text: str) -> str:
+    """
+    Текст без знаков ударения и мягких переносов
+
+    Описание:
+        Снимаются акут U+0301 и гравис U+0300 после кириллической буквы, буквы
+        ѐ и ѝ становятся е и и, ударная гласная латиницей внутри русского слова
+        (чтó, Домá) - кириллической, мягкий перенос U+00AD снимается везде:
+        в написание слова все это не входит, а pymorphy3 и словари слов с ними
+        не узнают. Знаки над латиницей (Café) и форма нормализации Unicode
+        остаются как есть
+
+    Аргументы:
+        text (str): Текст или слово
+
+    Вывод:
+        str: Текст без знаков
+
+    Пример использования:
+        >>> from ruts.utils import strip_marks
+        >>> strip_marks("Моро\u0301з и со\u00adлнце, чтó, Café")
+        'Мороз и солнце, что, Café'
+    """
+    if not MARKED.search(text):
+        return text
+    text = text.replace("\u00ad", "").translate(GRAVE_VOWELS)
+    text = LATIN_STRESS.sub(lambda match: LATIN_VOWELS[match.group()], text)
+    return CYRILLIC_STRESS.sub("", text)
+
+
 @lru_cache(maxsize=131072)
 def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
     """
     Морфологические разборы словоформы pymorphy3 с кэшированием
 
     Описание:
-        Разборы по убыванию вероятности. Словоформа «её» разбирается как «ее»:
+        Разборы по убыванию вероятности; знаки ударения и мягкие переносы
+        снимаются (strip_marks). Словоформа «её» разбирается как «ее»:
         pymorphy3 дает у нее только притяжательное местоимение, без личного
         «она», и текст с буквой ё разбирался бы иначе, чем без нее
 
@@ -58,6 +98,7 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         >>> [parse.normal_form for parse in parse_all("её")][:2]
         ['она', 'её']
     """
+    word = strip_marks(word)
     return tuple(get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word)))
 
 
@@ -129,13 +170,17 @@ def normalize_yo(word: str) -> str:
     """
     Замена буквы ё на е в нижнем регистре
 
+    Описание:
+        Форма слова для сравнения: знаки ударения и мягкие переносы тоже
+        снимаются (strip_marks)
+
     Аргументы:
         word (str): Слово
 
     Вывод:
         str: Слово без буквы ё
     """
-    return word.lower().replace("ё", "е")
+    return strip_marks(word).lower().replace("ё", "е")
 
 
 def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int, int]]:
@@ -188,7 +233,8 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         razdel оставляет в слове приклеенные тире реплик и ремарок (-Нет -сказал он,
         —сказал); они становятся отдельными токенами, а дефис внутри слова (кто-то),
         минус перед числом и тире в сокращенном имени (N—ский) остаются; метка порядка
-        байтов (BOM) в начале токена отбрасывается
+        байтов (BOM) в начале токена отбрасывается. В тексте токена сняты знаки
+        ударения и мягкие переносы (strip_marks), позиции - по исходной строке
 
     Аргументы:
         text (str): Строка текста
@@ -197,6 +243,14 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого токена
     """
+    for start, stop, token in _iter_razdel_tokens(text):
+        word = strip_marks(token)
+        if word:
+            yield start, stop, word
+
+
+def _iter_razdel_tokens(text: str) -> Iterator[tuple[int, int, str]]:
+    """Токены razdel с отделенными тире и без BOM, как написаны в тексте"""
     for token in tokenize(text):
         word = token.text.lstrip(BYTE_ORDER_MARK)
         if not word:

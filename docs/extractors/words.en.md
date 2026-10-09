@@ -9,7 +9,7 @@
 
 ## Language hooks
 
-The class extends the `WordsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) core with the hooks of Russian: the tokenizer `tokenize(text)` is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library with the dialogue dashes glued to words split off (`ruts.utils.iter_tokens`), the lemma `lemmatize(word)` is the first parse of the `MorphAnalyzer` of the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) library, and the number pattern `number_pattern` also matches ranges, fractions and ordinals: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
+The class extends the `WordsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) core with the hooks of Russian: the tokenizer `tokenize(text)` is the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library with the dialogue dashes glued to words split off and without stress marks and soft hyphens in words (`ruts.utils.iter_tokens`), the lemma `lemmatize(word)` is the first parse of the `MorphAnalyzer` of the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) library, and the number pattern `number_pattern` also matches ranges, fractions and ordinals: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`.
 
 ## Parameters
 

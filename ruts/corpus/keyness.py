@@ -19,7 +19,7 @@ from anyts.corpus.keyness import (
 
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import normalize_yo, parse_all, parse_word
+from ..utils import normalize_yo, parse_all, parse_word, strip_marks
 
 
 def keyness(
@@ -137,4 +137,4 @@ def _reachable(key: Callable[[str], str], lemmatize: bool) -> Callable[[str], bo
 
 def _is_dictionary_word(word: str) -> bool:
     """Состоит ли слово из букв словаря (DICTIONARY_WORD)"""
-    return DICTIONARY_WORD.fullmatch(word) is not None
+    return DICTIONARY_WORD.fullmatch(strip_marks(word)) is not None

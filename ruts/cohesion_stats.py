@@ -34,7 +34,7 @@ from .constants import (
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import tag_to_ud_pos, word_to_ud
-from .utils import lemmatize, normalize_yo, parse_all, parse_word
+from .utils import lemmatize, normalize_yo, parse_all, parse_word, strip_marks
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -614,9 +614,9 @@ def unit_text(unit: Sequence[Token]) -> str:
         unit (list[Token]): Токены слова
 
     Вывод:
-        str: Текст слова
+        str: Текст слова без знаков ударения и мягких переносов (strip_marks)
     """
-    return "".join(token.text for token in unit)
+    return strip_marks("".join(token.text for token in unit))
 
 
 def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[list[Token]]]:

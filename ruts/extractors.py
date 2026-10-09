@@ -5,7 +5,7 @@ from typing import ClassVar
 import anyts
 from razdel import sentenize
 
-from .utils import iter_tokens, parse_word
+from .utils import iter_tokens, parse_word, strip_marks
 
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
 
@@ -137,3 +137,7 @@ class CharNgramsExtractor(anyts.CharNgramsExtractor):
     def tokenize(self, text: str) -> Iterable[str]:
         """Разбиение текста на слова ruts.utils.iter_tokens"""
         return (word for _, _, word in iter_tokens(text))
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        """Извлечение N-грамм из текста без знаков ударения и мягких переносов (strip_marks)"""
+        return super().extract(strip_marks(text) if isinstance(text, str) else text)
