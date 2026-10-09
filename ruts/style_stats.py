@@ -20,7 +20,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
-from .utils import find_phrases, get_morph_analyzer, is_verbal_noun, normalize_yo, parse_word
+from .utils import find_phrases, is_verbal_noun, normalize_yo, parse_all, parse_word
 
 
 def check_params(top_n: int) -> None:
@@ -573,7 +573,7 @@ def _verb_forms(word: str) -> frozenset[str]:
     """Формы глагола по всем лексемам pymorphy3, где слово - инфинитив, иначе пустое множество"""
     return frozenset(
         normalize_yo(form.word)
-        for parse in get_morph_analyzer().parse(word)
+        for parse in parse_all(word)
         if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word
         for form in parse.lexeme
     )

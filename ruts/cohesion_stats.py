@@ -34,7 +34,7 @@ from .constants import (
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import tag_to_ud_pos, word_to_ud
-from .utils import get_morph_analyzer, lemmatize, normalize_yo, parse_word
+from .utils import lemmatize, normalize_yo, parse_all, parse_word
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -476,10 +476,7 @@ def connector_pos(word: str) -> str | None:
         str|None: Часть речи UD
     """
     normalized = normalize_yo(word)
-    poses = [
-        tag_to_ud_pos(parse.tag, parse.normal_form, word)
-        for parse in get_morph_analyzer().parse(word)
-    ]
+    poses = [tag_to_ud_pos(parse.tag, parse.normal_form, word) for parse in parse_all(word)]
     return next((pos for pos in poses if _is_connector_pos(normalized, pos)), poses[0])
 
 

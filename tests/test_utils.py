@@ -8,9 +8,19 @@ from ruts.utils import (
     is_verbal_noun,
     iter_text_words,
     iter_tokens,
+    lemmatize,
     normalize_yo,
+    parse_all,
     parse_word,
 )
+
+
+def test_parse_yo_pronoun():
+    """pymorphy3 не дает у «её» личного местоимения, и оно разбирается как «ее»"""
+    assert [parse.normal_form for parse in parse_all("Её")][:2] == ["она", "её"]
+    assert parse_word("её").tag.POS == "NPRO"
+    assert lemmatize("её", "PRON") == lemmatize("ее", "PRON") == "она"
+    assert lemmatize("её", "DET") == "её"
 
 
 def test_parse_word_cached():

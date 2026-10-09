@@ -19,7 +19,7 @@ from .constants import (
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import get_morph_analyzer, normalize_yo, parse_word
+from .utils import normalize_yo, parse_all, parse_word
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
@@ -388,7 +388,7 @@ def _form_lemmas(word: str, key: str) -> tuple[str, str | None, str | None]:
     """Лемма в написании слова, краткая форма и форма множественного числа по разбору леммы"""
     parse = parse_word(word)
     if normalize_yo(parse.normal_form) != key:
-        parses = get_morph_analyzer().parse(word)
+        parses = parse_all(word)
         found = next((parse for parse in parses if normalize_yo(parse.normal_form) == key), None)
         if found is None:
             return key, None, None
@@ -420,9 +420,9 @@ def _spelling(parse: pymorphy3.analyzer.Parse) -> str | None:
 @lru_cache(maxsize=131072)
 def _parse_lemmas(word: str) -> tuple[tuple[str, str | None], ...]:
     """Леммы и части речи разборов pymorphy3, у имени собственного - только имен собственных"""
-    parses = get_morph_analyzer().parse(word)
+    parses = parse_all(word)
     if PROPER_NOUN_GRAMMEMES & parses[0].tag.grammemes:
-        parses = [parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes]
+        parses = tuple(parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes)
     return tuple((normalize_yo(parse.normal_form), parse.tag.POS) for parse in parses)
 
 

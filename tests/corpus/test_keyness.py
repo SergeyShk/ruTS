@@ -125,3 +125,43 @@ def test_keyness_errors():
         keyness(target, reference, top_n=0)
     with pytest.raises(ValueError):
         keyness(target, reference, top_n=-1)
+
+
+@pytest.fixture(scope="module")
+def pronoun_dict(tmp_path_factory):
+    """Статьи, к которым лемматизатор слова не приводит: «его», «ее», «во»"""
+    path = tmp_path_factory.mktemp("dicts")
+    rows = [
+        ("в", "pr", 30000.0),
+        ("во", "pr", 600.0),
+        ("его", "apro", 2000.0),
+        ("ее", "apro", 1500.0),
+        ("кот", "s", 40.3),
+        ("он", "spro", 15000.0),
+        ("она", "spro", 9000.0),
+        ("род", "s", 300.0),
+        ("родиться", "v", 200.0),
+    ]
+    lines = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
+    lines += [f"{lemma}\t{pos}\t{ipm}\t90\t90\t1000" for lemma, pos, ipm in rows]
+    path.joinpath(FILENAME).write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return FreqDict(data_dir=path)
+
+
+@pytest.mark.parametrize("lemmatize", [True, False])
+def test_keyness_freq_dict_unreachable(pronoun_dict, lemmatize):
+    """Статья остается, если к ней приводится другая форма: «род» - «родиться», но «рода» - «род»"""
+    negative = keyness(["кот"] * 50, pronoun_dict, positive=False, lemmatize=lemmatize)
+    assert {keyword.word for keyword in negative} == {"в", "он", "она", "род", "родиться"}
+
+
+def test_keyness_freq_dict_top_n(pronoun_dict):
+    """top_n берется после того, как недостижимые статьи отброшены"""
+    negative = keyness(["кот"] * 50, pronoun_dict, positive=False, top_n=2)
+    assert [keyword.word for keyword in negative] == ["в", "он"]
+
+
+def test_keyness_freq_dict_yo(pronoun_dict):
+    """«Её» и «ее» - одна статья «она», как в тексте без ё"""
+    assert keyness(["Её", "кот"], pronoun_dict) == keyness(["ее", "кот"], pronoun_dict)
+    assert {keyword.word for keyword in keyness(["её"], pronoun_dict)} == {"она"}

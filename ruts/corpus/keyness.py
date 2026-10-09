@@ -1,5 +1,6 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from functools import cache
+from itertools import islice
 
 import anyts.corpus
 from anyts.corpus.keyness import (
@@ -16,9 +17,9 @@ from anyts.corpus.keyness import (
     check_keyness_params as check_keyness_params,
 )
 
-from ..datasets.freq2011 import CORPUS_SIZE, FreqDict
+from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import parse_word
+from ..utils import normalize_yo, parse_all, parse_word
 
 
 def keyness(
@@ -43,7 +44,10 @@ def keyness(
         lemmatize=False - леммы) приводятся к леммам словаря, как в LexicalStats,
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная
         на объем корпуса словаря (92 млн); слово вне словаря получает его
-        наименьшую частоту (min_ipm) и бывает только положительным ключевым словом
+        наименьшую частоту (min_ipm) и бывает только положительным ключевым словом;
+        отрицательным ключевым словом бывает только статья, к которой приводится
+        хотя бы одна форма ее лексем pymorphy3: статьи «его», «во», «со», к которым
+        не приводится ни одно слово (это формы лемм «он», «в», «с»), не выдаются
         Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения
         шансов заменяется на 0.5 (Hardie 2014)
         Положительные ключевые слова чаще в целевом корпусе, отрицательные -
@@ -74,29 +78,58 @@ def keyness(
         SourceError: Если один из корпусов пуст
         DatasetNotFoundError: Если частотный словарь не загружен
     """
-    if isinstance(reference, FreqDict):
-        check_keyness_params(measure, min_freq, top_n, target)
-        reference = _frequency_reference(reference, lemmatize)
-    return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n)
+    if not isinstance(reference, FreqDict):
+        return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n)
+    check_keyness_params(measure, min_freq, top_n, target)
+    key = _dictionary_key(reference.entries, lemmatize)
+    frequency = _frequency_reference(reference, key)
+    if positive:
+        return anyts.corpus.keyness(target, frequency, measure, min_freq, positive, top_n)
+    found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive)
+    reachable = _reachable(key, lemmatize)
+    return list(islice((keyword for keyword in found if reachable(keyword.word)), top_n))
 
 
-def _frequency_reference(freq_dict: FreqDict, lemmatize: bool) -> FrequencyReference:
-    """Эталон частотного словаря, как его описывает докстринг keyness"""
-    size = float(CORPUS_SIZE)
-    entries = freq_dict.entries
+def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[str], str]:
+    """Статья словаря для слова цели: словоформы (lemmatize) или леммы"""
 
     @cache
     def key(word: str) -> str:
         lemma = parse_word(word).normal_form if lemmatize else word
         return dictionary_lemma(word, lemma, entries)
 
+    return key
+
+
+def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> FrequencyReference:
+    """Эталон частотного словаря, как его описывает докстринг keyness"""
+    size = float(CORPUS_SIZE)
     return FrequencyReference(
-        {lemma: entry.ipm * size / 1e6 for lemma, entry in entries.items()},
+        {lemma: entry.ipm * size / 1e6 for lemma, entry in freq_dict.entries.items()},
         size,
         freq_dict.min_ipm * size / 1e6,
         key,
         _is_dictionary_word,
     )
+
+
+def _reachable(key: Callable[[str], str], lemmatize: bool) -> Callable[[str], bool]:
+    """Приводится ли к статье словаря хотя бы одна форма ее лексем (через лемму без lemmatize)"""
+
+    def target(form: str) -> str:
+        return form if lemmatize else parse_word(form).normal_form
+
+    def reachable(entry: str) -> bool:
+        if key(target(entry)) == entry:
+            return True
+        forms = {form.word for parse in parse_all(entry) for form in parse.lexeme}
+        return any(
+            key(target(spelling)) == entry
+            for form in forms
+            for spelling in {form, normalize_yo(form)}
+        )
+
+    return reachable
 
 
 def _is_dictionary_word(word: str) -> bool:

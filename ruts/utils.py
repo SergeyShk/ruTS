@@ -20,6 +20,7 @@ from .constants import (
 
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
+SPELLINGS = {"её": "ее"}
 GLUED_DASHES = re.compile(
     rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
 )
@@ -37,12 +38,36 @@ def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
 
 
 @lru_cache(maxsize=131072)
+def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
+    """
+    Морфологические разборы словоформы pymorphy3 с кэшированием
+
+    Описание:
+        Разборы по убыванию вероятности. Словоформа «её» разбирается как «ее»:
+        pymorphy3 дает у нее только притяжательное местоимение, без личного
+        «она», и текст с буквой ё разбирался бы иначе, чем без нее
+
+    Аргументы:
+        word (str): Словоформа
+
+    Вывод:
+        tuple[Parse]: Разборы словоформы
+
+    Пример использования:
+        >>> from ruts.utils import parse_all
+        >>> [parse.normal_form for parse in parse_all("её")][:2]
+        ['она', 'её']
+    """
+    return tuple(get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word)))
+
+
+@lru_cache(maxsize=131072)
 def parse_word(word: str) -> pymorphy3.analyzer.Parse:
     """
     Морфологический разбор словоформы с кэшированием
 
     Описание:
-        Возвращает первый (наиболее вероятный) разбор pymorphy3
+        Возвращает первый (наиболее вероятный) разбор parse_all
         Результаты кэшируются по словоформе: в тексте на 75 тысяч токенов
         всего около 14 тысяч уникальных форм, повторный разбор не нужен
 
@@ -52,7 +77,7 @@ def parse_word(word: str) -> pymorphy3.analyzer.Parse:
     Вывод:
         Parse: Разбор словоформы
     """
-    return get_morph_analyzer().parse(word)[0]
+    return parse_all(word)[0]
 
 
 @lru_cache(maxsize=131072)
@@ -73,7 +98,7 @@ def lemmatize(word: str, pos: str = "") -> str:
     Вывод:
         str: Лемма
     """
-    parses = get_morph_analyzer().parse(word)
+    parses = parse_all(word)
     allowed = UD_TO_OPENCORPORA_POS.get(pos, frozenset())
     parse = next((parse for parse in parses if parse.tag.POS in allowed), parses[0])
     return str(parse.normal_form)
