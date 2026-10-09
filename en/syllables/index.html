@@ -2891,7 +2891,7 @@
 <p><strong>ruts.syllables</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions.</p>
+<p>A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (<code>ruts.utils.strip_marks</code>), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.</p>
 <h2 id="syllabify">Syllabification<a class="headerlink" href="#syllabify" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.syllables.syllabify()</strong></p>

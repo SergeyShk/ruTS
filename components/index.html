@@ -3018,6 +3018,7 @@
 <p>Компонент кладет в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code>, без компонентов.</p>
 </div>
 <p>Добавление компонента расширяет токенизатор его пайплайна правилами для приклеенных к словам тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами.</p>
+<p>Знаки ударения ruTS снимает со слов <code>Doc</code>, но части речи, признаки и зависимости дает модель, а она видит слово со знаком как незнакомое и размечает его хуже: на тексте после <code>accentuate</code> у модели <code>ru_core_news_sm</code> меняется часть речи больше половины слов. Текст с ударениями передавайте в пайплайн без них - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
 <h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.components.BasicStatsComponent</strong></p>

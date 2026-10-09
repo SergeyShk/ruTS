@@ -2976,6 +2976,7 @@
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source can be either a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
 <p>The words of a string come from the word extractor and its sentences from the sentence extractor. The words of a <code>Doc</code> come from its tokens (punctuation marks and symbols such as <code>€</code> or <code>%</code> dropped) and its sentences from its boundaries, or from the sentence extractor when it has none; an extractor passed explicitly is used on the text of the <code>Doc</code>. A sentence of punctuation alone holds no word and is not counted.</p>
+<p>Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The statistics are computed when the <code>BasicStats</code> object is initialized.</p>

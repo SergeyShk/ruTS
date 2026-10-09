@@ -2831,7 +2831,7 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Building a <a href="https://www.weblyzard.com/word-tree/">word tree</a> that shows the contexts of a keyword in a text: the N-grams of up to <code>max_n</code> words that start or end with the keyword are counted in every list of words - a sentence, for instance. Every level of the tree keeps the <code>max_per_n</code> most frequent N-grams that continue a kept shorter one, alphabetically when equal. The kept N-grams are joined into two trees, the words after the keyword and before it, with the size of the font by frequency (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg and Viégas 2008</a>). Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>.</p>
-<p>The function is that of the <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a> core.</p>
+<p>The function is that of the <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a> core; stress marks are stripped from the texts and from <code>keyword</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

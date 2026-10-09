@@ -3015,6 +3015,7 @@
 <p>A component keeps an object of statistics in <code>doc._.&lt;name&gt;</code>, and spaCy cannot serialize it: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> and <code>nlp.pipe(..., n_process&gt;1)</code> fail with these components in the pipeline. To save a document, leave the user data out (<code>doc.to_bytes(exclude=["user_data"])</code>) or keep <code>doc._.&lt;name&gt;.get_stats()</code> on your own; for multiprocessing compute the statistics in the main process after <code>nlp.pipe</code>, without the components.</p>
 </div>
 <p>Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (<code>ruts.utils.add_dash_rules</code>), so that a <code>Doc</code> is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.</p>
+<p>ruTS removes stress marks from the words of a <code>Doc</code>, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after <code>accentuate</code> the <code>ru_core_news_sm</code> model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
 <h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.components.BasicStatsComponent</strong></p>
