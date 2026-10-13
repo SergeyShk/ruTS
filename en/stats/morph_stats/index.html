@@ -2976,7 +2976,7 @@
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>A module for computing morphological statistics of a text. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
 <p>The module allows using a pre-built <a href="../../extractors/words/"><code>WordsExtractor</code></a> object for the word tokenization needed before computing the statistics.</p>
-<p>Parts of speech and grammatical features are given in <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> terms: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> and others, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, likewise <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code> and the verb form <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>. For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used, and the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>; a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
+<p>Parts of speech and grammatical features are given in <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> terms: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> and others, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, likewise <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code>, the verb form <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>), the degree of comparison <code>degree</code> (<code>Pos</code>, <code>Cmp</code>, <code>Sup</code>), the negation <code>polarity</code> (<code>Neg</code>) and the short form <code>style_variant</code> (<code>Short</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>. For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used, and the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>; a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
 <p>Correspondence between OpenCorpora and UD parts of speech:</p>
 <table>
 <thead>
@@ -3044,6 +3044,7 @@
 </tr>
 </tbody>
 </table>
+<p>For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - <code>Cmp</code> for the comparative, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others; the particles не and ни carry the negation; short adjectives and participles (рад, прочитана) carry the short form.</p>
 <p>Transitivity (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) and clusivity (<code>involvement</code>: <code>In</code>, <code>Ex</code>) are OpenCorpora features absent from Russian UD; they are computed via pymorphy3 for verbs (for a <code>Doc</code> - from the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3124,6 +3125,11 @@
 <td style="text-align: center;">Tuple of case values</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>degree</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Tuple of degree values</td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>gender</code></td>
 <td style="text-align: center;">tuple[str]</td>
 <td style="text-align: center;">Tuple of gender values</td>
@@ -3147,6 +3153,16 @@
 <td style="text-align: center;"><code>person</code></td>
 <td style="text-align: center;">tuple[str]</td>
 <td style="text-align: center;">Tuple of person values</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>polarity</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Tuple of negation values</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>style_variant</code></td>
+<td style="text-align: center;">tuple[str]</td>
+<td style="text-align: center;">Tuple of short form values</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>tense</code></td>

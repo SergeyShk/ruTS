@@ -3020,6 +3020,11 @@
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Minimum frequency in the dictionary (0.4)</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>word_ipm</code></td>
+<td style="text-align: center;">dict[str, float]</td>
+<td style="text-align: center;">Frequencies by the entry a word form reaches without a part of speech - the reference of <a href="../../corpus/keyness/"><code>keyness</code></a></td>
+</tr>
 </tbody>
 </table>
 <p>An <code>Entry</code> is a named tuple with the fields <code>lemma</code>, <code>pos</code> (tuple of parts of speech), <code>ipm</code>, <code>range</code>, <code>dispersion</code>, <code>docs</code>.</p>

@@ -2900,7 +2900,7 @@
 <p>Comparing two corpora feature by feature. Each corpus comes as a table of the features of its windows - texts split into parts of about the same size, so that the features do not depend on the length of the texts. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> compares the tables column by column and returns one row per feature, sorted by descending absolute Cliff's delta, the features without statistics last. The bootstrap resamples whole texts by the level <code>text</code> of the index of a table; a table without that level has every row taken for a text of its own. A column missing from one of the tables gives <code>nan</code>.</p>
 <p>The texts are cut in a row into windows of exactly <code>window</code> words by <code>split_windows</code>, so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless <code>min_words</code> allows shorter windows. The features of every window are computed by <code>text_features</code> or a function of one's own.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<p><code>text_features(text)</code> returns 108 features prefixed by source:</p>
+<p><code>text_features(text)</code> returns 113 features prefixed by source:</p>
 <table>
 <thead>
 <tr>
@@ -2927,7 +2927,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>morph_</code></td>
-<td style="text-align: left;">shares of parts of speech among the words (<code>morph_pos_NOUN</code>) and shares of values within each feature (<code>morph_case_Gen</code>, <code>morph_tense_Past</code>; one share for a two-valued feature, <code>morph_number_Plur</code>)</td>
+<td style="text-align: left;">shares of parts of speech and of single-valued features among the words (<code>morph_pos_NOUN</code>, <code>morph_polarity_Neg</code>, <code>morph_style_variant_Short</code>) and shares of values within the other features (<code>morph_case_Gen</code>, <code>morph_tense_Past</code>, <code>morph_degree_Cmp</code>; one share for a two-valued feature, <code>morph_number_Plur</code>)</td>
 <td style="text-align: left;"><a href="../../stats/morph_stats/"><code>MorphStats</code></a> by pymorphy3</td>
 </tr>
 <tr>

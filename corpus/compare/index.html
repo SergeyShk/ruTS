@@ -2901,7 +2901,7 @@
 <p>Сравнение двух корпусов признак за признаком. Каждый корпус приходит таблицей признаков своих окон - текстов, разрезанных на части примерно одинакового размера, чтобы признаки не зависели от длины текстов. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> сравнивает таблицы по столбцам и возвращает по строке на признак, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса таблицы; в таблице без этого уровня каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
 <p>Тексты режутся подряд на окна ровно по <code>window</code> слов функцией <code>split_windows</code>, так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если <code>min_words</code> не разрешает окна короче. Признаки каждого окна считает <code>text_features</code> или своя функция.</p>
 <h2 id="_3">Признаки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p><code>text_features(text)</code> возвращает 108 признаков с префиксом по источнику:</p>
+<p><code>text_features(text)</code> возвращает 113 признаков с префиксом по источнику:</p>
 <table>
 <thead>
 <tr>
@@ -2928,7 +2928,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>morph_</code></td>
-<td style="text-align: left;">доли частей речи от числа слов (<code>morph_pos_NOUN</code>) и доли значений внутри каждого признака (<code>morph_case_Gen</code>, <code>morph_tense_Past</code>; у двузначных - одна доля, <code>morph_number_Plur</code>)</td>
+<td style="text-align: left;">доли частей речи и признаков с одним значением от числа слов (<code>morph_pos_NOUN</code>, <code>morph_polarity_Neg</code>, <code>morph_style_variant_Short</code>) и доли значений внутри остальных признаков (<code>morph_case_Gen</code>, <code>morph_tense_Past</code>, <code>morph_degree_Cmp</code>; у двузначных - одна доля, <code>morph_number_Plur</code>)</td>
 <td style="text-align: left;"><a href="../../stats/morph_stats/"><code>MorphStats</code></a> по pymorphy3</td>
 </tr>
 <tr>
