@@ -90,6 +90,17 @@ def test_n_spaces(bs):
     assert bs.n_spaces == 89
 
 
+def test_n_spaces_unicode():
+    """Неразрывные пробелы веб-типографа и табуляция - тоже пробелы"""
+    bs = BasicStats("Кот\u00a0спит в\u00a0доме,\u202fа\tпёс лает", normalize=True)
+    assert bs.n_spaces == 6
+    assert bs.p_spaces == pytest.approx(6 / 27)
+
+
+def test_n_sents_blank_lines():
+    assert BasicStats("Итоги\n\nВсе на месте.").n_sents == 2
+
+
 def test_n_syllables(bs):
     assert bs.n_syllables == 198
 

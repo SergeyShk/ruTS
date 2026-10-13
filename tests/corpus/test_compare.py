@@ -134,6 +134,12 @@ def test_text_features():
         text_features("...")
 
 
+def test_text_features_blank_lines():
+    """Абзац без точки - отдельное предложение, как в SentsExtractor"""
+    features = text_features("Итоги без точки\n\nВсе на месте. Идем дальше.")
+    assert features["sents_mean"] == pytest.approx(8 / 3)
+
+
 def test_sentence_rhythm():
     rhythm = sentence_rhythm([4, 8, 2, 7])
     assert rhythm["sents_mean"] == 5.25

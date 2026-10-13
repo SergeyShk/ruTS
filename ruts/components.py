@@ -12,11 +12,13 @@
     Документ без слов проходит пайплайн нетронутым, расширение остается None;
     имя, занятое расширением другого пакета, - ParameterError
     Добавление компонента расширяет токенизатор пайплайна правилами add_dash_rules
+    ruts_blank_lines - компонент ядра start_sents_after_blank_lines: ставит начало
+    предложения после пустой строки, если добавлен перед parser, senter или sentencizer
 """
 
 import re
 
-from anyts.components import StatsComponent
+from anyts.components import StatsComponent, start_sents_after_blank_lines
 from anyts.constants import (
     DIVERSITY_LOG_BASE,
     HDD_SAMPLE_SIZE,
@@ -47,6 +49,8 @@ from .utils import add_dash_rules
 from .verse_stats import VerseStats
 
 _LETTER = re.compile(r"[^\W\d_]")
+
+Language.component("ruts_blank_lines", func=start_sents_after_blank_lines)
 
 
 class _Component(StatsComponent):

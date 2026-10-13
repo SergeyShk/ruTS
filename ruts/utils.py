@@ -6,6 +6,7 @@ from functools import lru_cache
 from typing import Any, TypeVar, cast
 
 import pymorphy3
+from anyts.extractors import BLANK_LINE
 from anyts.utils import check_sequence, check_words, is_punctuation
 from razdel import sentenize, tokenize
 from spacy.language import Language
@@ -415,10 +416,12 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
     Предложения razdel с позициями
 
     Описание:
-        razdel делит текст без знаков ударения и мягких переносов (take_marks):
-        иначе хвост слова после знака («но́с.») он принимает за сокращение и не
-        видит конца предложения. Позиции и текст предложений - по исходной строке,
-        со знаками
+        Пустая строка завершает предложение, как в SentsExtractor: razdel получает
+        части текста между пустыми строками по одной, а часть из одних пробельных
+        символов предложений не дает. razdel делит текст без знаков ударения
+        и мягких переносов (take_marks): иначе хвост слова после знака («но́с.»)
+        он принимает за сокращение и не видит конца предложения. Позиции и текст
+        предложений - по исходной строке, со знаками
 
     Аргументы:
         text (str): Строка текста
@@ -431,15 +434,25 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         >>> from ruts.utils import iter_text_sents
         >>> [sent for _, _, sent in iter_text_sents("Он кру\\u0301т. Мы тоже.")]
         ['Он кру́т.', 'Мы тоже.']
+        >>> [sent for _, _, sent in iter_text_sents("Итоги\\n\\nВсе на месте.")]
+        ['Итоги', 'Все на месте.']
     """
+    bounds = [0, *(bound for match in BLANK_LINE.finditer(text) for bound in match.span())]
+    for start, end in zip(bounds[::2], [*bounds[1::2], len(text)], strict=True):
+        for first, last in _iter_part_sents(text[start:end]):
+            if first < last:
+                yield start + first, start + last, text[start + first : start + last]
+
+
+def _iter_part_sents(text: str) -> Iterator[tuple[int, int]]:
+    """Границы предложений razdel в тексте без пустых строк, по строке со знаками"""
     if not MARKED.search(text):
-        yield from ((sent.start, sent.stop, sent.text) for sent in sentenize(text))
+        yield from ((sent.start, sent.stop) for sent in sentenize(text))
         return
     clean, origin, _ = take_marks(text)
     origin.append(len(text))
     for sent in sentenize(clean):
-        start, stop = origin[sent.start], origin[sent.stop]
-        yield start, stop, text[start:stop]
+        yield origin[sent.start], origin[sent.stop]
 
 
 def strip_doc_marks(doc: Doc) -> Doc:

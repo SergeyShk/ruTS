@@ -220,6 +220,25 @@ def test_component_syntax(parsed_nlp):
     assert doc._.syntax.get_stats() == SyntaxStats(doc).get_stats()
 
 
+def test_component_blank_lines(parsed_nlp):
+    """Перед парсером ruts_blank_lines дает Doc те же предложения, что и строке"""
+    post = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\nСписок изменений"
+    assert BasicStats(parsed_nlp(post)).n_sents == 2
+    parsed_nlp.add_pipe("ruts_blank_lines", before="parser")
+    try:
+        doc = parsed_nlp(post)
+    finally:
+        parsed_nlp.remove_pipe("ruts_blank_lines")
+    assert [sent.text.strip() for sent in doc.sents] == [
+        "Что нового",
+        "Быстрый импорт.",
+        "Меньше ошибок",
+        "Список изменений",
+    ]
+    assert BasicStats(doc).n_sents == BasicStats(post).n_sents == 4
+    assert doc._.syntax.n_sents == 4
+
+
 def test_component_lexical(tmp_path):
     from tests.datasets.test_freq2011 import write_dict
 
@@ -368,3 +387,19 @@ def test_pipeline_is_loaded_without_importing_the_package(tmp_path):
         [sys.executable, "-c", code], capture_output=True, text=True, check=True
     )
     assert result.stdout.strip() == "4"
+
+
+def test_blank_lines_pipeline_is_loaded_without_importing_the_package(tmp_path):
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_blank_lines")
+    nlp.add_pipe("sentencizer")
+    nlp.to_disk(tmp_path)
+    code = (
+        "import spacy;"
+        f"nlp = spacy.load({str(tmp_path)!r});"
+        "print(len(list(nlp('Итоги\\n\\nВсе на месте').sents)))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True
+    )
+    assert result.stdout.strip() == "2"

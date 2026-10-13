@@ -114,10 +114,36 @@ LIX_LEVELS: tuple[tuple[float, str], ...] = (
     (30, "простые тексты, художественная литература, газетные статьи"),
     (0, "очень простые тексты, детские книги"),
 )
+# RIX - по классам Андерсона (1983); 12-го класса в российской школе нет, он входит в 11-й
+RIX_LEVELS: tuple[tuple[float, str], ...] = (
+    (7.2, "университет и выше"),
+    (5.3, "11-й класс"),
+    (4.5, "10-й класс"),
+    (3.7, "9-й класс"),
+    (3.0, "8-й класс"),
+    (2.4, "7-й класс"),
+    (1.8, "6-й класс"),
+    (1.3, "5-й класс"),
+    (0.8, "4-й класс"),
+    (0.5, "3-й класс"),
+    (0.2, "2-й класс"),
+    (0, "1-й класс"),
+)
 READABILITY_LEVEL_SCALES: dict[str, tuple[tuple[float, str], ...]] = {
     "flesch_reading_easy": READING_EASE_LEVELS,
     "lix": LIX_LEVELS,
+    "rix": RIX_LEVELS,
 }
+# Индекс Флеша в сводном классе - по полосам READING_EASE_LEVELS, чтобы прочтение совпадало с describe
+READING_EASE_GRADES: tuple[tuple[float, float], ...] = (
+    (90, 5),
+    (80, 6),
+    (70, 7),
+    (60, 8.5),
+    (50, 10.5),
+    (30, 14),
+    (0, 17),
+)
 READING_SPEED_WPM = 180
 READING_SPEED_NORMS: dict[str, tuple[int, int]] = {
     "adult_silent": (120, 180),

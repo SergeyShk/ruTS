@@ -287,6 +287,13 @@ def test_plural():
     assert plural(112, "слово", "слова", "слов") == "112 слов"
 
 
+def test_long_sents_blank_lines():
+    """Заголовок без точки не входит в длинное предложение после пустой строки"""
+    text = "Заголовок без точки\n\n" + long_text
+    (h,) = highlight(text, layers=["long_sents"]).highlights
+    assert text[h.start : h.end] == long_text[: -len(" Ночь.")]
+
+
 def test_long_sents():
     ht = highlight(long_text, layers=["long_sents"])
     assert ht.counts == {"long_sents": 1}
