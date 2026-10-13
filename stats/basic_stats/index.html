@@ -2974,9 +2974,10 @@
 <p><strong>ruts.basic_stats.BasicStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats 9bab5af -->
+<!-- core: stats/basic_stats.md:BasicStats 1991b2a -->
 <p>Базовые статистики текста: количество предложений, слов, символов, букв, пробелов, слогов и знаков препинания, распределения слов по числу букв и слогов, длинные, сложные, простые, односложные и многосложные слова. Источником данных может быть текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
-<p>Слова строки дает экстрактор слов, ее предложения - экстрактор предложений. Слова <code>Doc</code> берутся из его токенов (знаки препинания и символы вроде <code>€</code> или <code>%</code> отбрасываются), предложения - из его границ, а если их нет - из экстрактора предложений; явно переданный экстрактор применяется к тексту <code>Doc</code>. Предложение из одних знаков препинания не содержит слов и не считается.</p>
+<p>Слова строки дает экстрактор слов, ее предложения - экстрактор предложений. Слова <code>Doc</code> берутся из его токенов (знаки препинания и символы вроде <code>€</code> или <code>%</code> отбрасываются), предложения - из его границ, а если их нет - из экстрактора предложений; явно переданный экстрактор применяется к тексту <code>Doc</code>. Пустая строка завершает предложение строки и <code>Doc</code> без границ; <code>Doc</code> с границами следует этому правилу, если его пайплайн ставит начало предложения после пустой строки (<code>start_sents_after_blank_lines</code>, библиотека регистрирует компонент под своим именем) до парсера, <code>senter</code> или <code>sentencizer</code>. Предложение из одних знаков препинания не содержит слов и не считается.</p>
+<p>В ruTS этот компонент называется <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>.</p>
 <p>Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
@@ -3040,7 +3041,7 @@
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 </div>
 <h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-attributes 105b5fe -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes ed90a25 -->
 <table>
 <thead>
 <tr>
@@ -3113,7 +3114,7 @@
 <tr>
 <td style="text-align: center;"><code>n_spaces</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество пробелов и табуляций</td>
+<td style="text-align: center;">Количество пробелов Unicode (категория Zs), например неразрывных, и табуляций</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_syllables</code></td>

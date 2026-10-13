@@ -3724,6 +3724,65 @@ a \cdot \frac{\textrm{Количество букв}}{\textrm{Количеств
 <p class="admonition-title">Примечание</p>
 <p>Как и для LIX, класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> передает в функцию количество слов с числом букв не меньше 7.</p>
 </div>
+<p>Методы <code>describe_level</code> и <code>describe</code> читают RIX по классам Андерсона как по классам российской школы (<code>ruts.constants.RIX_LEVELS</code>); 12-го класса в ней нет, и его полоса входит в 11-й:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Показатель</th>
+<th style="text-align: center;">Уровень сложности</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0-0.2</code></td>
+<td style="text-align: center;">1-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.2-0.5</code></td>
+<td style="text-align: center;">2-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.5-0.8</code></td>
+<td style="text-align: center;">3-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.8-1.3</code></td>
+<td style="text-align: center;">4-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1.3-1.8</code></td>
+<td style="text-align: center;">5-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1.8-2.4</code></td>
+<td style="text-align: center;">6-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2.4-3.0</code></td>
+<td style="text-align: center;">7-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3.0-3.7</code></td>
+<td style="text-align: center;">8-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3.7-4.5</code></td>
+<td style="text-align: center;">9-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4.5-5.3</code></td>
+<td style="text-align: center;">10-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>5.3-7.2</code></td>
+<td style="text-align: center;">11-й класс</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>&gt; 7.2</code></td>
+<td style="text-align: center;">университет и выше</td>
+</tr>
+</tbody>
+</table>
 <h2 id="_4">Формула Соловьёва, Иванова, Солнышкиной<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_sis_grade()</strong></p>
@@ -4103,7 +4162,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </div>
 <!-- core: stats/readability_stats_funcs.md:flesch_reading_easy_to_grade b88a235 -->
 <p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону.</p>
-<p>Диапазоны по умолчанию - диапазоны <code>text_standard</code> библиотеки <a href="https://github.com/textstat/textstat">textstat</a> (<code>anyts.constants.READING_EASE_GRADES</code>):</p>
+<p>Полосы ruTS по умолчанию - полосы шкалы прочтения индекса (<code>READING_EASE_LEVELS</code>), чтобы сводный класс и <code>describe</code> читали значение одинаково: 8.5 и 10.5 - середины полос «8-й и 9-й класс» и «10-й и 11-й класс», 14 - «университет», 17 - «выпускник университета», то есть 1-3-й и 4-6-й курс вуза по <a href="#grade_to_age">таблице ступеней</a>. Значения ниже 0 относятся к последней полосе, как и в шкале прочтения. Эти полосы - <code>ruts.constants.READING_EASE_GRADES</code>, атрибут <code>reading_ease_grades</code> класса <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a>:</p>
 <table>
 <thead>
 <tr>
@@ -4126,23 +4185,19 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 <tr>
 <td><code>60-70</code></td>
-<td>8.5 (8-9 классы)</td>
+<td>8.5</td>
 </tr>
 <tr>
 <td><code>50-60</code></td>
-<td>10</td>
+<td>10.5</td>
 </tr>
 <tr>
-<td><code>40-50</code></td>
-<td>11</td>
+<td><code>30-50</code></td>
+<td>14</td>
 </tr>
 <tr>
-<td><code>30-40</code></td>
-<td>12</td>
-</tr>
-<tr>
-<td><code>меньше 30</code></td>
-<td>13</td>
+<td><code>0-30</code></td>
+<td>17</td>
 </tr>
 </tbody>
 </table>
@@ -4172,7 +4227,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <tr>
 <td style="text-align: center;"><code>below</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>13</code></td>
+<td style="text-align: center;"><code>17</code></td>
 <td style="text-align: center;">Класс ниже последней границы</td>
 </tr>
 </tbody>
@@ -4330,7 +4385,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 </tbody>
 </table>
-<p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code> и <code>LIX_LEVELS</code>, классы RIX ядра - <code>anyts.constants.RIX_GRADES</code>.</p>
+<p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> и <code>RIX_LEVELS</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>

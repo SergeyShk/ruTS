@@ -2975,7 +2975,8 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source can be either a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
-<p>The words of a string come from the word extractor and its sentences from the sentence extractor. The words of a <code>Doc</code> come from its tokens (punctuation marks and symbols such as <code>€</code> or <code>%</code> dropped) and its sentences from its boundaries, or from the sentence extractor when it has none; an extractor passed explicitly is used on the text of the <code>Doc</code>. A sentence of punctuation alone holds no word and is not counted.</p>
+<p>The words of a string come from the word extractor and its sentences from the sentence extractor. The words of a <code>Doc</code> come from its tokens (punctuation marks and symbols such as <code>€</code> or <code>%</code> dropped) and its sentences from its boundaries, or from the sentence extractor when it has none; an extractor passed explicitly is used on the text of the <code>Doc</code>. A blank line ends a sentence of a string and of a <code>Doc</code> without boundaries; a <code>Doc</code> with boundaries follows the rule when its pipeline starts a sentence after a blank line (<code>start_sents_after_blank_lines</code>, registered by a language library under its own name) before the parser, <code>senter</code> or <code>sentencizer</code>. A sentence of punctuation alone holds no word and is not counted.</p>
+<p>In ruTS this component is called <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>.</p>
 <p>Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3110,7 +3111,7 @@
 <tr>
 <td style="text-align: center;"><code>n_spaces</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of spaces and tabs</td>
+<td style="text-align: center;">Number of spaces of Unicode (category Zs), such as the no-break space, and tabs</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_syllables</code></td>

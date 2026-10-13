@@ -3150,7 +3150,7 @@
 <li>a reader slows down at low-frequency and/or unfamiliar words.</li>
 </ul>
 <h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core with the hooks of Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS, which take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient presets of <code>ruts.constants.READABILITY_PRESETS</code>, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade <code>ruts.constants.READABILITY_GRADE_STATS</code>, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), the grades and ages of the plainrussian table, the scales of the Flesch index and LIX with Russian labels (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>) and the reading speeds of Russian readers.</p>
+<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core with the hooks of Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS, which take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient presets of <code>ruts.constants.READABILITY_PRESETS</code>, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade <code>ruts.constants.READABILITY_GRADE_STATS</code>, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), the grades and ages of the plainrussian table, the scales of the Flesch index, LIX and RIX with Russian labels (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), the conversion of the Flesch index into a grade by the bands of its scale (<code>ruts.constants.READING_EASE_GRADES</code>) and the reading speeds of Russian readers.</p>
 <p>The <code>mu_index</code> attribute of the core (Legibilidad µ) stays outside <code>get_stats</code>: it was fitted on Spanish texts.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -3341,8 +3341,8 @@
 <p>Every metric can be computed separately by calling the corresponding function. Detailed information on the readability metrics and the functions used to compute them is available in the corresponding <a href="../readability_stats_funcs/">section</a>.</p>
 </div>
 <h2 id="interpretation">Interpretation<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
-<p>The formulas that give years of schooling (<code>grade_stats</code>) are summarized in the <code>consensus_grade</code> attribute: the median of their values rounded half up, together with the reading ease converted into years of schooling (<code>reading_ease_to_grade</code>) without rounding.</p>
-<p>The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">converted to a grade</a> by the bands of textstat. The <a href="#describe_grade"><code>describe_grade</code></a> method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:</p>
+<p>The formulas that give years of schooling (<code>grade_stats</code>) are summarized in the <code>consensus_grade</code> attribute: the median of their values rounded half up, together with the reading ease converted into years of schooling (<code>reading_ease_to_grade</code>) without rounding. A library aligns the bounds of <code>reading_ease_grades</code> with its scale of the reading ease, so that the consensus grade and <code>describe</code> read the value alike.</p>
+<p>The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">converted to a grade</a> by the bands of its reading scale, so an index of 45 reads as university both in <code>describe</code> and in the consensus grade. The <a href="#describe_grade"><code>describe_grade</code></a> method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:</p>
 <table>
 <thead>
 <tr>
@@ -3389,7 +3389,7 @@
 </tr>
 </tbody>
 </table>
-<p>The <a href="#describe_level"><code>describe_level</code></a> method reads the Flesch index and LIX by their scales - the tables of the <a href="../readability_stats_funcs/">metric functions</a> page, and <a href="#describe"><code>describe</code></a> reads any metric: a grade formula and the consensus grade by the table above, RIX through the grades of Anderson, the Flesch index and LIX by their scales; for a metric without a scale it gives <code>None</code>.</p>
+<p>The <a href="#describe_level"><code>describe_level</code></a> method reads the Flesch index, LIX and RIX by their scales - the tables of the <a href="../readability_stats_funcs/">metric functions</a> page, and <a href="#describe"><code>describe</code></a> reads any metric: a grade formula and the consensus grade by the table above, the Flesch index, LIX and RIX by their scales; for a metric without a scale it gives <code>None</code>.</p>
 <p>The <code>reading_time</code> attribute estimates silent reading time at 180 words per minute (the upper bound of the adult norm by Kuznetsov and Khromov, 1991). A different speed is accepted by the <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a> method, and the <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> method computes the time within the norm bounds from the <code>ruts.constants.READING_SPEED_NORMS</code> table, including the school reading-aloud norms of the Russian federal standard.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
@@ -3447,7 +3447,7 @@
 </tbody>
 </table>
 <h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<p>Returns the reading of any metric by its scale: for the consensus grade and a grade formula the school stage and reader age (<code>describe_grade</code>), for a metric of <code>grade_scales</code> the stage and age of the years of schooling its scale gives, for a metric with a scale of bands (<code>level_scale</code>) its band, and <code>None</code> for a metric without a scale or with an undefined value (nan). A name that is neither in <code>stats_desc</code> nor a public property of the class raises <code>UnknownStatError</code>.</p>
+<p>Returns the reading of any metric by its scale: for the consensus grade and a grade formula the school stage and reader age (<code>describe_grade</code>), for a metric with a scale of bands (<code>level_scale</code>) its band, for another metric of <code>grade_scales</code> the stage and age of the years of schooling its scale gives, and <code>None</code> for a metric without a scale or with an undefined value (nan). A name that is neither in <code>stats_desc</code> nor a public property of the class raises <code>UnknownStatError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3476,7 +3476,7 @@
 <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"flesch_reading_easy"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe_level</span><span class="p">(</span><span class="s2">"lix"</span><span class="p">)</span>
 <span class="c1"># ('6-й класс', 'очень простые тексты, детские книги')</span>
 <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"rix"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"matskovsky_index"</span><span class="p">)</span>
-<span class="c1"># ('4-6-й класс (9-11 лет)', None)</span>
+<span class="c1"># ('6-й класс', None)</span>
 </code></pre></div>
 </div>
 <h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>

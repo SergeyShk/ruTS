@@ -3151,7 +3151,7 @@
 <li>читатель замедляется, встречая низкочастотные и/или незнакомые ему слова.</li>
 </ul>
 <h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, пресетами коэффициентов <code>ruts.constants.READABILITY_PRESETS</code>, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса <code>ruts.constants.READABILITY_GRADE_STATS</code>, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), классами и возрастами таблицы plainrussian, шкалами индекса Флеша и LIX с русскими подписями (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>) и скоростями чтения русских читателей.</p>
+<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, пресетами коэффициентов <code>ruts.constants.READABILITY_PRESETS</code>, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса <code>ruts.constants.READABILITY_GRADE_STATS</code>, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), классами и возрастами таблицы plainrussian, шкалами индекса Флеша, LIX и RIX с русскими подписями (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), переводом индекса Флеша в класс по полосам его шкалы (<code>ruts.constants.READING_EASE_GRADES</code>) и скоростями чтения русских читателей.</p>
 <p>Атрибут <code>mu_index</code> ядра (Legibilidad µ) не входит в <code>get_stats</code>: он получен на испанских текстах.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
@@ -3342,9 +3342,9 @@
 <p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках удобочитаемости и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../readability_stats_funcs/">разделе</a>.</p>
 </div>
 <h2 id="interpretation">Интерпретация<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
-<!-- core: stats/readability_stats.md:ReadabilityStats-consensus 40f0d09 -->
-<p>Формулы, результатом которых является число лет обучения (<code>grade_stats</code>), сводятся в атрибут <code>consensus_grade</code>: медиану их значений, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления.</p>
-<p>Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">переводится в класс</a> по диапазонам textstat. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-consensus 7e17a01 -->
+<p>Формулы, результатом которых является число лет обучения (<code>grade_stats</code>), сводятся в атрибут <code>consensus_grade</code>: медиану их значений, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления. Библиотека выравнивает границы <code>reading_ease_grades</code> по своей шкале индекса Флеша, чтобы сводный класс и <code>describe</code> читали значение одинаково.</p>
+<p>Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">переводится в класс</a> по полосам своей шкалы прочтения, так что индекс 45 и в <code>describe</code>, и в сводном классе читается как университет. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
 <table>
 <thead>
 <tr>
@@ -3391,7 +3391,7 @@
 </tr>
 </tbody>
 </table>
-<p>Метод <a href="#describe_level"><code>describe_level</code></a> читает индекс Флеша и LIX по их шкалам - таблицам страницы <a href="../readability_stats_funcs/">функций вычисления метрик</a>, а <a href="#describe"><code>describe</code></a> - любую метрику: формулу класса и сводный класс по таблице выше, RIX через классы Андерсона, индекс Флеша и LIX по их шкалам; для метрики без шкалы он возвращает <code>None</code>.</p>
+<p>Метод <a href="#describe_level"><code>describe_level</code></a> читает индекс Флеша, LIX и RIX по их шкалам - таблицам страницы <a href="../readability_stats_funcs/">функций вычисления метрик</a>, а <a href="#describe"><code>describe</code></a> - любую метрику: формулу класса и сводный класс по таблице выше, индекс Флеша, LIX и RIX по их шкалам; для метрики без шкалы он возвращает <code>None</code>.</p>
 <p>Атрибут <code>reading_time</code> оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a>, а метод <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> считает время в границах нормы из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе школьных норм чтения вслух по ФГОС.</p>
 <h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
@@ -3451,8 +3451,8 @@
 </tbody>
 </table>
 <h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-describe 0ef7130 -->
-<p>Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (<code>describe_grade</code>), для метрики из <code>grade_scales</code> - ступень и возраст по числу лет обучения, которое дает ее шкала, для метрики со шкалой полос (<code>level_scale</code>) - ее полосу, и <code>None</code> для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в <code>stats_desc</code>, ни среди открытых свойств класса, дает <code>UnknownStatError</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe 6148d1e -->
+<p>Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (<code>describe_grade</code>), для метрики со шкалой полос (<code>level_scale</code>) - ее полосу, для другой метрики из <code>grade_scales</code> - ступень и возраст по числу лет обучения, которое дает ее шкала, и <code>None</code> для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в <code>stats_desc</code>, ни среди открытых свойств класса, дает <code>UnknownStatError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3481,7 +3481,7 @@
 <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"flesch_reading_easy"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe_level</span><span class="p">(</span><span class="s2">"lix"</span><span class="p">)</span>
 <span class="c1"># ('6-й класс', 'очень простые тексты, детские книги')</span>
 <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"rix"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"matskovsky_index"</span><span class="p">)</span>
-<span class="c1"># ('4-6-й класс (9-11 лет)', None)</span>
+<span class="c1"># ('6-й класс', None)</span>
 </code></pre></div>
 </div>
 <h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>

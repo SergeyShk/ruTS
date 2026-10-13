@@ -3717,6 +3717,65 @@ a \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + b \cdot \f
 <p class="admonition-title">Note</p>
 <p>As for LIX, <a href="../readability_stats/"><code>ReadabilityStats</code></a> passes the number of words with at least 7 letters to the function.</p>
 </div>
+<p>The <code>describe_level</code> and <code>describe</code> methods read RIX by the grades of Anderson as the grades of the Russian school (<code>ruts.constants.RIX_LEVELS</code>); it has no 12th grade, and its band joins the 11th:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Value</th>
+<th style="text-align: center;">Difficulty level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>0-0.2</code></td>
+<td style="text-align: center;">1st grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.2-0.5</code></td>
+<td style="text-align: center;">2nd grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.5-0.8</code></td>
+<td style="text-align: center;">3rd grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>0.8-1.3</code></td>
+<td style="text-align: center;">4th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1.3-1.8</code></td>
+<td style="text-align: center;">5th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>1.8-2.4</code></td>
+<td style="text-align: center;">6th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>2.4-3.0</code></td>
+<td style="text-align: center;">7th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3.0-3.7</code></td>
+<td style="text-align: center;">8th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>3.7-4.5</code></td>
+<td style="text-align: center;">9th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>4.5-5.3</code></td>
+<td style="text-align: center;">10th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>5.3-7.2</code></td>
+<td style="text-align: center;">11th grade</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>&gt; 7.2</code></td>
+<td style="text-align: center;">university and above</td>
+</tr>
+</tbody>
+</table>
 <h2 id="solovyev-ivanov-and-solnyshkina-formula">Solovyev, Ivanov and Solnyshkina formula<a class="headerlink" href="#solovyev-ivanov-and-solnyshkina-formula" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_sis_grade()</strong></p>
@@ -4094,7 +4153,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <p><strong>ruts.readability_stats.flesch_reading_easy_to_grade()</strong></p>
 </div>
 <p>Conversion of the Flesch reading ease into years of schooling for the consensus grade: the grade of the first band whose lower bound the value reaches, or <code>below</code> under the last bound; values above 100 belong to the first band.</p>
-<p>The default bands are those of <code>text_standard</code> of the <a href="https://github.com/textstat/textstat">textstat</a> library (<code>anyts.constants.READING_EASE_GRADES</code>):</p>
+<p>The default bands of ruTS are the bands of the reading scale of the index (<code>READING_EASE_LEVELS</code>), so that the consensus grade and <code>describe</code> read a value alike: 8.5 and 10.5 are the middles of the bands "grades 8 and 9" and "grades 10 and 11", 14 is "university" and 17 is "university graduate", that is university years 1-3 and 4-6 by the <a href="#grade_to_age">table of stages</a>. Values below 0 belong to the last band, as in the reading scale. These bands are <code>ruts.constants.READING_EASE_GRADES</code>, the <code>reading_ease_grades</code> attribute of <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a>:</p>
 <table>
 <thead>
 <tr>
@@ -4117,23 +4176,19 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tr>
 <tr>
 <td><code>60-70</code></td>
-<td>8.5 (grades 8-9)</td>
+<td>8.5</td>
 </tr>
 <tr>
 <td><code>50-60</code></td>
-<td>10</td>
+<td>10.5</td>
 </tr>
 <tr>
-<td><code>40-50</code></td>
-<td>11</td>
+<td><code>30-50</code></td>
+<td>14</td>
 </tr>
 <tr>
-<td><code>30-40</code></td>
-<td>12</td>
-</tr>
-<tr>
-<td><code>below 30</code></td>
-<td>13</td>
+<td><code>0-30</code></td>
+<td>17</td>
 </tr>
 </tbody>
 </table>
@@ -4163,7 +4218,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <tr>
 <td style="text-align: center;"><code>below</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>13</code></td>
+<td style="text-align: center;"><code>17</code></td>
 <td style="text-align: center;">Grade below the last bound</td>
 </tr>
 </tbody>
@@ -4318,7 +4373,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tr>
 </tbody>
 </table>
-<p>The scales of ruTS are <code>ruts.constants.READING_EASE_LEVELS</code> and <code>LIX_LEVELS</code>, the RIX grades of the core are <code>anyts.constants.RIX_GRADES</code>.</p>
+<p>The scales of ruTS are <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> and <code>RIX_LEVELS</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>
