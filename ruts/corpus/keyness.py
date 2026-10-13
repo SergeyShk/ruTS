@@ -115,7 +115,7 @@ def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> Freq
     """Эталон частотного словаря, как его описывает докстринг keyness"""
     size = float(CORPUS_SIZE)
     return FrequencyReference(
-        {lemma: entry.ipm * size / 1e6 for lemma, entry in freq_dict.entries.items()},
+        {lemma: ipm * size / 1e6 for lemma, ipm in freq_dict.word_ipm.items()},
         size,
         freq_dict.min_ipm * size / 1e6,
         key,

@@ -3,6 +3,7 @@ from math import isnan
 
 import pytest
 import spacy
+from spacy.tokens import Doc
 
 from ruts import MorphStats
 from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
@@ -311,9 +312,18 @@ def test_word_to_ud_pos(word, expected):
             },
         ),
         ("PRTF,impf,tran,pres,actv masc,sing,nomn", {"verb_form": "Part", "voice": "Act"}),
-        ("PRTS,perf,past,pssv masc,sing", {"verb_form": "Part", "voice": "Pass", "tense": "Past"}),
+        (
+            "PRTS,perf,past,pssv masc,sing",
+            {"verb_form": "Part", "voice": "Pass", "tense": "Past", "style_variant": "Short"},
+        ),
+        ("ADJS,Qual masc,sing", {"pos": "ADJ", "degree": "Pos", "style_variant": "Short"}),
+        ("ADJF,Supr,Qual masc,sing,nomn", {"degree": "Sup", "style_variant": None}),
+        ("COMP,Qual", {"pos": "ADJ", "degree": "Cmp"}),
+        ("ADVB", {"degree": "Pos"}),
+        ("ADJF,Apro masc,sing,nomn", {"pos": "DET", "degree": None}),
+        ("PRCL", {"pos": "PART", "polarity": None}),
         ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf", "tense": "Past"}),
-        ("PRED,pres", {"pos": "ADV", "tense": None}),
+        ("PRED,pres", {"pos": "ADV", "tense": None, "degree": "Pos"}),
         ("INFN,impf,tran", {"verb_form": "Inf", "mood": None, "tense": None}),
         ("VERB,impf,tran sing,3per,pres,indc", {"person": "3", "tense": "Pres", "mood": "Ind"}),
         ("LATN", {"pos": "X", "verb_form": None}),
@@ -340,6 +350,35 @@ def test_predicatives_tense(nlp, text, tense):
     assert MorphStats(text).get_stats("tense", filter_none=True) == {"tense": tense}
     assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": tense}
     assert tag_to_ud(make_tag("PRED,pres"), "нет")["tense"] == "Pres"
+
+
+def test_degree_polarity_short_forms(nlp):
+    """Степень, отрицание и краткая форма строки - по правилам русского UD, как у Doc"""
+    text = "Он не рад. Книга прочитана. Он бежал быстрее и быстро. Ни один кот не спит."
+    expected = {
+        "degree": {"Pos": 2, "Cmp": 1},
+        "polarity": {"Neg": 3},
+        "style_variant": {"Short": 2},
+    }
+    stats = ("degree", "polarity", "style_variant")
+    assert MorphStats(text).get_stats(*stats, filter_none=True) == expected
+    assert MorphStats(nlp(text)).get_stats(*stats, filter_none=True) == expected
+    assert tag_to_ud(make_tag("PRCL"), "не")["polarity"] == "Neg"
+    assert tag_to_ud(make_tag("PRED,pres"), "нет")["degree"] is None
+    assert tag_to_ud(make_tag("ADVB"), "более")["degree"] == "Cmp"
+    analytic = "Этот вопрос более важен, а тот менее интересен."
+    expected = {"degree": {"Cmp": 2, "Pos": 2}}
+    assert MorphStats(analytic).get_stats("degree", filter_none=True) == expected
+    assert MorphStats(nlp(analytic)).get_stats("degree", filter_none=True) == expected
+
+
+def test_short_form_of_ud_annotation():
+    """Краткая форма разметки русского UD (Variant=Short) читается как StyleVariant модели"""
+    vocab = spacy.blank("ru").vocab
+    doc = Doc(vocab, words=["Он", "рад"], pos=["PRON", "ADJ"], morphs=["", "Variant=Short"])
+    ms = MorphStats(doc)
+    assert ms.style_variant == (None, "Short")
+    assert ms.tags[1] == "StyleVariant=Short"
 
 
 def test_tag_to_ud_pos_lemma():
@@ -435,7 +474,7 @@ def test_explain_text_filter_none(ms):
 def test_print_stats(capsys, ms):
     ms.print_stats()
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 32
+    assert captured.out.count("|") == 36
     assert "Подчинительный союз" in captured.out
     assert "Личная форма" in captured.out
 

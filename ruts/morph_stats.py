@@ -9,10 +9,12 @@ from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
+    COMPARATIVE_ADVERBS,
     CONDITIONAL_PARTICLES,
     MORPHOLOGY_FEATURES,
     MORPHOLOGY_MARKERS_DESC,
     MORPHOLOGY_STATS_DESC,
+    NEGATIVE_PARTICLES,
     OPENCORPORA_TO_UD_GRAMMEMES,
     OPENCORPORA_TO_UD_POS,
     OPENCORPORA_VERB_FORMS,
@@ -27,11 +29,14 @@ from .utils import lemmatize, parse_all, parse_word, strip_marks
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 VERBAL_POS = frozenset({"VERB", "AUX"})
+SHORT_FORM_POS = frozenset({"ADJS", "PRTS"})
 REFLEXIVE_ENDINGS = ("ся", "сь")
+# Признаки, которых нет среди граммем pymorphy3: выводятся из части речи и леммы в tag_to_ud
+DERIVED_FEATURES = frozenset({"degree", "polarity", "style_variant", "verb_form"})
 TAG_GRAMMEMES = {
     stat: getattr_static(pymorphy3.tagset.OpencorporaTag, stat).grammeme_set
     for stat in MORPHOLOGY_FEATURES
-    if stat != "verb_form"
+    if stat not in DERIVED_FEATURES
 }
 
 
@@ -42,7 +47,8 @@ class MorphStats:
     Описание:
         Части речи и грамматические признаки выдаются в терминах Universal Dependencies:
         pos - NOUN, VERB, ADJ, PRON, DET и другие, case - Nom, Gen, Dat, Acc, Ins, Loc,
-        так же animacy, aspect, gender, mood, number, person, tense, voice и verb_form
+        так же animacy, aspect, degree, gender, mood, number, person, polarity, tense,
+        voice, verb_form и краткая форма style_variant
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, то есть с учетом контекста (стали - глагол или существительное);
         для строки, Doc без разметки и Doc с заданным экстрактором слов используется
@@ -66,11 +72,14 @@ class MorphStats:
         'animacy': {None: 11},
         'aspect': {'Perf': 5, None: 5, 'Imp': 1},
         'case': {None: 11},
+        'degree': {None: 10, 'Pos': 1},
         'gender': {None: 11},
         'involvement': {'Ex': 1, None: 10},
         'mood': {'Imp': 1, None: 7, 'Ind': 3},
         'number': {'Plur': 3, None: 7, 'Sing': 1},
         'person': {None: 9, '2': 1, '3': 1},
+        'polarity': {None: 11},
+        'style_variant': {None: 11},
         'tense': {None: 8, 'Pres': 1, 'Fut': 1, 'Past': 1},
         'transitivity': {'Intr': 2, 'Tran': 4, None: 5},
         'verb_form': {'Fin': 4, 'Inf': 2, None: 5},
@@ -91,11 +100,14 @@ class MorphStats:
         animacy (tuple[str]): Кортеж значений одушевленности
         aspect (tuple[str]): Кортеж значений вида
         case (tuple[str]): Кортеж значений падежа
+        degree (tuple[str]): Кортеж значений степени сравнения
         gender (tuple[str]): Кортеж значений рода
         involvement (tuple[str]): Кортеж значений совместности
         mood (tuple[str]): Кортеж значений наклонения
         number (tuple[str]): Кортеж значений числа
         person (tuple[str]): Кортеж значений лица
+        polarity (tuple[str]): Кортеж значений отрицания
+        style_variant (tuple[str]): Кортеж значений краткой формы
         tense (tuple[str]): Кортеж значений времени
         transitivity (tuple[str]): Кортеж значений переходности
         verb_form (tuple[str]): Кортеж значений формы глагола
@@ -147,11 +159,14 @@ class MorphStats:
         self.animacy = tuple(word_features["animacy"] for word_features in features)
         self.aspect = tuple(word_features["aspect"] for word_features in features)
         self.case = tuple(word_features["case"] for word_features in features)
+        self.degree = tuple(word_features["degree"] for word_features in features)
         self.gender = tuple(word_features["gender"] for word_features in features)
         self.involvement = tuple(word_features["involvement"] for word_features in features)
         self.mood = tuple(word_features["mood"] for word_features in features)
         self.number = tuple(word_features["number"] for word_features in features)
         self.person = tuple(word_features["person"] for word_features in features)
+        self.polarity = tuple(word_features["polarity"] for word_features in features)
+        self.style_variant = tuple(word_features["style_variant"] for word_features in features)
         self.tense = tuple(word_features["tense"] for word_features in features)
         self.transitivity = tuple(word_features["transitivity"] for word_features in features)
         self.verb_form = tuple(word_features["verb_form"] for word_features in features)
@@ -393,7 +408,9 @@ def tag_to_ud(
         acc2, loc1, loc2 - в Gen, Par, Acc, Loc, Loc; лицо 1per, 2per, 3per - в 1, 2, 3;
         общий род ms-f (сирота, задира), который pymorphy3 не относит к роду, - в Com;
         форма глагола verb_form выводится из части речи OpenCorpora: VERB - Fin,
-        INFN - Inf, PRTF и PRTS - Part, GRND - Conv
+        INFN - Inf, PRTF и PRTS - Part, GRND - Conv; степень degree, отрицание
+        polarity и краткая форма style_variant - по правилам русского UD
+        (_derived_features)
         Время - у глагольных форм и бытийных «нет», «нету» (TENSED_PREDICATIVES), как
         в русском UD: остальным предикативам (надо, нельзя) pymorphy3 дает настоящее
         время, а в UD это наречия без времени
@@ -408,9 +425,10 @@ def tag_to_ud(
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
     features: dict[str, str | None] = {"pos": tag_to_ud_pos(tag, lemma, word)}
+    derived = _derived_features(tag, lemma)
     for stat in MORPHOLOGY_FEATURES:
-        if stat == "verb_form":
-            features[stat] = OPENCORPORA_VERB_FORMS.get(tag.POS or "")
+        if stat in DERIVED_FEATURES:
+            features[stat] = derived[stat]
         elif stat == "tense" and not _has_tense(tag, lemma):
             features[stat] = None
         else:
@@ -422,6 +440,45 @@ def tag_to_ud(
     if "ms-f" in tag.grammemes:
         features["gender"] = OPENCORPORA_TO_UD_GRAMMEMES["ms-f"]
     return features
+
+
+def _derived_features(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[str, str | None]:
+    """
+    Признаки UD, которых нет среди граммем pymorphy3
+
+    Описание:
+        Форма глагола - по части речи (OPENCORPORA_VERB_FORMS); степень сравнения,
+        как в русском UD, есть у прилагательных и наречий: COMP и «более», «менее»
+        (COMPARATIVE_ADVERBS) - Cmp, превосходная степень (Supr) - Sup, остальные
+        прилагательные (кроме местоименных), наречия
+        и предикативы (кроме бытийных «нет», «нету») - Pos; отрицание Neg - у частиц
+        NEGATIVE_PARTICLES; краткая форма Short - у кратких прилагательных и причастий
+
+    Аргументы:
+        tag (OpencorporaTag): Тэг OpenCorpora
+        lemma (str): Лемма слова
+
+    Вывод:
+        dict[str, str|None]: Значения признаков DERIVED_FEATURES
+    """
+    pos = tag.POS or ""
+    degree = None
+    if pos == "COMP" or (pos == "ADVB" and lemma in COMPARATIVE_ADVERBS):
+        degree = "Cmp"
+    elif "Supr" in tag.grammemes:
+        degree = "Sup"
+    elif (
+        (pos in ("ADJF", "ADJS") and "Apro" not in tag.grammemes)
+        or pos == "ADVB"
+        or (pos == "PRED" and lemma not in TENSED_PREDICATIVES)
+    ):
+        degree = "Pos"
+    return {
+        "degree": degree,
+        "polarity": "Neg" if pos == "PRCL" and lemma in NEGATIVE_PARTICLES else None,
+        "style_variant": "Short" if pos in SHORT_FORM_POS else None,
+        "verb_form": OPENCORPORA_VERB_FORMS.get(pos),
+    }
 
 
 def _has_tense(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> bool:
@@ -472,7 +529,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
 
     Описание:
         Часть речи и признаки берутся из token.pos_ и token.morph; лицо First, Second,
-        Third моделей ru_core_news переводится в 1, 2, 3
+        Third моделей ru_core_news переводится в 1, 2, 3; краткая форма - StyleVariant
+        моделей ru_core_news или Variant=Short разметки русского UD
         Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
         берутся из глагольного разбора pymorphy3 с леммой spaCy
 
@@ -487,6 +545,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         values = token.morph.get(feature, [])
         features[stat] = values[0] if values else None
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
+    if features["style_variant"] is None and "Short" in token.morph.get("Variant", []):
+        features["style_variant"] = "Short"
     parse = parse_verb(token.text, token.lemma_) if token.pos_ in ("VERB", "AUX") else None
     tag = parse.tag if parse else None
     features["transitivity"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.transitivity) if tag else None

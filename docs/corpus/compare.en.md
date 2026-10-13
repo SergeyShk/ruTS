@@ -13,14 +13,14 @@ The texts are cut in a row into windows of exactly `window` words by `split_wind
 
 ## Features
 
-`text_features(text)` returns 108 features prefixed by source:
+`text_features(text)` returns 113 features prefixed by source:
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
 | `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | shares of parts of speech among the words (`morph_pos_NOUN`) and shares of values within each feature (`morph_case_Gen`, `morph_tense_Past`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
+| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths (`sentence_rhythm`) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 
