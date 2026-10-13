@@ -3142,7 +3142,7 @@
 <li>the linguistic features of the text material (complexity of syntactic constructions, vocabulary hard to perceive, etc.).</li>
 </ul>
 </div>
-<p>The coefficients of the formulas adapted for Russian are set by a preset (see <a href="#presets">below</a>): by default the coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.</p>
+<p>The coefficients of the formulas adapted for Russian are set by a preset (see <a href="#presets">below</a>): by default the coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva obtained on fiction (the Flesch-Kincaid test with them is above the grade of the Russian school, see <a href="#presets">below</a>) and of the Kazan group (Solovyev, Ivanov, Solnyshkina) obtained on textbooks are also available.</p>
 <p>The main presumptions of readability metrics:</p>
 <ul>
 <li>short sentences are easier to read than long ones;</li>
@@ -3336,6 +3336,63 @@
 <span class="c1"># 3.0299999999999994</span>
 </code></pre></div>
 </div>
+<p>The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for all three presets is 0.79, while the medians of the test by label group differ:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Label</th>
+<th style="text-align: center;">Texts</th>
+<th style="text-align: center;"><code>plainrussian</code></th>
+<th style="text-align: center;"><code>fiction</code></th>
+<th style="text-align: center;"><code>academic</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: center;">7.5</td>
+<td style="text-align: center;">4.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">3-4</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">4.2</td>
+<td style="text-align: center;">8.7</td>
+<td style="text-align: center;">4.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">5-9</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">4.4</td>
+<td style="text-align: center;">8.7</td>
+<td style="text-align: center;">4.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">10-11</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">6.7</td>
+<td style="text-align: center;">11.7</td>
+<td style="text-align: center;">7.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">12-17</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">23.7</td>
+<td style="text-align: center;">24.4</td>
+<td style="text-align: center;">15.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">1 (<a href="../../datasets/sovchlit/"><code>SovChLit</code></a>)</td>
+<td style="text-align: center;">179</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">6.1</td>
+<td style="text-align: center;">3.1</td>
+</tr>
+</tbody>
+</table>
+<p>On school texts (labels 1-11) the test with the <code>fiction</code> preset is about four grades above the label (median deviation +3.9 against −0.9 for <code>plainrussian</code> and −0.2 for <code>academic</code>), and about five on the first-grade reader <code>SovChLit</code>. Its value should therefore not be read as a grade of the Russian school: for the grade of the reader use <code>plainrussian</code> (the default; its coefficients were fitted on <code>TextsByGrade</code>) or <code>academic</code>, and <code>fiction</code> to compare with works that use Oborneva's coefficients. The consensus grade depends on the preset less, since the Flesch-Kincaid test is only one of its formulas (the median on <code>TextsByGrade</code> is 7.75 for <code>fiction</code> against 6.75 for <code>plainrussian</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Every metric can be computed separately by calling the corresponding function. Detailed information on the readability metrics and the functions used to compute them is available in the corresponding <a href="../readability_stats_funcs/">section</a>.</p>

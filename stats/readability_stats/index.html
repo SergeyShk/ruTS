@@ -3143,7 +3143,7 @@
 <li>лингвистических особенностей текстового материала (сложность синтаксических конструкций, трудная для восприятия лексика и т.п.).</li>
 </ul>
 </div>
-<p>Коэффициенты формул, адаптированных для русского языка, задаются пресетом (см. <a href="#presets">ниже</a>): по умолчанию используются коэффициенты проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, полученные на 68 текстах с метками класса, доступны также коэффициенты Оборневой для художественных текстов и казанской группы (Соловьёв, Иванов, Солнышкина) для учебных.</p>
+<p>Коэффициенты формул, адаптированных для русского языка, задаются пресетом (см. <a href="#presets">ниже</a>): по умолчанию используются коэффициенты проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, полученные на 68 текстах с метками класса, доступны также коэффициенты Оборневой, полученные на художественных текстах (тест Флеша-Кинкайда по ним выше класса российской школы, см. <a href="#presets">ниже</a>), и казанской группы (Соловьёв, Иванов, Солнышкина), полученные на учебниках.</p>
 <p>Основные презумпции метрик удобочитаемости:</p>
 <ul>
 <li>короткие предложения читать легче, чем длинные;</li>
@@ -3337,6 +3337,63 @@
 <span class="c1"># 3.0299999999999994</span>
 </code></pre></div>
 </div>
+<p>Пресеты одинаково согласуются с меткой класса, но дают разную шкалу, а порядок текстов у них совпадает не полностью. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> корреляция Спирмена теста Флеша-Кинкайда с меткой класса у всех трех пресетов 0.79, а медианы теста по группам меток различаются:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Метка</th>
+<th style="text-align: center;">Текстов</th>
+<th style="text-align: center;"><code>plainrussian</code></th>
+<th style="text-align: center;"><code>fiction</code></th>
+<th style="text-align: center;"><code>academic</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: center;">7.5</td>
+<td style="text-align: center;">4.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">3-4</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">4.2</td>
+<td style="text-align: center;">8.7</td>
+<td style="text-align: center;">4.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">5-9</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">4.4</td>
+<td style="text-align: center;">8.7</td>
+<td style="text-align: center;">4.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">10-11</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">6.7</td>
+<td style="text-align: center;">11.7</td>
+<td style="text-align: center;">7.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">12-17</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">23.7</td>
+<td style="text-align: center;">24.4</td>
+<td style="text-align: center;">15.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">1 (<a href="../../datasets/sovchlit/"><code>SovChLit</code></a>)</td>
+<td style="text-align: center;">179</td>
+<td style="text-align: center;">1.5</td>
+<td style="text-align: center;">6.1</td>
+<td style="text-align: center;">3.1</td>
+</tr>
+</tbody>
+</table>
+<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.9 против −0.9 у <code>plainrussian</code> и −0.2 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках удобочитаемости и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../readability_stats_funcs/">разделе</a>.</p>
