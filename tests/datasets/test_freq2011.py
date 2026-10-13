@@ -7,7 +7,14 @@ import pytest
 from anyts.datasets import sha256
 
 from ruts.datasets import FreqDict, freq2011 as freq2011_module
-from ruts.datasets.freq2011 import ARCHIVE, FILENAME, Entry, load_entries, load_min_ipm
+from ruts.datasets.freq2011 import (
+    ARCHIVE,
+    FILENAME,
+    Entry,
+    load_entries,
+    load_min_ipm,
+    load_word_ipm,
+)
 from ruts.exceptions import ParameterError
 
 ROWS = (
@@ -134,6 +141,14 @@ def make_archive(path: Path, content: bytes | None = None) -> Path:
     return archive
 
 
+def test_word_ipm(dataset):
+    """Частоты по статье: части речи и имена собственные склеены, как в entries"""
+    assert dataset.word_ipm == {lemma: entry.ipm for lemma, entry in dataset.entries.items()}
+    assert dataset.word_ipm["а"] == pytest.approx(8204.1)
+    assert dataset.word_ipm["абрам"] == 4.1
+    assert load_word_ipm(dataset._filepath) is dataset.word_ipm
+
+
 def test_entries_cached(dataset):
     other = FreqDict(data_dir=dataset.data_dir)
     assert other.entries is dataset.entries
@@ -189,10 +204,13 @@ def test_download_force_reloads(tmp_path, monkeypatch):
     dataset = FreqDict(data_dir=tmp_path)
     dataset.download()
     before = dataset.entries
+    before_ipm = dataset.word_ipm
     assert dataset.min_ipm == 4.1
     dataset.download(force=True)
     assert dataset.entries == before
     assert dataset.entries is not before
+    assert dataset.word_ipm == before_ipm
+    assert dataset.word_ipm is not before_ipm
     assert load_min_ipm.cache_info().currsize == 0 or dataset.min_ipm == 4.1
 
 

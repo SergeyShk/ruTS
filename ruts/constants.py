@@ -228,6 +228,10 @@ MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
             "Par": "Партитив (второй родительный)",
         },
     },
+    "degree": {
+        "name": "Степень сравнения",
+        "values": {"Pos": "Положительная", "Cmp": "Сравнительная", "Sup": "Превосходная"},
+    },
     "gender": {
         "name": "Род",
         "values": {
@@ -253,6 +257,8 @@ MORPHOLOGY_STATS_DESC: dict[str, MorphologyStatDesc] = {
         "values": {"Sing": "Единственное", "Plur": "Множественное"},
     },
     "person": {"name": "Лицо", "values": {"1": "1", "2": "2", "3": "3"}},
+    "polarity": {"name": "Полярность", "values": {"Neg": "Отрицание"}},
+    "style_variant": {"name": "Вариант формы", "values": {"Short": "Краткая форма"}},
     "tense": {
         "name": "Время",
         "values": {"Pres": "Настоящее", "Past": "Прошедшее", "Fut": "Будущее"},
@@ -296,11 +302,14 @@ MORPHOLOGY_FEATURES = {
     "animacy": "Animacy",
     "aspect": "Aspect",
     "case": "Case",
+    "degree": "Degree",
     "gender": "Gender",
     "involvement": "Clusivity",
     "mood": "Mood",
     "number": "Number",
     "person": "Person",
+    "polarity": "Polarity",
+    "style_variant": "StyleVariant",
     "tense": "Tense",
     "transitivity": "Subcat",
     "verb_form": "VerbForm",
@@ -378,6 +387,8 @@ OPENCORPORA_VERB_FORMS = {
 PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
 # Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
 TENSED_PREDICATIVES = frozenset({"нет", "нету"})
+# Частицы с отрицанием (Polarity=Neg), как в русском UD
+NEGATIVE_PARTICLES = frozenset({"не", "ни"})
 SUBORDINATING_CONJUNCTIONS = frozenset(
     {
         "будто",

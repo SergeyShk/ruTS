@@ -9,7 +9,7 @@ A module for computing morphological statistics of a text. The data source can b
 
 The module allows using a pre-built [`WordsExtractor`](../extractors/words.md) object for the word tokenization needed before computing the statistics.
 
-Parts of speech and grammatical features are given in [Universal Dependencies](https://universaldependencies.org/u/feat/) terms: `pos` - `NOUN`, `VERB`, `ADJ`, `PRON`, `DET` and others, `case` - `Nom`, `Gen`, `Dat`, `Acc`, `Ins`, `Loc`, likewise `animacy`, `aspect`, `gender`, `mood`, `number`, `person`, `tense`, `voice` and the verb form `verb_form` (`Fin`, `Inf`, `Part`, `Conv`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`. For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used, and the [OpenCorpora](http://opencorpora.org/dict.php?act=gram) grammemes are mapped to UD by the `OPENCORPORA_TO_UD_POS` and `OPENCORPORA_TO_UD_GRAMMEMES` tables of `ruts.constants`; a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.
+Parts of speech and grammatical features are given in [Universal Dependencies](https://universaldependencies.org/u/feat/) terms: `pos` - `NOUN`, `VERB`, `ADJ`, `PRON`, `DET` and others, `case` - `Nom`, `Gen`, `Dat`, `Acc`, `Ins`, `Loc`, likewise `animacy`, `aspect`, `gender`, `mood`, `number`, `person`, `tense`, `voice`, the verb form `verb_form` (`Fin`, `Inf`, `Part`, `Conv`), the degree of comparison `degree` (`Pos`, `Cmp`, `Sup`), the negation `polarity` (`Neg`) and the short form `style_variant` (`Short`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`. For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used, and the [OpenCorpora](http://opencorpora.org/dict.php?act=gram) grammemes are mapped to UD by the `OPENCORPORA_TO_UD_POS` and `OPENCORPORA_TO_UD_GRAMMEMES` tables of `ruts.constants`; a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.
 
 Correspondence between OpenCorpora and UD parts of speech:
 
@@ -26,6 +26,8 @@ Correspondence between OpenCorpora and UD parts of speech:
 | `PRCL` | `PART` | |
 | `INTJ` | `INTJ` | |
 | `LATN`, `UNKN` | `X` | |
+
+For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - `Cmp` for the comparative, `Sup` for the superlative (красивейший), `Pos` for the others; the particles не and ни carry the negation; short adjectives and participles (рад, прочитана) carry the short form.
 
 Transitivity (`transitivity`: `Tran`, `Intr`) and clusivity (`involvement`: `In`, `Ex`) are OpenCorpora features absent from Russian UD; they are computed via pymorphy3 for verbs (for a `Doc` - from the analysis with the spaCy lemma) and appear in the `tags` feature string as `Subcat` and `Clusivity`.
 
@@ -53,11 +55,14 @@ Transitivity (`transitivity`: `Tran`, `Intr`) and clusivity (`involvement`: `In`
 | `animacy` | tuple[str] | Tuple of animacy values |
 | `aspect` | tuple[str] | Tuple of aspect values |
 | `case` | tuple[str] | Tuple of case values |
+| `degree` | tuple[str] | Tuple of degree values |
 | `gender` | tuple[str] | Tuple of gender values |
 | `involvement` | tuple[str] | Tuple of clusivity values |
 | `mood` | tuple[str] | Tuple of mood values |
 | `number` | tuple[str] | Tuple of number values |
 | `person` | tuple[str] | Tuple of person values |
+| `polarity` | tuple[str] | Tuple of negation values |
+| `style_variant` | tuple[str] | Tuple of short form values |
 | `tense` | tuple[str] | Tuple of tense values |
 | `transitivity` | tuple[str] | Tuple of transitivity values |
 | `verb_form` | tuple[str] | Tuple of verb form values |

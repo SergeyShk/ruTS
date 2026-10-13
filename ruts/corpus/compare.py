@@ -147,7 +147,9 @@ def text_features(text: str) -> dict[str, float]:
         и сводный класс (ReadabilityStats); diversity_ - меры лексического
         разнообразия (DiversityStats); morph_ - доли частей речи и значений
         морфологических признаков, например morph_pos_NOUN, morph_case_Gen
-        (MorphStats по pymorphy3; признак, которого нет в окне, - nan); sents_ -
+        (MorphStats по pymorphy3): части речи и признаки с одним значением
+        (отрицание, краткая форма) - доли всех слов, остальные - доли слов с этим
+        признаком, а признак, которого нет в окне, - nan; sents_ -
         средняя длина предложения, ее разброс и автокорреляция соседних длин;
         punct_ - частоты знаков на 1000 слов и доля буквы ё. Признаки, повторяющие
         другие, отброшены (REDUNDANT_FEATURES)
@@ -194,7 +196,8 @@ def text_features(text: str) -> dict[str, float]:
     stats = morph.get_stats(filter_none=True)
     for category, desc in MORPHOLOGY_STATS_DESC.items():
         counts = stats.get(category, {})
-        denominator = n_words if category == "pos" else sum(counts.values())
+        single = category == "pos" or len(desc["values"]) == 1
+        denominator = n_words if single else sum(counts.values())
         for label in desc["values"]:
             features[f"morph_{category}_{label}"] = (
                 counts.get(label, 0) / denominator if denominator else nan

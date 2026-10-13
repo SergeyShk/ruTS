@@ -120,8 +120,11 @@ def test_text_features():
     assert features["morph_pos_INTJ"] == 0.0
     assert features["morph_case_Voc"] == 0.0
     assert isnan(text_features("Кот, пёс, дом.")["morph_tense_Past"])
-    assert sum(1 for key in features if key.startswith("morph_")) == 43
-    assert len(features) == 108
+    # Признак с одним значением - доля всех слов, а не 1.0 среди размеченных
+    assert text_features("Кот не спит, пёс не лает.")["morph_polarity_Neg"] == pytest.approx(2 / 6)
+    assert text_features("Кот, пёс, дом.")["morph_polarity_Neg"] == 0.0
+    assert sum(1 for key in features if key.startswith("morph_")) == 48
+    assert len(features) == 113
     assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"

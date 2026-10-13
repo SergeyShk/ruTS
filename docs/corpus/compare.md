@@ -21,7 +21,7 @@
 | `basic_` | доли длинных, сложных, простых, одно- и многосложных слов, букв, пробелов и знаков препинания; буквы и слоги на слово | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | все формулы удобочитаемости и сводный класс | [`ReadabilityStats`](../stats/readability_stats.md) |
 | `diversity_` | меры лексического разнообразия | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | доли частей речи от числа слов (`morph_pos_NOUN`) и доли значений внутри каждого признака (`morph_case_Gen`, `morph_tense_Past`; у двузначных - одна доля, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) по pymorphy3 |
+| `morph_` | доли частей речи и признаков с одним значением от числа слов (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) и доли значений внутри остальных признаков (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; у двузначных - одна доля, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) по pymorphy3 |
 | `sents_` | средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (`sentence_rhythm`) - ритм текста | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | частоты знаков по типам на 1000 слов и доля буквы ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 

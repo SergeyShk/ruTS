@@ -116,6 +116,8 @@ class FreqDict(Dataset):
     Атрибуты:
         entries (dict[str, Entry]): Справочник статей по нормализованной лемме
         min_ipm (float): Минимальная частота в словаре
+        word_ipm (dict[str, float]): Частоты по статье, к которой приводится словоформа
+            без части речи, - эталон keyness
 
     Методы:
         check_data: Проверка наличия файла словаря
@@ -195,6 +197,7 @@ class FreqDict(Dataset):
         self.check_data()
         load_entries.cache_clear()
         load_min_ipm.cache_clear()
+        load_word_ipm.cache_clear()
 
     def __iter__(self) -> Generator[dict[str, Any], None, None]:
         """
@@ -287,6 +290,14 @@ class FreqDict(Dataset):
         """
         self._ensure_data()
         return load_min_ipm(self._filepath)
+
+    @property
+    def word_ipm(self) -> dict[str, float]:
+        """
+        Частоты словаря по статье, к которой приводится словоформа без части речи
+        """
+        self._ensure_data()
+        return load_word_ipm(self._filepath)
 
     def _ensure_data(self) -> None:
         """
@@ -388,3 +399,22 @@ def load_min_ipm(filepath: Path) -> float:
         float: Минимальная частота
     """
     return min(entry.ipm for entry in load_entries(filepath).values())
+
+
+@cache
+def load_word_ipm(filepath: Path) -> dict[str, float]:
+    """
+    Частоты словаря по статье, к которой приводится словоформа без части речи
+
+    Описание:
+        Части речи и имена собственные одной леммы склеены уже в статье
+        (load_entries), поэтому ключ - нормализованная лемма статьи, а частота -
+        сумма по частям речи; кэшируется по пути к файлу, как load_entries
+
+    Аргументы:
+        filepath (Path): Путь к файлу словаря
+
+    Вывод:
+        dict[str, float]: Частота на миллион словоупотреблений по статье
+    """
+    return {lemma: entry.ipm for lemma, entry in load_entries(filepath).items()}
