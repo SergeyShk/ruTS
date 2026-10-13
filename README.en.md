@@ -839,6 +839,8 @@ The library allows creating the following classes of spaCy components:
 
 The values match the example above: punctuation and whitespace tokens of spaCy are filtered out when counting.
 
+For a blank line to end a sentence of a `Doc` as it does in a string, put the `ruts_blank_lines` component before the parser: `nlp.add_pipe("ruts_blank_lines", before="parser")`.
+
 More in the [documentation](https://sergeyshk.github.io/ruTS/en/components/).
 
 </details>

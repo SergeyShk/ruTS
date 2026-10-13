@@ -6,6 +6,7 @@ from ruts.utils import (
     add_dash_rules,
     find_phrases,
     is_verbal_noun,
+    iter_text_sents,
     iter_text_words,
     iter_tokens,
     lemmatize,
@@ -81,6 +82,20 @@ def test_iter_text_words():
         (23, 28, "зверь"),
     ]
     assert list(iter_text_words("")) == []
+
+
+def test_iter_text_sents_blank_lines():
+    """Пустая строка завершает предложение, позиции - по исходной строке со знаками"""
+    text = "Итоги без точки\n \n\nВсё на ме\u0301сте. Идём дальше\n\n***\n\n"
+    sents = list(iter_text_sents(text))
+    assert [sent for _, _, sent in sents] == [
+        "Итоги без точки",
+        "Всё на ме\u0301сте.",
+        "Идём дальше",
+        "***",
+    ]
+    assert all(text[start:stop] == sent for start, stop, sent in sents)
+    assert list(iter_text_sents(" \n\n ")) == []
 
 
 @pytest.mark.parametrize(

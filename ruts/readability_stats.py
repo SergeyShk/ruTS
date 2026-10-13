@@ -1,13 +1,11 @@
-from collections.abc import Mapping
+from collections.abc import Callable, Iterable, Mapping
 from math import nan
 
 import anyts.readability_stats
 from anyts.readability_stats import (
-    calc_consensus_grade as calc_consensus_grade,
     calc_gunning_fog_index as calc_gunning_fog_index,
     calc_lix as calc_lix,
     calc_rix as calc_rix,
-    flesch_reading_easy_to_grade as flesch_reading_easy_to_grade,
     scale_level as scale_level,
 )
 from anyts.utils import safe_divide
@@ -21,6 +19,7 @@ from .constants import (
     READABILITY_LEVEL_SCALES,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    READING_EASE_GRADES,
     READING_SPEED_NORMS,
     READING_SPEED_WPM,
     SIS_GRADE_FREQ_STAGES,
@@ -62,9 +61,9 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
             academic - Соловьёв, Иванов, Солнышкина (2018), учебники 5-11 классов
         Пресет задает коэффициенты теста Флеша-Кинкайда и индекса Флеша, коэффициенты
         индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из plainrussian
-        Интерпретирующий слой: сводный класс по медиане формул класса, соответствие
-        класса возрасту по таблице plainrussian, шкалы индекса Флеша, LIX и RIX
-        и время чтения
+        Интерпретирующий слой: сводный класс по медиане формул класса и индекса Флеша,
+        переведенного в класс по полосам его шкалы, соответствие класса возрасту
+        по таблице plainrussian, шкалы индекса Флеша, LIX и RIX и время чтения
 
     Пример использования:
         >>> from ruts import ReadabilityStats
@@ -87,7 +86,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         >>> rs.describe_grade()
         '1-3-й класс (6-8 лет)'
         >>> rs.describe("flesch_reading_easy"), rs.describe("rix")
-        ('6-й класс', '4-6-й класс (9-11 лет)')
+        ('6-й класс', '6-й класс')
 
     Аргументы:
         source (str|Doc|BasicStats): Источник данных - строка, объект Doc или готовый
@@ -121,7 +120,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         sis_grade_by_stage: Формула Соловьёва, Иванова, Солнышкиной (2023) для ступени обучения
         sis_grade_by_freq: Формула Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов
         describe_grade: Класс школы и возраст читателя для сводного класса или отдельной формулы
-        describe_level: Полоса шкалы индекса Флеша или LIX
+        describe_level: Полоса шкалы индекса Флеша, LIX или RIX
         describe: Прочтение любой метрики по ее шкале, None для метрики без шкалы
         reading_time_by_speed: Время чтения при заданной скорости
         reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
@@ -144,6 +143,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     grade_age_levels = GRADE_AGE_LEVELS
     postgraduate_level = POSTGRADUATE_LEVEL
     level_scales = READABILITY_LEVEL_SCALES
+    reading_ease_grades = READING_EASE_GRADES
     reading_speed = READING_SPEED_WPM
     reading_speed_norms = _NORMS_FROM_MAX
 
@@ -576,6 +576,65 @@ def calc_dale_chall_index(
         float: Значение индекса, nan без слов или предложений
     """
     return safe_divide(a * 100 * n_complex, n_words, nan) + safe_divide(b * n_words, n_sents, nan)
+
+
+def flesch_reading_easy_to_grade(
+    flesch_reading_easy: float,
+    grades: Iterable[tuple[float, float]] = READING_EASE_GRADES,
+    below: float = 17,
+) -> float:
+    """
+    Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса
+
+    Описание:
+        Класс первой полосы, нижней границы которой достигает значение, или below ниже
+        последней границы; по умолчанию - полосы шкалы прочтения READING_EASE_LEVELS,
+        чтобы сводный класс и describe читали индекс одинаково:
+            90-100 - 5, 80-90 - 6, 70-80 - 7, 60-70 - 8.5 (8-й и 9-й класс),
+            50-60 - 10.5 (10-й и 11-й класс), 30-50 - 14 (университет),
+            ниже 30 - 17 (выпускник университета)
+        Значения выше 100 относятся к первой полосе
+
+    Аргументы:
+        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
+        grades (list[tuple[float, float]]): Нижние границы и их классы по убыванию границ
+        below (float): Класс ниже последней границы
+
+    Вывод:
+        float: Число лет обучения
+
+    Исключения:
+        ParameterError: Если значение не конечное число
+    """
+    return anyts.readability_stats.flesch_reading_easy_to_grade(flesch_reading_easy, grades, below)
+
+
+def calc_consensus_grade(
+    grades: Iterable[float],
+    flesch_reading_easy: float | None = None,
+    to_grade: Callable[[float], float] = flesch_reading_easy_to_grade,
+) -> float:
+    """
+    Вычисление сводного класса
+
+    Описание:
+        Медиана значений формул класса, округленных арифметически, вместе с индексом
+        удобочитаемости Флеша, переведенным в число лет обучения функцией to_grade
+        и добавленным без округления
+
+    Аргументы:
+        grades (list[float]): Значения формул класса
+        flesch_reading_easy (float): Значение индекса удобочитаемости Флеша
+        to_grade (Callable): Перевод индекса Флеша в число лет обучения
+
+    Вывод:
+        float: Сводный класс
+
+    Исключения:
+        SourceTypeError: Если to_grade нельзя вызвать
+        ParameterError: Если значений нет или значение не конечное число
+    """
+    return anyts.readability_stats.calc_consensus_grade(grades, flesch_reading_easy, to_grade)
 
 
 def grade_to_age(

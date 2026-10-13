@@ -53,6 +53,16 @@ class TestSentsExtractor:
             "Пёс.",
         )
 
+    def test_extract_blank_lines(self):
+        """Заголовок и абзац без точки - отдельные предложения, как у esTS"""
+        text = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\n- первый пункт\n- второй пункт"
+        assert SentsExtractor().extract(text) == (
+            "Что нового",
+            "Быстрый импорт.",
+            "Меньше ошибок",
+            "- первый пункт\n- второй пункт",
+        )
+
     @pytest.mark.parametrize(
         "tokenizer, expected",
         [(None, 2), (re.compile(r"[;.]"), 3), (split_sentences, 2)],

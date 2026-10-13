@@ -31,7 +31,7 @@
 
 ## Языковые крючки
 
-Класс расширяет `ReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) крючками русского языка: [базовыми статистиками](basic_stats.md) ruTS, которые по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), пресетами коэффициентов `ruts.constants.READABILITY_PRESETS`, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса `ruts.constants.READABILITY_GRADE_STATS`, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), классами и возрастами таблицы plainrussian, шкалами индекса Флеша и LIX с русскими подписями (`ruts.constants.READABILITY_LEVEL_SCALES`) и скоростями чтения русских читателей.
+Класс расширяет `ReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) крючками русского языка: [базовыми статистиками](basic_stats.md) ruTS, которые по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), пресетами коэффициентов `ruts.constants.READABILITY_PRESETS`, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса `ruts.constants.READABILITY_GRADE_STATS`, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), классами и возрастами таблицы plainrussian, шкалами индекса Флеша, LIX и RIX с русскими подписями (`ruts.constants.READABILITY_LEVEL_SCALES`), переводом индекса Флеша в класс по полосам его шкалы (`ruts.constants.READING_EASE_GRADES`) и скоростями чтения русских читателей.
 
 Атрибут `mu_index` ядра (Legibilidad µ) не входит в `get_stats`: он получен на испанских текстах.
 
@@ -97,10 +97,10 @@
 
 ## Интерпретация { #interpretation }
 
-<!-- core: stats/readability_stats.md:ReadabilityStats-consensus 40f0d09 -->
-Формулы, результатом которых является число лет обучения (`grade_stats`), сводятся в атрибут `consensus_grade`: медиану их значений, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (`reading_ease_to_grade`) без округления.
+<!-- core: stats/readability_stats.md:ReadabilityStats-consensus 7e17a01 -->
+Формулы, результатом которых является число лет обучения (`grade_stats`), сводятся в атрибут `consensus_grade`: медиану их значений, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (`reading_ease_to_grade`) без округления. Библиотека выравнивает границы `reading_ease_grades` по своей шкале индекса Флеша, чтобы сводный класс и `describe` читали значение одинаково.
 
-Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша [переводится в класс](readability_stats_funcs.md#flesch_reading_easy_to_grade) по диапазонам textstat. Метод [`describe_grade`](#describe_grade) переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:
+Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша [переводится в класс](readability_stats_funcs.md#flesch_reading_easy_to_grade) по полосам своей шкалы прочтения, так что индекс 45 и в `describe`, и в сводном классе читается как университет. Метод [`describe_grade`](#describe_grade) переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:
 
 | Класс | Ступень | Возраст |
 | :---: | :-----: | :-----: |
@@ -112,7 +112,7 @@
 | 15-17 | 4-6-й курс вуза | 20-22 года |
 | больше 17 | аспирантура | старше 22 лет |
 
-Метод [`describe_level`](#describe_level) читает индекс Флеша и LIX по их шкалам - таблицам страницы [функций вычисления метрик](readability_stats_funcs.md), а [`describe`](#describe) - любую метрику: формулу класса и сводный класс по таблице выше, RIX через классы Андерсона, индекс Флеша и LIX по их шкалам; для метрики без шкалы он возвращает `None`.
+Метод [`describe_level`](#describe_level) читает индекс Флеша, LIX и RIX по их шкалам - таблицам страницы [функций вычисления метрик](readability_stats_funcs.md), а [`describe`](#describe) - любую метрику: формулу класса и сводный класс по таблице выше, индекс Флеша, LIX и RIX по их шкалам; для метрики без шкалы он возвращает `None`.
 
 Атрибут `reading_time` оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод [`reading_time_by_speed`](#reading_time_by_speed), а метод [`reading_time_by_norm`](#reading_time_by_norm) считает время в границах нормы из справочника `ruts.constants.READING_SPEED_NORMS`, в том числе школьных норм чтения вслух по ФГОС.
 
@@ -155,8 +155,8 @@
 
 ### describe
 
-<!-- core: stats/readability_stats.md:ReadabilityStats-describe 0ef7130 -->
-Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (`describe_grade`), для метрики из `grade_scales` - ступень и возраст по числу лет обучения, которое дает ее шкала, для метрики со шкалой полос (`level_scale`) - ее полосу, и `None` для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в `stats_desc`, ни среди открытых свойств класса, дает `UnknownStatError`.
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe 6148d1e -->
+Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (`describe_grade`), для метрики со шкалой полос (`level_scale`) - ее полосу, для другой метрики из `grade_scales` - ступень и возраст по числу лет обучения, которое дает ее шкала, и `None` для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в `stats_desc`, ни среди открытых свойств класса, дает `UnknownStatError`.
 
 Параметры:
 
@@ -174,7 +174,7 @@
     rs.describe("flesch_reading_easy"), rs.describe_level("lix")
     # ('6-й класс', 'очень простые тексты, детские книги')
     rs.describe("rix"), rs.describe("matskovsky_index")
-    # ('4-6-й класс (9-11 лет)', None)
+    # ('6-й класс', None)
     ```
 
 ### reading_time_by_speed

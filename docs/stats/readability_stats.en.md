@@ -26,7 +26,7 @@ The main presumptions of readability metrics:
 
 ## Language hooks
 
-The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core with the hooks of Russian: the [basic statistics](basic_stats.md) of ruTS, which take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient presets of `ruts.constants.READABILITY_PRESETS`, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade `ruts.constants.READABILITY_GRADE_STATS`, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), the grades and ages of the plainrussian table, the scales of the Flesch index and LIX with Russian labels (`ruts.constants.READABILITY_LEVEL_SCALES`) and the reading speeds of Russian readers.
+The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core with the hooks of Russian: the [basic statistics](basic_stats.md) of ruTS, which take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient presets of `ruts.constants.READABILITY_PRESETS`, the Russian formulas - Solovyev, Ivanov and Solnyshkina, Matskovsky and Dale-Chall in the plainrussian adaptation, the grade formulas of the consensus grade `ruts.constants.READABILITY_GRADE_STATS`, complex words of five or more syllables in SMOG, Gunning fog and Dale-Chall (`ruts.constants.SMOG_COMPLEX_SYL_FACTOR`), the grades and ages of the plainrussian table, the scales of the Flesch index, LIX and RIX with Russian labels (`ruts.constants.READABILITY_LEVEL_SCALES`), the conversion of the Flesch index into a grade by the bands of its scale (`ruts.constants.READING_EASE_GRADES`) and the reading speeds of Russian readers.
 
 The `mu_index` attribute of the core (Legibilidad µ) stays outside `get_stats`: it was fitted on Spanish texts.
 
@@ -94,7 +94,7 @@ Here ASL is the mean number of words per sentence, ASW the mean number of syllab
 
 --8<-- "stats/readability_stats.md:ReadabilityStats-consensus"
 
-The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is [converted to a grade](readability_stats_funcs.md#flesch_reading_easy_to_grade) by the bands of textstat. The [`describe_grade`](#describe_grade) method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:
+The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is [converted to a grade](readability_stats_funcs.md#flesch_reading_easy_to_grade) by the bands of its reading scale, so an index of 45 reads as university both in `describe` and in the consensus grade. The [`describe_grade`](#describe_grade) method translates the consensus grade or an individual formula into a school grade and reader age by the plainrussian project table:
 
 | Grade | Stage | Age |
 | :---: | :---: | :-: |
@@ -106,7 +106,7 @@ The grade formulas of ruTS are the Flesch-Kincaid test, the Coleman-Liau, SMOG, 
 | 15-17 | university years 4-6 | 20-22 years |
 | above 17 | postgraduate | over 22 years |
 
-The [`describe_level`](#describe_level) method reads the Flesch index and LIX by their scales - the tables of the [metric functions](readability_stats_funcs.md) page, and [`describe`](#describe) reads any metric: a grade formula and the consensus grade by the table above, RIX through the grades of Anderson, the Flesch index and LIX by their scales; for a metric without a scale it gives `None`.
+The [`describe_level`](#describe_level) method reads the Flesch index, LIX and RIX by their scales - the tables of the [metric functions](readability_stats_funcs.md) page, and [`describe`](#describe) reads any metric: a grade formula and the consensus grade by the table above, the Flesch index, LIX and RIX by their scales; for a metric without a scale it gives `None`.
 
 The `reading_time` attribute estimates silent reading time at 180 words per minute (the upper bound of the adult norm by Kuznetsov and Khromov, 1991). A different speed is accepted by the [`reading_time_by_speed`](#reading_time_by_speed) method, and the [`reading_time_by_norm`](#reading_time_by_norm) method computes the time within the norm bounds from the `ruts.constants.READING_SPEED_NORMS` table, including the school reading-aloud norms of the Russian federal standard.
 
@@ -147,7 +147,7 @@ The `reading_time` attribute estimates silent reading time at 180 words per minu
     rs.describe("flesch_reading_easy"), rs.describe_level("lix")
     # ('6-й класс', 'очень простые тексты, детские книги')
     rs.describe("rix"), rs.describe("matskovsky_index")
-    # ('4-6-й класс (9-11 лет)', None)
+    # ('6-й класс', None)
     ```
 
 ### reading_time_by_speed

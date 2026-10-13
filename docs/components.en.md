@@ -9,7 +9,7 @@ The components of ruTS are subclasses of the `StatsComponent` of the [anyTS](htt
 
 ## Names { #names }
 
-The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`. They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`.
+The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`.
 
 --8<-- "components.md:StatsComponent-names"
 
@@ -512,4 +512,39 @@ The dictionary directory is passed via `config`:
 
     ``` python
     nlp.add_pipe("ruts_verse", name="verse_dicts", config={"data_dir": "/path/to/dicts"}, last=True)
+    ```
+
+## Blank lines { #blank_lines }
+
+!!! info ""
+    **ruts_blank_lines** (`anyts.components.start_sents_after_blank_lines`)
+
+--8<-- "components.md:start_sents_after_blank_lines"
+
+In ruTS the component is registered as `ruts_blank_lines`. Without it the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence, and the statistics of a `Doc` differ from those of the same string.
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    # Import the libraries
+    import ruts
+    import spacy
+
+    # Load the spaCy model
+    nlp = spacy.load("ru_core_news_sm")
+
+    # Add the component before the parser
+    nlp.add_pipe("ruts_blank_lines", before="parser")
+
+    # Sentences of the document
+    doc = nlp("Что нового\n\nБыстрый импорт. Меньше ошибок")
+    [sent.text.strip() for sent in doc.sents]
+    ```
+
+    _Result_:
+
+    ``` bash
+    ['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
     ```

@@ -155,6 +155,23 @@ Parameters:
 !!! note "Note"
     As for LIX, [`ReadabilityStats`](readability_stats.md) passes the number of words with at least 7 letters to the function.
 
+The `describe_level` and `describe` methods read RIX by the grades of Anderson as the grades of the Russian school (`ruts.constants.RIX_LEVELS`); it has no 12th grade, and its band joins the 11th:
+
+| Value | Difficulty level |
+| :---: | :---: |
+| `0-0.2` | 1st grade |
+| `0.2-0.5` | 2nd grade |
+| `0.5-0.8` | 3rd grade |
+| `0.8-1.3` | 4th grade |
+| `1.3-1.8` | 5th grade |
+| `1.8-2.4` | 6th grade |
+| `2.4-3.0` | 7th grade |
+| `3.0-3.7` | 8th grade |
+| `3.7-4.5` | 9th grade |
+| `4.5-5.3` | 10th grade |
+| `5.3-7.2` | 11th grade |
+| `> 7.2` | university and above |
+
 ## Solovyev, Ivanov and Solnyshkina formula
 
 !!! info ""
@@ -313,18 +330,17 @@ Parameters:
 
 --8<-- "stats/readability_stats_funcs.md:flesch_reading_easy_to_grade"
 
-The default bands are those of `text_standard` of the [textstat](https://github.com/textstat/textstat) library (`anyts.constants.READING_EASE_GRADES`):
+The default bands of ruTS are the bands of the reading scale of the index (`READING_EASE_LEVELS`), so that the consensus grade and `describe` read a value alike: 8.5 and 10.5 are the middles of the bands "grades 8 and 9" and "grades 10 and 11", 14 is "university" and 17 is "university graduate", that is university years 1-3 and 4-6 by the [table of stages](#grade_to_age). Values below 0 belong to the last band, as in the reading scale. These bands are `ruts.constants.READING_EASE_GRADES`, the `reading_ease_grades` attribute of [`ReadabilityStats`](readability_stats.md#interpretation):
 
 | Flesch index | Grade |
 |---|---|
 |`90-100`| 5 |
 |`80-90`| 6 |
 |`70-80`| 7 |
-|`60-70`| 8.5 (grades 8-9) |
-|`50-60`| 10 |
-|`40-50`| 11 |
-|`30-40`| 12 |
-|`below 30`| 13 |
+|`60-70`| 8.5 |
+|`50-60`| 10.5 |
+|`30-50`| 14 |
+|`0-30`| 17 |
 
 Parameters:
 
@@ -332,7 +348,7 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `flesch_reading_easy` | float | `-` | Flesch reading ease value |
 | `grades` | list[tuple[float, float]] | `READING_EASE_GRADES` | Lower bounds and their grades in descending order of the bounds |
-| `below` | float | `13` | Grade below the last bound |
+| `below` | float | `17` | Grade below the last bound |
 
 ## Consensus grade { #calc_consensus_grade }
 
@@ -377,7 +393,7 @@ Parameters:
 
 --8<-- "stats/readability_stats_funcs.md:scale_level"
 
-The scales of ruTS are `ruts.constants.READING_EASE_LEVELS` and `LIX_LEVELS`, the RIX grades of the core are `anyts.constants.RIX_GRADES`.
+The scales of ruTS are `ruts.constants.READING_EASE_LEVELS`, `LIX_LEVELS` and `RIX_LEVELS`.
 
 !!! example "Example"
 

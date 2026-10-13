@@ -3,6 +3,7 @@ from math import isnan
 from pathlib import Path
 
 import anyts.basic_stats
+import anyts.constants
 import pytest
 
 from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
@@ -12,7 +13,9 @@ from ruts.constants import (
     READABILITY_LEVEL_SCALES,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    READING_EASE_GRADES,
     READING_EASE_LEVELS,
+    RIX_LEVELS,
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
 )
@@ -245,26 +248,45 @@ def test_scale_level():
 FUNCS_PAGE = Path(__file__).parent.parent / "docs" / "stats" / "readability_stats_funcs.md"
 
 
-def doc_scale(heading):
-    """Шкала из таблицы раздела страницы функций: нижние границы по убыванию и подписи"""
+def doc_scale(heading, after=""):
+    """
+    Шкала из таблицы раздела страницы функций: нижние границы по убыванию и подписи;
+    after - текст, после которого начинается таблица шкалы
+    """
     page = FUNCS_PAGE.read_text(encoding="utf-8")
     section = page.split(f"## {heading}\n", 1)[1].split("\n## ", 1)[0]
-    rows = re.findall(r"^\|\s*`([\d.]+)-([\d.]+)`\s*\|\s*([^|]+?)\s*\|$", section, re.MULTILINE)
+    if after:
+        section = section.split(after, 1)[1]
+    rows = re.findall(
+        r"^\|\s*`(?:([\d.]+)-([\d.]+)|> ([\d.]+))`\s*\|\s*([^|]+?)\s*\|$", section, re.MULTILINE
+    )
     return tuple(
-        sorted(((min(float(a), float(b)), label.lower()) for a, b, label in rows), reverse=True)
+        sorted(
+            (
+                (float(above) if above else min(float(a), float(b)), label.lower())
+                for a, b, above, label in rows
+            ),
+            reverse=True,
+        )
     )
 
 
 @pytest.mark.parametrize(
-    ("heading", "scale"),
+    ("heading", "scale", "after"),
     [
-        ("Индекс удобочитаемости Флеша", READING_EASE_LEVELS),
-        ("Индекс удобочитаемости LIX", LIX_LEVELS),
+        ("Индекс удобочитаемости Флеша", READING_EASE_LEVELS, ""),
+        ("Индекс удобочитаемости LIX", LIX_LEVELS, ""),
+        ("Индекс удобочитаемости RIX", RIX_LEVELS, "RIX_LEVELS"),
+        (
+            "Перевод индекса Флеша в класс { #flesch_reading_easy_to_grade }",
+            READING_EASE_GRADES,
+            "READING_EASE_GRADES",
+        ),
     ],
 )
-def test_level_scales_follow_docs(heading, scale):
-    """Шкалы прочтения совпадают с таблицами документации"""
-    assert scale == doc_scale(heading)
+def test_level_scales_follow_docs(heading, scale, after):
+    """Шкалы прочтения и перевода в класс совпадают с таблицами документации"""
+    assert tuple((bound, str(label)) for bound, label in scale) == doc_scale(heading, after)
 
 
 def test_calc_consensus_grade():
@@ -274,6 +296,7 @@ def test_calc_consensus_grade():
     assert calc_consensus_grade([], 65) == 8.5
     assert calc_consensus_grade([8, 8, 9, 9], 65) == 8.5
     assert calc_consensus_grade([8.5]) == 9.0
+    assert calc_consensus_grade([12, 14], 45) == 14.0
     with pytest.raises(ValueError):
         calc_consensus_grade([])
 
@@ -286,11 +309,11 @@ def test_calc_consensus_grade():
         (89.9, 6),
         (75, 7),
         (65, 8.5),
-        (55, 10),
-        (45, 11),
-        (30, 12),
-        (29.9, 13),
-        (-50, 13),
+        (55, 10.5),
+        (45, 14),
+        (30, 14),
+        (29.9, 17),
+        (-50, 17),
     ],
 )
 def test_flesch_reading_easy_to_grade(flesch_reading_easy, grade):
@@ -325,7 +348,7 @@ def test_describe_grade(rs):
 
 
 def test_describe(rs):
-    """Шкалы индекса Флеша и LIX русские, RIX переводится в класс таблицей ядра"""
+    """Шкалы индекса Флеша, LIX и RIX русские"""
     assert ReadabilityStats.level_scales is READABILITY_LEVEL_SCALES
     assert [label for _, label in READING_EASE_LEVELS][-2:] == [
         "университет",
@@ -334,12 +357,36 @@ def test_describe(rs):
     # индекс Флеша текста ниже нуля, LIX выше 60, RIX выше 7.2
     assert rs.describe("flesch_reading_easy") == rs.describe_level() == "выпускник университета"
     assert rs.describe("lix") == LIX_LEVELS[0][1]
-    assert rs.describe("rix") == "1-3-й курс вуза (17-19 лет)"
+    assert rs.describe("rix") == rs.describe_level("rix") == "университет и выше"
     assert rs.describe("consensus_grade") == rs.describe_grade()
     assert rs.describe("matskovsky_index") is None
     riddle = ReadabilityStats("Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать")
     assert riddle.describe("flesch_reading_easy") == "5-й класс"
     assert riddle.describe("lix") == "очень простые тексты, детские книги"
+    assert riddle.describe("rix") == "4-й класс"
+
+
+@pytest.mark.parametrize(
+    ("rix", "level"),
+    [(7.2, "университет и выше"), (7.1, "11-й класс"), (5.3, "11-й класс"), (5.2, "10-й класс")],
+)
+def test_describe_rix_above_school(rix, level):
+    """RIX от 7.2 читается выше школы, а 6.2-7.2 - выпускным классом, а не одной полосой"""
+    assert scale_level(rix, RIX_LEVELS) == level
+    # перевод в годы обучения ядра остается для потребителей, читающих grade_scales
+    assert ReadabilityStats.grade_scales["rix"] is anyts.constants.RIX_GRADES
+
+
+def test_reading_ease_grades_follow_levels():
+    """Индекс Флеша в сводном классе переводится по полосам той же шкалы, что и в describe"""
+    assert ReadabilityStats.reading_ease_grades is READING_EASE_GRADES
+    assert [bound for bound, _ in READING_EASE_GRADES] == [
+        bound for bound, _ in READING_EASE_LEVELS
+    ]
+    rs = ReadabilityStats("Мама мыла раму")
+    assert rs.reading_ease_to_grade(45) == flesch_reading_easy_to_grade(45) == 14
+    assert scale_level(45, READING_EASE_LEVELS) == "университет"
+    assert grade_to_age(14) == "1-3-й курс вуза (17-19 лет)"
 
 
 def test_reading_time(rs):

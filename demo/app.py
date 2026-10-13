@@ -165,6 +165,7 @@ DEFAULT_GROUP_LAYERS = [
     for group in HIGHLIGHT_LAYER_GROUPS.values()
 ]
 nlp = spacy.load("ru_core_news_sm", exclude=["ner", "lemmatizer"])
+nlp.add_pipe("ruts_blank_lines", before="parser")
 freq_dict = FreqDict()
 if not freq_dict.filepath:
     try:
