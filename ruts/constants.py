@@ -389,6 +389,8 @@ PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad
 TENSED_PREDICATIVES = frozenset({"нет", "нету"})
 # Частицы с отрицанием (Polarity=Neg), как в русском UD
 NEGATIVE_PARTICLES = frozenset({"не", "ни"})
+# Аналитические компаративы: в русском UD Degree=Cmp, у pymorphy3 - наречия без COMP
+COMPARATIVE_ADVERBS = frozenset({"более", "менее"})
 SUBORDINATING_CONJUNCTIONS = frozenset(
     {
         "будто",

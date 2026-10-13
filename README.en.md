@@ -355,11 +355,14 @@ The library allows extracting the following morphological features:
 *   animacy
 *   aspect
 *   case
+*   degree of comparison
 *   gender
 *   involvement
 *   mood
 *   number
 *   person
+*   negation
+*   short form
 *   tense
 *   transitivity
 *   verb form
@@ -381,12 +384,15 @@ Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/
 {'animacy': {None: 11},
  'aspect': {None: 5, 'Imp': 1, 'Perf': 5},
  'case': {None: 11},
+ 'degree': {None: 10, 'Pos': 1},
  'gender': {None: 11},
  'involvement': {None: 10, 'Ex': 1},
  'mood': {None: 7, 'Imp': 1, 'Ind': 3},
  'number': {None: 7, 'Plur': 3, 'Sing': 1},
  'person': {None: 9, '2': 1, '3': 1},
+ 'polarity': {None: 11},
  'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
+ 'style_variant': {None: 11},
  'tense': {None: 8, 'Fut': 1, 'Past': 1, 'Pres': 1},
  'transitivity': {None: 5, 'Intr': 2, 'Tran': 4},
  'verb_form': {None: 5, 'Fin': 4, 'Inf': 2},
@@ -660,7 +666,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: 108 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 113 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor

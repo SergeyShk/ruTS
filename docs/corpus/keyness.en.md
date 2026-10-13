@@ -31,7 +31,7 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 
 | Field | `FreqDict` |
 | :---: | :--------- |
-| `counts` | the ipm of the lemmas of `FreqDict.entries` converted to occurrences in the corpus of the dictionary |
+| `counts` | the frequencies of `FreqDict.word_ipm` converted to occurrences in the corpus of the dictionary |
 | `size` | `CORPUS_SIZE` of `ruts.datasets.freq2011`, 92 million tokens of the modern subcorpus of the Russian National Corpus |
 | `missing` | the least frequency of the dictionary `FreqDict.min_ipm`, 0.4 ipm (about 37 occurrences) |
 | `key` | the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with `lemmatize=False` it is taken as a lemma) and brought to the conventions of the dictionary by `ruts.lexical_stats.dictionary_lemma`, as in [`LexicalStats`](../stats/lexical_stats.md) |

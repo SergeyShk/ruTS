@@ -9,6 +9,7 @@ from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
+    COMPARATIVE_ADVERBS,
     CONDITIONAL_PARTICLES,
     MORPHOLOGY_FEATURES,
     MORPHOLOGY_MARKERS_DESC,
@@ -447,8 +448,9 @@ def _derived_features(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[
 
     Описание:
         Форма глагола - по части речи (OPENCORPORA_VERB_FORMS); степень сравнения,
-        как в русском UD, есть у прилагательных и наречий: COMP - Cmp, превосходная
-        степень (Supr) - Sup, остальные прилагательные (кроме местоименных), наречия
+        как в русском UD, есть у прилагательных и наречий: COMP и «более», «менее»
+        (COMPARATIVE_ADVERBS) - Cmp, превосходная степень (Supr) - Sup, остальные
+        прилагательные (кроме местоименных), наречия
         и предикативы (кроме бытийных «нет», «нету») - Pos; отрицание Neg - у частиц
         NEGATIVE_PARTICLES; краткая форма Short - у кратких прилагательных и причастий
 
@@ -461,7 +463,7 @@ def _derived_features(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[
     """
     pos = tag.POS or ""
     degree = None
-    if pos == "COMP":
+    if pos == "COMP" or (pos == "ADVB" and lemma in COMPARATIVE_ADVERBS):
         degree = "Cmp"
     elif "Supr" in tag.grammemes:
         degree = "Sup"
@@ -527,7 +529,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
 
     Описание:
         Часть речи и признаки берутся из token.pos_ и token.morph; лицо First, Second,
-        Third моделей ru_core_news переводится в 1, 2, 3
+        Third моделей ru_core_news переводится в 1, 2, 3; краткая форма - StyleVariant
+        моделей ru_core_news или Variant=Short разметки русского UD
         Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
         берутся из глагольного разбора pymorphy3 с леммой spaCy
 
@@ -542,6 +545,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         values = token.morph.get(feature, [])
         features[stat] = values[0] if values else None
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
+    if features["style_variant"] is None and "Short" in token.morph.get("Variant", []):
+        features["style_variant"] = "Short"
     parse = parse_verb(token.text, token.lemma_) if token.pos_ in ("VERB", "AUX") else None
     tag = parse.tag if parse else None
     features["transitivity"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.transitivity) if tag else None

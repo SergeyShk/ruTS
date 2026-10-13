@@ -13,7 +13,7 @@ The texts are cut in a row into windows of exactly `window` words by `split_wind
 
 ## Features
 
-`text_features(text)` returns 108 features prefixed by source:
+`text_features(text)` returns 113 features prefixed by source:
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |

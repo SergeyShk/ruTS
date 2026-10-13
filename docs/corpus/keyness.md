@@ -68,7 +68,7 @@
 
 | Поле | `FreqDict` |
 | :--: | :--------- |
-| `counts` | ipm лемм `FreqDict.entries`, переведенные в число употреблений в корпусе словаря |
+| `counts` | частоты `FreqDict.word_ipm`, переведенные в число употреблений в корпусе словаря |
 | `size` | `CORPUS_SIZE` из `ruts.datasets.freq2011`, 92 млн словоупотреблений современного подкорпуса Национального корпуса русского языка |
 | `missing` | наименьшая частота словаря `FreqDict.min_ipm`, 0.4 ipm (около 37 употреблений) |
 | `key` | лемма словаря: словоформа лемматизируется pymorphy3 (с `lemmatize=False` берется как лемма) и приводится к соглашениям словаря функцией `ruts.lexical_stats.dictionary_lemma`, как в [`LexicalStats`](../stats/lexical_stats.md) |

@@ -3,6 +3,7 @@ from math import isnan
 
 import pytest
 import spacy
+from spacy.tokens import Doc
 
 from ruts import MorphStats
 from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
@@ -364,6 +365,20 @@ def test_degree_polarity_short_forms(nlp):
     assert MorphStats(nlp(text)).get_stats(*stats, filter_none=True) == expected
     assert tag_to_ud(make_tag("PRCL"), "не")["polarity"] == "Neg"
     assert tag_to_ud(make_tag("PRED,pres"), "нет")["degree"] is None
+    assert tag_to_ud(make_tag("ADVB"), "более")["degree"] == "Cmp"
+    analytic = "Этот вопрос более важен, а тот менее интересен."
+    expected = {"degree": {"Cmp": 2, "Pos": 2}}
+    assert MorphStats(analytic).get_stats("degree", filter_none=True) == expected
+    assert MorphStats(nlp(analytic)).get_stats("degree", filter_none=True) == expected
+
+
+def test_short_form_of_ud_annotation():
+    """Краткая форма разметки русского UD (Variant=Short) читается как StyleVariant модели"""
+    vocab = spacy.blank("ru").vocab
+    doc = Doc(vocab, words=["Он", "рад"], pos=["PRON", "ADJ"], morphs=["", "Variant=Short"])
+    ms = MorphStats(doc)
+    assert ms.style_variant == (None, "Short")
+    assert ms.tags[1] == "StyleVariant=Short"
 
 
 def test_tag_to_ud_pos_lemma():
