@@ -8,6 +8,9 @@ import pytest
 
 from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
 from ruts.constants import (
+    LEVEL_NORM_BANDS,
+    LEVEL_NORMS,
+    LEVEL_NORMS_DESC,
     LIX_LEVELS,
     READABILITY_GRADE_STATS,
     READABILITY_LEVEL_SCALES,
@@ -34,8 +37,11 @@ from ruts.readability_stats import (
     calc_sis_grade_freq,
     calc_smog_index,
     check_preset,
+    describe_level_norm,
     flesch_reading_easy_to_grade,
     grade_to_age,
+    level_features,
+    level_norms,
     scale_level,
 )
 
@@ -448,3 +454,62 @@ def test_print_stats(capsys, rs):
     rs.print_stats()
     captured = capsys.readouterr()
     assert captured.out.count("|") == len(READABILITY_STATS_DESC) + 1
+
+
+@pytest.mark.parametrize(
+    ("grade", "stage"),
+    [
+        (0.2, 1),
+        (1, 1),
+        (3.4, 1),
+        (3.5, 4),
+        (6, 4),
+        (7, None),
+        (9.4, None),
+        (9.5, 10),
+        (11, 10),
+        (11.5, None),
+        (25, None),
+    ],
+)
+def test_level_norms(grade, stage):
+    """Нормы ступени, к которой класс относится по таблице grade_to_age"""
+    assert level_norms(grade) is (None if stage is None else LEVEL_NORMS[stage])
+
+
+def test_level_norms_data():
+    """Нормы - квартили: нижний не выше верхнего, признаки - ключи LEVEL_NORMS_DESC"""
+    for norms in LEVEL_NORMS.values():
+        assert set(norms) == set(LEVEL_NORMS_DESC)
+        assert all(low <= high for low, high in norms.values())
+    with pytest.raises(ValueError):
+        level_norms(float("nan"))
+
+
+def test_describe_level_norm():
+    below, within, above = LEVEL_NORM_BANDS
+    assert describe_level_norm("words_per_sent", 6.0, 2) == below
+    assert describe_level_norm("words_per_sent", 8.1, 2) == within
+    assert describe_level_norm("words_per_sent", 10.7, 2) == within
+    assert describe_level_norm("words_per_sent", 11, 2) == above
+    assert describe_level_norm("mtld", float("inf"), 10) == above
+    assert describe_level_norm("mtld", float("nan"), 10) is None
+    assert describe_level_norm("words_per_sent", 12, 8) is None
+    with pytest.raises(KeyError):
+        describe_level_norm("n_words", 12, 2)
+    with pytest.raises(ValueError):
+        describe_level_norm("words_per_sent", "12", 2)
+    with pytest.raises(ValueError):
+        describe_level_norm("words_per_sent", True, 2)
+
+
+def test_level_features():
+    """Признаки норм считаются по тем же словам и предложениям, что формулы класса"""
+    features = level_features("Ног нет, а хожу. Рта нет, а скажу: когда спать, когда вставать.")
+    assert set(features) == set(LEVEL_NORMS_DESC)
+    assert features["words_per_sent"] == 6.0
+    assert features["letters_per_word"] == pytest.approx(46 / 12)
+    assert features["p_smog_complex_words"] == 0.0
+    bs = BasicStats("Здравоохранение и благоустройство. Кот спит.")
+    features = level_features("Здравоохранение и благоустройство. Кот спит.")
+    assert features["p_smog_complex_words"] == pytest.approx(2 / bs.n_words)

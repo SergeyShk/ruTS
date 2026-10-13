@@ -144,6 +144,35 @@ READING_EASE_GRADES: tuple[tuple[float, float], ...] = (
     (30, 14),
     (0, 17),
 )
+# Нормы признаков по ступеням (level_norms): первый класс ступени GRADE_AGE_LEVELS -> признак ->
+# квартили (q1, q3) текстов от 100 слов с меткой ступени из SovChLit и TextsByGrade
+LEVEL_NORMS: dict[int, dict[str, tuple[float, float]]] = {
+    1: {
+        "words_per_sent": (8.1, 10.7),
+        "letters_per_word": (4.56, 5.03),
+        "p_smog_complex_words": (0.0, 0.022),
+        "mtld": (104, 178),
+    },
+    4: {
+        "words_per_sent": (10.2, 14.6),
+        "letters_per_word": (5.16, 5.33),
+        "p_smog_complex_words": (0.039, 0.052),
+        "mtld": (220, 373),
+    },
+    10: {
+        "words_per_sent": (15.6, 17.9),
+        "letters_per_word": (5.11, 5.57),
+        "p_smog_complex_words": (0.035, 0.065),
+        "mtld": (277, 513),
+    },
+}
+LEVEL_NORMS_DESC = {
+    "words_per_sent": "Слов в предложении",
+    "letters_per_word": "Букв в слове",
+    "p_smog_complex_words": "Доля слов от пяти слогов",
+    "mtld": "Лексическое разнообразие MTLD",
+}
+LEVEL_NORM_BANDS = ("ниже нормы ступени", "в норме ступени", "выше нормы ступени")
 READING_SPEED_WPM = 180
 READING_SPEED_NORMS: dict[str, tuple[int, int]] = {
     "adult_silent": (120, 180),

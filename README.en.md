@@ -214,7 +214,7 @@ The library allows counting the following readability metrics:
 *   Dale-Chall Index
 *   Gunning Fog Index
 
-An interpretation layer works on top of the formulas: a consensus grade as the median of the grade formulas, mapping of the grade to the reader's age by the plainrussian table, the scales of the Flesch index, LIX and RIX, and reading time.
+An interpretation layer works on top of the formulas: a consensus grade as the median of the grade formulas, mapping of the grade to the reader's age by the plainrussian table, the scales of the Flesch index, LIX and RIX, reading time and the [stage norms](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#level_norms) - the usual sentence and word length, share of words of five or more syllables and MTLD of texts for grades 1-3, 4-6 and 10-11.
 
 Coefficients of the formulas adapted for Russian are selected by the `preset` argument: by default the library uses the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project obtained on texts with grade labels (`plainrussian`); Oborneva's coefficients obtained on fiction (`fiction`; the Flesch-Kincaid test with them is about four grades above the grade of the Russian school, see [presets](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#presets)) and the Kazan group's (Solovyev, Ivanov, Solnyshkina) coefficients obtained on textbooks (`academic`) are also available.
 

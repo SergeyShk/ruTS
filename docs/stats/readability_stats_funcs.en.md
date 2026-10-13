@@ -429,3 +429,55 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `n_words` | int | `-` | Number of words |
 | `wpm` | float | `180` | Reading speed, words per minute |
+
+## Features of the stage norms { #level_features }
+
+!!! info ""
+    **ruts.readability_stats.level_features()**
+
+The features of a text that the [stage norms](readability_stats.md#level_norms) cover: words per sentence, letters per word (of the words the grade formulas count), the share of words of five or more syllables (the complex words of SMOG, Gunning fog and Dale-Chall) and the lexical diversity MTLD. They are computed the same way as for the norms, so they can be compared with them.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `source` | str/Doc | `-` | Data source (a string or a Doc object) |
+
+## Norms of a stage { #level_norms }
+
+!!! info ""
+    **ruts.readability_stats.level_norms()**
+
+The norms of the features of the stage a grade belongs to - the usual range (quartiles) of each feature of `level_features` - or `None` for a stage without norms. A grade belongs to a stage as in [`grade_to_age`](#grade_to_age): it is rounded half up, and a grade below 1 belongs to the first stage. A grade that is not a finite number raises `ParameterError`.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `grade` | float | `-` | Grade of the reader or consensus grade of a text |
+
+## Reading a feature by the stage norms { #describe_level_norm }
+
+!!! info ""
+    **ruts.readability_stats.describe_level_norm()**
+
+The reading of a feature of a text by the norms of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of `ruts.constants.LEVEL_NORM_BANDS`. A stage without norms and an undefined value (nan) give `None`, an unknown feature raises `UnknownStatError`, and a value that is not a number raises `ParameterError`.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `stat` | str | `-` | Name of a feature of `ruts.constants.LEVEL_NORMS_DESC` |
+| `value` | float | `-` | Value of the feature |
+| `grade` | float | `-` | Grade of the reader or consensus grade of a text |
+
+!!! example "Example"
+
+    ``` python
+    from ruts.readability_stats import describe_level_norm, level_norms
+
+    level_norms(2)["words_per_sent"], level_norms(8)
+    # ((8.1, 10.7), None)
+    describe_level_norm("words_per_sent", 6.0, 2), describe_level_norm("words_per_sent", 12, 5)
+    # ('ниже нормы ступени', 'в норме ступени')
+    ```
