@@ -376,6 +376,8 @@ OPENCORPORA_VERB_FORMS = {
     "GRND": "Conv",
 }
 PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
+# Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
+TENSED_PREDICATIVES = frozenset({"нет", "нету"})
 SUBORDINATING_CONJUNCTIONS = frozenset(
     {
         "будто",

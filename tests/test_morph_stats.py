@@ -328,12 +328,18 @@ def test_tag_to_ud(tag, expected):
         assert features[key] == value
 
 
-def test_predicatives_have_no_tense(nlp):
-    """Предикативы (надо, нельзя) - наречия без времени и у строки, и у Doc"""
-    text = "Надо идти. Нельзя молчать. Было надо спать."
-    expected = {"tense": {"Past": 1}}
-    assert MorphStats(text).get_stats("tense", filter_none=True) == expected
-    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == expected
+@pytest.mark.parametrize(
+    ("text", "tense"),
+    [
+        ("Надо идти. Нельзя молчать. Было надо спать.", {"Past": 1}),
+        ("Меня нет дома. Хлеба нету.", {"Pres": 2}),
+    ],
+)
+def test_predicatives_tense(nlp, text, tense):
+    """Предикативы (надо, нельзя) - без времени, бытийные «нет» и «нету» - в настоящем, как у Doc"""
+    assert MorphStats(text).get_stats("tense", filter_none=True) == {"tense": tense}
+    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": tense}
+    assert tag_to_ud(make_tag("PRED,pres"), "нет")["tense"] == "Pres"
 
 
 def test_tag_to_ud_pos_lemma():

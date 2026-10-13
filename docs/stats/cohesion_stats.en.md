@@ -16,7 +16,7 @@ Sentence pairs are compared by lemmas. For a `Doc` object with part-of-speech an
 | Arguments | `NOUN`, `NPRO` | `NOUN`, `PROPN`, `PRON` |
 | Content words | `CONTENT_POS` without `STOPWORD_GRAMMEMES` and demonstratives | `CONTENT_UD_POS` without demonstratives |
 | Demonstratives | lemmas from `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | the same lemmas |
-| Tense and aspect | grammemes `past`, `pres`, `futr` and `perf`, `impf` of verb forms | features `Tense` and `Aspect` |
+| Tense and aspect | grammemes `past`, `pres`, `futr` and `perf`, `impf` of verb forms, the tense of the existential нет and нету | features `Tense` and `Aspect` |
 
 The overlap indicators range from 0 to 1; for a one-sentence text they are `nan`, as is the temporal cohesion of a text without verbs in adjacent sentences. All-pair overlaps are computed without enumerating pairs, see [`calc_overlaps`](cohesion_stats_funcs.md#calc_overlaps).
 
