@@ -19,7 +19,7 @@ Correspondence between OpenCorpora and UD parts of speech:
 | `ADJF`, `ADJS`, `COMP` | `ADJ`, `DET`, `PRON`, `NUM` | pronominal adjectives (этот, мой, весь) - `DET`, «который» - `PRON`, «один» - `NUM`; a comparative without context counts as an adjective |
 | `VERB`, `INFN`, `PRTF`, `PRTS`, `GRND` | `VERB` | the form goes into `verb_form`: `Fin`, `Inf`, `Part`, `Conv`; the auxiliary `AUX` is distinguished only by spaCy |
 | `NUMR`, `NUMB`, `ROMN` | `NUM` | |
-| `ADVB`, `PRED` | `ADV` | predicatives (надо, нельзя) - adverbs, as in the Russian UD corpora |
+| `ADVB`, `PRED` | `ADV` | predicatives (надо, нельзя) - adverbs without tense, as in the Russian UD corpora; the existential нет and нету, which UD treats as verbs, have the present tense |
 | `NPRO` | `PRON` | |
 | `PREP` | `ADP` | |
 | `CONJ` | `CCONJ`, `SCONJ` | subordinating conjunctions by the `SUBORDINATING_CONJUNCTIONS` list (что, чтобы, если, когда, хотя, потому) |

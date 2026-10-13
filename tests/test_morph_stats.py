@@ -312,7 +312,8 @@ def test_word_to_ud_pos(word, expected):
         ),
         ("PRTF,impf,tran,pres,actv masc,sing,nomn", {"verb_form": "Part", "voice": "Act"}),
         ("PRTS,perf,past,pssv masc,sing", {"verb_form": "Part", "voice": "Pass", "tense": "Past"}),
-        ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf"}),
+        ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf", "tense": "Past"}),
+        ("PRED,pres", {"pos": "ADV", "tense": None}),
         ("INFN,impf,tran", {"verb_form": "Inf", "mood": None, "tense": None}),
         ("VERB,impf,tran sing,3per,pres,indc", {"person": "3", "tense": "Pres", "mood": "Ind"}),
         ("LATN", {"pos": "X", "verb_form": None}),
@@ -325,6 +326,20 @@ def test_tag_to_ud(tag, expected):
     assert set(features) == set(MORPHOLOGY_STATS_DESC)
     for key, value in expected.items():
         assert features[key] == value
+
+
+@pytest.mark.parametrize(
+    ("text", "tense"),
+    [
+        ("Надо идти. Нельзя молчать. Было надо спать.", {"Past": 1}),
+        ("Меня нет дома. Хлеба нету.", {"Pres": 2}),
+    ],
+)
+def test_predicatives_tense(nlp, text, tense):
+    """Предикативы (надо, нельзя) - без времени, бытийные «нет» и «нету» - в настоящем, как у Doc"""
+    assert MorphStats(text).get_stats("tense", filter_none=True) == {"tense": tense}
+    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": tense}
+    assert tag_to_ud(make_tag("PRED,pres"), "нет")["tense"] == "Pres"
 
 
 def test_tag_to_ud_pos_lemma():
