@@ -1,5 +1,7 @@
+import re
 import shutil
 from pathlib import Path
+from statistics import median
 
 import anyts.datasets as dataset_module
 import numpy as np
@@ -7,14 +9,27 @@ import pytest
 from anyts.datasets import extract_archive
 from scipy.stats import spearmanr
 
-from ruts import ReadabilityStats
-from ruts.constants import READABILITY_GRADE_STATS
-from ruts.datasets import texts_by_grade as texts_by_grade_module
+from ruts import BasicStats, ReadabilityStats
+from ruts.constants import READABILITY_GRADE_STATS, READABILITY_PRESETS, READABILITY_STATS_DESC
+from ruts.datasets import (
+    sov_chrest_lit as sov_chrest_lit_module,
+    texts_by_grade as texts_by_grade_module,
+)
+from ruts.datasets.sov_chrest_lit import SovChLit
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
 from ruts.exceptions import DownloadError, ParameterError
 
 BUNDLED_ARCHIVE = (
     Path(__file__).parents[2] / "ruts" / "datasets" / "data" / texts_by_grade_module.ARCHIVE
+)
+DOCS = Path(__file__).parents[2] / "docs"
+FORMULA_ROW = re.compile(
+    r"^\| (?P<label>[^|]+?) \| (?P<rho>−?[\d.]+) \| (?P<mae>[\d.]+|-) \|$", re.MULTILINE
+)
+PRESET_ROW = re.compile(
+    r"^\| (?P<group>[^|]+?) \| (?P<n>\d+) \| (?P<plainrussian>[\d.]+) \| (?P<fiction>[\d.]+)"
+    r" \| (?P<academic>[\d.]+) \|$",
+    re.MULTILINE,
 )
 
 
@@ -184,7 +199,15 @@ def test_subject_escaped(dataset, subject, expected):
 def readability(dataset):
     labels = []
     stats = {stat: [] for stat in READABILITY_GRADE_STATS}
-    stats.update({"consensus_grade": [], "flesch_reading_easy": [], "lix": [], "rix": []})
+    stats.update(
+        {
+            "consensus_grade": [],
+            "flesch_reading_easy": [],
+            "lix": [],
+            "rix": [],
+            "matskovsky_index": [],
+        }
+    )
     for record in dataset:
         rs = ReadabilityStats(record["text"])
         labels.append(record["grade"])
@@ -211,3 +234,77 @@ def test_consensus_grade_matches_labels(readability):
     groups = [(1, 1), (3, 4), (5, 9), (10, 11), (12, 17)]
     means = [consensus[(labels >= low) & (labels <= high)].mean() for low, high in groups]
     assert means == sorted(means)
+    for page in ("textsbygrade.md", "textsbygrade.en.md"):
+        text = (DOCS / "datasets" / page).read_text(encoding="utf-8")
+        assert re.findall(r"(\d+\.\d) (?:для|for) ", text) == [f"{mean:.1f}" for mean in means]
+
+
+def test_readability_table_follows_docs(readability):
+    """Таблица формул на странице набора совпадает с вычисленной"""
+    labels, stats = readability
+    names = {READABILITY_STATS_DESC[stat]: stat for stat in stats}
+    page = (DOCS / "datasets" / "textsbygrade.md").read_text(encoding="utf-8")
+    rows = {row["label"]: (row["rho"], row["mae"]) for row in FORMULA_ROW.finditer(page)}
+    assert set(rows) == set(names)
+    for label, (rho, mae) in rows.items():
+        values = stats[names[label]]
+        assert rho == f"{spearmanr(labels, values)[0]:.2f}".replace("-", "−"), label
+        has_grade = names[label] in (*READABILITY_GRADE_STATS, "consensus_grade")
+        assert mae == (f"{np.mean(np.abs(values - labels)):.1f}" if has_grade else "-"), label
+    english = (DOCS / "datasets" / "textsbygrade.en.md").read_text(encoding="utf-8")
+    english_rows = [(row["rho"], row["mae"]) for row in FORMULA_ROW.finditer(english)]
+    assert english_rows == list(rows.values())
+
+
+@pytest.fixture(scope="module")
+def first_grade_reader(tmp_path_factory):
+    reader = SovChLit(data_dir=tmp_path_factory.mktemp("ruts_data_scl"))
+    archive = BUNDLED_ARCHIVE.with_name(sov_chrest_lit_module.ARCHIVE)
+    shutil.copy(archive, reader._filepath)
+    reader.download()
+    return reader
+
+
+@pytest.fixture(scope="module")
+def presets(dataset, first_grade_reader):
+    """Метки и объекты ReadabilityStats каждого пресета для TextsByGrade и SovChLit"""
+    records = [(record["grade"], BasicStats(record["text"])) for record in dataset]
+    reader = [(1, BasicStats(text)) for text in first_grade_reader.get_texts()]
+    return {
+        name: [
+            (
+                grade,
+                {preset: ReadabilityStats(bs, preset=preset) for preset in READABILITY_PRESETS},
+            )
+            for grade, bs in texts
+        ]
+        for name, texts in (("TextsByGrade", records), ("SovChLit", reader))
+    }
+
+
+@pytest.mark.parametrize("page", ["readability_stats.md", "readability_stats.en.md"])
+def test_presets_table_follows_docs(presets, page):
+    """Медианы теста Флеша-Кинкайда по пресетам и числа оговорки в документации - вычисленные"""
+    groups = {"1": (1, 1), "3-4": (3, 4), "5-9": (5, 9), "10-11": (10, 11), "12-17": (12, 17)}
+    texts = presets["TextsByGrade"]
+    samples = [
+        [rs for grade, rs in texts if low <= grade <= high] for low, high in groups.values()
+    ]
+    samples.append([rs for _, rs in presets["SovChLit"]])
+    text = (DOCS / "stats" / page).read_text(encoding="utf-8")
+    rows = list(PRESET_ROW.finditer(text))
+    for row, label, sample in zip(rows, [*groups, "1"], samples, strict=True):
+        assert row["group"].split()[0] == label
+        assert int(row["n"]) == len(sample), label
+        for preset in READABILITY_PRESETS:
+            grades = [rs[preset].flesch_kincaid_grade for rs in sample]
+            assert row[preset] == f"{median(grades):.1f}", (label, preset)
+    school = [(grade, rs) for grade, rs in texts if grade <= 11]
+    for preset in READABILITY_PRESETS:
+        fk = [rs[preset].flesch_kincaid_grade for _, rs in texts]
+        assert f" {spearmanr([grade for grade, _ in texts], fk)[0]:.2f}," in text, preset
+        bias = median(rs[preset].flesch_kincaid_grade - grade for grade, rs in school)
+        assert f"{bias:+.1f}".replace("-", "−") in text, preset
+    for preset in ("plainrussian", "fiction"):
+        consensus = median(rs[preset].consensus_grade for _, rs in texts)
+        assert f"{consensus:.2f}" in text, preset

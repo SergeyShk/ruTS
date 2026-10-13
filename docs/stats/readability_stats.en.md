@@ -16,7 +16,7 @@
     *   the typographic design of the text;
     *   the linguistic features of the text material (complexity of syntactic constructions, vocabulary hard to perceive, etc.).
 
-The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.
+The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva obtained on fiction (the Flesch-Kincaid test with them is above the grade of the Russian school, see [below](#presets)) and of the Kazan group (Solovyev, Ivanov, Solnyshkina) obtained on textbooks are also available.
 
 The main presumptions of readability metrics:
 
@@ -86,6 +86,19 @@ Here ASL is the mean number of words per sentence, ASW the mean number of syllab
     ReadabilityStats(text, preset="academic").flesch_kincaid_grade
     # 3.0299999999999994
     ```
+
+The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for all three presets is 0.79, while the medians of the test by label group differ:
+
+| Label | Texts | `plainrussian` | `fiction` | `academic` |
+| :---: | :---: | :------------: | :-------: | :--------: |
+| 1 | 11 | 2.9 | 7.5 | 4.0 |
+| 3-4 | 10 | 4.2 | 8.7 | 4.9 |
+| 5-9 | 12 | 4.4 | 8.7 | 4.9 |
+| 10-11 | 18 | 6.7 | 11.7 | 7.0 |
+| 12-17 | 17 | 23.7 | 24.4 | 15.9 |
+| 1 ([`SovChLit`](../datasets/sovchlit.md)) | 179 | 1.5 | 6.1 | 3.1 |
+
+On school texts (labels 1-11) the test with the `fiction` preset is about four grades above the label (median deviation +3.9 against −0.9 for `plainrussian` and −0.2 for `academic`), and about five on the first-grade reader `SovChLit`. Its value should therefore not be read as a grade of the Russian school: for the grade of the reader use `plainrussian` (the default; its coefficients were fitted on `TextsByGrade`) or `academic`, and `fiction` to compare with works that use Oborneva's coefficients. The consensus grade depends on the preset less, since the Flesch-Kincaid test is only one of its formulas (the median on `TextsByGrade` is 7.75 for `fiction` against 6.75 for `plainrussian`).
 
 !!! note "Note"
     Every metric can be computed separately by calling the corresponding function. Detailed information on the readability metrics and the functions used to compute them is available in the corresponding [section](readability_stats_funcs.md).
