@@ -8,6 +8,7 @@ from itertools import pairwise
 from math import nan
 from typing import Any
 
+from anyts.extractors import BLANK_LINE
 from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
@@ -351,7 +352,7 @@ def split_stanzas(text: str) -> list[list[str]]:
         list[list[str]]: Строки по строфам
     """
     stanzas = []
-    for block in re.split(r"\n\s*\n", text.strip()):
+    for block in BLANK_LINE.split(text.strip()):
         lines = [line.strip() for line in block.split("\n") if WORD_PATTERN.search(line)]
         if lines:
             stanzas.append(lines)

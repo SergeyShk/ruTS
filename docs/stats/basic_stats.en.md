@@ -7,6 +7,8 @@
 
 --8<-- "stats/basic_stats.md:BasicStats"
 
+In ruTS this component is called [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`.
+
 Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (`ruts.utils.strip_marks`): a text with stresses gives the same statistics as without them.
 
 !!! note "Note"
