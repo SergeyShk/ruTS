@@ -33,7 +33,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import tag_to_ud_pos, word_to_ud
+from .morph_stats import VERB_POS, tag_to_ud_pos, word_to_ud
 from .utils import lemmatize, normalize_yo, parse_all, parse_word, strip_marks
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
@@ -527,7 +527,7 @@ def word_info(word: str) -> WordInfo:
         Существительное - NOUN, местоимение - NPRO, Apro или лемма из DEMONSTRATIVE_LEMMAS,
         аргумент - NOUN или NPRO, знаменательное слово - по is_content_word, кроме
         указательных (столько - наречие для pymorphy3), время и вид - граммемы
-        глагольной формы
+        глагольной формы: у предикативов (надо, нельзя) времени нет, как у Doc
 
     Аргументы:
         word (str): Слово
@@ -545,7 +545,7 @@ def word_info(word: str) -> WordInfo:
         demonstrative=demonstrative,
         argument=tag.POS in ("NOUN", "NPRO"),
         content=not demonstrative and is_content_word(word),
-        tense=tag.tense,
+        tense=tag.tense if tag.POS in VERB_POS else None,
         aspect=tag.aspect,
     )
 

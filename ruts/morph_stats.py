@@ -393,6 +393,8 @@ def tag_to_ud(
         общий род ms-f (сирота, задира), который pymorphy3 не относит к роду, - в Com;
         форма глагола verb_form выводится из части речи OpenCorpora: VERB - Fin,
         INFN - Inf, PRTF и PRTS - Part, GRND - Conv
+        Время - только у глагольных форм: предикативам (надо, нельзя) pymorphy3 дает
+        настоящее время, а в UD и у Doc это наречия без времени
         Переходность и совместность переводятся в Tran, Intr и In, Ex
 
     Аргументы:
@@ -407,6 +409,8 @@ def tag_to_ud(
     for stat in MORPHOLOGY_FEATURES:
         if stat == "verb_form":
             features[stat] = OPENCORPORA_VERB_FORMS.get(tag.POS or "")
+        elif stat == "tense" and tag.POS not in VERB_POS:
+            features[stat] = None
         else:
             found = TAG_GRAMMEMES[stat] & tag.grammemes
             # У слов на -кки pymorphy3 дает и anim, и inan: такой признак не определен

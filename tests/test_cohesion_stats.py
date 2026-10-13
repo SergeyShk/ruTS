@@ -90,6 +90,8 @@ def test_word_info():
         "читать", False, False, False, False, True, "past", "impf"
     )
     assert word_info("на") == WordInfo("на", False, False, False, False, False, None, None)
+    assert word_info("надо") == WordInfo("надо", False, False, False, False, False, None, None)
+    assert word_info("прочитав").tense == "past"
 
 
 def test_token_info(nlp):
@@ -204,6 +206,13 @@ def test_no_nouns_no_verbs():
     assert cs.content_overlap_adjacent == 0
     assert isnan(cs.tense_repetition)
     assert isnan(cs.temporal_cohesion)
+
+
+def test_temporal_ignores_predicatives():
+    """У «надо» нет времени, поэтому повтор времени не определен, как у Doc"""
+    cs = CohesionStats("Надо идти. Надо спать.")
+    assert isnan(cs.tense_repetition)
+    assert cs.aspect_repetition == 1.0
 
 
 def test_temporal_skips_sentences_without_verbs():

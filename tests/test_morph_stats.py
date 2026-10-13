@@ -312,7 +312,8 @@ def test_word_to_ud_pos(word, expected):
         ),
         ("PRTF,impf,tran,pres,actv masc,sing,nomn", {"verb_form": "Part", "voice": "Act"}),
         ("PRTS,perf,past,pssv masc,sing", {"verb_form": "Part", "voice": "Pass", "tense": "Past"}),
-        ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf"}),
+        ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf", "tense": "Past"}),
+        ("PRED,pres", {"pos": "ADV", "tense": None}),
         ("INFN,impf,tran", {"verb_form": "Inf", "mood": None, "tense": None}),
         ("VERB,impf,tran sing,3per,pres,indc", {"person": "3", "tense": "Pres", "mood": "Ind"}),
         ("LATN", {"pos": "X", "verb_form": None}),
@@ -325,6 +326,14 @@ def test_tag_to_ud(tag, expected):
     assert set(features) == set(MORPHOLOGY_STATS_DESC)
     for key, value in expected.items():
         assert features[key] == value
+
+
+def test_predicatives_have_no_tense(nlp):
+    """Предикативы (надо, нельзя) - наречия без времени и у строки, и у Doc"""
+    text = "Надо идти. Нельзя молчать. Было надо спать."
+    expected = {"tense": {"Past": 1}}
+    assert MorphStats(text).get_stats("tense", filter_none=True) == expected
+    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == expected
 
 
 def test_tag_to_ud_pos_lemma():
