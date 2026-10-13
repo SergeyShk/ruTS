@@ -16,7 +16,7 @@
     *   the typographic design of the text;
     *   the linguistic features of the text material (complexity of syntactic constructions, vocabulary hard to perceive, etc.).
 
-The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva for fiction and of the Kazan group (Solovyev, Ivanov, Solnyshkina) for academic texts are also available.
+The coefficients of the formulas adapted for Russian are set by a preset (see [below](#presets)): by default the coefficients of the [Plain Russian Language](https://github.com/infoculture/plainrussian) project fitted on 68 grade-labeled texts are used; the coefficients of Oborneva obtained on fiction (the Flesch-Kincaid test with them is above the grade of the Russian school, see [below](#presets)) and of the Kazan group (Solovyev, Ivanov, Solnyshkina) obtained on textbooks are also available.
 
 The main presumptions of readability metrics:
 
@@ -87,7 +87,7 @@ Here ASL is the mean number of words per sentence, ASW the mean number of syllab
     # 3.0299999999999994
     ```
 
-The presets order texts alike but give different scales. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the Spearman correlation of the Flesch-Kincaid test with the grade label is 0.79 for all three presets, while the medians of the test by label group differ:
+The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for all three presets is 0.79, while the medians of the test by label group differ:
 
 | Label | Texts | `plainrussian` | `fiction` | `academic` |
 | :---: | :---: | :------------: | :-------: | :--------: |

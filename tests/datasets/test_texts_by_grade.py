@@ -234,6 +234,9 @@ def test_consensus_grade_matches_labels(readability):
     groups = [(1, 1), (3, 4), (5, 9), (10, 11), (12, 17)]
     means = [consensus[(labels >= low) & (labels <= high)].mean() for low, high in groups]
     assert means == sorted(means)
+    for page in ("textsbygrade.md", "textsbygrade.en.md"):
+        text = (DOCS / "datasets" / page).read_text(encoding="utf-8")
+        assert re.findall(r"(\d+\.\d) (?:для|for) ", text) == [f"{mean:.1f}" for mean in means]
 
 
 def test_readability_table_follows_docs(readability):
@@ -248,6 +251,9 @@ def test_readability_table_follows_docs(readability):
         assert rho == f"{spearmanr(labels, values)[0]:.2f}".replace("-", "−"), label
         has_grade = names[label] in (*READABILITY_GRADE_STATS, "consensus_grade")
         assert mae == (f"{np.mean(np.abs(values - labels)):.1f}" if has_grade else "-"), label
+    english = (DOCS / "datasets" / "textsbygrade.en.md").read_text(encoding="utf-8")
+    english_rows = [(row["rho"], row["mae"]) for row in FORMULA_ROW.finditer(english)]
+    assert english_rows == list(rows.values())
 
 
 @pytest.fixture(scope="module")
@@ -259,19 +265,46 @@ def first_grade_reader(tmp_path_factory):
     return reader
 
 
-@pytest.mark.parametrize("page", ["readability_stats.md", "readability_stats.en.md"])
-def test_presets_table_follows_docs(dataset, first_grade_reader, page):
-    """Медианы теста Флеша-Кинкайда по пресетам в документации совпадают с вычисленными"""
-    groups = {"1": (1, 1), "3-4": (3, 4), "5-9": (5, 9), "10-11": (10, 11), "12-17": (12, 17)}
+@pytest.fixture(scope="module")
+def presets(dataset, first_grade_reader):
+    """Метки и объекты ReadabilityStats каждого пресета для TextsByGrade и SovChLit"""
     records = [(record["grade"], BasicStats(record["text"])) for record in dataset]
+    reader = [(1, BasicStats(text)) for text in first_grade_reader.get_texts()]
+    return {
+        name: [
+            (
+                grade,
+                {preset: ReadabilityStats(bs, preset=preset) for preset in READABILITY_PRESETS},
+            )
+            for grade, bs in texts
+        ]
+        for name, texts in (("TextsByGrade", records), ("SovChLit", reader))
+    }
+
+
+@pytest.mark.parametrize("page", ["readability_stats.md", "readability_stats.en.md"])
+def test_presets_table_follows_docs(presets, page):
+    """Медианы теста Флеша-Кинкайда по пресетам и числа оговорки в документации - вычисленные"""
+    groups = {"1": (1, 1), "3-4": (3, 4), "5-9": (5, 9), "10-11": (10, 11), "12-17": (12, 17)}
+    texts = presets["TextsByGrade"]
     samples = [
-        [bs for grade, bs in records if low <= grade <= high] for low, high in groups.values()
+        [rs for grade, rs in texts if low <= grade <= high] for low, high in groups.values()
     ]
-    samples.append([BasicStats(text) for text in first_grade_reader.get_texts()])
-    rows = list(PRESET_ROW.finditer((DOCS / "stats" / page).read_text(encoding="utf-8")))
-    assert len(rows) == len(samples)
-    for row, sample in zip(rows, samples, strict=True):
-        assert int(row["n"]) == len(sample), row["group"]
+    samples.append([rs for _, rs in presets["SovChLit"]])
+    text = (DOCS / "stats" / page).read_text(encoding="utf-8")
+    rows = list(PRESET_ROW.finditer(text))
+    for row, label, sample in zip(rows, [*groups, "1"], samples, strict=True):
+        assert row["group"].split()[0] == label
+        assert int(row["n"]) == len(sample), label
         for preset in READABILITY_PRESETS:
-            grades = [ReadabilityStats(bs, preset=preset).flesch_kincaid_grade for bs in sample]
-            assert row[preset] == f"{median(grades):.1f}", (row["group"], preset)
+            grades = [rs[preset].flesch_kincaid_grade for rs in sample]
+            assert row[preset] == f"{median(grades):.1f}", (label, preset)
+    school = [(grade, rs) for grade, rs in texts if grade <= 11]
+    for preset in READABILITY_PRESETS:
+        fk = [rs[preset].flesch_kincaid_grade for _, rs in texts]
+        assert f" {spearmanr([grade for grade, _ in texts], fk)[0]:.2f}," in text, preset
+        bias = median(rs[preset].flesch_kincaid_grade - grade for grade, rs in school)
+        assert f"{bias:+.1f}".replace("-", "−") in text, preset
+    for preset in ("plainrussian", "fiction"):
+        consensus = median(rs[preset].consensus_grade for _, rs in texts)
+        assert f"{consensus:.2f}" in text, preset
