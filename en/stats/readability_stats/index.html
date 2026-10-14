@@ -1060,6 +1060,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2990,6 +3001,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#methods" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3448,6 +3470,61 @@
 </table>
 <p>The <a href="#describe_level"><code>describe_level</code></a> method reads the Flesch index, LIX and RIX by their scales - the tables of the <a href="../readability_stats_funcs/">metric functions</a> page, and <a href="#describe"><code>describe</code></a> reads any metric: a grade formula and the consensus grade by the table above, the Flesch index, LIX and RIX by their scales; for a metric without a scale it gives <code>None</code>.</p>
 <p>The <code>reading_time</code> attribute estimates silent reading time at 180 words per minute (the upper bound of the adult norm by Kuznetsov and Khromov, 1991). A different speed is accepted by the <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a> method, and the <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> method computes the time within the norm bounds from the <code>ruts.constants.READING_SPEED_NORMS</code> table, including the school reading-aloud norms of the Russian federal standard.</p>
+<h2 id="level_norms">Stage norms<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
+<p>The consensus grade tells which stage a text is for, but not what a text of that stage is like. For this the <code>ruts.constants.LEVEL_NORMS</code> table holds the norms of the features of the stages: the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of texts of at least 100 words labeled with the stage in the <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> and <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> datasets. School stages with at least 10 such texts have norms:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Stage</th>
+<th style="text-align: center;">Texts</th>
+<th style="text-align: center;">Words per sentence</th>
+<th style="text-align: center;">Letters per word</th>
+<th style="text-align: center;">Share of words of 5+ syllables</th>
+<th style="text-align: center;">MTLD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">grades 1-3</td>
+<td style="text-align: center;">73</td>
+<td style="text-align: center;">8.1-10.7</td>
+<td style="text-align: center;">4.56-5.03</td>
+<td style="text-align: center;">0.0-0.022</td>
+<td style="text-align: center;">104-178</td>
+</tr>
+<tr>
+<td style="text-align: center;">grades 4-6</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">10.2-14.6</td>
+<td style="text-align: center;">5.16-5.33</td>
+<td style="text-align: center;">0.039-0.052</td>
+<td style="text-align: center;">220-373</td>
+</tr>
+<tr>
+<td style="text-align: center;">grades 10-11</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">15.6-17.9</td>
+<td style="text-align: center;">5.11-5.57</td>
+<td style="text-align: center;">0.035-0.065</td>
+<td style="text-align: center;">277-513</td>
+</tr>
+</tbody>
+</table>
+<p>Grades 7-9 have seven texts in the datasets, and the university labels of <code>TextsByGrade</code> mark a Wikipedia article, a newspaper article and regulatory documents, not texts written for students of a given year, so these stages have no norms. The <a href="../readability_stats_funcs/#level_features"><code>level_features</code></a> function computes the features of a text the same way as for the norms, <a href="../readability_stats_funcs/#level_norms"><code>level_norms</code></a> returns the norms of the stage of a grade, and <a href="../readability_stats_funcs/#describe_level_norm"><code>describe_level_norm</code></a> reads a feature by them. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SovChLit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe_level_norm</span><span class="p">,</span> <span class="n">level_features</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">SovChLit</span><span class="p">()</span><span class="o">.</span><span class="n">get_texts</span><span class="p">())</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">level_features</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="p">{</span><span class="n">stat</span><span class="p">:</span> <span class="n">describe_level_norm</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">stat</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="c1"># {'words_per_sent': 'выше нормы ступени',</span>
+<span class="c1">#  'letters_per_word': 'выше нормы ступени',</span>
+<span class="c1">#  'p_smog_complex_words': 'выше нормы ступени',</span>
+<span class="c1">#  'mtld': 'в норме ступени'}</span>
+</code></pre></div>
+</div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
 <p>Returns the school stage and reader age for the consensus grade or a grade formula; another metric raises <code>ParameterError</code>.</p>

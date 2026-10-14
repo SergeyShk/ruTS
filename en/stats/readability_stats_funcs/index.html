@@ -1208,6 +1208,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#level_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features of the stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Norms of a stage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe_level_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading a feature by the stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3115,6 +3148,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#level_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features of the stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Norms of a stage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe_level_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading a feature by the stage norms
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4445,6 +4511,100 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tr>
 </tbody>
 </table>
+<h2 id="level_features">Features of the stage norms<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.level_features()</strong></p>
+</div>
+<p>The features of a text that the <a href="../readability_stats/#level_norms">stage norms</a> cover: words per sentence, letters per word (of the words the grade formulas count), the share of words of five or more syllables (the complex words of SMOG, Gunning fog and Dale-Chall) and the lexical diversity MTLD. They are computed the same way as for the norms, so they can be compared with them; the features of a <code>Doc</code> are computed from its text, not from the sentence boundaries of spaCy.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>source</code></td>
+<td style="text-align: center;">str/Doc</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Data source (a string or a Doc object)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="level_norms">Norms of a stage<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.level_norms()</strong></p>
+</div>
+<p>The norms of the features of the stage a grade belongs to - the usual range (quartiles) of each feature of <code>level_features</code> - or <code>None</code> for a stage without norms. A grade belongs to a stage as in <a href="#grade_to_age"><code>grade_to_age</code></a>: it is rounded half up, and a grade below 1 belongs to the first stage. A grade that is not a finite number raises <code>ParameterError</code>.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Grade of the reader or consensus grade of a text</td>
+</tr>
+</tbody>
+</table>
+<h2 id="describe_level_norm">Reading a feature by the stage norms<a class="headerlink" href="#describe_level_norm" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.describe_level_norm()</strong></p>
+</div>
+<p>The reading of a feature of a text by the norms of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of <code>ruts.constants.LEVEL_NORM_BANDS</code>. A stage without norms and an undefined value (nan) give <code>None</code>, an unknown feature raises <code>UnknownStatError</code>, and a value that is not a number raises <code>ParameterError</code>.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Name of a feature of <code>ruts.constants.LEVEL_NORMS_DESC</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>value</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Value of the feature</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Grade of the reader or consensus grade of a text</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe_level_norm</span><span class="p">,</span> <span class="n">level_norms</span>
+
+<span class="n">level_norms</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="s2">"words_per_sent"</span><span class="p">],</span> <span class="n">level_norms</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># ((8.1, 10.7), None)</span>
+<span class="n">describe_level_norm</span><span class="p">(</span><span class="s2">"words_per_sent"</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">describe_level_norm</span><span class="p">(</span><span class="s2">"words_per_sent"</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># ('ниже нормы ступени', 'в норме ступени')</span>
+</code></pre></div>
+</div>
 
 
 

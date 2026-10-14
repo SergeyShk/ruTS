@@ -1208,6 +1208,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#level_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Признаки норм ступеней
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Нормы ступени
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe_level_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Прочтение признака по нормам ступени
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3115,6 +3148,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#level_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Признаки норм ступеней
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level_norms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Нормы ступени
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#describe_level_norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Прочтение признака по нормам ступени
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4458,6 +4524,100 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 </tbody>
 </table>
+<h2 id="level_features">Признаки норм ступеней<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.level_features()</strong></p>
+</div>
+<p>Признаки текста, для которых есть <a href="../readability_stats/#level_norms">нормы ступеней</a>: слов в предложении, букв в слове (у слов, которые учитывают формулы класса), доля слов от пяти слогов (сложные слова SMOG, индексов Ганнинга и Дейла-Чейла) и лексическое разнообразие MTLD. Признаки считаются так же, как для норм, поэтому их можно сравнивать с нормами; признаки <code>Doc</code> считаются по его тексту, а не по границам предложений spaCy.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>source</code></td>
+<td style="text-align: center;">str/Doc</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Источник данных (строка или объект Doc)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="level_norms">Нормы ступени<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.level_norms()</strong></p>
+</div>
+<p>Нормы признаков ступени обучения, к которой относится класс, - обычные диапазоны (квартили) каждого признака <code>level_features</code>, или <code>None</code> для ступени без норм. Класс относится к ступени, как в <a href="#grade_to_age"><code>grade_to_age</code></a>: округляется арифметически, класс меньше 1 - первая ступень. Класс, который не конечное число, дает <code>ParameterError</code>.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Класс читателя или сводный класс текста</td>
+</tr>
+</tbody>
+</table>
+<h2 id="describe_level_norm">Прочтение признака по нормам ступени<a class="headerlink" href="#describe_level_norm" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.readability_stats.describe_level_norm()</strong></p>
+</div>
+<p>Прочтение признака текста по нормам ступени, к которой относится класс: «ниже нормы ступени», «в норме ступени» (между квартилями, включая их) или «выше нормы ступени» (<code>ruts.constants.LEVEL_NORM_BANDS</code>). Ступень без норм и неопределенное значение (nan) дают <code>None</code>, неизвестный признак - <code>UnknownStatError</code>, значение, которое не число, - <code>ParameterError</code>.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>stat</code></td>
+<td style="text-align: center;">str</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Название признака из <code>ruts.constants.LEVEL_NORMS_DESC</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>value</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Значение признака</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>grade</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Класс читателя или сводный класс текста</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe_level_norm</span><span class="p">,</span> <span class="n">level_norms</span>
+
+<span class="n">level_norms</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="s2">"words_per_sent"</span><span class="p">],</span> <span class="n">level_norms</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># ((8.1, 10.7), None)</span>
+<span class="n">describe_level_norm</span><span class="p">(</span><span class="s2">"words_per_sent"</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">describe_level_norm</span><span class="p">(</span><span class="s2">"words_per_sent"</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># ('ниже нормы ступени', 'в норме ступени')</span>
+</code></pre></div>
+</div>
 
 
 
