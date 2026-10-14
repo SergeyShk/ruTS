@@ -3039,8 +3039,9 @@
 </tr>
 </tbody>
 </table>
-<!-- core: stats/diversity_stats.md:check_params 1ed1a29 -->
-<p>Параметры проверяет <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)</code>: окно, размер выборки или минимальная длина фактора вне допустимых значений, порог вне интервала (0, 1) и основание логарифма не больше 1 дают <code>ParameterError</code>. Проверка выполняется до извлечения слов, поэтому о неверном параметре она сообщает раньше, чем о пустом тексте.</p>
+<!-- core: stats/diversity_stats.md:check_params 69e400f -->
+<p>Параметры проверяет <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, *, messages=CORE_MESSAGES)</code>: окно, размер выборки или минимальная длина фактора вне допустимых значений, порог вне интервала (0, 1) и основание логарифма не больше 1 дают <code>ParameterError</code>. Проверка выполняется до извлечения слов, поэтому о неверном параметре она сообщает раньше, чем о пустом тексте.</p>
+<p>Сообщения об ошибках - по-русски, из <code>ruts.constants.CORE_MESSAGES</code>.</p>
 <h2 id="conventions">Соглашения<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
 <!-- core: stats/diversity_stats.md:DiversityStats-conventions a759359 -->
 <p>Значения части метрик зависят от соглашений, которые в разных библиотеках различаются. Все они, кроме сравнения с порогом MTLD, вынесены в параметры класса:</p>

@@ -3038,7 +3038,8 @@
 </tr>
 </tbody>
 </table>
-<p>The parameters are checked by <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)</code>, which raises <code>ParameterError</code> for a window, a sample size or a minimum factor length out of range, a threshold outside (0, 1) or a logarithm base not above 1. Called before the words are extracted, it reports a wrong parameter before an empty text.</p>
+<p>The parameters are checked by <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, *, messages=MESSAGES)</code>, which raises <code>ParameterError</code> for a window, a sample size or a minimum factor length out of range, a threshold outside (0, 1) or a logarithm base not above 1. Called before the words are extracted, it reports a wrong parameter before an empty text.</p>
+<p>In ruTS the messages of the errors are in Russian, <code>ruts.constants.CORE_MESSAGES</code> by default.</p>
 <h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
 <p>The values of some metrics depend on conventions that differ between libraries. All of them except the comparison with the MTLD threshold are class parameters:</p>
 <table>

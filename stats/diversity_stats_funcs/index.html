@@ -4693,7 +4693,7 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_windowed()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_windowed b59de2a -->
+<!-- core: stats/diversity_stats_funcs.md:calc_windowed 29b5120 -->
 <p>Оконный расчет любой метрики: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины; стандартизированный TTR Кубата и Милички (не STTR Summer) - оконный расчет TTR с окном 1000 слов и 95% доверительным интервалом. Для текстов короче окна метрика считается по всему тексту как по единственному окну, окна с неопределенным значением метрики (<code>nan</code>) не учитываются. Если хотя бы в одном окне метрика бесконечна (например, обратный индекс Симпсона на окне из уникальных слов), среднее равно бесконечности, а стандартное отклонение и доверительный интервал не определены. Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
 <p>Параметры:</p>
 <table>
@@ -4735,6 +4735,12 @@ H = -\sum_k p_k \log_2 p_k
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.95</code></td>
 <td style="text-align: center;">Уровень доверия</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>messages</code></td>
+<td style="text-align: center;">dict[str, str]</td>
+<td style="text-align: center;"><code>CORE_MESSAGES</code></td>
+<td style="text-align: center;">Сообщения об ошибках по ключам, ключевой аргумент</td>
 </tr>
 </tbody>
 </table>
