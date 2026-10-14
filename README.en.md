@@ -443,7 +443,7 @@ The exact formulas of the services are not published, so the commonly accepted d
 >>> ss = StyleStats(text)
 
 >>> pprint(ss.get_stats())
-{'academic_nausea': 93.33333333333333,
+{'academic_nausea': 53.333333333333336,
  'classic_nausea': 1.7320508075688772,
  'cliches': 0.0,
  'compound_prepositions': 0.0,

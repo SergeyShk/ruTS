@@ -443,7 +443,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> ss = StyleStats(text)
 
 >>> pprint(ss.get_stats())
-{'academic_nausea': 93.33333333333333,
+{'academic_nausea': 53.333333333333336,
  'classic_nausea': 1.7320508075688772,
  'cliches': 0.0,
  'compound_prepositions': 0.0,

@@ -64,7 +64,7 @@ class StyleStats:
         >>> ss = StyleStats(text)
         >>> ss.get_stats()
         {'classic_nausea': 1.7320508075688772,
-        'academic_nausea': 93.33333333333333,
+        'academic_nausea': 53.333333333333336,
         'water': 46.666666666666664,
         'spam': 26.666666666666668,
         'zipf_naturalness': 33.333333333333336,
@@ -76,7 +76,7 @@ class StyleStats:
         {'когда': 20.0, 'нет а': 13.333333333333334}
         >>> StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка").get_stats()
         {'classic_nausea': 1.4142135623730951,
-        'academic_nausea': 100.0,
+        'academic_nausea': 72.72727272727273,
         'water': 27.272727272727273,
         'spam': 9.090909090909092,
         'zipf_naturalness': 100.0,
@@ -166,7 +166,7 @@ class StyleStats:
 
     @property
     def academic_nausea(self) -> float:
-        return calc_academic_nausea(self.words, self.top_n)
+        return calc_academic_nausea(self.words, self.top_n, self.stopwords)
 
     @property
     def water(self) -> float:
@@ -349,14 +349,20 @@ def calc_classic_nausea(text: Sequence[str]) -> float:
     return sqrt(max(Counter(text).values()))
 
 
-def calc_academic_nausea(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> float:
+def calc_academic_nausea(
+    text: Sequence[str],
+    top_n: int = NAUSEA_TOP_N,
+    stopwords: Collection[str] | None = None,
+) -> float:
     """
     Вычисление академической тошноты
 
     Описание:
-        Доля вхождений самых частых слов в тексте в процентах (Advego)
+        Доля вхождений самых частых значимых слов в тексте в процентах (Advego)
         Точная формула Advego не опубликована, реализовано как суммарная частота
-        top_n самых частых слов, деленная на количество слов
+        top_n самых частых слов без стоп-слов (как в calc_water), деленная на
+        количество всех слов: со стоп-словами в десятке самых частых почти всегда
+        «и», «в», «на», «не», и тошнота любого текста выходит выше нормы
         Норма Advego - 5-15%; полосы - STYLE_NORMS
 
     Ссылки:
@@ -365,13 +371,20 @@ def calc_academic_nausea(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> floa
     Аргументы:
         text (list[str]): Список слов
         top_n (int): Количество самых частых слов
+        stopwords (list[str]): Список стоп-слов; если не задан, используется разметка pymorphy3
 
     Вывод:
         float: Значение тошноты в процентах
     """
     check_words(text)
     check_params(top_n)
-    top_freqs = sum(freq for _, freq in Counter(text).most_common(top_n))
+    if stopwords is not None:
+        check_words(stopwords, "stopwords", ordered=False)
+        stopwords_set = {word.lower() for word in stopwords}
+        significant = [word for word in text if word.lower() not in stopwords_set]
+    else:
+        significant = [word for word in text if not is_stopword(word)]
+    top_freqs = sum(freq for _, freq in Counter(significant).most_common(top_n))
     return safe_divide(100 * top_freqs, len(text))
 
 

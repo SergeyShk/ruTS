@@ -113,12 +113,18 @@ def test_classic_nausea(ss):
 
 
 def test_academic_nausea(ss):
-    assert calc_academic_nausea(riddle, 1) == pytest.approx(100 * 3 / 15)
-    assert calc_academic_nausea(riddle, 3) == pytest.approx(100 * 7 / 15)
-    assert calc_academic_nausea(riddle, 100) == 100.0
-    assert ss.academic_nausea == pytest.approx(100 * 15 / 61)
+    # стоп-слова (нет, а, когда - 7 из 15) в число самых частых не входят, доля - от всех слов
+    assert calc_academic_nausea(riddle, 1) == pytest.approx(100 * 1 / 15)
+    assert calc_academic_nausea(riddle, 3) == pytest.approx(100 * 3 / 15)
+    assert calc_academic_nausea(riddle, 100) == pytest.approx(100 * 8 / 15)
+    assert calc_academic_nausea(riddle, 1, stopwords=["когда"]) == pytest.approx(100 * 2 / 15)
+    # значений x3, значениями x2 и восемь слов по одному разу
+    assert ss.academic_nausea == pytest.approx(100 * 13 / 61)
     assert StyleStats(text, top_n=3).academic_nausea == pytest.approx(
         calc_academic_nausea(ss.words, 3)
+    )
+    assert StyleStats(text, stopwords=["значений"]).academic_nausea == pytest.approx(
+        calc_academic_nausea(ss.words, stopwords=["значений"])
     )
 
 

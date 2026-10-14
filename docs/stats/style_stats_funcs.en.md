@@ -26,7 +26,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_academic_nausea()**
 
-Computation of academic nausea ([Advego](https://advego.com/text/seo/)) - the share of occurrences of the most frequent words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the `top_n` most frequent words divided by the number of words. The Advego norm is 5-15%.
+Computation of academic nausea ([Advego](https://advego.com/text/seo/)) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the `top_n` most frequent words without the stop words (those of [water content](#calc_water)) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.
 
 Formula:
 
@@ -40,6 +40,7 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `text` | list[str] | `-` | List of words |
 | `top_n` | int | `10` | Number of the most frequent words |
+| `stopwords` | list[str] | `None` | List of stop words; if not set, pymorphy3 annotation is used |
 
 ## Water content { #calc_water }
 

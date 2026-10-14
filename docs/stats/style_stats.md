@@ -148,7 +148,7 @@
 
     ``` bash
     {'classic_nausea': 1.7320508075688772,
-    'academic_nausea': 93.33333333333333,
+    'academic_nausea': 53.333333333333336,
     'water': 46.666666666666664,
     'spam': 26.666666666666668,
     'zipf_naturalness': 33.333333333333336,
