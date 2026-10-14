@@ -158,14 +158,16 @@ def test_component_phon_params(spacy_doc):
 
 def test_component_style_params(spacy_doc):
     nlp = spacy.blank("ru")
-    nlp.add_pipe("ruts_style", name="style_custom", config={"stopwords": ["и", "или"], "top_n": 3})
+    config = {"stopwords": ["и", "или"], "top_n": 3, "nausea_stopwords": ["и"]}
+    nlp.add_pipe("ruts_style", name="style_custom", config=config)
     doc = nlp(text)
     custom = doc._.style_custom
     assert custom.stopwords == ("и", "или")
+    assert custom.nausea_stopwords == ("и",)
     assert custom.water == pytest.approx(StyleStats(doc, stopwords=["и", "или"]).water)
     assert custom.water != spacy_doc._.style.water
     assert custom.academic_nausea == pytest.approx(
-        StyleStats(doc, top_n=3, stopwords=["и", "или"]).academic_nausea
+        StyleStats(doc, top_n=3, nausea_stopwords=["и"]).academic_nausea
     )
 
 

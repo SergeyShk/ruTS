@@ -1,5 +1,6 @@
 import threading
 from collections import Counter
+from collections.abc import Callable
 from functools import lru_cache
 from importlib.metadata import version
 from io import BytesIO
@@ -194,9 +195,17 @@ def format_value(value: float | int | str | None) -> str:
     return str(value)
 
 
-def stats_table(stats: dict[str, float], desc: dict[str, str]) -> pd.DataFrame:
-    rows = [(desc[key], format_value(stats[key])) for key in desc if key in stats]
-    return pd.DataFrame(rows, columns=["Метрика", "Значение"])
+def stats_table(
+    stats: dict[str, float],
+    desc: dict[str, str],
+    describe: Callable[[str], str | None] | None = None,
+) -> pd.DataFrame:
+    keys = [key for key in desc if key in stats]
+    if describe is None:
+        rows = [(desc[key], format_value(stats[key])) for key in keys]
+        return pd.DataFrame(rows, columns=["Метрика", "Значение"])
+    rows_read = [(desc[key], format_value(stats[key]), describe(key) or "-") for key in keys]
+    return pd.DataFrame(rows_read, columns=["Метрика", "Значение", "Прочтение"])
 
 
 def format_reading_time(minutes: float) -> str:
@@ -211,7 +220,7 @@ def format_reading_time(minutes: float) -> str:
 def readability_summary(rs: ReadabilityStats) -> str:
     return (
         f"### {rs.describe_grade()}\n\n"
-        f"Сводный класс по семи формулам - **{rs.consensus_grade:.1f}**, "
+        f"Сводный класс по семи формулам класса и индексу Флеша - **{rs.consensus_grade:.1f}**, "
         f"индекс удобочитаемости Флеша - **{floor(rs.flesch_reading_easy)}** "
         f"({rs.describe('flesch_reading_easy')}), "
         f"время чтения - **{format_reading_time(rs.reading_time)}**."
@@ -378,14 +387,14 @@ def compute(text: str, layers: list[str]) -> dict:
         "text": text,
         "highlight": highlight(doc, layers=layers).to_html(),
         "summary": readability_summary(rs),
-        "readability": stats_table(rs.get_stats(), READABILITY_STATS_DESC),
+        "readability": stats_table(rs.get_stats(), READABILITY_STATS_DESC, rs.describe),
         "diversity": stats_table(ds.get_stats(), DIVERSITY_STATS_DESC),
         "pos": pos_table,
         "morph": morph_table,
         "syntax": stats_table(xs.get_stats(), SYNTAX_STATS_DESC),
         "cohesion": stats_table(cs.get_stats(), COHESION_STATS_DESC),
         "lexical": lexical_table(doc),
-        "style": stats_table(ss.get_stats(), STYLE_STATS_DESC),
+        "style": stats_table(ss.get_stats(), STYLE_STATS_DESC, ss.describe),
         "phon": stats_table(ps.get_stats(), PHON_STATS_DESC),
         "verse": verse_table,
         "verse_lines": verse_lines,
@@ -403,7 +412,6 @@ def analyze(text: str, *groups: list[str]):
     try:
         result = compute(text, [layer for group in groups for layer in group])
     except SourceError as error:
-        # Сообщения ядра английские, интерфейс русский
         raise gr.Error("В тексте нет слов для разбора") from error
     except ValueError as error:
         raise gr.Error(str(error)) from error

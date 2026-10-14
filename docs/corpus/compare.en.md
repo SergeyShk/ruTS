@@ -102,23 +102,23 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ``` bash
                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    punct_ellipsis                       14.000           2.000   5.000   25.000    1.869        0.707  0.853     0.0
+    punct_ellipsis                       14.000           2.000   5.000   23.000    1.869        0.707  0.853     0.0
     punct_exclamation                    14.000           4.000   7.000   13.000    1.670        0.658  0.829     0.0
-    morph_verb_form_Fin                   0.756           0.695   0.037    0.100    1.123        0.572  0.786     0.0
+    morph_verb_form_Fin                   0.766           0.700   0.037    0.100    1.132        0.574  0.787     0.0
     punct_yo_share                        0.007           0.000   0.002    0.010    1.026        0.533  0.766     0.0
-    readability_gunning_fog_index         6.088           7.962  -2.881   -1.007   -0.934       -0.521  0.240     0.0
-    readability_dale_chall_index          5.280           6.702  -2.378   -0.833   -0.914       -0.518  0.241     0.0
-    readability_smog_index                5.880           7.314  -2.447   -0.936   -0.883       -0.508  0.246     0.0
-    readability_matskovsky_index          8.660          11.281  -4.101   -1.178   -0.910       -0.503  0.249     0.0
-    sents_mean                           11.236          15.152  -6.141   -1.669   -0.902       -0.501  0.250     0.0
-    readability_sis_grade                 0.974           3.478  -3.858   -1.138   -0.879       -0.499  0.251     0.0
+    morph_verb_form_Part                  0.043           0.077  -0.051   -0.017   -0.795       -0.492  0.254     0.0
+    punct_other                           0.000           2.000  -4.000    0.000   -0.351       -0.489  0.256     0.0
+    readability_dale_chall_index          5.280           6.566  -2.235   -0.754   -0.866       -0.488  0.256     0.0
+    readability_gunning_fog_index         6.088           7.730  -2.669   -0.863   -0.864       -0.481  0.260     0.0
+    readability_smog_index                5.876           7.174  -2.323   -0.854   -0.840       -0.480  0.260     0.0
+    morph_verb_form_Conv                  0.055           0.082  -0.041   -0.017   -0.800       -0.464  0.268     0.0
 
     {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences and a higher share of finite verb forms; Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs; Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the warning above): 84 of the 108 features have a corrected p-value below 0.01, but only 14 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 63 of those 84 features, and for the length of a sentence it spans −6.1 to −1.7 words, where the windows alone would give −4.6 to −3.2. For the ellipses it spans 5 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1672 windows for independent (see the warning above): 87 of the 113 features have a corrected p-value below 0.01, but only 9 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 65 of those 87 features, and for the length of a sentence it spans −5.3 to −1.3 words, where the windows alone would give −4.2 to −2.7. For the ellipses it spans 5 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 Your own features, for example syntactic ones by spaCy, are passed as a function:
 

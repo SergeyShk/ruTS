@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from math import floor, isfinite, isnan, nan
+from math import floor, isfinite, isinf, isnan, nan
 from numbers import Real
 
 import anyts.readability_stats
@@ -219,8 +219,20 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
             float: Значение формулы
 
         Исключения:
-            ParameterError: Если указана неизвестная ступень обучения
+            ParameterError: Если частотность не неотрицательное число или указана
+                неизвестная ступень обучения
         """
+        number: object = mean_ipm
+        # nan (нет знаменательных слов в словаре) дает nan, а не ошибку
+        if (
+            isinstance(number, bool)
+            or not isinstance(number, Real)
+            or isinf(mean_ipm)
+            or mean_ipm < 0
+        ):
+            raise ParameterError(
+                f"Частотность должна быть неотрицательным числом, а не {mean_ipm!r}"
+            )
         if stage is None:
             return calc_sis_grade_freq(
                 self._n_word_letters, self.bs.n_words, self.bs.n_sents, mean_ipm
@@ -686,7 +698,12 @@ def grade_to_age(
     return anyts.readability_stats.grade_to_age(grade, levels, above)
 
 
-def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
+def calc_reading_time(
+    n_words: int,
+    wpm: float = READING_SPEED_WPM,
+    *,
+    messages: Mapping[str, str] = CORE_MESSAGES,
+) -> float:
     """
     Вычисление времени чтения текста
 
@@ -702,6 +719,7 @@ def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
     Аргументы:
         n_words (int): Количество слов
         wpm (float): Скорость чтения, слов в минуту
+        messages (dict[str, str]): Сообщения об ошибках по ключам (CORE_MESSAGES)
 
     Вывод:
         float: Время чтения в минутах
@@ -709,7 +727,7 @@ def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
     Исключения:
         ParameterError: Если скорость чтения не положительное число
     """
-    return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=CORE_MESSAGES)
+    return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=messages)
 
 
 def level_features(source: str | Doc) -> dict[str, float]:
@@ -761,7 +779,8 @@ def level_norms(grade: float) -> dict[str, tuple[float, float]] | None:
         меньше 1 - в первую ступень, как в grade_to_age. Нормы - квартили q1-q3
         признаков level_features у текстов от 100 слов с меткой ступени из наборов
         SovChLit и TextsByGrade; они есть у школьных ступеней, где таких текстов
-        не меньше 10: 1-3, 4-6 и 10-11-й класс. Результат - копия, справочник
+        не меньше 10: 1-3, 4-6 и 10-11-й класс; нормы 1-3-го класса сняты почти
+        целиком с текстов 1-го класса (70 из 73). Результат - копия, справочник
         LEVEL_NORMS он не меняет
 
     Аргументы:

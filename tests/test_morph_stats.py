@@ -8,6 +8,8 @@ from spacy.tokens import Doc
 from ruts import MorphStats
 from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
 from ruts.morph_stats import (
+    answer_particles,
+    find_answer_particles,
     format_features,
     parse_verb,
     tag_to_ud,
@@ -370,6 +372,63 @@ def test_degree_polarity_short_forms(nlp):
     expected = {"degree": {"Cmp": 2, "Pos": 2}}
     assert MorphStats(analytic).get_stats("degree", filter_none=True) == expected
     assert MorphStats(nlp(analytic)).get_stats("degree", filter_none=True) == expected
+
+
+def test_comparative_adverbs(nlp):
+    """«выше» и «ниже» - сравнительная степень, как у Doc"""
+    text = "Солнце поднималось всё выше и выше. Температура упала ниже нуля."
+    expected = {"degree": {"Cmp": 3}}
+    assert MorphStats(text).get_stats("degree", filter_none=True) == expected
+    assert MorphStats(nlp(text)).get_stats("degree", filter_none=True) == expected
+
+
+def test_existential_verb(nlp):
+    """Бытийное и связочное «есть» - глагол «быть» в настоящем времени, как у Doc"""
+    text = "У меня есть книга. Ленинизм есть марксизм эпохи империализма."
+    expected = {"tense": {"Pres": 2}, "verb_form": {"Fin": 2}}
+    assert MorphStats(text).get_stats("tense", "verb_form", filter_none=True) == expected
+    assert MorphStats(nlp(text)).get_stats("tense", "verb_form", filter_none=True) == expected
+
+
+def test_answer_particle(nlp):
+    """Ответное «нет» - частица с отрицанием без времени, бытийное - в настоящем, как у Doc"""
+    text = "Нет, я не пойду. Денег нет."
+    expected = {"tense": {"Fut": 1, "Pres": 1}, "polarity": {"Neg": 2}}
+    for source in (text, nlp(text), spacy.blank("ru")(text)):
+        assert MorphStats(source).get_stats("tense", "polarity", filter_none=True) == expected
+    assert MorphStats(text).pos[0] == "PART"
+    # Слово с неразрывным дефисом не сбивает счет «нет» в словах и в тексте
+    hyphenated = "Нет, я не пойду. Нет\u2011нет да и заглянет."
+    assert MorphStats(hyphenated).pos[0] == "PART"
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Нет, денег нет. Или нет?", [True, False, True]),
+        ("— Нет, — сказал он.", [True]),
+        ("Да нет же. Ну нет!", [True, True]),
+        ("Если нет, то что? Он ответил: нет.", [True, True]),
+        ("Его нет? Нет денег. Хлеба нет — магазин закрыт.", [False, False, False]),
+        # «нет» в дефисных словах, в том числе с неразрывным дефисом, не считается
+        ("Нет, не пойду. Нет-нет да и заглянет. Нет\u2011с, Да\u2010нет.", [True]),
+        ("Кот спит.", []),
+    ],
+)
+def test_find_answer_particles(text, expected):
+    assert find_answer_particles(text) == expected
+
+
+def test_answer_particles_mismatch():
+    """Если «нет» в словах и в тексте не совпали, ответных «нет» не ищут"""
+    assert answer_particles(["нет", "кот"], "Нет, кот.") == [True, False]
+    assert answer_particles(["нет"], "Кот.") == [False]
+
+
+def test_word_to_ud_copy():
+    features = word_to_ud("кот")
+    features["pos"] = "X"
+    assert word_to_ud("кот")["pos"] == "NOUN"
 
 
 def test_short_form_of_ud_annotation():

@@ -1,9 +1,13 @@
 import importlib
+import subprocess
+import sys
 from types import ModuleType
 
 import pytest
 
 import ruts
+from ruts.diversity_stats import calc_ttr, calc_windowed, check_params
+from ruts.readability_stats import calc_reading_time
 
 # Публичные имена 0.15.0.dev7: переезд на ядро не должен терять ни одного
 PACKAGE_NAMES = {
@@ -285,11 +289,26 @@ def test_core_messages():
     """Русский словарь сообщений ядра полон: новый ключ ядра не выйдет по-английски"""
     from anyts.constants import MESSAGES
 
-    from ruts.constants import CORE_MESSAGES
+    from ruts.constants import _RU_CORE_MESSAGES, CORE_MESSAGES
 
-    assert set(CORE_MESSAGES) == set(MESSAGES)
+    assert set(_RU_CORE_MESSAGES) == set(MESSAGES)
+    assert CORE_MESSAGES == _RU_CORE_MESSAGES
     for stats in (ruts.BasicStats, ruts.ReadabilityStats, ruts.DiversityStats):
         assert stats.messages is CORE_MESSAGES
+
+
+def test_new_core_message_does_not_break_import():
+    """Ключ, добавленный патчем ядра, выходит по-английски, а импорт ruTS работает"""
+    code = (
+        "import anyts.constants as core;"
+        "core.MESSAGES['new_key'] = 'New message';"
+        "import ruts;"
+        "print(ruts.BasicStats.messages['new_key'])"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True
+    )
+    assert result.stdout.strip() == "New message"
 
 
 @pytest.mark.parametrize(
@@ -299,6 +318,9 @@ def test_core_messages():
         (lambda: ruts.DiversityStats("Кот спит").windowed("ttr", 0), r"^Размер окна должен быть"),
         (lambda: ruts.ReadabilityStats("Кот спит.").describe("x"), r"^'?Неизвестная метрика: x"),
         (lambda: ruts.BasicStats("Кот спит.", complex_syl_factor=0), r"^Наименьшее число слогов"),
+        (lambda: calc_windowed(["кот"] * 5, calc_ttr, window_len=0), r"^Размер окна должен быть"),
+        (lambda: check_params(window_len=0), r"^Размер окна должен быть"),
+        (lambda: calc_reading_time(10, 0), r"^Скорость чтения должна быть"),
     ],
 )
 def test_core_messages_in_russian(call, match):

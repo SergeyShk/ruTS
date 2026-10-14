@@ -433,7 +433,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
 *   Reading of the metrics by the service norms
 
-The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content and academic nausea are detected by part of speech with pymorphy3 or passed as a list.
+The exact formulas of the services are not published, so the commonly accepted definitions are implemented; the water words for water content and the stop words for academic nausea are detected by part of speech with pymorphy3 or passed as lists.
 
 ```python
 >>> from pprint import pprint

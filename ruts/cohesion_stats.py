@@ -33,7 +33,7 @@ from .constants import (
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import _has_tense, tag_to_ud_pos, word_to_ud
+from .morph_stats import _has_tense, answer_particles, tag_to_ud_pos, word_to_ud
 from .utils import lemmatize, normalize_yo, parse_all, parse_word, strip_marks
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
@@ -245,7 +245,7 @@ class CohesionStats:
                 infos = [[unit_info(unit) for unit in sent] for sent in units]
                 pos = [[unit_pos(unit) for unit in sent] for sent in units]
             else:
-                infos = [[word_info(word) for word in sent] for sent in sents]
+                infos = words_info(sents, source.text)
                 pos = [[connector_pos(word) for word in sent] for sent in sents]
         elif isinstance(source, str | Doc):
             if isinstance(source, Doc) and doc_sents:
@@ -255,7 +255,7 @@ class CohesionStats:
                 texts = (sents_extractor or SentsExtractor()).extract(text)
             words_extractor = words_extractor or WordsExtractor()
             sents = [tuple(words_extractor.extract(sent)) for sent in texts]
-            infos = [[word_info(word) for word in sent] for sent in sents]
+            infos = words_info(sents, source.text if isinstance(source, Doc) else source)
             pos = [[connector_pos(word) for word in sent] for sent in sents]
         else:
             raise SourceTypeError("Некорректный источник данных")
@@ -549,6 +549,31 @@ def word_info(word: str) -> WordInfo:
         tense=tag.tense if _has_tense(tag, parse.normal_form) else None,
         aspect=tag.aspect,
     )
+
+
+def words_info(sents: Sequence[Sequence[str]], text: str) -> list[list[WordInfo]]:
+    """
+    Получение признаков слов текста по первому разбору pymorphy3
+
+    Описание:
+        Как word_info, но ответное «нет» (find_answer_particles) - частица без времени,
+        а не бытийный предикатив
+
+    Аргументы:
+        sents (list[list[str]]): Слова предложений текста
+        text (str): Текст, из которого извлечены слова
+
+    Вывод:
+        list[list[WordInfo]]: Признаки слов предложений
+    """
+    particles = iter(answer_particles([word for sent in sents for word in sent], text))
+    return [
+        [
+            ud_info(word, "PART", None, None) if next(particles) else word_info(word)
+            for word in sent
+        ]
+        for sent in sents
+    ]
 
 
 def token_info(token: Token) -> WordInfo:

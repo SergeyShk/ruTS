@@ -25,7 +25,7 @@
 | Канцелярит | `verbal_nouns` | Отглагольные существительные | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Производные предлоги по списку `COMPOUND_PREPOSITIONS` | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Штампы по списку `OFFICIALESE_CLICHES` или параметру `cliches` | [StyleStats](../stats/style_stats.md) |
-| Стиль | `stopwords` | Стоп-слова по части речи (`is_stopword`) или переданному списку | [StyleStats](../stats/style_stats.md) |
+| Стиль | `stopwords` | Слова «воды» по части речи (`is_water_word`) или переданному списку | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Вводные слова и обороты | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Коннекторы по части речи из разметки `Doc` или pymorphy3, в подсказке класс и тип | [CohesionStats](../stats/cohesion_stats.md) |
 | Фоника | `alliteration` | Повторы согласной в соседних словах, маловероятные при частотах букв русского языка | [PhonStats](../stats/phon_stats.md) |
@@ -55,7 +55,7 @@
 | :------: | :-: | :----------: | :------: |
 | `long_sent_word_factor` | int | `20` | Минимальное количество слов в длинном предложении |
 | `complex_syl_factor` | int | `4` | Минимальное количество слогов в сложном слове |
-| `stopwords` | list[str]/set[str] | `None` | Список или множество стоп-слов; если не задан, стоп-слова определяются по части речи с помощью pymorphy3 |
+| `stopwords` | list[str]/set[str] | `None` | Список или множество слов «воды»; если не задан, они определяются по части речи с помощью pymorphy3 |
 | `cliches` | list[str]/set[str] | `None` | Список или множество штампов; если не задан, используется `OFFICIALESE_CLICHES` |
 | `alliteration_threshold` | float | `0.001` | Порог вероятности повтора согласной при независимом распределении букв, ниже которого повтор считается аллитерацией |
 
@@ -130,7 +130,7 @@
     highlight(nlp(text), layers="all").counts
     # {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,
     #  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,
-    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 17, 'parentheticals': 0,
+    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,
     #  'connectors': 4, 'alliteration': 1}
 
     # Отображение в Jupyter или сохранение разметки

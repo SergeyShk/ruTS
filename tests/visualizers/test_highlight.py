@@ -4,7 +4,7 @@ from anyts.visualizers.highlight import get_text_sents as count_sent_words, iter
 from razdel import sentenize
 from spacy.tokens import Doc
 
-from ruts import SyntaxStats
+from ruts import StyleStats, SyntaxStats
 from ruts.constants import (
     HIGHLIGHT_DEFAULT_LAYERS,
     HIGHLIGHT_LAYER_ANNOTATIONS,
@@ -343,16 +343,18 @@ def test_find_complex_words():
 
 
 def test_stopwords():
-    source = "Он сказал, что не придёт, и ушёл."
+    """Слой stopwords - слова «воды», как в водности StyleStats: предлоги - не вода"""
+    source = "Он сказал, что не придёт в дом, и ушёл. Конечно, надо ждать."
     ht = highlight(source, layers=["stopwords"])
-    assert [source[h.start : h.end] for h in ht.highlights] == ["Он", "что", "не", "и"]
+    assert [source[h.start : h.end] for h in ht.highlights] == ["Он", "что", "не", "и", "Конечно"]
     assert ht.highlights[0].note == "стоп-слово"
+    assert 100 * ht.counts["stopwords"] / 12 == pytest.approx(StyleStats(source).water)
 
 
 def test_stopwords_list():
     source = "Он сказал, что не придёт, и ушёл."
     words = get_text_words(source)
-    assert [source[h.start : h.end] for h in find_stopwords(words, ["ОН", "ушёл"])] == [
+    assert [source[h.start : h.end] for h in find_stopwords(words, ["ОН", "ушел"])] == [
         "Он",
         "ушёл",
     ]
@@ -530,12 +532,8 @@ def test_doc_long_sents(doc):
 
 def test_doc_text_layers(doc):
     ht = highlight(doc, layers=["complex_words", "stopwords", "alliteration"])
-    assert ht.counts == {"complex_words": 6, "stopwords": 3, "alliteration": 0}
-    assert [doc.text[h.start : h.end] for h in ht.highlights if h.layer == "stopwords"] == [
-        "в",
-        "не",
-        "за",
-    ]
+    assert ht.counts == {"complex_words": 6, "stopwords": 1, "alliteration": 0}
+    assert [doc.text[h.start : h.end] for h in ht.highlights if h.layer == "stopwords"] == ["не"]
 
 
 def test_to_html(ht):

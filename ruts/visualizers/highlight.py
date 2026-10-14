@@ -33,7 +33,7 @@ from ..constants import (
 )
 from ..exceptions import ParameterError
 from ..lexical_stats import get_rank
-from ..style_stats import expand_phrases, is_stopword
+from ..style_stats import expand_phrases, is_stopword, is_water_word
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     find_split_predicates,
@@ -76,7 +76,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             verbal_nouns - отглагольные существительные (StyleStats)
             compound_prepositions - производные предлоги (StyleStats)
             cliches - штампы по списку OFFICIALESE_CLICHES или переданному (StyleStats)
-            stopwords - стоп-слова по части речи (is_stopword) или переданному списку (StyleStats)
+            stopwords - слова «воды» по части речи (is_water_word) или переданному списку (StyleStats)
             parentheticals - вводные слова и обороты (StyleStats)
             connectors - коннекторы с классом и типом в подсказке (CohesionStats)
             alliteration - повторы согласной в соседних словах, маловероятные при частотах букв русского языка (PhonStats)
@@ -110,7 +110,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
-        stopwords (list[str]): Список стоп-слов; если не задан, стоп-слова определяются
+        stopwords (list[str]): Список слов «воды»; если не задан, они определяются
             по части речи с помощью pymorphy3
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
@@ -241,7 +241,7 @@ def highlight(
             HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
-        stopwords (list[str]): Список стоп-слов; если не задан, стоп-слова определяются
+        stopwords (list[str]): Список слов «воды»; если не задан, они определяются
             по части речи с помощью pymorphy3
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
@@ -355,24 +355,24 @@ def find_stopwords(
     words: Iterable[Word], stopwords: Collection[str] | None = None
 ) -> list[Highlight]:
     """
-    Поиск стоп-слов
+    Поиск слов «воды»
 
     Описание:
-        Стоп-слова определяются по части речи (функция is_stopword) или по переданному
-        списку без учета регистра, как при вычислении академической тошноты в StyleStats
+        Слова «воды» определяются по части речи (функция is_water_word) или по переданному
+        списку без учета регистра и буквы ё, как при вычислении водности в StyleStats
 
     Аргументы:
         words (list[Word]): Слова с позициями
-        stopwords (list[str]): Список стоп-слов; если не задан, используется разметка pymorphy3
+        stopwords (list[str]): Список слов «воды»; если не задан, используется разметка pymorphy3
 
     Вывод:
         list[Highlight]: Фрагменты слоя stopwords
     """
     if stopwords is not None:
-        stopwords_set = {word.lower() for word in stopwords}
-        matches = [word for word in words if word.text.lower() in stopwords_set]
+        stopwords_set = {normalize_yo(word) for word in stopwords}
+        matches = [word for word in words if normalize_yo(word.text) in stopwords_set]
     else:
-        matches = [word for word in words if is_stopword(word.text.lower())]
+        matches = [word for word in words if is_water_word(word.text.lower())]
     return [Highlight(word.start, word.end, "stopwords", "стоп-слово") for word in matches]
 
 

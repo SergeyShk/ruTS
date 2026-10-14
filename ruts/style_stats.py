@@ -90,10 +90,12 @@ class StyleStats:
         source (str|Doc): Источник данных (строка или объект Doc)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
             если задан, применяется и к тексту Doc
-        stopwords (list[str]): Список стоп-слов для водности и академической тошноты;
-            если не задан, они определяются по части речи с помощью pymorphy3
+        stopwords (list[str]): Список слов «воды» для водности; если не задан, они
+            определяются по части речи с помощью pymorphy3 (is_water_word)
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
+        nausea_stopwords (list[str]): Список стоп-слов для академической тошноты; если
+            не задан, они определяются по части речи с помощью pymorphy3 (is_stopword)
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
@@ -110,6 +112,7 @@ class StyleStats:
 
     Методы:
         keyword_density: Плотность ключевых слов и фраз
+        nausea_words: Самые частые значимые слова академической тошноты
         markers: Найденные маркеры канцелярита
         describe: Прочтение метрики стиля по нормам SEO-сервисов
         get_stats: Получение вычисленных метрик стиля текста
@@ -128,12 +131,15 @@ class StyleStats:
         stopwords: Collection[str] | None = None,
         top_n: int = NAUSEA_TOP_N,
         cliches: Collection[str] | None = None,
+        nausea_stopwords: Collection[str] | None = None,
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         check_params(top_n)
         if stopwords is not None:
             check_words(stopwords, "stopwords", ordered=False)
+        if nausea_stopwords is not None:
+            check_words(nausea_stopwords, "nausea stopwords", ordered=False)
         if cliches is not None:
             check_words(cliches, "clichés", ordered=False)
         if isinstance(source, Doc) and words_extractor is not None:
@@ -158,6 +164,7 @@ class StyleStats:
         if not self.words:
             raise SourceError("В источнике данных отсутствуют слова")
         self.stopwords = tuple(stopwords) if stopwords is not None else None
+        self.nausea_stopwords = tuple(nausea_stopwords) if nausea_stopwords is not None else None
         self.top_n = top_n
         self.cliches_list = tuple(cliches) if cliches is not None else OFFICIALESE_CLICHES
 
@@ -167,7 +174,7 @@ class StyleStats:
 
     @property
     def academic_nausea(self) -> float:
-        return calc_academic_nausea(self.words, self.top_n, self.stopwords)
+        return calc_academic_nausea(self.words, self.top_n, self.nausea_stopwords)
 
     @property
     def water(self) -> float:
@@ -208,6 +215,15 @@ class StyleStats:
             dict[str, float]: Плотность каждого ключевого слова в процентах
         """
         return calc_keyword_density(self.words, keywords)
+
+    def nausea_words(self) -> dict[str, int]:
+        """
+        Самые частые значимые слова, по которым считается академическая тошнота
+
+        Вывод:
+            dict[str, int]: Количество вхождений top_n самых частых слов без стоп-слов
+        """
+        return find_nausea_words(self.words, self.top_n, self.nausea_stopwords)
 
     def markers(self) -> dict[str, tuple[str, ...]]:
         """
@@ -385,8 +401,8 @@ def calc_academic_nausea(
     Описание:
         Доля вхождений самых частых значимых слов в тексте в процентах (Advego)
         Точная формула Advego не опубликована, реализовано как суммарная частота
-        top_n самых частых слов без стоп-слов (переданного списка или is_stopword),
-        деленная на количество всех слов: со стоп-словами в десятке самых частых почти всегда
+        top_n самых частых слов без стоп-слов (find_nausea_words), деленная
+        на количество всех слов: со стоп-словами в десятке самых частых почти всегда
         «и», «в», «на», «не», и тошнота любого текста выходит выше нормы
         Норма Advego - 5-15%; полосы - STYLE_NORMS
 
@@ -401,16 +417,44 @@ def calc_academic_nausea(
     Вывод:
         float: Значение тошноты в процентах
     """
+    top_freqs = sum(find_nausea_words(text, top_n, stopwords).values())
+    return safe_divide(100 * top_freqs, len(text))
+
+
+def find_nausea_words(
+    text: Sequence[str],
+    top_n: int = NAUSEA_TOP_N,
+    stopwords: Collection[str] | None = None,
+) -> dict[str, int]:
+    """
+    Поиск самых частых значимых слов академической тошноты
+
+    Описание:
+        top_n самых частых слов без стоп-слов (переданного списка без учета регистра
+        и буквы ё или is_stopword) с количеством вхождений, по убыванию частоты
+
+    Аргументы:
+        text (list[str]): Список слов
+        top_n (int): Количество самых частых слов
+        stopwords (list[str]): Список стоп-слов; если не задан, используется разметка pymorphy3
+
+    Вывод:
+        dict[str, int]: Количество вхождений каждого слова
+
+    Пример использования:
+        >>> from ruts.style_stats import find_nausea_words
+        >>> find_nausea_words(["кот", "и", "кот", "и", "пес"], top_n=1)
+        {'кот': 2}
+    """
     check_words(text)
     check_params(top_n)
     if stopwords is not None:
         check_words(stopwords, "stopwords", ordered=False)
-        stopwords_set = {word.lower() for word in stopwords}
-        significant = [word for word in text if word.lower() not in stopwords_set]
+        stopwords_set = {normalize_yo(word) for word in stopwords}
+        significant = [word for word in text if normalize_yo(word) not in stopwords_set]
     else:
         significant = [word for word in text if not is_stopword(word)]
-    top_freqs = sum(freq for _, freq in Counter(significant).most_common(top_n))
-    return safe_divide(100 * top_freqs, len(text))
+    return dict(Counter(significant).most_common(top_n))
 
 
 def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) -> float:
@@ -421,7 +465,7 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
         Доля незначимых слов в тексте в процентах (Text.ru)
         Незначимыми считаются союзы (с вводными словами), частицы,
         местоимения-существительные и междометия по разметке pymorphy3
-        (функция is_water_word) или слова из переданного списка стоп-слов
+        (функция is_water_word) или слова из переданного списка без учета регистра и буквы ё
         Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое;
         полосы - STYLE_NORMS
         «Вода» Advego - другой показатель с нормой 55-75%, здесь не реализован
@@ -431,7 +475,7 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
 
     Аргументы:
         text (list[str]): Список слов
-        stopwords (list[str]): Список стоп-слов; если не задан, используется разметка pymorphy3
+        stopwords (list[str]): Список слов «воды»; если не задан, используется разметка pymorphy3
 
     Вывод:
         float: Значение водности в процентах
@@ -439,9 +483,8 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
     check_words(text)
     if stopwords is not None:
         check_words(stopwords, "stopwords", ordered=False)
-    if stopwords is not None:
-        stopwords_set = {word.lower() for word in stopwords}
-        n_stopwords = sum(1 for word in text if word.lower() in stopwords_set)
+        stopwords_set = {normalize_yo(word) for word in stopwords}
+        n_stopwords = sum(1 for word in text if normalize_yo(word) in stopwords_set)
     else:
         n_stopwords = sum(1 for word in text if is_water_word(word))
     return safe_divide(100 * n_stopwords, len(text))

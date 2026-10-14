@@ -429,6 +429,7 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `n_words` | int | `-` | Number of words |
 | `wpm` | float | `180` | Reading speed, words per minute |
+| `messages` | dict[str, str] | `CORE_MESSAGES` | Error messages by key, a keyword argument |
 
 ## Features of the stage norms { #level_features }
 

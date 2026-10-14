@@ -27,7 +27,7 @@ Correspondence between OpenCorpora and UD parts of speech:
 | `INTJ` | `INTJ` | |
 | `LATN`, `UNKN` | `X` | |
 
-For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - `Cmp` for the comparative, `Sup` for the superlative (красивейший), `Pos` for the others; the particles не and ни carry the negation; short adjectives and participles (рад, прочитана) carry the short form.
+For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - `Cmp` for the comparative and for более, менее, выше, ниже, `Sup` for the superlative (красивейший), `Pos` for the others; the particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation; short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a `Doc` of a model. есть is taken for a form of быть, not of есть meaning to eat.
 
 Transitivity (`transitivity`: `Tran`, `Intr`) and clusivity (`involvement`: `In`, `Ex`) are OpenCorpora features absent from Russian UD; they are computed via pymorphy3 for verbs (for a `Doc` - from the analysis with the spaCy lemma) and appear in the `tags` feature string as `Subcat` and `Clusivity`.
 
