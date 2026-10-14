@@ -27,8 +27,10 @@
 | `hdd_sample_size` | int | `42` | Размер выборки для HD-D |
 | `log_base` | float | `10` | Основание логарифма для метрик Summer, Maas и Dugast |
 
-<!-- core: stats/diversity_stats.md:check_params 1ed1a29 -->
-Параметры проверяет `check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)`: окно, размер выборки или минимальная длина фактора вне допустимых значений, порог вне интервала (0, 1) и основание логарифма не больше 1 дают `ParameterError`. Проверка выполняется до извлечения слов, поэтому о неверном параметре она сообщает раньше, чем о пустом тексте.
+<!-- core: stats/diversity_stats.md:check_params 69e400f -->
+Параметры проверяет `check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, *, messages=CORE_MESSAGES)`: окно, размер выборки или минимальная длина фактора вне допустимых значений, порог вне интервала (0, 1) и основание логарифма не больше 1 дают `ParameterError`. Проверка выполняется до извлечения слов, поэтому о неверном параметре она сообщает раньше, чем о пустом тексте.
+
+Сообщения об ошибках - по-русски, из `ruts.constants.CORE_MESSAGES`.
 
 ## Соглашения { #conventions }
 

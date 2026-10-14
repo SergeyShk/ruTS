@@ -9,6 +9,7 @@ from ruts.constants import VERSE_STATS_DESC
 from ruts.datasets import StressDict
 from ruts.datasets.stress_dict import FILENAME
 from ruts.exceptions import SourceError, SourceTypeError
+from ruts.syllables import stress_type, word_stress, word_stresses
 from ruts.verse_stats import (
     _ending_key,
     _group_labels,
@@ -519,3 +520,20 @@ def test_proclitic_only_before_word(stress_dict):
 
 def test_latin_vowel_before_soft_hyphen(stress_dict):
     assert VerseStats("Ó\u00adблако плывёт", stress_dict).lines == ("Облако плывёт",)
+
+
+@pytest.mark.parametrize(
+    "call",
+    [
+        lambda: VerseStats("Буря мглою небо кроет", stress_dict="x"),
+        lambda: accentuate("Буря мглою небо кроет", stress_dict="x"),
+        lambda: detect_meter("Буря мглою небо кроет", stress_dict="x"),
+        lambda: word_stress("моро\u0301з", stress_dict="x"),
+        lambda: word_stresses("мороз", stress_dict="x"),
+        lambda: stress_type("мороз", stress_dict="x"),
+    ],
+)
+def test_stress_dict_type(call):
+    """Словарь ударений не того типа - SourceTypeError, как у LexicalStats с freq_dict"""
+    with pytest.raises(SourceTypeError, match=r"^Словарь ударений должен быть StressDict$"):
+        call()

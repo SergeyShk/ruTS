@@ -14,6 +14,7 @@ from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
 from .constants import (
+    CORE_MESSAGES,
     GRADE_AGE_LEVELS,
     LEVEL_NORM_BANDS,
     LEVEL_NORMS,
@@ -152,6 +153,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     reading_ease_grades = READING_EASE_GRADES
     reading_speed = READING_SPEED_WPM
     reading_speed_norms = _NORMS_FROM_MAX
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
@@ -707,7 +709,7 @@ def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
     Исключения:
         ParameterError: Если скорость чтения не положительное число
     """
-    return anyts.readability_stats.calc_reading_time(n_words, wpm)
+    return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=CORE_MESSAGES)
 
 
 def level_features(source: str | Doc) -> dict[str, float]:

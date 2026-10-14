@@ -23,7 +23,7 @@ from ruts.constants import (
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
 )
-from ruts.exceptions import ParameterError, UnknownStatError
+from ruts.exceptions import ParameterError, SourceTypeError, UnknownStatError
 from ruts.readability_stats import (
     calc_automated_readability_index,
     calc_coleman_liau_index,
@@ -72,13 +72,22 @@ def test_init_type_error(text):
 
 
 def test_init_no_sents_error():
-    with pytest.raises(ValueError, match="sentences"):
+    with pytest.raises(ValueError, match="отсутствуют предложения"):
         ReadabilityStats("Текст один. Текст два.", sents_extractor=SentsExtractor(min_len=1000))
+
+
+def test_basic_stats_of_another_library():
+    class Foreign(anyts.basic_stats.BasicStats):
+        def count_syllables(self, word):
+            return 1
+
+    with pytest.raises(SourceTypeError, match=r"^Базовые статистики должны быть объектом"):
+        ReadabilityStats(Foreign("The cat sleeps."))
 
 
 @pytest.mark.parametrize("preset", ["unknown", None, ["plainrussian"]])
 def test_init_preset_error(preset):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^(Неизвестный пресет коэффициентов|Пресет должен)"):
         ReadabilityStats(text, preset=preset)
     with pytest.raises(ValueError):
         check_preset(preset)

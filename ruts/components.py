@@ -33,6 +33,7 @@ from spacy.tokens import Doc
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats, unit_text
 from .constants import (
+    CORE_MESSAGES,
     NAUSEA_TOP_N,
     PHON_WINDOW_LEN,
 )
@@ -55,6 +56,8 @@ Language.component("ruts_blank_lines", func=start_sents_after_blank_lines)
 
 class _Component(StatsComponent):
     """Компонент ruTS: расширяет токенизатор пайплайна правилами add_dash_rules"""
+
+    messages = CORE_MESSAGES
 
     def prepare(self, nlp: Language) -> None:
         add_dash_rules(nlp)

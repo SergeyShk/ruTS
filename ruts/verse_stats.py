@@ -26,7 +26,13 @@ from .constants import (
 )
 from .datasets.stress_dict import StressDict
 from .exceptions import SourceError, SourceTypeError
-from .syllables import VOWELS, _count_vowels, _word_stress, word_stress as word_stress
+from .syllables import (
+    VOWELS,
+    _check_stress_dict,
+    _count_vowels,
+    _word_stress,
+    word_stress as word_stress,
+)
 from .utils import MARKED, take_marks
 
 ACUTE = "\u0301"
@@ -187,6 +193,7 @@ class VerseStats:
 
     Исключения:
         SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+            или словарь ударений не StressDict
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: Если словарь ударений не загружен
     """
@@ -198,6 +205,7 @@ class VerseStats:
             text = source
         else:
             raise SourceTypeError("Некорректный источник данных")
+        _check_stress_dict(stress_dict)
         self.stress_dict = stress_dict if stress_dict is not None else StressDict()
         if not re.search(r"[^\W\d_]", text):
             raise SourceError("В источнике данных отсутствуют слова")
@@ -786,11 +794,12 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
         str: Текст с ударениями
 
     Исключения:
+        SourceTypeError: Если словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
+    _check_stress_dict(stress_dict)
     if stress_dict is None:
         stress_dict = StressDict()
-
     text, marked = _take_stress_marks(text)
     marks = iter(marked)
     proclitic_end = -1

@@ -30,6 +30,8 @@ jobs:
         run: |
           uv run --no-sync ruff check ruts tests demo examples conftest.py
           uv run --no-sync ruff format ruts tests demo examples conftest.py --check
+      - name: Ruff format of the Python in Markdown
+        run: git ls-files -z '*.md' | xargs -0 uv run --no-sync ruff format --check
       - name: Mypy
         run: uv run --no-sync mypy
 

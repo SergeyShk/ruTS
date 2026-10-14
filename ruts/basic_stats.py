@@ -6,7 +6,12 @@ from anyts.basic_stats import dash_pattern
 from anyts.utils import check_integer
 from spacy.tokens import Doc
 
-from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, LONG_WORD_LETTER_FACTOR
+from .constants import (
+    BASIC_STATS_DESC,
+    COMPLEX_SYL_FACTOR,
+    CORE_MESSAGES,
+    LONG_WORD_LETTER_FACTOR,
+)
 from .exceptions import ParameterError
 from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
@@ -114,6 +119,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
     join_hyphens = True
     stats_desc = BASIC_STATS_DESC
     stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(
         self,

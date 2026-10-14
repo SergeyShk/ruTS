@@ -133,10 +133,11 @@ def word_stress(word: str, stress_dict: StressDict | None = None) -> int | None:
         int|None: Номер ударного слога, None если слово не найдено или в нем нет гласных
 
     Исключения:
-        SourceTypeError: Если слово не строка
+        SourceTypeError: Если слово не строка или словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
     _check_word(word)
+    _check_stress_dict(stress_dict)
     marked = _marked_stress(word)
     if marked is not None:
         return marked
@@ -164,10 +165,11 @@ def word_stresses(word: str, stress_dict: StressDict | None = None) -> list[int]
             или в нем нет гласных
 
     Исключения:
-        SourceTypeError: Если слово не строка
+        SourceTypeError: Если слово не строка или словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
     _check_word(word)
+    _check_stress_dict(stress_dict)
     marked = _marked_stress(word)
     if marked is not None:
         return [marked]
@@ -194,7 +196,7 @@ def stress_type(word: str, stress_dict: StressDict | None = None) -> str | None:
         str|None: Тип окончания, None если слово не найдено или в нем нет гласных
 
     Исключения:
-        SourceTypeError: Если слово не строка
+        SourceTypeError: Если слово не строка или словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
     stress = word_stress(word, stress_dict)
@@ -217,6 +219,12 @@ def _marked_stress(word: str) -> int | None:
 def _default_stress_dict() -> StressDict:
     """Словарь ударений по умолчанию, один на процесс: функции слова вызываются на каждом слове"""
     return StressDict()
+
+
+def _check_stress_dict(stress_dict: object) -> None:
+    """Проверка типа словаря ударений; None - словарь по умолчанию"""
+    if stress_dict is not None and not isinstance(stress_dict, StressDict):
+        raise SourceTypeError("Словарь ударений должен быть StressDict")
 
 
 def _check_word(word: object) -> None:
