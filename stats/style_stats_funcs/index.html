@@ -1300,6 +1300,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова академической тошноты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_water" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2885,6 +2896,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова академической тошноты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_water" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3037,7 +3059,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_academic_nausea()</strong></p>
 </div>
-<p>Вычисление академической тошноты (<a href="https://advego.com/text/seo/">Advego</a>) - доли вхождений самых частых значимых слов в тексте в процентах. Точная формула Advego не опубликована, реализовано как суммарная частота <code>top_n</code> самых частых слов без стоп-слов (переданного списка или <a href="#is_stopword"><code>is_stopword</code></a>), деленная на количество всех слов: со стоп-словами в десятке самых частых почти всегда «и», «в», «на», «не», и тошнота любого текста выходит выше нормы. Норма Advego - 5-15%.</p>
+<p>Вычисление академической тошноты (<a href="https://advego.com/text/seo/">Advego</a>) - доли вхождений самых частых значимых слов в тексте в процентах. Точная формула Advego не опубликована, реализовано как суммарная частота <code>top_n</code> самых частых слов без стоп-слов (<a href="#find_nausea_words"><code>find_nausea_words</code></a>), деленная на количество всех слов: со стоп-словами в десятке самых частых почти всегда «и», «в», «на», «не», и тошнота любого текста выходит выше нормы. Норма Advego - 5-15%.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 100\times\frac{\sum_{k \in \textrm{top}_n} n_k}{N}
@@ -3073,11 +3095,55 @@
 </tr>
 </tbody>
 </table>
+<h2 id="find_nausea_words">Слова академической тошноты<a class="headerlink" href="#find_nausea_words" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.style_stats.find_nausea_words()</strong></p>
+</div>
+<p>Слова, по которым считается <a href="#calc_academic_nausea">академическая тошнота</a>: <code>top_n</code> самых частых слов без стоп-слов (переданного списка или <a href="#is_stopword"><code>is_stopword</code></a>) с числом вхождений.</p>
+<p>Параметры:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Параметр</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">По умолчанию</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">Список слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>top_n</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Количество самых частых слов</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>stopwords</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Список стоп-слов; если не задан, используется разметка pymorphy3</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.style_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_nausea_words</span>
+
+<span class="n">find_nausea_words</span><span class="p">([</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"и"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"и"</span><span class="p">,</span> <span class="s2">"пес"</span><span class="p">],</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># {'кот': 2}</span>
+</code></pre></div>
+</div>
 <h2 id="calc_water">Водность<a class="headerlink" href="#calc_water" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_water()</strong></p>
 </div>
-<p>Вычисление водности (<a href="https://text.ru/seo">Text.ru</a>) - доли незначимых слов в тексте в процентах. Незначимыми («водой») считаются союзы (с вводными словами «конечно», «например», которые pymorphy3 относит к союзам), частицы, местоимения-существительные и междометия по разметке pymorphy3 (функция <a href="#is_water_word"><code>is_water_word</code></a>) или слова из переданного списка стоп-слов. Этот набор ближе всего к водности Text.ru: предлоги, местоименные прилагательные и предикативы, которые входят в стоп-слова <a href="#is_stopword"><code>is_stopword</code></a>, Text.ru водой не считает.</p>
+<p>Вычисление водности (<a href="https://text.ru/seo">Text.ru</a>) - доли незначимых слов в тексте в процентах. Незначимыми («водой») считаются союзы (с вводными словами «конечно», «например», которые pymorphy3 относит к союзам), частицы, местоимения-существительные и междометия по разметке pymorphy3 (функция <a href="#is_water_word"><code>is_water_word</code></a>) или слова из переданного списка. Этот набор ближе всего к водности Text.ru: предлоги, местоименные прилагательные и предикативы, которые входят в стоп-слова <a href="#is_stopword"><code>is_stopword</code></a>, Text.ru водой не считает.</p>
 <p>Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
@@ -3108,7 +3174,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов; если не задан, используется разметка pymorphy3</td>
+<td style="text-align: center;">Список слов «воды»; если не задан, используется разметка pymorphy3</td>
 </tr>
 </tbody>
 </table>
@@ -3116,7 +3182,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_water_word()</strong></p>
 </div>
-<p>Проверка, является ли слово «водой» по части речи для <a href="#calc_water">водности</a>: слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> по разметке pymorphy3; набор задан в <code>ruts.constants.WATER_POS</code>. Результаты разбора кэшируются.</p>
+<p>Проверка, является ли слово «водой» по части речи для <a href="#calc_water">водности</a> и слоя <code>stopwords</code> подсветки: слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> по разметке pymorphy3; набор задан в <code>ruts.constants.WATER_POS</code>. Результаты разбора кэшируются.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3140,7 +3206,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_stopword()</strong></p>
 </div>
-<p>Проверка, является ли слово стоп-словом по части речи - незначимым для <a href="#calc_academic_nausea">академической тошноты</a> и слоя <code>stopwords</code> подсветки. Стоп-словами считаются слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> или с граммемами <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> по разметке pymorphy3; наборы заданы в <code>ruts.constants.STOPWORD_POS</code> и <code>ruts.constants.STOPWORD_GRAMMEMES</code>. Результаты разбора кэшируются.</p>
+<p>Проверка, является ли слово стоп-словом по части речи - незначимым для <a href="#calc_academic_nausea">академической тошноты</a>. Стоп-словами считаются слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> или с граммемами <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> по разметке pymorphy3; наборы заданы в <code>ruts.constants.STOPWORD_POS</code> и <code>ruts.constants.STOPWORD_GRAMMEMES</code>. Результаты разбора кэшируются.</p>
 <p>Параметры:</p>
 <table>
 <thead>

@@ -3044,7 +3044,7 @@
 </tr>
 </tbody>
 </table>
-<p>For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - <code>Cmp</code> for the comparative, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others; the particles не and ни carry the negation; short adjectives and participles (рад, прочитана) carry the short form.</p>
+<p>For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - <code>Cmp</code> for the comparative and for более, менее, выше, ниже, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others; the particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation; short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a <code>Doc</code> of a model. есть is taken for a form of быть, not of есть meaning to eat.</p>
 <p>Transitivity (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) and clusivity (<code>involvement</code>: <code>In</code>, <code>Ex</code>) are OpenCorpora features absent from Russian UD; they are computed via pymorphy3 for verbs (for a <code>Doc</code> - from the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

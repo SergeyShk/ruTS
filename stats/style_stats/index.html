@@ -1317,6 +1317,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nausea_words
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#markers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2925,6 +2936,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nausea_words
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#markers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3032,7 +3054,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов для водности и академической тошноты; если не задан, они определяются по части речи с помощью pymorphy3</td>
+<td style="text-align: center;">Список слов «воды» для водности; если не задан, они определяются по части речи с помощью pymorphy3 (<a href="../style_stats_funcs/#is_water_word"><code>is_water_word</code></a>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>top_n</code></td>
@@ -3045,6 +3067,12 @@
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Список штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>nausea_stopwords</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Список стоп-слов для академической тошноты; если не задан, они определяются по части речи с помощью pymorphy3 (<a href="../style_stats_funcs/#is_stopword"><code>is_stopword</code></a>)</td>
 </tr>
 </tbody>
 </table>
@@ -3228,6 +3256,17 @@
 <span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">keyword_density</span><span class="p">(</span><span class="s2">"когда"</span><span class="p">,</span> <span class="s2">"нет а"</span><span class="p">)</span>
 <span class="c1"># {'когда': 20.0, 'нет а': 13.333333333333334}</span>
+</code></pre></div>
+</div>
+<h3 id="nausea_words">nausea_words<a class="headerlink" href="#nausea_words" title="Permanent link">&para;</a></h3>
+<p>Возвращает слова, по которым считается академическая тошнота: <code>top_n</code> самых частых слов без стоп-слов с числом вхождений.</p>
+<div class="admonition example">
+<p class="admonition-title">Пример</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот ловит мышей, кот спит, а мыши бегают вокруг кота"</span>
+<span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">nausea_words</span><span class="p">()</span>
+<span class="c1"># {'кот': 2, 'ловит': 1}</span>
 </code></pre></div>
 </div>
 <h3 id="markers">markers<a class="headerlink" href="#markers" title="Permanent link">&para;</a></h3>

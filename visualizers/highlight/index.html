@@ -3035,7 +3035,7 @@
 <tr>
 <td style="text-align: left;">Стиль</td>
 <td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">Стоп-слова по части речи (<code>is_stopword</code>) или переданному списку</td>
+<td style="text-align: center;">Слова «воды» по части речи (<code>is_water_word</code>) или переданному списку</td>
 <td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
@@ -3119,7 +3119,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список или множество стоп-слов; если не задан, стоп-слова определяются по части речи с помощью pymorphy3</td>
+<td style="text-align: center;">Список или множество слов «воды»; если не задан, они определяются по части речи с помощью pymorphy3</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
@@ -3237,7 +3237,7 @@
 <span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">layers</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
 <span class="c1"># {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,</span>
 <span class="c1">#  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,</span>
-<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 17, 'parentheticals': 0,</span>
+<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,</span>
 <span class="c1">#  'connectors': 4, 'alliteration': 1}</span>
 
 <span class="c1"># Отображение в Jupyter или сохранение разметки</span>

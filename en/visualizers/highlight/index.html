@@ -3034,7 +3034,7 @@
 <tr>
 <td style="text-align: left;">Style</td>
 <td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">Stop words by part of speech (<code>is_stopword</code>) or from the given list</td>
+<td style="text-align: center;">Water words by part of speech (<code>is_water_word</code>) or from the given list</td>
 <td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
@@ -3117,7 +3117,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]/set[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List or set of stop words; if not given, stop words are determined by part of speech with pymorphy3</td>
+<td style="text-align: center;">List or set of water words; if not given, they are determined by part of speech with pymorphy3</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
@@ -3231,7 +3231,7 @@
 <span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">layers</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
 <span class="c1"># {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,</span>
 <span class="c1">#  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,</span>
-<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 17, 'parentheticals': 0,</span>
+<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,</span>
 <span class="c1">#  'connectors': 4, 'alliteration': 1}</span>
 
 <span class="c1"># Display in Jupyter or save the markup</span>

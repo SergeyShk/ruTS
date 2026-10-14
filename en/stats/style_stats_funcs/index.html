@@ -1300,6 +1300,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Academic nausea words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_water" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2885,6 +2896,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#find_nausea_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Academic nausea words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calc_water" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3037,7 +3059,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_academic_nausea()</strong></p>
 </div>
-<p>Computation of academic nausea (<a href="https://advego.com/text/seo/">Advego</a>) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the <code>top_n</code> most frequent words without the stop words (of the given list or <a href="#is_stopword"><code>is_stopword</code></a>) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.</p>
+<p>Computation of academic nausea (<a href="https://advego.com/text/seo/">Advego</a>) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the <code>top_n</code> most frequent words without the stop words (<a href="#find_nausea_words"><code>find_nausea_words</code></a>) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
 100\times\frac{\sum_{k \in \textrm{top}_n} n_k}{N}
@@ -3073,11 +3095,55 @@
 </tr>
 </tbody>
 </table>
+<h2 id="find_nausea_words">Academic nausea words<a class="headerlink" href="#find_nausea_words" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p><strong>ruts.style_stats.find_nausea_words()</strong></p>
+</div>
+<p>The words <a href="#calc_academic_nausea">academic nausea</a> is computed by: the <code>top_n</code> most frequent words without the stop words (of the given list or <a href="#is_stopword"><code>is_stopword</code></a>) with the number of their occurrences.</p>
+<p>Parameters:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>text</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>-</code></td>
+<td style="text-align: center;">List of words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>top_n</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;"><code>10</code></td>
+<td style="text-align: center;">Number of the most frequent words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>stopwords</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">List of stop words; if not set, pymorphy3 annotation is used</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.style_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_nausea_words</span>
+
+<span class="n">find_nausea_words</span><span class="p">([</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"и"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"и"</span><span class="p">,</span> <span class="s2">"пес"</span><span class="p">],</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># {'кот': 2}</span>
+</code></pre></div>
+</div>
 <h2 id="calc_water">Water content<a class="headerlink" href="#calc_water" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_water()</strong></p>
 </div>
-<p>Computation of water content (<a href="https://text.ru/seo">Text.ru</a>) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function <a href="#is_water_word"><code>is_water_word</code></a>) or words from the given stop word list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of <a href="#is_stopword"><code>is_stopword</code></a>, are not water for Text.ru.</p>
+<p>Computation of water content (<a href="https://text.ru/seo">Text.ru</a>) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function <a href="#is_water_word"><code>is_water_word</code></a>) or words from the given list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of <a href="#is_stopword"><code>is_stopword</code></a>, are not water for Text.ru.</p>
 <p>Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3108,7 +3174,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stop word list; if not given, pymorphy3 tags are used</td>
+<td style="text-align: center;">List of water words; if not given, pymorphy3 tags are used</td>
 </tr>
 </tbody>
 </table>
@@ -3116,7 +3182,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_water_word()</strong></p>
 </div>
-<p>Checking whether a word is "water" by part of speech for <a href="#calc_water">water content</a>: words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> by pymorphy3 tags; the set is defined in <code>ruts.constants.WATER_POS</code>. The analysis results are cached.</p>
+<p>Checking whether a word is "water" by part of speech for <a href="#calc_water">water content</a> and the <code>stopwords</code> layer of the highlighting: words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> by pymorphy3 tags; the set is defined in <code>ruts.constants.WATER_POS</code>. The analysis results are cached.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3140,7 +3206,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_stopword()</strong></p>
 </div>
-<p>Checking whether a word is a stop word by part of speech - insignificant for <a href="#calc_academic_nausea">academic nausea</a> and the <code>stopwords</code> layer of the highlighting. Stop words are words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> or with the grammemes <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> by pymorphy3 tags; the sets are defined in <code>ruts.constants.STOPWORD_POS</code> and <code>ruts.constants.STOPWORD_GRAMMEMES</code>. The analysis results are cached.</p>
+<p>Checking whether a word is a stop word by part of speech - insignificant for <a href="#calc_academic_nausea">academic nausea</a>. Stop words are words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> or with the grammemes <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> by pymorphy3 tags; the sets are defined in <code>ruts.constants.STOPWORD_POS</code> and <code>ruts.constants.STOPWORD_GRAMMEMES</code>. The analysis results are cached.</p>
 <p>Parameters:</p>
 <table>
 <thead>
