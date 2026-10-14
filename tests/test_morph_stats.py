@@ -397,6 +397,9 @@ def test_answer_particle(nlp):
     for source in (text, nlp(text), spacy.blank("ru")(text)):
         assert MorphStats(source).get_stats("tense", "polarity", filter_none=True) == expected
     assert MorphStats(text).pos[0] == "PART"
+    # Слово с неразрывным дефисом не сбивает счет «нет» в словах и в тексте
+    hyphenated = "Нет, я не пойду. Нет\u2011нет да и заглянет."
+    assert MorphStats(hyphenated).pos[0] == "PART"
 
 
 @pytest.mark.parametrize(
@@ -407,6 +410,8 @@ def test_answer_particle(nlp):
         ("Да нет же. Ну нет!", [True, True]),
         ("Если нет, то что? Он ответил: нет.", [True, True]),
         ("Его нет? Нет денег. Хлеба нет — магазин закрыт.", [False, False, False]),
+        # «нет» в дефисных словах, в том числе с неразрывным дефисом, не считается
+        ("Нет, не пойду. Нет-нет да и заглянет. Нет\u2011с, Да\u2010нет.", [True]),
         ("Кот спит.", []),
     ],
 )

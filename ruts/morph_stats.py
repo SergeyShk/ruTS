@@ -33,8 +33,8 @@ from .extractors import WordsExtractor
 from .utils import lemmatize, parse_all, parse_word, strip_marks
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
-# «нет» отдельным словом, не в «нет-нет» и не в дефисном слове
-ANSWER_NET = re.compile(r"(?<!\w)(?<!\w-)нет(?![\w-])", re.IGNORECASE)
+# «нет» отдельным словом, не в дефисном слове (нет-нет, нет‑с): дефисы, которые склеивает токенизатор
+ANSWER_NET = re.compile(r"(?<!\w)(?<!\w[-‐‑‒])нет(?![\w\-‐‑‒])", re.IGNORECASE)
 # Окно вокруг «нет», в котором ищутся соседние знак или слово
 ANSWER_CONTEXT = 40
 VERBAL_POS = frozenset({"VERB", "AUX"})
@@ -152,12 +152,12 @@ class MorphStats:
                     for unit, word in zip(units, self.words, strict=True)
                 ]
             else:
-                features = words_to_ud(self.words, source.text)
+                features = _words_to_ud(self.words, source.text)
         elif isinstance(source, str):
             if not words_extractor:
                 words_extractor = WordsExtractor()
             self.words = words_extractor.extract(source)
-            features = words_to_ud(self.words, source)
+            features = _words_to_ud(self.words, source)
         else:
             raise SourceTypeError("Некорректный источник данных")
         if not self.words:
@@ -522,7 +522,7 @@ def _particle_to_ud(word: str) -> dict[str, str | None]:
     return tag_to_ud(parse.tag, parse.normal_form, word)
 
 
-def words_to_ud(words: Sequence[str], text: str) -> list[dict[str, str | None]]:
+def _words_to_ud(words: Sequence[str], text: str) -> list[dict[str, str | None]]:
     """
     Получение признаков Universal Dependencies слов текста по первому разбору pymorphy3
 
