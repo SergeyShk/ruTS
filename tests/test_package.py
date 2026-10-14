@@ -176,6 +176,8 @@ RUSSIAN = {
     "calc_flesch_reading_easy",
     "calc_reading_time",
     "calc_smog_index",
+    "calc_windowed",
+    "check_params",
     "collocations",
     "count_punctuations",
     "dendrogram_plot",
@@ -277,3 +279,28 @@ def test_no_words_after_the_words_extractor(name):
     extractor = ruts.WordsExtractor(stopwords=["в", "году"], filter_nums=True)
     with pytest.raises(ruts.SourceError, match=r"^В источнике данных отсутствуют слова$"):
         getattr(ruts, name)("В 2024 году.", words_extractor=extractor)
+
+
+def test_core_messages():
+    """Русский словарь сообщений ядра полон: новый ключ ядра не выйдет по-английски"""
+    from anyts.constants import MESSAGES
+
+    from ruts.constants import CORE_MESSAGES
+
+    assert set(CORE_MESSAGES) == set(MESSAGES)
+    for stats in (ruts.BasicStats, ruts.ReadabilityStats, ruts.DiversityStats):
+        assert stats.messages is CORE_MESSAGES
+
+
+@pytest.mark.parametrize(
+    ("call", "match"),
+    [
+        (lambda: ruts.DiversityStats("Кот спит", window_len=0), r"^Размер окна должен быть"),
+        (lambda: ruts.DiversityStats("Кот спит").windowed("ttr", 0), r"^Размер окна должен быть"),
+        (lambda: ruts.ReadabilityStats("Кот спит.").describe("x"), r"^'?Неизвестная метрика: x"),
+        (lambda: ruts.BasicStats("Кот спит.", complex_syl_factor=0), r"^Наименьшее число слогов"),
+    ],
+)
+def test_core_messages_in_russian(call, match):
+    with pytest.raises(ValueError, match=match):
+        call()

@@ -352,7 +352,7 @@ def test_readability_reuse_of_a_missing_component():
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
     nlp.add_pipe("ruts_readability", name="readability", config={"basic": "missing_basic"})
-    with pytest.raises(SourceError, match="holds no BasicStats"):
+    with pytest.raises(SourceError, match="нет BasicStats: добавьте компонент ruts_basic"):
         nlp(text)
 
 
@@ -368,7 +368,7 @@ def test_wrong_parameters_fail_at_add_pipe():
 def test_extension_of_another_package():
     Doc.set_extension("foreign_stats", getter=lambda doc: len(doc))
     try:
-        with pytest.raises(ParameterError, match="another package"):
+        with pytest.raises(ParameterError, match="принадлежит другому пакету"):
             spacy.blank("ru").add_pipe("ruts_basic", name="foreign_stats")
     finally:
         Doc.remove_extension("foreign_stats")

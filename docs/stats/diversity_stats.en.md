@@ -25,6 +25,8 @@ The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.i
 
 --8<-- "stats/diversity_stats.md:check_params"
 
+In ruTS the messages of the errors are in Russian, `ruts.constants.CORE_MESSAGES` by default.
+
 ## Conventions { #conventions }
 
 --8<-- "stats/diversity_stats.md:DiversityStats-conventions"

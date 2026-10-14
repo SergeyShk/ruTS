@@ -20,7 +20,7 @@ from ..basic_stats import BasicStats, punctuation_profile
 from ..constants import MORPHOLOGY_STATS_DESC, OPENING_MARKS, SYMMETRIC_MARKS
 from ..diversity_stats import DiversityStats
 from ..exceptions import ParameterError, SourceError, SourceTypeError
-from ..extractors import _FixedSentsExtractor, _FixedWordsExtractor
+from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
 from ..utils import iter_text_sents, iter_text_words
@@ -210,6 +210,28 @@ def text_features(text: str) -> dict[str, float]:
         for key, value in punctuation_profile(text, basic.n_words).items()
     )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
+
+
+class _FixedWordsExtractor(WordsExtractor):
+    """Экстрактор с готовыми словами, чтобы не токенизировать текст дважды"""
+
+    def __init__(self, words: tuple[str, ...]) -> None:
+        super().__init__()
+        self.words = words
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        return self.words
+
+
+class _FixedSentsExtractor(SentsExtractor):
+    """Экстрактор с готовыми предложениями, чтобы не делить текст дважды"""
+
+    def __init__(self, sents: tuple[str, ...]) -> None:
+        super().__init__()
+        self.sents = sents
+
+    def extract(self, text: str) -> tuple[str, ...]:
+        return self.sents
 
 
 def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:

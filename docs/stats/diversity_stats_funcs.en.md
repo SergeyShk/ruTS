@@ -267,3 +267,5 @@ The [Heaps' law](../visualizers/vocabulary.md) plot is built from `fit_heaps`.
     **ruts.diversity_stats.calc_windowed()**
 
 --8<-- "stats/diversity_stats_funcs.md:calc_windowed"
+
+In ruTS `messages` defaults to `ruts.constants.CORE_MESSAGES`, in Russian.

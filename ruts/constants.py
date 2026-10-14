@@ -414,6 +414,45 @@ OPENCORPORA_VERB_FORMS = {
     "GRND": "Conv",
 }
 PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
+# Сообщения об ошибках классов статистик ядра anyTS (атрибут messages) по ключам MESSAGES ядра
+CORE_MESSAGES: dict[str, str] = {
+    "source_type": "Некорректный источник данных",
+    "no_words": "В источнике данных отсутствуют слова",
+    "no_sentences": "В источнике данных отсутствуют предложения",
+    "sents_extractor_type": "Экстрактор предложений должен быть SentsExtractor",
+    "words_extractor_type": "Экстрактор слов должен быть WordsExtractor",
+    "complex_syl_factor": "Наименьшее число слогов сложного слова должно быть больше 0",
+    "long_word_letter_factor": "Наименьшее число букв длинного слова должно быть больше 0",
+    "preset_type": "Пресет должен быть строкой, а не {type}",
+    "unknown_preset": "Неизвестный пресет коэффициентов: {preset}. Доступные пресеты: {presets}",
+    "basic_stats_type": "Базовые статистики должны быть объектом {expected} ruTS, а не {type}",
+    "no_basic_stats_class": (
+        "У {cls} нет basic_stats_class, источником данных должен быть объект BasicStats"
+    ),
+    "not_grade_formula": "Метрика {stat} не формула класса. Формулы класса: {grade_stats}",
+    "no_scale": "У метрики {stat} нет шкалы полос",
+    "unknown_metric": "Неизвестная метрика: {stat}. Доступные метрики: {metrics}",
+    "unknown_norm": "Неизвестная норма скорости чтения: {norm}. Доступные нормы: {norms}",
+    "reading_speed": "Скорость чтения должна быть больше 0",
+    "window_len": "Размер окна должен быть больше 0",
+    "window_step": "Шаг окна должен быть больше 0",
+    "window_metric": "Метрика должна быть функцией, а не {type}",
+    "confidence": "Уровень доверия должен лежать в интервале (0, 1)",
+    "mtld_threshold": "Порог TTR для MTLD должен лежать в интервале (0, 1)",
+    "mtld_min_len": "Минимальная длина фактора MTLD не может быть отрицательной",
+    "hdd_sample_size": "Размер выборки HD-D должен быть больше 0",
+    "log_base": "Основание логарифма должно быть больше 1",
+    "missing_extension": (
+        "В расширении {name} нет {stats}: добавьте компонент {factory} с именем {name} "
+        "перед {component}"
+    ),
+    "missing_extension_any": (
+        "В расширении {name} нет {stats}: добавьте компонент с именем {name} перед {component}"
+    ),
+    "foreign_extension": (
+        "Расширение {name} объекта Doc принадлежит другому пакету: дайте компоненту другое имя"
+    ),
+}
 # Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
 TENSED_PREDICATIVES = frozenset({"нет", "нету"})
 # Частицы с отрицанием (Polarity=Neg), как в русском UD

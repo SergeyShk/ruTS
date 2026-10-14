@@ -2,7 +2,6 @@ from collections.abc import Callable, Iterable, Mapping
 from math import floor, isfinite, isnan, nan
 from numbers import Real
 
-import anyts.basic_stats
 import anyts.readability_stats
 from anyts.readability_stats import (
     calc_gunning_fog_index as calc_gunning_fog_index,
@@ -13,8 +12,9 @@ from anyts.readability_stats import (
 from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
-from .basic_stats import BasicStats, check_extractors
+from .basic_stats import BasicStats
 from .constants import (
+    CORE_MESSAGES,
     GRADE_AGE_LEVELS,
     LEVEL_NORM_BANDS,
     LEVEL_NORMS,
@@ -32,7 +32,7 @@ from .constants import (
     SMOG_COMPLEX_SYL_FACTOR,
 )
 from .diversity_stats import DiversityStats
-from .exceptions import ParameterError, SourceTypeError, UnknownStatError
+from .exceptions import ParameterError, UnknownStatError
 from .extractors import SentsExtractor, WordsExtractor
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
@@ -153,6 +153,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     reading_ease_grades = READING_EASE_GRADES
     reading_speed = READING_SPEED_WPM
     reading_speed_norms = _NORMS_FROM_MAX
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
@@ -161,10 +162,6 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         words_extractor: WordsExtractor | None = None,
         preset: str = "plainrussian",
     ):
-        check_preset(preset)
-        check_extractors(sents_extractor, words_extractor)
-        if isinstance(source, anyts.basic_stats.BasicStats) and not isinstance(source, BasicStats):
-            raise SourceTypeError("Базовые статистики должны быть объектом BasicStats ruTS")
         super().__init__(source, sents_extractor, words_extractor, preset)
 
     @property
@@ -712,7 +709,7 @@ def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
     Исключения:
         ParameterError: Если скорость чтения не положительное число
     """
-    return anyts.readability_stats.calc_reading_time(n_words, wpm)
+    return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=CORE_MESSAGES)
 
 
 def level_features(source: str | Doc) -> dict[str, float]:

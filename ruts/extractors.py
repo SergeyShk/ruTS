@@ -144,25 +144,3 @@ class CharNgramsExtractor(anyts.CharNgramsExtractor):
     def extract(self, text: str) -> tuple[str, ...]:
         """Извлечение N-грамм из текста без знаков ударения и мягких переносов (strip_marks)"""
         return super().extract(strip_marks(text) if isinstance(text, str) else text)
-
-
-class _FixedWordsExtractor(WordsExtractor):
-    """Экстрактор с готовыми словами, чтобы не токенизировать текст дважды"""
-
-    def __init__(self, words: tuple[str, ...]) -> None:
-        super().__init__()
-        self.words = words
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        return self.words
-
-
-class _FixedSentsExtractor(SentsExtractor):
-    """Экстрактор с готовыми предложениями, чтобы не делить текст дважды"""
-
-    def __init__(self, sents: tuple[str, ...]) -> None:
-        super().__init__()
-        self.sents = sents
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        return self.sents

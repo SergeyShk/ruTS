@@ -1,6 +1,7 @@
-from collections.abc import Sequence
+from collections.abc import Callable, Mapping, Sequence
 
 import anyts
+import anyts.diversity_stats
 from anyts.constants import (
     DIVERSITY_LOG_BASE,
     HDD_SAMPLE_SIZE,
@@ -43,11 +44,9 @@ from anyts.diversity_stats import (
     calc_simpson_index as calc_simpson_index,
     calc_sttr as calc_sttr,
     calc_ttr as calc_ttr,
-    calc_windowed as calc_windowed,
     calc_yule_i as calc_yule_i,
     calc_yule_k as calc_yule_k,
     calc_zipf_alpha as calc_zipf_alpha,
-    check_params as check_params,
     fit_heaps as fit_heaps,
     fit_zipf_mandelbrot as fit_zipf_mandelbrot,
     vocabulary_growth as vocabulary_growth,
@@ -55,10 +54,76 @@ from anyts.diversity_stats import (
 from anyts.utils import iter_doc_words
 from spacy.tokens import Doc
 
-from .constants import DIVERSITY_STATS_DESC
-from .exceptions import SourceError, SourceTypeError
+from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
+from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import strip_marks
+
+
+def check_params(
+    window_len: int = MATTR_WINDOW_LEN,
+    mtld_threshold: float = MTLD_TTR_THRESHOLD,
+    mtld_min_len: int = MTLD_MIN_LEN,
+    hdd_sample_size: int = HDD_SAMPLE_SIZE,
+    log_base: float = DIVERSITY_LOG_BASE,
+    *,
+    messages: Mapping[str, str] = CORE_MESSAGES,
+) -> None:
+    """
+    Проверка параметров метрик лексического разнообразия
+
+    Аргументы:
+        window_len (int): Размер окна для MATTR и сегмента для MSTTR
+        mtld_threshold (float): Порог TTR для MTLD, MA-MTLD и MTLD-W
+        mtld_min_len (int): Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W
+        hdd_sample_size (int): Размер выборки для HD-D
+        log_base (float): Основание логарифма для метрик Саммера, Мааса и Дюгаста
+        messages (dict[str, str]): Сообщения об ошибках по ключам (CORE_MESSAGES)
+
+    Исключения:
+        ParameterError: Если параметр не число своего типа или вне допустимых значений
+    """
+    anyts.diversity_stats.check_params(
+        window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, messages=messages
+    )
+
+
+def calc_windowed(
+    text: Sequence[str],
+    func: Callable[[Sequence[str]], float],
+    window_len: int = 100,
+    step: int | None = None,
+    confidence: float = 0.95,
+    *,
+    messages: Mapping[str, str] = CORE_MESSAGES,
+) -> WindowStats:
+    """
+    Вычисление метрики в скользящем окне
+
+    Описание:
+        Метрика считается по последовательным окнам текста равной длины, по значениям
+        окон - среднее, выборочное стандартное отклонение и доверительный интервал
+        среднего по распределению Стьюдента; текст короче окна - одно окно
+
+    Аргументы:
+        text (list[str]): Список слов
+        func (callable): Функция, вычисляющая метрику по списку слов
+        window_len (int): Размер окна
+        step (int): Шаг окна, по умолчанию равен размеру окна
+        confidence (float): Уровень доверия
+        messages (dict[str, str]): Сообщения об ошибках по ключам (CORE_MESSAGES)
+
+    Вывод:
+        WindowStats: Среднее, стандартное отклонение, границы интервала и число окон
+
+    Исключения:
+        ParameterError: Если метрика не функция или размер окна, шаг или уровень
+            доверия заданы неверно
+        SourceTypeError: Если слова не список строк
+    """
+    return anyts.diversity_stats.calc_windowed(
+        text, func, window_len, step, confidence, messages=messages
+    )
 
 
 class DiversityStats(anyts.DiversityStats):
@@ -159,6 +224,7 @@ class DiversityStats(anyts.DiversityStats):
 
     stats_desc = DIVERSITY_STATS_DESC
     stats_headers = ("Метрика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
@@ -172,7 +238,14 @@ class DiversityStats(anyts.DiversityStats):
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
-        check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)
+        check_params(
+            window_len,
+            mtld_threshold,
+            mtld_min_len,
+            hdd_sample_size,
+            log_base,
+            messages=self.messages,
+        )
         if isinstance(source, Doc) and words_extractor is None:
             words: Sequence[str] = [
                 strip_marks(word) for _, _, word in iter_doc_words(source, join_hyphens=True)
@@ -182,8 +255,6 @@ class DiversityStats(anyts.DiversityStats):
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
             raise SourceTypeError("Некорректный источник данных")
-        if not words:
-            raise SourceError("В источнике данных отсутствуют слова")
         super().__init__(
             [word.lower() for word in words],
             window_len,

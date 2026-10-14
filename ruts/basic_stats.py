@@ -1,37 +1,24 @@
 from collections.abc import Mapping
 from re import Pattern
 
-import anyts
 import anyts.basic_stats
 from anyts.basic_stats import dash_pattern
-from anyts.utils import check_integer, has_words
+from anyts.utils import check_integer
 from spacy.tokens import Doc
 
-from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, LONG_WORD_LETTER_FACTOR
-from .exceptions import ParameterError, SourceError, SourceTypeError
-from .extractors import SentsExtractor, WordsExtractor, _FixedWordsExtractor
+from .constants import (
+    BASIC_STATS_DESC,
+    COMPLEX_SYL_FACTOR,
+    CORE_MESSAGES,
+    LONG_WORD_LETTER_FACTOR,
+)
+from .exceptions import ParameterError
+from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
 from .utils import strip_doc_marks, strip_marks
 
 PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
 DASH_PATTERN = dash_pattern(("и", "или", "либо"), hanging_before_comma=True)
-
-
-def check_extractors(sents_extractor: object, words_extractor: object) -> None:
-    """
-    Проверка типа экстракторов предложений и слов
-
-    Аргументы:
-        sents_extractor (SentsExtractor): Экстрактор предложений или None
-        words_extractor (WordsExtractor): Экстрактор слов или None
-
-    Исключения:
-        SourceTypeError: Если экстрактор другого типа
-    """
-    if sents_extractor is not None and not isinstance(sents_extractor, anyts.SentsExtractor):
-        raise SourceTypeError("Экстрактор предложений должен быть SentsExtractor")
-    if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-        raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
 
 
 class BasicStats(anyts.basic_stats.BasicStats):
@@ -132,6 +119,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
     join_hyphens = True
     stats_desc = BASIC_STATS_DESC
     stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
@@ -142,24 +130,10 @@ class BasicStats(anyts.basic_stats.BasicStats):
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,
     ):
-        check_extractors(sents_extractor, words_extractor)
         if isinstance(source, str):
             source = strip_marks(source)
         elif isinstance(source, Doc):
             source = strip_doc_marks(source)
-        else:
-            raise SourceTypeError("Некорректный источник данных")
-        # Проверка до ядра, чтобы сообщение было по-русски, как у остальных классов
-        if words_extractor is not None:
-            words = tuple(
-                words_extractor.extract(source if isinstance(source, str) else source.text)
-            )
-            words_extractor = _FixedWordsExtractor(words)
-            empty = not words
-        else:
-            empty = not has_words(source)
-        if empty:
-            raise SourceError("В источнике данных отсутствуют слова")
         super().__init__(
             source,
             sents_extractor,

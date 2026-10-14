@@ -72,7 +72,7 @@ def test_init_type_error(text):
 
 
 def test_init_no_sents_error():
-    with pytest.raises(ValueError, match="sentences"):
+    with pytest.raises(ValueError, match="отсутствуют предложения"):
         ReadabilityStats("Текст один. Текст два.", sents_extractor=SentsExtractor(min_len=1000))
 
 
@@ -87,7 +87,7 @@ def test_basic_stats_of_another_library():
 
 @pytest.mark.parametrize("preset", ["unknown", None, ["plainrussian"]])
 def test_init_preset_error(preset):
-    with pytest.raises(ValueError, match=r"^Неизвестный пресет коэффициентов"):
+    with pytest.raises(ValueError, match=r"^(Неизвестный пресет коэффициентов|Пресет должен)"):
         ReadabilityStats(text, preset=preset)
     with pytest.raises(ValueError):
         check_preset(preset)
