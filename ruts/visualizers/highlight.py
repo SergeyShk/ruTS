@@ -76,7 +76,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             verbal_nouns - отглагольные существительные (StyleStats)
             compound_prepositions - производные предлоги (StyleStats)
             cliches - штампы по списку OFFICIALESE_CLICHES или переданному (StyleStats)
-            stopwords - стоп-слова по части речи или переданному списку, «вода» текста (StyleStats)
+            stopwords - стоп-слова по части речи (is_stopword) или переданному списку (StyleStats)
             parentheticals - вводные слова и обороты (StyleStats)
             connectors - коннекторы с классом и типом в подсказке (CohesionStats)
             alliteration - повторы согласной в соседних словах, маловероятные при частотах букв русского языка (PhonStats)
@@ -359,7 +359,7 @@ def find_stopwords(
 
     Описание:
         Стоп-слова определяются по части речи (функция is_stopword) или по переданному
-        списку без учета регистра, как при вычислении водности в StyleStats
+        списку без учета регистра, как при вычислении академической тошноты в StyleStats
 
     Аргументы:
         words (list[Word]): Слова с позициями

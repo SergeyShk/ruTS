@@ -433,7 +433,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
 *   Reading of the metrics by the service norms
 
-The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content are detected by part of speech with pymorphy3 or passed as a list.
+The exact formulas of the services are not published, so the commonly accepted definitions are implemented; stop words for water content and academic nausea are detected by part of speech with pymorphy3 or passed as a list.
 
 ```python
 >>> from pprint import pprint
@@ -443,14 +443,14 @@ The exact formulas of the services are not published, so the commonly accepted d
 >>> ss = StyleStats(text)
 
 >>> pprint(ss.get_stats())
-{'academic_nausea': 93.33333333333333,
+{'academic_nausea': 53.333333333333336,
  'classic_nausea': 1.7320508075688772,
  'cliches': 0.0,
  'compound_prepositions': 0.0,
  'parentheticals': 0.0,
  'spam': 26.666666666666668,
  'verbal_nouns': 0.0,
- 'water': 46.666666666666664,
+ 'water': 33.333333333333336,
  'zipf_naturalness': 33.333333333333336}
 
 >>> ss.keyword_density("когда", "нет а")

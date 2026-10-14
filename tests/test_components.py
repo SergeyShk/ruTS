@@ -164,7 +164,9 @@ def test_component_style_params(spacy_doc):
     assert custom.stopwords == ("и", "или")
     assert custom.water == pytest.approx(StyleStats(doc, stopwords=["и", "или"]).water)
     assert custom.water != spacy_doc._.style.water
-    assert custom.academic_nausea == pytest.approx(StyleStats(doc, top_n=3).academic_nausea)
+    assert custom.academic_nausea == pytest.approx(
+        StyleStats(doc, top_n=3, stopwords=["и", "или"]).academic_nausea
+    )
 
 
 def test_component_diversity_params(spacy_doc):
