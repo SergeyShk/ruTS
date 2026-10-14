@@ -33,9 +33,9 @@ from .extractors import WordsExtractor
 from .utils import lemmatize, parse_all, parse_word, strip_marks
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
-# «нет» отдельным словом, не в дефисном слове (нет-нет, нет‑с): дефисы, которые склеивает токенизатор
+# «нет» вне дефисных слов (нет-нет, нет‑с) с дефисами, которые склеивает токенизатор
 ANSWER_NET = re.compile(r"(?<!\w)(?<!\w[-‐‑‒])нет(?![\w\-‐‑‒])", re.IGNORECASE)
-# Окно вокруг «нет», в котором ищутся соседние знак или слово
+# Окно поиска соседнего знака или слова
 ANSWER_CONTEXT = 40
 VERBAL_POS = frozenset({"VERB", "AUX"})
 SHORT_FORM_POS = frozenset({"ADJS", "PRTS"})
@@ -550,10 +550,9 @@ def find_answer_particles(text: str) -> list[bool]:
 
     Описание:
         Для каждого «нет» текста по порядку - частица ли это (Нет, не пойду; Или нет?),
-        а не бытийный предикатив (Денег нет): частица стоит в начале текста, после знаков
-        ANSWER_PARTICLE_PREV_MARKS (конец предложения, запятая, тире) или слов
-        ANSWER_PARTICLE_PREV (или, а, да, ну), а перед знаком, концом текста или словами
-        ANSWER_PARTICLE_NEXT (уж, же)
+        а не бытийный предикатив (Денег нет): частица стоит в начале текста, после знака
+        или слова ANSWER_PARTICLE_PREV(_MARKS) и перед знаком, концом текста или словом
+        ANSWER_PARTICLE_NEXT
 
     Аргументы:
         text (str): Текст

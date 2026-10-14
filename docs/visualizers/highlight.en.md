@@ -24,7 +24,7 @@ Highlighting layers:
 | Officialese | `verbal_nouns` | Verbal nouns | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Compound prepositions from the `COMPOUND_PREPOSITIONS` list | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Clichés from the `OFFICIALESE_CLICHES` list or the `cliches` parameter | [StyleStats](../stats/style_stats.md) |
-| Style | `stopwords` | Water words by part of speech (`is_water_word`) or from the given list, as in water content | [StyleStats](../stats/style_stats.md) |
+| Style | `stopwords` | Water words by part of speech (`is_water_word`) or from the given list | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Parenthetical words and phrases | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Connectives by part of speech from the `Doc` annotation or pymorphy3, the tooltip shows the class and type | [CohesionStats](../stats/cohesion_stats.md) |
 | Phonics | `alliteration` | Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies | [PhonStats](../stats/phon_stats.md) |

@@ -47,7 +47,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.find_nausea_words()**
 
-Search for the most frequent significant words [academic nausea](#calc_academic_nausea) is computed by: the `top_n` most frequent words without the stop words (of the given list, regardless of case and of the letter ё, or [`is_stopword`](#is_stopword)) with the number of their occurrences, by descending frequency.
+The words [academic nausea](#calc_academic_nausea) is computed by: the `top_n` most frequent words without the stop words (of the given list or [`is_stopword`](#is_stopword)) with the number of their occurrences.
 
 Parameters:
 
@@ -71,7 +71,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_water()**
 
-Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given list, regardless of case and of the letter ё. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
+Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
 
 Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.
 

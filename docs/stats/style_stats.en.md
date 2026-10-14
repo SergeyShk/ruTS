@@ -87,7 +87,7 @@ Parameters:
 
 ### nausea_words
 
-Returns the most frequent significant words academic nausea is computed by: the `top_n` most frequent words without the stop words with the number of their occurrences, by descending frequency.
+Returns the words academic nausea is computed by: the `top_n` most frequent words without the stop words with the number of their occurrences.
 
 !!! example "Example"
 

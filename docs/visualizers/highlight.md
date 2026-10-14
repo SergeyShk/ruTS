@@ -25,7 +25,7 @@
 | Канцелярит | `verbal_nouns` | Отглагольные существительные | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Производные предлоги по списку `COMPOUND_PREPOSITIONS` | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Штампы по списку `OFFICIALESE_CLICHES` или параметру `cliches` | [StyleStats](../stats/style_stats.md) |
-| Стиль | `stopwords` | Слова «воды» по части речи (`is_water_word`) или переданному списку, как в водности | [StyleStats](../stats/style_stats.md) |
+| Стиль | `stopwords` | Слова «воды» по части речи (`is_water_word`) или переданному списку | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Вводные слова и обороты | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Коннекторы по части речи из разметки `Doc` или pymorphy3, в подсказке класс и тип | [CohesionStats](../stats/cohesion_stats.md) |
 | Фоника | `alliteration` | Повторы согласной в соседних словах, маловероятные при частотах букв русского языка | [PhonStats](../stats/phon_stats.md) |
