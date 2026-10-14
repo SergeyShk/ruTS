@@ -3032,7 +3032,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stop word list for water content; if not given, stop words are determined by part of speech with pymorphy3</td>
+<td style="text-align: center;">Stop word list for water content and academic nausea; if not given, they are determined by part of speech with pymorphy3</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>top_n</code></td>
@@ -3294,8 +3294,8 @@
 </code></pre></div>
 <p><em>Result</em>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'classic_nausea'</span>:<span class="w"> </span><span class="m">1</span>.7320508075688772,
-<span class="s1">'academic_nausea'</span>:<span class="w"> </span><span class="m">93</span>.33333333333333,
-<span class="s1">'water'</span>:<span class="w"> </span><span class="m">46</span>.666666666666664,
+<span class="s1">'academic_nausea'</span>:<span class="w"> </span><span class="m">53</span>.333333333333336,
+<span class="s1">'water'</span>:<span class="w"> </span><span class="m">33</span>.333333333333336,
 <span class="s1">'spam'</span>:<span class="w"> </span><span class="m">26</span>.666666666666668,
 <span class="s1">'zipf_naturalness'</span>:<span class="w"> </span><span class="m">33</span>.333333333333336,
 <span class="s1">'verbal_nouns'</span>:<span class="w"> </span><span class="m">0</span>.0,
@@ -3318,8 +3318,8 @@
 <div class="highlight"><pre><span></span><code><span class="w">                     </span>Метрика<span class="w">                      </span><span class="p">|</span><span class="w"> </span>Значение
 ------------------------------------------------------------
 Классическая<span class="w"> </span>тошнота<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.73
-Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                         </span><span class="p">|</span><span class="w">  </span><span class="m">93</span>.33
-Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">  </span><span class="m">46</span>.67
+Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                         </span><span class="p">|</span><span class="w">  </span><span class="m">53</span>.33
+Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
 Заспамленность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">  </span><span class="m">26</span>.67
 Естественность<span class="w"> </span>по<span class="w"> </span>Ципфу<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
 Отглагольные<span class="w"> </span>существительные<span class="w"> </span><span class="o">(</span>%<span class="w"> </span>существительных<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
