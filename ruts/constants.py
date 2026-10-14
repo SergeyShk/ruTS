@@ -1095,6 +1095,10 @@ DEMONSTRATIVE_LEMMAS = frozenset(
 )
 STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
+# «Вода» Text.ru: союзы, частицы, местоимения-существительные, междометия, вводные слова;
+# предлоги Text.ru водой не считает
+WATER_POS = frozenset({"CONJ", "PRCL", "NPRO", "INTJ"})
+WATER_GRAMMEMES = frozenset({"Prnt"})
 NAUSEA_TOP_N = 10
 # Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS
 VISUALIZER_LABELS = {

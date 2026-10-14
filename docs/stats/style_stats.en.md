@@ -20,7 +20,7 @@ Lexical officialese markers: verbal nouns, compound prepositions, parentheticals
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
 | `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
-| `stopwords` | list[str] | `None` | Stop word list for water content; if not given, stop words are determined by part of speech with pymorphy3 |
+| `stopwords` | list[str] | `None` | Stop word list for water content and academic nausea; if not given, they are determined by part of speech with pymorphy3 |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
 | `cliches` | list[str] | `None` | List of clichés; if not given, `OFFICIALESE_CLICHES` is used |
 
@@ -149,7 +149,7 @@ Returns a dictionary with the computed style metrics.
     ``` bash
     {'classic_nausea': 1.7320508075688772,
     'academic_nausea': 53.333333333333336,
-    'water': 46.666666666666664,
+    'water': 33.333333333333336,
     'spam': 26.666666666666668,
     'zipf_naturalness': 33.333333333333336,
     'verbal_nouns': 0.0,

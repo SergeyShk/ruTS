@@ -450,7 +450,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
  'parentheticals': 0.0,
  'spam': 26.666666666666668,
  'verbal_nouns': 0.0,
- 'water': 46.666666666666664,
+ 'water': 33.333333333333336,
  'zipf_naturalness': 33.333333333333336}
 
 >>> ss.keyword_density("когда", "нет а")

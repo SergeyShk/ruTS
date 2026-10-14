@@ -450,7 +450,7 @@ The exact formulas of the services are not published, so the commonly accepted d
  'parentheticals': 0.0,
  'spam': 26.666666666666668,
  'verbal_nouns': 0.0,
- 'water': 46.666666666666664,
+ 'water': 33.333333333333336,
  'zipf_naturalness': 33.333333333333336}
 
 >>> ss.keyword_density("когда", "нет а")

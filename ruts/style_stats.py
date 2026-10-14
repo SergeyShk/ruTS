@@ -18,6 +18,8 @@ from .constants import (
     STOPWORD_POS,
     STYLE_NORMS,
     STYLE_STATS_DESC,
+    WATER_GRAMMEMES,
+    WATER_POS,
 )
 from .exceptions import ParameterError, SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
@@ -65,7 +67,7 @@ class StyleStats:
         >>> ss.get_stats()
         {'classic_nausea': 1.7320508075688772,
         'academic_nausea': 53.333333333333336,
-        'water': 46.666666666666664,
+        'water': 33.333333333333336,
         'spam': 26.666666666666668,
         'zipf_naturalness': 33.333333333333336,
         'verbal_nouns': 0.0,
@@ -77,7 +79,7 @@ class StyleStats:
         >>> StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка").get_stats()
         {'classic_nausea': 1.4142135623730951,
         'academic_nausea': 72.72727272727273,
-        'water': 27.272727272727273,
+        'water': 9.090909090909092,
         'spam': 9.090909090909092,
         'zipf_naturalness': 100.0,
         'verbal_nouns': 16.666666666666664,
@@ -89,8 +91,8 @@ class StyleStats:
         source (str|Doc): Источник данных (строка или объект Doc)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
             если задан, применяется и к тексту Doc
-        stopwords (list[str]): Список стоп-слов для водности; если не задан, стоп-слова
-            определяются по части речи с помощью pymorphy3
+        stopwords (list[str]): Список стоп-слов для водности и академической тошноты;
+            если не задан, они определяются по части речи с помощью pymorphy3
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
 
@@ -324,6 +326,29 @@ def is_stopword(word: str) -> bool:
     return tag.POS in STOPWORD_POS or bool(STOPWORD_GRAMMEMES & tag.grammemes)
 
 
+@lru_cache(maxsize=65536)
+def is_water_word(word: str) -> bool:
+    """
+    Проверка, является ли слово «водой» по части речи
+
+    Описание:
+        «Вода» - союзы, частицы, местоимения-существительные, междометия и вводные
+        слова (конечно, например) по разметке pymorphy3: на сверке с Text.ru этот набор
+        воспроизводит его водность лучше всего, а предлоги, местоименные прилагательные
+        и предикативы, в отличие от is_stopword, Text.ru водой не считает
+
+    Аргументы:
+        word (str): Слово
+
+    Вывод:
+        bool: Результат проверки
+    """
+    if not isinstance(word, str):
+        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
+    tag = parse_word(word).tag
+    return tag.POS in WATER_POS or bool(WATER_GRAMMEMES & tag.grammemes)
+
+
 def calc_classic_nausea(text: Sequence[str]) -> float:
     """
     Вычисление классической тошноты
@@ -394,9 +419,9 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
 
     Описание:
         Доля незначимых слов в тексте в процентах (Text.ru)
-        Незначимыми считаются стоп-слова: союзы, частицы, предлоги, местоимения, междометия,
-        предикативы, вводные слова, указательные и вопросительные наречия по разметке
-        pymorphy3 (функция is_stopword) или слова из переданного списка стоп-слов
+        Незначимыми считаются союзы, частицы, местоимения-существительные, междометия
+        и вводные слова по разметке pymorphy3 (функция is_water_word) или слова
+        из переданного списка стоп-слов
         Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое;
         полосы - STYLE_NORMS
         «Вода» Advego - другой показатель с нормой 55-75%, здесь не реализован
@@ -418,7 +443,7 @@ def calc_water(text: Sequence[str], stopwords: Collection[str] | None = None) ->
         stopwords_set = {word.lower() for word in stopwords}
         n_stopwords = sum(1 for word in text if word.lower() in stopwords_set)
     else:
-        n_stopwords = sum(1 for word in text if is_stopword(word))
+        n_stopwords = sum(1 for word in text if is_water_word(word))
     return safe_divide(100 * n_stopwords, len(text))
 
 

@@ -47,7 +47,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_water()**
 
-Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words are stop words: conjunctions, particles, prepositions, pronominal nouns, interjections, predicatives (нет, надо, можно), pronominal adjectives (этот, такой, который, весь), parentheticals (конечно, например), demonstrative (там, тогда) and interrogative (где, почему) adverbs by pymorphy3 tags (the [`is_stopword`](#is_stopword) function) or words from the given stop word list.
+Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions, particles, pronominal nouns, interjections and parenthetical words (конечно, например) by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given stop word list. On 15 texts of different types this set reproduces the water content of Text.ru with a mean error of 1.3 percentage points; prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
 
 Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.
 
@@ -57,7 +57,7 @@ Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high
 Formula:
 
 $$
-100\times\frac{\textrm{Number of stop words}}{\textrm{Number of words}}
+100\times\frac{\textrm{Number of water words}}{\textrm{Number of words}}
 $$
 
 Parameters:
@@ -67,12 +67,25 @@ Parameters:
 | `text` | list[str] | `-` | List of words |
 | `stopwords` | list[str] | `None` | Stop word list; if not given, pymorphy3 tags are used |
 
+## Water word { #is_water_word }
+
+!!! info ""
+    **ruts.style_stats.is_water_word()**
+
+Checking whether a word is "water" by part of speech for [water content](#calc_water): words with the part of speech `CONJ`, `PRCL`, `NPRO`, `INTJ` or with the grammeme `Prnt` by pymorphy3 tags; the sets are defined in `ruts.constants.WATER_POS` and `ruts.constants.WATER_GRAMMEMES`. The analysis results are cached.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `word` | str | `-` | Word |
+
 ## Stop word { #is_stopword }
 
 !!! info ""
     **ruts.style_stats.is_stopword()**
 
-Checking whether a word is a stop word by part of speech. Stop words are words with the part of speech `CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED` or with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` by pymorphy3 tags; the sets are defined in `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`. The analysis results are cached.
+Checking whether a word is a stop word by part of speech - insignificant for [academic nausea](#calc_academic_nausea) and the `stopwords` layer of the highlighting. Stop words are words with the part of speech `CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED` or with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` by pymorphy3 tags; the sets are defined in `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`. The analysis results are cached.
 
 Parameters:
 

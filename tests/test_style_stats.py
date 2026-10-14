@@ -1,10 +1,13 @@
+import json
 import re
 from collections import defaultdict
 from math import inf, isnan, nextafter
 from pathlib import Path
 
+import numpy as np
 import pytest
 import spacy
+from scipy.stats import spearmanr
 
 from ruts import StyleStats, WordsExtractor
 from ruts.constants import STYLE_NORMS, STYLE_STATS_DESC
@@ -25,6 +28,7 @@ from ruts.style_stats import (
     find_verbal_nouns,
     is_parenthetical,
     is_stopword,
+    is_water_word,
 )
 from ruts.utils import parse_word
 
@@ -129,12 +133,13 @@ def test_academic_nausea(ss):
 
 
 def test_water(ss):
-    # стоп-слова: нет (предикатив) x2, а (союз) x2, когда (союз) x3
-    assert calc_water(riddle) == pytest.approx(100 * 7 / 15)
+    # вода: а (союз) x2, когда (союз) x3; предикатив «нет», в отличие от стоп-слов, - не вода
+    assert calc_water(riddle) == pytest.approx(100 * 5 / 15)
     assert calc_water(riddle, stopwords=["нет", "а"]) == pytest.approx(100 * 4 / 15)
     assert calc_water(riddle, stopwords=["НЕТ"]) == pytest.approx(100 * 2 / 15)
     assert calc_water(riddle, stopwords=[]) == 0.0
-    assert ss.water == pytest.approx(100 * 18 / 61)
+    # или x2, его, не, и, их, а, также
+    assert ss.water == pytest.approx(100 * 8 / 61)
     assert StyleStats(text, stopwords=["и", "или"]).water == pytest.approx(100 * 3 / 61)
 
 
@@ -427,3 +432,46 @@ def test_markers_verbal_nouns_share():
     ss = StyleStats(text)
     nouns = sum(1 for word in ss.forms if parse_word(word).tag.POS == "NOUN")
     assert ss.verbal_nouns == pytest.approx(100 * len(ss.markers()["verbal_nouns"]) / nouns)
+
+
+@pytest.mark.parametrize(
+    ("word", "expected"),
+    [
+        ("и", True),
+        ("же", True),
+        ("он", True),
+        ("ой", True),
+        ("конечно", True),
+        ("в", False),
+        ("этот", False),
+        ("надо", False),
+        ("кот", False),
+    ],
+)
+def test_is_water_word(word, expected):
+    """Союзы, частицы, местоимения-существительные, междометия, вводные - вода; предлоги - нет"""
+    assert is_water_word(word) is expected
+
+
+def test_is_water_word_type():
+    with pytest.raises(SourceTypeError):
+        is_water_word(5)
+
+
+TEXT_RU = Path(__file__).parent / "data" / "textru"
+
+
+def test_water_follows_text_ru():
+    """Водность 15 текстов разных типов близка к воде Text.ru, как сказано в документации"""
+    truth = json.loads((TEXT_RU / "text_ru.json").read_text(encoding="utf-8"))
+    ours = np.array(
+        [StyleStats((TEXT_RU / f"{i}.txt").read_text(encoding="utf-8")).water for i in truth]
+    )
+    theirs = np.array([value["water"] for value in truth.values()], dtype=float)
+    mae = np.mean(np.abs(ours - theirs))
+    assert f"{mae:.1f}" == "1.3"
+    assert spearmanr(ours, theirs)[0] > 0.85
+    page = (Path(__file__).parent.parent / "docs" / "stats" / "style_stats_funcs.md").read_text(
+        encoding="utf-8"
+    )
+    assert "средней ошибкой 1.3 процентного пункта" in page
