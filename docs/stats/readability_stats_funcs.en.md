@@ -435,7 +435,7 @@ Parameters:
 !!! info ""
     **ruts.readability_stats.level_features()**
 
-The features of a text that the [stage norms](readability_stats.md#level_norms) cover: words per sentence, letters per word (of the words the grade formulas count), the share of words of five or more syllables (the complex words of SMOG, Gunning fog and Dale-Chall) and the lexical diversity MTLD. They are computed the same way as for the norms, so they can be compared with them.
+The features of a text that the [stage norms](readability_stats.md#level_norms) cover: words per sentence, letters per word (of the words the grade formulas count), the share of words of five or more syllables (the complex words of SMOG, Gunning fog and Dale-Chall) and the lexical diversity MTLD. They are computed the same way as for the norms, so they can be compared with them; the features of a `Doc` are computed from its text, not from the sentence boundaries of spaCy.
 
 Parameters:
 

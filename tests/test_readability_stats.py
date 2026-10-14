@@ -5,6 +5,7 @@ from pathlib import Path
 import anyts.basic_stats
 import anyts.constants
 import pytest
+import spacy
 
 from ruts import BasicStats, ReadabilityStats, SentsExtractor, WordsExtractor
 from ruts.constants import (
@@ -22,6 +23,7 @@ from ruts.constants import (
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
 )
+from ruts.exceptions import ParameterError, UnknownStatError
 from ruts.readability_stats import (
     calc_automated_readability_index,
     calc_coleman_liau_index,
@@ -474,7 +476,7 @@ def test_print_stats(capsys, rs):
 )
 def test_level_norms(grade, stage):
     """Нормы ступени, к которой класс относится по таблице grade_to_age"""
-    assert level_norms(grade) is (None if stage is None else LEVEL_NORMS[stage])
+    assert level_norms(grade) == (None if stage is None else LEVEL_NORMS[stage])
 
 
 def test_level_norms_data():
@@ -482,8 +484,12 @@ def test_level_norms_data():
     for norms in LEVEL_NORMS.values():
         assert set(norms) == set(LEVEL_NORMS_DESC)
         assert all(low <= high for low, high in norms.values())
-    with pytest.raises(ValueError):
-        level_norms(float("nan"))
+    for grade in (float("nan"), float("inf"), "3", True):
+        with pytest.raises(ParameterError, match="Класс должен быть конечным числом"):
+            level_norms(grade)
+    norms = level_norms(2)
+    norms["words_per_sent"] = (1, 2)
+    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS[1]["words_per_sent"] == (8.1, 10.7)
 
 
 def test_describe_level_norm():
@@ -495,8 +501,9 @@ def test_describe_level_norm():
     assert describe_level_norm("mtld", float("inf"), 10) == above
     assert describe_level_norm("mtld", float("nan"), 10) is None
     assert describe_level_norm("words_per_sent", 12, 8) is None
-    with pytest.raises(KeyError):
-        describe_level_norm("n_words", 12, 2)
+    for grade in (2, 8):
+        with pytest.raises(UnknownStatError, match="n_words отсутствует"):
+            describe_level_norm("n_words", 12, grade)
     with pytest.raises(ValueError):
         describe_level_norm("words_per_sent", "12", 2)
     with pytest.raises(ValueError):
@@ -513,3 +520,13 @@ def test_level_features():
     bs = BasicStats("Здравоохранение и благоустройство. Кот спит.")
     features = level_features("Здравоохранение и благоустройство. Кот спит.")
     assert features["p_smog_complex_words"] == pytest.approx(2 / bs.n_words)
+
+
+def test_level_features_of_doc():
+    """Признаки Doc - по его тексту, как нормы, а не по границам предложений spaCy"""
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    text = "Кот, т. е. зверь, спит на окне. Пёс лает во дворе."
+    doc = nlp(text)
+    assert BasicStats(doc).n_sents != BasicStats(text).n_sents
+    assert level_features(doc) == level_features(text)

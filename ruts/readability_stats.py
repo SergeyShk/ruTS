@@ -1,5 +1,5 @@
 from collections.abc import Callable, Iterable, Mapping
-from math import floor, isnan, nan
+from math import floor, isfinite, isnan, nan
 from numbers import Real
 
 import anyts.readability_stats
@@ -9,7 +9,7 @@ from anyts.readability_stats import (
     calc_rix as calc_rix,
     scale_level as scale_level,
 )
-from anyts.utils import check_number, safe_divide
+from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
@@ -719,7 +719,8 @@ def level_features(source: str | Doc) -> dict[str, float]:
         доля слов от пяти слогов (SMOG_COMPLEX_SYL_FACTOR - сложные слова SMOG,
         индексов Ганнинга и Дейла-Чейла) и лексическое разнообразие MTLD; так же
         считались нормы, поэтому признаки текста можно сравнивать с ними
-        (describe_level_norm)
+        (describe_level_norm). Признаки Doc считаются по его тексту, как нормы:
+        границы предложений spaCy дают другую длину предложения
 
     Аргументы:
         source (str|Doc): Источник данных - строка или объект Doc
@@ -737,13 +738,14 @@ def level_features(source: str | Doc) -> dict[str, float]:
         >>> {stat: round(value, 2) for stat, value in features.items()}
         {'words_per_sent': 6.0, 'letters_per_word': 3.83, 'p_smog_complex_words': 0.0, 'mtld': 13.44}
     """
-    bs = BasicStats(source)
+    text = source.text if isinstance(source, Doc) else source
+    bs = BasicStats(text)
     n_words = bs.n_words
     return {
         "words_per_sent": n_words / bs.n_sents,
         "letters_per_word": sum(n * count for n, count in bs.c_letters.items()) / n_words,
         "p_smog_complex_words": bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR) / n_words,
-        "mtld": DiversityStats(source).mtld,
+        "mtld": DiversityStats(text).mtld,
     }
 
 
@@ -756,8 +758,9 @@ def level_norms(grade: float) -> dict[str, tuple[float, float]] | None:
         и попадает в первую ступень, последний год которой не превышает, класс
         меньше 1 - в первую ступень, как в grade_to_age. Нормы - квартили q1-q3
         признаков level_features у текстов от 100 слов с меткой ступени из наборов
-        SovChLit и TextsByGrade; они есть у ступеней, где таких текстов не меньше 10:
-        1-3, 4-6 и 10-11-й класс
+        SovChLit и TextsByGrade; они есть у школьных ступеней, где таких текстов
+        не меньше 10: 1-3, 4-6 и 10-11-й класс. Результат - копия, справочник
+        LEVEL_NORMS он не меняет
 
     Аргументы:
         grade (float): Класс читателя или сводный класс текста
@@ -774,11 +777,14 @@ def level_norms(grade: float) -> dict[str, tuple[float, float]] | None:
         >>> level_norms(2)["words_per_sent"], level_norms(8)
         ((8.1, 10.7), None)
     """
-    check_number(grade, "grade")
+    number: object = grade
+    if isinstance(number, bool) or not isinstance(number, Real) or not isfinite(grade):
+        raise ParameterError(f"Класс должен быть конечным числом, а не {grade!r}")
     year = max(floor(grade + 0.5), GRADE_AGE_LEVELS[0][0])
     for low, high, _, _ in GRADE_AGE_LEVELS:
         if year <= high:
-            return LEVEL_NORMS.get(low)
+            norms = LEVEL_NORMS.get(low)
+            return None if norms is None else dict(norms)
     return None
 
 
