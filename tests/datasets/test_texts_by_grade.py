@@ -10,7 +10,13 @@ from anyts.datasets import extract_archive
 from scipy.stats import spearmanr
 
 from ruts import BasicStats, ReadabilityStats
-from ruts.constants import READABILITY_GRADE_STATS, READABILITY_PRESETS, READABILITY_STATS_DESC
+from ruts.constants import (
+    GRADE_AGE_LEVELS,
+    LEVEL_NORMS,
+    READABILITY_GRADE_STATS,
+    READABILITY_PRESETS,
+    READABILITY_STATS_DESC,
+)
 from ruts.datasets import (
     sov_chrest_lit as sov_chrest_lit_module,
     texts_by_grade as texts_by_grade_module,
@@ -18,6 +24,7 @@ from ruts.datasets import (
 from ruts.datasets.sov_chrest_lit import SovChLit
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
 from ruts.exceptions import DownloadError, ParameterError
+from ruts.readability_stats import level_features
 
 BUNDLED_ARCHIVE = (
     Path(__file__).parents[2] / "ruts" / "datasets" / "data" / texts_by_grade_module.ARCHIVE
@@ -26,6 +33,7 @@ DOCS = Path(__file__).parents[2] / "docs"
 FORMULA_ROW = re.compile(
     r"^\| (?P<label>[^|]+?) \| (?P<rho>−?[\d.]+) \| (?P<mae>[\d.]+|-) \|$", re.MULTILINE
 )
+NORM_ROW = re.compile(r"^\|[^|]+\| \d+ \|(?: [\d.]+-[\d.]+ \|){4}$", re.MULTILINE)
 PRESET_ROW = re.compile(
     r"^\| (?P<group>[^|]+?) \| (?P<n>\d+) \| (?P<plainrussian>[\d.]+) \| (?P<fiction>[\d.]+)"
     r" \| (?P<academic>[\d.]+) \|$",
@@ -308,3 +316,35 @@ def test_presets_table_follows_docs(presets, page):
     for preset in ("plainrussian", "fiction"):
         consensus = median(rs[preset].consensus_grade for _, rs in texts)
         assert f"{consensus:.2f}" in text, preset
+
+
+def test_level_norms_follow_datasets(dataset, first_grade_reader):
+    """LEVEL_NORMS - квартили признаков текстов от 100 слов с меткой школьной ступени"""
+    digits = {"words_per_sent": 1, "letters_per_word": 2, "p_smog_complex_words": 3, "mtld": 0}
+    texts = [*dataset, *first_grade_reader]
+    stages: dict[int, list[dict[str, float]]] = {}
+    for record in texts:
+        if BasicStats(record["text"]).n_words < 100:
+            continue
+        for low, high, _, _ in GRADE_AGE_LEVELS:
+            if low <= record["grade"] <= high <= 11:
+                stages.setdefault(low, []).append(level_features(record["text"]))
+    computed = {
+        low: {
+            stat: tuple(
+                round(float(value), places)
+                for value in np.percentile([f[stat] for f in rows], [25, 75])
+            )
+            for stat, places in digits.items()
+        }
+        for low, rows in stages.items()
+        if len(rows) >= 10
+    }
+    assert computed == LEVEL_NORMS
+    for page in ("readability_stats.md", "readability_stats.en.md"):
+        text = (DOCS / "stats" / page).read_text(encoding="utf-8")
+        rows = [row.strip("| ").split(" | ")[1:] for row in NORM_ROW.findall(text)]
+        assert rows == [
+            [str(len(stages[low])), *(f"{low_}-{high}" for low_, high in norms.values())]
+            for low, norms in LEVEL_NORMS.items()
+        ], page

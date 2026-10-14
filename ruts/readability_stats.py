@@ -1,5 +1,6 @@
 from collections.abc import Callable, Iterable, Mapping
-from math import nan
+from math import floor, isfinite, isnan, nan
+from numbers import Real
 
 import anyts.readability_stats
 from anyts.readability_stats import (
@@ -14,6 +15,9 @@ from spacy.tokens import Doc
 from .basic_stats import BasicStats
 from .constants import (
     GRADE_AGE_LEVELS,
+    LEVEL_NORM_BANDS,
+    LEVEL_NORMS,
+    LEVEL_NORMS_DESC,
     POSTGRADUATE_LEVEL,
     READABILITY_GRADE_STATS,
     READABILITY_LEVEL_SCALES,
@@ -26,7 +30,8 @@ from .constants import (
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
 )
-from .exceptions import ParameterError
+from .diversity_stats import DiversityStats
+from .exceptions import ParameterError, UnknownStatError
 from .extractors import SentsExtractor, WordsExtractor
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
@@ -703,3 +708,125 @@ def calc_reading_time(n_words: int, wpm: float = READING_SPEED_WPM) -> float:
         ParameterError: Если скорость чтения не положительное число
     """
     return anyts.readability_stats.calc_reading_time(n_words, wpm)
+
+
+def level_features(source: str | Doc) -> dict[str, float]:
+    """
+    Признаки текста, для которых есть нормы ступеней обучения (LEVEL_NORMS)
+
+    Описание:
+        Слов в предложении, букв в слове (у слов, которые учитывают формулы класса),
+        доля слов от пяти слогов (SMOG_COMPLEX_SYL_FACTOR - сложные слова SMOG,
+        индексов Ганнинга и Дейла-Чейла) и лексическое разнообразие MTLD; так же
+        считались нормы, поэтому признаки текста можно сравнивать с ними
+        (describe_level_norm). Признаки Doc считаются по его тексту, как нормы:
+        границы предложений spaCy дают другую длину предложения
+
+    Аргументы:
+        source (str|Doc): Источник данных - строка или объект Doc
+
+    Вывод:
+        dict[str, float]: Признаки по ключам LEVEL_NORMS_DESC
+
+    Исключения:
+        SourceTypeError: Если источник данных не строка и не объект Doc
+        SourceError: Если в источнике данных отсутствуют слова или предложения
+
+    Пример использования:
+        >>> from ruts.readability_stats import level_features
+        >>> features = level_features("Ног нет, а хожу. Рта нет, а скажу: когда спать, когда вставать.")
+        >>> {stat: round(value, 2) for stat, value in features.items()}
+        {'words_per_sent': 6.0, 'letters_per_word': 3.83, 'p_smog_complex_words': 0.0, 'mtld': 13.44}
+    """
+    text = source.text if isinstance(source, Doc) else source
+    bs = BasicStats(text)
+    n_words = bs.n_words
+    return {
+        "words_per_sent": n_words / bs.n_sents,
+        "letters_per_word": sum(n * count for n, count in bs.c_letters.items()) / n_words,
+        "p_smog_complex_words": bs.count_words_by_syllables(SMOG_COMPLEX_SYL_FACTOR) / n_words,
+        "mtld": DiversityStats(text).mtld,
+    }
+
+
+def level_norms(grade: float) -> dict[str, tuple[float, float]] | None:
+    """
+    Нормы признаков ступени обучения, к которой относится класс
+
+    Описание:
+        Ступени - таблица GRADE_AGE_LEVELS: класс округляется арифметически
+        и попадает в первую ступень, последний год которой не превышает, класс
+        меньше 1 - в первую ступень, как в grade_to_age. Нормы - квартили q1-q3
+        признаков level_features у текстов от 100 слов с меткой ступени из наборов
+        SovChLit и TextsByGrade; они есть у школьных ступеней, где таких текстов
+        не меньше 10: 1-3, 4-6 и 10-11-й класс. Результат - копия, справочник
+        LEVEL_NORMS он не меняет
+
+    Аргументы:
+        grade (float): Класс читателя или сводный класс текста
+
+    Вывод:
+        dict[str, tuple[float, float]]|None: Обычный диапазон каждого признака
+            по ключам LEVEL_NORMS_DESC; None для ступени без норм
+
+    Исключения:
+        ParameterError: Если класс не конечное число
+
+    Пример использования:
+        >>> from ruts.readability_stats import level_norms
+        >>> level_norms(2)["words_per_sent"], level_norms(8)
+        ((8.1, 10.7), None)
+    """
+    number: object = grade
+    if isinstance(number, bool) or not isinstance(number, Real) or not isfinite(grade):
+        raise ParameterError(f"Класс должен быть конечным числом, а не {grade!r}")
+    year = max(floor(grade + 0.5), GRADE_AGE_LEVELS[0][0])
+    for low, high, _, _ in GRADE_AGE_LEVELS:
+        if year <= high:
+            norms = LEVEL_NORMS.get(low)
+            return None if norms is None else dict(norms)
+    return None
+
+
+def describe_level_norm(stat: str, value: float, grade: float) -> str | None:
+    """
+    Прочтение признака текста по нормам ступени обучения
+
+    Описание:
+        Значение признака level_features сравнивается с обычным диапазоном
+        признака у текстов ступени, к которой относится класс (level_norms):
+        ниже нижнего квартиля, между квартилями или выше верхнего - полосы
+        LEVEL_NORM_BANDS; ступень без норм и неопределенное значение (nan)
+        дают None
+
+    Аргументы:
+        stat (str): Название признака из LEVEL_NORMS_DESC
+        value (float): Значение признака
+        grade (float): Класс читателя или сводный класс текста
+
+    Вывод:
+        str|None: Полоса нормы; None для ступени без норм или неопределенного значения
+
+    Исключения:
+        UnknownStatError: Если признака нет в LEVEL_NORMS_DESC
+        ParameterError: Если значение не число или класс не конечное число
+
+    Пример использования:
+        >>> from ruts.readability_stats import describe_level_norm
+        >>> describe_level_norm("words_per_sent", 6.0, 2), describe_level_norm("words_per_sent", 12, 5)
+        ('ниже нормы ступени', 'в норме ступени')
+    """
+    if not isinstance(stat, str) or stat not in LEVEL_NORMS_DESC:
+        raise UnknownStatError(
+            f"{stat} отсутствует в справочнике признаков норм ступеней, "
+            f"доступны: {', '.join(LEVEL_NORMS_DESC)}"
+        )
+    number: object = value
+    if isinstance(number, bool) or not isinstance(number, Real):
+        raise ParameterError(f"Значение признака должно быть числом, а не {type(value).__name__}")
+    norms = level_norms(grade)
+    if norms is None or isnan(value):
+        return None
+    low, high = norms[stat]
+    below, within, above = LEVEL_NORM_BANDS
+    return below if value < low else above if value > high else within

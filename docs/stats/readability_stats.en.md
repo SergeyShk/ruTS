@@ -123,6 +123,33 @@ The [`describe_level`](#describe_level) method reads the Flesch index, LIX and R
 
 The `reading_time` attribute estimates silent reading time at 180 words per minute (the upper bound of the adult norm by Kuznetsov and Khromov, 1991). A different speed is accepted by the [`reading_time_by_speed`](#reading_time_by_speed) method, and the [`reading_time_by_norm`](#reading_time_by_norm) method computes the time within the norm bounds from the `ruts.constants.READING_SPEED_NORMS` table, including the school reading-aloud norms of the Russian federal standard.
 
+## Stage norms { #level_norms }
+
+The consensus grade tells which stage a text is for, but not what a text of that stage is like. For this the `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the stages: the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets. School stages with at least 10 such texts have norms:
+
+| Stage | Texts | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
+| :---: | :---: | :----------------: | :--------------: | :----------------------------: | :--: |
+| grades 1-3 | 73 | 8.1-10.7 | 4.56-5.03 | 0.0-0.022 | 104-178 |
+| grades 4-6 | 12 | 10.2-14.6 | 5.16-5.33 | 0.039-0.052 | 220-373 |
+| grades 10-11 | 18 | 15.6-17.9 | 5.11-5.57 | 0.035-0.065 | 277-513 |
+
+Grades 7-9 have seven texts in the datasets, and the university labels of `TextsByGrade` mark a Wikipedia article, a newspaper article and regulatory documents, not texts written for students of a given year, so these stages have no norms. The [`level_features`](readability_stats_funcs.md#level_features) function computes the features of a text the same way as for the norms, [`level_norms`](readability_stats_funcs.md#level_norms) returns the norms of the stage of a grade, and [`describe_level_norm`](readability_stats_funcs.md#describe_level_norm) reads a feature by them. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
+
+!!! example "Example"
+
+    ``` python
+    from ruts.datasets import SovChLit
+    from ruts.readability_stats import describe_level_norm, level_features
+
+    text = next(SovChLit().get_texts())
+    features = level_features(text)
+    {stat: describe_level_norm(stat, value, 1) for stat, value in features.items()}
+    # {'words_per_sent': 'выше нормы ступени',
+    #  'letters_per_word': 'выше нормы ступени',
+    #  'p_smog_complex_words': 'выше нормы ступени',
+    #  'mtld': 'в норме ступени'}
+    ```
+
 ## Methods
 
 ### describe_grade
