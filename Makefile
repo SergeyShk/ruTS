@@ -4,6 +4,8 @@ APP_PATH := ruts
 TESTS_PATH := tests
 DEMO_PATH := demo
 EXAMPLES_PATH := examples
+# Python в блоках кода Markdown форматирует и хук ruff-format pre-commit
+MARKDOWN_FILES := $(shell git ls-files '*.md')
 HF_SPACE := SergeyShk/ruTS
 
 help: ## Показать список команд
@@ -30,14 +32,14 @@ lint: ruff mypy ## Запустить все проверки кода
 ruff: deps ## Проверить и отформатировать код с помощью ruff
 ifeq ($(MODE), ci)
 	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py --check
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py $(MARKDOWN_FILES) --check
 else
 	uv run ruff check $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py --fix
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py $(MARKDOWN_FILES)
 endif
 
 format: deps ## Отформатировать код
-	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py
+	uv run ruff format $(APP_PATH) $(TESTS_PATH) $(DEMO_PATH) $(EXAMPLES_PATH) conftest.py $(MARKDOWN_FILES)
 
 mypy: deps ## Проверить типы с помощью mypy
 	uv run mypy

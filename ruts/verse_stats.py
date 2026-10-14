@@ -187,6 +187,7 @@ class VerseStats:
 
     Исключения:
         SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+            или словарь ударений не StressDict
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: Если словарь ударений не загружен
     """
@@ -198,7 +199,7 @@ class VerseStats:
             text = source
         else:
             raise SourceTypeError("Некорректный источник данных")
-        self.stress_dict = stress_dict if stress_dict is not None else StressDict()
+        self.stress_dict = _check_stress_dict(stress_dict)
         if not re.search(r"[^\W\d_]", text):
             raise SourceError("В источнике данных отсутствуют слова")
         text, marked = _take_stress_marks(text)
@@ -786,11 +787,10 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
         str: Текст с ударениями
 
     Исключения:
+        SourceTypeError: Если словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
-    if stress_dict is None:
-        stress_dict = StressDict()
-
+    stress_dict = _check_stress_dict(stress_dict)
     text, marked = _take_stress_marks(text)
     marks = iter(marked)
     proclitic_end = -1
@@ -842,3 +842,12 @@ def rhyme_scheme(text: str, stress_dict: StressDict | None = None) -> str:
             ABAB, -A-A, AABB CC
     """
     return " ".join(VerseStats(text, stress_dict).rhyme_schemes)
+
+
+def _check_stress_dict(stress_dict: StressDict | None) -> StressDict:
+    """Переданный словарь ударений после проверки типа или StressDict() по умолчанию"""
+    if stress_dict is None:
+        return StressDict()
+    if not isinstance(stress_dict, StressDict):
+        raise SourceTypeError("Словарь ударений должен быть StressDict")
+    return stress_dict

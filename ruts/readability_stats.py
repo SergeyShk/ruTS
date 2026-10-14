@@ -2,6 +2,7 @@ from collections.abc import Callable, Iterable, Mapping
 from math import floor, isfinite, isnan, nan
 from numbers import Real
 
+import anyts.basic_stats
 import anyts.readability_stats
 from anyts.readability_stats import (
     calc_gunning_fog_index as calc_gunning_fog_index,
@@ -12,7 +13,7 @@ from anyts.readability_stats import (
 from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
-from .basic_stats import BasicStats
+from .basic_stats import BasicStats, check_extractors
 from .constants import (
     GRADE_AGE_LEVELS,
     LEVEL_NORM_BANDS,
@@ -31,7 +32,7 @@ from .constants import (
     SMOG_COMPLEX_SYL_FACTOR,
 )
 from .diversity_stats import DiversityStats
-from .exceptions import ParameterError, UnknownStatError
+from .exceptions import ParameterError, SourceTypeError, UnknownStatError
 from .extractors import SentsExtractor, WordsExtractor
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
@@ -160,6 +161,10 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         words_extractor: WordsExtractor | None = None,
         preset: str = "plainrussian",
     ):
+        check_preset(preset)
+        check_extractors(sents_extractor, words_extractor)
+        if not isinstance(source, Doc | str | anyts.basic_stats.BasicStats):
+            raise SourceTypeError("Некорректный источник данных")
         super().__init__(source, sents_extractor, words_extractor, preset)
 
     @property

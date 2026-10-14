@@ -221,3 +221,39 @@ def test_core_names(library, core):
             assert not isinstance(value, type) or issubclass(own, value), name
         else:
             assert own is value, name
+
+
+TEXT_STATS = (
+    "BasicStats",
+    "ReadabilityStats",
+    "DiversityStats",
+    "MorphStats",
+    "StyleStats",
+    "PhonStats",
+    "CohesionStats",
+    "LexicalStats",
+    "VerseStats",
+)
+
+
+@pytest.mark.parametrize("name", TEXT_STATS)
+@pytest.mark.parametrize("text", ["", "   ", "?!"])
+def test_no_words_message(name, text):
+    """Текст без слов дает одно сообщение во всех классах, а не английское сообщение ядра"""
+    with pytest.raises(ruts.SourceError, match=r"^В источнике данных отсутствуют слова$"):
+        getattr(ruts, name)(text)
+
+
+@pytest.mark.parametrize("name", TEXT_STATS)
+def test_source_type_message(name):
+    with pytest.raises(ruts.SourceTypeError, match=r"^Некорректный источник данных$"):
+        getattr(ruts, name)(5)
+
+
+@pytest.mark.parametrize("name", ["BasicStats", "ReadabilityStats"])
+def test_extractor_type_messages(name):
+    stats = getattr(ruts, name)
+    with pytest.raises(ruts.SourceTypeError, match=r"^Экстрактор предложений должен быть"):
+        stats("Кот спит.", sents_extractor=5)
+    with pytest.raises(ruts.SourceTypeError, match=r"^Экстрактор слов должен быть"):
+        stats("Кот спит.", words_extractor=5)

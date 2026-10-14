@@ -56,7 +56,7 @@ from anyts.utils import iter_doc_words
 from spacy.tokens import Doc
 
 from .constants import DIVERSITY_STATS_DESC
-from .exceptions import SourceTypeError
+from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import strip_marks
 
@@ -182,6 +182,8 @@ class DiversityStats(anyts.DiversityStats):
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
             raise SourceTypeError("Некорректный источник данных")
+        if not words:
+            raise SourceError("В источнике данных отсутствуют слова")
         super().__init__(
             [word.lower() for word in words],
             window_len,

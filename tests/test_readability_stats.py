@@ -78,7 +78,7 @@ def test_init_no_sents_error():
 
 @pytest.mark.parametrize("preset", ["unknown", None, ["plainrussian"]])
 def test_init_preset_error(preset):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"^Неизвестный пресет коэффициентов"):
         ReadabilityStats(text, preset=preset)
     with pytest.raises(ValueError):
         check_preset(preset)
