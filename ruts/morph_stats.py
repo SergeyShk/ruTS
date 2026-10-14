@@ -1,4 +1,6 @@
+import re
 from collections import Counter, OrderedDict
+from collections.abc import Sequence
 from functools import cached_property, lru_cache
 from inspect import getattr_static
 from math import nan
@@ -9,6 +11,9 @@ from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
+    ANSWER_PARTICLE_NEXT,
+    ANSWER_PARTICLE_PREV,
+    ANSWER_PARTICLE_PREV_MARKS,
     COMPARATIVE_ADVERBS,
     CONDITIONAL_PARTICLES,
     MORPHOLOGY_FEATURES,
@@ -28,6 +33,10 @@ from .extractors import WordsExtractor
 from .utils import lemmatize, parse_all, parse_word, strip_marks
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
+# «нет» отдельным словом, не в «нет-нет» и не в дефисном слове
+ANSWER_NET = re.compile(r"(?<!\w)(?<!\w-)нет(?![\w-])", re.IGNORECASE)
+# Окно вокруг «нет», в котором ищутся соседние знак или слово
+ANSWER_CONTEXT = 40
 VERBAL_POS = frozenset({"VERB", "AUX"})
 SHORT_FORM_POS = frozenset({"ADJS", "PRTS"})
 REFLEXIVE_ENDINGS = ("ся", "сь")
@@ -139,16 +148,16 @@ class MorphStats:
             )
             if source.has_annotation("POS"):
                 features = [
-                    token_to_ud(unit[0]) if len(unit) == 1 else word_to_ud(word)
+                    token_to_ud(unit[0]) if len(unit) == 1 else _word_to_ud(word)
                     for unit, word in zip(units, self.words, strict=True)
                 ]
             else:
-                features = [word_to_ud(word) for word in self.words]
+                features = words_to_ud(self.words, source.text)
         elif isinstance(source, str):
             if not words_extractor:
                 words_extractor = WordsExtractor()
             self.words = words_extractor.extract(source)
-            features = [word_to_ud(word) for word in self.words]
+            features = words_to_ud(self.words, source)
         else:
             raise SourceTypeError("Некорректный источник данных")
         if not self.words:
@@ -448,8 +457,8 @@ def _derived_features(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[
 
     Описание:
         Форма глагола - по части речи (OPENCORPORA_VERB_FORMS); степень сравнения,
-        как в русском UD, есть у прилагательных и наречий: COMP и «более», «менее»
-        (COMPARATIVE_ADVERBS) - Cmp, превосходная степень (Supr) - Sup, остальные
+        как в русском UD, есть у прилагательных и наречий: COMP и «более», «менее»,
+        «выше», «ниже» (COMPARATIVE_ADVERBS) - Cmp, превосходная степень (Supr) - Sup, остальные
         прилагательные (кроме местоименных), наречия
         и предикативы (кроме бытийных «нет», «нету») - Pos; отрицание Neg - у частиц
         NEGATIVE_PARTICLES; краткая форма Short - у кратких прилагательных и причастий
@@ -496,8 +505,91 @@ def word_to_ud(word: str) -> dict[str, str | None]:
     Вывод:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
+    return dict(_word_to_ud(word))
+
+
+@lru_cache(maxsize=131072)
+def _word_to_ud(word: str) -> dict[str, str | None]:
+    """Признаки word_to_ud с кэшем по словоформе; словарь общий, менять его нельзя"""
     parse = parse_word(word)
     return tag_to_ud(parse.tag, parse.normal_form, word)
+
+
+@lru_cache(maxsize=1024)
+def _particle_to_ud(word: str) -> dict[str, str | None]:
+    """Признаки слова по разбору частицей (ответное «нет»); словарь общий, менять его нельзя"""
+    parse = next(parse for parse in parse_all(word) if parse.tag.POS == "PRCL")
+    return tag_to_ud(parse.tag, parse.normal_form, word)
+
+
+def words_to_ud(words: Sequence[str], text: str) -> list[dict[str, str | None]]:
+    """
+    Получение признаков Universal Dependencies слов текста по первому разбору pymorphy3
+
+    Описание:
+        Как word_to_ud, но ответное «нет» (find_answer_particles) - частица с отрицанием
+        без времени, а не бытийный предикатив
+
+    Аргументы:
+        words (list[str]): Слова текста
+        text (str): Текст, из которого извлечены слова
+
+    Вывод:
+        list[dict[str, str|None]]: Признаки слов; словари общие, менять их нельзя
+    """
+    particles = answer_particles(words, text)
+    return [
+        _particle_to_ud(word) if particle else _word_to_ud(word)
+        for word, particle in zip(words, particles, strict=True)
+    ]
+
+
+def find_answer_particles(text: str) -> list[bool]:
+    """
+    Поиск ответных «нет» в тексте
+
+    Описание:
+        Для каждого «нет» текста по порядку - частица ли это (Нет, не пойду; Или нет?),
+        а не бытийный предикатив (Денег нет): частица стоит в начале текста, после знаков
+        ANSWER_PARTICLE_PREV_MARKS (конец предложения, запятая, тире) или слов
+        ANSWER_PARTICLE_PREV (или, а, да, ну), а перед знаком, концом текста или словами
+        ANSWER_PARTICLE_NEXT (уж, же)
+
+    Аргументы:
+        text (str): Текст
+
+    Вывод:
+        list[bool]: Частица ли каждое «нет» текста
+
+    Пример использования:
+        >>> from ruts.morph_stats import find_answer_particles
+        >>> find_answer_particles("Нет, денег нет. Или нет?")
+        [True, False, True]
+    """
+    text = strip_marks(text)
+    flags = []
+    for match in ANSWER_NET.finditer(text):
+        before = text[max(match.start() - ANSWER_CONTEXT, 0) : match.start()].rstrip()
+        after = text[match.end() : match.end() + ANSWER_CONTEXT].lstrip()
+        prev = re.search(r"\w+$", before)
+        starts = not before or before[-1] in ANSWER_PARTICLE_PREV_MARKS
+        if prev:
+            starts = prev.group().lower() in ANSWER_PARTICLE_PREV
+        following = re.match(r"\w+", after)
+        ends = not following or following.group().lower() in ANSWER_PARTICLE_NEXT
+        flags.append(starts and ends)
+    return flags
+
+
+def answer_particles(words: Sequence[str], text: str) -> list[bool]:
+    """Ответные «нет» среди слов текста; если «нет» в словах и в тексте не совпали - ни одного"""
+    indices = [i for i, word in enumerate(words) if word.lower() == "нет"]
+    flags = [False] * len(words)
+    found = find_answer_particles(text) if indices else []
+    if len(found) == len(indices):
+        for i, particle in zip(indices, found, strict=True):
+            flags[i] = particle
+    return flags
 
 
 @lru_cache(maxsize=131072)
@@ -541,11 +633,12 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
     features: dict[str, str | None] = {"pos": token.pos_ or None}
+    morph = token.morph.to_dict()
     for stat, feature in MORPHOLOGY_FEATURES.items():
-        values = token.morph.get(feature, [])
-        features[stat] = values[0] if values else None
+        value = morph.get(feature)
+        features[stat] = value.split(",", 1)[0] if value else None
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
-    if features["style_variant"] is None and "Short" in token.morph.get("Variant", []):
+    if features["style_variant"] is None and "Short" in morph.get("Variant", "").split(","):
         features["style_variant"] = "Short"
     parse = parse_verb(token.text, token.lemma_) if token.pos_ in ("VERB", "AUX") else None
     tag = parse.tag if parse else None

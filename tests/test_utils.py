@@ -25,6 +25,25 @@ def test_parse_yo_pronoun():
     assert lemmatize("её", "DET") == "её"
 
 
+@pytest.mark.parametrize(
+    ("word", "lemma", "pos"),
+    [
+        ("нем", "он", "NPRO"),
+        ("Нем", "он", "NPRO"),
+        ("есть", "быть", "VERB"),
+        ("ниже", "ниже", "ADVB"),
+        ("Мартова", "мартов", "NOUN"),
+        ("мартова", "мартовый", "ADJS"),
+        ("Кринжово", "кринжовый", "ADJS"),
+    ],
+)
+def test_parse_preferences(word, lemma, pos):
+    """«нем» - «нём», «есть» - «быть», «ниже» - наречие; догадка о кратком прилагательном
+    с заглавной буквы уступает существительному, если такой разбор есть"""
+    parse = parse_word(word)
+    assert (parse.normal_form, parse.tag.POS) == (lemma, pos)
+
+
 def test_parse_word_cached():
     parse_all.cache_clear()
     assert parse_word("рублей").normal_form == "рубль"

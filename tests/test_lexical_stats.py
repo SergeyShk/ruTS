@@ -111,10 +111,16 @@ def test_bands(ls):
     }
 
 
-@pytest.mark.parametrize("bands", [(0,), (-5, 1000), (1000, 20000)])
+@pytest.mark.parametrize(
+    "bands", [(0,), (-5, 1000), (1000, 20000), 1000, "1000", ["1000"], [True]]
+)
 def test_band_coverage_bounds(ls, bands):
     with pytest.raises(ParameterError):
         ls.band_coverage(bands=bands)
+
+
+def test_band_coverage_iterator(ls):
+    assert ls.band_coverage(bands=iter([100, 500])) == ls.band_coverage(bands=(100, 500))
 
 
 def test_rare_words(freq_dict):

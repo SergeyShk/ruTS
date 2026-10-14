@@ -262,9 +262,11 @@ class StyleStatsComponent(_Component):
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
-        stopwords (list[str]): Список стоп-слов для водности и академической тошноты;
-            если не задан, используется разметка pymorphy3
+        stopwords (list[str]): Список слов «воды» для водности; если не задан,
+            используется разметка pymorphy3
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
+        nausea_stopwords (list[str]): Список стоп-слов для академической тошноты; если
+            не задан, используется разметка pymorphy3
 
     Исключения:
         SourceTypeError: Если стоп-слова не набор строк
@@ -277,16 +279,25 @@ class StyleStatsComponent(_Component):
         name: str = "ruts_style",
         stopwords: list[str] | None = None,
         top_n: int = NAUSEA_TOP_N,
+        nausea_stopwords: list[str] | None = None,
     ):
         check_style_params(top_n)
         if stopwords is not None:
             check_words(stopwords, "stopwords", ordered=False)
+        if nausea_stopwords is not None:
+            check_words(nausea_stopwords, "nausea stopwords", ordered=False)
         self.stopwords = stopwords
         self.top_n = top_n
+        self.nausea_stopwords = nausea_stopwords
         super().__init__(nlp, name)
 
     def compute(self, doc: Doc) -> StyleStats:
-        return StyleStats(doc, stopwords=self.stopwords, top_n=self.top_n)
+        return StyleStats(
+            doc,
+            stopwords=self.stopwords,
+            top_n=self.top_n,
+            nausea_stopwords=self.nausea_stopwords,
+        )
 
 
 @Language.factory("ruts_phon")

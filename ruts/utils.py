@@ -27,7 +27,9 @@ from .exceptions import SourceTypeError
 F = TypeVar("F", bound=Callable[..., Any])
 DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
-SPELLINGS = {"её": "ее"}
+SPELLINGS = {"её": "ее", "нем": "нём"}
+# Разборы, которые идут первыми: бытийное и связочное «есть», наречие «ниже» (у pymorphy3 - предлог)
+PREFERRED_POS = {"есть": "VERB", "ниже": "ADVB"}
 CYRILLIC = "а-яёА-ЯЁ"
 LATIN_STRESSED = "áéóýàèòÁÉÓÝÀÈÒ"
 # Буквы вместо записей с отдельными знаками, ѐ и ѝ и ударных гласных латиницей
@@ -208,7 +210,14 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         Разборы по убыванию вероятности; знаки ударения и мягкие переносы
         снимаются (strip_marks). Словоформа «её» разбирается как «ее»:
         pymorphy3 дает у нее только притяжательное местоимение, без личного
-        «она», и текст с буквой ё разбирался бы иначе, чем без нее
+        «она», и текст с буквой ё разбирался бы иначе, чем без нее; «нем» -
+        как «нём» (SPELLINGS): первый разбор pymorphy3 - краткое «немой», а в текстах
+        без ё это почти всегда местоимение
+        Первыми идут разборы PREFERRED_POS: «есть» - глагол «быть» (у pymorphy3
+        первый - инфинитив «есть», хотя в текстах это чаще бытийное «есть»
+        или связка), «ниже» - наречие, как «выше»; у слова с заглавной буквы,
+        первый разбор которого - догадка pymorphy3 о кратком прилагательном
+        (Мартова, Финиста), первым идет разбор существительным
 
     Аргументы:
         word (str): Словоформа
@@ -222,7 +231,15 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         ['она', 'её']
     """
     word = strip_marks(word)
-    return tuple(get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word)))
+    parses = get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word))
+    pos = PREFERRED_POS.get(word.lower())
+    # Краткое прилагательное с заглавной буквы не из словаря - обычно фамилия или имя
+    guessed = bool(parses) and parses[0].tag.POS == "ADJS" and not parses[0].is_known
+    if pos is None and guessed and word[:1].isupper():
+        pos = "NOUN"
+    if pos is not None:
+        parses.sort(key=lambda parse: pos != parse.tag.POS)
+    return tuple(parses)
 
 
 def parse_word(word: str) -> pymorphy3.analyzer.Parse:

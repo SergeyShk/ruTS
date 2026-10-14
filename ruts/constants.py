@@ -3,6 +3,8 @@ from math import inf, nextafter
 from pathlib import Path
 from typing import TypedDict
 
+from anyts.constants import MESSAGES
+
 
 class MorphologyStatDesc(TypedDict):
     name: str
@@ -414,8 +416,8 @@ OPENCORPORA_VERB_FORMS = {
     "GRND": "Conv",
 }
 PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
-# Сообщения об ошибках классов статистик ядра anyTS (атрибут messages) по ключам MESSAGES ядра
-CORE_MESSAGES: dict[str, str] = {
+# Русские сообщения об ошибках классов статистик ядра anyTS (атрибут messages) по ключам MESSAGES ядра
+_RU_CORE_MESSAGES: dict[str, str] = {
     "source_type": "Некорректный источник данных",
     "no_words": "В источнике данных отсутствуют слова",
     "no_sentences": "В источнике данных отсутствуют предложения",
@@ -453,12 +455,19 @@ CORE_MESSAGES: dict[str, str] = {
         "Расширение {name} объекта Doc принадлежит другому пакету: дайте компоненту другое имя"
     ),
 }
+# Поверх MESSAGES ядра: новый ключ патча anyTS выйдет по-английски, а не сломает импорт ruTS
+CORE_MESSAGES: dict[str, str] = {**MESSAGES, **_RU_CORE_MESSAGES}
 # Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
 TENSED_PREDICATIVES = frozenset({"нет", "нету"})
-# Частицы с отрицанием (Polarity=Neg), как в русском UD
-NEGATIVE_PARTICLES = frozenset({"не", "ни"})
-# Аналитические компаративы: в русском UD Degree=Cmp, у pymorphy3 - наречия без COMP
-COMPARATIVE_ADVERBS = frozenset({"более", "менее"})
+# Частицы с отрицанием (Polarity=Neg), как в русском UD; «нет» - ответное (find_answer_particles)
+NEGATIVE_PARTICLES = frozenset({"не", "ни", "нет"})
+# Ответное «нет» (Нет, не пойду) стоит после этих знаков, начала текста или этих слов, а перед
+# знаком, концом текста или «уж», «же»; бытийное (Денег нет) - после знаменательного слова
+ANSWER_PARTICLE_PREV_MARKS = frozenset('.!?…,:;—–-«„"(')
+ANSWER_PARTICLE_PREV = frozenset({"или", "если", "а", "да", "ну", "ах", "ох", "ой", "эх", "о"})
+ANSWER_PARTICLE_NEXT = frozenset({"уж", "же"})
+# Наречия-компаративы: в русском UD Degree=Cmp, у pymorphy3 - наречия без COMP
+COMPARATIVE_ADVERBS = frozenset({"более", "менее", "выше", "ниже"})
 SUBORDINATING_CONJUNCTIONS = frozenset(
     {
         "будто",

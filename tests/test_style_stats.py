@@ -21,6 +21,7 @@ from ruts.style_stats import (
     calc_water,
     calc_zipf_naturalness,
     expand_phrases,
+    find_nausea_words,
     find_parentheticals,
     find_verbal_nouns,
     is_parenthetical,
@@ -124,9 +125,33 @@ def test_academic_nausea(ss):
     assert StyleStats(text, top_n=3).academic_nausea == pytest.approx(
         calc_academic_nausea(ss.words, 3)
     )
-    assert StyleStats(text, stopwords=["значений"]).academic_nausea == pytest.approx(
-        calc_academic_nausea(ss.words, stopwords=["значений"])
+    # со своим списком стоп-слов самое частое - «или» x2, а не «значений» x3
+    nausea = StyleStats(text, top_n=1, nausea_stopwords=["значений"]).academic_nausea
+    assert nausea == pytest.approx(100 * 2 / 61)
+
+
+def test_stopwords_lists():
+    """stopwords - слова воды, nausea_stopwords - стоп-слова тошноты; без учета регистра и ё"""
+    source = " ".join(riddle)
+    ss = StyleStats(source, stopwords=["когда"], nausea_stopwords=["нет", "а"])
+    assert ss.water == pytest.approx(100 * 3 / 15)
+    assert ss.academic_nausea == pytest.approx(
+        calc_academic_nausea(riddle, stopwords=["нет", "а"])
     )
+    assert StyleStats(source, stopwords=["когда"]).academic_nausea == pytest.approx(100 * 8 / 15)
+    assert StyleStats(source, nausea_stopwords=["когда"]).water == pytest.approx(100 * 5 / 15)
+    assert calc_water(["всё", "все"], ["ВСЁ"]) == 100.0
+    assert calc_academic_nausea(["всё", "кот"], 1, stopwords=["все"]) == 50.0
+
+
+def test_nausea_words(ss):
+    assert find_nausea_words(["кот", "и", "кот", "и", "пес"], 1) == {"кот": 2}
+    assert find_nausea_words(["кот", "и", "кот"], stopwords=["КОТ"]) == {"и": 1}
+    assert find_nausea_words([]) == {}
+    words = ss.nausea_words()
+    assert list(words)[:2] == ["значений", "значениями"]
+    assert sum(words.values()) == 13
+    assert StyleStats(text, top_n=1).nausea_words() == {"значений": 3}
 
 
 def test_water(ss):
@@ -342,7 +367,7 @@ def test_hyphenated_words_doc(nlp):
     )
 
 
-@pytest.mark.parametrize("parameter", ["stopwords", "cliches"])
+@pytest.mark.parametrize("parameter", ["stopwords", "nausea_stopwords", "cliches"])
 def test_init_string_list(parameter):
     with pytest.raises(SourceTypeError):
         StyleStats(text, **{parameter: "и в"})

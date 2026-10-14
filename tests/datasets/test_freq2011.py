@@ -153,8 +153,9 @@ def test_entries_cached(dataset):
     other = FreqDict(data_dir=dataset.data_dir)
     assert other.entries is dataset.entries
     assert load_entries(dataset._filepath) is dataset.entries
-    assert dataset.min_ipm == 4.1
-    assert load_min_ipm.cache_info().hits >= 1
+    hits = load_min_ipm.cache_info().hits
+    assert dataset.min_ipm == other.min_ipm == 4.1
+    assert load_min_ipm.cache_info().hits > hits
 
 
 def test_check_data_once(tmp_path, monkeypatch):

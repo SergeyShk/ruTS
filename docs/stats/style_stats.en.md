@@ -20,9 +20,10 @@ Lexical officialese markers: verbal nouns, compound prepositions, parentheticals
 | :-------: | :--: | :-----: | :---------: |
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
 | `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
-| `stopwords` | list[str] | `None` | Stop word list for water content and academic nausea; if not given, they are determined by part of speech with pymorphy3 |
+| `stopwords` | list[str] | `None` | List of water words for water content; if not given, they are determined by part of speech with pymorphy3 ([`is_water_word`](style_stats_funcs.md#is_water_word)) |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
 | `cliches` | list[str] | `None` | List of clichés; if not given, `OFFICIALESE_CLICHES` is used |
+| `nausea_stopwords` | list[str] | `None` | Stop word list for academic nausea; if not given, they are determined by part of speech with pymorphy3 ([`is_stopword`](style_stats_funcs.md#is_stopword)) |
 
 ## Attributes
 
@@ -82,6 +83,20 @@ Parameters:
     ss = StyleStats(text)
     ss.keyword_density("когда", "нет а")
     # {'когда': 20.0, 'нет а': 13.333333333333334}
+    ```
+
+### nausea_words
+
+Returns the most frequent significant words academic nausea is computed by: the `top_n` most frequent words without the stop words with the number of their occurrences, by descending frequency.
+
+!!! example "Example"
+
+    ``` python
+    from ruts import StyleStats
+
+    text = "Кот ловит мышей, кот спит, а мыши бегают вокруг кота"
+    StyleStats(text, top_n=2).nausea_words()
+    # {'кот': 2, 'ловит': 1}
     ```
 
 ### markers

@@ -26,7 +26,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_academic_nausea()**
 
-Computation of academic nausea ([Advego](https://advego.com/text/seo/)) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the `top_n` most frequent words without the stop words (of the given list or [`is_stopword`](#is_stopword)) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.
+Computation of academic nausea ([Advego](https://advego.com/text/seo/)) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the `top_n` most frequent words without the stop words ([`find_nausea_words`](#find_nausea_words)) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.
 
 Formula:
 
@@ -42,12 +42,36 @@ Parameters:
 | `top_n` | int | `10` | Number of the most frequent words |
 | `stopwords` | list[str] | `None` | List of stop words; if not set, pymorphy3 annotation is used |
 
+## Academic nausea words { #find_nausea_words }
+
+!!! info ""
+    **ruts.style_stats.find_nausea_words()**
+
+Search for the most frequent significant words [academic nausea](#calc_academic_nausea) is computed by: the `top_n` most frequent words without the stop words (of the given list, regardless of case and of the letter ё, or [`is_stopword`](#is_stopword)) with the number of their occurrences, by descending frequency.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `text` | list[str] | `-` | List of words |
+| `top_n` | int | `10` | Number of the most frequent words |
+| `stopwords` | list[str] | `None` | List of stop words; if not set, pymorphy3 annotation is used |
+
+!!! example "Example"
+
+    ``` python
+    from ruts.style_stats import find_nausea_words
+
+    find_nausea_words(["кот", "и", "кот", "и", "пес"], top_n=1)
+    # {'кот': 2}
+    ```
+
 ## Water content { #calc_water }
 
 !!! info ""
     **ruts.style_stats.calc_water()**
 
-Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given stop word list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
+Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given list, regardless of case and of the letter ё. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
 
 Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.
 
@@ -65,14 +89,14 @@ Parameters:
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `text` | list[str] | `-` | List of words |
-| `stopwords` | list[str] | `None` | Stop word list; if not given, pymorphy3 tags are used |
+| `stopwords` | list[str] | `None` | List of water words; if not given, pymorphy3 tags are used |
 
 ## Water word { #is_water_word }
 
 !!! info ""
     **ruts.style_stats.is_water_word()**
 
-Checking whether a word is "water" by part of speech for [water content](#calc_water): words with the part of speech `CONJ`, `PRCL`, `NPRO`, `INTJ` by pymorphy3 tags; the set is defined in `ruts.constants.WATER_POS`. The analysis results are cached.
+Checking whether a word is "water" by part of speech for [water content](#calc_water) and the `stopwords` layer of the highlighting: words with the part of speech `CONJ`, `PRCL`, `NPRO`, `INTJ` by pymorphy3 tags; the set is defined in `ruts.constants.WATER_POS`. The analysis results are cached.
 
 Parameters:
 
@@ -85,7 +109,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.is_stopword()**
 
-Checking whether a word is a stop word by part of speech - insignificant for [academic nausea](#calc_academic_nausea) and the `stopwords` layer of the highlighting. Stop words are words with the part of speech `CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED` or with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` by pymorphy3 tags; the sets are defined in `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`. The analysis results are cached.
+Checking whether a word is a stop word by part of speech - insignificant for [academic nausea](#calc_academic_nausea). Stop words are words with the part of speech `CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED` or with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` by pymorphy3 tags; the sets are defined in `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`. The analysis results are cached.
 
 Parameters:
 

@@ -1,7 +1,8 @@
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from functools import cache, cached_property, lru_cache
 from math import log2, log10, nan
+from numbers import Integral
 from statistics import fmean
 
 import anyts
@@ -248,13 +249,22 @@ class LexicalStats:
             dict[int, float]: Доля слов с леммой из топ-N для каждой границы N
 
         Исключения:
-            ParameterError: Если граница полосы вне рангов вшитого списка (1..10 000)
+            ParameterError: Если границы полос не список целых чисел или граница вне рангов
+                вшитого списка (1..10 000)
         """
+        if isinstance(bands, str | bytes) or not isinstance(bands, Iterable):
+            raise ParameterError(f"Границы полос должны быть списком, а не {type(bands).__name__}")
+        bands = tuple(bands)
         last_rank = max(load_top_lemmas().values())
         for band in bands:
-            if not 1 <= band <= last_rank:
+            value: object = band
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, Integral)
+                or not 1 <= band <= last_rank
+            ):
                 raise ParameterError(
-                    f"Граница полосы должна быть от 1 до {last_rank}, а не {band}"
+                    f"Граница полосы должна быть целым числом от 1 до {last_rank}, а не {band!r}"
                 )
         ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
         return {

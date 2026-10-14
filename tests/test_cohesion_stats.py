@@ -40,6 +40,14 @@ def nlp():
     return spacy.load("ru_core_news_sm")
 
 
+def test_answer_particle_tense(nlp):
+    """Ответное «нет» - частица без времени, бытийное - в настоящем, как у Doc"""
+    answers = "Нет, я его видел. Нет, она придёт завтра."
+    assert CohesionStats(answers).tense_repetition == 0.0
+    assert CohesionStats(nlp(answers)).tense_repetition == 0.0
+    assert CohesionStats("Денег нет. Хлеба нет.").tense_repetition == 1.0
+
+
 def test_init_value_error():
     with pytest.raises(ValueError):
         CohesionStats("... !!! ...")

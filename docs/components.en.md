@@ -232,8 +232,9 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
 | `name` | str | `"ruts_style"` | Component name in the pipeline |
-| `stopwords` | list[str] | `None` | Stop word list for water content and academic nausea; if not given, pymorphy3 tags are used |
+| `stopwords` | list[str] | `None` | List of water words for water content; if not given, pymorphy3 tags are used |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
+| `nausea_stopwords` | list[str] | `None` | Stop word list for academic nausea; if not given, pymorphy3 tags are used |
 
 Usage example:
 

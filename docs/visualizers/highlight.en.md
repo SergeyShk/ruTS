@@ -24,7 +24,7 @@ Highlighting layers:
 | Officialese | `verbal_nouns` | Verbal nouns | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Compound prepositions from the `COMPOUND_PREPOSITIONS` list | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Clichés from the `OFFICIALESE_CLICHES` list or the `cliches` parameter | [StyleStats](../stats/style_stats.md) |
-| Style | `stopwords` | Stop words by part of speech (`is_stopword`) or from the given list | [StyleStats](../stats/style_stats.md) |
+| Style | `stopwords` | Water words by part of speech (`is_water_word`) or from the given list, as in water content | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Parenthetical words and phrases | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Connectives by part of speech from the `Doc` annotation or pymorphy3, the tooltip shows the class and type | [CohesionStats](../stats/cohesion_stats.md) |
 | Phonics | `alliteration` | Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies | [PhonStats](../stats/phon_stats.md) |
@@ -48,7 +48,7 @@ The parameters of the layers of ruTS:
 | :-------: | :--: | :-----: | :---------: |
 | `long_sent_word_factor` | int | `20` | Minimum number of words in a long sentence |
 | `complex_syl_factor` | int | `4` | Minimum number of syllables in a complex word |
-| `stopwords` | list[str]/set[str] | `None` | List or set of stop words; if not given, stop words are determined by part of speech with pymorphy3 |
+| `stopwords` | list[str]/set[str] | `None` | List or set of water words; if not given, they are determined by part of speech with pymorphy3 |
 | `cliches` | list[str]/set[str] | `None` | List or set of clichés; if not given, `OFFICIALESE_CLICHES` is used |
 | `alliteration_threshold` | float | `0.001` | Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration |
 
@@ -109,7 +109,7 @@ The note of a fragment gives the number of words in the sentence, of syllables i
     highlight(nlp(text), layers="all").counts
     # {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,
     #  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,
-    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 17, 'parentheticals': 0,
+    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,
     #  'connectors': 4, 'alliteration': 1}
 
     # Display in Jupyter or save the markup

@@ -209,6 +209,14 @@ def test_sis_grade_by_freq(rs):
     assert rs.sis_grade_by_freq(500, "2-4") != rs.sis_grade_by_freq(500)
     with pytest.raises(ValueError):
         rs.sis_grade_by_freq(500, "12")
+    # nan - нет знаменательных слов в словаре
+    assert isnan(rs.sis_grade_by_freq(float("nan")))
+
+
+@pytest.mark.parametrize("mean_ipm", [-1, float("inf"), "100", True, None])
+def test_sis_grade_by_freq_value(rs, mean_ipm):
+    with pytest.raises(ParameterError, match=r"^Частотность должна быть"):
+        rs.sis_grade_by_freq(mean_ipm)
 
 
 def test_sis_grade_counted_letters():
