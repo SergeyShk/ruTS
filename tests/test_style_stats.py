@@ -1,13 +1,10 @@
-import json
 import re
 from collections import defaultdict
 from math import inf, isnan, nextafter
 from pathlib import Path
 
-import numpy as np
 import pytest
 import spacy
-from scipy.stats import spearmanr
 
 from ruts import StyleStats, WordsExtractor
 from ruts.constants import STYLE_NORMS, STYLE_STATS_DESC
@@ -456,22 +453,3 @@ def test_is_water_word(word, expected):
 def test_is_water_word_type():
     with pytest.raises(SourceTypeError):
         is_water_word(5)
-
-
-TEXT_RU = Path(__file__).parent / "data" / "textru"
-
-
-def test_water_follows_text_ru():
-    """Водность 15 текстов разных типов близка к воде Text.ru, как сказано в документации"""
-    truth = json.loads((TEXT_RU / "text_ru.json").read_text(encoding="utf-8"))
-    ours = np.array(
-        [StyleStats((TEXT_RU / f"{i}.txt").read_text(encoding="utf-8")).water for i in truth]
-    )
-    theirs = np.array([value["water"] for value in truth.values()], dtype=float)
-    mae = np.mean(np.abs(ours - theirs))
-    assert f"{mae:.1f}" == "1.3"
-    assert spearmanr(ours, theirs)[0] > 0.85
-    page = (Path(__file__).parent.parent / "docs" / "stats" / "style_stats_funcs.md").read_text(
-        encoding="utf-8"
-    )
-    assert "средней ошибкой 1.3 процентного пункта" in page

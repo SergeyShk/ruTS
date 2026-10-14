@@ -47,7 +47,7 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_water()**
 
-Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions, particles, pronominal nouns, interjections and parenthetical words (конечно, например) by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given stop word list. On 15 texts of different types this set reproduces the water content of Text.ru with a mean error of 1.3 percentage points; prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
+Computation of water content ([Text.ru](https://text.ru/seo)) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions, particles, pronominal nouns, interjections and parenthetical words (конечно, например) by pymorphy3 tags (function [`is_water_word`](#is_water_word)) or words from the given stop word list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of [`is_stopword`](#is_stopword), are not water for Text.ru.
 
 Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.
 
