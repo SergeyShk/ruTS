@@ -9,7 +9,7 @@ from spacy.tokens import Doc
 
 from .constants import BASIC_STATS_DESC, COMPLEX_SYL_FACTOR, LONG_WORD_LETTER_FACTOR
 from .exceptions import ParameterError, SourceError, SourceTypeError
-from .extractors import SentsExtractor, WordsExtractor
+from .extractors import SentsExtractor, WordsExtractor, _FixedWordsExtractor
 from .syllables import count_syllables
 from .utils import strip_doc_marks, strip_marks
 
@@ -150,7 +150,15 @@ class BasicStats(anyts.basic_stats.BasicStats):
         else:
             raise SourceTypeError("Некорректный источник данных")
         # Проверка до ядра, чтобы сообщение было по-русски, как у остальных классов
-        if not has_words(source):
+        if words_extractor is not None:
+            words = tuple(
+                words_extractor.extract(source if isinstance(source, str) else source.text)
+            )
+            words_extractor = _FixedWordsExtractor(words)
+            empty = not words
+        else:
+            empty = not has_words(source)
+        if empty:
             raise SourceError("В источнике данных отсутствуют слова")
         super().__init__(
             source,

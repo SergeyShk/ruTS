@@ -257,3 +257,23 @@ def test_extractor_type_messages(name):
         stats("Кот спит.", sents_extractor=5)
     with pytest.raises(ruts.SourceTypeError, match=r"^Экстрактор слов должен быть"):
         stats("Кот спит.", words_extractor=5)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "BasicStats",
+        "ReadabilityStats",
+        "DiversityStats",
+        "MorphStats",
+        "StyleStats",
+        "PhonStats",
+        "CohesionStats",
+        "LexicalStats",
+    ],
+)
+def test_no_words_after_the_words_extractor(name):
+    """Экстрактор, отбросивший все слова текста, дает то же сообщение, что текст без слов"""
+    extractor = ruts.WordsExtractor(stopwords=["в", "году"], filter_nums=True)
+    with pytest.raises(ruts.SourceError, match=r"^В источнике данных отсутствуют слова$"):
+        getattr(ruts, name)("В 2024 году.", words_extractor=extractor)

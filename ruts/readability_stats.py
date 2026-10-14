@@ -163,8 +163,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     ):
         check_preset(preset)
         check_extractors(sents_extractor, words_extractor)
-        if not isinstance(source, Doc | str | anyts.basic_stats.BasicStats):
-            raise SourceTypeError("Некорректный источник данных")
+        if isinstance(source, anyts.basic_stats.BasicStats) and not isinstance(source, BasicStats):
+            raise SourceTypeError("Базовые статистики должны быть объектом BasicStats ruTS")
         super().__init__(source, sents_extractor, words_extractor, preset)
 
     @property
