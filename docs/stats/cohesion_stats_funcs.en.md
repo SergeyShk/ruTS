@@ -1,6 +1,6 @@
 # Statistic functions
 
-The functions of the overlaps, the givenness and the repetitions come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats_funcs/) core and take the elements of every sentence (lemmas or values of a feature of the verbs) in the order of the text; the features of the words, the dictionary of the connectors and the search in it are those of ruTS. The names of the [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) indices are given in parentheses.
+The functions of the overlaps, the givenness and the repetitions come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats_funcs/) core and take the elements of every sentence (lemmas or values of a feature of the verbs) in the order of the text; the features of the words and the dictionary of the connectors are those of ruTS, and the connectors are found by the matcher of the core with the Russian hooks (`RussianConnectorMatcher`). The names of the [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) indices are given in parentheses.
 
 --8<-- "stats/cohesion_stats_funcs.md:cohesion-checks"
 

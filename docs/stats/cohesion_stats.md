@@ -57,7 +57,7 @@
 | :-----: | :-: | :------: |
 | `words`, `lemmas` | tuple[tuple[str]] | Слова и леммы каждого предложения, в котором есть слова |
 | `n_sents`, `n_words` | int | Количество предложений со словами и количество слов |
-| `n_nouns`, `n_pronouns`, `n_demonstratives`, `n_content_words` | int | Количество существительных, местоимений, указательных и знаменательных слов |
+| `n_nouns`, `n_pronouns`, `n_demonstratives`, `n_content_words` | int | Количество слов по видам |
 | `n_given` | int | Количество знаменательных слов, лемма которых встречалась раньше |
 | `n_connectors`, `connector_spans`, `c_connectors` | int, tuple[Connector], dict[str, int] | Количество коннекторов, их вхождения и количество вхождений по коннекторам |
 | `noun_overlap_adjacent`, `noun_overlap_all` | float | Доли соседних и всех пар предложений с общим существительным |
@@ -74,7 +74,7 @@
 
 Повторы слов в тексте из одного предложения, повтор признака без двух соседних предложений с ним и доля, которой не на что делить, равны `nan`.
 
-Наклонение ruTS не размечает: `mood_repetition` всегда равен `nan` и в `get_stats` не входит, а `temporal_cohesion` - среднее `tense_repetition` и `aspect_repetition`. Заданные экстракторы хранятся в атрибутах:
+Наклонение `CohesionStats` в ruTS не сравнивает: `mood_repetition` всегда равен `nan` и в `get_stats` не входит, а `temporal_cohesion` - среднее `tense_repetition` и `aspect_repetition`. Заданные экстракторы хранятся в атрибутах:
 
 | Атрибут | Тип | Описание |
 | :-----: | :-: | :------: |

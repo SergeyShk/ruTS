@@ -54,7 +54,7 @@ A source that is neither a string nor a `Doc`, an extractor of another type and 
 
 --8<-- "stats/cohesion_stats.md:CohesionStats-attributes"
 
-ruTS does not mark the mood: `mood_repetition` is always `nan` and is not in `get_stats`, and `temporal_cohesion` is the mean of `tense_repetition` and `aspect_repetition`. The extractors given are kept as attributes:
+`CohesionStats` of ruTS does not compare the mood: `mood_repetition` is always `nan` and is not in `get_stats`, and `temporal_cohesion` is the mean of `tense_repetition` and `aspect_repetition`. The extractors given are kept as attributes:
 
 | Attribute | Type | Description |
 | :-------: | :--: | :---------: |

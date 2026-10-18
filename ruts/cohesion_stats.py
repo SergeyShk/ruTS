@@ -254,13 +254,13 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         texts: Iterable[str]
         if isinstance(source, str):
             text = source
-            texts = (self.sents_extractor or SentsExtractor()).extract(text)
+            texts = (self.sents_extractor or self.sents_extractor_class()).extract(text)
         elif is_doc(source):
             text = source.text
             if has_sents(source) and not self.sents_extractor:
                 texts = tuple(sent.text for sent in source.sents)
             else:
-                texts = (self.sents_extractor or SentsExtractor()).extract(text)
+                texts = (self.sents_extractor or self.sents_extractor_class()).extract(text)
         else:
             raise SourceTypeError(self.messages["source_type"])
         extractor = self.words_extractor or WordsExtractor()
@@ -347,9 +347,10 @@ def find_connectors(
         list[Connector]: Вхождения коннекторов в порядке слов
 
     Исключения:
-        SourceTypeError: Если словарь коннекторов или части речи заданы неверно
-        ParameterError: Если в словаре встречается неизвестный класс или тип или частей
-            речи не столько, сколько слов
+        SourceTypeError: Если слова не список строк, словарь коннекторов или части речи
+            заданы неверно
+        ParameterError: Если в словаре встречается неизвестный класс или тип, номер
+            предложения не целое число или частей речи не столько, сколько слов
     """
     matcher = (
         CohesionStats.connector_matcher()
