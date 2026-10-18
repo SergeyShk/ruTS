@@ -5,9 +5,9 @@
 
 ## Description
 
-A module for computing text cohesion statistics modeled on [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) and [TAACO](https://doi.org/10.3758/s13428-015-0651-7): overlap of nouns, arguments (nouns and pronouns) and content words between adjacent sentences and all sentence pairs; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - repetition of verb tense and aspect in adjacent sentences; connective density by class and type per 1000 words. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
+The cohesion statistics of a text in the manner of [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) and [TAACO](https://doi.org/10.3758/s13428-015-0651-7): the overlap of nouns, arguments (nouns and pronouns) and content words between adjacent and between all pairs of sentences; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - the repetition of the tense and aspect of the verbs of adjacent sentences; the density of connectors by class and type per 1000 words. Sentences are compared by lemmas. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
 
-Sentence pairs are compared by lemmas. For a `Doc` object with part-of-speech annotation, parts of speech, tense and aspect are taken from `token.pos_` and `token.morph`, the lemma - from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`): the lemmatizer of the `ru_core_news` models returns the word form for `AUX` and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used. Without an extractor `Doc` words are taken from the tokens (hyphenated words split by spaCy are glued back); a `Doc` without sentence boundaries is split into sentences by `SentsExtractor` over the text, a word belongs to a sentence by the position of its first token.
+The words are classified by the [pymorphy3](https://github.com/no-plagiarism/pymorphy3) tags or by the Universal Dependencies annotation of a `Doc`:
 
 | Notion | pymorphy3 | Universal Dependencies (`Doc`) |
 | :----- | :-------- | :----------------------------- |
@@ -18,9 +18,7 @@ Sentence pairs are compared by lemmas. For a `Doc` object with part-of-speech an
 | Demonstratives | lemmas from `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | the same lemmas |
 | Tense and aspect | grammemes `past`, `pres`, `futr` and `perf`, `impf` of verb forms, the tense of the existential нет and нету | features `Tense` and `Aspect` |
 
-The overlap indicators range from 0 to 1; for a one-sentence text they are `nan`, as is the temporal cohesion of a text without verbs in adjacent sentences. All-pair overlaps are computed without enumerating pairs, see [`calc_overlaps`](cohesion_stats_funcs.md#calc_overlaps).
-
-Connectives are searched by word forms in every sentence using the `ruts/resources/connectors.tsv` dictionary (317 entries, see [`find_connectors`](cohesion_stats_funcs.md#find_connectors)); your own dictionary is passed with the `connectors` parameter. A single-word connective counts only with a part of speech from `CONNECTOR_POS` (conjunction, particle, adverb, preposition, interjection) or from `CONNECTOR_POS_EXTRA` for particular words (словом, главное, допустим, точнее): «раз» as a noun and «значит» as a verb do not count. The part of speech is taken from the `Doc` annotation; without annotation a word passes if a suitable part of speech appears in at least one pymorphy3 analysis (`connector_pos`): for «раз» the first analysis is a noun, the conjunction comes only in the following ones. Classes after Krioni, Nikin and Filippova (2008):
+Connectors are searched in every sentence by the dictionary `ruts/resources/connectors.tsv` (317 entries, see [`find_connectors`](cohesion_stats_funcs.md#find_connectors)); your own dictionary is passed with the `connectors` parameter. A one-word connector counts only with a part of speech from `CONNECTOR_POS` (conjunction, particle, adverb, preposition, interjection) or from `CONNECTOR_POS_EXTRA` for particular words (словом, главное, допустим, точнее): «раз» as a noun and «значит» as a verb do not count. The part of speech is taken from the `Doc` annotation; without it a word passes if a suitable part of speech appears in at least one pymorphy3 analysis. Classes after Krioni, Nikin and Filippova (2008):
 
 | Class | Key | Examples |
 | :---- | :-- | :------- |
@@ -32,10 +30,14 @@ Connectives are searched by word forms in every sentence using the `ruts/resourc
 | Conditional | `conditional` | если, в случае если, при условии что, в противном случае |
 | Reformulative | `reformulative` | то есть, иными словами, в общем, подводя итог |
 
-Connective type: primary - conjunctions, adverbs and particles (потому что, однако, затем), secondary - lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами).
+Connector type: primary - conjunctions, adverbs and particles (потому что, однако, затем), secondary - lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами).
 
 !!! note "Note"
     The statistics are computed when the `CohesionStats` object is initialized.
+
+## Language hooks
+
+The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer. `analyze` reads a string as well as a `Doc`: for a `Doc` with part-of-speech annotation the parts of speech, tense and aspect come from `token.pos_` and `token.morph`, and the lemma from the pymorphy3 analysis with the part of speech of the token ([`unit_info`](cohesion_stats_funcs.md#word_info)); for a string, a `Doc` without annotation and a `Doc` with a word extractor given, from the first pymorphy3 analysis ([`words_info`](cohesion_stats_funcs.md#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`join_hyphens = True`, `во-первых` is one word). A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md) (`sents_extractor_class`); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given, a parameter the core does not have. The connectors come from the dictionary of `load_connectors` and are found by `RussianConnectorMatcher` ([`find_connectors`](cohesion_stats_funcs.md#find_connectors)), the core `ConnectorMatcher` with the Russian normalization of words and parts of speech. The `print_stats` table has Russian headers and the descriptions of `ruts.constants.COHESION_STATS_DESC`, the error messages are in Russian (`CORE_MESSAGES`).
 
 ## Parameters
 
@@ -44,49 +46,20 @@ Connective type: primary - conjunctions, adverbs and particles (потому ч�
 | `source` | str/Doc | `-` | Data source (a string or a Doc object) |
 | `sents_extractor` | SentsExtractor | `None` | Sentence extraction tool; when given, it is applied to the text of a Doc too |
 | `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
-| `connectors` | dict[str, tuple[str, str]] | `None` | Connective dictionary - class and type by connective; if not given, the dictionary from `resources` is used |
+| `connectors` | dict[str, tuple[str, str]] | `None` | Connector dictionary - class and type by connector; if not given, the dictionary from `resources` is used |
+
+A source that is neither a string nor a `Doc`, an extractor of another type and connectors that are not a dictionary of phrases and pairs of strings raise `SourceTypeError`; a source without words raises `SourceError`, and an unknown class or type of a connector `ParameterError`.
 
 ## Attributes
 
+--8<-- "stats/cohesion_stats.md:CohesionStats-attributes"
+
+`CohesionStats` of ruTS does not compare the mood: `mood_repetition` is always `nan` and is not in `get_stats`, and `temporal_cohesion` is the mean of `tense_repetition` and `aspect_repetition`. The extractors given are kept as attributes:
+
 | Attribute | Type | Description |
 | :-------: | :--: | :---------: |
-| `words` | tuple[tuple[str, ...], ...] | Tuple of the words of each sentence |
-| `lemmas` | tuple[tuple[str, ...], ...] | Tuple of the lemmas of each sentence |
-| `n_sents` | int | Number of sentences containing words |
-| `n_words` | int | Number of words |
-| `n_nouns` | int | Number of nouns |
-| `n_pronouns` | int | Number of pronouns |
-| `n_demonstratives` | int | Number of demonstrative pronouns |
-| `n_content_words` | int | Number of content words |
-| `n_given` | int | Number of content words whose lemma occurred earlier |
-| `n_connectors` | int | Number of connectives |
-| `connector_spans` | tuple[Connector] | Tuple of connective occurrences: sentence number, boundaries, connective, class, type |
-| `c_connectors` | dict[str, int] | Distribution of occurrences by connective |
-| `noun_overlap_adjacent` | float | Share of adjacent sentence pairs sharing a noun |
-| `noun_overlap_all` | float | Share of all sentence pairs sharing a noun |
-| `argument_overlap_adjacent` | float | Share of adjacent sentence pairs sharing a noun or pronoun |
-| `argument_overlap_all` | float | Share of all sentence pairs sharing a noun or pronoun |
-| `content_overlap_adjacent` | float | Share of adjacent sentence pairs sharing a content word |
-| `content_overlap_all` | float | Share of all sentence pairs sharing a content word |
-| `content_overlap_prop_adjacent` | float | Mean share of shared content words in adjacent sentences |
-| `content_overlap_prop_all` | float | Mean share of shared content words in all sentence pairs |
-| `p_pronouns` | float | Share of pronouns among words |
-| `pronoun_noun_ratio` | float | Ratio of pronouns to nouns |
-| `p_demonstratives` | float | Share of demonstrative pronouns among words |
-| `p_given` | float | Share of content words whose lemma occurred earlier in the text |
-| `tense_repetition` | float | Share of adjacent sentence pairs with the same dominant tense |
-| `aspect_repetition` | float | Share of adjacent sentence pairs with the same dominant aspect |
-| `temporal_cohesion` | float | Mean of tense and aspect repetition |
-| `connectors` | float | Connectives per 1000 words |
-| `connectors_causal` | float | Causal connectives per 1000 words |
-| `connectors_adversative` | float | Adversative connectives per 1000 words |
-| `connectors_concessive` | float | Concessive connectives per 1000 words |
-| `connectors_temporal` | float | Temporal connectives per 1000 words |
-| `connectors_additive` | float | Additive connectives per 1000 words |
-| `connectors_conditional` | float | Conditional connectives per 1000 words |
-| `connectors_reformulative` | float | Reformulative connectives per 1000 words |
-| `connectors_primary` | float | Primary connectives per 1000 words |
-| `connectors_secondary` | float | Secondary connectives per 1000 words |
+| `sents_extractor` | SentsExtractor | Sentence extraction tool given, `None` without it |
+| `words_extractor` | WordsExtractor | Word extraction tool given, `None` without it |
 
 !!! note "Note"
     Every statistic can be computed separately by calling the corresponding function. Detailed information on the cohesion statistics and the functions used to compute them is available in the corresponding [section](cohesion_stats_funcs.md).
@@ -158,7 +131,9 @@ Words, lemmas and counters are available as attributes:
 
 ### print_stats
 
-Prints a table with the computed cohesion statistics.
+--8<-- "stats/stats.md:Stats-print_stats"
+
+To illustrate the method, we reuse the code from the `get_stats` example:
 
 !!! example "Example"
 
@@ -174,31 +149,35 @@ Prints a table with the computed cohesion statistics.
     _Result_:
 
     ``` bash
-                            Статистика                        | Значение
+                           Статистика                        | Значение
     --------------------------------------------------------------------
-    Повтор существительных в соседних предложениях            |   0.33
-    Повтор существительных во всех парах предложений          |   0.50
-    Повтор аргументов в соседних предложениях                 |   0.33
-    Повтор аргументов во всех парах предложений               |   0.67
-    Повтор знаменательных слов в соседних предложениях        |   0.33
-    Повтор знаменательных слов во всех парах предложений      |   0.50
-    Доля общих знаменательных слов в соседних предложениях    |   0.11
-    Доля общих знаменательных слов во всех парах предложений  |   0.19
-    Доля местоимений                                          |   0.14
-    Отношение местоимений к существительным                   |   0.50
-    Доля указательных местоимений                             |   0.05
-    Доля знаменательных слов, встречавшихся ранее             |   0.29
-    Повтор времени в соседних предложениях                    |   0.67
-    Повтор вида в соседних предложениях                       |   0.33
-    Темпоральная связность                                    |   0.50
-    Коннекторов на 1000 слов                                  |  47.62
-    Причинных коннекторов на 1000 слов                        |   0.00
-    Противительных коннекторов на 1000 слов                   |   0.00
-    Уступительных коннекторов на 1000 слов                    |   0.00
-    Временных коннекторов на 1000 слов                        |   0.00
-    Аддитивных коннекторов на 1000 слов                       |  47.62
-    Условных коннекторов на 1000 слов                         |   0.00
-    Переформулирующих коннекторов на 1000 слов                |   0.00
-    Первичных коннекторов на 1000 слов                        |  47.62
-    Вторичных коннекторов на 1000 слов                        |   0.00
+    Повтор существительных в соседних предложениях           |   0.33
+    Повтор существительных во всех парах предложений         |   0.50
+    Повтор аргументов в соседних предложениях                |   0.33
+    Повтор аргументов во всех парах предложений              |   0.67
+    Повтор знаменательных слов в соседних предложениях       |   0.33
+    Повтор знаменательных слов во всех парах предложений     |   0.50
+    Доля общих знаменательных слов в соседних предложениях   |   0.11
+    Доля общих знаменательных слов во всех парах предложений |   0.19
+    Доля местоимений                                         |   0.14
+    Отношение местоимений к существительным                  |   0.50
+    Доля указательных местоимений                            |   0.05
+    Доля знаменательных слов, встречавшихся ранее            |   0.29
+    Повтор времени в соседних предложениях                   |   0.67
+    Повтор вида в соседних предложениях                      |   0.33
+    Темпоральная связность                                   |   0.50
+    Коннекторов на 1000 слов                                 |  47.62
+    Причинных коннекторов на 1000 слов                       |   0.00
+    Противительных коннекторов на 1000 слов                  |   0.00
+    Уступительных коннекторов на 1000 слов                   |   0.00
+    Временных коннекторов на 1000 слов                       |   0.00
+    Аддитивных коннекторов на 1000 слов                      |  47.62
+    Условных коннекторов на 1000 слов                        |   0.00
+    Переформулирующих коннекторов на 1000 слов               |   0.00
+    Первичных коннекторов на 1000 слов                       |  47.62
+    Вторичных коннекторов на 1000 слов                       |   0.00
     ```
+
+### to_dataframe, describe
+
+The `to_dataframe` method (the statistics as a one-row `pandas.DataFrame`) and the `describe` method are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the cohesion statistics have no scales, so `describe` always gives `None`.

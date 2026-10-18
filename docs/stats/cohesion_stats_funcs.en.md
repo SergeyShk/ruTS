@@ -1,13 +1,15 @@
 # Statistic functions
 
-The overlap functions take sets or lists of the lemmas of every sentence in text order; word features for `CohesionStats` are given by [`word_info`](#word_info) and [`token_info`](#word_info). The names of the [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) indices are given in parentheses.
+The functions of the overlaps, the givenness and the repetitions come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats_funcs/) core and take the elements of every sentence (lemmas or values of a feature of the verbs) in the order of the text; the features of the words and the dictionary of the connectors are those of ruTS, and the connectors are found by the matcher of the core with the Russian hooks (`RussianConnectorMatcher`). The names of the [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) indices are given in parentheses.
+
+--8<-- "stats/cohesion_stats_funcs.md:cohesion-checks"
 
 ## Binary overlap { #calc_overlap }
 
 !!! info ""
     **ruts.cohesion_stats.calc_overlap()**
 
-Computation of the share of sentence pairs with a shared element: a noun lemma (`CRFNO1`, `CRFNOa`), an argument (`CRFAO1`, `CRFAOa`) or a content word (`CRFSO1`, `CRFSOa`). By default adjacent sentence pairs are counted, with `adjacent=False` - all pairs. For a text shorter than two sentences `nan` is returned.
+--8<-- "stats/cohesion_stats_funcs.md:calc_overlap"
 
 Formula:
 
@@ -15,14 +17,7 @@ $$
 \frac{|\{(i, j): S_i \cap S_j \neq \varnothing\}|}{|\{(i, j)\}|}
 $$
 
-where $S_i$ is the set of lemmas of sentence $i$, the pairs $(i, j)$ are adjacent or all.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `sets` | list[set[str]] | `-` | Sets of elements of every sentence |
-| `adjacent` | bool | `True` | Count only adjacent pairs, otherwise all pairs |
+where $S_i$ is the set of elements of sentence $i$, the pairs $(i, j)$ are adjacent or all.
 
 !!! example "Example"
 
@@ -39,78 +34,59 @@ Parameters:
 ## Proportional overlap { #calc_proportional_overlap }
 
 !!! info ""
-    **ruts.cohesion_stats.calc_proportional_overlap()**
+    **ruts.cohesion_stats.calc_proportional_overlap()**, **ruts.cohesion_stats.dice()**
 
-Computation of the mean share of shared elements in sentence pairs (`CRFCWO1`, `CRFCWOa`): the Dice coefficient of the lemma sets averaged over adjacent or all pairs; a pair without elements gets 0. For a text shorter than two sentences `nan` is returned.
+--8<-- "stats/cohesion_stats_funcs.md:calc_proportional_overlap"
 
-Formula:
+### dice
 
-$$
-\frac{1}{|\{(i, j)\}|} \sum_{(i, j)} \frac{2 \cdot |S_i \cap S_j|}{|S_i| + |S_j|}
-$$
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `sets` | list[set[str]] | `-` | Sets of elements of every sentence |
-| `adjacent` | bool | `True` | Count only adjacent pairs, otherwise all pairs |
+--8<-- "stats/cohesion_stats_funcs.md:dice"
 
 ## All overlaps in one pass { #calc_overlaps }
 
 !!! info ""
-    **ruts.cohesion_stats.calc_overlaps()**, **ruts.cohesion_stats.dice()**, **ruts.cohesion_stats.Overlap**
+    **ruts.cohesion_stats.calc_overlaps()**, **ruts.cohesion_stats.Overlap**
 
-Computation of the binary and proportional overlaps over adjacent and all sentence pairs; returns `Overlap(adjacent, all, prop_adjacent, prop_all)` with the same values as [`calc_overlap`](#calc_overlap) and [`calc_proportional_overlap`](#calc_proportional_overlap). With `proportional=False` the proportional overlaps are not computed, and `prop_adjacent` and `prop_all` are `nan`. The `dice` function computes the Dice coefficient of two sets.
+--8<-- "stats/cohesion_stats_funcs.md:calc_overlaps"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `sets` | list[set[str]] | `-` | Sets of elements of every sentence |
-| `proportional` | bool | `True` | Compute the proportional overlaps as well |
+`CohesionStats` computes with it the overlaps of the nouns and of the arguments without the proportional ones, and those of the content words with them.
 
 ## Givenness { #count_given }
 
 !!! info ""
     **ruts.cohesion_stats.count_given()**
 
-Computation of the number of given elements - lemmas that already occurred earlier in the text, including the current sentence. `CohesionStats` divides the number of given content words by their total (`p_given`); the share of pronouns `p_pronouns`, the pronoun-to-noun ratio `pronoun_noun_ratio` and the share of demonstratives `p_demonstratives` are computed from the class counters.
+--8<-- "stats/cohesion_stats_funcs.md:count_given"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `sents` | list[list[str]] | `-` | Lemmas of every sentence in text order |
+`CohesionStats` divides the number of given content words by their total (`p_given`); the share of pronouns `p_pronouns`, the pronoun-to-noun ratio `pronoun_noun_ratio` and the share of demonstratives `p_demonstratives` are computed from the class counters.
 
 ## Tense and aspect repetition { #calc_repetition }
 
 !!! info ""
     **ruts.cohesion_stats.calc_repetition()**, **ruts.cohesion_stats.dominant()**
 
-Computation of the share of adjacent sentence pairs with the same dominant value of a verb feature - tense or aspect (`SMTEMP`). `dominant` takes the most frequent value (the first on a tie); pairs where one of the sentences has no verbs with the feature are skipped, and without such pairs `nan` is returned. `CohesionStats` computes `tense_repetition`, `aspect_repetition` and their mean `temporal_cohesion`.
+--8<-- "stats/cohesion_stats_funcs.md:calc_repetition"
 
-Parameters:
+`CohesionStats` computes `tense_repetition`, `aspect_repetition` and their mean `temporal_cohesion`.
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `sents` | list[list[str]] | `-` | Verb feature values of every sentence |
+### dominant
 
-## Connectives { #find_connectors }
+--8<-- "stats/cohesion_stats_funcs.md:dominant"
+
+## Connectors { #find_connectors }
 
 !!! info ""
-    **ruts.cohesion_stats.find_connectors()**, **ruts.cohesion_stats.load_connectors()**, **ruts.cohesion_stats.Connector**, **ruts.cohesion_stats.connector_pos()**
+    **ruts.cohesion_stats.find_connectors()**, **ruts.cohesion_stats.load_connectors()**, **ruts.cohesion_stats.RussianConnectorMatcher**, **ruts.cohesion_stats.Connector**, **ruts.cohesion_stats.connector_pos()**
 
-Search for connectives in a sentence by lowercased word forms with ё replaced by е: at every position the longest one is taken («и всё же» does not fall apart into «и»), matches do not overlap; patterns are indexed by the first word, so the search is linear in the number of words. A hyphen or period inside a connective may be split off by the tokenizer («Во», «первых» in spaCy, «т», «е» in `WordsExtractor`) - such variants are handled, and the occurrence boundaries are then counted in source words. The `load_connectors` dictionary reads `ruts/resources/connectors.tsv` - 317 connectives with a class from `CONNECTOR_CLASSES` and a type from `CONNECTOR_TYPES`, compiled after the classification of Krioni, Nikin and Filippova (2008) and checked against the [Ru-RSTreebank](https://rstreebank.ru/markersFull) marker list, the [Ruscon](https://ruslinkers.github.io/) database and the causal marker list of Toldova et al. (2018). The single-word «и», «а», «но» are in the dictionary, as in Coh-Metrix and TAACO; «что» and «как» do not count as connectives. If UD parts of speech (`pos`) are given, a single-word connective counts only with a part of speech from `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or from `CONNECTOR_POS_EXTRA` for that word (словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`); a part of speech of `None` is not checked. For a string the part of speech is given by `connector_pos` - the first pymorphy3 analysis with a suitable part of speech, otherwise the first analysis. The result is a list of `Connector(sent, start, end, text, cls, kind)` named tuples. `CohesionStats` computes from the occurrences the connective density per 1000 words - overall, by class and by type.
+--8<-- "stats/cohesion_stats_funcs.md:ConnectorMatcher"
 
-Parameters:
+ruTS searches with `RussianConnectorMatcher`, a subclass of the core `ConnectorMatcher`: words and connectors are compared in lower case without ё and stress marks (`normalize_yo`), a one-word connector takes a part of speech of `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`), and the other context rules of the core are empty. The dictionary `load_connectors()` reads `ruts/resources/connectors.tsv` - 317 connectors with a class from `CONNECTOR_CLASSES` and a type from `CONNECTOR_TYPES` of `ruts.constants`, compiled after the classification of Krioni, Nikin and Filippova (2008) and checked against the [Ru-RSTreebank](https://rstreebank.ru/markersFull) marker list, the [Ruscon](https://ruslinkers.github.io/) database and the causal marker list of Toldova et al. (2018). The one-word «и», «а», «но» are in the dictionary, as in Coh-Metrix and TAACO; «что» and «как» are not connectors.
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `words` | list[str] | `-` | Words of the sentence |
-| `connectors` | dict[str, tuple[str, str]] | `None` | Connective dictionary - class and type by connective |
-| `sent_index` | int | `0` | Sentence number to record in the occurrences |
-| `pos` | list[str] | `None` | UD parts of speech of the sentence words; without them parts of speech are not checked |
+`find_connectors(words, connectors, sent_index, pos)` searches a sentence with the `find` method of `RussianConnectorMatcher` over the dictionary `connectors` (class and type by connector), that of `load_connectors` by default:
+
+--8<-- "stats/cohesion_stats_funcs.md:ConnectorMatcher-find"
+
+`CohesionStats` passes the parts of speech of the `Doc` annotation, and for a string and a `Doc` without annotation those of `connector_pos(word)`: the first pymorphy3 analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis. It computes from the occurrences the connector density per 1000 words - overall, by class and by type.
 
 !!! example "Example"
 
@@ -120,20 +96,63 @@ Parameters:
     find_connectors(["Затем", "иными", "словами", "он", "уснул"])
     # [Connector(sent=0, start=0, end=1, text='затем', cls='temporal', kind='primary'),
     #  Connector(sent=0, start=1, end=3, text='иными словами', cls='reformulative', kind='secondary')]
+    find_connectors(["Раз", "он", "пришел"])
+    # [Connector(sent=0, start=0, end=1, text='раз', cls='conditional', kind='primary')]
+    find_connectors(["Раз", "он", "пришел"], pos=["NOUN", "PRON", "VERB"])
+    # []
     ```
 
 ## Word features { #word_info }
 
 !!! info ""
-    **ruts.cohesion_stats.word_info()**, **ruts.cohesion_stats.token_info()**, **ruts.cohesion_stats.WordInfo**
+    **ruts.cohesion_stats.word_info()**, **ruts.cohesion_stats.words_info()**, **ruts.cohesion_stats.token_info()**, **ruts.cohesion_stats.ud_info()**, **ruts.cohesion_stats.unit_info()**, **ruts.cohesion_stats.WordInfo**
 
-Getting the word features for the cohesion statistics - a `WordInfo` named tuple: lemma, noun, pronoun, demonstrative, argument, content word, tense and aspect. `word_info` takes them from the first pymorphy3 analysis, `token_info` - from the spaCy annotation (`token.pos_`, `Tense`, `Aspect`), and the lemma - from the pymorphy3 analysis with the token's part of speech (`ruts.utils.lemmatize`) rather than from `token.lemma_`: the lemmatizer of the `ru_core_news` models returns the word form for `AUX` and when the tagger's features disagree with pymorphy3 (были, них, стихли). A hyphenated word made of several `Doc` tokens (жили-были, назовите-ка) gets its features from the pymorphy3 analysis of the glued text mapped to UD, so tense and aspect are comparable with the annotation of the other words.
+Getting the features of a word for the cohesion statistics - a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect`, as defined in the table of the [class page](cohesion_stats.md). `word_info` takes them from the first pymorphy3 analysis; `words_info` does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle without tense. `token_info` takes them from the spaCy annotation (`token.pos_`, `Tense`, `Aspect`), `ud_info` from a given part of speech, tense and aspect of UD; the lemma comes from the pymorphy3 analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the pymorphy3 analysis of the joined text mapped to UD (`word_to_ud`).
 
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `word` / `token` | str / Token | `-` | Word or spaCy token |
+| `word` | str | `-` | Word (`word_info`, `ud_info`) |
+| `sents` | list[list[str]] | `-` | Words of the sentences of a text (`words_info`) |
+| `text` | str | `-` | Text the words are extracted from (`words_info`) |
+| `token` | Token | `-` | spaCy token (`token_info`) |
+| `pos`, `tense`, `aspect` | str | `-` | Part of speech, tense and aspect of UD (`ud_info`) |
+| `unit` | list[Token] | `-` | Tokens of a word (`unit_info`) |
+
+!!! example "Example"
+
+    ``` python
+    from ruts.cohesion_stats import word_info
+
+    word_info("смотрел")
+    # WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='past', aspect='impf')
+    ```
+
+## Words of a Doc { #split_doc_units }
+
+!!! info ""
+    **ruts.cohesion_stats.split_doc_units()**, **ruts.cohesion_stats.unit_text()**, **ruts.cohesion_stats.unit_pos()**
+
+--8<-- "utils/spacy.md:split_doc_units"
+
+`CohesionStats` joins the parts of hyphenated words (`во-первых` is one word), the function only with `join_hyphens=True`. `unit_text(unit)` gives the text of a word from its tokens without a byte order mark, stress marks and soft hyphens (`ruts.utils.strip_marks`), `unit_pos(unit)` its part of speech of UD: that of the token for a single token, and that of `connector_pos` of the joined text for a hyphenated word of several tokens.
+
+!!! example "Example"
+
+    ``` python
+    import spacy
+    from ruts import SentsExtractor
+    from ruts.cohesion_stats import split_doc_units, unit_text
+
+    doc = spacy.blank("ru")("Жили-были дед да баба. Во-первых, кот спит.")
+    units = split_doc_units(doc, SentsExtractor())
+    [[unit_text(unit) for unit in sent] for sent in units]
+    # [['Жили', 'были', 'дед', 'да', 'баба'], ['Во', 'первых', 'кот', 'спит']]
+    units = split_doc_units(doc, SentsExtractor(), join_hyphens=True)
+    [[unit_text(unit) for unit in sent] for sent in units]
+    # [['Жили-были', 'дед', 'да', 'баба'], ['Во-первых', 'кот', 'спит']]
+    ```
 
 ## Pronoun { #is_pronoun }
 

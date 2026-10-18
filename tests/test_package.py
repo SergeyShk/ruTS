@@ -167,7 +167,7 @@ RUSSIAN = {
         "calc_windowed",
         "check_params",
     },
-    "ruts.cohesion_stats": {"SentsExtractor"},
+    "ruts.cohesion_stats": {"COHESION_STATS_DESC", "CohesionStats", "SentsExtractor"},
     "ruts.syntax_stats": {
         "SYNTAX_STATS_DESC",
         "SyntaxStats",
@@ -273,15 +273,6 @@ RUSSIAN = {
 
 # Копии механики ядра до переезда классов на каркасы anyTS 0.3: каждый PR 0.18 убирает свои
 PENDING = {
-    "ruts.cohesion_stats": {
-        "COHESION_STATS_DESC",
-        "CONNECTOR_CLASSES",
-        "CONNECTOR_POS",
-        "CONTENT_UD_POS",
-        "CohesionStats",
-        "Connector",
-        "split_doc_units",
-    },
     "ruts.components": {
         "BasicStatsComponent",
         "CohesionStats",
@@ -408,6 +399,7 @@ def test_core_messages():
         ruts.LexicalStats,
         ruts.PhonStats,
         ruts.SyntaxStats,
+        ruts.CohesionStats,
         ruts.SentsExtractor,
         ruts.WordsExtractor,
         ruts.CharNgramsExtractor,

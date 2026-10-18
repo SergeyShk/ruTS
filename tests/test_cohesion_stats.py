@@ -433,7 +433,7 @@ def test_doc_without_sents(nlp):
     blank = spacy.blank("ru")(text)
     assert CohesionStats(blank).words == cs.words
     assert CohesionStats(blank).n_words == 11
-    units = split_doc_units(blank, SentsExtractor())
+    units = split_doc_units(blank, SentsExtractor(), join_hyphens=True)
     assert [[unit_text(unit) for unit in sent] for sent in units] == [
         list(sent) for sent in cs.words
     ]
@@ -488,3 +488,24 @@ def test_find_connectors_custom():
 def test_connectors_single_sentence_words(cs):
     assert cs.connector_spans == (Connector(2, 2, 3, "и", "additive", "primary"),)
     assert cs.connectors_additive == pytest.approx(1 / 21 * 1000)
+
+
+def test_sents_extractor_class_of_a_subclass():
+    """Свой экстрактор предложений подкласса делит и строку, и Doc без границ"""
+    import re
+
+    class Lines(SentsExtractor):
+        def __init__(self):
+            super().__init__(tokenizer=re.compile(r"; "))
+
+    class LineCohesion(CohesionStats):
+        sents_extractor_class = Lines
+
+    text = "Кот спит, пёс лежит; мы ушли"
+    blank = spacy.blank("ru")(text)
+    counts = {
+        LineCohesion(text).n_sents,
+        LineCohesion(blank).n_sents,
+        LineCohesion(blank, words_extractor=WordsExtractor()).n_sents,
+    }
+    assert counts == {2}
