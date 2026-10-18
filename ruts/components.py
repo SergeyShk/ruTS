@@ -25,6 +25,7 @@ from anyts.constants import (
     MATTR_WINDOW_LEN,
     MTLD_MIN_LEN,
     MTLD_TTR_THRESHOLD,
+    NAUSEA_TOP_N,
 )
 from anyts.utils import check_words, iter_doc_units
 from spacy.language import Language
@@ -32,11 +33,7 @@ from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats, unit_text
-from .constants import (
-    CORE_MESSAGES,
-    NAUSEA_TOP_N,
-    PHON_WINDOW_LEN,
-)
+from .constants import CORE_MESSAGES, PHON_WINDOW_LEN
 from .datasets.freq2011 import FreqDict
 from .datasets.stress_dict import StressDict
 from .diversity_stats import DiversityStats, check_params as check_diversity_params

@@ -278,9 +278,9 @@ def get_doc_words(doc: Doc) -> list[Word]:
     tagged = doc.has_annotation("POS")
     words = []
     for unit in iter_doc_units(doc, join_hyphens=True):
-        text = unit_text(unit)
-        word = text.lstrip(BYTE_ORDER_MARK)
-        start = unit[0].idx + len(text) - len(word)
+        raw = "".join(token.text for token in unit)
+        word = unit_text(unit)
+        start = unit[0].idx + len(raw) - len(raw.lstrip(BYTE_ORDER_MARK))
         end = unit[-1].idx + len(unit[-1])
         words.append(Word(start, end, word, unit_pos(unit) if tagged else None))
     return words

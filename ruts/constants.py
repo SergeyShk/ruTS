@@ -1095,7 +1095,6 @@ LEXICAL_STATS_DESC = {
     "p_beyond_top10000": "Доля слов вне топ-10000",
     "lexical_density": "Лексическая плотность",
 }
-FREQUENCY_BANDS = (1000, 2000, 5000, 10000)
 COHESION_STATS_DESC = {
     "noun_overlap_adjacent": "Повтор существительных в соседних предложениях",
     "noun_overlap_all": "Повтор существительных во всех парах предложений",
@@ -1158,7 +1157,6 @@ STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
 STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
 # «Вода» Text.ru; предлоги, в отличие от STOPWORD_POS, Text.ru водой не считает
 WATER_POS = frozenset({"CONJ", "PRCL", "NPRO", "INTJ"})
-NAUSEA_TOP_N = 10
 # Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS
 VISUALIZER_LABELS = {
     "zipf": {

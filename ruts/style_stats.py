@@ -4,18 +4,18 @@ from math import nan
 
 import anyts.style_stats
 import pymorphy3
+from anyts.constants import NAUSEA_TOP_N
 from anyts.style_stats import (
     calc_classic_nausea as calc_classic_nausea,
     calc_keyword_density as calc_keyword_density,
     calc_spam as calc_spam,
 )
-from anyts.utils import check_words, iter_doc_words, safe_divide
+from anyts.utils import check_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
     COMPOUND_PREPOSITIONS,
     CORE_MESSAGES,
-    NAUSEA_TOP_N,
     OFFICIALESE_CLICHES,
     PARENTHETICALS,
     STOPWORD_GRAMMEMES,
@@ -130,8 +130,8 @@ class StyleStats(anyts.style_stats.StyleStats):
         return normalize_yo(word)
 
     def doc_words(self, doc: Doc) -> tuple[str, ...]:
-        """Слова Doc в нижнем регистре без знаков ударения, дефисные слова склеены"""
-        return tuple(strip_marks(text).lower() for _, _, text in iter_doc_words(doc, True))
+        """Слова Doc ядра без знаков ударения"""
+        return tuple(map(strip_marks, super().doc_words(doc)))
 
     def is_stopword(self, word: str) -> bool:
         """Стоп-слово академической тошноты по разметке pymorphy3 (is_stopword)"""

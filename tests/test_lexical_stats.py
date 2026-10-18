@@ -4,11 +4,12 @@ import pytest
 import spacy
 
 from ruts import LexicalStats, WordsExtractor
-from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
+from ruts.constants import LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
 from ruts.datasets.freq2011 import Entry
 from ruts.exceptions import ParameterError
 from ruts.lexical_stats import (
+    FREQUENCY_BANDS,
     calc_surprisal,
     dictionary_lemma,
     get_rank,

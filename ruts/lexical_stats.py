@@ -6,6 +6,7 @@ import anyts
 import anyts.lexical_stats
 import anyts.utils
 import pymorphy3
+from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
 from anyts.lexical_stats import LexicalWord
 from anyts.utils import iter_doc_units
 from spacy.tokens import Doc
