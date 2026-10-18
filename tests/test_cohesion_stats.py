@@ -433,7 +433,7 @@ def test_doc_without_sents(nlp):
     blank = spacy.blank("ru")(text)
     assert CohesionStats(blank).words == cs.words
     assert CohesionStats(blank).n_words == 11
-    units = split_doc_units(blank, SentsExtractor())
+    units = split_doc_units(blank, SentsExtractor(), join_hyphens=True)
     assert [[unit_text(unit) for unit in sent] for sent in units] == [
         list(sent) for sent in cs.words
     ]

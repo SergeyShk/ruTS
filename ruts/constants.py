@@ -1127,7 +1127,6 @@ CONNECTOR_CLASSES = {
     "reformulative": "переформулирующие",
 }
 CONNECTOR_TYPES = {"primary": "первичные", "secondary": "вторичные"}
-CONNECTOR_POS = frozenset({"CCONJ", "SCONJ", "PART", "ADV", "ADP", "INTJ", "X"})
 CONNECTOR_POS_EXTRA = {
     **dict.fromkeys(
         ("раньше", "позже", "позднее", "вернее", "точнее", "скорее", "короче"),
@@ -1144,7 +1143,6 @@ CONNECTOR_POS_EXTRA = {
 CONTENT_POS = frozenset(
     {"NOUN", "ADJF", "ADJS", "COMP", "VERB", "INFN", "PRTF", "PRTS", "GRND", "ADVB"}
 )
-CONTENT_UD_POS = frozenset({"NOUN", "PROPN", "ADJ", "VERB", "ADV"})
 DEMONSTRATIVE_LEMMAS = frozenset(
     {"этот", "это", "тот", "такой", "таковой", "столько", "сей", "оный"}
 )

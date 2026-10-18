@@ -1,12 +1,13 @@
-from collections import Counter
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from functools import cache, lru_cache
-from math import nan
-from statistics import fmean
 from typing import NamedTuple
 
 import anyts
+import anyts.cohesion_stats
 from anyts.cohesion_stats import (
+    CohesionWord,
+    Connector as Connector,
+    ConnectorMatcher,
     Overlap as Overlap,
     calc_overlap as calc_overlap,
     calc_overlaps as calc_overlaps,
@@ -16,22 +17,24 @@ from anyts.cohesion_stats import (
     dice as dice,
     dominant as dominant,
 )
-from anyts.utils import check_sequence, check_words, has_sents, iter_doc_units, safe_divide
+from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
+from anyts.utils import (
+    has_sents,
+    is_doc,
+    split_doc_units as split_doc_units,
+)
 from spacy.tokens import Doc, Token
 
 from .constants import (
     COHESION_STATS_DESC,
-    CONNECTOR_CLASSES,
-    CONNECTOR_POS,
     CONNECTOR_POS_EXTRA,
-    CONNECTOR_TYPES,
     CONTENT_POS,
-    CONTENT_UD_POS,
+    CORE_MESSAGES,
     DEMONSTRATIVE_LEMMAS,
     RESOURCES_DIR,
     STOPWORD_GRAMMEMES,
 )
-from .exceptions import ParameterError, SourceError, SourceTypeError
+from .exceptions import SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import _has_tense, answer_particles, tag_to_ud_pos, word_to_ud
 from .utils import (
@@ -71,61 +74,37 @@ class WordInfo(NamedTuple):
     aspect: str | None
 
 
-class Connector(NamedTuple):
+class RussianConnectorMatcher(ConnectorMatcher):
     """
-    Вхождение коннектора в текст
+    Сопоставитель коннекторов ядра anyTS с русскими крючками
 
-    Атрибуты:
-        sent (int): Номер предложения
-        start (int): Позиция первого слова коннектора в предложении
-        end (int): Позиция за последним словом коннектора
-        text (str): Коннектор в словарной форме
-        cls (str): Класс коннектора (causal, adversative, concessive, temporal,
-            additive, conditional, reformulative)
-        kind (str): Тип коннектора (primary, secondary)
+    Описание:
+        Коннекторы и слова сравниваются в нижнем регистре без буквы ё (normalize_yo);
+        однословному коннектору, кроме частей речи CONNECTOR_POS, подходят части речи
+        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее)
     """
 
-    sent: int
-    start: int
-    end: int
-    text: str
-    cls: str
-    kind: str
+    pos_extra = CONNECTOR_POS_EXTRA
+    messages = CORE_MESSAGES
+
+    def normalize(self, text: str) -> str:
+        """Нижний регистр без буквы ё и знаков ударения (normalize_yo)"""
+        return normalize_yo(text)
 
 
-class CohesionStats:
+class CohesionStats(anyts.cohesion_stats.CohesionStats):
     """
     Класс для вычисления статистик связности текста
 
     Описание:
-        Референциальная связность по образцу Coh-Metrix: повторы существительных,
-        аргументов (существительных и местоимений) и знаменательных слов между
-        соседними предложениями и всеми парами предложений, данность (местоимения,
-        указательные, повторяющиеся леммы) и темпоральная связность (повтор времени
-        и вида глаголов в соседних предложениях)
-        Пары предложений сравниваются по леммам. Для Doc с разметкой частей речи
-        части речи, время и вид берутся из token.pos_ и token.morph, лемма - из разбора
-        pymorphy3 с частью речи токена (lemmatize): лемматизатор моделей ru_core_news
-        возвращает словоформу для AUX и при расхождении признаков (были, них, стихли);
-        для строки, Doc без разметки и Doc с заданным экстрактором слов - из первого
-        разбора pymorphy3. Без экстрактора слова Doc берутся из токенов, дефисные
-        слова, разрезанные spaCy, склеиваются (iter_doc_units); Doc без границ
-        предложений разбивается на предложения через sents_extractor по тексту
-        (split_doc_units)
-        Знаменательные слова: по pymorphy3 - CONTENT_POS без STOPWORD_GRAMMEMES,
-        по UD - CONTENT_UD_POS; местоимения: по pymorphy3 - NPRO и Apro, по UD - PRON
-        и DET; слова с леммой из DEMONSTRATIVE_LEMMAS считаются местоимениями
-        Коннекторы (потому что, однако, затем, иными словами) ищутся по словоформам
-        в каждом предложении по словарю resources/connectors.tsv с классами
-        по Криони, Никину и Филипповой (2008) и типом - первичные (союзы и наречия)
-        или вторичные (лексикализованные обороты); плотность считается на 1000 слов
-        Однословный коннектор засчитывается только при части речи из CONNECTOR_POS
-        (союз, частица, наречие, предлог, междометие) или из CONNECTOR_POS_EXTRA
-        для отдельных слов (словом, главное, допустим, точнее) - по разметке Doc,
-        так «раз» и «значит» как существительное и глагол не считаются; без разметки
-        слово проходит, если подходящая часть речи есть хотя бы в одном разборе
-        pymorphy3 (connector_pos)
-        и не считаются знаменательными в обоих случаях
+        Расширяет CohesionStats ядра anyTS крючками русского языка: леммы, части речи,
+        время и вид - для Doc с разметкой частей речи по token.pos_ и token.morph
+        с леммой разбора pymorphy3 с частью речи токена (lemmatize), для строки,
+        Doc без разметки и Doc с заданным экстрактором слов - по первому разбору
+        pymorphy3; дефисные слова склеиваются; словарь коннекторов - resources/connectors.tsv
+        с классами по Криони, Никину и Филипповой (2008), сопоставитель -
+        RussianConnectorMatcher. Источником данных может быть строка, в отличие
+        от ядра
 
     Ссылки:
         https://doi.org/10.1017/CBO9780511894664 (McNamara и др. 2014, Coh-Metrix)
@@ -219,131 +198,102 @@ class CohesionStats:
         print_stats: Отображение вычисленных статистик связности текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
+            другого типа или словарь коннекторов задан неверно
         SourceError: Если в источнике данных отсутствуют слова
+        ParameterError: Если в словаре коннекторов неизвестный класс или тип
     """
+
+    sents_extractor_class = SentsExtractor
+    connector_matcher_class = RussianConnectorMatcher
+    join_hyphens = True
+    stats_desc = COHESION_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
         source: str | Doc,
-        sents_extractor: SentsExtractor | None = None,
-        words_extractor: WordsExtractor | None = None,
+        sents_extractor: anyts.SentsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         connectors: Mapping[str, tuple[str, str]] | None = None,
     ):
-        if sents_extractor is not None and not isinstance(sents_extractor, anyts.SentsExtractor):
-            raise SourceTypeError("Экстрактор предложений должен быть SentsExtractor")
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
-        index = _normalize_connectors() if connectors is None else _normalize(connectors)
-        sents: list[tuple[str, ...]]
-        infos: list[list[WordInfo]]
-        pos: list[list[str | None]]
-        # Экстракторы применяются к тексту Doc, как в классах ядра
-        doc_sents = isinstance(source, Doc) and has_sents(source) and not sents_extractor
-        if isinstance(source, Doc) and words_extractor is None:
-            if doc_sents:
-                units = [list(iter_doc_units(sent, join_hyphens=True)) for sent in source.sents]
-            else:
-                units = split_doc_units(source, sents_extractor or SentsExtractor())
-            sents = [tuple(unit_text(unit) for unit in sent) for sent in units]
+            raise SourceTypeError(self.messages["words_extractor_type"])
+        self.words_extractor = words_extractor
+        super().__init__(source, sents_extractor, connectors)  # type: ignore[arg-type]
+
+    @classmethod
+    def load_connectors(cls) -> dict[str, tuple[str, str]]:
+        """Словарь коннекторов resources/connectors.tsv (load_connectors)"""
+        return load_connectors()
+
+    def analyze(self, source: str | Doc) -> list[list[CohesionWord]]:
+        """
+        Слова предложений с признаками по разметке Doc или по pymorphy3
+
+        Описание:
+            Без экстрактора слов слова Doc берутся из токенов (doc_units), признаки -
+            по разметке частей речи (unit_info, unit_pos), а без разметки - по pymorphy3
+            (words_info, connector_pos). Для строки и Doc с экстрактором слов
+            предложения - границы Doc или экстрактор предложений, слова - экстрактор
+            слов, признаки - по pymorphy3
+        """
+        if is_doc(source) and self.words_extractor is None:
+            units = self.doc_units(source)
             if source.has_annotation("POS"):
-                infos = [[unit_info(unit) for unit in sent] for sent in units]
-                pos = [[unit_pos(unit) for unit in sent] for sent in units]
-            else:
-                infos = words_info(sents, source.text)
-                pos = [[connector_pos(word) for word in sent] for sent in sents]
-        elif isinstance(source, str | Doc):
-            if isinstance(source, Doc) and doc_sents:
+                return [
+                    [
+                        _cohesion_word(unit_text(unit), unit_info(unit), unit_pos(unit))
+                        for unit in sent
+                    ]
+                    for sent in units
+                ]
+            sents = [[unit_text(unit) for unit in sent] for sent in units]
+            return _cohesion_words(sents, source.text)
+        texts: Iterable[str]
+        if isinstance(source, str):
+            text = source
+            texts = (self.sents_extractor or SentsExtractor()).extract(text)
+        elif is_doc(source):
+            text = source.text
+            if has_sents(source) and not self.sents_extractor:
                 texts = tuple(sent.text for sent in source.sents)
             else:
-                text = source.text if isinstance(source, Doc) else source
-                texts = (sents_extractor or SentsExtractor()).extract(text)
-            words_extractor = words_extractor or WordsExtractor()
-            sents = [tuple(words_extractor.extract(sent)) for sent in texts]
-            infos = words_info(sents, source.text if isinstance(source, Doc) else source)
-            pos = [[connector_pos(word) for word in sent] for sent in sents]
+                texts = (self.sents_extractor or SentsExtractor()).extract(text)
         else:
-            raise SourceTypeError("Некорректный источник данных")
-        self.words = tuple(sent for sent in sents if sent)
-        if not self.words:
-            raise SourceError("В источнике данных отсутствуют слова")
-        infos = [sent for sent in infos if sent]
-        self.n_sents = len(self.words)
-        self.n_words = sum(len(sent) for sent in self.words)
+            raise SourceTypeError(self.messages["source_type"])
+        extractor = self.words_extractor or WordsExtractor()
+        return _cohesion_words([tuple(extractor.extract(sent)) for sent in texts], text)
 
-        self.lemmas = tuple(tuple(info.lemma for info in sent) for sent in infos)
-        nouns = [frozenset(info.lemma for info in sent if info.noun) for sent in infos]
-        arguments = [frozenset(info.lemma for info in sent if info.argument) for sent in infos]
-        content = [[info.lemma for info in sent if info.content] for sent in infos]
-        content_sets = [frozenset(sent) for sent in content]
-        tenses = [[info.tense for info in sent if info.tense] for sent in infos]
-        aspects = [[info.aspect for info in sent if info.aspect] for sent in infos]
 
-        self.n_nouns = sum(1 for sent in infos for info in sent if info.noun)
-        self.n_pronouns = sum(1 for sent in infos for info in sent if info.pronoun)
-        self.n_demonstratives = sum(1 for sent in infos for info in sent if info.demonstrative)
-        self.n_content_words = sum(len(sent) for sent in content)
-        self.n_given = count_given(content)
+def _cohesion_word(word: str, info: WordInfo, pos: str | None) -> CohesionWord:
+    """Слово с признаками для каркаса ядра, наклонение не учитывается"""
+    return CohesionWord(
+        word,
+        info.lemma,
+        pos,
+        info.noun,
+        info.pronoun,
+        info.demonstrative,
+        info.argument,
+        info.content,
+        info.tense,
+        None,
+        info.aspect,
+    )
 
-        noun_overlap = calc_overlaps(nouns)
-        argument_overlap = calc_overlaps(arguments)
-        content_overlap = calc_overlaps(content_sets)
-        self.noun_overlap_adjacent = noun_overlap.adjacent
-        self.noun_overlap_all = noun_overlap.all
-        self.argument_overlap_adjacent = argument_overlap.adjacent
-        self.argument_overlap_all = argument_overlap.all
-        self.content_overlap_adjacent = content_overlap.adjacent
-        self.content_overlap_all = content_overlap.all
-        self.content_overlap_prop_adjacent = content_overlap.prop_adjacent
-        self.content_overlap_prop_all = content_overlap.prop_all
-        self.p_pronouns = self.n_pronouns / self.n_words
-        self.pronoun_noun_ratio = safe_divide(self.n_pronouns, self.n_nouns, nan)
-        self.p_demonstratives = self.n_demonstratives / self.n_words
-        self.p_given = safe_divide(self.n_given, self.n_content_words, nan)
-        self.tense_repetition = calc_repetition(tenses)
-        self.aspect_repetition = calc_repetition(aspects)
-        self.temporal_cohesion = fmean((self.tense_repetition, self.aspect_repetition))
 
-        pos = [sent for sent in pos if sent]
-        self.connector_spans = tuple(
-            connector
-            for sent_index, (sent, sent_pos) in enumerate(zip(self.words, pos, strict=True))
-            for connector in _find(sent, index, sent_index, sent_pos)
-        )
-        self.n_connectors = len(self.connector_spans)
-        self.c_connectors = dict(
-            sorted(Counter(connector.text for connector in self.connector_spans).items())
-        )
-        per_1000 = 1000 / self.n_words
-        classes = Counter(connector.cls for connector in self.connector_spans)
-        kinds = Counter(connector.kind for connector in self.connector_spans)
-        self.connectors = self.n_connectors * per_1000
-        self.connectors_causal = classes["causal"] * per_1000
-        self.connectors_adversative = classes["adversative"] * per_1000
-        self.connectors_concessive = classes["concessive"] * per_1000
-        self.connectors_temporal = classes["temporal"] * per_1000
-        self.connectors_additive = classes["additive"] * per_1000
-        self.connectors_conditional = classes["conditional"] * per_1000
-        self.connectors_reformulative = classes["reformulative"] * per_1000
-        self.connectors_primary = kinds["primary"] * per_1000
-        self.connectors_secondary = kinds["secondary"] * per_1000
-
-    def get_stats(self) -> dict[str, float]:
-        """
-        Получение вычисленных статистик связности текста
-
-        Вывод:
-            dict[str, float]: Справочник вычисленных статистик связности текста
-        """
-        return {stat: getattr(self, stat) for stat in COHESION_STATS_DESC}
-
-    def print_stats(self):
-        """Отображение вычисленных статистик связности текста с описанием на экран"""
-        print(f"{'Статистика':^58}|{'Значение':^10}")
-        print("-" * 68)
-        stats = self.get_stats()
-        for stat, value in COHESION_STATS_DESC.items():
-            print(f"{value:58}|{stats[stat]:^10.2f}")
+def _cohesion_words(sents: Sequence[Sequence[str]], text: str) -> list[list[CohesionWord]]:
+    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos)"""
+    infos = words_info(sents, text)
+    return [
+        [
+            _cohesion_word(word, info, connector_pos(word))
+            for word, info in zip(sent, sent_infos, strict=True)
+        ]
+        for sent, sent_infos in zip(sents, infos, strict=True)
+    ]
 
 
 @cache
@@ -369,98 +319,48 @@ def load_connectors() -> dict[str, tuple[str, str]]:
     return connectors
 
 
-class ConnectorIndex(NamedTuple):
-    """
-    Индекс словаря коннекторов для поиска
-
-    Атрибуты:
-        entries (dict[str, tuple[str, str, str]]): Коннектор, класс и тип по нормализованному ключу
-        by_first (dict[str, tuple[tuple[str, ...], ...]]): Шаблоны по первому слову,
-            от длинных к коротким
-    """
-
-    entries: dict[str, tuple[str, str, str]]
-    by_first: dict[str, tuple[tuple[str, ...], ...]]
-
-
-def _normalize(connectors: Mapping[str, tuple[str, str]]) -> ConnectorIndex:
-    """
-    Построение индекса словаря коннекторов
-
-    Описание:
-        Ключ - словоформы в нижнем регистре без буквы ё через один пробел; для
-        коннекторов с дефисом или точкой (во-первых, из-за, т.е.) добавляется ключ
-        с пробелами вместо них, так как spaCy отделяет дефис, а WordsExtractor - точку;
-        шаблоны группируются по первому слову
-    """
-    if not isinstance(connectors, Mapping):
-        raise SourceTypeError("Коннекторы должны быть словарем: словосочетание - класс и тип")
-    entries: dict[str, tuple[str, str, str]] = {}
-    patterns: dict[str, list[tuple[str, ...]]] = {}
-    for connector, value in connectors.items():
-        if not (
-            isinstance(connector, str)
-            and isinstance(value, tuple | list)
-            and len(value) == 2
-            and all(isinstance(item, str) for item in value)
-        ):
-            raise SourceTypeError(
-                f"Коннектор должен быть словосочетанием с парой класс и тип: {connector!r}"
-            )
-        cls, kind = value
-        if cls not in CONNECTOR_CLASSES or kind not in CONNECTOR_TYPES:
-            raise ParameterError(f"Неизвестный класс или тип коннектора: {cls}, {kind}")
-        key = " ".join(normalize_yo(connector).split())
-        split = " ".join(key.replace("-", " ").replace(".", " ").split())
-        for variant in {key, split}:
-            if not variant:
-                continue
-            entries[variant] = (connector, cls, kind)
-            pattern = tuple(variant.split())
-            patterns.setdefault(pattern[0], []).append(pattern)
-    by_first = {
-        first: tuple(sorted(set(group), key=len, reverse=True))
-        for first, group in patterns.items()
-    }
-    return ConnectorIndex(entries, by_first)
-
-
-@cache
-def _normalize_connectors() -> ConnectorIndex:
-    return _normalize(load_connectors())
-
-
-def _find(
+def find_connectors(
     words: Sequence[str],
-    index: ConnectorIndex,
-    sent_index: int,
+    connectors: Mapping[str, tuple[str, str]] | None = None,
+    sent_index: int = 0,
     pos: Sequence[str | None] | None = None,
 ) -> list[Connector]:
-    normalized = [normalize_yo(word) for word in words]
-    found = []
-    position = 0
-    while position < len(normalized):
-        for pattern in index.by_first.get(normalized[position], ()):
-            end = position + len(pattern)
-            if tuple(normalized[position:end]) != pattern:
-                continue
-            if (
-                len(pattern) == 1
-                and pos is not None
-                and not _is_connector_pos(pattern[0], pos[position])
-            ):
-                continue
-            text, cls, kind = index.entries[" ".join(pattern)]
-            found.append(Connector(sent_index, position, end, text, cls, kind))
-            position = end
-            break
-        else:
-            position += 1
-    return found
+    """
+    Поиск коннекторов в предложении
+
+    Описание:
+        Коннекторы ищутся сопоставителем RussianConnectorMatcher по словоформам
+        в нижнем регистре без буквы ё: в каждой позиции берется самый длинный
+        («и все же» не распадается на «и»), найденные не пересекаются; дефис и точка
+        внутри коннектора (во-первых, т.е.) могут быть отделены токенизатором. Если
+        переданы части речи UD, однословный коннектор засчитывается только при части
+        речи из CONNECTOR_POS или из CONNECTOR_POS_EXTRA для этого слова
+
+    Аргументы:
+        words (list[str]): Слова предложения
+        connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
+            по коннектору; если не задан, используется словарь из resources
+        sent_index (int): Номер предложения для записи во вхождения
+        pos (list[str]): Части речи UD слов предложения; без них части речи не проверяются
+
+    Вывод:
+        list[Connector]: Вхождения коннекторов в порядке слов
+
+    Исключения:
+        SourceTypeError: Если словарь коннекторов или части речи заданы неверно
+        ParameterError: Если в словаре встречается неизвестный класс или тип или частей
+            речи не столько, сколько слов
+    """
+    matcher = (
+        CohesionStats.connector_matcher()
+        if connectors is None
+        else RussianConnectorMatcher(connectors)
+    )
+    return matcher.find(words, sent_index, pos)
 
 
 def _is_connector_pos(word: str, pos: str | None) -> bool:
-    return pos is None or pos in CONNECTOR_POS or pos in CONNECTOR_POS_EXTRA.get(word, frozenset())
+    return pos in CONNECTOR_POS or pos in CONNECTOR_POS_EXTRA.get(word, frozenset())
 
 
 @lru_cache(maxsize=131072)
@@ -483,45 +383,6 @@ def connector_pos(word: str) -> str | None:
     normalized = normalize_yo(word)
     poses = [tag_to_ud_pos(parse.tag, parse.normal_form, word) for parse in parse_all(word)]
     return next((pos for pos in poses if _is_connector_pos(normalized, pos)), poses[0])
-
-
-def find_connectors(
-    words: Sequence[str],
-    connectors: Mapping[str, tuple[str, str]] | None = None,
-    sent_index: int = 0,
-    pos: Sequence[str | None] | None = None,
-) -> list[Connector]:
-    """
-    Поиск коннекторов в предложении
-
-    Описание:
-        Коннекторы ищутся по словоформам в нижнем регистре без буквы ё: в каждой
-        позиции берется самый длинный («и все же» не распадается на «и»), найденные
-        не пересекаются; дефис и точка внутри коннектора (во-первых, т.е.) могут
-        быть отделены токенизатором. Если переданы части речи UD, однословный
-        коннектор засчитывается только при части речи из CONNECTOR_POS или
-        из CONNECTOR_POS_EXTRA для этого слова
-
-    Аргументы:
-        words (list[str]): Слова предложения
-        connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
-            по коннектору; если не задан, используется словарь из resources
-        sent_index (int): Номер предложения для записи во вхождения
-        pos (list[str]): Части речи UD слов предложения; без них части речи не проверяются
-
-    Вывод:
-        list[Connector]: Вхождения коннекторов в порядке слов
-
-    Исключения:
-        ParameterError: Если в словаре встречается неизвестный класс или тип
-    """
-    check_words(words)
-    if pos is not None:
-        check_sequence(pos, "parts of speech")
-        if len(pos) != len(words):
-            raise ParameterError("Частей речи должно быть столько же, сколько слов")
-    index = _normalize_connectors() if connectors is None else _normalize(connectors)
-    return _find(words, index, sent_index, pos)
 
 
 def word_info(word: str) -> WordInfo:
@@ -648,45 +509,6 @@ def unit_text(unit: Sequence[Token]) -> str:
         str: Текст слова без BOM, знаков ударения и мягких переносов (strip_marks)
     """
     return strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
-
-
-def split_doc_units(source: Doc, sents_extractor: SentsExtractor) -> list[list[list[Token]]]:
-    """
-    Разбиение слов объекта Doc без границ предложений по предложениям
-
-    Описание:
-        Предложения извлекаются sents_extractor из текста и находятся в нем
-        по порядку; слово относится к предложению, в границах которого лежит его
-        первый токен. Слова вне найденных предложений (отброшенных экстрактором
-        по длине) не учитываются, как и для строки: если экстрактор не нашел
-        ни одного предложения, слов нет
-
-    Аргументы:
-        source (Doc): Объект Doc
-        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
-
-    Вывод:
-        list[list[list[Token]]]: Токены каждого слова каждого предложения
-    """
-    text = source.text
-    spans = []
-    cursor = 0
-    for sent in sents_extractor.extract(text):
-        start = text.find(sent, cursor)
-        if start != -1:
-            spans.append((start, start + len(sent)))
-            cursor = start + len(sent)
-    if not spans:
-        return []
-    units: list[list[list[Token]]] = [[] for _ in spans]
-    index = 0
-    for unit in iter_doc_units(source, join_hyphens=True):
-        position = unit[0].idx
-        while index + 1 < len(spans) and spans[index + 1][0] <= position:
-            index += 1
-        if spans[index][0] <= position < spans[index][1]:
-            units[index].append(unit)
-    return units
 
 
 def unit_pos(unit: Sequence[Token]) -> str | None:
