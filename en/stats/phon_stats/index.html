@@ -1375,6 +1375,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2825,6 +2836,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2910,8 +2932,15 @@
 <p><strong>ruts.phon_stats.PhonStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing phonostatistics of a text: shares of sound classes, consonant clusters and hiatuses, CV pattern entropy, "hardness", alliteration and assonance indices, and syllable statistics. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The statistics are computed over letters without accounting for devoicing, reduction and stress. Letter classes are set by the <code>ruts.constants</code> constants:</p>
+<p>The phonetic statistics of a text: the shares of the vowels, the sonorants and the voiced and voiceless obstruents, the ratio of the consonants to the vowels, the consonant clusters, the hiatuses, the entropy of the CV patterns of the words, the hardness, the alliteration and the assonance, the open syllables and the mean length of a syllable. A sound is a letter of a word by default, or a sound of its transcription when a library gives one. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>; the words are taken in lower case, and an extractor passed explicitly is used on the text of a <code>Doc</code>.</p>
+<p>A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, a source without words <code>SourceError</code>, a window that is not an integer of at least 2 <code>ParameterError</code>.</p>
+<p>The computation time grows linearly with text length.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The statistics are computed when the <code>PhonStats</code> object is initialized.</p>
+</div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress; the iotated е, ё, ю, я after a vowel make no hiatus, and a word is divided into syllables by the rising sonority rule (Avanesov) of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table has Russian headers and the Russian descriptions of <code>ruts.constants.PHON_STATS_DESC</code>, and the messages of the errors are in Russian, <code>ruts.constants.CORE_MESSAGES</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2943,17 +2972,11 @@
 </tr>
 <tr>
 <td style="text-align: center;">Signs</td>
-<td style="text-align: center;">ь, ъ - not sounds, not counted in the shares</td>
+<td style="text-align: center;">ь, ъ - not sounds: not counted in the shares and do not break a consonant cluster</td>
 <td style="text-align: center;"><code>RU_MARKS</code></td>
 </tr>
 </tbody>
 </table>
-<p>Words are divided into syllables by the rising sonority rule (Avanesov), see the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. For a text without sounds (numbers, Latin letters) the shares and ratios are undefined - <code>nan</code>.</p>
-<p>The computation time grows linearly with text length.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>PhonStats</code> object is initialized.</p>
-</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2969,22 +2992,23 @@
 <td style="text-align: center;"><code>source</code></td>
 <td style="text-align: center;">str/Doc</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
+<td style="text-align: center;">Data source</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; when given, it is applied to the text of a Doc too</td>
+<td style="text-align: center;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>window_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>3</code></td>
-<td style="text-align: center;">Window size in words for alliteration and assonance</td>
+<td style="text-align: center;">Window in words of the alliteration and the assonance (<code>PHON_WINDOW_LEN</code>)</td>
 </tr>
 </tbody>
 </table>
+<p>The window is checked on its own by <code>ruts.phon_stats.check_params(window_len)</code>.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2998,120 +3022,82 @@
 <tr>
 <td style="text-align: center;"><code>words</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of extracted lowercased words</td>
+<td style="text-align: center;">Words in lower case</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>syllables</code></td>
-<td style="text-align: center;">tuple[tuple[str, ...], ...]</td>
-<td style="text-align: center;">Tuple of the syllables of each word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_vowels</code></td>
+<td style="text-align: center;"><code>window_len</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of vowels</td>
+<td style="text-align: center;">Window of the alliteration and the assonance</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_consonants</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of consonants</td>
+<td style="text-align: center;"><code>syllables</code>, <code>sounds</code></td>
+<td style="text-align: center;">tuple</td>
+<td style="text-align: center;">Syllables (<code>syllabify</code>) and sounds (<code>transcribe</code>) of every word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_sonorants</code></td>
+<td style="text-align: center;"><code>n_vowels</code>, <code>n_sonorants</code>, <code>n_voiced</code>, <code>n_voiceless</code>, <code>n_consonants</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of sonorant consonants</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_voiced</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of voiced obstruents</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_voiceless</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of voiceless obstruents</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_marks</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of soft and hard signs</td>
+<td style="text-align: center;">Numbers of the sounds by class</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c_clusters</code></td>
 <td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Distribution of consonant clusters by length</td>
+<td style="text-align: center;">Number of the consonant clusters by length (<code>consonant_clusters</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c_syllable_patterns</code></td>
 <td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Distribution of syllables by CV pattern</td>
+<td style="text-align: center;">Number of the syllables by CV pattern; a syllable without a sound of the classes (a number) is no syllable</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_vowels</code></td>
+<td style="text-align: center;"><code>p_vowels</code>, <code>p_sonorants</code>, <code>p_voiced</code>, <code>p_voiceless</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of vowels among sounds</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_sonorants</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of sonorant consonants among sounds</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_voiced</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of voiced obstruents among sounds</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_voiceless</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of voiceless obstruents among sounds</td>
+<td style="text-align: center;">Shares of the sounds by class</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>consonant_vowel_ratio</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Consonant-to-vowel ratio</td>
+<td style="text-align: center;">Ratio of the consonants to the vowels</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>p_heavy_clusters</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of clusters of 3 or more consonants</td>
+<td style="text-align: center;">Share of the clusters of three consonants or more</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>p_hiatus</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Vowel hiatuses per word</td>
+<td style="text-align: center;">Hiatuses per word</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cv_entropy</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Entropy of word CV patterns in bits</td>
+<td style="text-align: center;">Shannon entropy of the CV patterns of the words, in bits</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>hardness</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Hardness - the ratio of voiceless obstruents to vowels and sonorants</td>
+<td style="text-align: center;">Voiceless consonants to the vowels and the sonorants</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>alliteration</code></td>
+<td style="text-align: center;"><code>alliteration</code>, <code>assonance</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Alliteration index</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>assonance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Assonance index</td>
+<td style="text-align: center;">Repetition index of the consonants and of the vowels (<code>calc_repetition_index</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>p_open_syllables</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of open syllables</td>
+<td style="text-align: center;">Share of the syllables that end in a vowel</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>mean_syllable_len</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean syllable length in letters</td>
+<td style="text-align: center;">Mean length of a syllable in sounds</td>
 </tr>
 </tbody>
 </table>
+<p>A share or a ratio without sounds, clusters or syllables to divide by is <code>nan</code>, and so are the hiatuses per word and the entropy of a text without sounds.</p>
+<p>In ruTS <code>mean_syllable_len</code> counts the letters of a syllable, ь and ъ included, and the <code>n_marks</code> attribute (int) is the number of ь and ъ.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Every statistic can be computed separately by calling the corresponding function. Detailed information on the phonostatistics and the functions used to compute them is available in the corresponding <a href="../phon_stats_funcs/">section</a>.</p>
@@ -3159,8 +3145,9 @@
 <span class="c1"># {'CCCV': 1, 'CCV': 5, 'CCVC': 1, 'CV': 11, 'CVC': 5, 'V': 2}</span>
 </code></pre></div>
 </div>
+<p><code>to_dataframe</code> returns the same statistics as a one-row <code>pandas.DataFrame</code>, and <code>describe</code> returns <code>None</code> for each of them: the phonostatistics have no interpretation scales.</p>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed phonostatistics.</p>
+<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
@@ -3170,21 +3157,21 @@
 <span class="n">ps</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">               </span>Статистика<span class="w">               </span><span class="p">|</span><span class="w"> </span>Значение
---------------------------------------------------
-Доля<span class="w"> </span>гласных<span class="w">                            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Доля<span class="w"> </span>сонорных<span class="w"> </span>согласных<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
-Доля<span class="w"> </span>звонких<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>глухих<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Отношение<span class="w"> </span>согласных<span class="w"> </span>к<span class="w"> </span>гласным<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.48
-Доля<span class="w"> </span>кластеров<span class="w"> </span>из<span class="w"> </span><span class="m">3</span><span class="w"> </span>и<span class="w"> </span>более<span class="w"> </span>согласных<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.03
-Зияний<span class="w"> </span>гласных<span class="w"> </span>на<span class="w"> </span>слово<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Энтропия<span class="w"> </span>CV-шаблонов<span class="w"> </span>слов<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.14
-Жёсткость<span class="w">                               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.56
-Индекс<span class="w"> </span>аллитерации<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.09
-Индекс<span class="w"> </span>ассонанса<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.83
-Доля<span class="w"> </span>открытых<span class="w"> </span>слогов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.76
-Средняя<span class="w"> </span>длина<span class="w"> </span>слога<span class="w"> </span><span class="o">(</span>букв<span class="o">)</span><span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.60
+<div class="highlight"><pre><span></span><code><span class="w">              </span>Статистика<span class="w">              </span><span class="p">|</span><span class="w"> </span>Значение
+-------------------------------------------------
+Доля<span class="w"> </span>гласных<span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
+Доля<span class="w"> </span>сонорных<span class="w"> </span>согласных<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
+Доля<span class="w"> </span>звонких<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
+Доля<span class="w"> </span>глухих<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
+Отношение<span class="w"> </span>согласных<span class="w"> </span>к<span class="w"> </span>гласным<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.48
+Доля<span class="w"> </span>кластеров<span class="w"> </span>из<span class="w"> </span><span class="m">3</span><span class="w"> </span>и<span class="w"> </span>более<span class="w"> </span>согласных<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.03
+Зияний<span class="w"> </span>гласных<span class="w"> </span>на<span class="w"> </span>слово<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Энтропия<span class="w"> </span>CV-шаблонов<span class="w"> </span>слов<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.14
+Жёсткость<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.56
+Индекс<span class="w"> </span>аллитерации<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.09
+Индекс<span class="w"> </span>ассонанса<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.83
+Доля<span class="w"> </span>открытых<span class="w"> </span>слогов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.76
+Средняя<span class="w"> </span>длина<span class="w"> </span>слога<span class="w"> </span><span class="o">(</span>букв<span class="o">)</span><span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.60
 </code></pre></div>
 </div>
 

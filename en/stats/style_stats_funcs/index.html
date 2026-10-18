@@ -3284,7 +3284,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_keyword_density()</strong></p>
 </div>
-<p>Computation of the keyword density (Text.ru): the occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the case is ignored, and the keywords of a set come in sorted order.</p>
+<p>Computation of the keyword density (Text.ru): the occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the words and the keywords are compared in lower case without the letter ё, as the stopwords and the phrases, and the keywords of a set come in sorted order. The <code>keyword_density</code> method of <code>StyleStats</code> counts the same way.</p>
 <p>Parameters:</p>
 <table>
 <thead>

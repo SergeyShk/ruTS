@@ -1492,7 +1492,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -1503,7 +1503,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -1512,6 +1512,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -1538,6 +1549,17 @@
     <span class="md-ellipsis">
       
         print_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
       
     </span>
   </a>
@@ -2828,7 +2850,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2839,7 +2861,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -2848,6 +2870,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2874,6 +2907,17 @@
     <span class="md-ellipsis">
       
         print_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
       
     </span>
   </a>
@@ -2910,9 +2954,10 @@
 <p><strong>ruts.syntax_stats.SyntaxStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления синтаксических статистик текста по дереву зависимостей: длин зависимостей, глубины и формы дерева, сочинительных цепочек, клауз, модификаторов именной группы, цепочек родительных падежей, причастных и деепричастных оборотов, пассива, инфинитивов, отрицаний, расщепленных сказуемых и отношения существительных к глаголам. Синтаксические маркеры канцелярита: пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отношение существительных к глаголам. Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018), где они были проверены на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелируют с классом учебника на уровне 0.88-0.93.</p>
-<p>Статистики считаются по разметке <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a>, поэтому источником данных может быть только объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с разбором зависимостей - из моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> или <code>ru_core_news_lg</code>. Знаки препинания, символы и пробельные токены не учитываются: узлами дерева считаются слова, дефисное слово, разрезанное spaCy (<code>во-первых</code>), - одно слово, а длины зависимостей измеряются по позициям слов.</p>
-<p>Показатели предложения (максимальная длина зависимости, глубина дерева, число листьев и поддеревьев, узлов на лист) усредняются по предложениям; конструкции (клаузы, цепочки, обороты, инфинитивы, отрицания) нормируются на число предложений; пассив и модификаторы - на число глагольных форм и существительных. Значения, которые не определены для текста (средняя длина оборота при отсутствии оборотов, доля пассива при отсутствии глаголов), равны <code>nan</code>.</p>
+<!-- core: stats/syntax_stats.md:SyntaxStats 8b1fa84 -->
+<p>Синтаксические статистики текста по его дереву зависимостей (Иванов, Солнышкина и Соловьёв 2018): длины зависимостей, глубина дерева, листья и поддеревья, валентность финитных глаголов, сочинительные цепочки, клаузы, модификаторы существительного, причастные обороты, пассив, инфинитивы, отрицания, расщепленные сказуемые и отношение существительных к глаголам. Источник данных - объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с разбором зависимостей. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.</p>
+<p>Источник, который не является <code>Doc</code>, дает <code>SourceTypeError</code>; источник без разбора зависимостей (отношений и границ предложений), без лемм, если класс их требует, или без слов - <code>SourceError</code>.</p>
+<p>Отношения и признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванов, Солнышкина и Соловьёв</a> проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Качество статистик ограничено качеством разбора: маленькая модель <code>ru_core_news_sm</code> ошибается в частях речи и связях заметно чаще, чем <code>ru_core_news_lg</code>.</p>
@@ -2921,7 +2966,9 @@
 <p class="admonition-title">Примечание</p>
 <p>Вычисление статистик происходит в момент инициализации объекта класса <code>SyntaxStats</code>.</p>
 </div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем: части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка. Краткое причастие (<code>дом построен</code>) - сказуемое и возглавляет клаузу (<a href="../syntax_stats_funcs/#is_clause_head"><code>is_clause_head</code></a>), полные причастия и деепричастия возглавляют обороты, которые считаются отдельно, а инфинитив при существительном (<code>желание уйти</code>) клаузы не образует; причастный оборот - полное причастие с зависимым словом (<a href="../syntax_stats_funcs/#is_participle_clause"><code>is_participle_clause</code></a>); отрицания - частицы с <code>Polarity=Neg</code> и частицы «не», «ни» (<a href="../syntax_stats_funcs/#is_negation"><code>is_negation</code></a>); расщепленное сказуемое - легкий глагол с существительным, которое несет его значение, например <code>осуществлять проверку</code> (<a href="../syntax_stats_funcs/#find_split_predicates"><code>find_split_predicates</code></a>). Свои статистики ruTS - цепочки родительных падежей (<a href="../syntax_stats_funcs/#calc_genitive_chains"><code>calc_genitive_chains</code></a> на основе <code>calc_modifier_chains</code> ядра) и деепричастные обороты. Таблица <code>print_stats</code> выводится с русскими заголовками и описаниями из <code>ruts.constants.SYNTAX_STATS_DESC</code>, сообщения об ошибках - по-русски (<code>CORE_MESSAGES</code>).</p>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2940,7 +2987,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 5018989 -->
 <table>
 <thead>
 <tr>
@@ -2951,24 +2999,19 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>n_sents</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество предложений, содержащих слова</td>
+<td style="text-align: center;"><code>sents</code></td>
+<td style="text-align: center;">tuple[tuple[Token]]</td>
+<td style="text-align: center;">Слова каждого предложения, в котором есть слова</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество слов</td>
+<td style="text-align: center;">Количество предложений со словами и количество слов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_leaves</code></td>
+<td style="text-align: center;"><code>n_leaves</code>, <code>n_subtrees</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество листьев - слов без зависимых слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_subtrees</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество поддеревьев - слов с зависимыми словами</td>
+<td style="text-align: center;">Количество слов без зависимых слов и с ними</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_coordination_chains</code></td>
@@ -2976,29 +3019,14 @@
 <td style="text-align: center;">Количество сочинительных цепочек</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_clauses</code></td>
+<td style="text-align: center;"><code>n_clauses</code>, <code>n_subordinate_clauses</code>, <code>n_complex_sents</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество клауз</td>
+<td style="text-align: center;">Количество клауз, придаточных клауз и предложений с придаточной</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_subordinate_clauses</code></td>
+<td style="text-align: center;"><code>n_nouns</code>, <code>n_verbs</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество придаточных клауз</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_complex_sents</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество предложений с придаточными</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_nouns</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество существительных</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_genitive_chains</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество цепочек родительных падежей</td>
+<td style="text-align: center;">Количество существительных (<code>NOUN</code>, <code>PROPN</code>) и глагольных форм (<code>VERB</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_participle_clauses</code></td>
@@ -3006,94 +3034,59 @@
 <td style="text-align: center;">Количество причастных оборотов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_converb_clauses</code></td>
+<td style="text-align: center;"><code>n_passive</code>, <code>n_agentless_passive</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество деепричастных оборотов</td>
+<td style="text-align: center;">Количество пассивных форм и форм без агенса</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_verbs</code></td>
+<td style="text-align: center;"><code>n_infinitives</code>, <code>n_negations</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество глагольных форм</td>
+<td style="text-align: center;">Количество инфинитивов и слов отрицания</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_passive</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество пассивных глагольных форм</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_agentless_passive</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество пассивных форм без агенса</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_infinitives</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество инфинитивов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_negations</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество отрицательных частиц</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_split_predicates</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество расщепленных сказуемых</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>split_predicates</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж расщепленных сказуемых (глагол и существительное)</td>
+<td style="text-align: center;"><code>n_split_predicates</code>, <code>split_predicates</code></td>
+<td style="text-align: center;">int, tuple[str]</td>
+<td style="text-align: center;">Количество расщепленных сказуемых и сами сказуемые - глагол и существительное</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c_children</code></td>
 <td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Распределение слов по числу зависимых слов</td>
+<td style="text-align: center;">Количество слов по числу зависимых слов</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>c_deps</code></td>
 <td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Распределение слов по синтаксическим отношениям</td>
+<td style="text-align: center;">Количество слов по синтаксическим отношениям</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_dependency_distance</code></td>
+<td style="text-align: center;"><code>mean_dependency_distance</code>, <code>std_dependency_distance</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина зависимости</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>std_dependency_distance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Стандартное отклонение длины зависимости</td>
+<td style="text-align: center;">Средняя длина зависимости и ее стандартное отклонение</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>max_dependency_distance</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее по предложениям с зависимостями наибольших длин зависимости</td>
+<td style="text-align: center;">Среднее наибольших длин зависимости предложений, в которых есть зависимости</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>p_adjacent_dependencies</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля смежных связей - зависимостей длины 1</td>
+<td style="text-align: center;">Доля зависимостей длины 1</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>tree_depth</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя по предложениям глубина дерева зависимостей</td>
+<td style="text-align: center;">Средняя глубина дерева предложения</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>leaves_per_sent</code></td>
+<td style="text-align: center;"><code>leaves_per_sent</code>, <code>subtrees_per_sent</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Листьев на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>subtrees_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Поддеревьев на предложение</td>
+<td style="text-align: center;">Листьев и поддеревьев на предложение</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>nodes_per_leaf</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее по предложениям отношение числа слов к числу листьев</td>
+<td style="text-align: center;">Среднее по предложениям число слов на лист</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>verb_valency</code></td>
@@ -3101,39 +3094,62 @@
 <td style="text-align: center;">Среднее число зависимых у финитного глагола</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>coordination_chains_per_sent</code></td>
+<td style="text-align: center;"><code>coordination_chains_per_sent</code>, <code>mean_coordination_chain_len</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Сочинительных цепочек на предложение</td>
+<td style="text-align: center;">Сочинительных цепочек на предложение и их средняя длина</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_coordination_chain_len</code></td>
+<td style="text-align: center;"><code>clauses_per_sent</code>, <code>mean_clause_len</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина сочинительной цепочки</td>
+<td style="text-align: center;">Клауз на предложение и их средняя длина в словах</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>clauses_per_sent</code></td>
+<td style="text-align: center;"><code>subordinate_clauses_per_sent</code>, <code>p_complex_sents</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Клауз на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина клаузы в словах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>subordinate_clauses_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Придаточных клауз на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_complex_sents</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля предложений хотя бы с одной придаточной клаузой</td>
+<td style="text-align: center;">Придаточных клауз на предложение и доля предложений с придаточной</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>modifiers_per_noun</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее число модификаторов у существительного</td>
+<td style="text-align: center;">Среднее число модификаторов существительного (<code>count_noun_modifiers</code>)</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>participle_clauses_per_sent</code>, <code>mean_participle_clause_len</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Причастных оборотов на предложение и их средняя длина в словах</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>p_passive</code>, <code>p_agentless_passive</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Доля пассивных форм среди глагольных форм и доля форм без агенса среди них</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>infinitives_per_sent</code>, <code>negations_per_sent</code>, <code>split_predicates_per_sent</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Инфинитивов, слов отрицания и расщепленных сказуемых на предложение</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>noun_verb_ratio</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Отношение числа существительных к числу глагольных форм</td>
+</tr>
+</tbody>
+</table>
+<p>Доля, отношение или среднее, которым не на что делить, равны <code>nan</code>.</p>
+<p>Статистики конструкций ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Атрибут</th>
+<th style="text-align: center;">Тип</th>
+<th style="text-align: center;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>n_genitive_chains</code>, <code>n_converb_clauses</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Количество цепочек родительных падежей и деепричастных оборотов</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>genitive_chains_per_sent</code></td>
@@ -3143,57 +3159,12 @@
 <tr>
 <td style="text-align: center;"><code>max_genitive_chain_len</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Максимальная длина цепочки родительных падежей</td>
+<td style="text-align: center;">Максимальная длина цепочки родительных падежей, 0 без цепочек</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>participle_clauses_per_sent</code></td>
+<td style="text-align: center;"><code>converb_clauses_per_sent</code>, <code>mean_converb_clause_len</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Причастных оборотов на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_participle_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина причастного оборота в словах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>converb_clauses_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Деепричастных оборотов на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_converb_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина деепричастного оборота в словах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_passive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля пассивных форм среди глагольных форм</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_agentless_passive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля форм без агенса среди пассивных</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>infinitives_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Инфинитивов на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>negations_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Отрицательных частиц на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>split_predicates_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Расщепленных сказуемых на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_verb_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Отношение числа существительных к числу глагольных форм</td>
+<td style="text-align: center;">Деепричастных оборотов на предложение и их средняя длина в словах</td>
 </tr>
 </tbody>
 </table>
@@ -3201,7 +3172,7 @@
 <p class="admonition-title">Примечание</p>
 <p>Каждую статистику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о синтаксических статистиках и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../syntax_stats_funcs/">разделе</a>.</p>
 </div>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
 <p>Возвращает справочник с вычисленными синтаксическими статистиками текста.</p>
 <div class="admonition example">
@@ -3250,7 +3221,7 @@
 <span class="s1">'noun_verb_ratio'</span>:<span class="w"> </span><span class="m">1</span>.0<span class="o">}</span>
 </code></pre></div>
 </div>
-<p>Счетчики и распределения доступны как атрибуты:</p>
+<p>Счетчики, распределения и слова предложений доступны как атрибуты:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
@@ -3259,10 +3230,14 @@
 <span class="c1"># {0: 9, 1: 2, 2: 5, 3: 1}</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
 <span class="c1"># {'ROOT': 2, 'acl': 1, 'advcl': 1, 'advmod': 1, 'amod': 1, 'aux:pass': 1, 'case': 1, 'cc': 1, 'ccomp': 1, 'conj': 1, 'iobj': 1, 'mark': 1, 'nsubj': 1, 'nsubj:pass': 1, 'obl': 1, 'obl:agent': 1}</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># (Дом, построенный, рабочими, в, прошлом, году, был, продан)</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Выводит на экран таблицу с вычисленными синтаксическими статистиками текста.</p>
+<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
+<p>Выводит таблицу статистик из <code>stats_desc</code> с их описаниями под заголовками из <code>stats_headers</code>, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.</p>
+<p>Для иллюстрации работы метода воспользуемся кодом из примера <code>get_stats</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
@@ -3272,38 +3247,40 @@
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                    </span>Статистика<span class="w">                    </span><span class="p">|</span><span class="w"> </span>Значение
+<div class="highlight"><pre><span></span><code><span class="w">                   </span>Статистика<span class="w">                    </span><span class="p">|</span><span class="w"> </span>Значение
 ------------------------------------------------------------
-Средняя<span class="w"> </span>длина<span class="w"> </span>зависимости<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.93
-Стандартное<span class="w"> </span>отклонение<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w">          </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.61
-Средний<span class="w"> </span>максимум<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w"> </span>в<span class="w"> </span>предложении<span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Доля<span class="w"> </span>смежных<span class="w"> </span>связей<span class="w">                               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.60
-Средняя<span class="w"> </span>глубина<span class="w"> </span>дерева<span class="w"> </span>зависимостей<span class="w"> </span>предложения<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Листьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                            </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.50
-Поддеревьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Среднее<span class="w"> </span>число<span class="w"> </span>узлов<span class="w"> </span>на<span class="w"> </span>лист<span class="w"> </span>в<span class="w"> </span>предложении<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.90
-Валентность<span class="w"> </span>финитных<span class="w"> </span>глаголов<span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Сочинительных<span class="w"> </span>цепочек<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>сочинительной<span class="w"> </span>цепочки<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>клаузы<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.67
-Придаточных<span class="w"> </span>клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>предложений<span class="w"> </span>с<span class="w"> </span>придаточными<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Модификаторов<span class="w"> </span>на<span class="w"> </span>именную<span class="w"> </span>группу<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Цепочек<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Максимальная<span class="w"> </span>длина<span class="w"> </span>цепочки<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w">    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Причастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>причастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">          </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Деепричастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>деепричастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Доля<span class="w"> </span>пассивных<span class="w"> </span>форм<span class="w"> </span>среди<span class="w"> </span>глаголов<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Доля<span class="w"> </span>безагентного<span class="w"> </span>пассива<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Инфинитивов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отрицаний<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Расщеплённых<span class="w"> </span>сказуемых<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отношение<span class="w"> </span>существительных<span class="w"> </span>к<span class="w"> </span>глаголам<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Средняя<span class="w"> </span>длина<span class="w"> </span>зависимости<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.93
+Стандартное<span class="w"> </span>отклонение<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.61
+Средний<span class="w"> </span>максимум<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w"> </span>в<span class="w"> </span>предложении<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
+Доля<span class="w"> </span>смежных<span class="w"> </span>связей<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.60
+Средняя<span class="w"> </span>глубина<span class="w"> </span>дерева<span class="w"> </span>зависимостей<span class="w"> </span>предложения<span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
+Листьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.50
+Поддеревьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
+Среднее<span class="w"> </span>число<span class="w"> </span>узлов<span class="w"> </span>на<span class="w"> </span>лист<span class="w"> </span>в<span class="w"> </span>предложении<span class="w">        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.90
+Валентность<span class="w"> </span>финитных<span class="w"> </span>глаголов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
+Сочинительных<span class="w"> </span>цепочек<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Средняя<span class="w"> </span>длина<span class="w"> </span>сочинительной<span class="w"> </span>цепочки<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
+Клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
+Средняя<span class="w"> </span>длина<span class="w"> </span>клаузы<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.67
+Придаточных<span class="w"> </span>клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Доля<span class="w"> </span>предложений<span class="w"> </span>с<span class="w"> </span>придаточными<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Модификаторов<span class="w"> </span>на<span class="w"> </span>именную<span class="w"> </span>группу<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
+Цепочек<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Максимальная<span class="w"> </span>длина<span class="w"> </span>цепочки<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>
+Причастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Средняя<span class="w"> </span>длина<span class="w"> </span>причастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
+Деепричастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Средняя<span class="w"> </span>длина<span class="w"> </span>деепричастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">      </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
+Доля<span class="w"> </span>пассивных<span class="w"> </span>форм<span class="w"> </span>среди<span class="w"> </span>глаголов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
+Доля<span class="w"> </span>безагентного<span class="w"> </span>пассива<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Инфинитивов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Отрицаний<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Расщеплённых<span class="w"> </span>сказуемых<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Отношение<span class="w"> </span>существительных<span class="w"> </span>к<span class="w"> </span>глаголам<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
 </code></pre></div>
 </div>
+<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
+<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у синтаксических статистик нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
 
 
 
