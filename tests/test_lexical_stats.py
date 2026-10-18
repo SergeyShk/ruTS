@@ -147,6 +147,14 @@ def test_numbers(freq_dict):
     assert not is_number("кот") and not is_number("5-миллионный")
 
 
+def test_byte_order_mark(freq_dict):
+    """BOM, приклеенный spaCy к числу в начале текста, не делает его словом Doc"""
+    text = "\ufeff2020 год был трудным"
+    words = LexicalStats(text, freq_dict=freq_dict).words
+    assert words == ("год", "был", "трудным")
+    assert LexicalStats(spacy.blank("ru")(text), freq_dict=freq_dict).words == words
+
+
 def test_without_dict(tmp_path):
     ls = LexicalStats(text, freq_dict=FreqDict(data_dir=tmp_path))
     assert ls.p_top1000 == pytest.approx(6 / 8)

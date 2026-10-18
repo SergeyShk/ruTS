@@ -1,24 +1,19 @@
 import re
-from collections.abc import Iterable, Mapping, Sequence
-from functools import cache, cached_property, lru_cache
-from math import log2, log10, nan
-from numbers import Integral
-from statistics import fmean
+from collections.abc import Mapping, Sequence
+from functools import cache, lru_cache
 
 import anyts
+import anyts.lexical_stats
+import anyts.utils
 import pymorphy3
-from anyts.utils import check_words, iter_doc_units, safe_divide
+from anyts.lexical_stats import LexicalWord
+from anyts.utils import iter_doc_units
 from spacy.tokens import Doc
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
-from .constants import (
-    FREQUENCY_BANDS,
-    LEXICAL_STATS_DESC,
-    PROPER_NOUN_GRAMMEMES,
-    RESOURCES_DIR,
-)
+from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, PROPER_NOUN_GRAMMEMES, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
-from .exceptions import ParameterError, SourceError, SourceTypeError
+from .exceptions import SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
 from .utils import normalize_yo, parse_all, parse_word
 
@@ -29,24 +24,17 @@ RARE_IPM = 1.0
 RARE_RATIO = 20
 
 
-class LexicalStats:
+class LexicalStats(anyts.lexical_stats.LexicalStats):
     """
     Класс для вычисления статистик лексической сложности текста
 
     Описание:
-        Лексическая сложность (lexical sophistication по образцу TAALES) - насколько
-        слова текста редки относительно языка: средняя частотность, диапазон
-        и дисперсия лемм по частотному словарю Ляшевской и Шарова (FreqDict), доля
-        слов из частотных полос топ-1000, 2000, 5000 и 10000 по вшитому списку Шарова,
-        сюрпризал и перплексия по униграммной модели словаря, лексическая плотность
-        Леммы для Doc с разметкой частей речи берутся из разбора pymorphy3 с частью
-        речи токена, для строки, Doc без разметки и Doc с заданным экстрактором
-        слов - из первого разбора pymorphy3;
-        дефисные слова, разрезанные spaCy, склеиваются (iter_doc_units)
-        Числа (2020, 5.5, 3-й) словами не считаются: в словаре и списке их нет,
-        и они выглядели бы как самые редкие слова текста
-        Метрики по частотному словарю требуют загруженного FreqDict, полосы
-        и лексическая плотность считаются без него
+        Расширяет LexicalStats ядра anyTS русским словарем и леммами: частотный словарь
+        Ляшевской и Шарова (FreqDict), частотные полосы - по вшитому списку
+        10 000 лемм Шарова, леммы pymorphy3 (для Doc с разметкой частей речи - разбор
+        с частью речи токена), дефисные слова Doc склеиваются, числа (2020, 5.5, 3-й)
+        словами не считаются. Метрики по частотному словарю требуют загруженного
+        FreqDict, полосы и лексическая плотность считаются без него
 
     Ссылки:
         https://doi.org/10.3758/s13428-017-0924-4 (Kyle, Crossley, Berger 2018, TAALES)
@@ -85,6 +73,8 @@ class LexicalStats:
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
         lemmas (tuple[str]): Кортеж лемм в нижнем регистре
+        keys (tuple[str]): Кортеж лемм в частотном словаре (dictionary_lemma)
+        entries (tuple[Entry|None]): Статьи частотного словаря, None для слов вне словаря
         n_words (int): Количество слов
         n_content_words (int): Количество знаменательных слов
         n_found (int): Количество слов, найденных в частотном словаре
@@ -112,24 +102,34 @@ class LexicalStats:
         print_stats: Отображение вычисленных статистик с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
+            или частотный словарь другого типа
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: При обращении к метрикам по словарю, если словарь не загружен
     """
 
+    freq_dict: FreqDict
+    freq_dict_class = FreqDict
+    stats_desc = LEXICAL_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
+
     def __init__(
         self,
         source: str | Doc,
-        words_extractor: WordsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         freq_dict: FreqDict | None = None,
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
-        if freq_dict is not None and not isinstance(freq_dict, FreqDict):
-            raise SourceTypeError("Частотный словарь должен быть FreqDict")
+            raise SourceTypeError(self.messages["words_extractor_type"])
+        self._words_extractor = words_extractor
+        super().__init__(source, freq_dict)
+
+    def analyze(self, source: str | Doc) -> list[LexicalWord]:
+        """Слова без чисел с леммами pymorphy3 и признаком знаменательного слова"""
+        extractor = self._words_extractor
         infos: list[WordInfo]
-        if isinstance(source, Doc) and words_extractor is not None:
-            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+        if isinstance(source, Doc) and extractor is not None:
             source = source.text
         if isinstance(source, Doc):
             units = [
@@ -137,45 +137,26 @@ class LexicalStats:
                 for unit in iter_doc_units(source, join_hyphens=True)
                 if not is_number(unit_text(unit))
             ]
-            self.words = tuple(unit_text(unit) for unit in units)
+            words = [unit_text(unit) for unit in units]
             if source.has_annotation("POS"):
                 infos = [unit_info(unit) for unit in units]
             else:
-                infos = [word_info(word) for word in self.words]
+                infos = [word_info(word) for word in words]
         elif isinstance(source, str):
-            if not words_extractor:
-                words_extractor = WordsExtractor()
-            self.words = tuple(
-                word for word in words_extractor.extract(source) if not is_number(word)
-            )
-            infos = [word_info(word) for word in self.words]
+            words = [
+                word
+                for word in (extractor or WordsExtractor()).extract(source)
+                if not is_number(word)
+            ]
+            infos = [word_info(word) for word in words]
         else:
-            raise SourceTypeError("Некорректный источник данных")
-        if not self.words:
-            raise SourceError("В источнике данных отсутствуют слова")
-        self.freq_dict = freq_dict if freq_dict is not None else FreqDict()
-        self.lemmas = tuple(info.lemma for info in infos)
-        self._content = tuple(info.content for info in infos)
-        self.n_words = len(self.words)
-        self.n_content_words = sum(self._content)
-        self.ranks = tuple(get_rank(lemma) for lemma in self.lemmas)
-        self.lexical_density = self.n_content_words / self.n_words
-        bands = self.band_coverage()
-        self.p_top1000 = bands[1000]
-        self.p_top2000 = bands[2000]
-        self.p_top5000 = bands[5000]
-        self.p_top10000 = bands[10000]
-        self.p_beyond_top10000 = 1 - bands[10000]
+            raise SourceTypeError(self.messages["source_type"])
+        return [
+            LexicalWord(word, info.lemma, info.content)
+            for word, info in zip(words, infos, strict=True)
+        ]
 
-    @cached_property
-    def entries(self) -> tuple[Entry | None, ...]:
-        """
-        Статьи частотного словаря для каждого слова, None для слов вне словаря
-        """
-        return tuple(self.freq_dict.lookup(lemma) for lemma in self._dict_lemmas)
-
-    @cached_property
-    def _dict_lemmas(self) -> tuple[str, ...]:
+    def dictionary_keys(self) -> tuple[str, ...]:
         """Леммы слов в частотном словаре (dictionary_lemma)"""
         entries = self.freq_dict.entries
         return tuple(
@@ -183,111 +164,13 @@ class LexicalStats:
             for word, lemma in zip(self.words, self.lemmas, strict=True)
         )
 
-    @property
-    def n_found(self) -> int:
-        return sum(1 for entry in self.entries if entry)
+    def rank(self, lemma: str) -> int | None:
+        """Ранг леммы по вшитому списку Шарова (get_rank)"""
+        return get_rank(lemma)
 
-    @property
-    def coverage(self) -> float:
-        return self.n_found / self.n_words
-
-    @property
-    def mean_ipm(self) -> float:
-        return _mean([entry.ipm for entry in self.entries if entry])
-
-    @property
-    def mean_ipm_content(self) -> float:
-        return _mean(
-            [
-                entry.ipm
-                for entry, content in zip(self.entries, self._content, strict=True)
-                if entry and content
-            ]
-        )
-
-    @property
-    def mean_log_ipm(self) -> float:
-        return _mean([log10(entry.ipm) for entry in self.entries if entry])
-
-    @property
-    def mean_log_ipm_content(self) -> float:
-        return _mean(
-            [
-                log10(entry.ipm)
-                for entry, content in zip(self.entries, self._content, strict=True)
-                if entry and content
-            ]
-        )
-
-    @property
-    def mean_range(self) -> float:
-        return _mean([entry.range for entry in self.entries if entry])
-
-    @property
-    def mean_dispersion(self) -> float:
-        return _mean([entry.dispersion for entry in self.entries if entry])
-
-    @cached_property
-    def surprisal(self) -> float:
-        return calc_surprisal(self._dict_lemmas, self.freq_dict)
-
-    @property
-    def perplexity(self) -> float:
-        return 2**self.surprisal
-
-    def band_coverage(
-        self, bands: Sequence[int] = FREQUENCY_BANDS, unique: bool = False
-    ) -> dict[int, float]:
-        """
-        Доли слов по частотным полосам вшитого списка
-
-        Аргументы:
-            bands (list[int]): Границы полос - размеры топ-списков
-            unique (bool): Считать по уникальным леммам, а не по словам
-
-        Вывод:
-            dict[int, float]: Доля слов с леммой из топ-N для каждой границы N
-
-        Исключения:
-            ParameterError: Если границы полос не список целых чисел или граница вне рангов
-                вшитого списка (1..10 000)
-        """
-        if isinstance(bands, str | bytes) or not isinstance(bands, Iterable):
-            raise ParameterError(f"Границы полос должны быть списком, а не {type(bands).__name__}")
-        bands = tuple(bands)
-        last_rank = max(load_top_lemmas().values())
-        for band in bands:
-            value: object = band
-            if (
-                isinstance(value, bool)
-                or not isinstance(value, Integral)
-                or not 1 <= band <= last_rank
-            ):
-                raise ParameterError(
-                    f"Граница полосы должна быть целым числом от 1 до {last_rank}, а не {band!r}"
-                )
-        ranks = [get_rank(lemma) for lemma in set(self.lemmas)] if unique else list(self.ranks)
-        return {
-            band: safe_divide(sum(1 for rank in ranks if rank and rank <= band), len(ranks))
-            for band in bands
-        }
-
-    def get_stats(self) -> dict[str, float]:
-        """
-        Получение вычисленных статистик лексической сложности текста
-
-        Вывод:
-            dict[str, float]: Справочник вычисленных статистик
-        """
-        return {stat: getattr(self, stat) for stat in LEXICAL_STATS_DESC}
-
-    def print_stats(self):
-        """Отображение вычисленных статистик лексической сложности текста с описанием на экран"""
-        print(f"{'Статистика':^58}|{'Значение':^10}")
-        print("-" * 68)
-        stats = self.get_stats()
-        for stat, value in LEXICAL_STATS_DESC.items():
-            print(f"{value:58}|{stats[stat]:^10.2f}")
+    def top_size(self) -> int:
+        """Последний ранг вшитого списка Шарова"""
+        return max(load_top_lemmas().values())
 
 
 def is_number(word: str) -> bool:
@@ -300,11 +183,7 @@ def is_number(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return NUMBER_PATTERN.fullmatch(word.lower()) is not None
-
-
-def _mean(values: Sequence[float]) -> float:
-    return fmean(values) if values else nan
+    return anyts.utils.is_number(word, NUMBER_PATTERN)
 
 
 @cache
@@ -455,9 +334,10 @@ def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:
 
     Вывод:
         float: Средний сюрпризал в битах, nan для пустого списка
+
+    Исключения:
+        SourceTypeError: Если леммы не список строк или словарь не FreqDict
     """
-    check_words(lemmas)
     if not isinstance(freq_dict, FreqDict):
-        raise SourceTypeError("Частотный словарь должен быть FreqDict")
-    floor = freq_dict.min_ipm
-    return _mean([-log2(max(freq_dict.ipm(lemma), floor) / 1_000_000) for lemma in lemmas])
+        raise SourceTypeError(CORE_MESSAGES["freq_dict_type"].format(expected="FreqDict"))
+    return anyts.lexical_stats.calc_surprisal(lemmas, freq_dict)
