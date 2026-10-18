@@ -80,7 +80,9 @@ class PhonStats(anyts.phon_stats.PhonStats):
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов в нижнем регистре
+        window_len (int): Размер окна в словах для аллитерации и ассонанса
         syllables (tuple[tuple[str, ...], ...]): Кортеж слогов каждого слова
+        sounds (tuple[str]): Звуки каждого слова - его буквы
         n_vowels (int): Количество гласных
         n_consonants (int): Количество согласных
         n_sonorants (int): Количество сонорных согласных

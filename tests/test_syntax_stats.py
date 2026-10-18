@@ -622,3 +622,17 @@ def test_negation_stress_mark():
     """Частица «не» со знаком ударения без признака Polarity - тоже отрицание"""
     doc = Doc(spacy.blank("ru").vocab, words=["не\u0301", "НЕ"], pos=["PART", "PART"])
     assert [is_negation(token) for token in doc] == [True, True]
+
+
+def test_clause_head_conj_loop():
+    """Однородные, зацикленные разбором через conj, - не клауза, а не RecursionError"""
+    vocab = spacy.blank("ru").vocab
+    doc = Doc(
+        vocab,
+        words=["Он", "пришел", "ушел", "спал"],
+        heads=[1, 1, 3, 2],
+        deps=["nsubj", "ROOT", "conj", "conj"],
+        pos=["PRON", "VERB", "VERB", "VERB"],
+    )
+    assert not is_clause_head(doc[2])
+    assert SyntaxStats(doc).n_clauses == 1

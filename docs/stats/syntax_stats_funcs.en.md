@@ -1,22 +1,23 @@
 # Statistic functions
 
-All functions work with spaCy `Token` objects: the `calc_*` functions take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions - a single token. Punctuation, symbols and whitespace tokens are skipped. The dependency tree helpers come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats_funcs/) core; with `join_hyphens=True`, which `SyntaxStats` passes, a hyphenated word that spaCy splits (`во-первых`) is one word. Syntactic relations and morphological features are taken from the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation; relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation where noted.
+All functions work with spaCy `Token` objects: the `calc_*` functions take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions - a single token. The functions of the dependency tree come from the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats_funcs/) core, the functions of the Russian constructions are those of ruTS. Syntactic relations and morphological features are taken from the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation; relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation where noted.
 
 The feature definitions follow [Ivanov, Solnyshkina and Solovyev (2018)](https://dialogue-conf.org/media/4302/ivanovvv.pdf); the original feature names and their correlation coefficients with the textbook grade from that paper are given in parentheses.
+
+## Hyphenated words { #hyphenated-words }
+
+--8<-- "stats/syntax_stats_funcs.md:hyphenated_words"
+
+`SyntaxStats` and the functions of the Russian constructions always join hyphenated words (`во-первых` is one word). The functions of the core, `is_predicate` and `count_noun_modifiers` included, take `join_hyphens=False` by default: they give the values of `SyntaxStats` with `join_hyphens=True`.
 
 ## Dependency distances { #calc_dependency_distances }
 
 !!! info ""
     **ruts.syntax_stats.calc_dependency_distances()**
 
-Computation of dependency distances - the distances between a word and its head in word positions, ignoring punctuation (Liu, 2008). Sentence roots have no dependency and are skipped, as are words whose head lies outside the given sequence. `SyntaxStats` derives from the distances the mean (`mean_dependency_distance`), the standard deviation over all dependencies of the text (`std_dependency_distance`), the maximum in a sentence averaged over sentences with dependencies (`max_dependency_distance`), and the share of adjacent relations of distance 1 (`p_adjacent_dependencies`); one-word sentences enter none of the statistics. The mean dependency distance grows with sentence length; the maximum distance is the best of the tree features at the level of an individual sentence.
+--8<-- "stats/syntax_stats_funcs.md:calc_dependency_distances"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
-| `join_hyphens` | bool | `False` | Take a hyphenated word for one position |
+`SyntaxStats` derives from the distances the mean (`mean_dependency_distance`), the standard deviation over all dependencies of the text (`std_dependency_distance`), the maximum in a sentence averaged over sentences with dependencies (`max_dependency_distance`), and the share of adjacent relations of distance 1 (`p_adjacent_dependencies`); one-word sentences enter none of the statistics. The mean dependency distance grows with sentence length; the maximum distance is the best of the tree features at the level of an individual sentence.
 
 !!! example "Example"
 
@@ -36,21 +37,18 @@ Parameters:
 !!! info ""
     **ruts.syntax_stats.calc_tree_depth()**
 
-Computation of the dependency tree depth - the length of the longest path from the sentence root to a leaf in relations (`LONGEST_PATH`, r = 0.84). For a sequence of several sentences the maximum is taken, for a one-word sentence - 0. `SyntaxStats` averages the depth over sentences (`tree_depth`).
+--8<-- "stats/syntax_stats_funcs.md:calc_tree_depth"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
-| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
+The depth is `LONGEST_PATH` of the paper (r = 0.84); `SyntaxStats` averages it over sentences (`tree_depth`).
 
 ## Leaves, subtrees and branching { #count_children }
 
 !!! info ""
     **ruts.syntax_stats.count_children()**
 
-Computation of the number of dependents of a token. A word without dependents is a leaf (`LEAVES_NUMBER`, r = 0.84), a word with dependents heads a subtree (`PATH_NUMBER`, r = 0.87). `SyntaxStats` counts the numbers of leaves and subtrees per sentence (`leaves_per_sent`, `subtrees_per_sent`), the ratio of words to leaves (`AVERAGE_PATH`, r = 0.84; `nodes_per_leaf`) and the distribution of words by number of dependents - the branching profile (`c_children`).
+--8<-- "stats/syntax_stats_funcs.md:count_children"
+
+A word without dependents is a leaf (`LEAVES_NUMBER`, r = 0.84), a word with dependents heads a subtree (`PATH_NUMBER`, r = 0.87). `SyntaxStats` counts the numbers of leaves and subtrees per sentence (`leaves_per_sent`, `subtrees_per_sent`), the ratio of words to leaves (`AVERAGE_PATH`, r = 0.84; `nodes_per_leaf`) and the distribution of words by number of dependents - the branching profile (`c_children`).
 
 Parameters:
 
@@ -64,7 +62,9 @@ Parameters:
 !!! info ""
     **ruts.syntax_stats.calc_valency()**
 
-Computation of the valency of a token - the number of dependents excluding coordination (`cc`, `conj`) and parenthetical (`parataxis`) relations. `SyntaxStats` averages the valency over finite verb forms (`VERBS_DEP`, r = 0.43; `verb_valency`); a finite form is a verb with the feature `VerbForm=Fin`, see [`is_finite_verb`](#is_finite_verb).
+--8<-- "stats/syntax_stats_funcs.md:calc_valency"
+
+`SyntaxStats` averages the valency over finite verb forms (`VERBS_DEP`, r = 0.43; `verb_valency`), see [`is_finite_verb`](#is_finite_verb).
 
 Parameters:
 
@@ -78,21 +78,18 @@ Parameters:
 !!! info ""
     **ruts.syntax_stats.calc_coordination_chains()**
 
-Computation of coordination chain lengths. A chain is a group of words linked by the `conj` relation, whichever word each coordinated member attaches to, so a nested coordination and an enumeration that the parser splits between several heads are one chain as well; its length is the number of its words: the sentence «Он купил хлеб, молоко и сыр» has one chain of length 3. The number of chains per sentence (`SOCHIN_NUMBER`, r = 0.93) and their mean length (`AVERAGE_SOCHIN_LENGTH`, r = 0.87) are the strongest syntactic predictors of textbook complexity.
+--8<-- "stats/syntax_stats_funcs.md:calc_coordination_chains"
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
-| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
+The number of chains per sentence (`SOCHIN_NUMBER`, r = 0.93) and their mean length (`AVERAGE_SOCHIN_LENGTH`, r = 0.87) are the strongest syntactic predictors of textbook complexity.
 
 ## Clauses { #is_clause_head }
 
 !!! info ""
     **ruts.syntax_stats.is_clause_head()**, **ruts.syntax_stats.is_subordinate_clause_head()**, **ruts.syntax_stats.is_predicate()**
 
-Checking whether a token heads a clause. A clause is headed by the sentence root or by a word with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, except full participles, adverbial participles and infinitives attached to a noun («желание уйти»): participial and adverbial participle clauses are counted separately. A parenthetical construction (`parataxis`) and a coordinated predicate (a `conj` relation from the clause head) form their own clause only if it is a verb or has its own subject (`is_predicate`): «Он сказал: „Уходи“» and «думала, что он умён» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as `parataxis`, are not.
+Checking whether a token heads a clause. A clause is headed by the sentence root or by a word with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, except full participles, adverbial participles and infinitives attached to a noun («желание уйти»): participial and adverbial participle clauses are counted separately. A parenthetical construction (`parataxis`) and a coordinated predicate (a `conj` relation from the clause head) form their own clause only if it can be a predicate (`is_predicate`): «Он сказал: „Уходи“» and «думала, что он умен» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as `parataxis`, are not.
+
+--8<-- "stats/syntax_stats_funcs.md:is_predicate"
 
 A subordinate clause is a clause with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, as well as a coordinated predicate of a subordinate clause (`PODCHIN_RATE`, r = 0.64). `SyntaxStats` counts clauses and subordinate clauses per sentence (`clauses_per_sent`, `subordinate_clauses_per_sent`), the mean clause length in words (`mean_clause_len`) and the share of sentences with at least one subordinate clause (`PODCHIN_NUMBER`, r = 0.62; `p_complex_sents`).
 
@@ -107,20 +104,23 @@ Parameters:
 !!! info ""
     **ruts.syntax_stats.count_noun_modifiers()**
 
-Computation of the number of noun phrase modifiers - dependents with the relations `amod`, `det`, `nmod`, `nummod`, `acl` and their subtypes (`acl:relcl`, `nummod:gov`). Coordination and apposition relations (`conj`, `appos`) are not counted. `SyntaxStats` averages the number of modifiers over nouns and proper names (`NOUNS_DEP`, r = 0.88; `modifiers_per_noun`).
+--8<-- "stats/syntax_stats_funcs.md:count_noun_modifiers"
+
+`SyntaxStats` averages the number of modifiers over nouns and proper names (`NOUNS_DEP`, r = 0.88; `modifiers_per_noun`).
 
 Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
 | `token` | Token | `-` | Token |
+| `join_hyphens` | bool | `False` | Take a hyphenated word for one word |
 
 ## Genitive chains { #calc_genitive_chains }
 
 !!! info ""
-    **ruts.syntax_stats.calc_genitive_chains()**, **ruts.syntax_stats.is_genitive_modifier()**
+    **ruts.syntax_stats.calc_genitive_chains()**, **ruts.syntax_stats.is_genitive_modifier()**, **ruts.syntax_stats.calc_modifier_chains()**
 
-Computation of genitive chain lengths - two or more nested prepositionless genitive modifiers: «повышение эффективности использования ресурсов» is a chain of length 3. A prepositionless modifier is a word with the `nmod` relation in the genitive case without a dependent preposition (`case`): «дом отца», but not «дом у дороги». A chain starts with a modifier whose head is not itself such a modifier; the length is the number of words in the longest branch. `SyntaxStats` counts the number of chains per sentence (`genitive_chains_per_sent`) and the maximum length over the text (`max_genitive_chain_len`).
+Computation of genitive chain lengths - the chains of `calc_modifier_chains` whose modifiers are prepositionless genitive modifiers (`is_genitive_modifier`): a word with the `nmod` relation in the genitive case without a dependent preposition (`case`), «дом отца», but not «дом у дороги». `SyntaxStats` counts the number of chains per sentence (`genitive_chains_per_sent`) and the maximum length over the text (`max_genitive_chain_len`).
 
 Parameters:
 
@@ -128,12 +128,27 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `tokens` | Doc/Span/list[Token] | `-` | Sequence of tokens |
 
+!!! example "Example"
+
+    ``` python
+    import spacy
+    from ruts.syntax_stats import calc_genitive_chains
+
+    nlp = spacy.load("ru_core_news_sm")
+    calc_genitive_chains(nlp("Повышение эффективности использования ресурсов обсуждалось долго."))
+    # [3]
+    ```
+
+### calc_modifier_chains
+
+--8<-- "stats/syntax_stats_funcs.md:calc_modifier_chains"
+
 ## Participial and adverbial participle clauses { #is_participle_clause }
 
 !!! info ""
     **ruts.syntax_stats.is_participle_clause()**, **ruts.syntax_stats.is_converb_clause()**, **ruts.syntax_stats.subtree_len()**
 
-Checking whether a token heads a participial or adverbial participle clause: a full participle (`VerbForm=Part` without `Variant=Short`) or an adverbial participle (`VerbForm=Conv`) with at least one dependent word, not counting coordination and parenthetical relations. Short participles («дом построен») are predicates rather than modifiers and form no clauses. The clause length is the number of words in the subtree including the participle itself (`subtree_len`). `SyntaxStats` counts clauses per sentence (`PRICH_RATE`, r = 0.91; `DEEPRICH_RATE`, r = 0.44) and their mean length (`PRICH_V`, `DEEPRICH_V`).
+Checking whether a token heads a participial or adverbial participle clause: a full participle ([`is_participle`](#is_finite_verb)) or an adverbial participle ([`is_converb`](#is_finite_verb)) with at least one dependent word, not counting coordination and parenthetical relations. Short participles («дом построен») are predicates rather than modifiers and form no clauses. The clause length is the number of words in the subtree including the participle itself ([`subtree_len`](#helpers)). `SyntaxStats` counts clauses per sentence (`PRICH_RATE`, r = 0.91; `DEEPRICH_RATE`, r = 0.44) and their mean length (`PRICH_V`, `DEEPRICH_V`).
 
 Parameters:
 
@@ -159,7 +174,11 @@ Parameters:
 !!! info ""
     **ruts.syntax_stats.is_finite_verb()**, **ruts.syntax_stats.is_participle()**, **ruts.syntax_stats.is_converb()**, **ruts.syntax_stats.is_infinitive()**
 
-Verb form checks by the `VerbForm` feature: finite form (`Fin`, only for the part of speech `VERB`), full participle (`Part` without `Variant=Short`), adverbial participle (`Conv`), infinitive (`Inf`). `SyntaxStats` counts infinitives per sentence (`infinitives_per_sent`).
+--8<-- "utils/spacy.md:is_finite_verb"
+
+--8<-- "utils/spacy.md:is_infinitive"
+
+`is_participle(token)` checks whether a token is a full participle (`VerbForm=Part` without `Variant=Short`), `is_converb(token)` - whether it is an adverbial participle (`VerbForm=Conv`). `SyntaxStats` counts infinitives per sentence (`infinitives_per_sent`).
 
 Parameters:
 
@@ -196,14 +215,34 @@ Parameters:
 ## Helper functions { #helpers }
 
 !!! info ""
-    **ruts.syntax_stats.is_word()**, **ruts.syntax_stats.get_words()**, **ruts.syntax_stats.is_root()**, **ruts.syntax_stats.base_dep()**, **ruts.syntax_stats.get_children()**, **ruts.syntax_stats.has_feature()**, **ruts.syntax_stats.get_lemma()**
+    **ruts.syntax_stats.is_word()**, **ruts.syntax_stats.get_words()**, **ruts.syntax_stats.is_root()**, **ruts.syntax_stats.base_dep()**, **ruts.syntax_stats.get_children()**, **ruts.syntax_stats.subtree_len()**, **ruts.syntax_stats.has_feature()**, **ruts.syntax_stats.get_lemma()**
 
-| Function | Description |
-| :------- | :---------- |
-| `is_word(token)` | The token is neither punctuation, a symbol nor whitespace |
-| `get_words(tokens, join_hyphens=False)` | List of words of a token sequence; with `join_hyphens=True` a hyphenated word is one word, given by its part that holds its relation |
-| `is_root(token)` | The token is the sentence root |
-| `base_dep(token)` | Base relation without the subtype: `acl:relcl` → `acl` |
-| `get_children(token, join_hyphens=False)` | List of the token's dependent words; with `join_hyphens=True` - of the whole hyphenated word |
-| `has_feature(token, field, value)` | The token has the morphological feature `field` with the value `value` |
-| `get_lemma(token)` | Lowercased lemma of the token from pymorphy3 by the token's part of speech |
+### is_word
+
+--8<-- "utils/spacy.md:is_word"
+
+### get_words
+
+--8<-- "stats/syntax_stats_funcs.md:get_words"
+
+### is_root
+
+--8<-- "stats/syntax_stats_funcs.md:is_root"
+
+### base_dep
+
+--8<-- "stats/syntax_stats_funcs.md:base_dep"
+
+### get_children, subtree_len
+
+--8<-- "stats/syntax_stats_funcs.md:get_children"
+
+--8<-- "stats/syntax_stats_funcs.md:subtree_len"
+
+### has_feature
+
+--8<-- "utils/spacy.md:has_feature"
+
+### get_lemma
+
+`get_lemma(token)` returns the lemma of a token in lower case from pymorphy3 by the part of speech of the token.

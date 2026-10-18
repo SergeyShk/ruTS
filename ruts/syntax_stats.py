@@ -271,20 +271,25 @@ def is_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not is_word(token):
-        return False
-    if is_root(token):
-        return True
-    if is_participle(token) or is_converb(token):
-        return False
-    dep = base_dep(token)
-    if dep not in CLAUSE_DEPS:
-        return (
-            dep == "conj" and is_clause_head(token.head) and is_predicate(token, join_hyphens=True)
-        )
-    if dep == "parataxis":
-        return is_predicate(token, join_hyphens=True)
-    return not (token.dep_ == "acl" and is_infinitive(token))
+    seen = set()
+    # Вверх по цепочке однородных до слова, которое само не conj; петля разбора - не клауза
+    while is_word(token) and token.i not in seen:
+        if is_root(token):
+            return True
+        if is_participle(token) or is_converb(token):
+            return False
+        dep = base_dep(token)
+        if dep != "conj":
+            if dep not in CLAUSE_DEPS:
+                return False
+            if dep == "parataxis":
+                return is_predicate(token, join_hyphens=True)
+            return not (token.dep_ == "acl" and is_infinitive(token))
+        if not is_predicate(token, join_hyphens=True):
+            return False
+        seen.add(token.i)
+        token = token.head
+    return False
 
 
 def is_subordinate_clause_head(token: Token) -> bool:
