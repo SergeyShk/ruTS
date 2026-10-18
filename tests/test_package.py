@@ -438,3 +438,16 @@ def test_new_core_message_does_not_break_import():
 def test_core_messages_in_russian(call, match):
     with pytest.raises(ValueError, match=match):
         call()
+
+
+@pytest.mark.parametrize("name", [*TEXT_STATS, "SyntaxStats"])
+def test_stats_interface(name):
+    """Каждый класс статистик - подкласс Stats ядра с русскими сообщениями"""
+    from anyts.stats import Stats
+
+    from ruts.constants import CORE_MESSAGES
+
+    stats_class = getattr(ruts, name)
+    assert issubclass(stats_class, Stats)
+    assert stats_class.messages is CORE_MESSAGES
+    assert stats_class.stats_desc

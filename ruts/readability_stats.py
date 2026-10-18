@@ -115,6 +115,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         reading_time_by_speed: Время чтения при заданной скорости
         reading_time_by_norm: Время чтения в границах нормы из справочника READING_SPEED_NORMS
         get_stats: Получение вычисленных метрик удобочитаемости текста
+        to_dataframe: Получение статистик таблицей из одной строки
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
     Исключения:

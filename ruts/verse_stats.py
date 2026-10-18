@@ -6,13 +6,14 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from itertools import pairwise
 from math import nan
-from typing import Any
 
 from anyts.extractors import BLANK_LINE
+from anyts.stats import Stats
 from anyts.utils import safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
+    CORE_MESSAGES,
     RHYME_WINDOW,
     VERSE_CLAUSULAS,
     VERSE_MAX_DEVIATIONS,
@@ -99,7 +100,7 @@ class _Line:
     key: tuple[str, str, int] | None = None
 
 
-class VerseStats:
+class VerseStats(Stats):
     """
     Класс для вычисления стиховедческих статистик текста
 
@@ -188,7 +189,9 @@ class VerseStats:
 
     Методы:
         get_stats: Получение вычисленных статистик стиха
+        to_dataframe: Получение статистик таблицей из одной строки
         print_stats: Отображение вычисленных статистик стиха с описанием на экран
+        describe: Прочтение статистики по шкале; у стиха шкал нет - None
         accentuate: Получение текста с расставленными ударениями
 
     Исключения:
@@ -197,6 +200,10 @@ class VerseStats:
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: Если словарь ударений не загружен
     """
+
+    stats_desc = VERSE_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(self, source: str | Doc, stress_dict: StressDict | None = None):
         if isinstance(source, Doc):
@@ -302,23 +309,6 @@ class VerseStats:
                 if word.result >= 0:
                     vowels[_vowel(word.text, word.result)] += 1
         self.c_stressed_vowels = dict(sorted(vowels.items(), key=lambda item: -item[1]))
-
-    def get_stats(self) -> dict[str, Any]:
-        """
-        Получение вычисленных статистик стиха
-
-        Вывод:
-            dict[str, object]: Справочник вычисленных статистик стиха
-        """
-        return {stat: getattr(self, stat) for stat in VERSE_STATS_DESC}
-
-    def print_stats(self):
-        """Отображение вычисленных статистик стиха с описанием на экран"""
-        print(f"{'Статистика':^40}|{'Значение':^12}")
-        print("-" * 52)
-        for stat, value in self.get_stats().items():
-            text = f"{value:.2f}" if isinstance(value, float) else str(value)
-            print(f"{VERSE_STATS_DESC[stat]:40}|{text:^12}")
 
     def accentuate(self) -> str:
         """
