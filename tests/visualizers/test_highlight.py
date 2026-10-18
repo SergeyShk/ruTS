@@ -765,3 +765,12 @@ def test_hyphenated_words_doc(nlp):
 def test_alliteration_runs_skip_stopwords():
     assert calc_alliteration_runs(["пустая", "который", "площадь"], threshold=1.0) == [(0, 3, "п")]
     assert calc_alliteration_runs(["что", "это", "тот"], threshold=1.0) == []
+
+
+def test_byte_order_mark_doc():
+    """BOM перед первым словом не входит во фрагмент ни у строки, ни у Doc"""
+    text = "﻿Осуществляет проверку."
+    for source in (text, spacy.blank("ru")(text)):
+        words = highlight(source, layers=["complex_words"]).highlights
+        assert words and words[0].start == 1
+    assert get_doc_words(spacy.blank("ru")(text))[0].start == 1

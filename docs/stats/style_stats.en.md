@@ -5,45 +5,25 @@
 
 ## Description
 
-A module for computing SEO metrics of text style and quality that replicate the indicators of the [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo) services: nausea, water content, spam score, naturalness of the word distribution by Zipf's law and keyword density. The data source can be either a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
+--8<-- "stats/style_stats.md:StyleStats"
 
-The exact formulas of the services are not published, so the commonly accepted definitions are implemented; they are described in the [functions](style_stats_funcs.md) section. By default words are extracted in lower case without lemmatization, so forms of one word count as different words, as in Advego. To compute by lemmas, pass a [`WordsExtractor`](../extractors/words.md) object with `use_lexemes=True` and `lowercase=True`.
+The definitions and formulas of the metrics are given in the [functions](style_stats_funcs.md) section. By default the words are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a [`WordsExtractor`](../extractors/words.md) object with `use_lexemes=True` and `lowercase=True`.
 
-Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés - by the `COMPOUND_PREPOSITIONS`, `PARENTHETICALS` and `OFFICIALESE_CLICHES` lists of `ruts.constants`. They are counted over unfiltered word forms (`forms`) regardless of the extractor passed.
+## Language hooks
 
-!!! note "Note"
-    The metrics are computed by accessing the corresponding attribute or by calling the `get_stats` method of the `StyleStats` object.
+The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) core with the hooks of Russian: the words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), the stopwords of the academic nausea and the water words are determined by part of speech with pymorphy3 ([`is_stopword`](style_stats_funcs.md#is_stopword), [`is_water_word`](style_stats_funcs.md#is_water_word)), the single parenthetical words by the pymorphy3 grammeme `Prnt` ([`is_parenthetical`](style_stats_funcs.md#calc_parentheticals)), the nouns and their lemmas by pymorphy3 and the verbal nouns among them by `is_verbal_noun` ([`calc_verbal_nouns`](style_stats_funcs.md#calc_verbal_nouns)). The given word lists and the phrases are compared without the letter ё (`normalize_yo`), and a phrase is found in any form of its verb ([`expand_phrases`](style_stats_funcs.md#calc_phrase_density)). The phrase lists are `COMPOUND_PREPOSITIONS`, `PARENTHETICALS` and `OFFICIALESE_CLICHES` of `ruts.constants`, the norms of the services are `STYLE_NORMS` ([below](#norms)); the `print_stats` table has Russian headers and the descriptions of `STYLE_STATS_DESC`, the error messages are in Russian (`CORE_MESSAGES`). The words of a `Doc` lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word).
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `source` | str/Doc | `-` | Data source (a string or a Doc object) |
-| `words_extractor` | WordsExtractor | `None` | Word extraction tool; when given, it is applied to the text of a Doc too |
-| `stopwords` | list[str] | `None` | List of water words for water content; if not given, they are determined by part of speech with pymorphy3 ([`is_water_word`](style_stats_funcs.md#is_water_word)) |
-| `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
-| `cliches` | list[str] | `None` | List of clichés; if not given, `OFFICIALESE_CLICHES` is used |
-| `nausea_stopwords` | list[str] | `None` | Stop word list for academic nausea; if not given, they are determined by part of speech with pymorphy3 ([`is_stopword`](style_stats_funcs.md#is_stopword)) |
+--8<-- "stats/style_stats.md:StyleStats-parameters"
 
 ## Attributes
 
-| Attribute | Type | Description |
-| :-------: | :--: | :---------: |
-| `words` | tuple[str] | Tuple of extracted words |
-| `forms` | tuple[str] | Tuple of unfiltered lowercased word forms; the officialese markers are counted over them |
-| `classic_nausea` | float | Classic nausea |
-| `academic_nausea` | float | Academic nausea in percent |
-| `water` | float | Water content in percent |
-| `spam` | float | Spam score in percent |
-| `zipf_naturalness` | float | Naturalness by Zipf's law in percent |
-| `verbal_nouns` | float | Share of verbal nouns among nouns in percent |
-| `compound_prepositions` | float | Compound prepositions per 100 words |
-| `parentheticals` | float | Parentheticals per 100 words |
-| `cliches` | float | Clichés per 100 words |
+--8<-- "stats/style_stats.md:StyleStats-attributes"
 
 ## Service norms { #norms }
 
-The [`describe`](#describe) method reads a metric by the bands of the service norms - `ruts.constants.STYLE_NORMS`; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.
+The [`describe`](#describe) method reads a metric by the bands of the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.
 
 | Metric | Value | Reading |
 | :-----: | :------: | :-------: |
@@ -64,15 +44,9 @@ The [`describe`](#describe) method reads a metric by the bands of the service no
 
 ## Methods
 
-### keyword_density
+### keyword_density, nausea_words
 
-Returns the density of keywords and phrases - the frequency of each per 100 words of the text. A multi-word phrase separated by spaces is searched as a sequence of words, ignoring case.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `keywords` | tuple[str] | `-` | Keywords or phrases |
+--8<-- "stats/style_stats.md:StyleStats-keyword_density"
 
 !!! example "Example"
 
@@ -80,19 +54,8 @@ Parameters:
     from ruts import StyleStats
 
     text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
-    ss = StyleStats(text)
-    ss.keyword_density("когда", "нет а")
+    StyleStats(text).keyword_density("когда", "нет а")
     # {'когда': 20.0, 'нет а': 13.333333333333334}
-    ```
-
-### nausea_words
-
-Returns the words academic nausea is computed by: the `top_n` most frequent words without the stop words with the number of their occurrences.
-
-!!! example "Example"
-
-    ``` python
-    from ruts import StyleStats
 
     text = "Кот ловит мышей, кот спит, а мыши бегают вокруг кота"
     StyleStats(text, top_n=2).nausea_words()
@@ -101,7 +64,7 @@ Returns the words academic nausea is computed by: the `top_n` most frequent word
 
 ### markers
 
-Returns the officialese markers found: for each of the metrics `verbal_nouns`, `compound_prepositions`, `parentheticals` and `cliches`, the words and phrases it was computed from, in the order of the text and as written in `forms`. Phrases are searched as in [`calc_phrase_density`](style_stats_funcs.md#calc_phrase_density).
+--8<-- "stats/style_stats.md:StyleStats-markers"
 
 !!! example "Example"
 
@@ -118,13 +81,7 @@ Returns the officialese markers found: for each of the metrics `verbal_nouns`, `
 
 ### describe
 
-Returns the band of the [service norm](#norms) for a metric; a metric without a norm and an undefined value (nan) give `None`, a name not in `STYLE_STATS_DESC` gives `UnknownStatError`.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `stat` | str | `-` | Name of the metric |
+--8<-- "stats/stats.md:Stats-describe"
 
 !!! example "Example"
 
@@ -173,9 +130,15 @@ Returns a dictionary with the computed style metrics.
     'cliches': 0.0}
     ```
 
+### to_dataframe
+
+Returns the computed metrics as a one-row `pandas.DataFrame` with a column for every metric.
+
 ### print_stats
 
-Prints a table with the computed style metrics.
+--8<-- "stats/stats.md:Stats-print_stats"
+
+To illustrate the method, we reuse the code from the `get_stats` example:
 
 !!! example "Example"
 
@@ -191,15 +154,15 @@ Prints a table with the computed style metrics.
     _Result_:
 
     ``` bash
-                         Метрика                      | Значение
+                         Метрика                     | Значение
     ------------------------------------------------------------
-    Классическая тошнота                              |   1.73
-    Академическая тошнота (%)                         |  53.33
-    Водность (%)                                      |  33.33
-    Заспамленность (%)                                |  26.67
-    Естественность по Ципфу (%)                       |  33.33
-    Отглагольные существительные (% существительных)  |   0.00
-    Производные предлоги (на 100 слов)                |   0.00
-    Вводные слова (на 100 слов)                       |   0.00
-    Штампы (на 100 слов)                              |   0.00
+    Классическая тошнота                             |   1.73
+    Академическая тошнота (%)                        |  53.33
+    Водность (%)                                     |  33.33
+    Заспамленность (%)                               |  26.67
+    Естественность по Ципфу (%)                      |  33.33
+    Отглагольные существительные (% существительных) |   0.00
+    Производные предлоги (на 100 слов)               |   0.00
+    Вводные слова (на 100 слов)                      |   0.00
+    Штампы (на 100 слов)                             |   0.00
     ```

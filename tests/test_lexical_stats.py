@@ -4,11 +4,12 @@ import pytest
 import spacy
 
 from ruts import LexicalStats, WordsExtractor
-from ruts.constants import FREQUENCY_BANDS, LEXICAL_STATS_DESC
+from ruts.constants import LEXICAL_STATS_DESC
 from ruts.datasets import FreqDict
 from ruts.datasets.freq2011 import Entry
 from ruts.exceptions import ParameterError
 from ruts.lexical_stats import (
+    FREQUENCY_BANDS,
     calc_surprisal,
     dictionary_lemma,
     get_rank,
@@ -145,6 +146,14 @@ def test_numbers(freq_dict):
         LexicalStats("2020 5.5 3-й", freq_dict=freq_dict)
     assert is_number("2020") and is_number("5,5") and is_number("3-й")
     assert not is_number("кот") and not is_number("5-миллионный")
+
+
+def test_byte_order_mark(freq_dict):
+    """BOM, приклеенный spaCy к числу в начале текста, не делает его словом Doc"""
+    text = "\ufeff2020 год был трудным"
+    words = LexicalStats(text, freq_dict=freq_dict).words
+    assert words == ("год", "был", "трудным")
+    assert LexicalStats(spacy.blank("ru")(text), freq_dict=freq_dict).words == words
 
 
 def test_without_dict(tmp_path):
