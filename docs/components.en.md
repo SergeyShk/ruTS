@@ -118,7 +118,7 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `nlp` | Language | `-` | Language object |
 | `name` | str | `"ruts_readability"` | Component name in the pipeline |
-| `preset` | str | `"plainrussian"` | [Coefficient preset](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`) |
+| `preset` | str | `None` | [Coefficient preset](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`); `None` - the preset of the class, `plainrussian` |
 | `basic` | str | `None` | Extension of a basic statistics component to reuse instead of counting again |
 
 Usage example:

@@ -18,32 +18,24 @@
 
 import re
 
+import anyts.components
 from anyts.components import StatsComponent, start_sents_after_blank_lines
-from anyts.constants import (
-    DIVERSITY_LOG_BASE,
-    HDD_SAMPLE_SIZE,
-    MATTR_WINDOW_LEN,
-    MTLD_MIN_LEN,
-    MTLD_TTR_THRESHOLD,
-    NAUSEA_TOP_N,
-)
-from anyts.utils import check_words, iter_doc_units
 from spacy.language import Language
 from spacy.tokens import Doc
 
 from .basic_stats import BasicStats
-from .cohesion_stats import CohesionStats, unit_text
-from .constants import CORE_MESSAGES, PHON_WINDOW_LEN
+from .cohesion_stats import CohesionStats
+from .constants import CORE_MESSAGES
 from .datasets.freq2011 import FreqDict
 from .datasets.stress_dict import StressDict
-from .diversity_stats import DiversityStats, check_params as check_diversity_params
+from .diversity_stats import DiversityStats
 from .lexical_stats import LexicalStats, is_number
 from .morph_stats import MorphStats
-from .phon_stats import PhonStats, check_params as check_phon_params
-from .readability_stats import ReadabilityStats, check_preset
-from .style_stats import StyleStats, check_params as check_style_params
+from .phon_stats import PhonStats
+from .readability_stats import ReadabilityStats
+from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
-from .utils import add_dash_rules
+from .utils import add_dash_rules, strip_marks
 from .verse_stats import VerseStats
 
 _LETTER = re.compile(r"[^\W\d_]")
@@ -61,7 +53,7 @@ class _Component(StatsComponent):
 
 
 @Language.factory("ruts_basic")
-class BasicStatsComponent(_Component):
+class BasicStatsComponent(_Component, anyts.components.BasicStatsComponent):
     """
     Класс для компонента основных статистик текста
 
@@ -82,11 +74,7 @@ class BasicStatsComponent(_Component):
         name (str): Наименование компонента в пайплайне
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_basic"):
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> BasicStats:
-        return BasicStats(doc)
+    stats_class = BasicStats
 
 
 @Language.factory("ruts_morph")
@@ -114,15 +102,11 @@ class MorphStatsComponent(_Component):
         name (str): Наименование компонента в пайплайне
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_morph"):
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> MorphStats:
-        return MorphStats(doc)
+    stats_class = MorphStats
 
 
 @Language.factory("ruts_readability")
-class ReadabilityStatsComponent(_Component):
+class ReadabilityStatsComponent(_Component, anyts.components.ReadabilityStatsComponent):
     """
     Класс для компонента основных метрик удобочитаемости текста
 
@@ -149,36 +133,22 @@ class ReadabilityStatsComponent(_Component):
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
-        preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
+        preset (str): Пресет коэффициентов (plainrussian, fiction, academic); None - пресет
+            класса, plainrussian
         basic (str): Расширение компонента основных статистик, которые берутся
             вместо повторного подсчета
 
     Исключения:
-        ParameterError: Если пресет неизвестен
+        ParameterError: Если пресет неизвестен или имя расширения не строка
         SourceError: Если в указанном расширении нет основных статистик
     """
 
-    def __init__(
-        self,
-        nlp: Language,
-        name: str = "ruts_readability",
-        preset: str = "plainrussian",
-        basic: str | None = None,
-    ):
-        check_preset(preset)
-        self.preset = preset
-        self.basic = basic
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> ReadabilityStats:
-        source: Doc | BasicStats = doc
-        if self.basic is not None:
-            source = self.from_extension(doc, self.basic, BasicStats, "ruts_basic")
-        return ReadabilityStats(source, preset=self.preset)
+    stats_class = ReadabilityStats
+    basic_factory = "ruts_basic"
 
 
 @Language.factory("ruts_diversity")
-class DiversityStatsComponent(_Component):
+class DiversityStatsComponent(_Component, anyts.components.DiversityStatsComponent):
     """
     Класс для компонента основных метрик лексического разнообразия текста
 
@@ -207,37 +177,11 @@ class DiversityStatsComponent(_Component):
         log_base (float): Основание логарифма для метрик Summer, Maas и Dugast
     """
 
-    def __init__(
-        self,
-        nlp: Language,
-        name: str = "ruts_diversity",
-        window_len: int = MATTR_WINDOW_LEN,
-        mtld_threshold: float = MTLD_TTR_THRESHOLD,
-        mtld_min_len: int = MTLD_MIN_LEN,
-        hdd_sample_size: int = HDD_SAMPLE_SIZE,
-        log_base: float = DIVERSITY_LOG_BASE,
-    ):
-        check_diversity_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base)
-        self.window_len = window_len
-        self.mtld_threshold = mtld_threshold
-        self.mtld_min_len = mtld_min_len
-        self.hdd_sample_size = hdd_sample_size
-        self.log_base = log_base
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> DiversityStats:
-        return DiversityStats(
-            doc,
-            window_len=self.window_len,
-            mtld_threshold=self.mtld_threshold,
-            mtld_min_len=self.mtld_min_len,
-            hdd_sample_size=self.hdd_sample_size,
-            log_base=self.log_base,
-        )
+    stats_class = DiversityStats
 
 
 @Language.factory("ruts_style")
-class StyleStatsComponent(_Component):
+class StyleStatsComponent(_Component, anyts.components.StyleStatsComponent):
     """
     Класс для компонента SEO-метрик стиля текста
 
@@ -270,35 +214,11 @@ class StyleStatsComponent(_Component):
         ParameterError: Если количество самых частых слов не целое число или меньше 1
     """
 
-    def __init__(
-        self,
-        nlp: Language,
-        name: str = "ruts_style",
-        stopwords: list[str] | None = None,
-        top_n: int = NAUSEA_TOP_N,
-        nausea_stopwords: list[str] | None = None,
-    ):
-        check_style_params(top_n)
-        if stopwords is not None:
-            check_words(stopwords, "stopwords", ordered=False)
-        if nausea_stopwords is not None:
-            check_words(nausea_stopwords, "nausea stopwords", ordered=False)
-        self.stopwords = stopwords
-        self.top_n = top_n
-        self.nausea_stopwords = nausea_stopwords
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> StyleStats:
-        return StyleStats(
-            doc,
-            stopwords=self.stopwords,
-            top_n=self.top_n,
-            nausea_stopwords=self.nausea_stopwords,
-        )
+    stats_class = StyleStats
 
 
 @Language.factory("ruts_phon")
-class PhonStatsComponent(_Component):
+class PhonStatsComponent(_Component, anyts.components.PhonStatsComponent):
     """
     Класс для компонента фоностатистик текста
 
@@ -323,17 +243,11 @@ class PhonStatsComponent(_Component):
         window_len (int): Размер окна в словах для аллитерации и ассонанса
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_phon", window_len: int = PHON_WINDOW_LEN):
-        check_phon_params(window_len)
-        self.window_len = window_len
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> PhonStats:
-        return PhonStats(doc, window_len=self.window_len)
+    stats_class = PhonStats
 
 
 @Language.factory("ruts_syntax", requires=["token.dep", "token.head"])
-class SyntaxStatsComponent(_Component):
+class SyntaxStatsComponent(_Component, anyts.components.SyntaxStatsComponent):
     """
     Класс для компонента синтаксических статистик текста
 
@@ -357,15 +271,11 @@ class SyntaxStatsComponent(_Component):
         name (str): Наименование компонента в пайплайне
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_syntax"):
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> SyntaxStats:
-        return SyntaxStats(doc)
+    stats_class = SyntaxStats
 
 
 @Language.factory("ruts_cohesion")
-class CohesionStatsComponent(_Component):
+class CohesionStatsComponent(_Component, anyts.components.CohesionStatsComponent):
     """
     Класс для компонента статистик связности текста
 
@@ -385,15 +295,11 @@ class CohesionStatsComponent(_Component):
         name (str): Наименование компонента в пайплайне
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_cohesion"):
-        super().__init__(nlp, name)
-
-    def compute(self, doc: Doc) -> CohesionStats:
-        return CohesionStats(doc)
+    stats_class = CohesionStats
 
 
 @Language.factory("ruts_lexical")
-class LexicalStatsComponent(_Component):
+class LexicalStatsComponent(_Component, anyts.components.LexicalStatsComponent):
     """
     Класс для компонента статистик лексической сложности текста
 
@@ -422,18 +328,16 @@ class LexicalStatsComponent(_Component):
             используется директория по умолчанию
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_lexical", data_dir: str | None = None):
+    stats_class = LexicalStats
+    join_hyphens = True
+
+    def __init__(self, nlp: Language, name: str, data_dir: str | None = None):
         self.freq_dict = FreqDict(data_dir) if data_dir else FreqDict()
         super().__init__(nlp, name)
 
-    def accepts(self, doc: Doc) -> bool:
-        """Статистики получает документ со словом, которое не число"""
-        return any(
-            not is_number(unit_text(unit)) for unit in iter_doc_units(doc, join_hyphens=True)
-        )
-
-    def compute(self, doc: Doc) -> LexicalStats:
-        return LexicalStats(doc, freq_dict=self.freq_dict)
+    def is_number(self, word: str) -> bool:
+        """Число по шаблону ruTS (ruts.lexical_stats.is_number) без знаков ударения"""
+        return is_number(strip_marks(word))
 
 
 @Language.factory("ruts_verse")
@@ -470,13 +374,13 @@ class VerseStatsComponent(_Component):
             используется директория по умолчанию
     """
 
-    def __init__(self, nlp: Language, name: str = "ruts_verse", data_dir: str | None = None):
+    stats_class = VerseStats
+    stats_params = ("stress_dict",)
+
+    def __init__(self, nlp: Language, name: str, data_dir: str | None = None):
         self.stress_dict = StressDict(data_dir) if data_dir else StressDict()
         super().__init__(nlp, name)
 
     def accepts(self, doc: Doc) -> bool:
         """Статистики получает документ с буквой"""
         return _LETTER.search(doc.text) is not None
-
-    def compute(self, doc: Doc) -> VerseStats:
-        return VerseStats(doc, stress_dict=self.stress_dict)
