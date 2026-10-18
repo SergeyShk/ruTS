@@ -6,8 +6,10 @@ from types import ModuleType
 import pytest
 
 import ruts
+from ruts.corpus import sentence_rhythm, split_windows
 from ruts.diversity_stats import calc_ttr, calc_windowed, check_params
 from ruts.readability_stats import calc_reading_time
+from ruts.visualizers.highlight import HighlightedText
 
 # Публичные имена 0.15.0.dev7: переезд на ядро не должен терять ни одного
 PACKAGE_NAMES = {
@@ -129,8 +131,10 @@ CORE_MODULES = {
     "ruts.utils": "anyts.utils",
     "ruts.extractors": "anyts.extractors",
     "ruts.diversity_stats": "anyts.diversity_stats",
-    "ruts.cohesion_stats": "anyts.cohesion",
-    "ruts.syntax_stats": "anyts.syntax",
+    "ruts.cohesion_stats": "anyts.cohesion_stats",
+    "ruts.syntax_stats": "anyts.syntax_stats",
+    "ruts.style_stats": "anyts.style_stats",
+    "ruts.lexical_stats": "anyts.lexical_stats",
     "ruts.corpus": "anyts.corpus",
     "ruts.corpus.collocations": "anyts.corpus.collocations",
     "ruts.corpus.dispersion": "anyts.corpus.dispersion",
@@ -141,70 +145,178 @@ CORE_MODULES = {
     "ruts.basic_stats": "anyts.basic_stats",
     "ruts.readability_stats": "anyts.readability_stats",
     "ruts.components": "anyts.components",
-    "ruts.phon_stats": "anyts.phonetics",
+    "ruts.phon_stats": "anyts.phon_stats",
     "ruts.datasets.dataset": "anyts.datasets",
     "ruts.visualizers": "anyts.visualizers",
     "ruts.visualizers.highlight": "anyts.visualizers.highlight",
 }
-# Имена ядра, которые библиотека определяет сама: подклассы с русскими крючками,
+# Имена ядра, которые модуль библиотеки определяет сам: подклассы с русскими крючками,
 # обертки с русскими умолчаниями, русские описания, подписи и настройки
 RUSSIAN = {
-    "BASIC_STATS_DESC",
-    "BasicStats",
-    "COMPLEX_SYL_FACTOR",
-    "CharNgramsExtractor",
-    "DASH_PATTERN",
-    "DIVERSITY_STATS_DESC",
-    "Dataset",
-    "DiversityStats",
-    "GRADE_AGE_LEVELS",
-    "HighlightedText",
-    "LONG_WORD_LETTER_FACTOR",
-    "NUMBER_PATTERN",
-    "POSTGRADUATE_LEVEL",
-    "PUNCTUATION_MARKS",
-    "READABILITY_GRADE_STATS",
-    "READABILITY_PRESETS",
-    "READABILITY_STATS_DESC",
-    "READING_EASE_GRADES",
-    "READING_SPEED_NORMS",
-    "READING_SPEED_WPM",
-    "ReadabilityStats",
-    "SMOG_COMPLEX_SYL_FACTOR",
-    "SentsExtractor",
-    "WordsExtractor",
-    "calc_automated_readability_index",
-    "calc_coleman_liau_index",
-    "calc_consensus_grade",
-    "calc_flesch_kincaid_grade",
-    "calc_flesch_reading_easy",
-    "calc_reading_time",
-    "calc_smog_index",
-    "calc_windowed",
-    "check_params",
-    "collocations",
-    "count_punctuations",
-    "dendrogram_plot",
-    "dispersion",
-    "dispersion_plot",
-    "fingerprinting",
-    "flesch_reading_easy_to_grade",
-    "frequency_spectrum_plot",
-    "get_doc_words",
-    "grade_to_age",
-    "heaps_plot",
-    "keyness",
-    "keyness_plot",
-    "kwic",
-    "mds_plot",
-    "mendenhall_plot",
-    "pca_plot",
-    "sentence_lengths",
-    "sentence_lengths_plot",
-    "substring_filter",
-    "wordtree",
-    "zipf",
-    "zipf_theory",
+    "ruts": {"CharNgramsExtractor", "DiversityStats", "SentsExtractor", "WordsExtractor"},
+    "ruts.utils": {"find_phrases"},
+    "ruts.extractors": {
+        "CharNgramsExtractor",
+        "NUMBER_PATTERN",
+        "SentsExtractor",
+        "WordsExtractor",
+    },
+    "ruts.diversity_stats": {
+        "DIVERSITY_STATS_DESC",
+        "DiversityStats",
+        "calc_windowed",
+        "check_params",
+    },
+    "ruts.cohesion_stats": {"SentsExtractor"},
+    "ruts.style_stats": {"WordsExtractor", "check_params", "find_phrases"},
+    "ruts.corpus": {
+        "collocations",
+        "dispersion",
+        "keyness",
+        "kwic",
+        "sentence_rhythm",
+        "split_windows",
+    },
+    "ruts.corpus.collocations": {"collocations"},
+    "ruts.corpus.dispersion": {"dispersion"},
+    "ruts.corpus.keyness": {"keyness"},
+    "ruts.corpus.compare": {
+        "CLOSING_MARKS",
+        "OPENING_MARKS",
+        "SYMMETRIC_MARKS",
+        "sentence_rhythm",
+        "split_windows",
+    },
+    "ruts.corpus.kwic": {"kwic"},
+    "ruts.basic_stats": {
+        "BASIC_STATS_DESC",
+        "BasicStats",
+        "COMPLEX_SYL_FACTOR",
+        "DASH_PATTERN",
+        "LONG_WORD_LETTER_FACTOR",
+        "PUNCTUATION_MARKS",
+        "SentsExtractor",
+        "WordsExtractor",
+        "count_punctuations",
+    },
+    "ruts.readability_stats": {
+        "BasicStats",
+        "GRADE_AGE_LEVELS",
+        "POSTGRADUATE_LEVEL",
+        "READABILITY_GRADE_STATS",
+        "READABILITY_PRESETS",
+        "READABILITY_STATS_DESC",
+        "READING_EASE_GRADES",
+        "READING_SPEED_NORMS",
+        "READING_SPEED_WPM",
+        "ReadabilityStats",
+        "SMOG_COMPLEX_SYL_FACTOR",
+        "calc_automated_readability_index",
+        "calc_coleman_liau_index",
+        "calc_consensus_grade",
+        "calc_flesch_kincaid_grade",
+        "calc_flesch_reading_easy",
+        "calc_reading_time",
+        "calc_smog_index",
+        "flesch_reading_easy_to_grade",
+        "grade_to_age",
+    },
+    "ruts.components": {"BasicStats", "ReadabilityStats"},
+    "ruts.phon_stats": {"WordsExtractor", "check_params"},
+    "ruts.datasets.dataset": {"Dataset", "substring_filter"},
+    "ruts.visualizers": {
+        "HighlightedText",
+        "dendrogram_plot",
+        "dispersion_plot",
+        "fingerprinting",
+        "frequency_spectrum_plot",
+        "heaps_plot",
+        "keyness_plot",
+        "mds_plot",
+        "mendenhall_plot",
+        "pca_plot",
+        "sentence_lengths",
+        "sentence_lengths_plot",
+        "wordtree",
+        "zipf",
+        "zipf_theory",
+    },
+    "ruts.visualizers.highlight": {"HighlightedText", "find_phrases", "get_doc_words"},
+}
+
+
+# Копии механики ядра до переезда классов на каркасы anyTS 0.3: каждый PR 0.18 убирает свои
+PENDING = {
+    "ruts.cohesion_stats": {
+        "COHESION_STATS_DESC",
+        "CONNECTOR_CLASSES",
+        "CONNECTOR_POS",
+        "CONTENT_UD_POS",
+        "CohesionStats",
+        "Connector",
+        "split_doc_units",
+    },
+    "ruts.syntax_stats": {
+        "CLAUSE_DEPS",
+        "NOUN_MODIFIER_DEPS",
+        "PASSIVE_DEPS",
+        "SUBJECT_DEPS",
+        "SUBORDINATE_CLAUSE_DEPS",
+        "SYNTAX_STATS_DESC",
+        "SyntaxStats",
+        "count_noun_modifiers",
+        "is_finite_verb",
+        "is_infinitive",
+        "is_predicate",
+    },
+    "ruts.style_stats": {
+        "STYLE_STATS_DESC",
+        "StyleStats",
+        "calc_academic_nausea",
+        "calc_classic_nausea",
+        "calc_keyword_density",
+        "calc_phrase_density",
+        "calc_spam",
+        "calc_water",
+        "calc_zipf_naturalness",
+        "find_nausea_words",
+    },
+    "ruts.lexical_stats": {
+        "FREQUENCY_BANDS",
+        "LEXICAL_STATS_DESC",
+        "LexicalStats",
+        "calc_surprisal",
+    },
+    "ruts.phon_stats": {"PHON_STATS_DESC", "PhonStats", "cv_pattern"},
+    "ruts.components": {
+        "BasicStatsComponent",
+        "CohesionStats",
+        "CohesionStatsComponent",
+        "DiversityStatsComponent",
+        "LexicalStats",
+        "LexicalStatsComponent",
+        "PhonStats",
+        "PhonStatsComponent",
+        "ReadabilityStatsComponent",
+        "StyleStats",
+        "StyleStatsComponent",
+        "SyntaxStats",
+        "SyntaxStatsComponent",
+        "check_diversity_params",
+        "check_phon_params",
+        "check_style_params",
+        "is_number",
+    },
+    "ruts.visualizers.highlight": {
+        "ALLITERATION_THRESHOLD",
+        "calc_alliteration_runs",
+        "find_alliteration",
+        "find_complex_words",
+        "find_connector_highlights",
+        "find_long_sents",
+        "find_phrase_highlights",
+        "find_split_predicate_highlights",
+    },
 }
 
 
@@ -219,10 +331,11 @@ def test_core_names(library, core):
             name.startswith("_")
             or isinstance(value, ModuleType)
             or not hasattr(library_module, name)
+            or name in PENDING.get(library, ())
         ):
             continue
         own = getattr(library_module, name)
-        if name in RUSSIAN:
+        if name in RUSSIAN.get(library, ()):
             assert own is not value, name
             assert not isinstance(value, type) or issubclass(own, value), name
         else:
@@ -293,8 +406,16 @@ def test_core_messages():
 
     assert set(_RU_CORE_MESSAGES) == set(MESSAGES)
     assert CORE_MESSAGES == _RU_CORE_MESSAGES
-    for stats in (ruts.BasicStats, ruts.ReadabilityStats, ruts.DiversityStats):
-        assert stats.messages is CORE_MESSAGES
+    for cls in (
+        ruts.BasicStats,
+        ruts.ReadabilityStats,
+        ruts.DiversityStats,
+        ruts.SentsExtractor,
+        ruts.WordsExtractor,
+        ruts.CharNgramsExtractor,
+        HighlightedText,
+    ):
+        assert cls.messages is CORE_MESSAGES
 
 
 def test_new_core_message_does_not_break_import():
@@ -316,11 +437,20 @@ def test_new_core_message_does_not_break_import():
     [
         (lambda: ruts.DiversityStats("Кот спит", window_len=0), r"^Размер окна должен быть"),
         (lambda: ruts.DiversityStats("Кот спит").windowed("ttr", 0), r"^Размер окна должен быть"),
-        (lambda: ruts.ReadabilityStats("Кот спит.").describe("x"), r"^'?Неизвестная метрика: x"),
+        (
+            lambda: ruts.ReadabilityStats("Кот спит.").describe("x"),
+            r"^'?Неизвестная статистика: x",
+        ),
         (lambda: ruts.BasicStats("Кот спит.", complex_syl_factor=0), r"^Наименьшее число слогов"),
         (lambda: calc_windowed(["кот"] * 5, calc_ttr, window_len=0), r"^Размер окна должен быть"),
         (lambda: check_params(window_len=0), r"^Размер окна должен быть"),
         (lambda: calc_reading_time(10, 0), r"^Скорость чтения должна быть"),
+        (lambda: ruts.WordsExtractor(ngram_range=(2, 1)), r"^Нижняя граница N-грамм больше"),
+        (lambda: ruts.SentsExtractor(min_len=-1), r"^Границы длины предложения не могут"),
+        (lambda: ruts.CharNgramsExtractor(n=0), r"^Длина N-граммы должна быть больше 0"),
+        (lambda: split_windows("Кот спит", 0), r"^Размер окна должен быть"),
+        (lambda: split_windows("Кот спит", 2, 3), r"^Наименьшее число слов в окне не может"),
+        (lambda: sentence_rhythm([3, -1]), r"^Длины предложений не могут быть отрицательными"),
     ],
 )
 def test_core_messages_in_russian(call, match):

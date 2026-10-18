@@ -5,10 +5,10 @@
 
 ## Описание
 
-<!-- core: corpus/collocations.md:collocations 90cd7f5 -->
+<!-- core: corpus/collocations.md:collocations e2bc980 -->
 Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем дала бы независимость: устойчивые сочетания, терминология, сочетаемость слова. Меры ассоциации те же, что в [Sketch Engine](https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf) и [`nltk.metrics.association`](https://www.nltk.org/api/nltk.metrics.association.html).
 
-Пары слов упорядочены, как в NLTK: правое слово встречается не дальше `window` слов после левого, каждая пара позиций учитывается один раз; `window=1` дает биграммы. В мере частота пары делится на размер окна (Church и Hanks 1990, так же в NLTK), чтобы ожидаемая частота не зависела от окна, а Dice и минимальная чувствительность не превышали единицы; поле `freq_pair` хранит частоту без деления. Поэтому при `window > 1` шкала Dice-мер сдвигается: пара, всегда стоящая рядом, получает logDice $14 - \log_2 window$ (13 при окне 2), а не 14, как в Sketch Engine, где берется сырое число совстречаемостей; 14 достигает только пара, встречающаяся на каждом расстоянии в окне. Параметр `node` оставляет пары с заданным словом слева или справа - сочетаемость одного слова.
+Пары упорядочены, как в NLTK: правое слово встречается не дальше `window` слов после левого, каждая пара позиций учитывается один раз; `window=1` дает биграммы. Меры берут частоту пары, деленную на размер окна (Church и Hanks 1990, так же в NLTK), так что ожидаемая частота не зависит от окна, а Dice и минимальная чувствительность не превышают единицы; `freq_pair` остается без деления. Поэтому при `window > 1` пара, всегда стоящая рядом, получает logDice $14 - \log_2 window$ (13 при окне 2), а не 14, как в Sketch Engine с его сырым числом совстречаемостей; 14 достигает только пара, встречающаяся на каждом расстоянии в окне. `node` оставляет пары с заданным словом с любой стороны.
 
 Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов; для устойчивых сочетаний подходят леммы, для грамматических конструкций - словоформы.
 
@@ -16,7 +16,7 @@
 
 ## Меры
 
-<!-- core: corpus/collocations.md:collocations-measures fb0a1f7 -->
+<!-- core: corpus/collocations.md:collocations-measures 188d009 -->
 Для пары слов с частотами $f_a$ и $f_b$, частотой пары $f_{ab}$ и числом слов $N$:
 
 | Мера | Ключ | Формула | Описание |
@@ -30,11 +30,11 @@
 | NPMI | `npmi` | $\frac{MI}{-\log_2 (f_{ab} / N)}$ | Bouma (2009); от −1 до 1, единица - слова встречаются только вместе |
 | Минимальная чувствительность | `min_sensitivity` | $\min(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b})$ | Pedersen (1998); от 0 до 1 |
 
-Меры доступны как функции `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi` и `calc_min_sensitivity` с аргументами `(freq_a, freq_b, freq_ab, n)` из модуля `anyts.corpus.collocations`; их названия и описания - в `anyts.constants.COLLOCATION_MEASURES`.
+Модуль `anyts.corpus.collocations` дает их как функции `calc_mi`, `calc_mi3`, `calc_t_score`, `calc_dice`, `calc_logdice`, `calc_log_likelihood`, `calc_npmi` и `calc_min_sensitivity` от `(freq_a, freq_b, freq_ab, n)`; их названия и описания - в `anyts.constants.COLLOCATION_MEASURES`.
 
 ## Параметры
 
-<!-- core: corpus/collocations.md:collocations-parameters 459ab39 -->
+<!-- core: corpus/collocations.md:collocations-parameters b02f048 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `words` | list[str] | `-` | Слова текста по порядку |
@@ -43,6 +43,8 @@
 | `min_freq` | int | `2` | Минимальная частота пары |
 | `node` | str | `None` | Слово, сочетаемость которого нужна; `None` - все пары |
 | `top_n` | int | `None` | Количество коллокаций; `None` - все |
+
+Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`. Неизвестная мера, `window` или `top_n`, который не целое число не меньше единицы, `min_freq`, который не целое число, и `node`, который не строка, дают `ParameterError`.
 
 ## Результат
 

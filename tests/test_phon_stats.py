@@ -3,7 +3,7 @@ from math import isnan, log2
 
 import pytest
 import spacy
-from anyts.phonetics import calc_repetition_index
+from anyts.phon_stats import calc_repetition_index
 
 from ruts import PhonStats
 from ruts.constants import PHON_STATS_DESC

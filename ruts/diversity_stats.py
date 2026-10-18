@@ -117,9 +117,8 @@ def calc_windowed(
         WindowStats: Среднее, стандартное отклонение, границы интервала и число окон
 
     Исключения:
-        ParameterError: Если метрика не функция или размер окна, шаг или уровень
-            доверия заданы неверно
-        SourceTypeError: Если слова не список строк
+        ParameterError: Если размер окна, шаг или уровень доверия заданы неверно
+        SourceTypeError: Если слова не список строк или метрика не функция
     """
     return anyts.diversity_stats.calc_windowed(
         text, func, window_len, step, confidence, messages=messages
@@ -229,7 +228,7 @@ class DiversityStats(anyts.DiversityStats):
     def __init__(
         self,
         source: str | Doc,
-        words_extractor: WordsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         window_len: int = MATTR_WINDOW_LEN,
         mtld_threshold: float = MTLD_TTR_THRESHOLD,
         mtld_min_len: int = MTLD_MIN_LEN,

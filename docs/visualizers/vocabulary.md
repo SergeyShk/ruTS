@@ -11,7 +11,7 @@
 
 ## Закон Хипса { #heaps_plot }
 
-<!-- core: visualizers/vocabulary.md:heaps_plot a5a763e -->
+<!-- core: visualizers/vocabulary.md:heaps_plot 13ca433 -->
 Размер словаря $V$ после каждого слова текста и кривая подгонки $V(N) = K \cdot N^{\beta}$ по `fit_heaps` с параметрами в легенде; кривая зависит от порядка слов.
 
 | Параметр | Тип | По умолчанию | Описание |
@@ -20,9 +20,11 @@
 | `ax` | Axes | `None` | Оси для графика |
 | `labels` | dict[str, str] | `None` | Подписи поверх подписей по умолчанию: `title`, `xlabel`, `ylabel`, `growth` (кривая), `fit` (строка формата с `k` и `beta`) |
 
+Слова, которые не список строк, дают `SourceTypeError`, меньше двух слов - `SourceError`; подписи, которые отвергает `merge_labels`, и `ax`, который не `Axes` matplotlib, дают `ParameterError`.
+
 ## Спектр частот { #frequency_spectrum_plot }
 
-<!-- core: visualizers/vocabulary.md:frequency_spectrum_plot 22fd438 -->
+<!-- core: visualizers/vocabulary.md:frequency_spectrum_plot 2552218 -->
 Число лексем $V(m)$, встретившихся ровно $m$ раз (`calc_frequency_spectrum`), в логарифмических координатах; левый край - гапаксы. По спектру считаются меры разнообразия Юла, Сишела, Мишеа и Оноре, а его форма показывает, насколько словарь текста далек от исчерпания.
 
 | Параметр | Тип | По умолчанию | Описание |
@@ -30,6 +32,8 @@
 | `words` | list[str] | `-` | Слова текста |
 | `ax` | Axes | `None` | Оси для графика |
 | `labels` | dict[str, str] | `None` | Подписи поверх подписей по умолчанию: `title`, `xlabel`, `ylabel` |
+
+Слова, которые не список строк, дают `SourceTypeError`, отсутствие слов - `SourceError`; подписи, которые отвергает `merge_labels`, и `ax`, который не `Axes` matplotlib, дают `ParameterError`.
 
 ## Пример использования
 

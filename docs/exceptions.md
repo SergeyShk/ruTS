@@ -18,7 +18,7 @@
 | `DataFileError` | `ValueError` | Файл набора данных поврежден, имеет неожиданный формат или не декодируется |
 | `DownloadError` | `RuntimeError` | Файл не удалось скачать или он не прошел проверку контрольной суммы |
 
-Классы доступны из `ruts` и из `ruts.exceptions`. Это классы ядра [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) под теми же именами, а `RutsError` - его `anyts.exceptions.AnyTSError`: псевдонимы, а не подклассы, поэтому `except RutsError` ловит и ошибки, поднятые кодом ядра, а в трассировке стоит `anyts.exceptions.SourceError`. Сообщения ruTS - на русском, в том числе сообщения классов статистик и компонентов, построенных на ядре (`ruts.constants.CORE_MESSAGES`). На английском остаются проверки типов аргументов в коде ядра (строка вместо числа и т. п.), проверки параметров экстракторов (`ngram_range`, `min_len`, `max_len`, `n`, `get_most_common`), компонент `ruts_blank_lines` и отдельные функции ядра.
+Классы доступны из `ruts` и из `ruts.exceptions`. Это классы ядра [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) под теми же именами, а `RutsError` - его `anyts.exceptions.AnyTSError`: псевдонимы, а не подклассы, поэтому `except RutsError` ловит и ошибки, поднятые кодом ядра, а в трассировке стоит `anyts.exceptions.SourceError`. Сообщения ruTS - на русском, в том числе сообщения классов статистик, экстракторов, компонентов и подсветки, построенных на ядре (`ruts.constants.CORE_MESSAGES`). На английском остаются проверки типов аргументов в коде ядра (строка вместо числа и т. п.) и отдельные функции ядра.
 
 !!! example "Пример"
 

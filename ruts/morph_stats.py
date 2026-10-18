@@ -134,7 +134,7 @@ class MorphStats:
         SourceError: Если в источнике данных отсутствуют слова
     """
 
-    def __init__(self, source: str | Doc, words_extractor: WordsExtractor | None = None):
+    def __init__(self, source: str | Doc, words_extractor: anyts.WordsExtractor | None = None):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
         features: list[dict[str, str | None]]

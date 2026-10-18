@@ -88,9 +88,9 @@ $$
 !!! info ""
     **ruts.phon_stats.calc_alliteration()**
 
-The index is `calc_repetition_index` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phonetics/) core over the consonant letters of the words:
+The index is `calc_repetition_index` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats_funcs/) core over the consonant letters of the words:
 
---8<-- "stats/phonetics.md:calc_repetition_index"
+--8<-- "stats/phon_stats_funcs.md:calc_repetition_index"
 
 Letters are compared, not sounds: devoicing is not accounted for.
 

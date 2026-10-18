@@ -2,6 +2,7 @@ from collections.abc import Callable, Iterable, Mapping
 from math import floor, isfinite, isinf, isnan, nan
 from numbers import Real
 
+import anyts
 import anyts.readability_stats
 from anyts.readability_stats import (
     calc_gunning_fog_index as calc_gunning_fog_index,
@@ -33,7 +34,6 @@ from .constants import (
 )
 from .diversity_stats import DiversityStats
 from .exceptions import ParameterError, UnknownStatError
-from .extractors import SentsExtractor, WordsExtractor
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
 _NORMS_FROM_MAX = {norm: speeds[::-1] for norm, speeds in READING_SPEED_NORMS.items()}
@@ -158,8 +158,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     def __init__(
         self,
         source: str | Doc | BasicStats,
-        sents_extractor: SentsExtractor | None = None,
-        words_extractor: WordsExtractor | None = None,
+        sents_extractor: anyts.SentsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         preset: str = "plainrussian",
     ):
         super().__init__(source, sents_extractor, words_extractor, preset)

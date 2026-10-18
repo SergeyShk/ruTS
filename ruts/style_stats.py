@@ -4,13 +4,15 @@ from functools import lru_cache
 from math import isnan, nan, sqrt
 
 import anyts
+import anyts.style_stats
 import pymorphy3
 from anyts.readability_stats import scale_level
-from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
+from anyts.utils import check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
     COMPOUND_PREPOSITIONS,
+    CORE_MESSAGES,
     NAUSEA_TOP_N,
     OFFICIALESE_CLICHES,
     PARENTHETICALS,
@@ -20,7 +22,7 @@ from .constants import (
     STYLE_STATS_DESC,
     WATER_POS,
 )
-from .exceptions import ParameterError, SourceError, SourceTypeError, UnknownStatError
+from .exceptions import SourceError, SourceTypeError, UnknownStatError
 from .extractors import WordsExtractor
 from .utils import find_phrases, is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
 
@@ -33,11 +35,9 @@ def check_params(top_n: int) -> None:
         top_n (int): Количество самых частых слов
 
     Исключения:
-        ParameterError: Если количество самых частых слов меньше единицы
+        ParameterError: Если количество самых частых слов не целое число или меньше единицы
     """
-    check_integer(top_n, "number of the most frequent words")
-    if top_n < 1:
-        raise ParameterError("Количество самых частых слов должно быть больше 0")
+    anyts.style_stats.check_params(top_n, messages=CORE_MESSAGES)
 
 
 class StyleStats:

@@ -1,16 +1,21 @@
 import functools
 import inspect
 import re
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
 from typing import Any, TypeVar, cast
 
+import anyts.utils
 import pymorphy3
-from anyts.extractors import BLANK_LINE
-from anyts.utils import check_sequence, check_words, is_punctuation
+from anyts.extractors import iter_part_sents
+from anyts.utils import (
+    add_tokenizer_rules,
+    check_sequence,
+    has_sents,
+    is_punctuation,
+)
 from razdel import sentenize, tokenize
 from spacy.language import Language
-from spacy.tokenizer import Tokenizer
 from spacy.tokens import Doc
 
 from .constants import (
@@ -320,46 +325,24 @@ def normalize_yo(word: str) -> str:
     return strip_marks(word).lower().replace("ё", "е")
 
 
-def find_phrases(words: Sequence[str], phrases: Iterable[str]) -> list[tuple[int, int]]:
+def find_phrases(words: Sequence[str], phrases: Collection[str]) -> list[tuple[int, int]]:
     """
     Поиск словосочетаний в последовательности слов
 
     Описание:
-        Слова и словосочетания сравниваются в нижнем регистре без буквы ё; в каждой
-        позиции выбирается самое длинное словосочетание, найденные не пересекаются
-        Словосочетания индексируются по первому слову, так что в каждой позиции
-        сравниваются только начинающиеся с этого слова
+        Слова и словосочетания сравниваются в нижнем регистре без буквы ё (normalize_yo);
+        в каждой позиции выбирается самое длинное словосочетание, найденные
+        не пересекаются. Расчет - find_phrases ядра
 
     Аргументы:
         words (list[str]): Слова текста
-        phrases (list[str]): Словосочетания через пробел
+        phrases (list[str]|set[str]): Словосочетания через пробел
 
     Вывод:
         list[tuple[int, int]]: Границы найденных словосочетаний как срезы words;
             пустые словосочетания пропускаются
     """
-    check_words(words)
-    patterns = sorted(
-        {pattern for phrase in phrases if (pattern := tuple(normalize_yo(phrase).split()))},
-        key=len,
-        reverse=True,
-    )
-    by_first: dict[str, list[tuple[str, ...]]] = {}
-    for pattern in patterns:
-        by_first.setdefault(pattern[0], []).append(pattern)
-    normalized = [normalize_yo(word) for word in words]
-    spans = []
-    position = 0
-    while position < len(normalized):
-        for pattern in by_first.get(normalized[position], ()):
-            end = position + len(pattern)
-            if tuple(normalized[position:end]) == pattern:
-                spans.append((position, end))
-                position = end
-                break
-        else:
-            position += 1
-    return spans
+    return anyts.utils.find_phrases(words, phrases, normalize_yo)
 
 
 def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
@@ -431,11 +414,11 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
 
     Описание:
         Пустая строка завершает предложение, как в SentsExtractor: razdel получает
-        части текста между пустыми строками по одной, а часть из одних пробельных
-        символов предложений не дает. razdel делит текст без знаков ударения
-        и мягких переносов (take_marks): иначе хвост слова после знака («но́с.»)
-        он принимает за сокращение и не видит конца предложения. Позиции и текст
-        предложений - по исходной строке, со знаками
+        части текста между пустыми строками по одной (iter_part_sents ядра), а часть
+        из одних пробельных символов предложений не дает. razdel делит текст без
+        знаков ударения и мягких переносов (take_marks): иначе хвост слова после
+        знака («но́с.») он принимает за сокращение и не видит конца предложения.
+        Позиции и текст предложений - по исходной строке, со знаками
 
     Аргументы:
         text (str): Строка текста
@@ -451,22 +434,20 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         >>> [sent for _, _, sent in iter_text_sents("Итоги\\n\\nВсе на месте.")]
         ['Итоги', 'Все на месте.']
     """
-    bounds = [0, *(bound for match in BLANK_LINE.finditer(text) for bound in match.span())]
-    for start, end in zip(bounds[::2], [*bounds[1::2], len(text)], strict=True):
-        for first, last in _iter_part_sents(text[start:end]):
-            if first < last:
-                yield start + first, start + last, text[start + first : start + last]
+    return iter_part_sents(_iter_part_sents, text)
 
 
-def _iter_part_sents(text: str) -> Iterator[tuple[int, int]]:
-    """Границы предложений razdel в тексте без пустых строк, по строке со знаками"""
-    if not MARKED.search(text):
-        yield from ((sent.start, sent.stop) for sent in sentenize(text))
-        return
-    clean, origin, _ = take_marks(text)
-    origin.append(len(text))
-    for sent in sentenize(clean):
-        yield origin[sent.start], origin[sent.stop]
+def _iter_part_sents(text: str) -> Iterator[tuple[int, int, str]]:
+    """Предложения razdel в тексте без пустых строк, с позициями по строке со знаками"""
+    if MARKED.search(text):
+        clean, origin, _ = take_marks(text)
+        origin.append(len(text))
+        spans = ((origin[sent.start], origin[sent.stop]) for sent in sentenize(clean))
+    else:
+        spans = ((sent.start, sent.stop) for sent in sentenize(text))
+    for first, last in spans:
+        if first < last:
+            yield first, last, text[first:last]
 
 
 def strip_doc_marks(doc: Doc) -> Doc:
@@ -475,7 +456,8 @@ def strip_doc_marks(doc: Doc) -> Doc:
 
     Описание:
         Новый Doc из текстов токенов после strip_marks с теми же пробелами
-        и границами предложений, без прочей разметки; токен из одних знаков
+        и границами предложений (если они у каждого токена, has_sents), без прочей
+        разметки; токен из одних знаков
         пропускается. Doc без знаков возвращается как есть
 
     Аргументы:
@@ -486,7 +468,7 @@ def strip_doc_marks(doc: Doc) -> Doc:
     """
     if not MARKED.search(doc.text):
         return doc
-    sents = doc.has_annotation("SENT_START")
+    sents = has_sents(doc)
     words: list[str] = []
     spaces: list[bool] = []
     starts: list[bool | int | None] = []
@@ -511,8 +493,9 @@ def add_dash_rules(nlp: Language) -> None:
 
     Описание:
         С правилами TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES и TOKENIZER_INFIXES
-        слова Doc совпадают со словами строки (iter_tokens); повторно правила
-        не добавляются. Компоненты ruTS добавляют их в свой пайплайн сами
+        слова Doc совпадают со словами строки (iter_tokens); правила добавляет
+        add_tokenizer_rules ядра, повторно - не добавляет. Компоненты ruTS добавляют
+        их в свой пайплайн сами
 
     Аргументы:
         nlp (Language): Пайплайн, в токенизатор которого добавляются правила
@@ -527,26 +510,4 @@ def add_dash_rules(nlp: Language) -> None:
         >>> [token.text for token in nlp("-Нет -сказал он.")]
         ['-', 'Нет', '-', 'сказал', 'он', '.']
     """
-    tokenizer = nlp.tokenizer
-    if not isinstance(tokenizer, Tokenizer):
-        return
-    prefixes = _extend_rules(tokenizer.prefix_search, [f"^{rule}" for rule in TOKENIZER_PREFIXES])
-    suffixes = _extend_rules(tokenizer.suffix_search, [f"{rule}$" for rule in TOKENIZER_SUFFIXES])
-    infixes = _extend_rules(tokenizer.infix_finditer, list(TOKENIZER_INFIXES))
-    if prefixes is not None:
-        tokenizer.prefix_search = prefixes.search
-    if suffixes is not None:
-        tokenizer.suffix_search = suffixes.search
-    if infixes is not None:
-        tokenizer.infix_finditer = infixes.finditer
-
-
-def _extend_rules(method: object, rules: list[str]) -> re.Pattern[str] | None:
-    """Регулярное выражение токенизатора с добавленными правилами, которых в нем нет"""
-    if method is None:
-        return re.compile("|".join(rules))
-    pattern = getattr(getattr(method, "__self__", None), "pattern", None)
-    if not isinstance(pattern, str):
-        return None
-    missing = [rule for rule in rules if rule not in pattern]
-    return re.compile("|".join([pattern, *missing]))
+    add_tokenizer_rules(nlp, TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES, TOKENIZER_INFIXES)

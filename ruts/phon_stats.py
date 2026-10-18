@@ -4,17 +4,19 @@ from functools import lru_cache
 from math import log2, nan
 
 import anyts
-from anyts.phonetics import calc_repetition_index
-from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
+import anyts.phon_stats
+from anyts.phon_stats import calc_repetition_index
+from anyts.utils import check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 
 from .constants import (
+    CORE_MESSAGES,
     PHON_STATS_DESC,
     PHON_WINDOW_LEN,
     RU_CONSONANTS_HIGH,
     RU_CONSONANTS_LOW,
 )
-from .exceptions import ParameterError, SourceError, SourceTypeError
+from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
 from .utils import strip_marks
@@ -34,11 +36,9 @@ def check_params(window_len: int) -> None:
         window_len (int): Размер окна в словах для аллитерации и ассонанса
 
     Исключения:
-        ParameterError: Если размер окна меньше 2
+        ParameterError: Если размер окна не целое число или меньше 2
     """
-    check_integer(window_len, "size of a window")
-    if window_len < 2:
-        raise ParameterError("Размер окна должен быть не меньше 2")
+    anyts.phon_stats.check_params(window_len, messages=CORE_MESSAGES)
 
 
 class PhonStats:

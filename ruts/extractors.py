@@ -4,6 +4,7 @@ from typing import ClassVar
 
 import anyts
 
+from .constants import CORE_MESSAGES
 from .utils import iter_text_sents, iter_tokens, parse_word, strip_marks
 
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
@@ -36,6 +37,8 @@ class SentsExtractor(anyts.SentsExtractor):
         ParameterError: Если граница длины не целое число, отрицательна или минимальная
             длина больше максимальной
     """
+
+    messages = CORE_MESSAGES
 
     def sentenize(self, text: str) -> Iterable[str]:
         """Разбиение текста на предложения razdel (ruts.utils.iter_text_sents)"""
@@ -84,6 +87,8 @@ class WordsExtractor(anyts.WordsExtractor):
             длина больше максимальной
         SourceTypeError: Если стоп-слова не набор строк
     """
+
+    messages = CORE_MESSAGES
 
     number_pattern: ClassVar[re.Pattern[str]] = NUMBER_PATTERN
 
@@ -136,6 +141,8 @@ class CharNgramsExtractor(anyts.CharNgramsExtractor):
     Исключения:
         ParameterError: Если длина N-граммы не целое число или меньше единицы
     """
+
+    messages = CORE_MESSAGES
 
     def tokenize(self, text: str) -> Iterable[str]:
         """Разбиение текста на слова ruts.utils.iter_tokens"""
