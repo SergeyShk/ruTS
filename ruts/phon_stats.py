@@ -196,8 +196,9 @@ def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
     """
     check_words(text)
     counter: Counter[int] = Counter()
-    for word in text:
-        counter.update(consonant_clusters(word.lower(), CONSONANTS, MARKS))
+    for word, count in Counter(text).items():
+        for size in consonant_clusters(word.lower(), CONSONANTS, MARKS):
+            counter[size] += count
     return dict(sorted(counter.items()))
 
 
@@ -217,7 +218,10 @@ def calc_hiatus(text: Sequence[str]) -> int:
         int: Количество зияний
     """
     check_words(text)
-    return sum(count_hiatus(word.lower(), VOWELS, IOTATED) for word in text)
+    return sum(
+        count_hiatus(word.lower(), VOWELS, IOTATED) * count
+        for word, count in Counter(text).items()
+    )
 
 
 def calc_cv_entropy(text: Sequence[str]) -> float:
