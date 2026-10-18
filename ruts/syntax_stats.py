@@ -3,7 +3,7 @@ from collections.abc import Iterable
 from math import nan
 from statistics import fmean, pstdev
 
-from anyts.syntax import (
+from anyts.syntax_stats import (
     base_dep as base_dep,
     calc_coordination_chains as calc_coordination_chains,
     calc_dependency_distances as calc_dependency_distances,
@@ -12,12 +12,14 @@ from anyts.syntax import (
     count_children as count_children,
     get_children as get_children,
     get_words as get_words,
-    has_feature as has_feature,
     is_root as is_root,
-    is_word as is_word,
     subtree_len as subtree_len,
 )
-from anyts.utils import safe_divide
+from anyts.utils import (
+    has_feature as has_feature,
+    is_word as is_word,
+    safe_divide,
+)
 from spacy.tokens import Doc, Token
 
 from .constants import (

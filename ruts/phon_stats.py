@@ -4,7 +4,7 @@ from functools import lru_cache
 from math import log2, nan
 
 import anyts
-from anyts.phonetics import calc_repetition_index
+from anyts.phon_stats import calc_repetition_index
 from anyts.utils import check_integer, check_words, iter_doc_words, safe_divide
 from spacy.tokens import Doc
 

@@ -6,7 +6,7 @@ from statistics import fmean
 from typing import NamedTuple
 
 import anyts
-from anyts.cohesion import (
+from anyts.cohesion_stats import (
     Overlap as Overlap,
     calc_overlap as calc_overlap,
     calc_overlaps as calc_overlaps,
@@ -16,7 +16,7 @@ from anyts.cohesion import (
     dice as dice,
     dominant as dominant,
 )
-from anyts.utils import check_sequence, check_words, iter_doc_units, safe_divide
+from anyts.utils import check_sequence, check_words, has_sents, iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
 from .constants import (
@@ -232,9 +232,7 @@ class CohesionStats:
         infos: list[list[WordInfo]]
         pos: list[list[str | None]]
         # Экстракторы применяются к тексту Doc, как в классах ядра
-        doc_sents = (
-            isinstance(source, Doc) and source.has_annotation("SENT_START") and not sents_extractor
-        )
+        doc_sents = isinstance(source, Doc) and has_sents(source) and not sents_extractor
         if isinstance(source, Doc) and words_extractor is None:
             if doc_sents:
                 units = [list(iter_doc_units(sent, join_hyphens=True)) for sent in source.sents]

@@ -1,9 +1,7 @@
 from collections.abc import Callable, Mapping, Sequence
-from itertools import pairwise
-from math import isnan, nan
-from numbers import Integral
+from math import nan
 
-import numpy as np
+import anyts.corpus.compare
 import pandas as pd
 from anyts.corpus.compare import (
     COMPARISON_COLUMNS as COMPARISON_COLUMNS,
@@ -14,12 +12,18 @@ from anyts.corpus.compare import (
     compare_features as compare_features,
     holm_correction as holm_correction,
 )
-from anyts.utils import check_integer, check_sequence, check_words, count_words_by_spans
+from anyts.utils import check_words, count_words_by_spans
 
 from ..basic_stats import BasicStats, punctuation_profile
-from ..constants import MORPHOLOGY_STATS_DESC, OPENING_MARKS, SYMMETRIC_MARKS
+from ..constants import (
+    CLOSING_MARKS,
+    CORE_MESSAGES,
+    MORPHOLOGY_STATS_DESC,
+    OPENING_MARKS,
+    SYMMETRIC_MARKS,
+)
 from ..diversity_stats import DiversityStats
-from ..exceptions import ParameterError, SourceError, SourceTypeError
+from ..exceptions import SourceError, SourceTypeError
 from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
@@ -64,7 +68,9 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         окно целиком, то есть остаток отбрасывается), так что окна разных текстов
         одной длины и признаки, зависящие от длины, сравнимы. Граница проходит перед первым
         словом окна и открывающими знаками перед ним (кавычки, скобки, тире), так
-        что пунктуация остается в окнах; при window=None окно - весь текст
+        что пунктуация остается в окнах; при window=None окно - весь текст. Расчет -
+        split_windows ядра со словами iter_text_words и русскими знаками
+        (OPENING_MARKS, SYMMETRIC_MARKS, CLOSING_MARKS)
 
     Аргументы:
         text (str): Строка текста
@@ -76,43 +82,20 @@ def split_windows(text: str, window: int | None = 1000, min_words: int | None = 
         list[str]: Окна текста; пустой список для текста без слов или короче min_words
 
     Исключения:
+        SourceTypeError: Если текст не строка
         ParameterError: Если размер окна или min_words меньше единицы или min_words
             больше окна
     """
-    if not isinstance(text, str):
-        raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
-    _check_windows(window, min_words)
-    min_words = _min_words(window, min_words)
-    words = list(iter_text_words(text))
-    if not words:
-        return []
-    size = len(words) if window is None else window
-    chunks = [
-        np.arange(start, min(start + size, len(words))) for start in range(0, len(words), size)
-    ]
-    boundaries = [0]
-    for chunk in chunks[1:]:
-        start = words[chunk[0]][0]
-        previous_end = words[chunk[0] - 1][1]
-        boundary = start
-        while boundary > previous_end and (
-            text[boundary - 1].isspace() or text[boundary - 1] in OPENING_MARKS
-        ):
-            boundary -= 1
-        while (
-            boundary < start
-            and text[boundary] in SYMMETRIC_MARKS
-            and (boundary == previous_end or text[boundary - 1] in ".!?…,;)]»")
-        ):
-            boundary += 1
-            previous_end = boundary
-        boundaries.append(boundary)
-    boundaries.append(len(text))
-    return [
-        text[start:end].strip()
-        for (start, end), chunk in zip(pairwise(boundaries), chunks, strict=True)
-        if len(chunk) >= min_words
-    ]
+    return anyts.corpus.compare.split_windows(
+        text,
+        window,
+        min_words,
+        tokenize=iter_text_words,
+        opening_marks=OPENING_MARKS,
+        symmetric_marks=SYMMETRIC_MARKS,
+        closing_marks=CLOSING_MARKS,
+        messages=CORE_MESSAGES,
+    )
 
 
 def _min_words(window: int | None, min_words: int | None) -> int:
@@ -123,17 +106,8 @@ def _min_words(window: int | None, min_words: int | None) -> int:
 
 
 def _check_windows(window: int | None, min_words: int | None) -> None:
-    """Проверка размера окна и наименьшего числа слов в нем"""
-    if window is not None:
-        check_integer(window, "size of a window")
-        if window < 1:
-            raise ParameterError("Размер окна должен быть больше 0")
-    if min_words is not None:
-        check_integer(min_words, "smallest number of words in a window")
-        if min_words < 1:
-            raise ParameterError("Наименьшее число слов в окне должно быть больше 0")
-        if window is not None and min_words > window:
-            raise ParameterError("Наименьшее число слов в окне не может быть больше окна")
+    """Проверка размера окна и наименьшего числа слов в нем до обработки текстов"""
+    split_windows("", window, min_words)
 
 
 def text_features(text: str) -> dict[str, float]:
@@ -248,28 +222,12 @@ def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:
 
     Вывод:
         dict[str, float]: Признаки sents_mean, sents_std, sents_cv, sents_autocorr
+
+    Исключения:
+        SourceTypeError: Если длины не список целых чисел
+        ParameterError: Если длина отрицательна
     """
-    check_sequence(lengths, "sentence lengths")
-    if not all(isinstance(length, Integral) for length in lengths):
-        raise SourceTypeError("Длины предложений должны быть целыми числами")
-    values = np.asarray(lengths, dtype=float)
-    if not len(values):
-        return dict.fromkeys(("sents_mean", "sents_std", "sents_cv", "sents_autocorr"), nan)
-    mean = float(values.mean())
-    std = float(values.std(ddof=1)) if len(values) > 1 else nan
-    centered = values - mean
-    variance = float((centered**2).sum())
-    autocorr = (
-        float((centered[:-1] * centered[1:]).sum() / variance)
-        if len(values) > 2 and variance
-        else nan
-    )
-    return {
-        "sents_mean": mean,
-        "sents_std": std,
-        "sents_cv": std / mean if mean and not isnan(std) else nan,
-        "sents_autocorr": autocorr,
-    }
+    return anyts.corpus.compare.sentence_rhythm(lengths, messages=CORE_MESSAGES)
 
 
 def corpus_features(

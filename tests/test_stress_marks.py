@@ -209,3 +209,13 @@ def test_strip_doc_marks():
     assert strip_doc_marks(plain) is plain
     leading = Doc(nlp.vocab, words=["\u00ad", "Мороз"], spaces=[True, False])
     assert strip_doc_marks(leading).text == "Мороз"
+
+
+def test_strip_doc_marks_partial_sents():
+    """Частичные границы (ruts_blank_lines без парсера) не становятся полными: абзац - не предложение"""
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_blank_lines")
+    text = "Кот спит. Пёс лежит.\n\nМы ушли. Они при\u0301шли."
+    doc = nlp(text)
+    assert not strip_doc_marks(doc).has_annotation("SENT_START")
+    assert BasicStats(doc).n_sents == BasicStats(text).n_sents == 4
