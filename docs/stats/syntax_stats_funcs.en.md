@@ -8,7 +8,7 @@ The feature definitions follow [Ivanov, Solnyshkina and Solovyev (2018)](https:/
 
 --8<-- "stats/syntax_stats_funcs.md:hyphenated_words"
 
-`SyntaxStats` and the functions of the Russian constructions always join hyphenated words (`во-первых` is one word). The functions of the core, `is_predicate` and `count_noun_modifiers` included, take `join_hyphens=False` by default: they give the values of `SyntaxStats` with `join_hyphens=True`.
+`SyntaxStats` and the functions of the Russian constructions always join hyphenated words (`во-первых` is one word). The functions of the core, `is_predicate`, `count_noun_modifiers`, `is_passive`, `has_agent` and `is_agentless` included, take `join_hyphens=False` by default: they give the values of `SyntaxStats` with `join_hyphens=True`.
 
 ## Dependency distances { #calc_dependency_distances }
 
@@ -159,15 +159,15 @@ Parameters:
 ## Passive voice { #is_passive }
 
 !!! info ""
-    **ruts.syntax_stats.is_passive()**, **ruts.syntax_stats.is_agentless()**
+    **ruts.syntax_stats.is_passive()**, **ruts.syntax_stats.has_agent()**, **ruts.syntax_stats.is_agentless()**
 
-Checking whether a token is a passive verb form - a verb with the feature `Voice=Pass` (passive participles, the reflexive passive «обсуждалось») or with a dependent `nsubj:pass`, `csubj:pass` or `aux:pass`. An agentless form is a passive without a dependent `obl:agent`: «дом построен», but not «дом построен рабочими». `SyntaxStats` counts the share of passive forms among all verb forms (`p_passive`) and the share of agentless forms among passive ones (`p_agentless_passive`).
+--8<-- "stats/syntax_stats_funcs.md:is_passive"
 
-Parameters:
+--8<-- "stats/syntax_stats_funcs.md:has_agent"
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `token` | Token | `-` | Token |
+--8<-- "stats/syntax_stats_funcs.md:is_agentless"
+
+In Russian the passive is a passive participle or the reflexive passive («обсуждалось»), and an agentless form is «дом построен», but not «дом построен рабочими». `SyntaxStats` counts the share of passive forms among all verb forms (`p_passive`) and the share of agentless forms among passive ones (`p_agentless_passive`).
 
 ## Verb forms { #is_finite_verb }
 

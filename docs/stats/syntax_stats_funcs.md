@@ -9,7 +9,7 @@
 <!-- core: stats/syntax_stats_funcs.md:hyphenated_words 2598bfe -->
 Токенизатор может разрезать слово по дефисам (`во-первых` на `во`, `-`, `первых`), и тогда парсер вешает каждую часть на свою вершину. С `join_hyphens=True` функции дерева считают одним словом вместе с дефисами слово, части которого склеивает `anyts.utils.joins_previous`. У слова, которое держит вершину предложения, вершины нет; вершина другого слова - вершина его части, которая висит вне слова и ближе всех к корню (при равенстве - слова, а не дефиса). Зависимые слова - слова, чья часть, висящая вне слова, висит на одном из его токенов; каждое представлено этой частью (или своей первой частью, если наружу висит дефис). Поддерево слова - само слово и слова, которые висят на нем прямо или через знаки препинания. Так у каждого слова одна зависимость, и зависит оно от одного слова.
 
-`SyntaxStats` и функции русских конструкций всегда склеивают дефисные слова (`во-первых` - одно слово). Функции ядра, в том числе `is_predicate` и `count_noun_modifiers`, по умолчанию принимают `join_hyphens=False`: значения `SyntaxStats` они дают с `join_hyphens=True`.
+`SyntaxStats` и функции русских конструкций всегда склеивают дефисные слова (`во-первых` - одно слово). Функции ядра, в том числе `is_predicate`, `count_noun_modifiers`, `is_passive`, `has_agent` и `is_agentless`, по умолчанию принимают `join_hyphens=False`: значения `SyntaxStats` они дают с `join_hyphens=True`.
 
 ## Длины зависимостей { #calc_dependency_distances }
 
@@ -189,15 +189,18 @@
 ## Пассив { #is_passive }
 
 !!! info ""
-    **ruts.syntax_stats.is_passive()**, **ruts.syntax_stats.is_agentless()**
+    **ruts.syntax_stats.is_passive()**, **ruts.syntax_stats.has_agent()**, **ruts.syntax_stats.is_agentless()**
 
-Проверка, является ли токен пассивной глагольной формой - глаголом с признаком `Voice=Pass` (страдательные причастия, возвратный пассив «обсуждалось») или с зависимым `nsubj:pass`, `csubj:pass` или `aux:pass`. Форма без агенса - пассив без зависимого `obl:agent`: «дом построен», но не «дом построен рабочими». Класс `SyntaxStats` считает долю пассивных форм среди всех глагольных форм (`p_passive`) и долю форм без агенса среди пассивных (`p_agentless_passive`).
+<!-- core: stats/syntax_stats_funcs.md:is_passive 245c390 -->
+`is_passive(token, join_hyphens=False)` проверяет, является ли слово пассивной глагольной формой: глаголом с `Voice=Pass` или с зависимым `nsubj:pass`, `csubj:pass`, `aux:pass` либо `nsubjpass`, `csubjpass`, `auxpass` ClearNLP (`PASSIVE_DEPS`).
 
-Параметры:
+<!-- core: stats/syntax_stats_funcs.md:has_agent c8688cc -->
+`has_agent(token, join_hyphens=False)` проверяет, есть ли у слова агенс: зависимое `obl:agent` или `agent` ClearNLP (`AGENT_DEPS`).
 
-| Параметр | Тип | По умолчанию | Описание |
-| :------: | :-: | :----------: | :------: |
-| `token` | Token | `-` | Токен |
+<!-- core: stats/syntax_stats_funcs.md:is_agentless e5f35a6 -->
+`is_agentless(token, join_hyphens=False)` проверяет, является ли слово пассивной формой (`is_passive`) без агенса (`has_agent`).
+
+В русском языке пассив - страдательные причастия и возвратный пассив («обсуждалось»), форма без агенса - «дом построен», но не «дом построен рабочими». Класс `SyntaxStats` считает долю пассивных форм среди всех глагольных форм (`p_passive`) и долю форм без агенса среди пассивных (`p_agentless_passive`).
 
 ## Формы глагола { #is_finite_verb }
 
