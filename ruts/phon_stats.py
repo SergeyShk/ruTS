@@ -1,12 +1,11 @@
 from collections import Counter
 from collections.abc import Sequence
 from functools import lru_cache
-from math import log2, nan
 
 import anyts
 import anyts.phon_stats
-from anyts.phon_stats import calc_repetition_index
-from anyts.utils import check_words, iter_doc_words, safe_divide
+from anyts.phon_stats import calc_repetition_index, consonant_clusters, count_hiatus
+from anyts.utils import check_words, shannon_entropy
 from spacy.tokens import Doc
 
 from .constants import (
@@ -16,14 +15,12 @@ from .constants import (
     RU_CONSONANTS_HIGH,
     RU_CONSONANTS_LOW,
 )
-from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
 from .utils import strip_marks
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
 VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
-SOUNDS = VOWELS | CONSONANTS
 IOTATED = frozenset("еёюя")
 CACHE_SIZE = 1 << 16
 
@@ -41,18 +38,18 @@ def check_params(window_len: int) -> None:
     anyts.phon_stats.check_params(window_len, messages=CORE_MESSAGES)
 
 
-class PhonStats:
+class PhonStats(anyts.phon_stats.PhonStats):
     """
     Класс для вычисления фоностатистик текста
 
     Описание:
-        Статистики считаются по буквам без учета оглушения, редукции и ударения:
-        гласные - а, е, и, о, у, ы, э, ю, я, ё; сонорные - л, м, н, р, й;
-        звонкие шумные - б, в, г, д, ж, з; глухие шумные - к, п, с, т, ф, х, ц, ч, ш, щ;
-        ь и ъ не являются звуками и не учитываются в долях; у текста без звуков
-        (числа, латиница) доли и отношения - nan, у текста без согласных - доля
-        тяжелых кластеров
-        Слова делятся на слоги по правилу восходящей звучности (Аванесов)
+        Расширяет PhonStats ядра anyTS крючками русского языка: звуки - буквы без учета
+        оглушения, редукции и ударения (гласные - а, е, и, о, у, ы, э, ю, я, ё;
+        сонорные - л, м, н, р, й; звонкие шумные - б, в, г, д, ж, з; глухие шумные -
+        к, п, с, т, ф, х, ц, ч, ш, щ), ь и ъ - не звуки и не разрывают кластер,
+        йотированные е, ё, ю, я после гласной не дают зияния, слоги - по правилу
+        восходящей звучности (Аванесов). Слова Doc - без знаков ударения, дефисные
+        слова склеиваются
 
     Пример использования:
         >>> from ruts import PhonStats
@@ -111,105 +108,40 @@ class PhonStats:
         print_stats: Отображение вычисленных фоностатистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка и не объект Doc или экстрактор
+            другого типа
         SourceError: Если в источнике данных отсутствуют слова
-        ParameterError: Если размер окна меньше 2
+        ParameterError: Если размер окна не целое число или меньше 2
     """
+
+    words_extractor_class = WordsExtractor
+    join_hyphens = True
+    vowels = VOWELS
+    sonorants = SONORANTS
+    voiced = VOICED
+    voiceless = VOICELESS
+    skipped = MARKS
+    glides = IOTATED
+    stats_desc = PHON_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
         source: str | Doc,
-        words_extractor: WordsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         window_len: int = PHON_WINDOW_LEN,
     ):
-        if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
-        check_params(window_len)
-        if isinstance(source, Doc) and words_extractor is not None:
-            # Экстрактор слов применяется к тексту Doc, как в классах ядра
-            source = source.text
-        if isinstance(source, Doc):
-            text = source.text
-            words = tuple(
-                strip_marks(word).lower()
-                for _, _, word in iter_doc_words(source, join_hyphens=True)
-            )
-        elif isinstance(source, str):
-            text = source
-            if not words_extractor:
-                words_extractor = WordsExtractor(lowercase=True)
-            words = tuple(word.lower() for word in words_extractor.extract(text))
-        else:
-            raise SourceTypeError("Некорректный источник данных")
-        if not words:
-            raise SourceError("В источнике данных отсутствуют слова")
-        self.words = words
-        self.window_len = window_len
-        self.syllables = tuple(_syllables(word) for word in words)
+        super().__init__(source, words_extractor, window_len)
+        self.n_marks = sum(1 for word in self.words for letter in word if letter in MARKS)
 
-        counts = Counter(words)
-        letters: Counter[str] = Counter()
-        syllables: Counter[str] = Counter()
-        for word, count in counts.items():
-            for letter, number in Counter(word).items():
-                letters[letter] += number * count
-            for syllable in _syllables(word):
-                syllables[syllable] += count
-        self.n_vowels = sum(letters[letter] for letter in VOWELS)
-        self.n_sonorants = sum(letters[letter] for letter in SONORANTS)
-        self.n_voiced = sum(letters[letter] for letter in VOICED)
-        self.n_voiceless = sum(letters[letter] for letter in VOICELESS)
-        self.n_consonants = self.n_sonorants + self.n_voiced + self.n_voiceless
-        self.n_marks = sum(letters[letter] for letter in MARKS)
-        n_sounds = self.n_vowels + self.n_consonants
-        self.c_clusters = _consonant_clusters(counts)
-        patterns: Counter[str] = Counter()
-        for syllable, count in syllables.items():
-            patterns[cv_pattern(syllable)] += count
-        self.c_syllable_patterns = dict(sorted(patterns.items()))
+    def doc_words(self, doc: Doc) -> tuple[str, ...]:
+        """Слова Doc ядра без знаков ударения"""
+        return tuple(map(strip_marks, super().doc_words(doc)))
 
-        self.p_vowels = safe_divide(self.n_vowels, n_sounds, nan)
-        self.p_sonorants = safe_divide(self.n_sonorants, n_sounds, nan)
-        self.p_voiced = safe_divide(self.n_voiced, n_sounds, nan)
-        self.p_voiceless = safe_divide(self.n_voiceless, n_sounds, nan)
-        self.consonant_vowel_ratio = safe_divide(self.n_consonants, self.n_vowels, nan)
-        n_clusters = sum(self.c_clusters.values())
-        self.p_heavy_clusters = safe_divide(
-            sum(count for size, count in self.c_clusters.items() if size >= 3), n_clusters, nan
-        )
-        self.p_hiatus = _hiatus(counts) / len(words) if n_sounds else nan
-        self.cv_entropy = _cv_entropy(counts)
-        self.hardness = safe_divide(self.n_voiceless, self.n_vowels + self.n_sonorants, nan)
-        self.alliteration = calc_repetition_index(words, window_len, CONSONANTS)
-        self.assonance = calc_repetition_index(words, window_len, VOWELS)
-        n_syllables = sum(syllables.values())
-        self.p_open_syllables = safe_divide(
-            sum(count for syllable, count in syllables.items() if is_open_syllable(syllable)),
-            n_syllables,
-            nan,
-        )
-        self.mean_syllable_len = safe_divide(
-            sum(len(syllable) * count for syllable, count in syllables.items()),
-            n_syllables,
-            nan,
-        )
-
-    def get_stats(self) -> dict[str, float]:
-        """
-        Получение вычисленных фоностатистик текста
-
-        Вывод:
-            dict[str, float]: Справочник вычисленных фоностатистик текста
-        """
-        return {stat: getattr(self, stat) for stat in PHON_STATS_DESC}
-
-    def print_stats(self):
-        """Отображение вычисленных фоностатистик текста с описанием на экран"""
-        print(f"{'Статистика':^40}|{'Значение':^10}")
-        print("-" * 50)
-        stats = self.get_stats()
-        for stat, value in PHON_STATS_DESC.items():
-            print(f"{value:40}|{stats[stat]:^10.2f}")
+    def syllabify(self, word: str) -> tuple[str, ...]:
+        """Слоги слова по правилу восходящей звучности (ruts.syllables.syllabify)"""
+        return _syllables(word)
 
 
 @lru_cache(maxsize=CACHE_SIZE)
@@ -219,8 +151,7 @@ def cv_pattern(word: str) -> str:
 
     Описание:
         Гласные обозначаются буквой V, согласные - C, ь и ъ пропускаются,
-        остальные символы (латиница, цифры, дефис) не учитываются
-        Результаты кэшируются по строке
+        остальные символы (латиница, цифры, дефис) не учитываются (cv_pattern ядра)
 
     Аргументы:
         word (str): Слово или слог
@@ -228,7 +159,7 @@ def cv_pattern(word: str) -> str:
     Вывод:
         str: CV-шаблон
     """
-    return "".join("V" if letter in VOWELS else "C" for letter in word.lower() if letter in SOUNDS)
+    return anyts.phon_stats.cv_pattern(word.lower(), VOWELS, CONSONANTS)
 
 
 def is_open_syllable(syllable: str) -> bool:
@@ -244,8 +175,7 @@ def is_open_syllable(syllable: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    pattern = cv_pattern(syllable)
-    return pattern.endswith("V")
+    return cv_pattern(syllable).endswith("V")
 
 
 def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
@@ -263,35 +193,10 @@ def calc_consonant_clusters(text: Sequence[str]) -> dict[int, int]:
         dict[int, int]: Количество кластеров каждой длины
     """
     check_words(text)
-    return _consonant_clusters(Counter(text))
-
-
-def _consonant_clusters(counts: Counter[str]) -> dict[int, int]:
-    """Распределение кластеров по длине по счетчику словоформ"""
     counter: Counter[int] = Counter()
-    for word, count in counts.items():
-        for size in _clusters(word):
-            counter[size] += count
+    for word in text:
+        counter.update(consonant_clusters(word.lower(), CONSONANTS, MARKS))
     return dict(sorted(counter.items()))
-
-
-@lru_cache(maxsize=CACHE_SIZE)
-def _clusters(word: str) -> tuple[int, ...]:
-    """Длины консонантных кластеров слова по порядку с кэшем по слову"""
-    sizes = []
-    size = 0
-    for letter in word.lower():
-        if letter in CONSONANTS:
-            size += 1
-        elif letter in MARKS:
-            continue
-        else:
-            if size:
-                sizes.append(size)
-            size = 0
-    if size:
-        sizes.append(size)
-    return tuple(sizes)
 
 
 def calc_hiatus(text: Sequence[str]) -> int:
@@ -301,8 +206,7 @@ def calc_hiatus(text: Sequence[str]) -> int:
     Описание:
         Зияние - две и более гласных подряд внутри слова: аэропорт, аист, поэзия (о-э)
         Йотированные е, ё, ю, я после гласной обозначают [j] и гласный и зияния
-        не образуют: заяц, моя, красивая, читает - иначе окончания прилагательных
-        и глаголов давали бы четыре пятых всех зияний
+        не образуют: заяц, моя, красивая, читает
 
     Аргументы:
         text (list[str]): Список слов
@@ -311,30 +215,7 @@ def calc_hiatus(text: Sequence[str]) -> int:
         int: Количество зияний
     """
     check_words(text)
-    return _hiatus(Counter(text))
-
-
-def _hiatus(counts: Counter[str]) -> int:
-    """Число зияний по счетчику словоформ"""
-    return sum(_word_hiatus(word) * count for word, count in counts.items())
-
-
-@lru_cache(maxsize=CACHE_SIZE)
-def _word_hiatus(word: str) -> int:
-    """Число зияний гласных в слове с кэшем по слову"""
-    hiatus = 0
-    previous_vowel = False
-    run = False
-    for letter in word.lower():
-        is_vowel = letter in VOWELS
-        if is_vowel and previous_vowel and letter not in IOTATED:
-            if not run:
-                hiatus += 1
-            run = True
-        else:
-            run = False
-        previous_vowel = is_vowel
-    return hiatus
+    return sum(count_hiatus(word.lower(), VOWELS, IOTATED) for word in text)
 
 
 def calc_cv_entropy(text: Sequence[str]) -> float:
@@ -353,19 +234,7 @@ def calc_cv_entropy(text: Sequence[str]) -> float:
         float: Значение энтропии, nan если в тексте нет слов с буквами
     """
     check_words(text)
-    return _cv_entropy(Counter(text))
-
-
-def _cv_entropy(counts: Counter[str]) -> float:
-    """Энтропия CV-шаблонов по счетчику словоформ"""
-    patterns: Counter[str] = Counter()
-    for word, count in counts.items():
-        if pattern := cv_pattern(word):
-            patterns[pattern] += count
-    total = sum(patterns.values())
-    if not total:
-        return nan
-    return -sum(count / total * log2(count / total) for count in patterns.values()) or 0.0
+    return shannon_entropy(Counter(pattern for word in text if (pattern := cv_pattern(word))))
 
 
 def calc_alliteration(text: Sequence[str], window_len: int = PHON_WINDOW_LEN) -> float:
