@@ -2,7 +2,7 @@ import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 
 import anyts.visualizers.highlight
-from anyts.utils import check_integer, check_number, check_words, iter_doc_units
+from anyts.utils import check_words, iter_doc_units
 from anyts.visualizers.highlight import (
     Highlight as Highlight,
     Sent,
@@ -22,6 +22,8 @@ from ..constants import (
     COMPOUND_PREPOSITIONS,
     CONNECTOR_CLASSES,
     CONNECTOR_TYPES,
+    CORE_MESSAGES,
+    HIGHLIGHT_ANNOTATION_NAMES,
     HIGHLIGHT_DEFAULT_LAYERS,
     HIGHLIGHT_LAYER_ANNOTATIONS,
     HIGHLIGHT_LAYER_STYLES,
@@ -31,7 +33,6 @@ from ..constants import (
     PARENTHETICALS,
     RU_LETTER_FREQUENCIES,
 )
-from ..exceptions import ParameterError
 from ..lexical_stats import get_rank
 from ..style_stats import expand_phrases, is_stopword, is_water_word
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
@@ -139,6 +140,8 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
     layer_annotations = HIGHLIGHT_LAYER_ANNOTATIONS
     layer_styles = HIGHLIGHT_LAYER_STYLES
     css_prefix = "ruts"
+    annotation_names = HIGHLIGHT_ANNOTATION_NAMES
+    messages = CORE_MESSAGES
 
     def __init__(
         self,
@@ -150,15 +153,12 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         cliches: Collection[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
-        check_integer(long_sent_word_factor, "number of words in a long sentence")
-        check_integer(complex_syl_factor, "number of syllables in a complex word")
-        if long_sent_word_factor < 1:
-            raise ParameterError("Количество слов в длинном предложении должно быть больше 0")
-        if complex_syl_factor < 1:
-            raise ParameterError("Количество слогов в сложном слове должно быть больше 0")
-        check_number(alliteration_threshold, "threshold of the alliteration")
-        if not 0 < alliteration_threshold <= 1:
-            raise ParameterError("Порог аллитерации должен быть в интервале (0, 1]")
+        anyts.visualizers.highlight.check_params(
+            long_sent_word_factor,
+            complex_syl_factor,
+            alliteration_threshold,
+            messages=self.messages,
+        )
         if stopwords is not None:
             check_words(stopwords, "stopwords", ordered=False)
             stopwords = tuple(stopwords)

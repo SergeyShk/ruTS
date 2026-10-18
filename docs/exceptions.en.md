@@ -18,7 +18,7 @@ All library exceptions inherit the base class `RutsError` and one of the built-i
 | `DataFileError` | `ValueError` | A dataset file is corrupted, has an unexpected format or cannot be decoded |
 | `DownloadError` | `RuntimeError` | The file could not be downloaded or failed the checksum verification |
 
-The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of ruTS are in Russian, the messages of the statistics classes, the extractors and the components built on the core included (`ruts.constants.CORE_MESSAGES`). English remain the checks of the types of arguments in the code of the core (a string instead of a number and the like) and some functions of the core.
+The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of ruTS are in Russian, the messages of the statistics classes, the extractors, the components and the highlighting built on the core included (`ruts.constants.CORE_MESSAGES`). English remain the checks of the types of arguments in the code of the core (a string instead of a number and the like) and some functions of the core.
 
 !!! example "Example"
 

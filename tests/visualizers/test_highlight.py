@@ -192,12 +192,14 @@ def test_layers_selection(doc):
 
 
 def test_layers_unknown():
-    with pytest.raises(ValueError, match="Unknown layer"):
+    with pytest.raises(ValueError, match=r"^Неизвестный слой подсветки: typos$"):
         highlight(text, layers=["typos"])
 
 
 def test_layers_unavailable():
-    with pytest.raises(ValueError, match="passive needs a Doc with a dependency parse"):
+    with pytest.raises(
+        ValueError, match=r"^Слою passive нужен Doc с аннотациями: разбор зависимостей$"
+    ):
         highlight(text, layers=["passive"])
     with pytest.raises(ValueError, match="passive"):
         highlight(spacy.blank("ru")(text), layers=["passive"])

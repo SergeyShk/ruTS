@@ -228,7 +228,7 @@ class DiversityStats(anyts.DiversityStats):
     def __init__(
         self,
         source: str | Doc,
-        words_extractor: WordsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         window_len: int = MATTR_WINDOW_LEN,
         mtld_threshold: float = MTLD_TTR_THRESHOLD,
         mtld_min_len: int = MTLD_MIN_LEN,

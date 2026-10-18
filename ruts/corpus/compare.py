@@ -12,6 +12,7 @@ from anyts.corpus.compare import (
     compare_features as compare_features,
     holm_correction as holm_correction,
 )
+from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
 from anyts.utils import check_words, count_words_by_spans
 
 from ..basic_stats import BasicStats, punctuation_profile
@@ -24,7 +25,6 @@ from ..constants import (
 )
 from ..diversity_stats import DiversityStats
 from ..exceptions import SourceError, SourceTypeError
-from ..extractors import SentsExtractor, WordsExtractor
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
 from ..utils import iter_text_sents, iter_text_words
@@ -143,8 +143,8 @@ def text_features(text: str) -> dict[str, float]:
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
     positions = list(iter_text_words(text))
     spans = [(start, stop) for start, stop, sent in iter_text_sents(text) if sent.strip()]
-    words = _FixedWordsExtractor(tuple(word for _, _, word in positions))
-    sents = _FixedSentsExtractor(tuple(text[start:stop] for start, stop in spans))
+    words = FixedWordsExtractor(tuple(word for _, _, word in positions))
+    sents = FixedSentsExtractor(tuple(text[start:stop] for start, stop in spans))
     basic = BasicStats(text, sents, words, normalize=True)
     features: dict[str, float] = {}
     for key in (
@@ -162,7 +162,7 @@ def text_features(text: str) -> dict[str, float]:
     features["basic_syllables_per_word"] = basic.n_syllables / basic.n_words
     for key, score in ReadabilityStats(basic).get_stats().items():
         features[f"readability_{key}"] = float(score)
-    lowered = _FixedWordsExtractor(tuple(word.lower() for word in words.words))
+    lowered = FixedWordsExtractor(tuple(word.lower() for word in words.words))
     for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
         features[f"diversity_{key}"] = float(score)
     morph = MorphStats(text, words_extractor=words)
@@ -184,28 +184,6 @@ def text_features(text: str) -> dict[str, float]:
         for key, value in punctuation_profile(text, basic.n_words).items()
     )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
-
-
-class _FixedWordsExtractor(WordsExtractor):
-    """Экстрактор с готовыми словами, чтобы не токенизировать текст дважды"""
-
-    def __init__(self, words: tuple[str, ...]) -> None:
-        super().__init__()
-        self.words = words
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        return self.words
-
-
-class _FixedSentsExtractor(SentsExtractor):
-    """Экстрактор с готовыми предложениями, чтобы не делить текст дважды"""
-
-    def __init__(self, sents: tuple[str, ...]) -> None:
-        super().__init__()
-        self.sents = sents
-
-    def extract(self, text: str) -> tuple[str, ...]:
-        return self.sents
 
 
 def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:

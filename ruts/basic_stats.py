@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 from re import Pattern
 
+import anyts
 import anyts.basic_stats
 from anyts.basic_stats import dash_pattern
 from anyts.utils import check_integer
@@ -124,8 +125,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
     def __init__(
         self,
         source: str | Doc,
-        sents_extractor: SentsExtractor | None = None,
-        words_extractor: WordsExtractor | None = None,
+        sents_extractor: anyts.SentsExtractor | None = None,
+        words_extractor: anyts.WordsExtractor | None = None,
         normalize: bool = False,
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,

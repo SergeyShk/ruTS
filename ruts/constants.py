@@ -1265,6 +1265,15 @@ HIGHLIGHT_LAYER_ANNOTATIONS = {
     "genitive_chains": ("DEP",),
     "split_predicates": ("DEP",),
 }
+# Названия аннотаций Doc в сообщении о недоступном слое
+HIGHLIGHT_ANNOTATION_NAMES = {
+    "DEP": "разбор зависимостей",
+    "LEMMA": "леммы",
+    "POS": "части речи",
+    "TAG": "теги",
+    "MORPH": "морфологические признаки",
+    "ENT_IOB": "именованные сущности",
+}
 # Стили CSS слоев; где фоны слоев пересекаются, побеждает более поздний
 HIGHLIGHT_LAYER_STYLES = {
     "long_sents": "background: #fef9c3;",
