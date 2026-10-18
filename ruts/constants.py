@@ -1072,11 +1072,6 @@ SYNTAX_STATS_DESC = {
     "split_predicates_per_sent": "Расщеплённых сказуемых на предложение",
     "noun_verb_ratio": "Отношение существительных к глаголам",
 }
-CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass", "parataxis"})
-SUBORDINATE_CLAUSE_DEPS = frozenset({"ccomp", "advcl", "acl", "acl:relcl", "csubj", "csubj:pass"})
-SUBJECT_DEPS = frozenset({"nsubj", "csubj"})
-NOUN_MODIFIER_DEPS = frozenset({"amod", "det", "nmod", "nummod", "acl"})
-PASSIVE_DEPS = frozenset({"nsubj:pass", "csubj:pass", "aux:pass"})
 NEGATION_PARTICLES = frozenset({"не", "ни"})
 LEXICAL_STATS_DESC = {
     "coverage": "Доля слов, найденных в частотном словаре",

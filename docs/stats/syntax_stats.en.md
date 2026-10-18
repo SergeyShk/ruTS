@@ -5,17 +5,19 @@
 
 ## Description
 
-A module for computing syntactic statistics of a text over the dependency tree: dependency distances, tree depth and shape, coordination chains, clauses, noun phrase modifiers, genitive chains, participial and adverbial participle clauses, passive voice, infinitives, negations, split predicates and the noun-to-verb ratio. Syntactic officialese markers: passive voice, participial clauses, genitive chains, split predicates, noun-to-verb ratio. The feature definitions follow Ivanov, Solnyshkina and Solovyev (2018), where they were tested on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93.
+--8<-- "stats/syntax_stats.md:SyntaxStats"
 
-The statistics are computed over [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation, so the data source can only be a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library with a dependency parse - from the `ru_core_news_sm`, `ru_core_news_md` or `ru_core_news_lg` models. Punctuation, symbols and whitespace tokens are ignored: words are the tree nodes, a hyphenated word that spaCy splits (`во-первых`) is one word, and dependency distances are measured in word positions.
-
-Sentence-level indicators (maximum dependency distance, tree depth, numbers of leaves and subtrees, nodes per leaf) are averaged over sentences; constructions (clauses, chains, participial clauses, infinitives, negations) are normalized by the number of sentences; passive voice and modifiers - by the numbers of verb forms and nouns. Values undefined for a text (the mean clause length without clauses, the passive share without verbs) are `nan`.
+The relations and features are those of the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation of the `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. [Ivanov, Solnyshkina and Solovyev](https://dialogue-conf.org/media/4302/ivanovvv.pdf) tested the features on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93.
 
 !!! note "Note"
     The quality of the statistics is bounded by the quality of the parse: the small `ru_core_news_sm` model errs in parts of speech and relations noticeably more often than `ru_core_news_lg`.
 
 !!! note "Note"
     The statistics are computed when the `SyntaxStats` object is initialized.
+
+## Language hooks
+
+The class extends the `SyntaxStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) core with the Russian layer: the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian. A short participle (`дом построен`) is a predicate and heads a clause ([`is_clause_head`](syntax_stats_funcs.md#is_clause_head)), full participles and adverbial participles head participial and adverbial participle clauses, counted apart, and an infinitive under a noun (`желание уйти`) heads none; a participial clause is a full participle with a dependent ([`is_participle_clause`](syntax_stats_funcs.md#is_participle_clause)); negations are the particles with `Polarity=Neg` and the particles «не», «ни» ([`is_negation`](syntax_stats_funcs.md#is_negation)); a split predicate is a light verb with a noun that carries its meaning, such as `осуществлять проверку` ([`find_split_predicates`](syntax_stats_funcs.md#find_split_predicates)). ruTS adds the statistics of genitive chains ([`calc_genitive_chains`](syntax_stats_funcs.md#calc_genitive_chains), built on the `calc_modifier_chains` of the core) and of adverbial participle clauses. The `print_stats` table has Russian headers and the descriptions of `ruts.constants.SYNTAX_STATS_DESC`, the error messages are in Russian (`CORE_MESSAGES`).
 
 ## Parameters
 
@@ -25,57 +27,16 @@ Sentence-level indicators (maximum dependency distance, tree depth, numbers of l
 
 ## Attributes
 
+--8<-- "stats/syntax_stats.md:SyntaxStats-attributes"
+
+The statistics of the constructions of ruTS:
+
 | Attribute | Type | Description |
 | :-------: | :--: | :---------: |
-| `n_sents` | int | Number of sentences containing words |
-| `n_words` | int | Number of words |
-| `n_leaves` | int | Number of leaves - words without dependents |
-| `n_subtrees` | int | Number of subtrees - words with dependents |
-| `n_coordination_chains` | int | Number of coordination chains |
-| `n_clauses` | int | Number of clauses |
-| `n_subordinate_clauses` | int | Number of subordinate clauses |
-| `n_complex_sents` | int | Number of sentences with subordinate clauses |
-| `n_nouns` | int | Number of nouns |
-| `n_genitive_chains` | int | Number of genitive chains |
-| `n_participle_clauses` | int | Number of participial clauses |
-| `n_converb_clauses` | int | Number of adverbial participle clauses |
-| `n_verbs` | int | Number of verb forms |
-| `n_passive` | int | Number of passive verb forms |
-| `n_agentless_passive` | int | Number of passive forms without an agent |
-| `n_infinitives` | int | Number of infinitives |
-| `n_negations` | int | Number of negative particles |
-| `n_split_predicates` | int | Number of split predicates |
-| `split_predicates` | tuple[str] | Tuple of split predicates (verb and noun) |
-| `c_children` | dict[int, int] | Distribution of words by number of dependents |
-| `c_deps` | dict[str, int] | Distribution of words by syntactic relation |
-| `mean_dependency_distance` | float | Mean dependency distance |
-| `std_dependency_distance` | float | Standard deviation of dependency distance |
-| `max_dependency_distance` | float | Mean over sentences with dependencies of the largest dependency distance |
-| `p_adjacent_dependencies` | float | Share of adjacent relations - dependencies of distance 1 |
-| `tree_depth` | float | Mean over sentences of the dependency tree depth |
-| `leaves_per_sent` | float | Leaves per sentence |
-| `subtrees_per_sent` | float | Subtrees per sentence |
-| `nodes_per_leaf` | float | Mean over sentences of the ratio of words to leaves |
-| `verb_valency` | float | Mean number of dependents of a finite verb |
-| `coordination_chains_per_sent` | float | Coordination chains per sentence |
-| `mean_coordination_chain_len` | float | Mean coordination chain length |
-| `clauses_per_sent` | float | Clauses per sentence |
-| `mean_clause_len` | float | Mean clause length in words |
-| `subordinate_clauses_per_sent` | float | Subordinate clauses per sentence |
-| `p_complex_sents` | float | Share of sentences with at least one subordinate clause |
-| `modifiers_per_noun` | float | Mean number of modifiers per noun |
+| `n_genitive_chains`, `n_converb_clauses` | int | Numbers of genitive chains and of adverbial participle clauses |
 | `genitive_chains_per_sent` | float | Genitive chains per sentence |
-| `max_genitive_chain_len` | int | Maximum genitive chain length |
-| `participle_clauses_per_sent` | float | Participial clauses per sentence |
-| `mean_participle_clause_len` | float | Mean participial clause length in words |
-| `converb_clauses_per_sent` | float | Adverbial participle clauses per sentence |
-| `mean_converb_clause_len` | float | Mean adverbial participle clause length in words |
-| `p_passive` | float | Share of passive forms among verb forms |
-| `p_agentless_passive` | float | Share of agentless forms among passive ones |
-| `infinitives_per_sent` | float | Infinitives per sentence |
-| `negations_per_sent` | float | Negative particles per sentence |
-| `split_predicates_per_sent` | float | Split predicates per sentence |
-| `noun_verb_ratio` | float | Ratio of nouns to verb forms |
+| `max_genitive_chain_len` | int | Maximum genitive chain length, 0 without chains |
+| `converb_clauses_per_sent`, `mean_converb_clause_len` | float | Adverbial participle clauses per sentence and their mean length in words |
 
 !!! note "Note"
     Every statistic can be computed separately by calling the corresponding function. Detailed information on the syntactic statistics and the functions used to compute them is available in the corresponding [section](syntax_stats_funcs.md).
@@ -137,7 +98,7 @@ Returns a dictionary with the computed syntactic statistics.
     'noun_verb_ratio': 1.0}
     ```
 
-Counters and distributions are available as attributes:
+Counters, distributions and the words of the sentences are available as attributes:
 
 !!! example "Example"
 
@@ -148,11 +109,15 @@ Counters and distributions are available as attributes:
     # {0: 9, 1: 2, 2: 5, 3: 1}
     ss.c_deps
     # {'ROOT': 2, 'acl': 1, 'advcl': 1, 'advmod': 1, 'amod': 1, 'aux:pass': 1, 'case': 1, 'cc': 1, 'ccomp': 1, 'conj': 1, 'iobj': 1, 'mark': 1, 'nsubj': 1, 'nsubj:pass': 1, 'obl': 1, 'obl:agent': 1}
+    ss.sents[0]
+    # (Дом, построенный, рабочими, в, прошлом, году, был, продан)
     ```
 
 ### print_stats
 
-Prints a table with the computed syntactic statistics.
+--8<-- "stats/stats.md:Stats-print_stats"
+
+To illustrate the method, we reuse the code from the `get_stats` example:
 
 !!! example "Example"
 
@@ -168,34 +133,38 @@ Prints a table with the computed syntactic statistics.
     _Result_:
 
     ``` bash
-                        Статистика                    | Значение
+                       Статистика                    | Значение
     ------------------------------------------------------------
-    Средняя длина зависимости                         |   1.93
-    Стандартное отклонение длины зависимости          |   1.61
-    Средний максимум длины зависимости в предложении  |   5.00
-    Доля смежных связей                               |   0.60
-    Средняя глубина дерева зависимостей предложения   |   4.00
-    Листьев на предложение                            |   4.50
-    Поддеревьев на предложение                        |   4.00
-    Среднее число узлов на лист в предложении         |   1.90
-    Валентность финитных глаголов                     |   2.00
-    Сочинительных цепочек на предложение              |   0.50
-    Средняя длина сочинительной цепочки               |   2.00
-    Клауз на предложение                              |   1.50
-    Средняя длина клаузы (слов)                       |   5.67
-    Придаточных клауз на предложение                  |   0.50
-    Доля предложений с придаточными                   |   0.50
-    Модификаторов на именную группу                   |   0.40
-    Цепочек родительных падежей на предложение        |   0.00
-    Максимальная длина цепочки родительных падежей    |   0.00
-    Причастных оборотов на предложение                |   0.50
-    Средняя длина причастного оборота (слов)          |   5.00
-    Деепричастных оборотов на предложение             |   0.50
-    Средняя длина деепричастного оборота (слов)       |   2.00
-    Доля пассивных форм среди глаголов                |   0.40
-    Доля безагентного пассива                         |   0.50
-    Инфинитивов на предложение                        |   0.00
-    Отрицаний на предложение                          |   0.50
-    Расщеплённых сказуемых на предложение             |   0.00
-    Отношение существительных к глаголам              |   1.00
+    Средняя длина зависимости                        |   1.93
+    Стандартное отклонение длины зависимости         |   1.61
+    Средний максимум длины зависимости в предложении |   5.00
+    Доля смежных связей                              |   0.60
+    Средняя глубина дерева зависимостей предложения  |   4.00
+    Листьев на предложение                           |   4.50
+    Поддеревьев на предложение                       |   4.00
+    Среднее число узлов на лист в предложении        |   1.90
+    Валентность финитных глаголов                    |   2.00
+    Сочинительных цепочек на предложение             |   0.50
+    Средняя длина сочинительной цепочки              |   2.00
+    Клауз на предложение                             |   1.50
+    Средняя длина клаузы (слов)                      |   5.67
+    Придаточных клауз на предложение                 |   0.50
+    Доля предложений с придаточными                  |   0.50
+    Модификаторов на именную группу                  |   0.40
+    Цепочек родительных падежей на предложение       |   0.00
+    Максимальная длина цепочки родительных падежей   |    0
+    Причастных оборотов на предложение               |   0.50
+    Средняя длина причастного оборота (слов)         |   5.00
+    Деепричастных оборотов на предложение            |   0.50
+    Средняя длина деепричастного оборота (слов)      |   2.00
+    Доля пассивных форм среди глаголов               |   0.40
+    Доля безагентного пассива                        |   0.50
+    Инфинитивов на предложение                       |   0.00
+    Отрицаний на предложение                         |   0.50
+    Расщеплённых сказуемых на предложение            |   0.00
+    Отношение существительных к глаголам             |   1.00
     ```
+
+### to_dataframe, describe
+
+The `to_dataframe` method (the statistics as a one-row `pandas.DataFrame`) and the `describe` method are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the syntactic statistics have no scales, so `describe` always gives `None`.

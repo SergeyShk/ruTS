@@ -44,7 +44,7 @@ Parameters:
 !!! info ""
     **ruts.phon_stats.calc_hiatus()**
 
-Computation of the number of vowel hiatuses - two or more vowels in a row inside a word: аэропорт, аист, поэзия (о-э). The iotated е, ё, ю, я after a vowel denote [j] plus a vowel and do not form a hiatus: заяц, моя, красивая, читает - otherwise adjective and verb endings would account for four fifths of all hiatuses. `PhonStats` divides the number of hiatuses by the number of words (`p_hiatus`).
+Computation of the number of vowel hiatuses - two or more vowels in a row inside a word: аэропорт, аист, поэзия (о-э). The iotated е, ё, ю, я after a vowel denote [j] plus a vowel and do not form a hiatus: заяц, моя, красивая, читает. `PhonStats` divides the number of hiatuses by the number of words (`p_hiatus`).
 
 Parameters:
 

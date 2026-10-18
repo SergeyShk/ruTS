@@ -1,62 +1,59 @@
-from collections import Counter
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from math import nan
-from statistics import fmean, pstdev
+from statistics import fmean
 
+import anyts.syntax_stats
+from anyts.constants import CLAUSE_DEPS
 from anyts.syntax_stats import (
     base_dep as base_dep,
     calc_coordination_chains as calc_coordination_chains,
     calc_dependency_distances as calc_dependency_distances,
+    calc_modifier_chains as calc_modifier_chains,
     calc_tree_depth as calc_tree_depth,
     calc_valency as calc_valency,
     count_children as count_children,
+    count_noun_modifiers as count_noun_modifiers,
     get_children as get_children,
     get_words as get_words,
+    has_agent as has_agent,
+    is_agentless as is_agentless,
+    is_passive as is_passive,
+    is_predicate as is_predicate,
     is_root as is_root,
     subtree_len as subtree_len,
 )
 from anyts.utils import (
     has_feature as has_feature,
+    is_finite_verb as is_finite_verb,
+    is_infinitive as is_infinitive,
     is_word as is_word,
-    safe_divide,
 )
 from spacy.tokens import Doc, Token
 
 from .constants import (
-    CLAUSE_DEPS,
+    CORE_MESSAGES,
     LIGHT_VERBS,
     NEGATION_PARTICLES,
-    NOUN_MODIFIER_DEPS,
-    PASSIVE_DEPS,
     SPLIT_PREDICATE_NOUNS,
-    SUBJECT_DEPS,
-    SUBORDINATE_CLAUSE_DEPS,
     SYNTAX_STATS_DESC,
 )
-from .exceptions import SourceError, SourceTypeError
 from .utils import is_verbal_noun, lemmatize, normalize_yo, strip_marks
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
 
-class SyntaxStats:
+class SyntaxStats(anyts.syntax_stats.SyntaxStats):
     """
     Класс для вычисления синтаксических статистик текста
 
     Описание:
-        Статистики считаются по дереву зависимостей Universal Dependencies, поэтому
-        источником данных может быть только объект Doc библиотеки spaCy с разбором
-        зависимостей (модели ru_core_news_sm, ru_core_news_md, ru_core_news_lg)
-        Знаки препинания и пробельные токены не учитываются: узлы дерева - слова,
-        длины зависимостей считаются по позициям слов
-        Показатели предложения (максимальная длина зависимости, глубина дерева,
-        число листьев и поддеревьев, узлов на лист) усредняются по предложениям,
-        конструкции нормируются на число предложений, пассив и модификаторы - на число
-        глаголов и существительных
-        Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018)
-        Синтаксические маркеры канцелярита: пассив, причастные и деепричастные обороты,
-        цепочки родительных падежей, расщепленные сказуемые, отношение существительных
-        к глаголам
+        Расширяет SyntaxStats ядра anyTS крючками русского языка: клаузы, причастные
+        обороты, отрицания и расщепленные сказуемые - по правилам русского языка,
+        дефисные слова склеиваются; свои статистики ruTS - цепочки родительных падежей
+        и деепричастные обороты. Источник данных - объект Doc библиотеки spaCy
+        с разбором зависимостей Universal Dependencies (модели ru_core_news_sm,
+        ru_core_news_md, ru_core_news_lg). Определения признаков следуют работе
+        Иванова, Солнышкиной и Соловьёва (2018)
 
     Ссылки:
         https://universaldependencies.org/u/dep/
@@ -104,6 +101,7 @@ class SyntaxStats:
         source (Doc): Источник данных (объект Doc с разбором зависимостей)
 
     Атрибуты:
+        sents (tuple[tuple[Token, ...], ...]): Слова предложений
         n_sents (int): Количество предложений, содержащих слова
         n_words (int): Количество слов
         n_leaves (int): Количество листьев - слов без зависимых слов
@@ -159,145 +157,44 @@ class SyntaxStats:
         print_stats: Отображение вычисленных синтаксических статистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является объектом Doc
-        SourceError: Если в источнике данных отсутствует разбор зависимостей
-        SourceError: Если в источнике данных отсутствуют слова
+        SourceTypeError: Если источник данных не объект Doc
+        SourceError: Если в источнике данных отсутствует разбор зависимостей или слова
     """
 
-    def __init__(self, source: Doc):
-        if not isinstance(source, Doc):
-            raise SourceTypeError("Некорректный источник данных")
-        if not source.has_annotation("DEP"):
-            raise SourceError("В источнике данных отсутствует разбор зависимостей")
-        spans, sents = [], []
-        for span in source.sents:
-            if sent_words := get_words(span, join_hyphens=True):
-                spans.append(span)
-                sents.append(sent_words)
-        if not sents:
-            raise SourceError("В источнике данных отсутствуют слова")
-        words = [token for sent in sents for token in sent]
-        self.n_sents = len(sents)
-        self.n_words = len(words)
+    join_hyphens = True
+    stats_desc = SYNTAX_STATS_DESC
+    stats_headers = ("Статистика", "Значение")
+    messages = CORE_MESSAGES
 
-        # Предложение целиком: зависимое может висеть на второй части дефисного слова
-        distances = [calc_dependency_distances(span, join_hyphens=True) for span in spans]
-        all_distances = [distance for sent in distances for distance in sent]
-        depths = [calc_tree_depth(span, join_hyphens=True) for span in spans]
-        children = [[count_children(token, join_hyphens=True) for token in sent] for sent in sents]
-        leaves = [sum(1 for count in sent if not count) for sent in children]
-        self.c_children = dict(
-            sorted(Counter(count for sent in children for count in sent).items())
-        )
-        self.c_deps = dict(sorted(Counter(token.dep_ for token in words).items()))
-        self.n_leaves = sum(leaves)
-        self.n_subtrees = self.n_words - self.n_leaves
-        finite_verbs = [token for token in words if is_finite_verb(token)]
-        chains = [
-            length
-            for span in spans
-            for length in calc_coordination_chains(span, join_hyphens=True)
-        ]
-        self.n_coordination_chains = len(chains)
-        self.n_clauses = sum(1 for token in words if is_clause_head(token))
-        subordinate = [
-            sum(1 for token in sent if is_subordinate_clause_head(token)) for sent in sents
-        ]
-        self.n_subordinate_clauses = sum(subordinate)
-        self.n_complex_sents = sum(1 for count in subordinate if count)
-        nouns = [token for token in words if token.pos_ in ("NOUN", "PROPN")]
-        self.n_nouns = len(nouns)
-        genitive_chains = [length for sent in sents for length in calc_genitive_chains(sent)]
+    def __init__(self, source: Doc):
+        super().__init__(source)
+        words = [token for sent in self.sents for token in sent]
+        genitive_chains = [length for sent in self.sents for length in calc_genitive_chains(sent)]
         self.n_genitive_chains = len(genitive_chains)
-        participle_clauses = [
-            subtree_len(token, join_hyphens=True) for token in words if is_participle_clause(token)
-        ]
-        self.n_participle_clauses = len(participle_clauses)
         converb_clauses = [
             subtree_len(token, join_hyphens=True) for token in words if is_converb_clause(token)
         ]
         self.n_converb_clauses = len(converb_clauses)
-        self.n_verbs = sum(1 for token in words if token.pos_ == "VERB")
-        passive = [token for token in words if is_passive(token)]
-        self.n_passive = len(passive)
-        self.n_agentless_passive = sum(1 for token in passive if is_agentless(token))
-        self.n_infinitives = sum(1 for token in words if is_infinitive(token))
-        self.n_negations = sum(1 for token in words if is_negation(token))
-        split_predicates = find_split_predicates(words)
-        self.n_split_predicates = len(split_predicates)
-        self.split_predicates = tuple(
-            f"{verb.text} {noun.text}" for verb, noun in split_predicates
-        )
-
-        self.mean_dependency_distance = fmean(all_distances) if all_distances else nan
-        self.std_dependency_distance = pstdev(all_distances) if all_distances else nan
-        sent_maxima = [max(sent) for sent in distances if sent]
-        self.max_dependency_distance = fmean(sent_maxima) if sent_maxima else nan
-        self.p_adjacent_dependencies = safe_divide(
-            sum(1 for distance in all_distances if distance == 1), len(all_distances), nan
-        )
-        self.tree_depth = fmean(depths)
-        self.leaves_per_sent = self.n_leaves / self.n_sents
-        self.subtrees_per_sent = self.n_subtrees / self.n_sents
-        self.nodes_per_leaf = fmean(
-            len(sent) / n_leaves for sent, n_leaves in zip(sents, leaves, strict=True)
-        )
-        self.verb_valency = safe_divide(
-            sum(calc_valency(token, join_hyphens=True) for token in finite_verbs),
-            len(finite_verbs),
-            nan,
-        )
-        self.coordination_chains_per_sent = self.n_coordination_chains / self.n_sents
-        self.mean_coordination_chain_len = fmean(chains) if chains else nan
-        self.clauses_per_sent = self.n_clauses / self.n_sents
-        self.mean_clause_len = safe_divide(self.n_words, self.n_clauses, nan)
-        self.subordinate_clauses_per_sent = self.n_subordinate_clauses / self.n_sents
-        self.p_complex_sents = self.n_complex_sents / self.n_sents
-        self.modifiers_per_noun = safe_divide(
-            sum(count_noun_modifiers(token) for token in nouns), self.n_nouns, nan
-        )
         self.genitive_chains_per_sent = self.n_genitive_chains / self.n_sents
         self.max_genitive_chain_len = max(genitive_chains, default=0)
-        self.participle_clauses_per_sent = self.n_participle_clauses / self.n_sents
-        self.mean_participle_clause_len = fmean(participle_clauses) if participle_clauses else nan
         self.converb_clauses_per_sent = self.n_converb_clauses / self.n_sents
         self.mean_converb_clause_len = fmean(converb_clauses) if converb_clauses else nan
-        self.p_passive = safe_divide(self.n_passive, self.n_verbs, nan)
-        self.p_agentless_passive = safe_divide(self.n_agentless_passive, self.n_passive, nan)
-        self.infinitives_per_sent = self.n_infinitives / self.n_sents
-        self.negations_per_sent = self.n_negations / self.n_sents
-        self.split_predicates_per_sent = self.n_split_predicates / self.n_sents
-        self.noun_verb_ratio = safe_divide(self.n_nouns, self.n_verbs, nan)
 
-    def get_stats(self) -> dict[str, float]:
-        """
-        Получение вычисленных синтаксических статистик текста
+    def is_clause_head(self, token: Token) -> bool:
+        """Вершина клаузы по правилам русского языка (is_clause_head)"""
+        return is_clause_head(token)
 
-        Вывод:
-            dict[str, float]: Справочник вычисленных синтаксических статистик текста
-        """
-        return {stat: getattr(self, stat) for stat in SYNTAX_STATS_DESC}
+    def is_participle_clause(self, token: Token) -> bool:
+        """Вершина причастного оборота - полного причастия (is_participle_clause)"""
+        return is_participle_clause(token)
 
-    def print_stats(self):
-        """Отображение вычисленных синтаксических статистик текста с описанием на экран"""
-        print(f"{'Статистика':^50}|{'Значение':^10}")
-        print("-" * 60)
-        stats = self.get_stats()
-        for stat, value in SYNTAX_STATS_DESC.items():
-            print(f"{value:50}|{stats[stat]:^10.2f}")
+    def is_negation(self, token: Token) -> bool:
+        """Отрицательная частица (is_negation)"""
+        return is_negation(token)
 
-
-def is_finite_verb(token: Token) -> bool:
-    """
-    Проверка, является ли токен финитной формой глагола
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return token.pos_ == "VERB" and has_feature(token, "VerbForm", "Fin")
+    def find_split_predicates(self, words: Sequence[Token]) -> list[tuple[Token, Token]]:
+        """Расщепленные сказуемые (find_split_predicates)"""
+        return find_split_predicates(words)
 
 
 def is_participle(token: Token) -> bool:
@@ -332,19 +229,6 @@ def is_converb(token: Token) -> bool:
         bool: Результат проверки
     """
     return has_feature(token, "VerbForm", "Conv")
-
-
-def is_infinitive(token: Token) -> bool:
-    """
-    Проверка, является ли токен инфинитивом
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return has_feature(token, "VerbForm", "Inf")
 
 
 def is_negation(token: Token) -> bool:
@@ -386,36 +270,25 @@ def is_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not is_word(token):
-        return False
-    if is_root(token):
-        return True
-    if is_participle(token) or is_converb(token):
-        return False
-    if token.dep_ not in CLAUSE_DEPS:
-        return token.dep_ == "conj" and is_clause_head(token.head) and is_predicate(token)
-    if token.dep_ == "parataxis":
-        return is_predicate(token)
-    return not (token.dep_ == "acl" and is_infinitive(token))
-
-
-def is_predicate(token: Token) -> bool:
-    """
-    Проверка, может ли токен быть сказуемым своей клаузы
-
-    Описание:
-        Глагол (VERB, AUX) или слово с собственным подлежащим (nsubj, csubj):
-        именное сказуемое «он умён» проходит, вводное слово «конечно» - нет
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return token.pos_ in ("VERB", "AUX") or any(
-        base_dep(child) in SUBJECT_DEPS for child in get_children(token, join_hyphens=True)
-    )
+    seen = set()
+    # Вверх по цепочке однородных до слова, которое само не conj; петля разбора - не клауза
+    while is_word(token) and token.i not in seen:
+        if is_root(token):
+            return True
+        if is_participle(token) or is_converb(token):
+            return False
+        dep = base_dep(token)
+        if dep != "conj":
+            if dep not in CLAUSE_DEPS:
+                return False
+            if dep == "parataxis":
+                return is_predicate(token, join_hyphens=True)
+            return not (token.dep_ == "acl" and is_infinitive(token))
+        if not is_predicate(token, join_hyphens=True):
+            return False
+        seen.add(token.i)
+        token = token.head
+    return False
 
 
 def is_subordinate_clause_head(token: Token) -> bool:
@@ -423,8 +296,9 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной придаточной клаузы
 
     Описание:
-        Вершина клаузы со связью ccomp, advcl, acl, acl:relcl, csubj или csubj:pass,
-        а также однородное сказуемое придаточной клаузы
+        is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head:
+        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами, а также
+        однородное сказуемое придаточной клаузы
 
     Аргументы:
         token (Token): Токен
@@ -432,33 +306,7 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not is_clause_head(token) or is_root(token):
-        return False
-    if token.dep_ in SUBORDINATE_CLAUSE_DEPS:
-        return True
-    return token.dep_ == "conj" and is_subordinate_clause_head(token.head)
-
-
-def count_noun_modifiers(token: Token) -> int:
-    """
-    Вычисление количества модификаторов именной группы
-
-    Описание:
-        Зависимые слова со связями amod, det, nmod, nummod, acl и их подтипами
-        (acl:relcl, nummod:gov); сочинительные и пояснительные связи (conj, appos)
-        не учитываются, как в признаке NOUNS_DEP Иванова, Солнышкиной и Соловьёва (2018)
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        int: Количество модификаторов
-    """
-    return sum(
-        1
-        for child in get_children(token, join_hyphens=True)
-        if base_dep(child) in NOUN_MODIFIER_DEPS
-    )
+    return anyts.syntax_stats.is_subordinate_clause_head(token, is_clause_head)
 
 
 def is_genitive_modifier(token: Token) -> bool:
@@ -480,17 +328,6 @@ def is_genitive_modifier(token: Token) -> bool:
     return not any(child.dep_ == "case" for child in get_children(token, join_hyphens=True))
 
 
-def _genitive_chain_len(token: Token) -> int:
-    return 1 + max(
-        (
-            _genitive_chain_len(child)
-            for child in get_children(token, join_hyphens=True)
-            if is_genitive_modifier(child)
-        ),
-        default=0,
-    )
-
-
 def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
     """
     Вычисление длин цепочек родительных падежей
@@ -507,13 +344,7 @@ def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
     Вывод:
         list[int]: Длины цепочек в порядке слов
     """
-    chains = []
-    for token in get_words(tokens, join_hyphens=True):
-        if is_genitive_modifier(token) and not is_genitive_modifier(token.head):
-            length = _genitive_chain_len(token)
-            if length >= 2:
-                chains.append(length)
-    return chains
+    return calc_modifier_chains(tokens, is_genitive_modifier, join_hyphens=True)
 
 
 def is_participle_clause(token: Token) -> bool:
@@ -548,45 +379,6 @@ def is_converb_clause(token: Token) -> bool:
         bool: Результат проверки
     """
     return is_converb(token) and calc_valency(token, join_hyphens=True) > 0
-
-
-def is_passive(token: Token) -> bool:
-    """
-    Проверка, является ли токен пассивной глагольной формой
-
-    Описание:
-        Глагол с признаком Voice=Pass (страдательные причастия, возвратный пассив)
-        или с зависимым nsubj:pass, csubj:pass или aux:pass
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    if token.pos_ != "VERB":
-        return False
-    return has_feature(token, "Voice", "Pass") or any(
-        child.dep_ in PASSIVE_DEPS for child in get_children(token, join_hyphens=True)
-    )
-
-
-def is_agentless(token: Token) -> bool:
-    """
-    Проверка, является ли токен пассивной формой без агенса
-
-    Описание:
-        Пассивная форма без зависимого obl:agent: дом построен, но не дом построен рабочими
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return is_passive(token) and not any(
-        child.dep_ == "obl:agent" for child in get_children(token, join_hyphens=True)
-    )
 
 
 def get_lemma(token: Token) -> str:

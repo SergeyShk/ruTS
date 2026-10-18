@@ -126,7 +126,14 @@ Parameters:
 !!! info ""
     **ruts.style_stats.calc_keyword_density()**
 
---8<-- "stats/style_stats_funcs.md:calc_keyword_density"
+Computation of the keyword density (Text.ru): the occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the words and the keywords are compared in lower case without the letter ё, as the stopwords and the phrases, and the keywords of a set come in sorted order. The `keyword_density` method of `StyleStats` counts the same way.
+
+Parameters:
+
+| Parameter | Type | Default | Description |
+| :-------: | :--: | :-----: | :---------: |
+| `text` | list[str] | `-` | List of words |
+| `keywords` | list[str] | `-` | Keywords or phrases |
 
 ## Verbal nouns { #calc_verbal_nouns }
 

@@ -745,14 +745,14 @@ def find_passive(doc: Doc) -> list[Highlight]:
     highlights = []
     word_tokens = _word_tokens(doc)
     for token in get_words(doc, join_hyphens=True):
-        if is_passive(token):
+        if is_passive(token, join_hyphens=True):
             auxiliaries = [
                 child
                 for child in get_children(token, join_hyphens=True)
                 if child.dep_ == "aux:pass"
             ]
             start, end = tokens_span(word_tokens([token, *auxiliaries]))
-            note = "пассив без агенса" if is_agentless(token) else "пассив"
+            note = "пассив без агенса" if is_agentless(token, join_hyphens=True) else "пассив"
             highlights.append(Highlight(start, end, "passive", note))
     return highlights
 
