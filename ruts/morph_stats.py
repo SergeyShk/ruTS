@@ -207,7 +207,8 @@ class MorphStats(Stats):
         Аргументы:
             args (tuple[str]): Кортеж выбранных статистик
             filter_none (bool): Фильтровать пустые значения
-            flat (bool): Ключи вида pos_NOUN вместо вложенных справочников
+            flat (bool): Ключи вида pos_NOUN вместо вложенных справочников, без слов
+                без признака
 
         Вывод:
             dict[str, dict[str, int]]: Справочник вычисленных морфологических статистик текста;
@@ -226,6 +227,7 @@ class MorphStats(Stats):
                 f"{stat}_{value}": n
                 for stat, counts in stats.items()
                 for value, n in counts.items()
+                if value is not None
             }
         return stats
 

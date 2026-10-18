@@ -110,7 +110,7 @@ Line patterns, the stress profile and the distributions are available as attribu
 
 ### print_stats
 
-Prints a table with the computed verse statistics.
+--8<-- "stats/stats.md:Stats-print_stats"
 
 !!! example "Example"
 
@@ -126,19 +126,23 @@ Prints a table with the computed verse statistics.
     _Result_:
 
     ``` bash
-                   Статистика               |  Значение
-    ----------------------------------------------------
-    Количество строк                        |     4
-    Количество строф                        |     1
-    Метр                                    |    ямб
-    Число стоп                              |     4
-    Доля отклонений от метра                |    0.00
-    Доля пропущенных ударений на иктах      |    0.19
-    Доля рифмованных строк                  |    1.00
-    Доля мужских окончаний                  |    0.50
-    Доля женских окончаний                  |    0.50
-    Доля дактилических окончаний            |    0.00
+                Статистика             | Значение
+    ----------------------------------------------
+    Количество строк                   |    4
+    Количество строф                   |    1
+    Метр                               |   ямб
+    Число стоп                         |    4
+    Доля отклонений от метра           |   0.00
+    Доля пропущенных ударений на иктах |   0.19
+    Доля рифмованных строк             |   1.00
+    Доля мужских окончаний             |   0.50
+    Доля женских окончаний             |   0.50
+    Доля дактилических окончаний       |   0.00
     ```
+
+### to_dataframe, describe
+
+The `to_dataframe` method (the statistics as a one-row `pandas.DataFrame`) and the `describe` method are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the verse statistics have no scales, so `describe` always gives `None`.
 
 ### accentuate
 

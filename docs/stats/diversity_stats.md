@@ -205,38 +205,42 @@
     _Результат_:
 
     ``` bash
-                                      Метрика                                  | Значение
-    -------------------------------------------------------------------------------------
-    Type-Token Ratio (TTR)                                                     |   0.73
-    Root Type-Token Ratio (RTTR)                                               |   2.84
-    Corrected Type-Token Ratio (CTTR)                                          |   2.01
-    Herdan Type-Token Ratio (HTTR)                                             |   0.89
-    Summer Type-Token Ratio (STTR)                                             |   0.25
-    Maas Type-Token Ratio (MTTR)                                               |   0.10
-    Dugast Type-Token Ratio (DTTR)                                             |  10.27
-    Moving Average Type-Token Ratio (MATTR)                                    |   0.73
-    Mean Segmental Type-Token Ratio (MSTTR)                                    |   0.73
-    Measure of Textual Lexical Diversity (MTLD)                                |  15.00
-    Moving Average Measure of Textual Lexical Diversity (MA-MTLD)              |  12.00
-    Moving Average Measure of Textual Lexical Diversity with Wrap (MTLD-W)     |  13.25
-    Hypergeometric Distribution D (HD-D)                                       |   nan
-    Индекс Симпсона (D)                                                        |   0.05
-    Обратный индекс Симпсона (1/D)                                             |  21.00
-    Индекс Джини-Симпсона (1-D)                                                |   0.95
-    Гапакс-индекс (Honoré's R)                                                 |  992.95
-    Характеристика Юла (Yule's K)                                              |  444.44
-    Обратная характеристика Юла (Yule's I)                                     |   8.64
-    Мера Хердана (Herdan's Vm)                                                 |   0.14
-    Мера Сишела (Sichel's S)                                                   |   0.18
-    Мера Мишеа (Michéa's M)                                                    |   5.50
-    Мера Брюне (Brunet's W)                                                    |   6.01
-    Мера Дюга (Dugast's k)                                                     |  14.78
-    Мера Баайена (Baayen's P)                                                  |   0.53
-    Доля гапаксов                                                              |   0.73
-    Показатель α₂                                                              |   0.50
-    Энтропия Шеннона (бит)                                                     |   3.32
-    Выравненность                                                              |   0.96
-    Перплексия                                                                 |  10.01
-    Наклон закона Ципфа (α)                                                    |   0.49
-    Показатель закона Хипса (β)                                                |   0.84
+                                    Метрика                                | Значение
+    ----------------------------------------------------------------------------------
+    Type-Token Ratio (TTR)                                                 |   0.73
+    Root Type-Token Ratio (RTTR)                                           |   2.84
+    Corrected Type-Token Ratio (CTTR)                                      |   2.01
+    Herdan Type-Token Ratio (HTTR)                                         |   0.89
+    Summer Type-Token Ratio (STTR)                                         |   0.25
+    Maas Type-Token Ratio (MTTR)                                           |   0.10
+    Dugast Type-Token Ratio (DTTR)                                         |  10.27
+    Moving Average Type-Token Ratio (MATTR)                                |   0.73
+    Mean Segmental Type-Token Ratio (MSTTR)                                |   0.73
+    Measure of Textual Lexical Diversity (MTLD)                            |  15.00
+    Moving Average Measure of Textual Lexical Diversity (MA-MTLD)          |  12.00
+    Moving Average Measure of Textual Lexical Diversity with Wrap (MTLD-W) |  13.25
+    Hypergeometric Distribution D (HD-D)                                   |   nan
+    Индекс Симпсона (D)                                                    |   0.05
+    Обратный индекс Симпсона (1/D)                                         |  21.00
+    Индекс Джини-Симпсона (1-D)                                            |   0.95
+    Гапакс-индекс (Honoré's R)                                             |  992.95
+    Характеристика Юла (Yule's K)                                          |  444.44
+    Обратная характеристика Юла (Yule's I)                                 |   8.64
+    Мера Хердана (Herdan's Vm)                                             |   0.14
+    Мера Сишела (Sichel's S)                                               |   0.18
+    Мера Мишеа (Michéa's M)                                                |   5.50
+    Мера Брюне (Brunet's W)                                                |   6.01
+    Мера Дюга (Dugast's k)                                                 |  14.78
+    Мера Баайена (Baayen's P)                                              |   0.53
+    Доля гапаксов                                                          |   0.73
+    Показатель α₂                                                          |   0.50
+    Энтропия Шеннона (бит)                                                 |   3.32
+    Выравненность                                                          |   0.96
+    Перплексия                                                             |  10.01
+    Наклон закона Ципфа (α)                                                |   0.49
+    Показатель закона Хипса (β)                                            |   0.84
     ```
+
+### to_dataframe, describe
+
+Метод `to_dataframe` (метрики в `pandas.DataFrame` из одной строки) и метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у метрик лексического разнообразия нет, поэтому `describe` всегда возвращает `None`.

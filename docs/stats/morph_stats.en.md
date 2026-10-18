@@ -80,6 +80,7 @@ Parameters:
 | :-------: | :--: | :-----: | :---------: |
 | `args` | tuple[str] | `-` | Selected statistics |
 | `filter_none` | bool | `False` | Filter empty values |
+| `flat` | bool | `False` | Keys like `pos_NOUN` instead of nested dictionaries, without the words lacking the feature |
 
 !!! warning "Warning"
     To select statistics, pass their names directly to the method separated by commas.
@@ -109,6 +110,31 @@ An example of computing morphological statistics, selecting only part of speech,
     'person': {'2': 1, '3': 1},
     'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
     'tense': {'Fut': 1, 'Past': 1, 'Pres': 1}}
+    ```
+
+With `flat=True` every value of a feature becomes a key of its own, joined to the name of the statistic with an underscore; words without the feature are left out:
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    ...
+
+    # Compute the statistics with flat keys
+    ms.get_stats("pos", "tense", flat=True)
+    ```
+
+    _Result_:
+
+    ``` bash
+    {'pos_VERB': 6,
+    'pos_CCONJ': 2,
+    'pos_SCONJ': 2,
+    'pos_ADV': 1,
+    'tense_Pres': 1,
+    'tense_Fut': 1,
+    'tense_Past': 1}
     ```
 
 ### print_stats
@@ -160,6 +186,32 @@ To illustrate the method, we reuse the code from the previous example:
     2                             |    1
     3                             |    1
     ```
+
+### to_dataframe
+
+--8<-- "stats/stats.md:Stats-to_dataframe"
+
+!!! example "Example"
+
+    _Code_:
+
+    ``` python
+    ...
+
+    # The first columns of the frame of the statistics
+    ms.to_dataframe().iloc[:, :4]
+    ```
+
+    _Result_:
+
+    ``` bash
+       pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
+    0         6          2          2        1
+    ```
+
+### describe
+
+The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the morphological statistics have no scales, so it always gives `None`.
 
 ### explain_text
 
