@@ -1,23 +1,22 @@
 import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 
-import anyts.visualizers.highlight
+import anyts.visualizers.highlight as core
+from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
 from anyts.utils import check_words, iter_doc_units
 from anyts.visualizers.highlight import (
     Highlight as Highlight,
-    Sent,
-    Word,
-    group_words_by_sents,
+    Sent as Sent,
+    Word as Word,
+    group_words_by_sents as group_words_by_sents,
     tokens_span,
 )
 from spacy.tokens import Doc, Token
 
 from .. import style_stats
-from ..cohesion_stats import connector_pos, find_connectors, unit_pos, unit_text
+from ..cohesion_stats import CohesionStats, connector_pos, unit_pos, unit_text
 from ..constants import (
     ALLITERATION_IGNORED_LETTERS,
-    ALLITERATION_MIN_WORD_LEN,
-    ALLITERATION_THRESHOLD,
     COMPLEX_SYL_FACTOR,
     COMPOUND_PREPOSITIONS,
     CONNECTOR_CLASSES,
@@ -50,7 +49,6 @@ from ..syntax_stats import (
 )
 from ..utils import (
     BYTE_ORDER_MARK,
-    find_phrases,
     iter_text_sents,
     iter_text_words,
     normalize_yo,
@@ -58,9 +56,13 @@ from ..utils import (
 )
 
 RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
+ALLITERATION_FREQUENCIES = {
+    consonant: RU_LETTER_FREQUENCIES[consonant]
+    for consonant in sorted(CONSONANTS - ALLITERATION_IGNORED_LETTERS)
+}
 
 
-class HighlightedText(anyts.visualizers.highlight.HighlightedText):
+class HighlightedText(core.HighlightedText):
     """
     Класс для подсветки текста по слоям в стиле Главреда и Тургенева
 
@@ -153,7 +155,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         cliches: Collection[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
-        anyts.visualizers.highlight.check_params(
+        core.check_params(
             long_sent_word_factor,
             complex_syl_factor,
             alliteration_threshold,
@@ -319,16 +321,11 @@ def find_long_sents(sents: Iterable[Sent], long_sent_word_factor: int) -> list[H
     Вывод:
         list[Highlight]: Фрагменты слоя long_sents
     """
-    return [
-        Highlight(
-            sent.start,
-            sent.end,
-            "long_sents",
-            f"длинное предложение, {plural(sent.n_words, 'слово', 'слова', 'слов')}",
-        )
-        for sent in sents
-        if sent.n_words >= long_sent_word_factor
-    ]
+    return core.find_long_sents(
+        sents,
+        long_sent_word_factor,
+        lambda n: f"длинное предложение, {plural(n, 'слово', 'слова', 'слов')}",
+    )
 
 
 def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[Highlight]:
@@ -342,13 +339,12 @@ def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[H
     Вывод:
         list[Highlight]: Фрагменты слоя complex_words
     """
-    highlights = []
-    for word in words:
-        n_syllables = count_syllables(word.text)
-        if n_syllables >= complex_syl_factor:
-            note = f"сложное слово, {plural(n_syllables, 'слог', 'слога', 'слогов')}"
-            highlights.append(Highlight(word.start, word.end, "complex_words", note))
-    return highlights
+    return core.find_complex_words(
+        words,
+        complex_syl_factor,
+        count_syllables,
+        lambda n: f"сложное слово, {plural(n, 'слог', 'слога', 'слогов')}",
+    )
 
 
 def find_stopwords(
@@ -369,11 +365,13 @@ def find_stopwords(
         list[Highlight]: Фрагменты слоя stopwords
     """
     if stopwords is not None:
-        stopwords_set = {normalize_yo(word) for word in stopwords}
-        matches = [word for word in words if normalize_yo(word.text) in stopwords_set]
-    else:
-        matches = [word for word in words if is_water_word(word.text.lower())]
-    return [Highlight(word.start, word.end, "stopwords", "стоп-слово") for word in matches]
+        chosen = {normalize_yo(word) for word in stopwords}
+        return core.find_words(
+            words, lambda word: normalize_yo(word.text) in chosen, "stopwords", "стоп-слово"
+        )
+    return core.find_words(
+        words, lambda word: is_water_word(word.text.lower()), "stopwords", "стоп-слово"
+    )
 
 
 def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
@@ -392,13 +390,16 @@ def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя rare_words
     """
-    return [
-        Highlight(word.start, word.end, "rare_words", "редкое слово: вне топ-10000")
-        for word in words
-        if RUSSIAN_WORD.fullmatch(word.text)
-        and not is_stopword(word.text.lower())
-        and get_rank(parse_word(word.text).normal_form) is None
-    ]
+    return core.find_words(
+        words,
+        lambda word: bool(
+            RUSSIAN_WORD.fullmatch(word.text)
+            and not is_stopword(word.text.lower())
+            and get_rank(parse_word(word.text).normal_form) is None
+        ),
+        "rare_words",
+        "редкое слово: вне топ-10000",
+    )
 
 
 def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
@@ -406,7 +407,8 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     Поиск отглагольных существительных
 
     Описание:
-        Слова ruts.style_stats.find_verbal_nouns, как в доле verbal_nouns класса StyleStats
+        Существительные ruts.style_stats.find_verbal_nouns, как в доле verbal_nouns
+        класса StyleStats
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -414,24 +416,24 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя verbal_nouns
     """
-    words = list(words)
-    spans = style_stats.find_verbal_nouns([word.text for word in words])
-    note = "отглагольное существительное"
-    return [
-        Highlight(words[start].start, words[start].end, "verbal_nouns", note) for start, _ in spans
-    ]
+    return core.find_words(
+        words,
+        lambda word: bool(style_stats.find_verbal_nouns([word.text])),
+        "verbal_nouns",
+        "отглагольное существительное",
+    )
 
 
 def find_phrase_highlights(
-    words: Sequence[Word], phrases: Iterable[str] | Mapping[str, str], layer: str, label: str
+    words: Sequence[Word], phrases: Collection[str] | Mapping[str, str], layer: str, label: str
 ) -> list[Highlight]:
     """
     Поиск словосочетаний из списка
 
     Описание:
-        Словосочетания ищутся по словоформам (find_phrases), фрагмент покрывает
-        слова от первого до последнего вместе со знаками между ними; в подсказке -
-        словарная форма словосочетания
+        Словосочетания ищутся по словоформам в нижнем регистре без буквы ё,
+        фрагмент покрывает слова от первого до последнего вместе со знаками между
+        ними; в подсказке - словарная форма словосочетания
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -443,21 +445,9 @@ def find_phrase_highlights(
     Вывод:
         list[Highlight]: Фрагменты слоя
     """
-    pairs = (
-        phrases.items()
-        if isinstance(phrases, Mapping)
-        else ((phrase, phrase) for phrase in phrases)
+    return core.find_phrase_highlights(
+        words, phrases, layer, lambda phrase: f"{label}: «{phrase}»", normalize_yo
     )
-    forms: dict[str, str] = {}
-    for variant, phrase in pairs:
-        forms.setdefault(" ".join(normalize_yo(variant).split()), phrase)
-    texts = [word.text for word in words]
-    highlights = []
-    for start, end in find_phrases(texts, forms):
-        phrase = forms[" ".join(normalize_yo(word) for word in texts[start:end])]
-        note = f"{label}: «{phrase}»"
-        highlights.append(Highlight(words[start].start, words[end - 1].end, layer, note))
-    return highlights
 
 
 def find_compound_prepositions(words: Sequence[Word]) -> list[Highlight]:
@@ -521,11 +511,10 @@ def find_connector_highlights(
     Поиск коннекторов
 
     Описание:
-        Коннекторы ищутся внутри каждого предложения (find_connectors), без границ
-        предложений - по всему тексту; однословные коннекторы проверяются по части
-        речи слова из разметки Doc, а без нее - по pymorphy3 (connector_pos), так
-        «раз» и «значит» как существительное и глагол не считаются; в подсказке
-        класс и тип коннектора
+        Коннекторы ищутся внутри каждого предложения сопоставителем CohesionStats,
+        без границ предложений - по всему тексту; однословные коннекторы проверяются
+        по части речи слова из разметки Doc, а без нее - по pymorphy3 (connector_pos);
+        в подсказке класс и тип коннектора
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -534,22 +523,16 @@ def find_connector_highlights(
     Вывод:
         list[Highlight]: Фрагменты слоя connectors
     """
-    groups = group_words_by_sents(words, sents) if sents else [list(words)]
-    highlights = []
-    for group in groups:
-        texts = [word.text for word in group]
-        pos = [word.pos or connector_pos(word.text) for word in group]
-        for connector in find_connectors(texts, sent_index=0, pos=pos):
-            note = (
-                f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
-                f"{CONNECTOR_TYPES[connector.kind]}"
-            )
-            highlights.append(
-                Highlight(
-                    group[connector.start].start, group[connector.end - 1].end, "connectors", note
-                )
-            )
-    return highlights
+    return core.find_connector_highlights(
+        words,
+        sents,
+        CohesionStats.connector_matcher(),
+        lambda connector: (
+            f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
+            f"{CONNECTOR_TYPES[connector.kind]}"
+        ),
+        lambda word: word.pos or connector_pos(word.text),
+    )
 
 
 def get_stem(word: str) -> str:
@@ -577,6 +560,21 @@ def get_stem(word: str) -> str:
     return word[:length] if length >= 2 else word
 
 
+def _stem_letters(word: str) -> list[str]:
+    """Буквы основы слова (get_stem)"""
+    return [letter for letter in get_stem(word) if letter in LETTERS]
+
+
+def _is_transparent(word: str) -> bool:
+    """Слово, которое не прерывает и не продолжает повтор: короткое, без гласных или стоп-слово"""
+    letters = [letter for letter in word if letter in LETTERS]
+    return (
+        len(letters) < ALLITERATION_MIN_WORD_LEN
+        or not any(letter in VOWELS for letter in letters)
+        or is_stopword(word)
+    )
+
+
 def calc_alliteration_runs(
     text: Sequence[str], threshold: float = ALLITERATION_THRESHOLD
 ) -> list[tuple[int, int, str]]:
@@ -584,27 +582,11 @@ def calc_alliteration_runs(
     Поиск повторов согласной в соседних словах
 
     Описание:
-        Повтор - цепочка из двух и более соседних слов, в основе каждого из которых
-        есть одна и та же согласная буква; слова короче трех букв, стоп-слова и слова
-        без гласных цепочку не прерывают и не продолжают (по полю плыл - повтор п)
-        Согласная ищется в основе слова (функция get_stem), а не в окончании:
-        окончания согласуются с соседними словами и повторяются по грамматике,
-        а не по звучанию - этих крупных, своим целям и нуждам, в других губерниях
-        Буква й не учитывается и в основе, так как в именительном падеже она входит
-        в лемму прилагательного (красивый молодой)
-        Вероятность цепочки при независимом распределении букв - произведение по словам
-        вероятностей встретить согласную хотя бы раз среди букв основы, 1 - (1 - f)^n,
-        где f - частота согласной в русских текстах, n - число букв в основе;
-        цепочка считается аллитерацией, если вероятность ниже порога
-        На каждой позиции проверяется около двадцати согласных, поэтому порог
-        по умолчанию строгий: на прозе при 0.001 подсвечено около 5% слов,
-        при 0.01 - около 20%, в основном случайные совпадения частых букв
-        Так три соседних 5-буквенных основы с ш дают 0.00005, две - 0.0013,
-        а цепочка из четырех 8-буквенных основ с т - 0.04: повтор редкой согласной
-        заметен в двух-трех словах, повтор частой в длинных словах ожидаем
-        и аллитерацией не считается
-        Индекс аллитерации PhonStats измеряет сгруппированность повторов во всем тексте,
-        здесь ищутся их места
+        Повторы calc_alliteration_runs ядра с русскими крючками: согласная ищется
+        в основе слова (get_stem), а не в окончании, которое повторяется по грамматике;
+        й не учитывается; слова короче трех букв, без гласных и стоп-слова повтор
+        не прерывают и не продолжают (по полю плыл - повтор п); частоты согласных -
+        частоты букв русских текстов RU_LETTER_FREQUENCIES
 
     Ссылки:
         https://ru.wikipedia.org/wiki/Частотность
@@ -617,36 +599,9 @@ def calc_alliteration_runs(
         list[tuple[int, int, str]]: Индексы первого и за последним словом цепочки
             и согласная в порядке появления в тексте
     """
-    words = [word.lower() for word in text]
-    letters = [[letter for letter in word if letter in LETTERS] for word in words]
-    transparent = [
-        len(word_letters) < ALLITERATION_MIN_WORD_LEN
-        or not any(letter in VOWELS for letter in word_letters)
-        or is_stopword(word)
-        for word, word_letters in zip(words, letters, strict=True)
-    ]
-    stems = [[letter for letter in get_stem(word) if letter in LETTERS] for word in words]
-    runs = []
-    for consonant in sorted(CONSONANTS - ALLITERATION_IGNORED_LETTERS):
-        frequency = RU_LETTER_FREQUENCIES[consonant]
-        start = None
-        stop = 0
-        probability = 1.0
-        for i, stem in enumerate(stems):
-            if transparent[i]:
-                continue
-            if consonant in stem:
-                if start is None:
-                    start, probability = i, 1.0
-                stop = i + 1
-                probability *= 1 - (1 - frequency) ** len(stem)
-            elif start is not None:
-                if stop - start >= 2 and probability < threshold:
-                    runs.append((start, stop, consonant))
-                start = None
-        if start is not None and stop - start >= 2 and probability < threshold:
-            runs.append((start, stop, consonant))
-    return sorted(runs)
+    return core.calc_alliteration_runs(
+        text, ALLITERATION_FREQUENCIES, threshold, _stem_letters, _is_transparent
+    )
 
 
 def find_alliteration(
@@ -658,8 +613,8 @@ def find_alliteration(
     Поиск аллитераций
 
     Описание:
-        Повторы ищутся внутри предложений; если границы предложений не заданы,
-        текст считается одним предложением
+        Повторы calc_alliteration_runs ищутся внутри предложений; если границы
+        предложений не заданы, текст считается одним предложением
 
     Аргументы:
         words (list[Word]): Слова с позициями
@@ -669,17 +624,15 @@ def find_alliteration(
     Вывод:
         list[Highlight]: Фрагменты слоя alliteration
     """
-    groups = [list(words)] if sents is None else group_words_by_sents(words, sents)
-    highlights = []
-    for group in groups:
-        for start, stop, consonant in calc_alliteration_runs(
-            [word.text for word in group], threshold
-        ):
-            note = f"аллитерация на «{consonant}»"
-            highlights.append(
-                Highlight(group[start].start, group[stop - 1].end, "alliteration", note)
-            )
-    return highlights
+    return core.find_alliteration(
+        words,
+        sents,
+        ALLITERATION_FREQUENCIES,
+        threshold,
+        _stem_letters,
+        _is_transparent,
+        lambda consonant: f"аллитерация на «{consonant}»",
+    )
 
 
 def _word_tokens(doc: Doc) -> Callable[[Iterable[Token]], list[Token]]:
@@ -813,12 +766,10 @@ def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя split_predicates
     """
-    highlights = []
-    for verb, noun in find_split_predicates(doc):
-        start, end = tokens_span([verb, noun])
-        note = f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}"
-        highlights.append(Highlight(start, end, "split_predicates", note))
-    return highlights
+    return core.find_split_predicate_highlights(
+        find_split_predicates(doc),
+        lambda verb, noun: f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}",
+    )
 
 
 def _genitive_chain(token: Token) -> tuple[list[Token], int]:
