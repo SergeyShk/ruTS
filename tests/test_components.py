@@ -328,7 +328,7 @@ def test_component_of_a_document_without_words(factory, doc_text):
     assert nlp(doc_text)._.stats is None
 
 
-@pytest.mark.parametrize("doc_text", ["", "?!", "12 345"])
+@pytest.mark.parametrize("doc_text", ["", "?!", "12 345", "20\u00ad20", "\u00ad\ufeff2020"])
 def test_lexical_component_of_a_document_of_numbers(tmp_path, doc_text):
     nlp = spacy.blank("ru")
     nlp.add_pipe("ruts_lexical", name="lexical", config={"data_dir": str(tmp_path)})

@@ -122,7 +122,7 @@
 | :------: | :-: | :----------: | :------: |
 | `nlp` | Language | `-` | Объект класса Language |
 | `name` | str | `"ruts_readability"` | Наименование компонента в пайплайне |
-| `preset` | str | `"plainrussian"` | [Пресет коэффициентов](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`) |
+| `preset` | str | `None` | [Пресет коэффициентов](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`); `None` - пресет класса, `plainrussian` |
 | `basic` | str | `None` | Расширение компонента основных статистик, которые берутся вместо повторного подсчета |
 
 Пример использования:

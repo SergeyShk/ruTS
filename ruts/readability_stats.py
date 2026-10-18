@@ -39,23 +39,6 @@ from .exceptions import ParameterError, UnknownStatError
 _NORMS_FROM_MAX = {norm: speeds[::-1] for norm, speeds in READING_SPEED_NORMS.items()}
 
 
-def check_preset(preset: str) -> None:
-    """
-    Проверка названия пресета коэффициентов
-
-    Аргументы:
-        preset (str): Название пресета
-
-    Исключения:
-        ParameterError: Если пресет не строка или неизвестен
-    """
-    if not isinstance(preset, str) or preset not in READABILITY_PRESETS:
-        raise ParameterError(
-            f"Неизвестный пресет коэффициентов: {preset!r}. "
-            f"Доступные пресеты: {tuple(READABILITY_PRESETS)}"
-        )
-
-
 class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
     """
     Класс для вычисления основных метрик удобочитаемости текста
