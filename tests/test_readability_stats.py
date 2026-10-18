@@ -38,7 +38,6 @@ from ruts.readability_stats import (
     calc_sis_grade,
     calc_sis_grade_freq,
     calc_smog_index,
-    check_preset,
     describe_level_norm,
     flesch_reading_easy_to_grade,
     grade_to_age,
@@ -89,8 +88,6 @@ def test_basic_stats_of_another_library():
 def test_init_preset_error(preset):
     with pytest.raises(ValueError, match=r"^(Неизвестный пресет коэффициентов|Пресет должен)"):
         ReadabilityStats(text, preset=preset)
-    with pytest.raises(ValueError):
-        check_preset(preset)
 
 
 def test_init_foreign_basic_stats():

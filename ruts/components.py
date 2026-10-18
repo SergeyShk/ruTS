@@ -35,7 +35,7 @@ from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
-from .utils import add_dash_rules, strip_marks
+from .utils import BYTE_ORDER_MARK, add_dash_rules, strip_marks
 from .verse_stats import VerseStats
 
 _LETTER = re.compile(r"[^\W\d_]")
@@ -336,8 +336,8 @@ class LexicalStatsComponent(_Component, anyts.components.LexicalStatsComponent):
         super().__init__(nlp, name)
 
     def is_number(self, word: str) -> bool:
-        """Число по шаблону ruTS (ruts.lexical_stats.is_number) без знаков ударения"""
-        return is_number(strip_marks(word))
+        """Число по шаблону ruTS без знаков ударения, мягких переносов и BOM, как в LexicalStats"""
+        return is_number(strip_marks(word).lstrip(BYTE_ORDER_MARK))
 
 
 @Language.factory("ruts_verse")
