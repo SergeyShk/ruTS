@@ -1603,6 +1603,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1652,6 +1663,17 @@
     <span class="md-ellipsis">
       
         print_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
       
     </span>
   </a>
@@ -2825,6 +2847,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2880,6 +2913,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2910,8 +2954,8 @@
 <p><strong>ruts.cohesion_stats.CohesionStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing text cohesion statistics modeled on <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: overlap of nouns, arguments (nouns and pronouns) and content words between adjacent sentences and all sentence pairs; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - repetition of verb tense and aspect in adjacent sentences; connective density by class and type per 1000 words. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>Sentence pairs are compared by lemmas. For a <code>Doc</code> object with part-of-speech annotation, parts of speech, tense and aspect are taken from <code>token.pos_</code> and <code>token.morph</code>, the lemma - from the pymorphy3 analysis with the token's part of speech (<code>ruts.utils.lemmatize</code>): the lemmatizer of the <code>ru_core_news</code> models returns the word form for <code>AUX</code> and when the tagger's features disagree with pymorphy3 (были, них, стихли). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used. Without an extractor <code>Doc</code> words are taken from the tokens (hyphenated words split by spaCy are glued back); a <code>Doc</code> without sentence boundaries is split into sentences by <code>SentsExtractor</code> over the text, a word belongs to a sentence by the position of its first token.</p>
+<p>The cohesion statistics of a text in the manner of <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: the overlap of nouns, arguments (nouns and pronouns) and content words between adjacent and between all pairs of sentences; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - the repetition of the tense and aspect of the verbs of adjacent sentences; the density of connectors by class and type per 1000 words. Sentences are compared by lemmas. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
+<p>The words are classified by the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> tags or by the Universal Dependencies annotation of a <code>Doc</code>:</p>
 <table>
 <thead>
 <tr>
@@ -2953,8 +2997,7 @@
 </tr>
 </tbody>
 </table>
-<p>The overlap indicators range from 0 to 1; for a one-sentence text they are <code>nan</code>, as is the temporal cohesion of a text without verbs in adjacent sentences. All-pair overlaps are computed without enumerating pairs, see <a href="../cohesion_stats_funcs/#calc_overlaps"><code>calc_overlaps</code></a>.</p>
-<p>Connectives are searched by word forms in every sentence using the <code>ruts/resources/connectors.tsv</code> dictionary (317 entries, see <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); your own dictionary is passed with the <code>connectors</code> parameter. A single-word connective counts only with a part of speech from <code>CONNECTOR_POS</code> (conjunction, particle, adverb, preposition, interjection) or from <code>CONNECTOR_POS_EXTRA</code> for particular words (словом, главное, допустим, точнее): «раз» as a noun and «значит» as a verb do not count. The part of speech is taken from the <code>Doc</code> annotation; without annotation a word passes if a suitable part of speech appears in at least one pymorphy3 analysis (<code>connector_pos</code>): for «раз» the first analysis is a noun, the conjunction comes only in the following ones. Classes after Krioni, Nikin and Filippova (2008):</p>
+<p>Connectors are searched in every sentence by the dictionary <code>ruts/resources/connectors.tsv</code> (317 entries, see <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); your own dictionary is passed with the <code>connectors</code> parameter. A one-word connector counts only with a part of speech from <code>CONNECTOR_POS</code> (conjunction, particle, adverb, preposition, interjection) or from <code>CONNECTOR_POS_EXTRA</code> for particular words (словом, главное, допустим, точнее): «раз» as a noun and «значит» as a verb do not count. The part of speech is taken from the <code>Doc</code> annotation; without it a word passes if a suitable part of speech appears in at least one pymorphy3 analysis. Classes after Krioni, Nikin and Filippova (2008):</p>
 <table>
 <thead>
 <tr>
@@ -3001,11 +3044,13 @@
 </tr>
 </tbody>
 </table>
-<p>Connective type: primary - conjunctions, adverbs and particles (потому что, однако, затем), secondary - lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами).</p>
+<p>Connector type: primary - conjunctions, adverbs and particles (потому что, однако, затем), secondary - lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The statistics are computed when the <code>CohesionStats</code> object is initialized.</p>
 </div>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer. <code>analyze</code> reads a string as well as a <code>Doc</code>: for a <code>Doc</code> with part-of-speech annotation the parts of speech, tense and aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the pymorphy3 analysis with the part of speech of the token (<a href="../cohesion_stats_funcs/#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first pymorphy3 analysis (<a href="../cohesion_stats_funcs/#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>join_hyphens = True</code>, <code>во-первых</code> is one word). A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> (<code>sents_extractor_class</code>); the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given, a parameter the core does not have. The connectors come from the dictionary of <code>load_connectors</code> and are found by <code>RussianConnectorMatcher</code> (<a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>), the core <code>ConnectorMatcher</code> with the Russian normalization of words and parts of speech. The <code>print_stats</code> table has Russian headers and the descriptions of <code>ruts.constants.COHESION_STATS_DESC</code>, the error messages are in Russian (<code>CORE_MESSAGES</code>).</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3039,10 +3084,11 @@
 <td style="text-align: center;"><code>connectors</code></td>
 <td style="text-align: center;">dict[str, tuple[str, str]]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Connective dictionary - class and type by connective; if not given, the dictionary from <code>resources</code> is used</td>
+<td style="text-align: center;">Connector dictionary - class and type by connector; if not given, the dictionary from <code>resources</code> is used</td>
 </tr>
 </tbody>
 </table>
+<p>A source that is neither a string nor a <code>Doc</code>, an extractor of another type and connectors that are not a dictionary of phrases and pairs of strings raise <code>SourceTypeError</code>; a source without words raises <code>SourceError</code>, and an unknown class or type of a connector <code>ParameterError</code>.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3054,189 +3100,107 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">tuple[tuple[str, ...], ...]</td>
-<td style="text-align: center;">Tuple of the words of each sentence</td>
+<td style="text-align: center;"><code>words</code>, <code>lemmas</code></td>
+<td style="text-align: center;">tuple[tuple[str]]</td>
+<td style="text-align: center;">Words and lemmas of every sentence with words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>lemmas</code></td>
-<td style="text-align: center;">tuple[tuple[str, ...], ...]</td>
-<td style="text-align: center;">Tuple of the lemmas of each sentence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_sents</code></td>
+<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of sentences containing words</td>
+<td style="text-align: center;">Numbers of the sentences with words and of the words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_words</code></td>
+<td style="text-align: center;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_nouns</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of nouns</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_pronouns</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of pronouns</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_demonstratives</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of demonstrative pronouns</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_content_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of content words</td>
+<td style="text-align: center;">Numbers of the words by kind</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>n_given</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of content words whose lemma occurred earlier</td>
+<td style="text-align: center;">Number of the content words whose lemma was used before</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_connectors</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of connectives</td>
+<td style="text-align: center;"><code>n_connectors</code>, <code>connector_spans</code>, <code>c_connectors</code></td>
+<td style="text-align: center;">int, tuple[Connector], dict[str, int]</td>
+<td style="text-align: center;">Number of the connectors, their occurrences and their number by connector</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>connector_spans</code></td>
-<td style="text-align: center;">tuple[Connector]</td>
-<td style="text-align: center;">Tuple of connective occurrences: sentence number, boundaries, connective, class, type</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_connectors</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Distribution of occurrences by connective</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_overlap_adjacent</code></td>
+<td style="text-align: center;"><code>noun_overlap_adjacent</code>, <code>noun_overlap_all</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of adjacent sentence pairs sharing a noun</td>
+<td style="text-align: center;">Shares of the adjacent and of all pairs of sentences sharing a noun</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>noun_overlap_all</code></td>
+<td style="text-align: center;"><code>argument_overlap_adjacent</code>, <code>argument_overlap_all</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of all sentence pairs sharing a noun</td>
+<td style="text-align: center;">The same for a noun or a pronoun</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>argument_overlap_adjacent</code></td>
+<td style="text-align: center;"><code>content_overlap_adjacent</code>, <code>content_overlap_all</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of adjacent sentence pairs sharing a noun or pronoun</td>
+<td style="text-align: center;">The same for a content word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>argument_overlap_all</code></td>
+<td style="text-align: center;"><code>content_overlap_prop_adjacent</code>, <code>content_overlap_prop_all</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of all sentence pairs sharing a noun or pronoun</td>
+<td style="text-align: center;">Mean share of the shared content words (Dice) in the adjacent and in all pairs</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>content_overlap_adjacent</code></td>
+<td style="text-align: center;"><code>p_pronouns</code>, <code>p_demonstratives</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of adjacent sentence pairs sharing a content word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of all sentence pairs sharing a content word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_prop_adjacent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean share of shared content words in adjacent sentences</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_prop_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean share of shared content words in all sentence pairs</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_pronouns</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of pronouns among words</td>
+<td style="text-align: center;">Shares of the pronouns and of the demonstratives among the words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>pronoun_noun_ratio</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Ratio of pronouns to nouns</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_demonstratives</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of demonstrative pronouns among words</td>
+<td style="text-align: center;">Ratio of the pronouns to the nouns</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>p_given</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of content words whose lemma occurred earlier in the text</td>
+<td style="text-align: center;">Share of the content words whose lemma was used before in the text</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>tense_repetition</code></td>
+<td style="text-align: center;"><code>tense_repetition</code>, <code>mood_repetition</code>, <code>aspect_repetition</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of adjacent sentence pairs with the same dominant tense</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>aspect_repetition</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of adjacent sentence pairs with the same dominant aspect</td>
+<td style="text-align: center;">Shares of the adjacent pairs of sentences with the same dominant tense, mood and aspect</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>temporal_cohesion</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean of tense and aspect repetition</td>
+<td style="text-align: center;">Mean of the repetitions of <code>temporal_features</code></td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>connectors</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Connectives per 1000 words</td>
+<td style="text-align: center;">Connectors per 1000 words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>connectors_causal</code></td>
+<td style="text-align: center;"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Causal connectives per 1000 words</td>
+<td style="text-align: center;">Connectors of every class and kind of the matcher per 1000 words: <code>connectors_causal</code>, <code>connectors_adversative</code>, <code>connectors_concessive</code>, <code>connectors_temporal</code>, <code>connectors_additive</code>, <code>connectors_conditional</code>, <code>connectors_reformulative</code>, <code>connectors_primary</code> and <code>connectors_secondary</code> by default</td>
+</tr>
+</tbody>
+</table>
+<p>An overlap of a text of one sentence, a repetition without two adjacent sentences with the feature, and a share without anything to divide by are <code>nan</code>.</p>
+<p><code>CohesionStats</code> of ruTS does not compare the mood: <code>mood_repetition</code> is always <code>nan</code> and is not in <code>get_stats</code>, and <code>temporal_cohesion</code> is the mean of <code>tense_repetition</code> and <code>aspect_repetition</code>. The extractors given are kept as attributes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Attribute</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>sents_extractor</code></td>
+<td style="text-align: center;">SentsExtractor</td>
+<td style="text-align: center;">Sentence extraction tool given, <code>None</code> without it</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>connectors_adversative</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Adversative connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_concessive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Concessive connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_temporal</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Temporal connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_additive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Additive connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_conditional</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Conditional connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_reformulative</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Reformulative connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_primary</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Primary connectives per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_secondary</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Secondary connectives per 1000 words</td>
+<td style="text-align: center;"><code>words_extractor</code></td>
+<td style="text-align: center;">WordsExtractor</td>
+<td style="text-align: center;">Word extraction tool given, <code>None</code> without it</td>
 </tr>
 </tbody>
 </table>
@@ -3300,7 +3264,8 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed cohesion statistics.</p>
+<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
+<p>To illustrate the method, we reuse the code from the <code>get_stats</code> example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
@@ -3310,35 +3275,37 @@
 <span class="n">cs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                        </span>Статистика<span class="w">                        </span><span class="p">|</span><span class="w"> </span>Значение
+<div class="highlight"><pre><span></span><code><span class="w">                       </span>Статистика<span class="w">                        </span><span class="p">|</span><span class="w"> </span>Значение
 --------------------------------------------------------------------
-Повтор<span class="w"> </span>существительных<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>существительных<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>местоимений<span class="w">                                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.14
-Отношение<span class="w"> </span>местоимений<span class="w"> </span>к<span class="w"> </span>существительным<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>указательных<span class="w"> </span>местоимений<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
-Доля<span class="w"> </span>знаменательных<span class="w"> </span>слов,<span class="w"> </span>встречавшихся<span class="w"> </span>ранее<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Повтор<span class="w"> </span>времени<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Темпоральная<span class="w"> </span>связность<span class="w">                                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                  </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Временных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Аддитивных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Условных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Переформулирующих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Первичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Вторичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Повтор<span class="w"> </span>существительных<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
+Повтор<span class="w"> </span>существительных<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Повтор<span class="w"> </span>аргументов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
+Повтор<span class="w"> </span>аргументов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
+Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
+Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
+Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
+Доля<span class="w"> </span>местоимений<span class="w">                                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.14
+Отношение<span class="w"> </span>местоимений<span class="w"> </span>к<span class="w"> </span>существительным<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Доля<span class="w"> </span>указательных<span class="w"> </span>местоимений<span class="w">                            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
+Доля<span class="w"> </span>знаменательных<span class="w"> </span>слов,<span class="w"> </span>встречавшихся<span class="w"> </span>ранее<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
+Повтор<span class="w"> </span>времени<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
+Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
+Темпоральная<span class="w"> </span>связность<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                 </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Временных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Аддитивных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                      </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Условных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Переформулирующих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Первичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Вторичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
+<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
+<p>The <code>to_dataframe</code> method (the statistics as a one-row <code>pandas.DataFrame</code>) and the <code>describe</code> method are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the cohesion statistics have no scales, so <code>describe</code> always gives <code>None</code>.</p>
 
 
 
