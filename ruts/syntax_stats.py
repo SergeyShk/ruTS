@@ -15,6 +15,9 @@ from anyts.syntax_stats import (
     count_noun_modifiers as count_noun_modifiers,
     get_children as get_children,
     get_words as get_words,
+    has_agent as has_agent,
+    is_agentless as is_agentless,
+    is_passive as is_passive,
     is_predicate as is_predicate,
     is_root as is_root,
     subtree_len as subtree_len,
@@ -194,10 +197,6 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         return find_split_predicates(words)
 
 
-# Крючки класса читают только его атрибуты, поэтому предикаты не требуют разбора текста
-_HOOKS = SyntaxStats.__new__(SyntaxStats)
-
-
 def is_participle(token: Token) -> bool:
     """
     Проверка, является ли токен полной формой причастия
@@ -297,8 +296,9 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной придаточной клаузы
 
     Описание:
-        Вершина клаузы со связью ccomp, advcl, acl, acl:relcl, csubj или csubj:pass,
-        а также однородное сказуемое придаточной клаузы
+        is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head:
+        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами, а также
+        однородное сказуемое придаточной клаузы
 
     Аргументы:
         token (Token): Токен
@@ -306,7 +306,7 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return _HOOKS.is_subordinate_clause_head(token)
+    return anyts.syntax_stats.is_subordinate_clause_head(token, is_clause_head)
 
 
 def is_genitive_modifier(token: Token) -> bool:
@@ -379,39 +379,6 @@ def is_converb_clause(token: Token) -> bool:
         bool: Результат проверки
     """
     return is_converb(token) and calc_valency(token, join_hyphens=True) > 0
-
-
-def is_passive(token: Token) -> bool:
-    """
-    Проверка, является ли токен пассивной глагольной формой
-
-    Описание:
-        Глагол с признаком Voice=Pass (страдательные причастия, возвратный пассив)
-        или с зависимым nsubj:pass, csubj:pass или aux:pass
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return _HOOKS.is_passive(token)
-
-
-def is_agentless(token: Token) -> bool:
-    """
-    Проверка, является ли токен пассивной формой без агенса
-
-    Описание:
-        Пассивная форма без зависимого obl:agent: дом построен, но не дом построен рабочими
-
-    Аргументы:
-        token (Token): Токен
-
-    Вывод:
-        bool: Результат проверки
-    """
-    return _HOOKS.is_agentless(token)
 
 
 def get_lemma(token: Token) -> str:

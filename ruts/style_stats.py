@@ -7,7 +7,6 @@ import pymorphy3
 from anyts.constants import NAUSEA_TOP_N
 from anyts.style_stats import (
     calc_classic_nausea as calc_classic_nausea,
-    calc_keyword_density as calc_keyword_density,
     calc_spam as calc_spam,
 )
 from anyts.utils import check_words, safe_divide
@@ -26,7 +25,7 @@ from .constants import (
 )
 from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
-from .utils import find_phrases, is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
+from .utils import is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
 
 
 def check_params(top_n: int) -> None:
@@ -337,6 +336,29 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
     return anyts.style_stats.calc_zipf_naturalness(text, top_n, messages=CORE_MESSAGES)
 
 
+def calc_keyword_density(text: Sequence[str], keywords: Collection[str]) -> dict[str, float]:
+    """
+    Вычисление плотности ключевых слов
+
+    Описание:
+        Частота каждого ключевого слова на 100 слов текста (Text.ru); ключевая фраза
+        из нескольких слов через пробел ищется как последовательность слов, вхождения
+        могут пересекаться; слова сравниваются в нижнем регистре без буквы ё
+        (calc_keyword_density ядра с normalize_yo)
+
+    Ссылки:
+        https://text.ru/seo
+
+    Аргументы:
+        text (list[str]): Список слов
+        keywords (list[str]): Ключевые слова или фразы
+
+    Вывод:
+        dict[str, float]: Плотность каждого ключевого слова в процентах
+    """
+    return anyts.style_stats.calc_keyword_density(text, keywords, normalize_yo)
+
+
 def calc_verbal_nouns(text: Sequence[str]) -> float:
     """
     Вычисление доли отглагольных существительных
@@ -471,8 +493,13 @@ def calc_parentheticals(text: Sequence[str]) -> float:
     Вывод:
         float: Вводных слов на 100 слов
     """
-    check_words(text)
-    return safe_divide(len(find_parentheticals(text)), len(text)) * 100
+    return anyts.style_stats.calc_parentheticals(
+        text,
+        PARENTHETICALS,
+        is_parenthetical=is_parenthetical,
+        expand=expand_phrases,
+        normalize=normalize_yo,
+    )
 
 
 def find_parentheticals(text: Sequence[str]) -> list[tuple[int, int]]:
@@ -480,9 +507,10 @@ def find_parentheticals(text: Sequence[str]) -> list[tuple[int, int]]:
     Поиск вводных слов и словосочетаний
 
     Описание:
-        Вводные словосочетания из PARENTHETICALS (таким образом, как правило) и
-        одиночные вводные слова is_parenthetical (конечно, например, впрочем) вне
-        найденных словосочетаний
+        Вводные словосочетания из PARENTHETICALS (таким образом, как правило) в любой
+        форме глагола (expand_phrases) и одиночные вводные слова is_parenthetical
+        (конечно, например, впрочем) вне найденных словосочетаний; слова сравниваются
+        без буквы ё (find_parentheticals ядра)
 
     Аргументы:
         text (list[str]): Список слов
@@ -496,12 +524,10 @@ def find_parentheticals(text: Sequence[str]) -> list[tuple[int, int]]:
         >>> find_parentheticals(["таким", "образом", "мы", "конечно", "правы"])
         [(0, 2), (3, 4)]
     """
-    check_words(text)
-    spans = find_phrases(text, expand_phrases(text, PARENTHETICALS))
-    covered = {position for start, end in spans for position in range(start, end)}
-    singles = [
-        (position, position + 1)
-        for position, word in enumerate(text)
-        if position not in covered and is_parenthetical(word)
-    ]
-    return sorted(spans + singles)
+    return anyts.style_stats.find_parentheticals(
+        text,
+        PARENTHETICALS,
+        is_parenthetical=is_parenthetical,
+        expand=expand_phrases,
+        normalize=normalize_yo,
+    )

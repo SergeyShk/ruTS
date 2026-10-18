@@ -478,3 +478,9 @@ def test_is_water_word(word, expected):
 def test_is_water_word_type():
     with pytest.raises(SourceTypeError):
         is_water_word(5)
+
+
+def test_keyword_density_without_yo():
+    """Ключевые слова сравниваются без буквы ё, как стоп-слова и словосочетания"""
+    assert StyleStats("Ещё раз и еще раз").keyword_density("еще") == {"еще": 40.0}
+    assert calc_keyword_density(["Ещё", "раз", "и", "еще"], ["ещё"]) == {"ещё": 50.0}

@@ -76,8 +76,8 @@ SEO-метрики считаются по словам экстрактора �
 
 ### keyword_density, nausea_words
 
-<!-- core: stats/style_stats.md:StyleStats-keyword_density dab455b -->
-`keyword_density(*keywords)` дает плотность ключевых слов и фраз в процентах (`calc_keyword_density`), `nausea_words()` - самые частые значимые слова академической тошноты с числом вхождений (`find_nausea_words`).
+<!-- core: stats/style_stats.md:StyleStats-keyword_density 5d9b0bc -->
+`keyword_density(*keywords)` дает плотность ключевых слов и фраз в процентах (`calc_keyword_density` с `normalize` класса), `nausea_words()` - самые частые значимые слова академической тошноты с числом вхождений (`find_nausea_words`).
 
 !!! example "Пример"
 

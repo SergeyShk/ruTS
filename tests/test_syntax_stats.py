@@ -636,3 +636,14 @@ def test_clause_head_conj_loop():
     )
     assert not is_clause_head(doc[2])
     assert SyntaxStats(doc).n_clauses == 1
+
+
+def test_pickle(nlp):
+    """Объект синтаксических статистик сериализуется вместе со словами предложений"""
+    import copy
+    import pickle
+
+    stats = SyntaxStats(nlp("Дом, построенный рабочими, был продан. Он ушёл, хлопнув дверью."))
+    for clone in (pickle.loads(pickle.dumps(stats)), copy.deepcopy(stats)):
+        assert repr(clone.get_stats()) == repr(stats.get_stats())
+        assert [token.text for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
