@@ -71,6 +71,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
             из директории по умолчанию
 
     Атрибуты:
+        freq_dict (FreqDict): Частотный словарь
         words (tuple[str]): Кортеж извлеченных слов
         lemmas (tuple[str]): Кортеж лемм в нижнем регистре
         keys (tuple[str]): Кортеж лемм в частотном словаре (dictionary_lemma)

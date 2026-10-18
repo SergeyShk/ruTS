@@ -157,7 +157,7 @@ class StyleStats(anyts.style_stats.StyleStats):
         ]
 
     def is_verbal_noun(self, lemma: str) -> bool:
-        """Отглагольное существительное по суффиксу леммы (ruts.utils.is_verbal_noun)"""
+        """Отглагольное существительное (ruts.utils.is_verbal_noun)"""
         return is_verbal_noun(lemma)
 
 
@@ -497,7 +497,7 @@ def find_parentheticals(text: Sequence[str]) -> list[tuple[int, int]]:
         [(0, 2), (3, 4)]
     """
     check_words(text)
-    spans = find_phrases(text, PARENTHETICALS)
+    spans = find_phrases(text, expand_phrases(text, PARENTHETICALS))
     covered = {position for start, end in spans for position in range(start, end)}
     singles = [
         (position, position + 1)
