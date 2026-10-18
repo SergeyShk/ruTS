@@ -2979,7 +2979,7 @@
 <p>A class for computing the main <a href="https://en.wikipedia.org/wiki/Lexical_diversity">lexical diversity</a> metrics of a text from its words.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>DiversityStats</code> object.</p>
+<p>The metrics are computed by accessing an attribute or by calling <code>get_stats</code>.</p>
 </div>
 <h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
 <p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library. The words of a text are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given one, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The words are always lower-cased. The <code>print_stats</code> table has Russian headers and the Russian descriptions of the metrics from <code>ruts.constants.DIVERSITY_STATS_DESC</code>.</p>
@@ -3041,7 +3041,7 @@
 <p>The parameters are checked by <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, *, messages=MESSAGES)</code>, which raises <code>ParameterError</code> for a window, a sample size or a minimum factor length out of range, a threshold outside (0, 1) or a logarithm base not above 1. Called before the words are extracted, it reports a wrong parameter before an empty text.</p>
 <p>In ruTS the messages of the errors are in Russian, <code>ruts.constants.CORE_MESSAGES</code> by default.</p>
 <h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
-<p>The values of some metrics depend on conventions that differ between libraries. All of them except the comparison with the MTLD threshold are class parameters:</p>
+<p>Some metrics depend on conventions that differ between libraries. All of them except the comparison with the MTLD threshold are class parameters:</p>
 <table>
 <thead>
 <tr>
@@ -3074,7 +3074,7 @@
 <tr>
 <td style="text-align: center;">Minimum MTLD factor length</td>
 <td style="text-align: center;">10</td>
-<td style="text-align: center;">koRpus applies it only to MTLD-MA and drops the shorter factors instead of extending them, LexicalRichness and textcomplexity do not apply it</td>
+<td style="text-align: center;">koRpus - only in MTLD-MA, dropping shorter factors instead of extending them; LexicalRichness and textcomplexity - not applied</td>
 </tr>
 <tr>
 <td style="text-align: center;">HD-D sample size</td>
@@ -3083,7 +3083,7 @@
 </tr>
 </tbody>
 </table>
-<p>According to Zenker and Kyle (2021), MATTR, MTLD and HD-D are stable on texts of 50-200 words and longer, MTLD-W, MA-MTLD and Maas are unstable on short texts, and the TTR family never stabilizes. To compare texts of different lengths use the <a href="#windowed">windowed computation</a> with confidence intervals.</p>
+<p>According to Zenker and Kyle (2021), MATTR, MTLD and HD-D are stable on texts of 50-200 words and longer, MTLD-W, MA-MTLD and Maas are unstable on short texts, and the TTR family never stabilizes. Texts of different lengths are compared by the <a href="#windowed">windowed computation</a> with confidence intervals.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3102,7 +3102,7 @@
 <tr>
 <td style="text-align: center;"><code>window_len</code>, <code>mtld_threshold</code>, <code>mtld_min_len</code>, <code>hdd_sample_size</code>, <code>log_base</code></td>
 <td style="text-align: center;">int/float</td>
-<td style="text-align: center;">The parameters of the metrics; changing them on the object changes the metrics</td>
+<td style="text-align: center;">Parameters of the metrics, changeable on the object</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>frequency_spectrum</code></td>
@@ -3278,11 +3278,11 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Every metric can also be computed by its function; the metrics and their functions are described in the corresponding <a href="../diversity_stats_funcs/">section</a>.</p>
+<p>Every metric can also be computed by its <a href="../diversity_stats_funcs/">function</a>.</p>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="windowed">windowed<a class="headerlink" href="#windowed" title="Permanent link">&para;</a></h3>
-<p>Windowed computation of a metric by its name, as in <a href="../diversity_stats_funcs/#calc_windowed"><code>calc_windowed</code></a>: its value over consecutive text windows of equal length, the mean, the sample standard deviation and the confidence interval of the mean by Student's distribution. The edge cases (short texts, <code>nan</code> and infinite values) are described there.</p>
+<p>Windowed computation of a metric by its name with <a href="../diversity_stats_funcs/#calc_windowed"><code>calc_windowed</code></a>: the mean of its values over consecutive windows of equal length, the sample standard deviation and the confidence interval of the mean. The edge cases (short texts, <code>nan</code> and infinite values) are described there.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3310,7 +3310,7 @@
 <td style="text-align: center;"><code>step</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Window step, by default equal to the window size (windows do not overlap)</td>
+<td style="text-align: center;">Window step, by default the window size (windows do not overlap)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>confidence</code></td>
@@ -3320,7 +3320,7 @@
 </tr>
 </tbody>
 </table>
-<p>Returns a <code>WindowStats</code> named tuple with the fields <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> and <code>n_windows</code>. An unknown metric name raises <code>UnknownStatError</code>.</p>
+<p>Returns a <code>WindowStats</code> named tuple with the fields <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> and <code>n_windows</code>. An unknown metric name raises <code>UnknownStatError</code>; a window size or a step that is not an integer of at least one and a confidence level that is not a number in (0, 1) raise <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiversityStats</span>
@@ -3334,7 +3334,7 @@
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed lexical diversity metrics.</p>
+<p>Returns a dictionary with the computed lexical diversity metrics of <code>stats_desc</code>.</p>
 <p>An example of computing lexical diversity metrics:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

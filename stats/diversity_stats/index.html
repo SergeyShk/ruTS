@@ -2976,11 +2976,11 @@
 <p><strong>ruts.diversity_stats.DiversityStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/diversity_stats.md:DiversityStats 2e4dbf8 -->
+<!-- core: stats/diversity_stats.md:DiversityStats e29b51c -->
 <p>Класс для вычисления основных метрик <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%BB%D0%B5%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%BD%D0%BE%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B8%D1%8F">лексического разнообразия</a> текста по его словам.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Вычисление метрик происходит посредством вызова соответствующего атрибута или метода <code>get_stats</code> объекта класса <code>DiversityStats</code>.</p>
+<p>Метрики вычисляются обращением к атрибуту или вызовом <code>get_stats</code>.</p>
 </div>
 <h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Класс расширяет <code>DiversityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a>: вместо списка слов он принимает текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Слова текста извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Слова всегда приводятся к нижнему регистру. Таблица <code>print_stats</code> выводится с русскими заголовками и русскими описаниями метрик из <code>ruts.constants.DIVERSITY_STATS_DESC</code>.</p>
@@ -3043,8 +3043,8 @@
 <p>Параметры проверяет <code>check_params(window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, *, messages=CORE_MESSAGES)</code>: окно, размер выборки или минимальная длина фактора вне допустимых значений, порог вне интервала (0, 1) и основание логарифма не больше 1 дают <code>ParameterError</code>. Проверка выполняется до извлечения слов, поэтому о неверном параметре она сообщает раньше, чем о пустом тексте.</p>
 <p>Сообщения об ошибках - по-русски, из <code>ruts.constants.CORE_MESSAGES</code>.</p>
 <h2 id="conventions">Соглашения<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
-<!-- core: stats/diversity_stats.md:DiversityStats-conventions a759359 -->
-<p>Значения части метрик зависят от соглашений, которые в разных библиотеках различаются. Все они, кроме сравнения с порогом MTLD, вынесены в параметры класса:</p>
+<!-- core: stats/diversity_stats.md:DiversityStats-conventions d022996 -->
+<p>Часть метрик зависит от соглашений, которые в разных библиотеках различаются. Все они, кроме сравнения с порогом MTLD, вынесены в параметры класса:</p>
 <table>
 <thead>
 <tr>
@@ -3077,7 +3077,7 @@
 <tr>
 <td style="text-align: center;">Минимальная длина фактора MTLD</td>
 <td style="text-align: center;">10</td>
-<td style="text-align: center;">koRpus применяет ее только к MTLD-MA и отбрасывает более короткие факторы, а не продлевает их, LexicalRichness и textcomplexity не применяют</td>
+<td style="text-align: center;">koRpus - только в MTLD-MA, с отбрасыванием более коротких факторов вместо их продления; LexicalRichness и textcomplexity - не применяется</td>
 </tr>
 <tr>
 <td style="text-align: center;">Размер выборки HD-D</td>
@@ -3086,9 +3086,9 @@
 </tr>
 </tbody>
 </table>
-<p>По Zenker и Kyle (2021) MATTR, MTLD и HD-D стабильны на текстах от 50-200 слов, MTLD-W, MA-MTLD и Maas нестабильны на коротких текстах, семейство TTR не стабилизируется вовсе. Для сравнения текстов разной длины используйте <a href="#windowed">оконный расчет</a> с доверительными интервалами.</p>
+<p>По Zenker и Kyle (2021) MATTR, MTLD и HD-D стабильны на текстах от 50-200 слов, MTLD-W, MA-MTLD и Maas нестабильны на коротких текстах, семейство TTR не стабилизируется вовсе. Тексты разной длины сравниваются <a href="#windowed">оконным расчетом</a> с доверительными интервалами.</p>
 <h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/diversity_stats.md:DiversityStats-attributes 2bd9615 -->
+<!-- core: stats/diversity_stats.md:DiversityStats-attributes f46f107 -->
 <table>
 <thead>
 <tr>
@@ -3106,7 +3106,7 @@
 <tr>
 <td style="text-align: center;"><code>window_len</code>, <code>mtld_threshold</code>, <code>mtld_min_len</code>, <code>hdd_sample_size</code>, <code>log_base</code></td>
 <td style="text-align: center;">int/float</td>
-<td style="text-align: center;">Параметры метрик; их изменение у объекта меняет метрики</td>
+<td style="text-align: center;">Параметры метрик, изменяемые у объекта</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>frequency_spectrum</code></td>
@@ -3282,12 +3282,12 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Каждую метрику можно вычислить и ее функцией; метрики и их функции описаны в соответствующем <a href="../diversity_stats_funcs/">разделе</a>.</p>
+<p>Каждую метрику можно вычислить и ее <a href="../diversity_stats_funcs/">функцией</a>.</p>
 </div>
 <h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="windowed">windowed<a class="headerlink" href="#windowed" title="Permanent link">&para;</a></h3>
-<!-- core: stats/diversity_stats.md:DiversityStats-windowed af6a479 -->
-<p>Оконный расчет метрики по ее названию, как в <a href="../diversity_stats_funcs/#calc_windowed"><code>calc_windowed</code></a>: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Краевые случаи (короткие тексты, значения <code>nan</code> и бесконечные значения) описаны там.</p>
+<!-- core: stats/diversity_stats.md:DiversityStats-windowed 5f74a3a -->
+<p>Оконный расчет метрики по ее названию с помощью <a href="../diversity_stats_funcs/#calc_windowed"><code>calc_windowed</code></a>: среднее ее значений по последовательным окнам одинаковой длины, выборочное стандартное отклонение и доверительный интервал среднего. Краевые случаи (короткие тексты, значения <code>nan</code> и бесконечные значения) описаны там.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3325,7 +3325,7 @@
 </tr>
 </tbody>
 </table>
-<p>Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>. Неизвестное название метрики дает <code>UnknownStatError</code>.</p>
+<p>Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>. Неизвестное название метрики дает <code>UnknownStatError</code>, размер окна или шаг, которые не целое число не меньше единицы, и уровень доверия, который не число в интервале (0, 1), - <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiversityStats</span>
@@ -3339,8 +3339,8 @@
 </code></pre></div>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/diversity_stats.md:DiversityStats-get_stats b65013e -->
-<p>Возвращает справочник с вычисленными метриками лексического разнообразия.</p>
+<!-- core: stats/diversity_stats.md:DiversityStats-get_stats 4451961 -->
+<p>Возвращает справочник с вычисленными метриками лексического разнообразия из <code>stats_desc</code>.</p>
 <p>Рассмотрим пример вычисления метрик лексического разнообразия текста:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>

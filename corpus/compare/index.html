@@ -2897,8 +2897,8 @@
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p><code>compare_corpora</code> сравнивает два корпуса русских текстов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>. Функция строит таблицы признаков окон обоих корпусов и сравнивает их функцией <code>compare_features</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>:</p>
-<!-- core: corpus/compare.md:compare_features 9eaeeac -->
-<p>Сравнение двух корпусов признак за признаком. Каждый корпус приходит таблицей признаков своих окон - текстов, разрезанных на части примерно одинакового размера, чтобы признаки не зависели от длины текстов. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> сравнивает таблицы по столбцам и возвращает по строке на признак, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса таблицы; в таблице без этого уровня каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
+<!-- core: corpus/compare.md:compare_features 0ac6ea0 -->
+<p>Сравнение двух корпусов признак за признаком. Каждый корпус - таблица признаков своих окон, частей текстов примерно одинакового размера, чтобы признаки не зависели от длины текстов. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> дает по строке на столбец, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса; без него каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
 <p>Тексты режутся подряд на окна ровно по <code>window</code> слов функцией <code>split_windows</code>, так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если <code>min_words</code> не разрешает окна короче. Признаки каждого окна считает <code>text_features</code> или своя функция.</p>
 <h2 id="_3">Признаки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p><code>text_features(text)</code> возвращает 113 признаков с префиксом по источнику:</p>
@@ -2947,7 +2947,7 @@
 <p><code>corpus_features(texts, window, features)</code> отдает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; уровень <code>text</code> этого индекса и пересэмплирует бутстрэп <code>compare_features</code>. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
 <p>Доли пробелов, букв и знаков (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) считаются по символам как есть: отступы строк, двойные и неразрывные пробелы в файлах отражают верстку издания, а не текст. В корпусе из разных источников их стоит схлопнуть заранее, например <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
 <h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/compare.md:compare_features-statistics 42e948a -->
+<!-- core: corpus/compare.md:compare_features-statistics b032a50 -->
 <p>Для признака со значениями <span class="arithmatex">\(x_1 \dots x_{n_A}\)</span> в корпусе A и <span class="arithmatex">\(y_1 \dots y_{n_B}\)</span> в корпусе B (неопределенные и бесконечные значения отброшены; при менее чем двух значениях на стороне - <code>nan</code>):</p>
 <table>
 <thead>
@@ -2975,7 +2975,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>auc</code></td>
-<td style="text-align: left;">признак как классификатор сам по себе: доля пар окон, где значение в A больше, чем в B, ничьи за половину; <span class="arithmatex">\(\delta = 2 \cdot AUC - 1\)</span>, 0.5 - признак не различает корпуса</td>
+<td style="text-align: left;">признак как классификатор: доля пар окон, где значение в A больше, чем в B, ничьи за половину; <span class="arithmatex">\(\delta = 2 \cdot AUC - 1\)</span>, 0.5 - признак не различает корпуса</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>u</code>, <code>p_value</code></td>
@@ -2995,10 +2995,10 @@
 </tr>
 </tbody>
 </table>
-<p>Имена столбцов - <code>anyts.corpus.COMPARISON_COLUMNS</code>, где <code>A</code> и <code>B</code> заменены метками корпусов. Дельта Клиффа и AUC считаются из той же U-статистики и согласованы между собой; d Коэна чувствителен к выбросам и отклонениям от нормальности, его стоит смотреть рядом с дельтой.</p>
+<p>Столбцы - <code>anyts.corpus.COMPARISON_COLUMNS</code>, где <code>A</code> и <code>B</code> заменены метками корпусов. Дельта Клиффа и AUC считаются из той же U-статистики и согласованы; d Коэна чувствителен к выбросам и отклонениям от нормальности, его стоит смотреть рядом с дельтой.</p>
 <div class="admonition warning">
 <p class="admonition-title">Окна одного текста не независимы</p>
-<p>Критерий и размеры эффекта считают каждое окно независимым наблюдением, а окна одного текста не независимы. При небольшом числе текстов в корпусе p-значения слишком малы и отражают выбор текстов не меньше, чем сами корпуса. Бутстрэп же пересэмплирует целые тексты (кластерный бутстрэп), так что его интервал учитывает разброс между текстами; ему нужно не меньше двух текстов с каждой стороны, а при немногих текстах он груб.</p>
+<p>Критерий и размеры эффекта считают окна независимыми наблюдениями, а окна одного текста не независимы: при небольшом числе текстов p-значения слишком малы и отражают выбор текстов не меньше, чем сами корпуса. Бутстрэп пересэмплирует целые тексты (кластерный бутстрэп), так что его интервал учитывает разброс между текстами; ему нужно не меньше двух текстов с каждой стороны, а при немногих текстах он груб.</p>
 </div>
 <h2 id="_5">Параметры<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>Параметры <code>compare_corpora</code>:</p>
@@ -3045,7 +3045,7 @@
 </tbody>
 </table>
 <p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <code>compare_features</code>, параметры которой:</p>
-<!-- core: corpus/compare.md:compare_features-parameters 7c141e7 -->
+<!-- core: corpus/compare.md:compare_features-parameters 552077d -->
 <table>
 <thead>
 <tr>
@@ -3088,19 +3088,20 @@
 </tr>
 </tbody>
 </table>
-<!-- core: corpus/compare.md:check_comparison_params f445b8d -->
-<p><code>check_comparison_params(labels=("A", "B"), n_bootstrap=1000, seed=0)</code> проверяет параметры <code>compare_features</code> и дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy. Вызванная до построения таблиц из текстов, она сообщает о неверном параметре до обработки текстов.</p>
+<p>Таблица, которая не <code>DataFrame</code>, повторяет имя столбца или содержит столбец, который не числовой, дает <code>SourceTypeError</code>; остальные параметры проверяет <code>check_comparison_params</code>.</p>
+<!-- core: corpus/compare.md:check_comparison_params 578280c -->
+<p><code>check_comparison_params(labels=("A", "B"), n_bootstrap=1000, seed=0)</code> проверяет параметры <code>compare_features</code> до обработки текстов: дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy.</p>
 <p><code>compare_corpora</code> вызывает ее первой, так что неверное имя корпуса или зерно дает ошибку до обработки текстов.</p>
 <h2 id="_6">Функции статистик<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <p>Статистики строки доступны по отдельности из <code>ruts.corpus</code>:</p>
-<!-- core: corpus/compare.md:calc_cohen_d c27397e -->
-<p><code>calc_cohen_d(values_a, values_b)</code> - d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса.</p>
-<!-- core: corpus/compare.md:calc_cliff_delta 896afa2 -->
-<p><code>calc_cliff_delta(values_a, values_b)</code> - дельта Клиффа, доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью.</p>
-<!-- core: corpus/compare.md:bootstrap_median_diff e93949a -->
-<p><code>bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None)</code> - перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, и медиана выборки - медиана значений вытянутых текстов вместе; при менее чем двух текстах на стороне интервал - <code>nan</code>.</p>
-<!-- core: corpus/compare.md:holm_correction e61edf0 -->
-<p><code>holm_correction(p_values)</code> - поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>, а p-значение вне [0, 1] дает <code>ParameterError</code>.</p>
+<!-- core: corpus/compare.md:calc_cohen_d 1403a14 -->
+<p><code>calc_cohen_d(values_a, values_b)</code> - d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса. Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
+<!-- core: corpus/compare.md:calc_cliff_delta 35672f7 -->
+<p><code>calc_cliff_delta(values_a, values_b)</code> - дельта Клиффа, доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью. Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
+<!-- core: corpus/compare.md:bootstrap_median_diff 819bff8 -->
+<p><code>bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None)</code> - перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, а медиана выборки берется по значениям ее текстов; при менее чем двух текстах на стороне интервал - <code>nan</code>. Значение, которое не число и не пропуск, значения, которые не плоский список, и тексты, которые не метки одного типа, дают <code>SourceTypeError</code>; <code>n_bootstrap</code>, который не целое число не меньше единицы, <code>confidence</code>, который не число в интервале (0, 1), число текстов, не равное числу значений, и <code>rng</code>, который не <code>Generator</code> numpy, - <code>ParameterError</code>.</p>
+<!-- core: corpus/compare.md:holm_correction 61aa239 -->
+<p><code>holm_correction(p_values)</code> - поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>. P-значение, которое не число и не пропуск, и p-значения, которые не плоский список, дают <code>SourceTypeError</code>, а p-значение вне [0, 1] - <code>ParameterError</code>.</p>
 <h2 id="_7">Пример использования<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
 <p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 249 и 1423 окна по 1000 слов, меньше минуты.</p>
 <div class="admonition example">

@@ -2974,9 +2974,9 @@
 <p><strong>ruts.basic_stats.BasicStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats 1991b2a -->
-<p>Базовые статистики текста: количество предложений, слов, символов, букв, пробелов, слогов и знаков препинания, распределения слов по числу букв и слогов, длинные, сложные, простые, односложные и многосложные слова. Источником данных может быть текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
-<p>Слова строки дает экстрактор слов, ее предложения - экстрактор предложений. Слова <code>Doc</code> берутся из его токенов (знаки препинания и символы вроде <code>€</code> или <code>%</code> отбрасываются), предложения - из его границ, а если их нет - из экстрактора предложений; явно переданный экстрактор применяется к тексту <code>Doc</code>. Пустая строка завершает предложение строки и <code>Doc</code> без границ; <code>Doc</code> с границами следует этому правилу, если его пайплайн ставит начало предложения после пустой строки (<code>start_sents_after_blank_lines</code>, библиотека регистрирует компонент под своим именем) до парсера, <code>senter</code> или <code>sentencizer</code>. Предложение из одних знаков препинания не содержит слов и не считается.</p>
+<!-- core: stats/basic_stats.md:BasicStats a89aa13 -->
+<p>Базовые статистики текста: количество предложений, слов, символов, букв, пробелов, слогов и знаков препинания, распределения слов по числу букв и слогов, длинные, сложные, простые, односложные и многосложные слова. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
+<p>Слова и предложения строки дают экстракторы. <code>Doc</code> дает словами свои токены без знаков препинания и символов вроде <code>€</code> или <code>%</code>, предложениями - свои границы или, если их нет или они частичные (<code>has_sents</code>), границы экстрактора предложений; переданный экстрактор вместо этого применяется к его тексту. Пустая строка завершает предложение строки и <code>Doc</code> без границ; <code>Doc</code> с границами - если в его пайплайне до парсера, <code>senter</code> или <code>sentencizer</code> стоит <code>start_sents_after_blank_lines</code> (библиотека регистрирует компонент под своим именем). Предложение без слов, например из одних знаков препинания, не считается.</p>
 <p>В ruTS этот компонент называется <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>.</p>
 <p>Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них.</p>
 <div class="admonition note">
@@ -2984,7 +2984,7 @@
 <p>Вычисление статистик происходит в момент инициализации объекта класса <code>BasicStats</code>.</p>
 </div>
 <h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> крючками русского языка: слоги слова считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). <code>Doc</code> без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) берет предложения из текста через <code>SentsExtractor</code>.</p>
+<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> крючками русского языка: слоги слова считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). <code>Doc</code> без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) или с частичными границами (только <code>ruts_blank_lines</code>) берет предложения из текста через <code>SentsExtractor</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <!-- core: stats/basic_stats.md:BasicStats-parameters 2296788 -->
 <table>
@@ -3041,7 +3041,7 @@
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 </div>
 <h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-attributes ed90a25 -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes c1718bf -->
 <table>
 <thead>
 <tr>
@@ -3051,6 +3051,21 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: center;"><code>normalize</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;">Вычисляются ли нормализованные статистики</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>complex_syl_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Минимальное количество слогов в сложном слове</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>long_word_letter_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Минимальное количество букв в длинном слове</td>
+</tr>
 <tr>
 <td style="text-align: center;"><code>c_letters</code></td>
 <td style="text-align: center;">dict[int, int]</td>
@@ -3178,7 +3193,7 @@
 </tr>
 </tbody>
 </table>
-<p>Количества слов нормализуются на число слов, количества символов - на число символов; нормализованные статистики вычисляются с <code>normalize=True</code>.</p>
+<p>С <code>normalize=True</code> количества слов делятся на число слов, количества символов - на число символов.</p>
 <h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="count_words_by_syllables-count_words_by_letters">count_words_by_syllables, count_words_by_letters<a class="headerlink" href="#count_words_by_syllables-count_words_by_letters" title="Permanent link">&para;</a></h3>
 <!-- core: stats/basic_stats.md:BasicStats-count_words_by abc6821 -->
@@ -3188,8 +3203,8 @@
 <p>Методы позволяют пересчитать количество сложных и длинных слов с порогом, отличным от заданного при инициализации объекта. Так, класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> использует их для вычисления индекса SMOG (сложное слово - от 5 слогов) и индекса LIX (длинное слово - от 7 букв).</p>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/basic_stats.md:BasicStats-get_stats c61b85d -->
-<p>Возвращает справочник с вычисленными статистиками - копию: ее правка не меняет объект.</p>
+<!-- core: stats/basic_stats.md:BasicStats-get_stats f70b435 -->
+<p>Возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, количествами из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
 <p>Рассмотрим пример вычисления базовых текстовых статистик с использованием нормализации:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -3233,8 +3248,8 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/basic_stats.md:BasicStats-print_stats 3af6554 -->
-<p>Выводит таблицу с количествами статистик, их описаниями из <code>stats_desc</code> и заголовками из <code>stats_headers</code>.</p>
+<!-- core: stats/basic_stats.md:BasicStats-print_stats ab297fc -->
+<p>Выводит таблицу с количествами из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
 <p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -3270,8 +3285,8 @@
 <div class="admonition info">
 <p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>
 </div>
-<!-- core: stats/basic_stats.md:count_punctuations fdfb6b0 -->
-<p><code>count_punctuations(text, marks, dash_pattern)</code> считает знаки препинания по типам - это же распределение лежит в атрибуте <code>c_punctuations</code>: запятые, точки, вопросительные и восклицательные знаки, многоточия, двоеточия, точки с запятой, тире, дефисы, кавычки-ёлочки, кавычки, скобки и прочие знаки. Сначала считаются тире, набранные дефисами (<code>dash_pattern</code>), затем многоточия - символ <code>…</code>, три и более точек или две точки после <code>?</code> и <code>!</code>, один знак, точки которого в точки не входят (<code>Кто там?..</code> - вопрос и многоточие), - а затем каждый знак по его типу в <code>marks</code>; любой другой символ категорий Unicode P и S - прочий знак (<code>§</code>, <code>€</code>, <code>°</code>). <code>marks</code> сопоставляет каждому знаку, одному символу, один из типов, иначе <code>ParameterError</code>, а <code>dash_pattern</code> - скомпилированное регулярное выражение; текст, который не строка, знаки, которые не словарь, и тире, которые не скомпилированное выражение, дают <code>SourceTypeError</code>.</p>
+<!-- core: stats/basic_stats.md:count_punctuations db6a9ba -->
+<p><code>count_punctuations(text, marks, dash_pattern)</code> считает знаки препинания по типам - распределение <code>c_punctuations</code>: запятые, точки, вопросительные и восклицательные знаки, многоточия, двоеточия, точки с запятой, тире, дефисы, кавычки-елочки, кавычки, скобки и прочие знаки. Сначала считаются тире, набранные дефисами (<code>dash_pattern</code>), затем многоточия - <code>…</code>, три и более точек или две после <code>?</code> и <code>!</code>, один знак, точки которого в точки не входят (<code>Кто там?..</code> - вопрос и многоточие), - затем каждый знак по его типу в <code>marks</code>; любой другой символ категорий Unicode P и S - прочий знак (<code>§</code>, <code>€</code>, <code>°</code>). Знак <code>marks</code>, который не один символ или имеет неизвестный тип, дает <code>ParameterError</code>; текст, который не строка, <code>marks</code>, которые не словарь, и <code>dash_pattern</code>, который не скомпилированное регулярное выражение, дают <code>SourceTypeError</code>.</p>
 <p>В ruTS <code>count_punctuations(text)</code> берет знаки ядра с нижней кавычкой <code>„</code> в роли кавычки, а висячий дефис перед <code>и</code>, <code>или</code>, <code>либо</code> или запятой остается дефисом (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), тогда как тире реплики, набранное дефисом, - тире (<code>- Ушли, - сказал он</code>). <code>punctuation_profile(text, n_words=None)</code> переводит количества в частоты на 1000 слов и добавляет <code>yo_share</code> - долю буквы ё среди букв е и ё, то есть пишет ли автор ё.</p>
 <p>Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. <a href="../../corpus/compare/">сравнение корпусов</a>). Он зависит от оформления текста - типографских кавычек и тире, буквы ё - и легко подделывается, поэтому его стоит смотреть отдельно от лингвистических признаков.</p>
 <div class="admonition example">

@@ -2899,7 +2899,7 @@
 <p>Plots for <a href="../../corpus/stylometry/">stylometry</a>: a dendrogram and multidimensional scaling from the <a href="../../corpus/stylometry/#delta"><code>delta</code></a> distance matrix, a principal component chart from the frequencies of the most frequent words and Mendenhall curves of several texts - the set used in stylo to look at the clustering of texts by author. The functions take axes <code>ax</code> and return <code>Axes</code>.</p>
 <p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/stylometry/">anyTS</a> core with the Russian labels of <code>ruts.constants.VISUALIZER_LABELS</code> by default; <code>labels</code> puts the given labels over them. The frequencies of the principal components come from <a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a> and the curves from <a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>.</p>
 <h2 id="dendrogram_plot">Dendrogram<a class="headerlink" href="#dendrogram_plot" title="Permanent link">&para;</a></h2>
-<p>Hierarchical clustering by <code>scipy.cluster.hierarchy</code> over the matrix of distances between texts; Ward's method by default, as in <a href="https://aclanthology.org/W15-0709.pdf">Evert et al. (2015)</a>; the labels of the leaves are the names of the texts of the index of the matrix. The columns are taken in the order of the rows; a matrix with other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raises <code>SourceError</code> before a figure is created.</p>
+<p>Hierarchical clustering by <code>scipy.cluster.hierarchy</code> over the matrix of distances between texts, Ward's method by default as in <a href="https://aclanthology.org/W15-0709.pdf">Evert et al. (2015)</a>; the leaves are labelled by the index of the matrix. The columns are taken in the order of the rows; other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raise <code>SourceError</code> before a figure is created. Distances that are not a <code>DataFrame</code> of numbers raise <code>SourceTypeError</code>; an unknown <code>method</code>, labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2980,8 +2980,9 @@
 </tr>
 </tbody>
 </table>
+<p>The corpus, <code>n_mfw</code> and <code>culling</code> raise the errors of <code>frequency_table</code>, and fewer than three texts raise <code>SourceError</code>; labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <h2 id="mds_plot">Multidimensional scaling<a class="headerlink" href="#mds_plot" title="Permanent link">&para;</a></h2>
-<p>Classical multidimensional scaling (Torgerson 1952) of any matrix of distances: the double centering of the matrix of squared distances and the two leading eigenvectors; the distances between the points approximate the distances of the matrix. The columns are taken in the order of the rows; a matrix with other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raises <code>SourceError</code> before a figure is created.</p>
+<p>Classical multidimensional scaling (Torgerson 1952) of any matrix of distances: the two leading eigenvectors of the double-centred squared distances, so the distances between the points approximate those of the matrix. The columns are taken in the order of the rows; other texts in the columns than in the rows, fewer than two texts, an infinite or negative distance, asymmetry or a distance on the diagonal raise <code>SourceError</code> before a figure is created. Distances that are not a <code>DataFrame</code> of numbers raise <code>SourceTypeError</code>; labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -3044,6 +3045,7 @@
 </tr>
 </tbody>
 </table>
+<p>A corpus that is not a mapping of lists of strings raises <code>SourceTypeError</code>, no texts or a text without words <code>SourceError</code>; labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <p>Let us look at the visualizers on 8 texts of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset.</p>
 <div class="admonition example">

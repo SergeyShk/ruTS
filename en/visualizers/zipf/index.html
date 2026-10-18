@@ -2833,7 +2833,7 @@
 <p>Plotting <a href="https://en.wikipedia.org/wiki/Zipf%27s_law">Zipf's law</a> from a counter of the frequencies of words.</p>
 <div class="admonition quote">
 <p class="admonition-title">Definition</p>
-<p>Zipf's law (the rank-frequency law) is an empirical regularity of the distribution of the frequencies of words in a natural language: if all the words of a language, or of a long enough text, are ordered by descending frequency, the frequency of the n-th word of the list is roughly inversely proportional to its number n, the rank of the word. The second most frequent word occurs about half as often as the first, the third a third as often, and so on.</p>
+<p>Zipf's law (the rank-frequency law) is an empirical regularity of the frequencies of words in a natural language: with the words of a language, or of a long enough text, ordered by descending frequency, the frequency of the n-th word is roughly inversely proportional to its rank n. The second most frequent word occurs about half as often as the first, the third a third as often, and so on.</p>
 </div>
 <p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/zipf/">anyTS</a> core with the Russian labels of <code>ruts.constants.VISUALIZER_LABELS</code> by default; <code>labels</code> puts the given labels over them, for instance <code>labels={"title": "Закон Ципфа в SovChLit"}</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
@@ -2903,9 +2903,9 @@
 </tr>
 </tbody>
 </table>
-<p>The function returns the <code>Axes</code> with the plot; a <code>num_words</code> greater than the number of word types does not extend the curves beyond the data, a counter whose words are not strings raises <code>SourceTypeError</code>, an empty counter or a frequency that is not above zero <code>SourceError</code>, and a <code>num_words</code> below one or an exponent that is not a finite number above zero <code>ParameterError</code> - all before a figure is created.</p>
+<p>The function returns the <code>Axes</code> with the plot; a <code>num_words</code> greater than the number of word types does not extend the curves beyond the data. A counter that is not a <code>Counter</code> of strings raises <code>SourceTypeError</code>, and an empty counter or a frequency that is not above zero <code>SourceError</code>. A <code>num_words</code> below one, a negative <code>num_labels</code>, with <code>show_theory</code> an exponent that is not a finite number above zero, labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>. All of them are raised before a figure is created.</p>
 <p>The Zipf-Mandelbrot fit is described in <a href="../../stats/diversity_stats_funcs/#fit_zipf_mandelbrot"><code>fit_zipf_mandelbrot</code></a>.</p>
-<p><code>zipf_theory(size, num_ranks, alpha=1.5, ax=None, labels=None)</code> plots the theoretical curve alone, <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> for the ranks from 1 to <code>num_ranks</code>; its label is the key <code>theoretical</code>.</p>
+<p><code>zipf_theory(size, num_ranks, alpha=1.5, ax=None, labels=None)</code> plots the theoretical curve alone, <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> for the ranks from 1 to <code>num_ranks</code>; its label is the key <code>theoretical</code>. A <code>size</code> or an <code>alpha</code> that is not a finite number above zero, a <code>num_ranks</code> that is not an integer of at least one, labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <p>Let us look at the visualizer on 100 texts of the <a href="../../datasets/sovchlit/">SovChLit</a> dataset.</p>
 <div class="admonition example">

@@ -2908,8 +2908,8 @@
 <p><strong>ruts.extractors.CharNgramsExtractor</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A class for extracting character N-grams from a text - sequences of N characters taken with a sliding window over the string. Character N-grams are a standard feature of stylometry and authorship attribution (Stamatatos 2009) and can replace words as the units of a text in measures such as Burrows's Delta.</p>
-<p>Whitespace runs are collapsed into a single space beforehand, punctuation marks are kept. With <code>within_words=True</code> N-grams do not cross word boundaries: the text is split into words by the tokenizer, punctuation is dropped, and words shorter than N yield no N-grams.</p>
+<p>A class for extracting character N-grams from a text - sequences of N characters taken with a sliding window over the string. Character N-grams are a standard feature of stylometry and authorship attribution (Stamatatos 2009) and can replace words in measures such as Burrows's Delta.</p>
+<p>Whitespace runs are collapsed into a single space, punctuation marks are kept. With <code>within_words=True</code> N-grams do not cross word boundaries: the text is split into words by the tokenizer, punctuation is dropped, and words shorter than N yield no N-grams.</p>
 <p>The list of N-grams is passed to <a href="../../corpus/stylometry/"><code>delta</code></a> as text units instead of words.</p>
 <h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
 <p>The class extends the <code>CharNgramsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/char_ngrams/">anyTS</a> core with the hook of Russian: its default word tokenizer for <code>within_words</code>, the method <code>tokenize(text)</code>, is the default tokenizer of <a href="../words/"><code>WordsExtractor</code></a>, the <code>tokenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library with the dialogue dashes glued to words split off (<code>ruts.utils.iter_tokens</code>). Stress marks and soft hyphens are removed from the text before extraction (<code>ruts.utils.strip_marks</code>).</p>
@@ -2950,6 +2950,7 @@
 </tr>
 </tbody>
 </table>
+<p>An <code>n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Extracts N-grams from a text.</p>
@@ -2971,6 +2972,7 @@
 </tr>
 </tbody>
 </table>
+<p>A text that is not a string raises <code>SourceTypeError</code>, and so does, with <code>within_words</code>, a tokenizer that cannot be called or does not return strings.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CharNgramsExtractor</span>
@@ -2990,7 +2992,7 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Returns the top N-grams of the text as a list of (N-gram, frequency) pairs, the most frequent first.</p>
+<p>Returns the top N-grams of the text as a list of (N-gram, frequency) pairs, the most frequent first; a number that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>

@@ -2899,7 +2899,7 @@
 <p>Measures of stylometry and authorship attribution: distances between texts by the frequencies of the most frequent words (Burrows's Delta and its variants, as in <a href="https://github.com/computationalstylistics/stylo">stylo</a>), markers of preferred and avoided words (Zeta), Kilgarriff's chi-square distance between corpora and the Mendenhall curve. The functions work on lists of units of a text: lower-case word forms (the usual choice for Delta), lemmas or character N-grams - case and lemmatization belong to the extractors.</p>
 <p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/corpus/stylometry/">anyTS</a> core, with the <a href="#function_words_profile">profile of the function words</a> of Russian added as a feature of an author. The units of a text come from <a href="../../extractors/words/"><code>WordsExtractor</code></a> - word forms and lemmas - and <a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>.</p>
 <h2 id="delta">Burrows's Delta<a class="headerlink" href="#delta" title="Permanent link">&para;</a></h2>
-<p>A corpus is a dictionary "name of a text → units". <code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> builds the table of relative frequencies: rows are the texts, columns the <code>n_mfw</code> most frequent units by descending mean relative frequency (alphabetically when equal); <code>culling</code> keeps the units that occur in at least the given share of the texts, as in stylo.</p>
+<p>A corpus is a dictionary "name of a text → units". <code>frequency_table(corpus, n_mfw=100, culling=0.0)</code> builds the table of relative frequencies: rows are the texts, columns the <code>n_mfw</code> most frequent units by descending mean relative frequency (alphabetically when equal); <code>culling</code> keeps the units that occur in at least the given share of the texts, as in stylo. A corpus that is not a mapping of lists of strings raises <code>SourceTypeError</code>; an empty corpus, a text without units and no unit left after culling raise <code>SourceError</code>, and an <code>n_mfw</code> that is not an integer of at least one and a <code>culling</code> that is not a number within [0, 1] <code>ParameterError</code>.</p>
 <p><code>z_scores(table)</code> standardizes the columns with the sample standard deviation, like <code>scale()</code> of R; a column with the same frequency in every text gives zeros.</p>
 <p><code>delta</code> computes a symmetric matrix of distances from the z-scores (a <code>DataFrame</code> with the names of the texts); at least three texts are needed - with two, the z-scores degenerate to ±1/√2 and the distances do not depend on the frequencies.</p>
 <p>Variants (<code>anyts.constants.DELTA_VARIANTS</code>), with the formulas of the sources of stylo; <span class="arithmatex">\(n\)</span> is the number of units, <span class="arithmatex">\(z_A\)</span> and <span class="arithmatex">\(z_B\)</span> the vectors of z-scores of the texts:</p>
@@ -2977,7 +2977,8 @@
 </tr>
 </tbody>
 </table>
-<p>For authorship attribution there is <code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code>: the most frequent units, the culling and the statistics of the z-scores come from the reference texts <code>reference</code> (the profiles of the authors) or from a separate set <code>statistics</code> - for instance, the training windows when the profiles are too few to estimate the spread of the frequencies; the texts under test <code>samples</code> are described by the same units and scaled by the same statistics. The result is the distances from the texts under test to the reference ones, and the nearest reference in a row is the presumed author. Unlike in <code>delta</code>, the texts under test affect neither the units nor the scaling, so the result for a text does not depend on the texts passed along with it.</p>
+<p>The corpus, <code>n_mfw</code> and <code>culling</code> raise the errors of <code>frequency_table</code>; fewer than three texts raise <code>SourceError</code>, and an unknown variant <code>ParameterError</code>.</p>
+<p><code>delta_profiles(reference, samples, n_mfw, variant, culling, statistics)</code> is for authorship attribution. The most frequent units, the culling and the statistics of the z-scores come from the reference texts (the profiles of the authors) or from a separate set <code>statistics</code>, such as training windows when the profiles are too few to estimate the spread of the frequencies; the texts under test <code>samples</code> get the same units and scaling. The result is the distances from the samples (rows) to the references (columns); the nearest reference is the presumed author. Unlike in <code>delta</code>, a sample affects neither the units nor the scaling, so its result does not depend on the other samples. The corpora, <code>n_mfw</code> and <code>culling</code> raise the errors of <code>frequency_table</code>; fewer than three texts for the statistics raise <code>SourceError</code>, and an unknown variant <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
@@ -3016,7 +3017,7 @@
 </code></pre></div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
-<p>Markers of preferred and avoided words after Burrows (2007) and Craig and Kinney (2009). Every text of both corpora is split into segments of about <code>segment_size</code> words (the number of segments is the ratio of the length to the size rounded half up, at least one), and for a word the share of the segments of each corpus where it occurs (<span class="arithmatex">\(DP\)</span>) is computed. Zeta is the difference of the shares <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span> from −1 to 1 (<code>zeta.craig</code> in the notation of stylo; the classic Zeta of Craig <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span> is greater by one), the logarithmic Zeta is <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch et al. 2018</a>), a zero share replaced by half a segment. The list starts with the words the target corpus prefers and ends with the avoided ones.</p>
+<p>Markers of preferred and avoided words after Burrows (2007) and Craig and Kinney (2009). Every text of both corpora is split into segments of about <code>segment_size</code> words (the length over the size rounded half up, at least one segment); <span class="arithmatex">\(DP\)</span> is the share of the segments of a corpus with the word. Zeta is <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span>, from −1 to 1 (<code>zeta.craig</code> in stylo; the classic Zeta of Craig, <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span>, is greater by one); the logarithmic Zeta is <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch et al. 2018</a>), a zero share replaced by half a segment. The list goes from the words the target corpus prefers to those it avoids.</p>
 <table>
 <thead>
 <tr>
@@ -3053,7 +3054,7 @@
 </tr>
 </tbody>
 </table>
-<p>The result is a list of <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> named tuples by descending Zeta, by descending logarithmic Zeta and alphabetically when equal.</p>
+<p>The result is a list of <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> named tuples by descending Zeta, by descending logarithmic Zeta and alphabetically when equal. A corpus that is neither a list of strings nor a list of such lists raises <code>SourceTypeError</code>, and a corpus without words <code>SourceError</code>; a <code>segment_size</code> or a <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta</span>
@@ -3067,7 +3068,7 @@
 </code></pre></div>
 </div>
 <h2 id="kilgarriff_chi2">Kilgarriff's chi-square<a class="headerlink" href="#kilgarriff_chi2" title="Permanent link">&para;</a></h2>
-<p>The distance between two corpora after <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: for the <code>n_mfw</code> most frequent words of the joint corpus the expected frequencies in the corpora are proportional to their sizes, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> over the words and both corpora. The greater the value, the more the corpora differ; the value grows with the size of the corpora, so pairs of corpora are comparable with each other at equal sizes.</p>
+<p>The distance between two corpora after <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: for the <code>n_mfw</code> most frequent words of the joint corpus the expected frequencies in the corpora are proportional to their sizes, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> over the words and both corpora. The greater the value, the more the corpora differ; it grows with the size of the corpora, so only pairs of equal sizes are comparable.</p>
 <table>
 <thead>
 <tr>
@@ -3098,6 +3099,7 @@
 </tr>
 </tbody>
 </table>
+<p>Words that are not a list of strings raise <code>SourceTypeError</code>, a corpus without words <code>SourceError</code>, and an <code>n_mfw</code> that is not an integer of at least one <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">kilgarriff_chi2</span>
@@ -3107,8 +3109,8 @@
 </code></pre></div>
 </div>
 <h2 id="mendenhall">Mendenhall curve<a class="headerlink" href="#mendenhall" title="Permanent link">&para;</a></h2>
-<p><code>mendenhall_curve(words)</code> - the shares of the words of every length in characters (Mendenhall 1887), a profile of the author comparable between texts whatever their size.</p>
-<p><code>mendenhall_distance(words_a, words_b)</code> - the Jensen-Shannon distance with base 2 between the curves, from 0 (the distributions coincide) to 1.</p>
+<p><code>mendenhall_curve(words)</code> - the shares of the words of every length in characters (Mendenhall 1887), a profile of the author comparable between texts whatever their size. Words that are not a list of strings raise <code>SourceTypeError</code>, and no words <code>SourceError</code>.</p>
+<p><code>mendenhall_distance(words_a, words_b)</code> - the Jensen-Shannon distance with base 2 between the curves, from 0 (the distributions coincide) to 1. Words that are not a list of strings raise <code>SourceTypeError</code>, and a text without words <code>SourceError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">mendenhall_curve</span><span class="p">,</span> <span class="n">mendenhall_distance</span>

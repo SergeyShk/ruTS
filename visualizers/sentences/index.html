@@ -2830,12 +2830,12 @@
 <p><strong>ruts.visualizers.sentence_lengths_plot()</strong>, <strong>ruts.visualizers.sentence_lengths()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/sentences.md:sentence_lengths_plot 85736ab -->
-<p>Кривая длин предложений - ритм текста: длина каждого предложения в словах по порядку, скользящее среднее по окну из <code>window</code> предложений и врезка с гистограммой длин. Чередование коротких и длинных предложений - редакторский признак живого текста, ровная кривая - монотонного. Функция принимает оси <code>ax</code> и возвращает <code>Axes</code>.</p>
+<!-- core: visualizers/sentences.md:sentence_lengths_plot 36b6cdc -->
+<p>Кривая длин предложений - ритм текста: длина каждого предложения в словах по порядку, скользящее среднее по <code>window</code> предложениям и врезка с гистограммой длин. Чередование коротких и длинных предложений - редакторский признак живого текста, ровная кривая - монотонного. Функция принимает оси <code>ax</code> и возвращает <code>Axes</code>.</p>
 <p><code>sentence_lengths(source, sents_extractor=None, words_extractor=None)</code> извлекает длины: строка делится на предложения экстрактором предложений, каждое предложение - на слова экстрактором слов; предложения <code>Doc</code> берутся из его границ, а слова - из его токенов без знаков препинания и символов, причем части дефисного слова склеиваются (<code>во-первых</code> - одно слово); <code>Doc</code> без границ считается как его текст, экстракторами; предложения без слов пропускаются. Готовые длины - последовательность или итератор неотрицательных целых чисел - используются как есть; таблица, множество, словарь, байты или длина, которая не целое число, дают <code>SourceTypeError</code>, отрицательная длина - <code>SourceError</code>.</p>
 <p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a>; для строки ruTS по умолчанию передает русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, параметры <code>sents_extractor</code> и <code>words_extractor</code> заменяют их. Подписи по умолчанию - русские из <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> задает подписи поверх них.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters 5e37f4a -->
+<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters 7a3df40 -->
 <table>
 <thead>
 <tr>
@@ -2890,6 +2890,7 @@
 </tr>
 </tbody>
 </table>
+<p>Источник и экстракторы дают ошибки <code>sentence_lengths</code>, а отсутствие предложений - <code>SourceError</code>; <code>window</code>, который не целое число не меньше единицы, подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>

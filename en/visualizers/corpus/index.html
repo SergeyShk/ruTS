@@ -2914,9 +2914,10 @@
 </tr>
 </tbody>
 </table>
+<p>Words or targets that are not a list of strings raise <code>SourceTypeError</code>, no words or no targets <code>SourceError</code>; labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <p>The words are extracted by <a href="../../extractors/words/"><code>WordsExtractor</code></a>: lower case with <code>lowercase=True</code>, lemmas with <code>use_lexemes=True</code>.</p>
 <h2 id="keyness_plot">Keyness chart<a class="headerlink" href="#keyness_plot" title="Permanent link">&para;</a></h2>
-<p>Diverging horizontal bars: the words of <code>positive</code> to the right, of <code>negative</code> - the result of <code>keyness</code> with <code>positive=False</code> - to the left, the length of a bar is the absolute value of the <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), so the side is set by the list and not by the sign of the measure; <code>top_n</code> words on each side, the words with an undefined or infinite value are skipped. For the odds ratio (<code>score</code> from 0 to infinity, one - equal odds) set <code>log=True</code>: the absolute <span class="arithmatex">\(\log_2\)</span> of the value is plotted, symmetric around one.</p>
+<p>Diverging horizontal bars: the words of <code>positive</code> to the right, of <code>negative</code> (the result of <code>keyness</code> with <code>positive=False</code>) to the left, <code>top_n</code> on each side. The length of a bar is the absolute value of the <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), so the side is set by the list, not by the sign of the measure; words with an undefined or infinite value are skipped. For the odds ratio (from 0 to infinity, one - equal odds) <code>log=True</code> plots the absolute <span class="arithmatex">\(\log_2\)</span> of the value, symmetric around one.</p>
 <table>
 <thead>
 <tr>
@@ -2971,8 +2972,9 @@
 </tr>
 </tbody>
 </table>
+<p>Keywords that are not a list raise <code>SourceTypeError</code>, and no keyword with a finite value <code>SourceError</code>. An unknown <code>field</code>, a <code>top_n</code> that is not an integer of at least one, labels that <code>merge_labels</code> refuses or a legend that is not a pair, and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <h2 id="collocation_network">Collocation network<a class="headerlink" href="#collocation_network" title="Permanent link">&para;</a></h2>
-<p>An undirected graph: the nodes are the words with the size of the font by frequency, the edges the pairs with the width and the label by the value of the measure; the <code>neato</code> layout. A pair of a word with itself - a word repeated within the window - would be a loop and is left out before <code>top_n</code> pairs are taken. Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>; in Jupyter the graph displays itself, and <code>graph.render("network")</code> saves a png file.</p>
+<p>An undirected graph in the <code>neato</code> layout: the nodes are the words, the size of the font by frequency, the edges the pairs, the width and the label by the measure. A pair of a word with itself (a word repeated within the window) would be a loop and is left out before <code>top_n</code>. Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>; Jupyter displays the graph, and <code>graph.render("network")</code> saves a png file.</p>
 <table>
 <thead>
 <tr>
@@ -2997,6 +2999,7 @@
 </tr>
 </tbody>
 </table>
+<p>Collocations that are not a list raise <code>SourceTypeError</code>, no pair of two different words <code>SourceError</code>, and a <code>top_n</code> that is not an integer of at least one <code>ParameterError</code>.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <p>Let us look at the visualizers on 12 texts of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset.</p>
 <div class="admonition example">

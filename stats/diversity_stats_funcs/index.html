@@ -3532,6 +3532,8 @@
 
 
 <h1 id="_1">Функции вычисления метрик<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<!-- core: stats/diversity_stats_funcs.md:diversity-checks 518d85e -->
+<p>Каждая функция проверяет слова с помощью <code>check_words</code>: <code>text</code>, который является строкой, <code>Doc</code>, итератором, множеством или таблицей или слова которого не строки, дает <code>SourceTypeError</code>; <code>fit_zipf_mandelbrot</code> принимает и справочник частот.</p>
 <h2 id="type-token-ratio-ttr">Type-Token Ratio (TTR)<a class="headerlink" href="#type-token-ratio-ttr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_ttr()</strong></p>
@@ -3656,12 +3658,12 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_sttr()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_sttr 90d42f8 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_sttr 021e6fa -->
 <p>Вычисление метрики Summer Type-Token Ratio (STTR).</p>
 <p>Модификация метрики TTR с использованием логарифмической функции (Summer, 1966).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. Для текста из одной лексемы числитель не определен, а для текста не длиннее основания знаменатель <span class="arithmatex">\(\log \log N\)</span> равен нулю или отрицателен, поэтому значение в этих случаях - <code>nan</code>, как и в каждом столь же коротком окне <code>calc_windowed</code>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. Значение равно <code>nan</code> для текста из одной лексемы (числитель не определен) и для текста не длиннее основания (<span class="arithmatex">\(\log \log N \le 0\)</span>), в том числе для таких окон <code>calc_windowed</code>.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -3688,15 +3690,16 @@
 <td style="text-align: center;"><code>base</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Основание логарифма</td>
+<td style="text-align: center;">Основание логарифма (<code>DIVERSITY_LOG_BASE</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>base</code>, который не конечное число больше 1, дает <code>ParameterError</code>.</p>
 <h2 id="maas-type-token-ratio-mttr">Maas Type-Token Ratio (MTTR)<a class="headerlink" href="#maas-type-token-ratio-mttr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mttr()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_mttr 0e1fcfb -->
+<!-- core: stats/diversity_stats_funcs.md:calc_mttr 091f9f6 -->
 <p>Вычисление метрики Maas Type-Token Ratio (MTTR).</p>
 <p>Модификация метрики TTR с использованием логарифмической функции (Maas, 1972).</p>
 <div class="admonition note">
@@ -3728,20 +3731,21 @@
 <td style="text-align: center;"><code>base</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Основание логарифма</td>
+<td style="text-align: center;">Основание логарифма (<code>DIVERSITY_LOG_BASE</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>base</code>, который не конечное число больше 1, дает <code>ParameterError</code>.</p>
 <h2 id="dugast-type-token-ratio-dttr">Dugast Type-Token Ratio (DTTR)<a class="headerlink" href="#dugast-type-token-ratio-dttr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_dttr()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_dttr 5a40f62 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_dttr 240ae03 -->
 <p>Вычисление метрики Dugast Type-Token Ratio (DTTR).</p>
 <p>Модификация метрики TTR с использованием логарифмической функции (Dugast, 1978), обратная величина к метрике Maas.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. У текста без повторяющихся слов значение бесконечно, как и у других обратных мер.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. См. <a href="../diversity_stats/#conventions">соглашения</a>. У текста без повторяющихся слов значение бесконечно.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -3768,15 +3772,16 @@
 <td style="text-align: center;"><code>base</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Основание логарифма</td>
+<td style="text-align: center;">Основание логарифма (<code>DIVERSITY_LOG_BASE</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>base</code>, который не конечное число больше 1, дает <code>ParameterError</code>.</p>
 <h2 id="moving-average-type-token-ratio-mattr">Moving Average Type-Token Ratio (MATTR)<a class="headerlink" href="#moving-average-type-token-ratio-mattr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mattr()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_mattr 57fa7d4 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_mattr 3b56baf -->
 <p>Вычисление метрики Moving Average Type-Token Ratio (MATTR).</p>
 <p>Модификация метрики TTR с использованием скользящей средней (Covington &amp; McFall, 2010). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
@@ -3810,15 +3815,16 @@
 <td style="text-align: center;"><code>window_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>50</code></td>
-<td style="text-align: center;">Размер окна</td>
+<td style="text-align: center;">Размер окна (<code>MATTR_WINDOW_LEN</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>window_len</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <h2 id="mean-segmental-type-token-ratio-msttr">Mean Segmental Type-Token Ratio (MSTTR)<a class="headerlink" href="#mean-segmental-type-token-ratio-msttr" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_msttr()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_msttr 14ba8f3 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_msttr 76b66a0 -->
 <p>Вычисление метрики Mean Segmental Type-Token Ratio (MSTTR).</p>
 <p>Модификация метрики TTR с использованием сегментирования (Johnson, 1944). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
@@ -3852,27 +3858,28 @@
 <td style="text-align: center;"><code>segment_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>50</code></td>
-<td style="text-align: center;">Размер сегмента</td>
+<td style="text-align: center;">Размер сегмента (<code>MATTR_WINDOW_LEN</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>segment_len</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <h2 id="measure-of-textual-lexical-diversity-mtld">Measure of Textual Lexical Diversity (MTLD)<a class="headerlink" href="#measure-of-textual-lexical-diversity-mtld" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mtld()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_mtld 0c88867 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_mtld c584c02 -->
 <p>Вычисление метрики Measure of Textual Lexical Diversity (MTLD).</p>
 <p>Модификация метрики MSTTR (McCarthy, 2005). Не зависит от длины текста.</p>
 <p>Алгоритм:</p>
 <ol>
-<li>Текст делится на факторы - отрезки, на которых TTR опускается до порога 0.72 включительно (<code>TTR &lt;= 0.72</code>, см. <a href="../diversity_stats/#conventions">соглашения</a>)</li>
-<li>Незавершенный фактор в конце текста учитывается частично, пропорционально тому, насколько его TTR приблизился к порогу</li>
+<li>Текст делится на факторы - отрезки, на которых TTR опускается до порога 0.72 (<code>TTR &lt;= 0.72</code>, см. <a href="../diversity_stats/#conventions">соглашения</a>)</li>
+<li>Незавершенный последний фактор учитывается пропорционально тому, насколько его TTR приблизился к порогу</li>
 <li>Количество слов делится на количество факторов</li>
 </ol>
-<p>Доработанная версия алгоритма предполагает два прохода по тексту - в прямом и обратном порядке, и дальнейшее усреднение значения метрики (McCarthy &amp; Jarvis, 2010).</p>
+<p>Значение - среднее двух проходов, в прямом и обратном порядке (McCarthy &amp; Jarvis, 2010).</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Минимальная длина фактора нестандартна (lexical-diversity Кайла). Если ни один фактор не завершен и TTR не опускается ниже 1, возвращается бесконечность.</p>
+<p>Минимальная длина фактора нестандартна (lexical-diversity Кайла). Если ни один фактор не завершен и TTR не опускается ниже 1, значение равно бесконечности.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -3895,23 +3902,24 @@
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Минимальная длина фактора</td>
+<td style="text-align: center;">Минимальная длина фактора (<code>MTLD_MIN_LEN</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>threshold</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.72</code></td>
-<td style="text-align: center;">Порог TTR для завершения фактора</td>
+<td style="text-align: center;">Порог TTR для завершения фактора (<code>MTLD_TTR_THRESHOLD</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>min_len</code>, который не целое неотрицательное число, и <code>threshold</code>, который не число в интервале (0, 1), дают <code>ParameterError</code>.</p>
 <h2 id="moving-average-measure-of-textual-lexical-diversity-ma-mtld">Moving Average Measure of Textual Lexical Diversity (MA-MTLD)<a class="headerlink" href="#moving-average-measure-of-textual-lexical-diversity-ma-mtld" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mamtld()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_mamtld e26f25e -->
+<!-- core: stats/diversity_stats_funcs.md:calc_mamtld 5b434a2 -->
 <p>Вычисление метрики Moving Average Measure of Textual Lexical Diversity (MA-MTLD).</p>
-<p>Модификация метрики MTLD с использованием скользящего окна по образцу MTLD-MA из koRpus: фактор начинается с каждой позиции текста, значение метрики - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. Факторы, не завершенные до конца текста, не учитываются. Значения отличаются от значений koRpus, который делает только прямой проход, закрывает фактор при TTR строго ниже порога и отбрасывает факторы короче минимальной длины, а не продлевает их до нее.</p>
+<p>Модификация метрики MTLD с использованием скользящего окна по образцу MTLD-MA из koRpus: фактор начинается с каждой позиции текста, а значение метрики - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. koRpus делает только прямой проход, закрывает фактор при TTR строго ниже порога и отбрасывает факторы короче минимальной длины, а не продлевает их.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Если ни один фактор не завершен, функция возвращает <code>nan</code>. Метрика нестабильна на коротких текстах.</p>
@@ -3937,23 +3945,24 @@
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Минимальная длина фактора</td>
+<td style="text-align: center;">Минимальная длина фактора (<code>MTLD_MIN_LEN</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>threshold</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.72</code></td>
-<td style="text-align: center;">Порог TTR для завершения фактора</td>
+<td style="text-align: center;">Порог TTR для завершения фактора (<code>MTLD_TTR_THRESHOLD</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>min_len</code>, который не целое неотрицательное число, и <code>threshold</code>, который не число в интервале (0, 1), дают <code>ParameterError</code>.</p>
 <h2 id="mtld-mtld-w">MTLD со скользящим окном и заворотом текста (MTLD-W)<a class="headerlink" href="#mtld-mtld-w" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_mtldw()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_mtldw e98c64b -->
+<!-- core: stats/diversity_stats_funcs.md:calc_mtldw fb3a03f -->
 <p>Вычисление метрики MTLD-W (lexical-diversity <code>mtld_ma_wrap</code>, TAALED).</p>
-<p>Модификация метрики MA-MTLD: фактор начинается с каждой позиции текста, а факторы, не завершенные до конца текста, продолжаются с его начала, поэтому все позиции получают равный вес. Фактор не может быть длиннее текста.</p>
+<p>Модификация метрики MA-MTLD: факторы, не завершенные до конца текста, продолжаются с его начала, поэтому все позиции получают равный вес. Фактор не может быть длиннее текста.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Если TTR не опускается до порога даже на всем тексте, функция возвращает <code>nan</code>. Метрика нестабильна на текстах короче 100 слов.</p>
@@ -3979,23 +3988,24 @@
 <td style="text-align: center;"><code>min_len</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Минимальная длина фактора</td>
+<td style="text-align: center;">Минимальная длина фактора (<code>MTLD_MIN_LEN</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>threshold</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.72</code></td>
-<td style="text-align: center;">Порог TTR для завершения фактора</td>
+<td style="text-align: center;">Порог TTR для завершения фактора (<code>MTLD_TTR_THRESHOLD</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>min_len</code>, который не целое неотрицательное число, и <code>threshold</code>, который не число в интервале (0, 1), дают <code>ParameterError</code>.</p>
 <h2 id="hypergeometric-distribution-d-hd-d">Hypergeometric Distribution D (HD-D)<a class="headerlink" href="#hypergeometric-distribution-d-hd-d" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_hdd()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_hdd 6bf82ff -->
+<!-- core: stats/diversity_stats_funcs.md:calc_hdd f2327ae -->
 <p>Вычисление метрики Hypergeometric Distribution D (HD-D).</p>
-<p>Альтернатива vocd-D (McCarthy &amp; Jarvis, 2010): вместо случайного отбора сегментов текста она точно вычисляет ожидаемый TTR случайной выборки из <code>sample_size</code> слов. Для каждой лексемы гипергеометрическое распределение дает вероятность того, что лексема попадет в выборку хотя бы раз; сумма этих вероятностей - ожидаемое количество лексем в выборке, а HD-D - это количество, деленное на размер выборки. Случайности в значении нет.</p>
+<p>Альтернатива vocd-D (McCarthy &amp; Jarvis, 2010): точный ожидаемый TTR случайной выборки из <code>sample_size</code> слов, без отбора выборок. Гипергеометрическое распределение дает вероятность того, что каждая лексема попадет в выборку хотя бы раз; HD-D - сумма этих вероятностей, деленная на размер выборки.</p>
 <div class="admonition warning">
 <p class="admonition-title">Предупреждение</p>
 <p>Для текстов короче 50 слов или короче размера выборки метрика не определена, функция возвращает <code>nan</code>.</p>
@@ -4021,10 +4031,11 @@
 <td style="text-align: center;"><code>sample_size</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>42</code></td>
-<td style="text-align: center;">Размер выборки в словах, в литературе от 35 до 50</td>
+<td style="text-align: center;">Размер выборки в словах (<code>HDD_SAMPLE_SIZE</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>sample_size</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <h2 id="d">Индекс Симпсона (D)<a class="headerlink" href="#d" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_simpson_index()</strong></p>
@@ -4128,11 +4139,11 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_hapax_index()</strong>, псевдоним <strong>ruts.diversity_stats.calc_honore_r()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_hapax_index 4a5bc5c -->
+<!-- core: stats/diversity_stats_funcs.md:calc_hapax_index 1fc0489 -->
 <p>Вычисление <a href="https://ru.wikipedia.org/wiki/Гапакс">гапакс-индекса</a>.</p>
 <div class="admonition quote">
 <p class="admonition-title">Определение</p>
-<p>Гапакс (греч. ἅπαξ λεγόμενον - «только раз названное») - слово, встретившееся в некотором корпусе текстов только один раз. Так, <em>baciyelmo</em> - словечко Санчо Пансы для цирюльничьего тазика, который Дон Кихот принимает за шлем, - гапакс Сервантеса (оно встречается один раз, в главе 44 первой части «Дон Кихота»).</p>
+<p>Гапакс (греч. ἅπαξ λεγόμενον - «только раз названное») - слово, встретившееся в корпусе только один раз. Так, <em>baciyelmo</em> - словечко Санчо Пансы для цирюльничьего тазика, который Дон Кихот принимает за шлем, - гапакс Сервантеса (глава 44 первой части «Дон Кихота»).</p>
 </div>
 <p>Метрика совпадает с мерой Оноре (1979) и использует натуральный логарифм.</p>
 <p>Формула:</p>
@@ -4170,8 +4181,8 @@
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_frequency_spectrum()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_frequency_spectrum bd17b84 -->
-<p>Вычисление спектра частот - количества лексем <span class="arithmatex">\(V_i\)</span>, встретившихся в тексте ровно <span class="arithmatex">\(i\)</span> раз. Меры ниже считаются по нему; их формулы сверены с Tweedie и Baayen (1998).</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_frequency_spectrum 594f63a -->
+<p>Вычисление спектра частот - количества лексем <span class="arithmatex">\(V_i\)</span>, встретившихся в тексте ровно <span class="arithmatex">\(i\)</span> раз. Из него по формулам Tweedie и Baayen (1998) вычисляются гапакс-индекс, характеристики Юла K и I, меры Хердана Vm, Сишела S, Мишеа M и Баайена P, доля гапаксов и показатель α₂.</p>
 <p>Обозначения: <span class="arithmatex">\(N\)</span> - количество слов, <span class="arithmatex">\(V\)</span> - количество лексем, <span class="arithmatex">\(V_i\)</span> - количество лексем с частотой <span class="arithmatex">\(i\)</span>, <span class="arithmatex">\(V_1\)</span> - гапаксы, <span class="arithmatex">\(V_2\)</span> - дислегомены, <span class="arithmatex">\(p_k\)</span> - относительная частота лексемы.</p>
 <p>Параметры:</p>
 <table>
@@ -4341,7 +4352,7 @@ M = \frac{V}{V_2}
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_brunet_w()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_brunet_w 4e786ba -->
+<!-- core: stats/diversity_stats_funcs.md:calc_brunet_w a962d92 -->
 <p>Вычисление меры Брюне (Brunet, 1978). Значения для текстов обычно лежат в пределах 10-20, чем ниже показатель, тем богаче словарь.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4368,19 +4379,20 @@ W = N^{V^{-a}}, \quad a = 0.172
 <td style="text-align: center;"><code>a</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>0.172</code></td>
-<td style="text-align: center;">Показатель степени</td>
+<td style="text-align: center;">Показатель степени (<code>BRUNET_W_EXPONENT</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>a</code>, который не конечное число, дает <code>ParameterError</code>.</p>
 <h2 id="dugasts-k">Мера Дюга (Dugast's k)<a class="headerlink" href="#dugasts-k" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_dugast_k()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_dugast_k 7933070 -->
+<!-- core: stats/diversity_stats_funcs.md:calc_dugast_k c652724 -->
 <p>Вычисление меры Дюга (Dugast, 1979). Не путать с Dugast's U - метрикой <a href="#dugast-type-token-ratio-dttr">DTTR</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Значение зависит от основания логарифма, по умолчанию 10. Мера не определена, если <span class="arithmatex">\(\log N \le 1\)</span>, то есть для текстов не длиннее основания логарифма; в этом случае функция возвращает <code>nan</code>.</p>
+<p>Значение зависит от основания логарифма, по умолчанию 10. Для текстов не длиннее основания (<span class="arithmatex">\(\log N \le 1\)</span>) мера не определена, функция возвращает <code>nan</code>.</p>
 </div>
 <p>Формула:</p>
 <div class="arithmatex">\[
@@ -4407,10 +4419,11 @@ k = \frac{\log V}{\log \log N}
 <td style="text-align: center;"><code>base</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Основание логарифма</td>
+<td style="text-align: center;">Основание логарифма (<code>DIVERSITY_LOG_BASE</code>)</td>
 </tr>
 </tbody>
 </table>
+<p><code>base</code>, который не конечное число больше 1, дает <code>ParameterError</code>.</p>
 <h2 id="baayens-p">Мера Баайена (Baayen's P)<a class="headerlink" href="#baayens-p" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_baayen_p()</strong></p>
@@ -4618,11 +4631,11 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.fit_zipf_mandelbrot()</strong>, <strong>ruts.diversity_stats.ZipfMandelbrot</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:fit_zipf_mandelbrot 56dd01c -->
-<p>Подгонка <a href="https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law">закона Ципфа-Мандельброта</a> <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> к распределению частот по рангам. При <span class="arithmatex">\(q = 0\)</span> закон сводится к закону Ципфа с показателем <span class="arithmatex">\(s\)</span>; сдвиг <span class="arithmatex">\(q\)</span> описывает выполаживание кривой на самых частых словах, которое закон Ципфа не передает. Параметры подбираются методом наименьших квадратов в логарифмических координатах с ограничениями <span class="arithmatex">\(q \ge 0\)</span>, <span class="arithmatex">\(s \ge 0\)</span>. Возвращает именованный кортеж <code>ZipfMandelbrot</code> с полями <code>c</code>, <code>q</code>, <code>s</code> и <code>r2</code> - коэффициентом детерминации подгонки в логарифмических координатах.</p>
+<!-- core: stats/diversity_stats_funcs.md:fit_zipf_mandelbrot 05b729c -->
+<p>Подгонка <a href="https://en.wikipedia.org/wiki/Zipf–Mandelbrot_law">закона Ципфа-Мандельброта</a> <span class="arithmatex">\(f(r) = C / (r + q)^s\)</span> к распределению частот по рангам. При <span class="arithmatex">\(q = 0\)</span> это закон Ципфа с показателем <span class="arithmatex">\(s\)</span>; сдвиг <span class="arithmatex">\(q\)</span> передает выполаживание кривой на самых частых словах. Параметры подбираются методом наименьших квадратов в логарифмических координатах при <span class="arithmatex">\(q \ge 0\)</span>, <span class="arithmatex">\(s \ge 0\)</span>. Возвращает именованный кортеж <code>ZipfMandelbrot</code> с полями <code>c</code>, <code>q</code>, <code>s</code> и <code>r2</code> - коэффициентом детерминации подгонки в логарифмических координатах.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Для текстов из менее чем трех лексем, при одинаковых частотах всех лексем и при расходящейся подгонке все поля <code>nan</code>. На коротких текстах параметры неустойчивы: закон описывает распределение частот больших корпусов.</p>
+<p>Все поля <code>nan</code> для текстов из менее чем трех лексем, при одинаковых частотах всех лексем или при расходящейся подгонке. На коротких текстах параметры неустойчивы: закон описывает большие корпуса.</p>
 </div>
 <p>Параметры:</p>
 <table>
@@ -4643,6 +4656,7 @@ H = -\sum_k p_k \log_2 p_k
 </tr>
 </tbody>
 </table>
+<p>Справочник, слова которого не строки или частоты не числа, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота - <code>SourceError</code> (<code>check_counts</code>).</p>
 <p>Визуализатор <a href="../../visualizers/zipf/">закона Ципфа</a> строит эту подгонку при <code>show_fit=True</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -4659,8 +4673,8 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_heaps_beta()</strong>, <strong>ruts.diversity_stats.fit_heaps()</strong>, <strong>ruts.diversity_stats.vocabulary_growth()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_heaps_beta 1ed3900 -->
-<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span>, описывающего рост словаря с ростом длины текста. Оценивается линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста словаря. На корпусах в миллионы слов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6, по кривой роста отдельного текста - выше (0.6-0.9), поэтому значения сравнимы только между текстами близкой длины.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_heaps_beta 1dedac8 -->
+<p>Вычисление показателя <span class="arithmatex">\(\beta\)</span> <a href="https://en.wikipedia.org/wiki/Heaps'_law">закона Хипса</a> <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> роста словаря с ростом длины текста: оценка линейной регрессией логарифма размера словаря по логарифму длины текста вдоль кривой роста. На корпусах в миллионы слов <span class="arithmatex">\(\beta\)</span> лежит в пределах 0.4-0.6, на отдельном тексте - в пределах 0.6-0.9, поэтому значения сравнимы только между текстами близкой длины.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Значение зависит от порядка слов и требует от нескольких сотен слов. Для текстов короче двух слов функция возвращает <code>nan</code>.</p>
@@ -4693,8 +4707,8 @@ H = -\sum_k p_k \log_2 p_k
 <div class="admonition info">
 <p><strong>ruts.diversity_stats.calc_windowed()</strong></p>
 </div>
-<!-- core: stats/diversity_stats_funcs.md:calc_windowed 29b5120 -->
-<p>Оконный расчет любой метрики: значение по последовательным окнам текста одинаковой длины, среднее, выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины; стандартизированный TTR Кубата и Милички (не STTR Summer) - оконный расчет TTR с окном 1000 слов и 95% доверительным интервалом. Для текстов короче окна метрика считается по всему тексту как по единственному окну, окна с неопределенным значением метрики (<code>nan</code>) не учитываются. Если хотя бы в одном окне метрика бесконечна (например, обратный индекс Симпсона на окне из уникальных слов), среднее равно бесконечности, а стандартное отклонение и доверительный интервал не определены. Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
+<!-- core: stats/diversity_stats_funcs.md:calc_windowed 732e552 -->
+<p>Оконный расчет любой метрики: среднее ее значений по последовательным окнам одинаковой длины, их выборочное стандартное отклонение и доверительный интервал среднего по распределению Стьюдента. Стандартный способ сравнения текстов разной длины; стандартизированный TTR Кубата и Милички (не STTR Summer) - оконный расчет TTR с окном 1000 слов и 95% интервалом. Текст короче окна - единственное окно; окна со значением <code>nan</code> не учитываются. Метрика, бесконечная хотя бы в одном окне (например, обратный индекс Симпсона на окне из уникальных слов), делает среднее бесконечным, а отклонение и интервал - <code>nan</code>. Возвращает именованный кортеж <code>WindowStats</code> с полями <code>mean</code>, <code>std</code>, <code>lower</code>, <code>upper</code> и <code>n_windows</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4744,6 +4758,7 @@ H = -\sum_k p_k \log_2 p_k
 </tr>
 </tbody>
 </table>
+<p><code>func</code>, который нельзя вызвать, дает <code>SourceTypeError</code>; <code>window_len</code> или <code>step</code>, которые не целое число не меньше единицы, и <code>confidence</code>, который не число в интервале (0, 1), дают <code>ParameterError</code>.</p>
 
 
 

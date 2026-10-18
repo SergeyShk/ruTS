@@ -2877,7 +2877,7 @@
 <p>Графики к <a href="../../corpus/keyness/">корпусным мерам</a>: лексическая дисперсия - где в тексте встречается слово, диаграмма ключевых слов по результатам <a href="../../corpus/keyness/"><code>keyness</code></a> и сеть коллокаций по результатам <a href="../../corpus/collocations/"><code>collocations</code></a>. Функции matplotlib принимают оси <code>ax</code> и возвращают <code>Axes</code>: без <code>ax</code> создается новая фигура, с <code>ax</code> график ложится в сетку пользователя; сеть коллокаций строится graphviz и возвращает <code>Graph</code>, как <a href="../word_tree/">дерево слов</a>.</p>
 <p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/corpus/">anyTS</a> с русскими подписями графиков matplotlib из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них, а пара строк, переданная <code>keyness_plot</code>, заменяет две подписи легенды, остальные остаются русскими. <code>dispersion_plot</code> снимает знаки ударения со слов и с <code>targets</code>.</p>
 <h2 id="dispersion_plot">Лексическая дисперсия<a class="headerlink" href="#dispersion_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/corpus.md:dispersion_plot 604b589 -->
+<!-- core: visualizers/corpus.md:dispersion_plot e99368a -->
 <p>Строка на каждое слово из <code>targets</code> и штрих на позиции каждого его вхождения в текст. Слова сравниваются как есть: регистр и лемматизация - на стороне извлечения слов.</p>
 <table>
 <thead>
@@ -2915,10 +2915,11 @@
 </tr>
 </tbody>
 </table>
+<p>Слова или <code>targets</code>, которые не список строк, дают <code>SourceTypeError</code>, отсутствие слов или <code>targets</code> - <code>SourceError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <p>Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>: в нижнем регистре - с <code>lowercase=True</code>, леммы - с <code>use_lexemes=True</code>.</p>
 <h2 id="keyness_plot">Диаграмма ключевых слов<a class="headerlink" href="#keyness_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/corpus.md:keyness_plot e860f91 -->
-<p>Расходящиеся горизонтальные столбцы: слова из <code>positive</code> вправо, из <code>negative</code> - результата <code>keyness</code> с <code>positive=False</code> - влево, длина столбца - модуль значения поля <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), так что сторона задается списком, а не знаком меры; по <code>top_n</code> слов с каждой стороны, слова с неопределенным или бесконечным значением пропускаются. Для отношения шансов (<code>score</code> от 0 до бесконечности, единица - шансы равны) задайте <code>log=True</code>: откладывается модуль <span class="arithmatex">\(\log_2\)</span> значения, симметричный относительно единицы.</p>
+<!-- core: visualizers/corpus.md:keyness_plot 336ec21 -->
+<p>Расходящиеся горизонтальные столбцы: слова из <code>positive</code> вправо, из <code>negative</code> (результата <code>keyness</code> с <code>positive=False</code>) влево, по <code>top_n</code> с каждой стороны. Длина столбца - модуль значения поля <code>field</code> (<code>score</code>, <code>g2</code>, <code>log_ratio</code>), так что сторона задается списком, а не знаком меры; слова с неопределенным или бесконечным значением пропускаются. Для отношения шансов (от 0 до бесконечности, единица - шансы равны) <code>log=True</code> откладывает модуль <span class="arithmatex">\(\log_2\)</span> значения, симметричный относительно единицы.</p>
 <table>
 <thead>
 <tr>
@@ -2973,9 +2974,10 @@
 </tr>
 </tbody>
 </table>
+<p>Ключевые слова, которые не список, дают <code>SourceTypeError</code>, а отсутствие ключевого слова с конечным значением - <code>SourceError</code>. Неизвестное поле <code>field</code>, <code>top_n</code>, который не целое число не меньше единицы, подписи, которые отвергает <code>merge_labels</code>, или легенда, которая не пара, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="collocation_network">Сеть коллокаций<a class="headerlink" href="#collocation_network" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/corpus.md:collocation_network 080cdcf -->
-<p>Неориентированный граф: узлы - слова с размером шрифта по частоте, ребра - пары с толщиной и подписью по значению меры; раскладка <code>neato</code>. Пара слова с самим собой - слово, повторенное внутри окна, - была бы петлей и отбрасывается до того, как берутся <code>top_n</code> пар. Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>; в Jupyter граф отображается сам, а <code>graph.render("network")</code> сохраняет файл png.</p>
+<!-- core: visualizers/corpus.md:collocation_network c004c73 -->
+<p>Неориентированный граф в раскладке <code>neato</code>: узлы - слова, размер шрифта по частоте, ребра - пары, толщина и подпись по мере. Пара слова с самим собой (слово, повторенное внутри окна) была бы петлей и отбрасывается до <code>top_n</code>. Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>; Jupyter отображает граф, а <code>graph.render("network")</code> сохраняет файл png.</p>
 <table>
 <thead>
 <tr>
@@ -3000,6 +3002,7 @@
 </tr>
 </tbody>
 </table>
+<p>Коллокации, которые не список, дают <code>SourceTypeError</code>, отсутствие пары из двух разных слов - <code>SourceError</code>, а <code>top_n</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
 <h2 id="_3">Пример использования<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализаторов на примере 12 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
 <div class="admonition example">

@@ -2830,7 +2830,7 @@
 <p><strong>ruts.visualizers.sentence_lengths_plot()</strong>, <strong>ruts.visualizers.sentence_lengths()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The curve of the lengths of the sentences - the rhythm of a text: the length of every sentence in words in order, the moving average over a window of <code>window</code> sentences and an inset with the histogram of the lengths. Short and long sentences in turn are an editorial sign of a lively text, a flat curve - of a monotonous one. The function takes the axes <code>ax</code> and returns <code>Axes</code>.</p>
+<p>The curve of the lengths of the sentences - the rhythm of a text: the length of every sentence in words, in order, the moving average over <code>window</code> sentences and an inset with the histogram of the lengths. Short and long sentences in turn are an editorial sign of a lively text, a flat curve of a monotonous one. The function takes the axes <code>ax</code> and returns <code>Axes</code>.</p>
 <p><code>sentence_lengths(source, sents_extractor=None, words_extractor=None)</code> extracts the lengths: a string is split into sentences by the sentence extractor and every sentence into words by the word extractor; the sentences of a <code>Doc</code> come from its boundaries and its words from its tokens, punctuation and symbols left out and the parts of a hyphenated word joined (<code>во-первых</code> is one word), while a <code>Doc</code> without boundaries is counted as its text, by the extractors; sentences without words are skipped. Ready lengths - a sequence or an iterator of integers that are not negative - are used as they are; a table, a set, a mapping, bytes or a length that is not an integer raise <code>SourceTypeError</code>, a negative length <code>SourceError</code>.</p>
 <p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a> core; for a string ruTS passes its Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, and the <code>sents_extractor</code> and <code>words_extractor</code> parameters replace them. The default labels are the Russian ones of <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> puts the given labels over them.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
@@ -2888,6 +2888,7 @@
 </tr>
 </tbody>
 </table>
+<p>The source and the extractors raise the errors of <code>sentence_lengths</code>, and no sentences raise <code>SourceError</code>; a <code>window</code> that is not an integer of at least one, labels that <code>merge_labels</code> refuses and an <code>ax</code> that is not a matplotlib <code>Axes</code> raise <code>ParameterError</code>.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Example</p>

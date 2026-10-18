@@ -3268,9 +3268,9 @@ a \cdot \frac{\textrm{Количество слов}}{\textrm{Количеств
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_flesch_reading_easy()</strong></p>
 </div>
-<!-- core: stats/readability_stats_funcs.md:calc_flesch_reading_easy 978f8ef -->
+<!-- core: stats/readability_stats_funcs.md:calc_flesch_reading_easy bcd5a1f -->
 <p>Вычисление индекса удобочитаемости Флеша (Flesch, 1948).</p>
-<p>Чем выше показатель, тем легче текст; шкала номинально идет от 0 до 100, хотя простейшие тексты выходят выше 100, а сложнейшие - ниже 0.</p>
+<p>Чем выше показатель, тем легче текст: номинально от 0 до 100, хотя простейшие тексты выходят выше 100, а сложнейшие - ниже 0.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
 c - a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
@@ -4226,8 +4226,8 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <div class="admonition info">
 <p><strong>ruts.readability_stats.flesch_reading_easy_to_grade()</strong></p>
 </div>
-<!-- core: stats/readability_stats_funcs.md:flesch_reading_easy_to_grade b88a235 -->
-<p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону.</p>
+<!-- core: stats/readability_stats_funcs.md:flesch_reading_easy_to_grade f9bc88b -->
+<p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону. Индекс Флеша или <code>below</code>, которые не конечное число, дают <code>ParameterError</code>, как и <code>grades</code>, которые пусты или не состоят из пар конечных чисел с границами по убыванию.</p>
 <p>Полосы ruTS по умолчанию - полосы шкалы прочтения индекса (<code>READING_EASE_LEVELS</code>), чтобы сводный класс и <code>describe</code> читали значение одинаково: 8.5 и 10.5 - середины полос «8-й и 9-й класс» и «10-й и 11-й класс», 14 - «университет», 17 - «выпускник университета», то есть 1-3-й и 4-6-й курс вуза по <a href="#grade_to_age">таблице ступеней</a>. Значения ниже 0 относятся к последней полосе, как и в шкале прочтения. Эти полосы - <code>ruts.constants.READING_EASE_GRADES</code>, атрибут <code>reading_ease_grades</code> класса <a href="../readability_stats/#interpretation"><code>ReadabilityStats</code></a>:</p>
 <table>
 <thead>
@@ -4302,8 +4302,8 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_consensus_grade()</strong></p>
 </div>
-<!-- core: stats/readability_stats_funcs.md:calc_consensus_grade 80761d1 -->
-<p>Вычисление сводного класса: медианы значений формул класса, округлённых арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения функцией <code>to_grade</code> и добавленным без округления, - поэтому диапазон с классом 8.5 голосует за 8.5. Отсутствие значений и класс, который не конечное число, дают <code>ParameterError</code>, <code>to_grade</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
+<!-- core: stats/readability_stats_funcs.md:calc_consensus_grade 8162c0d -->
+<p>Вычисление сводного класса: медианы значений формул класса, округленных арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения функцией <code>to_grade</code> без округления, - поэтому диапазон с классом 8.5 голосует за 8.5. Отсутствие значений, класс или индекс Флеша, которые не конечное число, дают <code>ParameterError</code>, <code>to_grade</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4424,8 +4424,8 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <div class="admonition info">
 <p><strong>ruts.readability_stats.scale_level()</strong></p>
 </div>
-<!-- core: stats/readability_stats_funcs.md:scale_level 2322dde -->
-<p>Полоса шкалы для значения: шкала задается нижними границами полос по убыванию, значение попадает в первую полосу, границы которой достигает, а нижняя полоса открыта вниз. Значение, которое не конечное число, и пустая шкала дают <code>ParameterError</code>.</p>
+<!-- core: stats/readability_stats_funcs.md:scale_level 70c84a3 -->
+<p>Полоса шкалы для значения: шкала задается нижними границами полос по убыванию, значение попадает в первую полосу, границы которой достигает, а нижняя полоса открыта вниз. Значение, которое не конечное число, и шкала, которая пуста или не является списком пар из конечной нижней границы и полосы, дают <code>ParameterError</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -4466,8 +4466,8 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <div class="admonition info">
 <p><strong>ruts.readability_stats.calc_reading_time()</strong></p>
 </div>
-<!-- core: stats/readability_stats_funcs.md:calc_reading_time 725bd9c -->
-<p>Вычисление времени чтения текста в минутах: количество слов, деленное на скорость чтения; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
+<!-- core: stats/readability_stats_funcs.md:calc_reading_time be4d042 -->
+<p>Вычисление времени чтения текста в минутах: количество слов, деленное на скорость чтения; количество слов, которое не неотрицательное целое число, и скорость, которая не положительное число, дают <code>ParameterError</code>.</p>
 <p>Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию используется верхняя граница. Нормы чтения вслух для начальной школы по ФГОС доступны в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>:</p>
 <table>
 <thead>

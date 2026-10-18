@@ -2830,11 +2830,11 @@
 <p><strong>ruts.visualizers.wordtree()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/word_tree.md:wordtree 7b85f86 -->
-<p>Построение <a href="https://www.weblyzard.com/word-tree/">дерева слов</a>, которое показывает контексты ключевого слова в тексте: в каждом списке слов - например, в предложении - считаются N-граммы длиной до <code>max_n</code> слов, которые начинаются или заканчиваются ключевым словом. Каждый уровень дерева сохраняет <code>max_per_n</code> самых частых N-грамм, продолжающих сохраненную более короткую, при равенстве - по алфавиту. Сохраненные N-граммы объединяются в два дерева, слов после ключевого слова и перед ним, с размером шрифта по частоте (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg и Viégas 2008</a>). Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>.</p>
+<!-- core: visualizers/word_tree.md:wordtree 37f3cdf -->
+<p>Построение <a href="https://www.weblyzard.com/word-tree/">дерева слов</a> контекстов ключевого слова: в каждом списке слов, например в предложении, считаются N-граммы длиной до <code>max_n</code> слов, которые начинаются или заканчиваются ключевым словом. Каждый уровень сохраняет <code>max_per_n</code> самых частых N-грамм, продолжающих сохраненную более короткую, при равенстве - по алфавиту; они объединяются в два дерева, после ключевого слова и перед ним, с размером шрифта по частоте (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg и Viégas 2008</a>). Для отрисовки нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a>.</p>
 <p>Это функция ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a>; знаки ударения снимаются с текстов и с <code>keyword</code>.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/word_tree.md:wordtree-parameters d32a474 -->
+<!-- core: visualizers/word_tree.md:wordtree-parameters 2e0594d -->
 <table>
 <thead>
 <tr>
@@ -2877,7 +2877,7 @@
 </tr>
 </tbody>
 </table>
-<p>Функция возвращает <code>Digraph</code> библиотеки graphviz.</p>
+<p>Функция возвращает <code>Digraph</code> библиотеки graphviz. Тексты, которые не список списков строк, и ключевое слово, которое не строка, дают <code>SourceTypeError</code>; отсутствие текстов или ключевое слово, рядом с которым ни в одном тексте нет слов, - <code>SourceError</code>; <code>max_n</code>, который не целое число не меньше 2, и <code>max_per_n</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере предложений 50 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
 <div class="admonition example">

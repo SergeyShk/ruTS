@@ -2952,8 +2952,8 @@
 <p><strong>ruts.visualizers.highlight()</strong>, <strong>ruts.visualizers.HighlightedText</strong>, <strong>ruts.visualizers.Highlight</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/highlight.md:HighlightedText ca113fe -->
-<p>Механизм подсветки текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Результат отображается в Jupyter как HTML со стилями и легендой; метод <code>to_html</code> возвращает ту же разметку для документации и веб-приложений, а фрагменты хранятся в атрибуте <code>highlights</code> для собственной отрисовки. Фрагменты разных слоев могут пересекаться.</p>
+<!-- core: visualizers/highlight.md:HighlightedText a3f4037 -->
+<p>Подсветка текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. Источник данных - текст или объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Результат отображается в Jupyter как HTML со стилями и легендой; <code>to_html</code> возвращает разметку, а <code>highlights</code> хранит фрагменты для собственной отрисовки. Фрагменты разных слоев могут пересекаться.</p>
 <p>Функция <code>highlight</code> возвращает объект <code>HighlightedText</code> ruTS со слоями в стиле сервисов <a href="https://glvrd.ru/">Главред</a> и <a href="https://turgenev.ashmanov.com/">Тургенев</a>: длинные предложения, сложные и редкие слова, пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отглагольные существительные, производные предлоги, штампы, стоп-слова, вводные слова, коннекторы, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел.</p>
 <p>Слои подсветки:</p>
 <table>
@@ -3174,8 +3174,8 @@
 <p>Пояснение фрагмента - число слов в предложении, слогов в слове, длина цепочки или согласная аллитерации.</p>
 <h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="to_html">to_html<a class="headerlink" href="#to_html" title="Permanent link">&para;</a></h3>
-<!-- core: visualizers/highlight.md:HighlightedText-to_html a16305c -->
-<p>Возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>&lt;префикс&gt;-highlight</code>, в котором легенда со счетчиками и текст, где подсвеченные отрезки обернуты в <code>span</code> с классами <code>&lt;префикс&gt;-hl</code> и <code>&lt;префикс&gt;-hl-&lt;слой&gt;</code>, а пояснения выводятся в атрибут <code>title</code>; <code>&lt;префикс&gt;</code> - префикс классов CSS. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) сохраняются как символьные ссылки, по одной на перенос, поэтому разметку можно вставлять в Markdown.</p>
+<!-- core: visualizers/highlight.md:HighlightedText-to_html 1692b86 -->
+<p>Возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>&lt;префикс&gt;-highlight</code>, в котором легенда со счетчиками и текст, где подсвеченный отрезок - <code>span</code> с классами <code>&lt;префикс&gt;-hl</code> и <code>&lt;префикс&gt;-hl-&lt;слой&gt;</code> с пояснениями в его <code>title</code>; <code>&lt;префикс&gt;</code> - <code>css_prefix</code>. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) становятся символьными ссылками, по одной на перенос, поэтому разметку можно вставлять в Markdown.</p>
 <table>
 <thead>
 <tr>

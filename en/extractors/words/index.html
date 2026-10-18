@@ -2980,8 +2980,9 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A regular expression as the tokenizer is a separator: the text is split with <code>re.split</code>. The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. A lower-case stop word list also filters a capitalized word at the start of a sentence. A punctuation mark is a token consisting entirely of marks and symbols, including multi-character ones: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (see <code>anyts.utils.is_punctuation</code>). Empty and whitespace tokens are dropped before the filters. N-grams join the words with <code>_</code>.</p>
+<p>A regular expression as the tokenizer is a separator for <code>re.split</code>. The filters are applied in order: punctuation, numbers, lemmatization, lower case, stop words, word length. A punctuation mark is a token of marks and symbols only, multi-character ones included: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (<code>anyts.utils.is_punctuation</code>). Empty and whitespace tokens are dropped before the filters. N-grams join the words with <code>_</code>.</p>
 </div>
+<p>An <code>ngram_range</code> that is not a pair of integers, or whose lower bound is below one or above the upper one, raises <code>ParameterError</code>, and so do a length bound that is not an integer, a negative bound and a minimum above the maximum. Stop words that are not a collection of strings raise <code>SourceTypeError</code>.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
 <p>Extracts words from a text.</p>
@@ -3003,6 +3004,7 @@
 </tr>
 </tbody>
 </table>
+<p>A text that is not a string and a tokenizer that cannot be called or does not return strings raise <code>SourceTypeError</code>.</p>
 <p>An example of word extraction with bigrams as tokens, after filtering stop words and numbers and lemmatizing:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3022,7 +3024,7 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<p>Returns the top words of the text as a list of (word, frequency) pairs, the most frequent first.</p>
+<p>Returns the top words of the text as a list of (word, frequency) pairs, the most frequent first; a number that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>

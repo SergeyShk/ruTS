@@ -2896,13 +2896,13 @@
 <p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong>, <strong>ruts.corpus.FrequencyReference</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness 0018a96 -->
+<!-- core: corpus/keyness.md:keyness bbbd1ba -->
 <p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном.</p>
-<p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (значимость различия - есть ли оно) и Log Ratio (размер эффекта - насколько оно велико). Также считается выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC) и ELL, размер эффекта <span class="arithmatex">\(G^2\)</span>, получают знак: отрицательный, если слово чаще в эталоне; остальные меры эффекта (%DIFF, Log Ratio, отношение шансов) направленные по построению.</p>
+<p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (есть ли различие) и Log Ratio (насколько оно велико), а также выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC) и ELL, размер эффекта <span class="arithmatex">\(G^2\)</span>, отрицательны, если слово чаще в эталоне; %DIFF, Log Ratio и отношение шансов направленные по построению.</p>
 <p>Эталоном может быть список слов, справочник частот (его объем - сумма частот) или <code>FrequencyReference</code>. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково.</p>
 <p>Функция оборачивает <code>keyness</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> и принимает эталоном также <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> <code>FreqDict</code>; <code>FrequencyReference</code> лежит рядом с ней в <code>ruts.corpus</code>, а функции мер - в <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>). Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness-measures 7d98aa3 -->
+<!-- core: corpus/keyness.md:keyness-measures 03b8710 -->
 <p>Для слова с частотой <span class="arithmatex">\(a\)</span> в целевом корпусе объемом <span class="arithmatex">\(c\)</span> и частотой <span class="arithmatex">\(b\)</span> в эталонном корпусе объемом <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
 <table>
 <thead>
@@ -2948,7 +2948,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnston, Berry и Mielke (2006); размер эффекта <span class="arithmatex">\(G^2\)</span>, доля наибольшего возможного отклонения от ожидаемых частот, от 0 до 1; <code>nan</code>, когда наименьшая ожидаемая частота не больше единицы - тогда логарифм нулевой или отрицательный; чуть выше единицы мера неограниченно растет</td>
+<td style="text-align: left;">Johnston, Berry и Mielke (2006); размер эффекта <span class="arithmatex">\(G^2\)</span>, доля наибольшего возможного отклонения от ожидаемых частот, от 0 до 1; <code>nan</code>, когда наименьшая ожидаемая частота не больше единицы (логарифм нулевой или отрицательный), чуть выше единицы мера не ограничена</td>
 </tr>
 <tr>
 <td style="text-align: left;">Отношение шансов</td>
@@ -2958,9 +2958,9 @@
 </tr>
 </tbody>
 </table>
-<p>Нулевая частота в одном из корпусов для %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> берется из распределения хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Меры доступны как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> и <code>calc_odds_ratio</code> с аргументами <code>(a, b, c, d)</code> из модуля <code>anyts.corpus.keyness</code>; их названия и описания - в <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
+<p>Нулевая частота в одном из корпусов для %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014). p-значение <span class="arithmatex">\(G^2\)</span> берется из распределения хи-квадрат с одной степенью свободы (<code>calc_p_value</code>). Модуль <code>anyts.corpus.keyness</code> дает их как функции <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> и <code>calc_odds_ratio</code> от <code>(a, b, c, d)</code>; их названия и описания - в <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness-parameters 6f31f0b -->
+<!-- core: corpus/keyness.md:keyness-parameters 91241e7 -->
 <table>
 <thead>
 <tr>
@@ -3009,6 +3009,7 @@
 </tr>
 </tbody>
 </table>
+<p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>. Эталон, который не список строк, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота справочника и пустой корпус - <code>SourceError</code>.</p>
 <p><code>reference</code> может быть и <code>FreqDict</code>, и еще один параметр говорит, из чего при нем целевой корпус:</p>
 <table>
 <thead>
@@ -3029,7 +3030,7 @@
 </tbody>
 </table>
 <h2 id="_5">Эталон по частотам<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:FrequencyReference 3fc867c -->
+<!-- core: corpus/keyness.md:FrequencyReference 812ba4c -->
 <p><code>FrequencyReference(counts, size, missing=0.0, key=None, keep=None)</code> описывает эталонный корпус одними частотами - например, частотный словарь, построенный по корпусу, слишком большому, чтобы передать его словами:</p>
 <table>
 <thead>
@@ -3073,7 +3074,7 @@
 </tr>
 </tbody>
 </table>
-<p>Слова целевого корпуса, которые пропускает <code>keep</code>, считаются под своим <code>key</code>, а отброшенные не входят и в его объем; отрицательные ключевые слова берутся только из ключей <code>counts</code>, которые пропускает <code>keep</code>. Частота ключа, которого нет в <code>counts</code>, - <code>missing</code>: словарь дает свою наименьшую частоту, верхнюю границу истинной, поэтому такое слово может быть положительным ключевым словом, но никогда - отрицательным.</p>
+<p>Учитываются только слова целевого корпуса, которые пропускает <code>keep</code>, - под своим <code>key</code>, и в частотах, и в объеме. Частота ключа, которого нет в <code>counts</code>, - <code>missing</code>, например наименьшая частота словаря: это верхняя граница, поэтому такое слово может быть положительным ключевым словом, но никогда - отрицательным. Отрицательные ключевые слова берутся только из ключей <code>counts</code>, которые пропускает <code>keep</code>. Частота проверяется при чтении, так что большой словарь не перебирается ради положительных ключевых слов: частота, которая не число, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная - <code>SourceError</code>. <code>size</code> или <code>missing</code>, который не конечное число или отрицателен, дает <code>ParameterError</code>, а <code>key</code> или <code>keep</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
 <p>Частотный словарь <code>FreqDict</code>, переданный как <code>reference</code>, превращается в такой эталон:</p>
 <table>
 <thead>

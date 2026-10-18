@@ -2897,7 +2897,7 @@
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>Keyword extraction (keyness) for a target corpus against a reference one: the words that occur significantly more often in the target corpus than in the reference.</p>
-<p>For every word two values are computed that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (the significance of the difference - whether there is one) and Log Ratio (the size of the effect - how large it is). The chosen measure <code>score</code> is computed as well and used for the sorting. The measures of significance (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC) and ELL, the effect size of <span class="arithmatex">\(G^2\)</span>, are signed: negative when the word is more frequent in the reference; the other measures of effect (%DIFF, Log Ratio, odds ratio) are directional by construction.</p>
+<p>Every word gets two values that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (whether there is a difference) and Log Ratio (how large it is), plus the chosen measure <code>score</code>, which sorts the list. The measures of significance (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC) and ELL, the effect size of <span class="arithmatex">\(G^2\)</span>, are negative when the word is more frequent in the reference; %DIFF, Log Ratio and the odds ratio are directional by construction.</p>
 <p>The reference may be a list of words, a mapping of frequencies (its size is the sum of the counts) or a <code>FrequencyReference</code>. Words are compared as they are: case, lemmatization and stop words belong to the word extractor, and both corpora have to be extracted the same way.</p>
 <p>The function wraps <code>keyness</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> core and also takes the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> <code>FreqDict</code> as the reference; <code>FrequencyReference</code> is in <code>ruts.corpus</code> next to it, and the functions of the measures in <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>). Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
@@ -2946,7 +2946,7 @@
 <td style="text-align: left;">ELL</td>
 <td style="text-align: left;"><code>ell</code></td>
 <td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnston, Berry and Mielke (2006); size of the effect of <span class="arithmatex">\(G^2\)</span>, the share of the greatest possible departure from the expected frequencies, from 0 to 1; <code>nan</code> when the least expected frequency is at most one - then the logarithm is zero or negative; just above one the measure grows without bound</td>
+<td style="text-align: left;">Johnston, Berry and Mielke (2006); effect size of <span class="arithmatex">\(G^2\)</span>, the share of the greatest possible departure from the expected frequencies, from 0 to 1; <code>nan</code> when the least expected frequency is at most one (a logarithm of zero or below), unbounded just above one</td>
 </tr>
 <tr>
 <td style="text-align: left;">Odds ratio</td>
@@ -2956,7 +2956,7 @@
 </tr>
 </tbody>
 </table>
-<p>A zero frequency in one of the corpora is replaced with 0.5 for %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> comes from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The measures are available as the functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> and <code>calc_odds_ratio</code> with the arguments <code>(a, b, c, d)</code> of the module <code>anyts.corpus.keyness</code>; their names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
+<p>A zero frequency in one of the corpora is replaced with 0.5 for %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> comes from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The module <code>anyts.corpus.keyness</code> gives them as the functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> and <code>calc_odds_ratio</code> of <code>(a, b, c, d)</code>; their names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3006,6 +3006,7 @@
 </tr>
 </tbody>
 </table>
+<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>. A reference that is not a list of strings, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and an empty corpus raise <code>SourceError</code>.</p>
 <p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
 <table>
 <thead>
@@ -3069,7 +3070,7 @@
 </tr>
 </tbody>
 </table>
-<p>The words of the target that <code>keep</code> passes are counted under their <code>key</code>, and the words it leaves out do not count in the size of the target either; negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. The frequency of a key missing from <code>counts</code> is <code>missing</code>: a dictionary gives its least frequency, an upper bound of the true one, so such a word may be a positive keyword but never a negative one.</p>
+<p>Only the words of the target that <code>keep</code> passes are counted, under their <code>key</code>, in the frequencies and in the size alike. A key missing from <code>counts</code> has the frequency <code>missing</code>, such as the least frequency of a dictionary: an upper bound, so its word may be a positive keyword but never a negative one. Negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. A frequency is checked as it is read, so a large dictionary is not gone through for positive keywords: one that is not a number raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite one <code>SourceError</code>. A <code>size</code> or a <code>missing</code> that is not a finite number or is negative raises <code>ParameterError</code>, and a <code>key</code> or a <code>keep</code> that cannot be called <code>SourceTypeError</code>.</p>
 <p>The frequency dictionary <code>FreqDict</code> passed as <code>reference</code> is turned into such a reference:</p>
 <table>
 <thead>

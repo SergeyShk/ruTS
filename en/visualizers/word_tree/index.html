@@ -2830,7 +2830,7 @@
 <p><strong>ruts.visualizers.wordtree()</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Building a <a href="https://www.weblyzard.com/word-tree/">word tree</a> that shows the contexts of a keyword in a text: the N-grams of up to <code>max_n</code> words that start or end with the keyword are counted in every list of words - a sentence, for instance. Every level of the tree keeps the <code>max_per_n</code> most frequent N-grams that continue a kept shorter one, alphabetically when equal. The kept N-grams are joined into two trees, the words after the keyword and before it, with the size of the font by frequency (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg and Viégas 2008</a>). Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>.</p>
+<p>Building a <a href="https://www.weblyzard.com/word-tree/">word tree</a> of the contexts of a keyword: the N-grams of up to <code>max_n</code> words that start or end with the keyword are counted in every list of words, such as a sentence. Every level keeps the <code>max_per_n</code> most frequent N-grams that continue a kept shorter one, alphabetically when equal; they are joined into two trees, after the keyword and before it, the size of the font by frequency (<a href="https://www.cg.tuwien.ac.at/courses/InfoVis/HallOfFame/2011/Gruppe05/Homepage/Paper/wordtree-paper-wattenberg.pdf">Wattenberg and Viégas 2008</a>). Rendering needs the executables of <a href="https://graphviz.org/download/">Graphviz</a>.</p>
 <p>The function is that of the <a href="https://sergeyshk.github.io/anyTS/visualizers/word_tree/">anyTS</a> core; stress marks are stripped from the texts and from <code>keyword</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -2871,11 +2871,11 @@
 <td style="text-align: center;"><code>**kwargs</code></td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Drawing parameters: <code>max_font_size</code> (default <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - a function of the relative frequency of a node, its frequency over the greatest one (0 to 1], that gives the share of the range from <code>min_font_size</code> to <code>max_font_size</code>, from 0 to 1; the cube root by default</td>
+<td style="text-align: center;">Drawing parameters: <code>max_font_size</code> (default <code>30</code>), <code>min_font_size</code> (<code>12</code>), <code>font_interp</code> - a function of the relative frequency of a node (its frequency over the greatest one, in (0, 1]) giving the share of the range from <code>min_font_size</code> to <code>max_font_size</code>, from 0 to 1; the cube root by default</td>
 </tr>
 </tbody>
 </table>
-<p>The function returns a <code>Digraph</code> of graphviz.</p>
+<p>The function returns a <code>Digraph</code> of graphviz. Texts that are not a list of lists of strings and a keyword that is not a string raise <code>SourceTypeError</code>; no texts, or a keyword with no word next to it in any of them, <code>SourceError</code>; a <code>max_n</code> that is not an integer of at least 2 and a <code>max_per_n</code> that is not an integer of at least one <code>ParameterError</code>.</p>
 <h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
 <p>Let us look at the visualizer on the sentences of 50 texts of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset.</p>
 <div class="admonition example">

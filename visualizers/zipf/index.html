@@ -2830,15 +2830,15 @@
 <p><strong>ruts.visualizers.zipf()</strong>, <strong>ruts.visualizers.zipf_theory()</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/zipf.md:zipf 2fecb35 -->
+<!-- core: visualizers/zipf.md:zipf 70ce52c -->
 <p>Построение графика <a href="https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%BA%D0%BE%D0%BD_%D0%A6%D0%B8%D0%BF%D1%84%D0%B0">закона Ципфа</a> по справочнику частотности слов.</p>
 <div class="admonition quote">
 <p class="admonition-title">Определение</p>
-<p>Зако́н Ци́пфа («ранг-частота») - эмпирическая закономерность распределения частоты слов естественного языка: если все слова языка или достаточно длинного текста упорядочить по убыванию частоты, частота n-го слова в списке окажется приблизительно обратно пропорциональной его номеру n - рангу слова. Второе по частоте слово встречается примерно в два раза реже первого, третье - в три раза реже, и так далее.</p>
+<p>Зако́н Ци́пфа («ранг-частота») - эмпирическая закономерность частоты слов естественного языка: если слова языка или достаточно длинного текста упорядочить по убыванию частоты, частота n-го слова окажется приблизительно обратно пропорциональной его рангу n. Второе по частоте слово встречается примерно в два раза реже первого, третье - в три раза реже, и так далее.</p>
 </div>
 <p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/zipf/">anyTS</a> с русскими подписями из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них, например <code>labels={"title": "Закон Ципфа в SovChLit"}</code>.</p>
 <h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/zipf.md:zipf-parameters 0d42d39 -->
+<!-- core: visualizers/zipf.md:zipf-parameters c00cea5 -->
 <table>
 <thead>
 <tr>
@@ -2905,10 +2905,10 @@
 </tr>
 </tbody>
 </table>
-<p>Функция возвращает оси <code>Axes</code> с графиком; <code>num_words</code> больше числа лексем не удлиняет кривые за пределы данных, справочник со словами не строками дает <code>SourceTypeError</code>, пустой справочник или частота не больше нуля - <code>SourceError</code>, а <code>num_words</code> меньше единицы или показатель, который не конечное число больше нуля, - <code>ParameterError</code>, все до создания фигуры.</p>
+<p>Функция возвращает оси <code>Axes</code> с графиком; <code>num_words</code> больше числа лексем не удлиняет кривые за пределы данных. Справочник, который не <code>Counter</code> строк, дает <code>SourceTypeError</code>, а пустой справочник или частота не больше нуля - <code>SourceError</code>. <code>num_words</code> меньше единицы, отрицательный <code>num_labels</code>, при <code>show_theory</code> показатель, который не конечное число больше нуля, подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>. Все эти ошибки возникают до создания фигуры.</p>
 <p>Подгонка закона Ципфа-Мандельброта описана в <a href="../../stats/diversity_stats_funcs/#fit_zipf_mandelbrot"><code>fit_zipf_mandelbrot</code></a>.</p>
-<!-- core: visualizers/zipf.md:zipf_theory bce12a7 -->
-<p><code>zipf_theory(size, num_ranks, alpha=1.5, ax=None, labels=None)</code> строит только теоретическую кривую, <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> для рангов от 1 до <code>num_ranks</code>; ее подпись - ключ <code>theoretical</code>.</p>
+<!-- core: visualizers/zipf.md:zipf_theory 2447339 -->
+<p><code>zipf_theory(size, num_ranks, alpha=1.5, ax=None, labels=None)</code> строит только теоретическую кривую, <span class="arithmatex">\(f(r) = size \cdot r^{-\alpha}\)</span> для рангов от 1 до <code>num_ranks</code>; ее подпись - ключ <code>theoretical</code>. <code>size</code> или <code>alpha</code>, который не конечное число больше нуля, <code>num_ranks</code>, который не целое число не меньше единицы, подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="_4">Пример использования<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализатора на примере 100 текстов из набора данных <a href="../../datasets/sovchlit/">SovChLit</a>.</p>
 <div class="admonition example">

@@ -2855,7 +2855,7 @@
 <p>Два графика о распределении слов текста, дополняющие <a href="../zipf/">закон Ципфа</a>: рост словаря с длиной текста по закону Хипса и спектр частот - сколько лексем встречается ровно один, два, три раза. Оба графика есть в zipfR (<code>plot.vgc</code>, <code>plot.spc</code>). Функции принимают оси <code>ax</code> и возвращают <code>Axes</code>.</p>
 <p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/vocabulary/">anyTS</a> с русскими подписями из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них. Подгонка закона Хипса описана в <a href="../../stats/diversity_stats_funcs/#heaps_beta"><code>fit_heaps</code></a>, спектр - в <a href="../../stats/diversity_stats_funcs/#frequency_spectrum"><code>calc_frequency_spectrum</code></a>.</p>
 <h2 id="heaps_plot">Закон Хипса<a class="headerlink" href="#heaps_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/vocabulary.md:heaps_plot a5a763e -->
+<!-- core: visualizers/vocabulary.md:heaps_plot 13ca433 -->
 <p>Размер словаря <span class="arithmatex">\(V\)</span> после каждого слова текста и кривая подгонки <span class="arithmatex">\(V(N) = K \cdot N^{\beta}\)</span> по <code>fit_heaps</code> с параметрами в легенде; кривая зависит от порядка слов.</p>
 <table>
 <thead>
@@ -2887,8 +2887,9 @@
 </tr>
 </tbody>
 </table>
+<p>Слова, которые не список строк, дают <code>SourceTypeError</code>, меньше двух слов - <code>SourceError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="frequency_spectrum_plot">Спектр частот<a class="headerlink" href="#frequency_spectrum_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/vocabulary.md:frequency_spectrum_plot 22fd438 -->
+<!-- core: visualizers/vocabulary.md:frequency_spectrum_plot 2552218 -->
 <p>Число лексем <span class="arithmatex">\(V(m)\)</span>, встретившихся ровно <span class="arithmatex">\(m\)</span> раз (<code>calc_frequency_spectrum</code>), в логарифмических координатах; левый край - гапаксы. По спектру считаются меры разнообразия Юла, Сишела, Мишеа и Оноре, а его форма показывает, насколько словарь текста далек от исчерпания.</p>
 <table>
 <thead>
@@ -2920,6 +2921,7 @@
 </tr>
 </tbody>
 </table>
+<p>Слова, которые не список строк, дают <code>SourceTypeError</code>, отсутствие слов - <code>SourceError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="_3">Пример использования<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>

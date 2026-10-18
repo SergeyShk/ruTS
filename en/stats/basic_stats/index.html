@@ -2974,8 +2974,8 @@
 <p><strong>ruts.basic_stats.BasicStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source can be either a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
-<p>The words of a string come from the word extractor and its sentences from the sentence extractor. The words of a <code>Doc</code> come from its tokens (punctuation marks and symbols such as <code>€</code> or <code>%</code> dropped) and its sentences from its boundaries, or from the sentence extractor when it has none; an extractor passed explicitly is used on the text of the <code>Doc</code>. A blank line ends a sentence of a string and of a <code>Doc</code> without boundaries; a <code>Doc</code> with boundaries follows the rule when its pipeline starts a sentence after a blank line (<code>start_sents_after_blank_lines</code>, registered by a language library under its own name) before the parser, <code>senter</code> or <code>sentencizer</code>. A sentence of punctuation alone holds no word and is not counted.</p>
+<p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
+<p>The words and the sentences of a string come from the extractors. A <code>Doc</code> gives its tokens as words, without punctuation marks and symbols such as <code>€</code> or <code>%</code>, and its boundaries as sentences, or those of the sentence extractor when it has none or only partial ones (<code>has_sents</code>); an extractor given is used on its text instead. A blank line ends a sentence of a string and of a <code>Doc</code> without boundaries; a <code>Doc</code> with boundaries does so when its pipeline has <code>start_sents_after_blank_lines</code> (registered by a language library under its own name) before the parser, <code>senter</code> or <code>sentencizer</code>. A sentence without words, such as punctuation alone, is not counted.</p>
 <p>In ruTS this component is called <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>.</p>
 <p>Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them.</p>
 <div class="admonition note">
@@ -2983,7 +2983,7 @@
 <p>The statistics are computed when the <code>BasicStats</code> object is initialized.</p>
 </div>
 <h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). A <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) takes its sentences from the text by <code>SentsExtractor</code>.</p>
+<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). A <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) or with partial ones (<code>ruts_blank_lines</code> alone) takes its sentences from the text by <code>SentsExtractor</code>.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3048,6 +3048,21 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: center;"><code>normalize</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;">Whether the normalized statistics are computed</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>complex_syl_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Minimum number of syllables in a complex word</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>long_word_letter_factor</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Minimum number of letters in a long word</td>
+</tr>
 <tr>
 <td style="text-align: center;"><code>c_letters</code></td>
 <td style="text-align: center;">dict[int, int]</td>
@@ -3175,7 +3190,7 @@
 </tr>
 </tbody>
 </table>
-<p>The counts of the words are normalized by the number of words, those of the characters by the number of characters; the normalized statistics are computed with <code>normalize=True</code>.</p>
+<p>With <code>normalize=True</code> the counts of the words are divided by the number of words, those of the characters by the number of characters.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <h3 id="count_words_by_syllables-count_words_by_letters">count_words_by_syllables, count_words_by_letters<a class="headerlink" href="#count_words_by_syllables-count_words_by_letters" title="Permanent link">&para;</a></h3>
 <p><code>count_words_by_syllables(min_syllables)</code> and <code>count_words_by_letters(min_letters)</code> return the number of words with at least the given number of syllables or letters; a minimum that is not an integer raises <code>ParameterError</code>.</p>
@@ -3184,7 +3199,7 @@
 <p>These methods recount complex and long words with a threshold different from the one set at initialization. For instance, <a href="../readability_stats/"><code>ReadabilityStats</code></a> uses them for the SMOG index (a complex word has 5+ syllables) and the LIX index (a long word has 7+ letters).</p>
 </div>
 <h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed statistics - a copy: editing it does not change the object.</p>
+<p>Returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the counts of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
 <p>An example of computing basic text statistics with normalization:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3228,7 +3243,7 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the counts of the statistics, their descriptions from <code>stats_desc</code> and the headers from <code>stats_headers</code>.</p>
+<p>Prints a table with the counts of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
 <p>To illustrate the method, we reuse the code from the previous example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
@@ -3264,7 +3279,7 @@
 <div class="admonition info">
 <p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>
 </div>
-<p><code>count_punctuations(text, marks, dash_pattern)</code> counts punctuation marks by their types - the same distribution lives in the <code>c_punctuations</code> attribute: commas, periods, question and exclamation marks, ellipses, colons, semicolons, dashes, hyphens, guillemets, quotation marks, parentheses and the other marks. The dashes typed with hyphens (<code>dash_pattern</code>) are counted first, then the ellipses - the <code>…</code> character, three or more periods, or two periods after <code>?</code> and <code>!</code>, one mark whose periods do not count as periods (<code>Who?..</code> is a question and an ellipsis) - and then every mark by its type in <code>marks</code>; any other character of the Unicode categories P and S is another mark (<code>§</code>, <code>€</code>, <code>°</code>). <code>marks</code> maps every mark, a single character, to one of the types, otherwise <code>ParameterError</code>, and <code>dash_pattern</code> is a compiled regular expression; a text that is not a string, marks that are not a mapping and dashes that are not a compiled expression raise <code>SourceTypeError</code>.</p>
+<p><code>count_punctuations(text, marks, dash_pattern)</code> counts punctuation marks by type, the distribution of <code>c_punctuations</code>: commas, periods, question and exclamation marks, ellipses, colons, semicolons, dashes, hyphens, guillemets, quotation marks, parentheses and other marks. Dashes typed with hyphens (<code>dash_pattern</code>) are counted first, then ellipses - <code>…</code>, three or more periods, or two after <code>?</code> and <code>!</code>, one mark whose periods are not counted as periods (<code>Who?..</code> is a question and an ellipsis) - then each mark by its type in <code>marks</code>; any other character of the Unicode categories P and S is another mark (<code>§</code>, <code>€</code>, <code>°</code>). A mark of <code>marks</code> that is not a single character or has an unknown type raises <code>ParameterError</code>; a text that is not a string, <code>marks</code> that are not a mapping and a <code>dash_pattern</code> that is not a compiled regular expression raise <code>SourceTypeError</code>.</p>
 <p>In ruTS <code>count_punctuations(text)</code> takes the marks of the core with the low quotation mark <code>„</code> as a quotation mark, and a hanging hyphen before <code>и</code>, <code>или</code>, <code>либо</code> or a comma stays a hyphen (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), while a dialogue dash typed with a hyphen is a dash (<code>- Ушли, - сказал он</code>). <code>punctuation_profile(text, n_words=None)</code> turns the counts into frequencies per 1000 words and adds <code>yo_share</code> - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.</p>
 <p>The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see <a href="../../corpus/compare/">corpus comparison</a>). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.</p>
 <div class="admonition example">

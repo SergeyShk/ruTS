@@ -2913,7 +2913,7 @@
 <h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Класс расширяет <code>WordsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/words/">anyTS</a> крючками русского языка: токенизатор <code>tokenize(text)</code> - функция <code>tokenize</code> библиотеки <a href="https://github.com/natasha/razdel">razdel</a> с отделением приклеенных к словам тире реплик (<code>ruts.utils.iter_tokens</code>), лемма <code>lemmatize(word)</code> - первый разбор <code>MorphAnalyzer</code> библиотеки <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> (<code>ruts.utils.parse_all</code>: «её» разбирается как «ее» - у pymorphy3 нет разбора «её» как личного местоимения, «нем» - как «нём», «есть» - как «быть»), а шаблон чисел <code>number_pattern</code> подходит и к диапазонам, дробям и порядковым числительным: <code>2020-2021</code>, <code>5.5</code>, <code>1,5</code>, <code>3-й</code>, <code>90-х</code>. До любого токенизатора из текста снимаются знаки ударения и мягкие переносы, а й и ё из двух символов собираются в одну букву (<code>ruts.utils.strip_marks</code>).</p>
 <h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: extractors/words.md:WordsExtractor-parameters a447ca0 -->
+<!-- core: extractors/words.md:WordsExtractor-parameters bb58d08 -->
 <table>
 <thead>
 <tr>
@@ -2982,11 +2982,12 @@
 </table>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Регулярное выражение в роли токенизатора - разделитель: текст режется через <code>re.split</code>. Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Список стоп-слов в нижнем регистре отбрасывает и слово с заглавной буквы в начале предложения. Знак препинания - токен целиком из знаков и символов, в том числе многосимвольный: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (см. <code>anyts.utils.is_punctuation</code>). Пустые и пробельные токены отбрасываются до фильтров. N-граммы соединяют слова через <code>_</code>.</p>
+<p>Регулярное выражение в роли токенизатора - разделитель для <code>re.split</code>. Фильтры применяются по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова. Знак препинания - токен только из знаков и символов, в том числе многосимвольный: <code>?!</code>, <code>--</code>, <code>…</code>, <code>€</code> (<code>anyts.utils.is_punctuation</code>). Пустые и пробельные токены отбрасываются до фильтров. N-граммы соединяют слова через <code>_</code>.</p>
 </div>
+<p><code>ngram_range</code>, который не пара целых чисел или чья нижняя граница меньше единицы или больше верхней, дает <code>ParameterError</code>, как и граница длины, которая не целое число, отрицательная граница и минимум больше максимума. Стоп-слова, которые не набор строк, дают <code>SourceTypeError</code>.</p>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <h3 id="extract">extract<a class="headerlink" href="#extract" title="Permanent link">&para;</a></h3>
-<!-- core: extractors/words.md:WordsExtractor-extract 67c60e1 -->
+<!-- core: extractors/words.md:WordsExtractor-extract 0455709 -->
 <p>Выполняет извлечение слов из текста.</p>
 <table>
 <thead>
@@ -3006,6 +3007,7 @@
 </tr>
 </tbody>
 </table>
+<p>Текст, который не строка, и токенизатор, который нельзя вызвать или который возвращает не строки, дают <code>SourceTypeError</code>.</p>
 <p>Рассмотрим пример извлечения слов, используя в качестве токенов биграммы, а также выполнив предварительную фильтрацию стоп-слов и чисел и лемматизацию:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
@@ -3025,8 +3027,8 @@
 </code></pre></div>
 </div>
 <h3 id="get_most_common">get_most_common<a class="headerlink" href="#get_most_common" title="Permanent link">&para;</a></h3>
-<!-- core: extractors/words.md:WordsExtractor-get_most_common a834177 -->
-<p>Возвращает топ-слова текста списком пар (слово, частота), начиная с самого частого.</p>
+<!-- core: extractors/words.md:WordsExtractor-get_most_common f1156d0 -->
+<p>Возвращает топ-слова текста списком пар (слово, частота), начиная с самого частого; количество, которое не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>

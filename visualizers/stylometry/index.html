@@ -2899,8 +2899,8 @@
 <p>Графики к <a href="../../corpus/stylometry/">стилометрии</a>: дендрограмма и многомерное шкалирование по матрице расстояний <a href="../../corpus/stylometry/#delta"><code>delta</code></a>, диаграмма главных компонент по частотам самых частых слов и кривые Менденхолла нескольких текстов - набор, которым в stylo смотрят на кластеризацию текстов по авторам. Функции принимают оси <code>ax</code> и возвращают <code>Axes</code>.</p>
 <p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/stylometry/">anyTS</a> с русскими подписями из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них. Частоты для главных компонент дает <a href="../../corpus/stylometry/#delta"><code>frequency_table</code></a>, кривые - <a href="../../corpus/stylometry/#mendenhall"><code>mendenhall_curve</code></a>.</p>
 <h2 id="dendrogram_plot">Дендрограмма<a class="headerlink" href="#dendrogram_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/stylometry.md:dendrogram_plot 1c08ea8 -->
-<p>Иерархическая кластеризация <code>scipy.cluster.hierarchy</code> по матрице расстояний между текстами; метод Уорда по умолчанию, как у <a href="https://aclanthology.org/W15-0709.pdf">Evert и др. (2015)</a>; подписи листьев - имена текстов из индекса матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры.</p>
+<!-- core: visualizers/stylometry.md:dendrogram_plot cb3258b -->
+<p>Иерархическая кластеризация <code>scipy.cluster.hierarchy</code> по матрице расстояний между текстами, по умолчанию методом Уорда, как у <a href="https://aclanthology.org/W15-0709.pdf">Evert и др. (2015)</a>; листья подписываются по индексу матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры. Расстояния, которые не <code>DataFrame</code> чисел, дают <code>SourceTypeError</code>; неизвестный <code>method</code>, подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2938,7 +2938,7 @@
 </tbody>
 </table>
 <h2 id="pca_plot">Главные компоненты<a class="headerlink" href="#pca_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/stylometry.md:pca_plot 5872373 -->
+<!-- core: visualizers/stylometry.md:pca_plot b940b06 -->
 <p>Метод главных компонент по z-оценкам относительных частот самых частых единиц (<code>frequency_table</code>, <code>z_scores</code>): тексты на плоскости двух первых компонент с их именами, доли объясненной дисперсии - в подписях осей.</p>
 <table>
 <thead>
@@ -2982,9 +2982,10 @@
 </tr>
 </tbody>
 </table>
+<p>Корпус, <code>n_mfw</code> и <code>culling</code> дают ошибки <code>frequency_table</code>, а меньше трех текстов - <code>SourceError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="mds_plot">Многомерное шкалирование<a class="headerlink" href="#mds_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/stylometry.md:mds_plot 3309106 -->
-<p>Классическое многомерное шкалирование (Torgerson 1952) по любой матрице расстояний: двойное центрирование матрицы квадратов расстояний и два главных собственных вектора; расстояния между точками приближают расстояния матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры.</p>
+<!-- core: visualizers/stylometry.md:mds_plot 0605d10 -->
+<p>Классическое многомерное шкалирование (Torgerson 1952) по любой матрице расстояний: два главных собственных вектора дважды центрированной матрицы квадратов расстояний, так что расстояния между точками приближают расстояния матрицы. Столбцы берутся в порядке строк; матрица, в столбцах которой другие тексты, чем в строках, меньше двух текстов, бесконечное или отрицательное расстояние, асимметрия или расстояние на диагонали дают <code>SourceError</code> до создания фигуры. Расстояния, которые не <code>DataFrame</code> чисел, дают <code>SourceTypeError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -3016,7 +3017,7 @@
 </tbody>
 </table>
 <h2 id="mendenhall_plot">Кривые Менденхолла<a class="headerlink" href="#mendenhall_plot" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/stylometry.md:mendenhall_plot fadc7a5 -->
+<!-- core: visualizers/stylometry.md:mendenhall_plot 21b6291 -->
 <p>Доли слов по длине в символах (<code>mendenhall_curve</code>) для каждого текста на одном графике; длина, которой нет ни у одного слова, рисуется в нуле.</p>
 <table>
 <thead>
@@ -3048,6 +3049,7 @@
 </tr>
 </tbody>
 </table>
+<p>Корпус, который не словарь списков строк, дает <code>SourceTypeError</code>, отсутствие текстов или текст без слов - <code>SourceError</code>; подписи, которые отвергает <code>merge_labels</code>, и <code>ax</code>, который не <code>Axes</code> matplotlib, дают <code>ParameterError</code>.</p>
 <h2 id="_3">Пример использования<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Рассмотрим работу визуализаторов на примере 8 текстов из набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>.</p>
 <div class="admonition example">
