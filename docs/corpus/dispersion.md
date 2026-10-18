@@ -5,10 +5,10 @@
 
 ## Описание
 
-<!-- core: corpus/dispersion.md:dispersion 14e4623 -->
+<!-- core: corpus/dispersion.md:dispersion bb96d7a -->
 Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной из них; меры дисперсии ([Gries 2008](https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf), [2020](https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf)) дополняют частоту.
 
-Текст делится на части: `parts` - число частей примерно равного размера или размеры частей по порядку (предложения, абзацы, главы, документы корпуса), в сумме равные числу слов. Для каждого слова считаются частоты по частям и шесть мер; Gries рекомендует DP как основную.
+`parts` - число частей примерно равного размера или размеры частей по порядку (предложения, абзацы, главы, документы корпуса), в сумме равные числу слов. По частотам каждого слова по частям считаются шесть мер; Gries рекомендует DP как основную.
 
 Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.
 
@@ -16,7 +16,7 @@
 
 ## Меры
 
-<!-- core: corpus/dispersion.md:dispersion-measures 09abba3 -->
+<!-- core: corpus/dispersion.md:dispersion-measures 305e725 -->
 Для $n$ частей с долями $s_i$ в тексте, частотами слова по частям $v_i$ и общей частотой $f = \sum v_i$; $p_i = v_i / n_i$ - относительная частота в части размером $n_i$:
 
 | Мера | Поле | Формула | Значения |
@@ -28,11 +28,11 @@
 | S Розенгрена | `rosengren_s` | $\frac{(\sum \sqrt{s_i v_i})^2}{f}$ | 1 - пропорционально, стремится к $1/n$ при сосредоточении в одной из равных частей; Rosengren (1971) |
 | Дивергенция Кульбака-Лейблера | `kl_divergence` | $\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}$ | в битах; 0 - пропорционально, растет при сосредоточении в малых частях; Gries (2020) |
 
-Меры доступны как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s` и `calc_kl_divergence` с аргументами `(frequencies, sizes)` - частоты слова по частям и размеры частей - из модуля `anyts.corpus.dispersion`; их названия - в `anyts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`.
+Модуль `anyts.corpus.dispersion` дает их как функции `calc_dp`, `calc_dp_norm`, `calc_juilland_d`, `calc_carroll_d2`, `calc_rosengren_s` и `calc_kl_divergence` от `(frequencies, sizes)`, частот слова по частям и размеров частей; их названия - в `anyts.constants.DISPERSION_STATS_DESC`. Для слова с нулевой частотой все меры `nan`.
 
 ## Параметры
 
-<!-- core: corpus/dispersion.md:dispersion-parameters a7f9e1c -->
+<!-- core: corpus/dispersion.md:dispersion-parameters a94f488 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------: | :-: | :----------: | :------: |
 | `words` | list[str] | `-` | Слова текста по порядку |
@@ -40,10 +40,12 @@
 | `word` | str | `None` | Слово, дисперсия которого нужна; `None` - все слова |
 | `min_freq` | int | `1` | Минимальная частота слова |
 
+Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`. `parts`, который не целое число от 2 до числа слов и не два или более положительных целых числа, в сумме равных ему, `word`, который не строка, и `min_freq`, который не целое число, дают `ParameterError`.
+
 ## Результат
 
-<!-- core: corpus/dispersion.md:Dispersion c55ea86 -->
-Список именованных кортежей `Dispersion` по убыванию частоты: `word`, `freq` и шесть мер из таблицы; `pd.DataFrame(result)` дает таблицу.
+<!-- core: corpus/dispersion.md:Dispersion 4c8585a -->
+Список именованных кортежей `Dispersion` по убыванию частоты: `word`, `freq`, `dp`, `dp_norm`, `juilland_d`, `carroll_d2`, `rosengren_s` и `kl_divergence`; `pd.DataFrame(result)` дает таблицу.
 
 ## Пример
 

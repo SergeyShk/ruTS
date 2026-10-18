@@ -16,7 +16,7 @@ Stress marks and soft hyphens count neither as characters nor as parts of words,
 
 ## Language hooks
 
-The class extends the `BasicStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) core with the hooks of Russian: the syllables of a word are counted by [`count_syllables`](../syllables.md#count_syllables), the default extractors are the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md), and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). A `Doc` without sentence boundaries (`spacy.blank`, a pipeline without `parser` and `senter`) takes its sentences from the text by `SentsExtractor`.
+The class extends the `BasicStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) core with the hooks of Russian: the syllables of a word are counted by [`count_syllables`](../syllables.md#count_syllables), the default extractors are the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md), and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). A `Doc` without sentence boundaries (`spacy.blank`, a pipeline without `parser` and `senter`) or with partial ones (`ruts_blank_lines` alone) takes its sentences from the text by `SentsExtractor`.
 
 ## Parameters
 

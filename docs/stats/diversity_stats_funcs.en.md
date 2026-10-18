@@ -1,5 +1,7 @@
 # Metric functions
 
+--8<-- "stats/diversity_stats_funcs.md:diversity-checks"
+
 ## Type-Token Ratio (TTR)
 
 !!! info ""
