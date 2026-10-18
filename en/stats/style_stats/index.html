@@ -1261,6 +1261,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1306,21 +1317,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#keyword_density" class="md-nav__link">
+  <a href="#keyword_density-nausea_words" class="md-nav__link">
     <span class="md-ellipsis">
       
-        keyword_density
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nausea_words" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        nausea_words
+        keyword_density, nausea_words
       
     </span>
   </a>
@@ -1354,6 +1354,17 @@
     <span class="md-ellipsis">
       
         get_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
       
     </span>
   </a>
@@ -2880,6 +2891,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#language-hooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Language hooks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2925,21 +2947,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#keyword_density" class="md-nav__link">
+  <a href="#keyword_density-nausea_words" class="md-nav__link">
     <span class="md-ellipsis">
       
-        keyword_density
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#nausea_words" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        nausea_words
+        keyword_density, nausea_words
       
     </span>
   </a>
@@ -2973,6 +2984,17 @@
     <span class="md-ellipsis">
       
         get_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
       
     </span>
   </a>
@@ -3020,13 +3042,12 @@
 <p><strong>ruts.style_stats.StyleStats</strong></p>
 </div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing SEO metrics of text style and quality that replicate the indicators of the <a href="https://advego.com/text/seo/">Advego</a> and <a href="https://text.ru/seo">Text.ru</a> services: nausea, water content, spam score, naturalness of the word distribution by Zipf's law and keyword density. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The exact formulas of the services are not published, so the commonly accepted definitions are implemented; they are described in the <a href="../style_stats_funcs/">functions</a> section. By default words are extracted in lower case without lemmatization, so forms of one word count as different words, as in Advego. To compute by lemmas, pass a <a href="../../extractors/words/"><code>WordsExtractor</code></a> object with <code>use_lexemes=True</code> and <code>lowercase=True</code>.</p>
-<p>Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés - by the <code>COMPOUND_PREPOSITIONS</code>, <code>PARENTHETICALS</code> and <code>OFFICIALESE_CLICHES</code> lists of <code>ruts.constants</code>. They are counted over unfiltered word forms (<code>forms</code>) regardless of the extractor passed.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The metrics are computed by accessing the corresponding attribute or by calling the <code>get_stats</code> method of the <code>StyleStats</code> object.</p>
-</div>
+<p>The style metrics of a text: the SEO metrics of Advego and Text.ru - the classic and the academic nausea, the water content, the spam score, the naturalness by Zipf's law and the keyword density - and the markers of the officialese style: the verbal nouns, the compound prepositions, the parenthetical expressions and the cliches. The services publish no formulas, so the common definitions are taken, as the metric functions give them. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>The SEO metrics are counted on the words of the word extractor, in lower case by default, or on the tokens of a <code>Doc</code>; an extractor passed explicitly is used on the text of a <code>Doc</code>. The markers are counted on the word forms in lower case (<code>forms</code>), whatever the extractor.</p>
+<p>A source that is neither a string nor a <code>Doc</code>, an extractor of another type and a list that is not a list of strings raise <code>SourceTypeError</code>, a source without words <code>SourceError</code>, a <code>top_n</code> that is not an integer of at least one <code>ParameterError</code>.</p>
+<p>The definitions and formulas of the metrics are given in the <a href="../style_stats_funcs/">functions</a> section. By default the words are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a <a href="../../extractors/words/"><code>WordsExtractor</code></a> object with <code>use_lexemes=True</code> and <code>lowercase=True</code>.</p>
+<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
+<p>The class extends the <code>StyleStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> core with the hooks of Russian: the words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the stopwords of the academic nausea and the water words are determined by part of speech with pymorphy3 (<a href="../style_stats_funcs/#is_stopword"><code>is_stopword</code></a>, <a href="../style_stats_funcs/#is_water_word"><code>is_water_word</code></a>), the single parenthetical words by the pymorphy3 grammeme <code>Prnt</code> (<a href="../style_stats_funcs/#calc_parentheticals"><code>is_parenthetical</code></a>), the nouns and their lemmas by pymorphy3 and the verbal nouns among them by <code>is_verbal_noun</code> (<a href="../style_stats_funcs/#calc_verbal_nouns"><code>calc_verbal_nouns</code></a>). The given word lists and the phrases are compared without the letter ё (<code>normalize_yo</code>), and a phrase is found in any form of its verb (<a href="../style_stats_funcs/#calc_phrase_density"><code>expand_phrases</code></a>). The phrase lists are <code>COMPOUND_PREPOSITIONS</code>, <code>PARENTHETICALS</code> and <code>OFFICIALESE_CLICHES</code> of <code>ruts.constants</code>, the norms of the services are <code>STYLE_NORMS</code> (<a href="#norms">below</a>); the <code>print_stats</code> table has Russian headers and the descriptions of <code>STYLE_STATS_DESC</code>, the error messages are in Russian (<code>CORE_MESSAGES</code>). The words of a <code>Doc</code> lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word).</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3042,40 +3063,41 @@
 <td style="text-align: center;"><code>source</code></td>
 <td style="text-align: center;">str/Doc</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
+<td style="text-align: center;">Data source</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>words_extractor</code></td>
 <td style="text-align: center;">WordsExtractor</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; when given, it is applied to the text of a Doc too</td>
+<td style="text-align: center;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of water words for water content; if not given, they are determined by part of speech with pymorphy3 (<a href="../style_stats_funcs/#is_water_word"><code>is_water_word</code></a>)</td>
+<td style="text-align: center;">Words of water; without them <code>is_water_word</code> decides</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>top_n</code></td>
 <td style="text-align: center;">int</td>
 <td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Number of the most frequent words for academic nausea and naturalness by Zipf's law</td>
+<td style="text-align: center;">Number of the most frequent words of the academic nausea and the naturalness by Zipf's law (<code>NAUSEA_TOP_N</code>)</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of clichés; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
+<td style="text-align: center;">Cliches; <code>cliches_list</code> of the class by default</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>nausea_stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stop word list for academic nausea; if not given, they are determined by part of speech with pymorphy3 (<a href="../style_stats_funcs/#is_stopword"><code>is_stopword</code></a>)</td>
+<td style="text-align: center;">Stopwords of the academic nausea; without them <code>is_stopword</code> decides</td>
 </tr>
 </tbody>
 </table>
+<p>A set of words is taken in sorted order.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3089,12 +3111,12 @@
 <tr>
 <td style="text-align: center;"><code>words</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of extracted words</td>
+<td style="text-align: center;">Words of the SEO metrics</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>forms</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of unfiltered lowercased word forms; the officialese markers are counted over them</td>
+<td style="text-align: center;">Word forms in lower case, of the markers</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>classic_nausea</code></td>
@@ -3124,7 +3146,7 @@
 <tr>
 <td style="text-align: center;"><code>verbal_nouns</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of verbal nouns among nouns in percent</td>
+<td style="text-align: center;">Share of the verbal nouns among the nouns in percent</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>compound_prepositions</code></td>
@@ -3134,17 +3156,18 @@
 <tr>
 <td style="text-align: center;"><code>parentheticals</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Parentheticals per 100 words</td>
+<td style="text-align: center;">Parenthetical expressions per 100 words</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>cliches</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Clichés per 100 words</td>
+<td style="text-align: center;">Cliches per 100 words</td>
 </tr>
 </tbody>
 </table>
+<p>The metrics are properties computed on each access. A parenthetical expression is a phrase of <code>parentheticals_list</code> or a word of <code>is_parenthetical</code> outside those phrases; the phrases of the three lists are found with their variants (<code>expand_phrases</code>).</p>
 <h2 id="norms">Service norms<a class="headerlink" href="#norms" title="Permanent link">&para;</a></h2>
-<p>The <a href="#describe"><code>describe</code></a> method reads a metric by the bands of the service norms - <code>ruts.constants.STYLE_NORMS</code>; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.</p>
+<p>The <a href="#describe"><code>describe</code></a> method reads a metric by the bands of the norms of <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy and megaindex; the officialese markers have no norms. The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The method returns the readings in Russian.</p>
 <table>
 <thead>
 <tr>
@@ -3227,42 +3250,15 @@
 </tbody>
 </table>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="keyword_density">keyword_density<a class="headerlink" href="#keyword_density" title="Permanent link">&para;</a></h3>
-<p>Returns the density of keywords and phrases - the frequency of each per 100 words of the text. A multi-word phrase separated by spaces is searched as a sequence of words, ignoring case.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>keywords</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Keywords or phrases</td>
-</tr>
-</tbody>
-</table>
+<h3 id="keyword_density-nausea_words">keyword_density, nausea_words<a class="headerlink" href="#keyword_density-nausea_words" title="Permanent link">&para;</a></h3>
+<p><code>keyword_density(*keywords)</code> gives the density of keywords and phrases in percent (<code>calc_keyword_density</code>), <code>nausea_words()</code> the most frequent significant words of the academic nausea with their occurrences (<code>find_nausea_words</code>).</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
 
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-<span class="n">ss</span> <span class="o">=</span> <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">keyword_density</span><span class="p">(</span><span class="s2">"когда"</span><span class="p">,</span> <span class="s2">"нет а"</span><span class="p">)</span>
+<span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">keyword_density</span><span class="p">(</span><span class="s2">"когда"</span><span class="p">,</span> <span class="s2">"нет а"</span><span class="p">)</span>
 <span class="c1"># {'когда': 20.0, 'нет а': 13.333333333333334}</span>
-</code></pre></div>
-</div>
-<h3 id="nausea_words">nausea_words<a class="headerlink" href="#nausea_words" title="Permanent link">&para;</a></h3>
-<p>Returns the words academic nausea is computed by: the <code>top_n</code> most frequent words without the stop words with the number of their occurrences.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
 
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот ловит мышей, кот спит, а мыши бегают вокруг кота"</span>
 <span class="n">StyleStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">nausea_words</span><span class="p">()</span>
@@ -3270,7 +3266,7 @@
 </code></pre></div>
 </div>
 <h3 id="markers">markers<a class="headerlink" href="#markers" title="Permanent link">&para;</a></h3>
-<p>Returns the officialese markers found: for each of the metrics <code>verbal_nouns</code>, <code>compound_prepositions</code>, <code>parentheticals</code> and <code>cliches</code>, the words and phrases it was computed from, in the order of the text and as written in <code>forms</code>. Phrases are searched as in <a href="../style_stats_funcs/#calc_phrase_density"><code>calc_phrase_density</code></a>.</p>
+<p>Returns the markers of the officialese found by metric - <code>verbal_nouns</code>, <code>compound_prepositions</code>, <code>parentheticals</code>, <code>cliches</code> - as the forms write them, in the order of the text.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleStats</span>
@@ -3284,7 +3280,7 @@
 </code></pre></div>
 </div>
 <h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<p>Returns the band of the <a href="#norms">service norm</a> for a metric; a metric without a norm and an undefined value (nan) give <code>None</code>, a name not in <code>STYLE_STATS_DESC</code> gives <code>UnknownStatError</code>.</p>
+<p>Returns the band of the scale of a statistic (<code>level_scale</code>), and <code>None</code> for a statistic without a scale or with an undefined value (nan). A name that is neither of <code>stat_names</code> nor a public property of the class raises <code>UnknownStatError</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3300,7 +3296,7 @@
 <td style="text-align: center;"><code>stat</code></td>
 <td style="text-align: center;">str</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Name of the metric</td>
+<td style="text-align: center;">Name of the statistic</td>
 </tr>
 </tbody>
 </table>
@@ -3343,8 +3339,11 @@
 <span class="s1">'cliches'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
 </code></pre></div>
 </div>
+<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
+<p>Returns the computed metrics as a one-row <code>pandas.DataFrame</code> with a column for every metric.</p>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed style metrics.</p>
+<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
+<p>To illustrate the method, we reuse the code from the <code>get_stats</code> example:</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p><em>Code</em>:</p>
@@ -3354,17 +3353,17 @@
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                     </span>Метрика<span class="w">                      </span><span class="p">|</span><span class="w"> </span>Значение
+<div class="highlight"><pre><span></span><code><span class="w">                     </span>Метрика<span class="w">                     </span><span class="p">|</span><span class="w"> </span>Значение
 ------------------------------------------------------------
-Классическая<span class="w"> </span>тошнота<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.73
-Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                         </span><span class="p">|</span><span class="w">  </span><span class="m">53</span>.33
-Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
-Заспамленность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                </span><span class="p">|</span><span class="w">  </span><span class="m">26</span>.67
-Естественность<span class="w"> </span>по<span class="w"> </span>Ципфу<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
-Отглагольные<span class="w"> </span>существительные<span class="w"> </span><span class="o">(</span>%<span class="w"> </span>существительных<span class="o">)</span><span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Производные<span class="w"> </span>предлоги<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Вводные<span class="w"> </span>слова<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Штампы<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Классическая<span class="w"> </span>тошнота<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.73
+Академическая<span class="w"> </span>тошнота<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                        </span><span class="p">|</span><span class="w">  </span><span class="m">53</span>.33
+Водность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                                     </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
+Заспамленность<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                               </span><span class="p">|</span><span class="w">  </span><span class="m">26</span>.67
+Естественность<span class="w"> </span>по<span class="w"> </span>Ципфу<span class="w"> </span><span class="o">(</span>%<span class="o">)</span><span class="w">                      </span><span class="p">|</span><span class="w">  </span><span class="m">33</span>.33
+Отглагольные<span class="w"> </span>существительные<span class="w"> </span><span class="o">(</span>%<span class="w"> </span>существительных<span class="o">)</span><span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Производные<span class="w"> </span>предлоги<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Вводные<span class="w"> </span>слова<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Штампы<span class="w"> </span><span class="o">(</span>на<span class="w"> </span><span class="m">100</span><span class="w"> </span>слов<span class="o">)</span><span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
 

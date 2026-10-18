@@ -1720,7 +1720,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -1731,7 +1731,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -1740,6 +1740,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -1777,6 +1788,17 @@
     <span class="md-ellipsis">
       
         print_stats
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
       
     </span>
   </a>
@@ -2839,7 +2861,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Языковые крючки
       
     </span>
   </a>
@@ -2850,7 +2872,7 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Параметры
       
     </span>
   </a>
@@ -2859,6 +2881,17 @@
       
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Атрибуты
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         Методы
@@ -2902,6 +2935,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2932,8 +2976,10 @@
 <p><strong>ruts.lexical_stats.LexicalStats</strong></p>
 </div>
 <h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления статистик лексической сложности текста (lexical sophistication по образцу <a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>) - насколько слова текста редки относительно языка: средняя частотность, диапазон и дисперсия лемм по <a href="../../datasets/freq2011/">частотному словарю Ляшевской и Шарова</a>, доля слов из частотных полос топ-1000, 2000, 5000 и 10000 по вшитому списку Шарова, сюрпризал и перплексия по униграммной модели словаря, лексическая плотность. В отличие от <a href="../diversity_stats/">метрик лексического разнообразия</a>, которые сравнивают слова текста между собой, здесь слова сравниваются с частотами языка. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Леммы для <code>Doc</code> с разметкой частей речи берутся из разбора pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>), для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов - из первого разбора pymorphy3; дефисные слова, разрезанные spaCy на части, склеиваются. Знаменательные слова определяются как в <a href="../cohesion_stats/"><code>CohesionStats</code></a>. Числа (2020, 5.5, 3-й) словами не считаются: в словаре и списке их нет, и они выглядели бы как самые редкие слова текста. Словарь лемматизирован не pymorphy3, поэтому леммы приводятся к его соглашениям: должна - должен, денег - деньги, ночью - ночь.</p>
+<!-- core: stats/lexical_stats.md:LexicalStats 460aef7 -->
+<p>Лексическая сложность (lexical sophistication) по образцу TAALES (Kyle, Crossley и Berger, 2018) - насколько редки слова текста: средняя частотность, диапазон и дисперсия слов по частотному словарю, сюрпризал и перплексия по его униграммной модели, доли частотных полос списка самых частых лемм и лексическая плотность - доля знаменательных слов. Статистики по словарю вычисляются при первом обращении, поэтому полосам и лексической плотности данные словаря не нужны.</p>
+<p>Словарь другого класса, чем у библиотеки, дает <code>SourceTypeError</code>, источник без слов - <code>SourceError</code>.</p>
+<p>В отличие от <a href="../diversity_stats/">метрик лексического разнообразия</a>, которые сравнивают слова текста между собой, здесь слова сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>). В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Ресурсы:</p>
 <table>
 <thead>
@@ -2957,7 +3003,9 @@
 </tbody>
 </table>
 <p><code>mean_ipm_content</code> - признак FREQ2 формулы Соловьёва, Иванова, Солнышкиной 2023 года с частотностью, см. <a href="../readability_stats/#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>.</p>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), а ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) берутся из вшитого списка 10 000 лемм Шарова (<a href="../lexical_stats_funcs/#get_rank"><code>get_rank</code></a>). <code>analyze</code> берет слова строки из русского <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданного экстрактора, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются. Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает pymorphy3: для <code>Doc</code> с разметкой частей речи - по части речи токена (<code>ruts.utils.lemmatize</code>), иначе по первому разбору; знаменательные слова определяются как в <a href="../cohesion_stats/"><code>CohesionStats</code></a>. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>LEXICAL_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -2988,7 +3036,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Источник, который не строка и не <code>Doc</code>, и экстрактор другого типа дают <code>SourceTypeError</code>.</p>
+<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<!-- core: stats/lexical_stats.md:LexicalStats-attributes 903c3fe -->
 <table>
 <thead>
 <tr>
@@ -2999,39 +3049,29 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>words</code></td>
+<td style="text-align: center;"><code>words</code>, <code>lemmas</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж извлеченных слов</td>
+<td style="text-align: center;">Слова и их леммы; полосы считаются по леммам</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>lemmas</code></td>
+<td style="text-align: center;"><code>keys</code></td>
 <td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж лемм в нижнем регистре</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>ranks</code></td>
-<td style="text-align: center;">tuple[int/None]</td>
-<td style="text-align: center;">Кортеж рангов лемм по вшитому списку, <code>None</code> вне топ-10000</td>
+<td style="text-align: center;">Ключи слов в словаре</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>entries</code></td>
-<td style="text-align: center;">tuple[Entry/None]</td>
-<td style="text-align: center;">Кортеж статей словаря для каждого слова, <code>None</code> вне словаря</td>
+<td style="text-align: center;">tuple[FrequencyEntry или None]</td>
+<td style="text-align: center;">Статьи словаря, <code>None</code> для слова вне его</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество слов</td>
+<td style="text-align: center;"><code>ranks</code></td>
+<td style="text-align: center;">tuple[int или None]</td>
+<td style="text-align: center;">Ранги лемм, <code>None</code> вне списка</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_content_words</code></td>
+<td style="text-align: center;"><code>n_words</code>, <code>n_content_words</code>, <code>n_found</code></td>
 <td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество знаменательных слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_found</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество слов, найденных в словаре</td>
+<td style="text-align: center;">Количество слов, знаменательных слов и слов, найденных в словаре</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>coverage</code></td>
@@ -3039,69 +3079,29 @@
 <td style="text-align: center;">Доля слов, найденных в словаре</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_ipm</code></td>
+<td style="text-align: center;"><code>mean_ipm</code>, <code>mean_ipm_content</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя частотность найденных слов</td>
+<td style="text-align: center;">Средняя частотность найденных слов, найденных знаменательных слов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_ipm_content</code></td>
+<td style="text-align: center;"><code>mean_log_ipm</code>, <code>mean_log_ipm_content</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя частотность знаменательных слов (FREQ2)</td>
+<td style="text-align: center;">Средний десятичный логарифм частотности найденных слов и найденных знаменательных слов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_log_ipm</code></td>
+<td style="text-align: center;"><code>mean_range</code>, <code>mean_dispersion</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средний десятичный логарифм частотности найденных слов</td>
+<td style="text-align: center;">Средние диапазон и дисперсия найденных слов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_log_ipm_content</code></td>
+<td style="text-align: center;"><code>surprisal</code>, <code>perplexity</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">То же по знаменательным словам</td>
+<td style="text-align: center;">Средний сюрпризал в битах (<code>calc_surprisal</code>), 2 в его степени</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_range</code></td>
+<td style="text-align: center;"><code>p_top1000</code>, <code>p_top2000</code>, <code>p_top5000</code>, <code>p_top10000</code>, <code>p_beyond_top10000</code></td>
 <td style="text-align: center;">float</td>
-<td style="text-align: center;">Средний диапазон R найденных слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_dispersion</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя дисперсия D найденных слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>surprisal</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средний сюрпризал слов по униграммной модели словаря в битах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>perplexity</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Униграммная перплексия</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_top1000</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля слов с леммой из топ-1000</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_top2000</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля слов с леммой из топ-2000</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_top5000</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля слов с леммой из топ-5000</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_top10000</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля слов с леммой из топ-10000</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_beyond_top10000</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля слов с леммой вне топ-10000</td>
+<td style="text-align: center;">Доли слов с леммой из топ-1000, 2000, 5000 и 10000 списка и вне его</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>lexical_density</code></td>
@@ -3110,39 +3110,16 @@
 </tr>
 </tbody>
 </table>
-<p>Средние по словарю считаются только по найденным словам, <code>nan</code> при их отсутствии; рядом с ними всегда смотрите <code>coverage</code>.</p>
+<p>Среднее без найденных слов - <code>nan</code>, как и полоса больше размера списка (<code>top_size</code>).</p>
+<p>Рядом со средними по словарю всегда смотрите <code>coverage</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
 <p>Каждую статистику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о статистиках и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../lexical_stats_funcs/">разделе</a>.</p>
 </div>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <h3 id="band_coverage">band_coverage<a class="headerlink" href="#band_coverage" title="Permanent link">&para;</a></h3>
-<p>Возвращает доли слов с леммой из топ-N для каждой границы N.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>bands</code></td>
-<td style="text-align: center;">list[int]</td>
-<td style="text-align: center;"><code>(1000, 2000, 5000, 10000)</code></td>
-<td style="text-align: center;">Границы полос - размеры топ-списков</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>unique</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Считать по уникальным леммам, а не по словам</td>
-</tr>
-</tbody>
-</table>
+<!-- core: stats/lexical_stats.md:LexicalStats-band_coverage 065e9e9 -->
+<p><code>band_coverage(bands, unique)</code> возвращает долю слов с леммой из топ-N списка для каждой границы N из <code>bands</code> (по умолчанию <code>FREQUENCY_BANDS</code>), а с <code>unique=True</code> - долю различных лемм. Границы, которые не список целых чисел, и граница вне промежутка от 1 до <code>top_size()</code> дают <code>ParameterError</code>.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexicalStats</span>
@@ -3208,25 +3185,27 @@
 <span class="n">ls</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                        </span>Статистика<span class="w">                        </span><span class="p">|</span><span class="w"> </span>Значение
---------------------------------------------------------------------
-Доля<span class="w"> </span>слов,<span class="w"> </span>найденных<span class="w"> </span>в<span class="w"> </span>частотном<span class="w"> </span>словаре<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-Средняя<span class="w"> </span>частотность<span class="w"> </span><span class="o">(</span>ipm<span class="o">)</span><span class="w">                                 </span><span class="p">|</span><span class="w"> </span><span class="m">8645</span>.54
-Средняя<span class="w"> </span>частотность<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span><span class="o">(</span>ipm<span class="o">)</span><span class="w">             </span><span class="p">|</span><span class="w">  </span><span class="m">324</span>.18
-Средняя<span class="w"> </span>логарифмическая<span class="w"> </span>частотность<span class="w"> </span><span class="o">(</span>lg<span class="w"> </span>ipm<span class="o">)</span><span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.07
-Средняя<span class="w"> </span>логарифмическая<span class="w"> </span>частотность<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.32
-Средний<span class="w"> </span>диапазон<span class="w"> </span><span class="o">(</span>R<span class="o">)</span><span class="w">                                      </span><span class="p">|</span><span class="w">  </span><span class="m">99</span>.75
-Средняя<span class="w"> </span>дисперсия<span class="w"> </span><span class="o">(</span>D<span class="o">)</span><span class="w">                                     </span><span class="p">|</span><span class="w">  </span><span class="m">95</span>.12
-Средний<span class="w"> </span>сюрпризал<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">9</span>.74
-Униграммная<span class="w"> </span>перплексия<span class="w">                                    </span><span class="p">|</span><span class="w">  </span><span class="m">856</span>.21
-Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-1000<span class="w">                                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.75
-Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-2000<span class="w">                                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.88
-Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-5000<span class="w">                                     </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-10000<span class="w">                                    </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-Доля<span class="w"> </span>слов<span class="w"> </span>вне<span class="w"> </span>топ-10000<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Лексическая<span class="w"> </span>плотность<span class="w">                                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.62
+<div class="highlight"><pre><span></span><code><span class="w">                       </span>Статистика<span class="w">                       </span><span class="p">|</span><span class="w"> </span>Значение
+-------------------------------------------------------------------
+Доля<span class="w"> </span>слов,<span class="w"> </span>найденных<span class="w"> </span>в<span class="w"> </span>частотном<span class="w"> </span>словаре<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Средняя<span class="w"> </span>частотность<span class="w"> </span><span class="o">(</span>ipm<span class="o">)</span><span class="w">                               </span><span class="p">|</span><span class="w"> </span><span class="m">8645</span>.54
+Средняя<span class="w"> </span>частотность<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span><span class="o">(</span>ipm<span class="o">)</span><span class="w">           </span><span class="p">|</span><span class="w">  </span><span class="m">324</span>.18
+Средняя<span class="w"> </span>логарифмическая<span class="w"> </span>частотность<span class="w"> </span><span class="o">(</span>lg<span class="w"> </span>ipm<span class="o">)</span><span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.07
+Средняя<span class="w"> </span>логарифмическая<span class="w"> </span>частотность<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.32
+Средний<span class="w"> </span>диапазон<span class="w"> </span><span class="o">(</span>R<span class="o">)</span><span class="w">                                    </span><span class="p">|</span><span class="w">  </span><span class="m">99</span>.75
+Средняя<span class="w"> </span>дисперсия<span class="w"> </span><span class="o">(</span>D<span class="o">)</span><span class="w">                                   </span><span class="p">|</span><span class="w">  </span><span class="m">95</span>.12
+Средний<span class="w"> </span>сюрпризал<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">                                 </span><span class="p">|</span><span class="w">   </span><span class="m">9</span>.74
+Униграммная<span class="w"> </span>перплексия<span class="w">                                  </span><span class="p">|</span><span class="w">  </span><span class="m">856</span>.21
+Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-1000<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.75
+Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-2000<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.88
+Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-5000<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Доля<span class="w"> </span>слов<span class="w"> </span>из<span class="w"> </span>топ-10000<span class="w">                                  </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Доля<span class="w"> </span>слов<span class="w"> </span>вне<span class="w"> </span>топ-10000<span class="w">                                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Лексическая<span class="w"> </span>плотность<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.62
 </code></pre></div>
 </div>
+<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
+<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик лексической сложности нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
 
 
 

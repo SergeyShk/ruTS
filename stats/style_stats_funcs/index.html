@@ -3026,16 +3026,18 @@
 
 
 <h1 id="_1">Функции вычисления метрик<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Нормы сервисов для метрик приведены в разделе <a href="../style_stats/#norms">норм сервисов</a>.</p>
 <h2 id="calc_classic_nausea">Классическая тошнота<a class="headerlink" href="#calc_classic_nausea" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_classic_nausea()</strong></p>
 </div>
-<p>Вычисление классической тошноты (<a href="https://advego.com/text/seo/">Advego</a>) - квадратного корня из количества вхождений самого частого слова. Характеризует навязчивость одного слова без учета длины текста, поэтому растет вместе с текстом. Норма Advego - не больше 7, на практике 1-5.</p>
+<!-- core: stats/style_stats_funcs.md:calc_classic_nausea b61d075 -->
+<p>Вычисление классической тошноты (Advego): насколько навязчиво повторяется одно слово. Без поправки на длину текста она растет вместе с текстом; пустой список слов дает 0.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-\sqrt{\max_k n_k}
+\sqrt{f_1}
 \]</div>
-<p>где <span class="arithmatex">\(n_k\)</span> - количество вхождений слова <span class="arithmatex">\(k\)</span>.</p>
+<p>где <span class="arithmatex">\(f_1\)</span> - количество вхождений самого частого слова.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3059,10 +3061,10 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_academic_nausea()</strong></p>
 </div>
-<p>Вычисление академической тошноты (<a href="https://advego.com/text/seo/">Advego</a>) - доли вхождений самых частых значимых слов в тексте в процентах. Точная формула Advego не опубликована, реализовано как суммарная частота <code>top_n</code> самых частых слов без стоп-слов (<a href="#find_nausea_words"><code>find_nausea_words</code></a>), деленная на количество всех слов: со стоп-словами в десятке самых частых почти всегда «и», «в», «на», «не», и тошнота любого текста выходит выше нормы. Норма Advego - 5-15%.</p>
+<p>Вычисление академической тошноты (Advego): доли вхождений самых частых значимых слов (<a href="#find_nausea_words"><code>find_nausea_words</code></a>) среди всех слов в процентах.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-100\times\frac{\sum_{k \in \textrm{top}_n} n_k}{N}
+100 \cdot \frac{\sum_{w \in \textrm{top}_n} f_w}{\textrm{Количество слов}}
 \]</div>
 <p>Параметры:</p>
 <table>
@@ -3091,7 +3093,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов; если не задан, используется разметка pymorphy3</td>
+<td style="text-align: center;">Стоп-слова; без них решает <a href="#is_stopword"><code>is_stopword</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -3099,7 +3101,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.find_nausea_words()</strong></p>
 </div>
-<p>Слова, по которым считается <a href="#calc_academic_nausea">академическая тошнота</a>: <code>top_n</code> самых частых слов без стоп-слов (переданного списка или <a href="#is_stopword"><code>is_stopword</code></a>) с числом вхождений.</p>
+<p><code>top_n</code> самых частых слов без стоп-слов с числом вхождений, начиная с самого частого. Стоп-слово - слово из <code>stopwords</code> без учета регистра и буквы ё или, без списка, слово <a href="#is_stopword"><code>is_stopword</code></a>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3127,7 +3129,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список стоп-слов; если не задан, используется разметка pymorphy3</td>
+<td style="text-align: center;">Стоп-слова</td>
 </tr>
 </tbody>
 </table>
@@ -3143,16 +3145,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_water()</strong></p>
 </div>
-<p>Вычисление водности (<a href="https://text.ru/seo">Text.ru</a>) - доли незначимых слов в тексте в процентах. Незначимыми («водой») считаются союзы (с вводными словами «конечно», «например», которые pymorphy3 относит к союзам), частицы, местоимения-существительные и междометия по разметке pymorphy3 (функция <a href="#is_water_word"><code>is_water_word</code></a>) или слова из переданного списка. Этот набор ближе всего к водности Text.ru: предлоги, местоименные прилагательные и предикативы, которые входят в стоп-слова <a href="#is_stopword"><code>is_stopword</code></a>, Text.ru водой не считает.</p>
-<p>Нормы Text.ru: до 15% - естественное содержание, 15-30% - избыточное, больше 30% - высокое.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>«Вода» Advego - другой показатель с нормой 55-75%, здесь он не реализован.</p>
-</div>
-<p>Формула:</p>
-<div class="arithmatex">\[
-100\times\frac{\textrm{Количество слов воды}}{\textrm{Количество слов}}
-\]</div>
+<p>Вычисление водности (Text.ru): доли слов без содержания в процентах - слов из <code>stopwords</code> без учета регистра и буквы ё или, без списка, слов <a href="#is_water_word"><code>is_water_word</code></a>. «Вода» Advego - другой показатель, здесь он не реализован.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3174,7 +3167,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Список слов «воды»; если не задан, используется разметка pymorphy3</td>
+<td style="text-align: center;">Слова «воды»</td>
 </tr>
 </tbody>
 </table>
@@ -3182,7 +3175,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_water_word()</strong></p>
 </div>
-<p>Проверка, является ли слово «водой» по части речи для <a href="#calc_water">водности</a> и слоя <code>stopwords</code> подсветки: слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> по разметке pymorphy3; набор задан в <code>ruts.constants.WATER_POS</code>. Результаты разбора кэшируются.</p>
+<p>Проверка, является ли слово «водой» по части речи, - для <a href="#calc_water">водности</a> и слоя <code>stopwords</code> подсветки: союзы, частицы, местоимения-существительные и междометия по разметке pymorphy3 (<code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code>; набор <code>ruts.constants.WATER_POS</code>). Вводные слова «конечно» и «например» pymorphy3 относит к союзам, поэтому они тоже «вода». Предлоги, местоименные прилагательные и предикативы, в отличие от <a href="#is_stopword"><code>is_stopword</code></a>, водой не считаются.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3206,7 +3199,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_stopword()</strong></p>
 </div>
-<p>Проверка, является ли слово стоп-словом по части речи - незначимым для <a href="#calc_academic_nausea">академической тошноты</a>. Стоп-словами считаются слова с частью речи <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> или с граммемами <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> по разметке pymorphy3; наборы заданы в <code>ruts.constants.STOPWORD_POS</code> и <code>ruts.constants.STOPWORD_GRAMMEMES</code>. Результаты разбора кэшируются.</p>
+<p>Проверка, является ли слово стоп-словом по части речи - незначимым для <a href="#calc_academic_nausea">академической тошноты</a>: союзы, частицы, предлоги, местоимения-существительные, междометия и предикативы (<code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code>) и слова с граммемами <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> - местоименные прилагательные, вводные слова, указательные и вопросительные наречия - по разметке pymorphy3; наборы - <code>ruts.constants.STOPWORD_POS</code> и <code>ruts.constants.STOPWORD_GRAMMEMES</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3230,13 +3223,12 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_spam()</strong></p>
 </div>
-<p>Вычисление заспамленности (<a href="https://text.ru/seo">Text.ru</a>) - доли повторов слов в тексте в процентах. Каждое вхождение слова, кроме первого, считается повтором, поэтому заспамленность равна <span class="arithmatex">\(100\times(1 - \textrm{TTR})\)</span>. Для расчета по леммам извлекайте слова с лемматизацией.</p>
-<p>Нормы Text.ru: до 30% - естественное содержание, 30-60% - SEO-оптимизированный текст, больше 60% - заспамленный текст.</p>
+<!-- core: stats/style_stats_funcs.md:calc_spam 03399fe -->
+<p>Вычисление заспамленности (Text.ru): доли повторов слов в процентах - каждого вхождения слова после первого.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-100\times\frac{N - V}{N}
+100 \cdot \left(1 - \frac{\textrm{Количество лексем}}{\textrm{Количество слов}}\right)
 \]</div>
-<p>где <span class="arithmatex">\(N\)</span> - количество слов, <span class="arithmatex">\(V\)</span> - количество лексем.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3260,14 +3252,10 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_zipf_naturalness()</strong></p>
 </div>
-<p>Вычисление естественности текста по <a href="https://en.wikipedia.org/wiki/Zipf's_law">закону Ципфа</a> (pr-cy, megaindex) - согласия частот самых частых слов с идеальным распределением <span class="arithmatex">\(f_r = f_1 / r\)</span>, где <span class="arithmatex">\(f_1\)</span> - частота самого частого слова, <span class="arithmatex">\(r\)</span> - ранг слова. Считается как <span class="arithmatex">\(100\times(1 - \bar{d})\)</span>, где <span class="arithmatex">\(\bar{d}\)</span> - среднее относительное отклонение частот от идеальных по рангам от 2 до <span class="arithmatex">\(n = \min(\textrm{top}_n, V, f_1)\)</span>: ранг 1 совпадает с идеалом по построению, а при рангах больше <span class="arithmatex">\(f_1\)</span> идеальная частота меньше единицы и отклонение гапаксов растет без ограничения. Отрицательные значения обрезаются до 0. Норма сервисов - не меньше 50%.</p>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Если рангов для сравнения нет (все слова - гапаксы, одна лексема или <code>top_n</code> меньше 2), функция возвращает <code>nan</code>.</p>
-</div>
+<p>Вычисление естественности по <a href="https://en.wikipedia.org/wiki/Zipf's_law">закону Ципфа</a> (pr-cy, megaindex): согласия частот самых частых слов с идеальным распределением <span class="arithmatex">\(f_r = f_1 / r\)</span>, где <span class="arithmatex">\(f_1\)</span> - частота самого частого слова, <span class="arithmatex">\(r\)</span> - ранг. Ранги берутся от 2 до <span class="arithmatex">\(R = \min(\textrm{top}_n, V, f_1)\)</span>, где <span class="arithmatex">\(V\)</span> - количество лексем; отрицательные значения обрезаются до 0, а без рангов для сравнения - все слова гапаксы, одна лексема или <code>top_n</code> меньше 2 - значение равно <code>nan</code>.</p>
 <p>Формула:</p>
 <div class="arithmatex">\[
-100\times\left(1-\frac{1}{n-1}\sum_{r=2}^{n}\frac{|f_r - f_1 / r|}{f_1 / r}\right)
+100 \cdot \left(1 - \frac{1}{R - 1} \sum_{r=2}^{R} \frac{|r \cdot f_r - f_1|}{f_1}\right)
 \]</div>
 <p>Параметры:</p>
 <table>
@@ -3298,11 +3286,8 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_keyword_density()</strong></p>
 </div>
-<p>Вычисление плотности ключевых слов (<a href="https://text.ru/seo">Text.ru</a>, Тургенев) - частоты каждого ключевого слова на 100 слов текста. Ключевая фраза из нескольких слов через пробел ищется как последовательность слов, вхождения фраз могут пересекаться. Слова сравниваются без учета регистра; для сравнения по леммам извлекайте слова с лемматизацией и передавайте леммы.</p>
-<p>Формула:</p>
-<div class="arithmatex">\[
-100\times\frac{\textrm{Количество вхождений ключевого слова}}{\textrm{Количество слов}}
-\]</div>
+<!-- core: stats/style_stats_funcs.md:calc_keyword_density 861f284 -->
+<p>Вычисление плотности ключевых слов (Text.ru): количества вхождений каждого ключевого слова на 100 слов. Ключевое слово из нескольких слов через пробел - последовательность слов, вхождения которой могут пересекаться; регистр не учитывается, ключевые слова из множества идут в отсортированном порядке.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3332,7 +3317,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_verbal_nouns()</strong>, <strong>ruts.style_stats.find_verbal_nouns()</strong></p>
 </div>
-<p>Вычисление доли существительных (по первому разбору pymorphy3), лемма которых оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; функция <code>ruts.utils.is_verbal_noun</code>), в процентах от всех существительных; <code>nan</code> для текста без существительных. Суффикс -ство в список не входит: он в основном не отглагольный (правительство, общество, средство). Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). Функция <code>find_verbal_nouns</code> возвращает границы найденных слов как срезы списка.</p>
+<p>Вычисление доли отглагольных существительных среди существительных (по первому разбору pymorphy3) в процентах; <code>nan</code> для текста без существительных. Существительное отглагольное, если его лемма оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - функция <code>ruts.utils.is_verbal_noun</code>; эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). Функция <code>find_verbal_nouns</code> возвращает границы найденных слов как срезы списка.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3354,9 +3339,9 @@
 </table>
 <h2 id="calc_phrase_density">Плотность словосочетаний<a class="headerlink" href="#calc_phrase_density" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_phrase_density()</strong></p>
+<p><strong>ruts.style_stats.calc_phrase_density()</strong>, <strong>ruts.style_stats.expand_phrases()</strong></p>
 </div>
-<p>Вычисление числа вхождений словосочетаний из списка на 100 слов. Словосочетания ищутся по словоформам в нижнем регистре без буквы ё (<code>ruts.utils.find_phrases</code>): в каждой позиции берется самое длинное, найденные не пересекаются, пустые пропускаются. Класс <code>StyleStats</code> считает так производные предлоги по списку <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет, путем, посредством) и штампы по списку <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, иметь место, в кратчайшие сроки, должным образом) или из параметра <code>cliches</code>. Словосочетание, начинающееся с инфинитива, находится в любой форме глагола («имело место»). Расчет идет по словоформам без фильтрации (<code>forms</code>), так как при лемматизации или фильтрации стоп-слов словосочетания распадаются.</p>
+<p>Вычисление числа вхождений словосочетаний из списка на 100 слов. Словосочетания сравниваются без учета регистра и буквы ё, а словосочетание, начинающееся с инфинитива, в том числе после «не», находится в любой форме своего глагола, включая причастия и деепричастия («имело место», «доведено до сведения»): эти варианты из текста, каждый со своим словосочетанием, добавляет функция <code>expand_phrases</code>. Так <code>StyleStats</code> считает по словоформам (<code>forms</code>) производные предлоги из <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет) и штампы из <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, иметь место) или из параметра <code>cliches</code>.</p>
 <p>Параметры:</p>
 <table>
 <thead>
@@ -3386,7 +3371,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.find_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
 </div>
-<p>Вычисление числа вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) плюс одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical</code>) вне найденных словосочетаний. Функция <code>find_parentheticals</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
+<p>Вычисление числа вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) и вне их одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical</code>). Функция <code>find_parentheticals</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
 <p>Параметры:</p>
 <table>
 <thead>

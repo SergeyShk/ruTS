@@ -2851,17 +2851,16 @@
 
 <h1 id="statistic-functions">Statistic functions<a class="headerlink" href="#statistic-functions" title="Permanent link">&para;</a></h1>
 <h2 id="frequency">Dictionary frequency<a class="headerlink" href="#frequency" title="Permanent link">&para;</a></h2>
-<p>The <code>coverage</code>, <code>mean_ipm</code>, <code>mean_ipm_content</code>, <code>mean_log_ipm</code>, <code>mean_log_ipm_content</code>, <code>mean_range</code> and <code>mean_dispersion</code> attributes of <code>LexicalStats</code> are computed from the <a href="../../datasets/freq2011/"><code>FreqDict</code></a> entries for the text lemmas (<code>entries</code>): the means are taken over words found in the dictionary, over all of them or only over content words. The mean frequency in ipm is sensitive to function words (и - 35,000 ipm, в - 31,000), so for comparing texts the log frequency or the mean over content words is more convenient; the latter corresponds to the FREQ2 feature of the 2023 Solovyev, Ivanov and Solnyshkina formula, whose values in the paper lie within 200-1000 (<a href="../readability_stats_funcs/#calc_sis_grade_freq"><code>calc_sis_grade_freq</code></a>).</p>
+<p>The <code>coverage</code>, <code>mean_ipm</code>, <code>mean_ipm_content</code>, <code>mean_log_ipm</code>, <code>mean_log_ipm_content</code>, <code>mean_range</code> and <code>mean_dispersion</code> attributes of <code>LexicalStats</code> are computed from the <a href="../../datasets/freq2011/"><code>FreqDict</code></a> entries for the keys of the words (<code>keys</code>, <code>entries</code>): the means are taken over words found in the dictionary, over all of them or only over content words. The mean frequency in ipm is sensitive to function words (и - 35,000 ipm, в - 31,000), so for comparing texts the log frequency or the mean over content words is more convenient; the latter corresponds to the FREQ2 feature of the 2023 Solovyev, Ivanov and Solnyshkina formula, whose values in the paper lie within 200-1000 (<a href="../readability_stats_funcs/#calc_sis_grade_freq"><code>calc_sis_grade_freq</code></a>).</p>
 <h2 id="calc_surprisal">Surprisal and perplexity<a class="headerlink" href="#calc_surprisal" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.lexical_stats.calc_surprisal()</strong></p>
 </div>
-<p>Computation of the mean word surprisal by the unigram model of the frequency dictionary. Words outside the dictionary get the dictionary's minimum frequency (0.4 ipm), so surprisal is defined for all words; the more rare words in the text, the higher it is. The text perplexity <code>perplexity</code> is <span class="arithmatex">\(2^{H}\)</span>.</p>
+<p>The mean surprisal of the words by the unigram model of a frequency dictionary, in bits; a word out of the dictionary gets its lowest frequency <code>min_ipm</code>. The perplexity is 2 to its power.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-H = -\frac{1}{N} \sum_{i=1}^{N} \log_2 \frac{\mathrm{ipm}(w_i)}{10^6}
+\frac{1}{N} \sum_{w} -\log_2 \frac{\max(\textrm{ipm}_w, \textrm{min\_ipm})}{10^6}
 \]</div>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
@@ -2876,16 +2875,18 @@ H = -\frac{1}{N} \sum_{i=1}^{N} \log_2 \frac{\mathrm{ipm}(w_i)}{10^6}
 <td style="text-align: center;"><code>lemmas</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word lemmas</td>
+<td style="text-align: center;">Keys of the words in the dictionary</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>freq_dict</code></td>
-<td style="text-align: center;">FreqDict</td>
+<td style="text-align: center;">FrequencyDictionary</td>
 <td style="text-align: center;"><code>-</code></td>
 <td style="text-align: center;">Frequency dictionary</td>
 </tr>
 </tbody>
 </table>
+<p>No words give <code>nan</code>; keys that are not a list of strings and a dictionary without <code>ipm</code> and <code>min_ipm</code> raise <code>SourceTypeError</code>, a lowest frequency that is not above zero <code>ParameterError</code>.</p>
+<p>In ruTS the dictionary is a <a href="../../datasets/freq2011/"><code>FreqDict</code></a> with the lowest frequency of 0.4 ipm: a dictionary of another class raises <code>SourceTypeError</code>.</p>
 <h2 id="get_rank">Frequency bands<a class="headerlink" href="#get_rank" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.lexical_stats.get_rank()</strong>, <strong>ruts.lexical_stats.load_top_lemmas()</strong></p>

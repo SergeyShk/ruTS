@@ -3026,16 +3026,17 @@
 
 
 <h1 id="metric-functions">Metric functions<a class="headerlink" href="#metric-functions" title="Permanent link">&para;</a></h1>
+<p>The norms of the services for the metrics are given in the <a href="../style_stats/#norms">service norms</a> section.</p>
 <h2 id="calc_classic_nausea">Classic nausea<a class="headerlink" href="#calc_classic_nausea" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_classic_nausea()</strong></p>
 </div>
-<p>Computation of classic nausea (<a href="https://advego.com/text/seo/">Advego</a>) - the square root of the number of occurrences of the most frequent word. It characterizes the intrusiveness of one word regardless of text length and therefore grows with the text. The Advego norm is at most 7, in practice 1-5.</p>
+<p>Computation of the classic nausea (Advego): how much one word is pressed. Not corrected for text length, it grows with the text; no words give 0.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-\sqrt{\max_k n_k}
+\sqrt{f_1}
 \]</div>
-<p>where <span class="arithmatex">\(n_k\)</span> is the number of occurrences of word <span class="arithmatex">\(k\)</span>.</p>
+<p>where <span class="arithmatex">\(f_1\)</span> is the number of occurrences of the most frequent word.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3059,10 +3060,10 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_academic_nausea()</strong></p>
 </div>
-<p>Computation of academic nausea (<a href="https://advego.com/text/seo/">Advego</a>) - the share of occurrences of the most frequent significant words in the text, in percent. The exact Advego formula is not published; it is implemented as the total frequency of the <code>top_n</code> most frequent words without the stop words (<a href="#find_nausea_words"><code>find_nausea_words</code></a>) divided by the number of all words: with stop words the ten most frequent are nearly always «и», «в», «на», «не», and the nausea of any text comes out above the norm. The Advego norm is 5-15%.</p>
+<p>Computation of the academic nausea (Advego): the share of the occurrences of the most frequent significant words (<a href="#find_nausea_words"><code>find_nausea_words</code></a>) among all the words, in percent.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-100\times\frac{\sum_{k \in \textrm{top}_n} n_k}{N}
+100 \cdot \frac{\sum_{w \in \textrm{top}_n} f_w}{\textrm{Number of words}}
 \]</div>
 <p>Parameters:</p>
 <table>
@@ -3091,7 +3092,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of stop words; if not set, pymorphy3 annotation is used</td>
+<td style="text-align: center;">Stop words; without them <a href="#is_stopword"><code>is_stopword</code></a> decides</td>
 </tr>
 </tbody>
 </table>
@@ -3099,7 +3100,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.find_nausea_words()</strong></p>
 </div>
-<p>The words <a href="#calc_academic_nausea">academic nausea</a> is computed by: the <code>top_n</code> most frequent words without the stop words (of the given list or <a href="#is_stopword"><code>is_stopword</code></a>) with the number of their occurrences.</p>
+<p>The <code>top_n</code> most frequent words without the stop words, with their occurrences, the most frequent first. A stop word is a word of <code>stopwords</code>, compared ignoring case and the letter ё, or, without the list, a word of <a href="#is_stopword"><code>is_stopword</code></a>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3127,7 +3128,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of stop words; if not set, pymorphy3 annotation is used</td>
+<td style="text-align: center;">Stop words</td>
 </tr>
 </tbody>
 </table>
@@ -3143,16 +3144,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_water()</strong></p>
 </div>
-<p>Computation of water content (<a href="https://text.ru/seo">Text.ru</a>) - the share of insignificant words in the text, in percent. Insignificant words (the "water") are conjunctions (with the parenthetical words конечно, например, which pymorphy3 tags as conjunctions), particles, pronominal nouns and interjections by pymorphy3 tags (function <a href="#is_water_word"><code>is_water_word</code></a>) or words from the given list. This set comes closest to the water content of Text.ru: prepositions, pronominal adjectives and predicatives, which are stop words of <a href="#is_stopword"><code>is_stopword</code></a>, are not water for Text.ru.</p>
-<p>Text.ru norms: up to 15% - natural content, 15-30% - excessive, above 30% - high.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Advego's "water" is a different indicator with a norm of 55-75%; it is not implemented here.</p>
-</div>
-<p>Formula:</p>
-<div class="arithmatex">\[
-100\times\frac{\textrm{Number of water words}}{\textrm{Number of words}}
-\]</div>
+<p>Computation of the water content (Text.ru): the share of the words without content, in percent - the words of <code>stopwords</code>, compared ignoring case and the letter ё, or, without the list, the words of <a href="#is_water_word"><code>is_water_word</code></a>. Advego's "water" is a different indicator; it is not implemented here.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3174,7 +3166,7 @@
 <td style="text-align: center;"><code>stopwords</code></td>
 <td style="text-align: center;">list[str]</td>
 <td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of water words; if not given, pymorphy3 tags are used</td>
+<td style="text-align: center;">Water words</td>
 </tr>
 </tbody>
 </table>
@@ -3182,7 +3174,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_water_word()</strong></p>
 </div>
-<p>Checking whether a word is "water" by part of speech for <a href="#calc_water">water content</a> and the <code>stopwords</code> layer of the highlighting: words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code> by pymorphy3 tags; the set is defined in <code>ruts.constants.WATER_POS</code>. The analysis results are cached.</p>
+<p>Checking whether a word is "water" by part of speech - for the <a href="#calc_water">water content</a> and the <code>stopwords</code> layer of the highlighting: conjunctions, particles, pronominal nouns and interjections by pymorphy3 tags (<code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code>; the <code>ruts.constants.WATER_POS</code> set). pymorphy3 tags the parenthetical words конечно and например as conjunctions, so they are water too. Prepositions, pronominal adjectives and predicatives, unlike in <a href="#is_stopword"><code>is_stopword</code></a>, are not water.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3206,7 +3198,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.is_stopword()</strong></p>
 </div>
-<p>Checking whether a word is a stop word by part of speech - insignificant for <a href="#calc_academic_nausea">academic nausea</a>. Stop words are words with the part of speech <code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code> or with the grammemes <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> by pymorphy3 tags; the sets are defined in <code>ruts.constants.STOPWORD_POS</code> and <code>ruts.constants.STOPWORD_GRAMMEMES</code>. The analysis results are cached.</p>
+<p>Checking whether a word is a stop word by part of speech - insignificant for the <a href="#calc_academic_nausea">academic nausea</a>: conjunctions, particles, prepositions, pronominal nouns, interjections and predicatives (<code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code>) and the words with the grammemes <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> - pronominal adjectives, parenthetical words, demonstrative and interrogative adverbs - by pymorphy3 tags; the sets are <code>ruts.constants.STOPWORD_POS</code> and <code>ruts.constants.STOPWORD_GRAMMEMES</code>.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3230,13 +3222,11 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_spam()</strong></p>
 </div>
-<p>Computation of the spam score (<a href="https://text.ru/seo">Text.ru</a>) - the share of word repeats in the text, in percent. Every occurrence of a word except the first counts as a repeat, so the spam score equals <span class="arithmatex">\(100\times(1 - \textrm{TTR})\)</span>. To compute by lemmas, extract words with lemmatization.</p>
-<p>Text.ru norms: up to 30% - natural content, 30-60% - SEO-optimized text, above 60% - spammed text.</p>
+<p>Computation of the spam score (Text.ru): the share of the repeated words in percent, every occurrence of a word after the first.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-100\times\frac{N - V}{N}
+100 \cdot \left(1 - \frac{\textrm{Number of lexemes}}{\textrm{Number of words}}\right)
 \]</div>
-<p>where <span class="arithmatex">\(N\)</span> is the number of words, <span class="arithmatex">\(V\)</span> the number of lexemes.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3260,14 +3250,10 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_zipf_naturalness()</strong></p>
 </div>
-<p>Computation of the naturalness of a text by <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf's law</a> (pr-cy, megaindex) - the agreement of the frequencies of the most frequent words with the ideal distribution <span class="arithmatex">\(f_r = f_1 / r\)</span>, where <span class="arithmatex">\(f_1\)</span> is the frequency of the most frequent word and <span class="arithmatex">\(r\)</span> the rank of a word. Computed as <span class="arithmatex">\(100\times(1 - \bar{d})\)</span>, where <span class="arithmatex">\(\bar{d}\)</span> is the mean relative deviation of the frequencies from the ideal ones over ranks 2 to <span class="arithmatex">\(n = \min(\textrm{top}_n, V, f_1)\)</span>: rank 1 matches the ideal by construction, and at ranks above <span class="arithmatex">\(f_1\)</span> the ideal frequency is below one and the deviation of hapaxes grows without bound. Negative values are clipped to 0. The service norm is at least 50%.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If there are no ranks to compare (all words are hapaxes, a single lexeme, or <code>top_n</code> below 2), the function returns <code>nan</code>.</p>
-</div>
+<p>Computation of the naturalness by <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf's law</a> (pr-cy, megaindex): the agreement of the frequencies of the most frequent words with the ideal distribution <span class="arithmatex">\(f_r = f_1 / r\)</span>, where <span class="arithmatex">\(f_1\)</span> is the frequency of the most frequent word and <span class="arithmatex">\(r\)</span> the rank. The ranks run from 2 to <span class="arithmatex">\(R = \min(\textrm{top}_n, V, f_1)\)</span>, where <span class="arithmatex">\(V\)</span> is the number of lexemes; negative values are cut to 0, and without ranks to compare - all the words hapaxes, one lexeme or <code>top_n</code> below 2 - the value is <code>nan</code>.</p>
 <p>Formula:</p>
 <div class="arithmatex">\[
-100\times\left(1-\frac{1}{n-1}\sum_{r=2}^{n}\frac{|f_r - f_1 / r|}{f_1 / r}\right)
+100 \cdot \left(1 - \frac{1}{R - 1} \sum_{r=2}^{R} \frac{|r \cdot f_r - f_1|}{f_1}\right)
 \]</div>
 <p>Parameters:</p>
 <table>
@@ -3298,11 +3284,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_keyword_density()</strong></p>
 </div>
-<p>Computation of keyword density (<a href="https://text.ru/seo">Text.ru</a>, Turgenev) - the frequency of every keyword per 100 words of the text. A multi-word key phrase separated by spaces is searched as a sequence of words; phrase occurrences may overlap. Words are compared ignoring case; to compare by lemmas, extract words with lemmatization and pass lemmas.</p>
-<p>Formula:</p>
-<div class="arithmatex">\[
-100\times\frac{\textrm{Number of keyword occurrences}}{\textrm{Number of words}}
-\]</div>
+<p>Computation of the keyword density (Text.ru): the occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the case is ignored, and the keywords of a set come in sorted order.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3332,7 +3314,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_verbal_nouns()</strong>, <strong>ruts.style_stats.find_verbal_nouns()</strong></p>
 </div>
-<p>Computation of the share of nouns (by the first pymorphy3 analysis) whose lemma ends with a suffix from <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство; the <code>ruts.utils.is_verbal_noun</code> function), in percent of all nouns; <code>nan</code> for a text without nouns. The suffix -ство is not in the list: it is mostly non-verbal (правительство, общество, средство). The heuristic also catches non-verbal words with the same suffixes (здание). The <code>find_verbal_nouns</code> function returns the bounds of the words found as slices of the list.</p>
+<p>Computation of the share of the verbal nouns among the nouns (by the first pymorphy3 analysis), in percent; <code>nan</code> for a text without nouns. A noun is verbal when its lemma ends with a suffix of <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - the <code>ruts.utils.is_verbal_noun</code> function; the heuristic also catches non-verbal words with the same suffixes (здание). The <code>find_verbal_nouns</code> function returns the bounds of the words found as slices of the list.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3354,9 +3336,9 @@
 </table>
 <h2 id="calc_phrase_density">Phrase density<a class="headerlink" href="#calc_phrase_density" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
-<p><strong>ruts.style_stats.calc_phrase_density()</strong></p>
+<p><strong>ruts.style_stats.calc_phrase_density()</strong>, <strong>ruts.style_stats.expand_phrases()</strong></p>
 </div>
-<p>Computation of the number of occurrences of phrases from a list per 100 words. Phrases are searched by lowercased word forms with ё replaced by е (<code>ruts.utils.find_phrases</code>): at every position the longest one is taken, matches do not overlap, empty phrases are skipped. <code>StyleStats</code> counts this way the compound prepositions from the <code>COMPOUND_PREPOSITIONS</code> list (в целях, в связи с, в рамках, за счет, путем, посредством) and the clichés from the <code>OFFICIALESE_CLICHES</code> list (на сегодняшний день, в настоящее время, иметь место, в кратчайшие сроки, должным образом) or from the <code>cliches</code> parameter. A phrase starting with an infinitive is found in any form of the verb («имело место»). The computation goes over unfiltered word forms (<code>forms</code>), since lemmatization or stop word filtering breaks the phrases apart.</p>
+<p>Computation of the occurrences of the phrases of a list per 100 words. The phrases are compared ignoring case and the letter ё, and a phrase starting with an infinitive, alone or after «не», is found in any form of its verb, participles and gerunds included («имело место», «доведено до сведения»): the <code>expand_phrases</code> function adds these variants from the text, each with its phrase. So <code>StyleStats</code> counts over the word forms (<code>forms</code>) the compound prepositions of <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет) and the cliches of <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, иметь место) or of the <code>cliches</code> parameter.</p>
 <p>Parameters:</p>
 <table>
 <thead>
@@ -3386,7 +3368,7 @@
 <div class="admonition info">
 <p><strong>ruts.style_stats.calc_parentheticals()</strong>, <strong>ruts.style_stats.find_parentheticals()</strong>, <strong>ruts.style_stats.is_parenthetical()</strong></p>
 </div>
-<p>Computation of the number of parentheticals per 100 words: phrases from <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) plus single words with the pymorphy3 grammeme <code>Prnt</code> (конечно, например, впрочем; the <code>is_parenthetical</code> function) outside the matched phrases. The <code>find_parentheticals</code> function returns the bounds of the words and phrases found as slices of the list.</p>
+<p>Computation of the number of parenthetical words per 100 words: the phrases of <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the pymorphy3 grammeme <code>Prnt</code> (конечно, например, впрочем; the <code>is_parenthetical</code> function). The <code>find_parentheticals</code> function returns the bounds of the words and phrases found as slices of the list.</p>
 <p>Parameters:</p>
 <table>
 <thead>
