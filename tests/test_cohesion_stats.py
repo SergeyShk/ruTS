@@ -496,12 +496,12 @@ def test_sents_extractor_class_of_a_subclass():
 
     class Lines(SentsExtractor):
         def __init__(self):
-            super().__init__(tokenizer=re.compile(r"\n"))
+            super().__init__(tokenizer=re.compile(r"; "))
 
     class LineCohesion(CohesionStats):
         sents_extractor_class = Lines
 
-    text = "Кот спит. Пёс лежит\nМы ушли"
+    text = "Кот спит, пёс лежит; мы ушли"
     blank = spacy.blank("ru")(text)
     counts = {
         LineCohesion(text).n_sents,
