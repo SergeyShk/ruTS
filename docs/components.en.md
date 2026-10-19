@@ -9,7 +9,7 @@ The components of ruTS are subclasses of the `StatsComponent` of the [anyTS](htt
 
 ## Names { #names }
 
-The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`.
+The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`. `import ruts` does not load the components while spaCy is not loaded - the entry points find them; from the sources without an installed package, `import ruts.components` comes before `add_pipe`.
 
 --8<-- "components.md:StatsComponent-names"
 

@@ -6,6 +6,7 @@
 # URL: <https://github.com/SergeyShk/ruTS>
 
 import logging
+import sys
 from importlib.metadata import PackageNotFoundError, version
 from typing import TYPE_CHECKING
 
@@ -95,7 +96,11 @@ __all__ = [
     "__version__",
 ]
 
-# Компоненты регистрируют фабрики spaCy и импортируют его: модуль грузится при первом обращении
+# Компоненты регистрируют фабрики spaCy и импортируют его: модуль грузится при первом обращении,
+# а при уже загруженном spaCy - сразу: точки входа он мог прочитать до установки ruTS
+if "spacy" in sys.modules:
+    from . import components as components
+
 make_lazy(
     __name__,
     dict.fromkeys(

@@ -516,3 +516,30 @@ def test_lazy_packages_export_their_names():
         assert set(package.__all__) <= set(dir(package))
         assert all(getattr(package, name) is not None for name in package.__all__)
     assert callable(ruts.visualizers.highlight) and callable(ruts.corpus.kwic)
+
+
+def test_factories_with_spacy_loaded_before():
+    """Точки входа, прочитанные до установки ruTS, не мешают: при загруженном spaCy
+    import ruts регистрирует фабрики сам"""
+    code = (
+        "import catalogue\n"
+        "catalogue.AVAILABLE_ENTRY_POINTS = {}\n"
+        "import spacy, ruts\n"
+        "nlp = spacy.blank('ru')\n"
+        "nlp.add_pipe('ruts_basic')\n"
+        "print(nlp('мама мыла раму')._.ruts_basic.n_words)"
+    )
+    assert _run(code) == "3"
+
+
+def test_doc_of_spacy_loaded_after():
+    """Doc распознается и тогда, когда spaCy загружен после import ruts"""
+    code = (
+        "import sys, ruts\n"
+        "before = 'spacy' in sys.modules\n"
+        "import spacy\n"
+        "doc = spacy.blank('ru')('Мама мыла раму. Кот спал.')\n"
+        "print(before, ruts.BasicStats(doc).n_sents, len(ruts.DiversityStats(doc).words),"
+        " len(ruts.StyleStats(doc).words))"
+    )
+    assert _run(code) == "False 2 5 5"
