@@ -169,7 +169,7 @@ def test_component_style_params(spacy_doc):
     assert custom.academic_nausea == pytest.approx(
         StyleStats(doc, top_n=3, nausea_stopwords=["и"]).academic_nausea
     )
-    assert custom.cliches_list == spacy_doc._.style.cliches_list
+    assert custom.cliches_list == StyleStats(doc).cliches_list
 
 
 def test_component_style_cliches():
