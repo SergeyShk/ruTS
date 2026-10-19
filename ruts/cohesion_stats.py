@@ -33,6 +33,7 @@ from .constants import (
     CONNECTOR_NOT_AT_START,
     CONNECTOR_ONLY_AFTER,
     CONNECTOR_POS_EXTRA,
+    CONNECTOR_SUBORDINATORS,
     CONTENT_POS,
     CORE_MESSAGES,
     DEMONSTRATIVE_LEMMAS,
@@ -89,7 +90,8 @@ class RussianConnectorMatcher(ConnectorMatcher):
         CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее);
         контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
         CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
-        (после обеда, пока что, ещё раз, не правда ли)
+        (после обеда, пока что, ещё раз, не правда ли); многословные подчинительные
+        союзы - CONNECTOR_SUBORDINATORS (так как, после того как)
     """
 
     pos_extra = CONNECTOR_POS_EXTRA
@@ -98,6 +100,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
     only_after = CONNECTOR_ONLY_AFTER
     not_at_start = CONNECTOR_NOT_AT_START
     blocked_after_pos = CONNECTOR_BLOCKED_AFTER_POS
+    subordinators = CONNECTOR_SUBORDINATORS
     messages = CORE_MESSAGES
 
     def normalize(self, text: str) -> str:

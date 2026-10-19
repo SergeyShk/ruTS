@@ -27,6 +27,7 @@ from ruts.constants import (
     CONNECTOR_CLASSES,
     CONNECTOR_NOT_AT_START,
     CONNECTOR_ONLY_AFTER,
+    CONNECTOR_SUBORDINATORS,
     CONNECTOR_TYPES,
 )
 from ruts.exceptions import SourceError
@@ -461,6 +462,21 @@ def test_connector_context_rules(nlp):
     assert [c.text for c in find_connectors(["и", "отсюда"])] == ["и", "отсюда"]
 
 
+def test_connectors_by_place(nlp):
+    """Подчинительный союз в начале предложения начинает его придаточное"""
+    text = (
+        "Что касается денег, их нет. Для того чтобы успеть, он бежал. Так как он устал, "
+        "он сел. Потому что поздно. Как бы там ни было, мы пошли. Когда он пришёл, все встали. "
+        "Однако дождь шёл."
+    )
+    for source in (text, nlp(text)):
+        cs = CohesionStats(source)
+        # Межпредложенческие: что касается, потому что, как бы там ни было, однако
+        assert [connector.start for connector in cs.connector_spans] == [0] * 7
+        assert cs.n_inter_connectors == 4
+        assert cs.connectors_intra == pytest.approx(3 / cs.n_words * 1000)
+
+
 def test_connector_rules_dictionary():
     """Ключи правил - коннекторы словаря, слова правил - в форме normalize_yo"""
     connectors = load_connectors()
@@ -473,6 +489,7 @@ def test_connector_rules_dictionary():
     for rule in rules:
         assert set(rule) <= set(connectors)
     assert set(CONNECTOR_NOT_AT_START) <= set(connectors)
+    assert set(CONNECTOR_SUBORDINATORS) <= set(connectors)
     for rule in rules[:3]:
         for words in rule.values():
             assert all(word == normalize_yo(word) for word in words), words

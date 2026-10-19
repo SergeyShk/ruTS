@@ -52,7 +52,7 @@
 
 ## Атрибуты
 
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 7be8873 -->
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 06c1393 -->
 | Атрибут | Тип | Описание |
 | :-----: | :-: | :------: |
 | `words`, `lemmas` | tuple[tuple[str]] | Слова и леммы каждого предложения, в котором есть слова |
@@ -71,7 +71,7 @@
 | `tense_repetition`, `mood_repetition`, `aspect_repetition` | float | Доли соседних пар предложений с одинаковым преобладающим временем, наклонением и видом |
 | `temporal_cohesion` | float | Среднее повторов признаков `temporal_features` |
 | `connectors` | float | Коннекторов на 1000 слов |
-| `connectors_inter`, `connectors_intra` | float | Межпредложенческих коннекторов на 1000 слов, которые связывают предложение с предыдущими: открывающих предложение, если их первое слово не подчинительный союз (`SCONJ`, *когда он пришел, ...*), чья клауза принадлежит тому же предложению; и внутрипредложенческих - остальных |
+| `connectors_inter`, `connectors_intra` | float | Межпредложенческих коннекторов на 1000 слов, которые связывают предложение с предыдущими: открывающих предложение, если сопоставитель не считает их подчинительным союзом (`is_subordinator`: один из его `subordinators` или однословный коннектор с частью речи `SCONJ`, *когда он пришел, ...*), чья клауза принадлежит тому же предложению; и внутрипредложенческих - остальных |
 | `connectors_<class>`, `connectors_<kind>` | float | Коннекторов каждого класса и типа сопоставителя на 1000 слов: по умолчанию `connectors_causal`, `connectors_adversative`, `connectors_concessive`, `connectors_temporal`, `connectors_additive`, `connectors_conditional`, `connectors_reformulative`, `connectors_primary` и `connectors_secondary` |
 
 Повторы слов в тексте из одного предложения, повтор признака без двух соседних предложений с ним и доля, которой не на что делить, равны `nan`.
