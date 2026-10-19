@@ -212,6 +212,8 @@ class DiversityStats(anyts.DiversityStats):
     Методы:
         windowed: Оконный расчет метрики со средним и доверительным интервалом
         get_stats: Получение вычисленных метрик лексического разнообразия текста
+        to_dataframe: Получение статистик таблицей из одной строки
+        describe: Прочтение статистики по шкале; шкал нет - None
         print_stats: Отображение вычисленных метрик лексического разнообразия текста с описанием на экран
 
     Исключения:
@@ -236,7 +238,7 @@ class DiversityStats(anyts.DiversityStats):
         log_base: float = DIVERSITY_LOG_BASE,
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
+            raise SourceTypeError(self.messages["words_extractor_type"])
         check_params(
             window_len,
             mtld_threshold,
@@ -253,7 +255,7 @@ class DiversityStats(anyts.DiversityStats):
             text = source.text if isinstance(source, Doc) else source
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
-            raise SourceTypeError("Некорректный источник данных")
+            raise SourceTypeError(self.messages["source_type"])
         super().__init__(
             [word.lower() for word in words],
             window_len,

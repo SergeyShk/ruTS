@@ -548,8 +548,7 @@ def test_check_stat_key_error(ms, capsys):
     with pytest.raises(KeyError) as excinfo:
         ms.get_stats("foo", "tense")
     assert str(excinfo.value) == (
-        "foo отсутствует в справочнике морфологических статистик, доступны: "
-        + ", ".join(MORPHOLOGY_STATS_DESC)
+        f"Неизвестная статистика: foo. Доступные статистики: {tuple(MORPHOLOGY_STATS_DESC)}"
     )
     assert capsys.readouterr().out == ""
 
@@ -618,3 +617,15 @@ def test_ambiguous_grammeme():
     assert {"anim", "inan"} <= grammemes
     assert word_to_ud("бачокки")["animacy"] is None
     assert word_to_ud("бачокки")["case"] is not None
+
+
+def test_stats_interface(ms):
+    """Плоские статистики, таблица и прочтение базового класса ядра"""
+    flat = ms.get_stats("pos", flat=True)
+    assert flat == {f"pos_{value}": n for value, n in ms.get_stats("pos")["pos"].items() if value}
+    assert not any(key.endswith("_None") for key in ms.get_stats(flat=True))
+    frame = ms.to_dataframe()
+    assert len(frame) == 1 and set(frame.columns) == set(ms.get_stats(flat=True))
+    assert ms.describe("case") is None
+    with pytest.raises(KeyError):
+        ms.describe("foo")

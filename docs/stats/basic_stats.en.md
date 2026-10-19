@@ -110,25 +110,33 @@ To illustrate the method, we reuse the code from the previous example:
     _Result_:
 
     ``` bash
-         Статистика     | Значение
+        Статистика     | Значение
     ------------------------------
-    Предложения         |    1
-    Слова               |    9
-    Уникальные слова    |    8
-    Длинные слова       |    3
-    Сложные слова       |    2
-    Простые слова       |    7
-    Односложные слова   |    5
-    Многосложные слова  |    4
-    Символы             |    55
-    Буквы               |    45
-    Пробелы             |    8
-    Слоги               |    18
-    Знаки препинания    |    2
+    Предложения        |    1
+    Слова              |    9
+    Уникальные слова   |    8
+    Длинные слова      |    3
+    Сложные слова      |    2
+    Простые слова      |    7
+    Односложные слова  |    5
+    Многосложные слова |    4
+    Символы            |    55
+    Буквы              |    45
+    Пробелы            |    8
+    Слоги              |    18
+    Знаки препинания   |    2
     ```
 
 !!! warning "Warning"
     The method does not print the normalized statistics attributes `p_*`.
+
+### to_dataframe
+
+--8<-- "stats/stats.md:Stats-to_dataframe"
+
+### describe
+
+The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, so it always gives `None`.
 
 ## Punctuation profile { #punctuation }
 

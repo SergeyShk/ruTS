@@ -1,12 +1,14 @@
 import re
 from collections import Counter, OrderedDict
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from functools import cached_property, lru_cache
 from inspect import getattr_static
 from math import nan
+from typing import Any, ClassVar
 
 import anyts
 import pymorphy3
+from anyts.stats import Stats
 from anyts.utils import iter_doc_units, safe_divide
 from spacy.tokens import Doc, Token
 
@@ -16,6 +18,7 @@ from .constants import (
     ANSWER_PARTICLE_PREV_MARKS,
     COMPARATIVE_ADVERBS,
     CONDITIONAL_PARTICLES,
+    CORE_MESSAGES,
     MORPHOLOGY_FEATURES,
     MORPHOLOGY_MARKERS_DESC,
     MORPHOLOGY_STATS_DESC,
@@ -28,7 +31,7 @@ from .constants import (
     TENSED_PREDICATIVES,
     UD_PERSONS,
 )
-from .exceptions import SourceError, SourceTypeError, UnknownStatError
+from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import lemmatize, parse_all, parse_word, strip_marks
 
@@ -49,7 +52,7 @@ TAG_GRAMMEMES = {
 }
 
 
-class MorphStats:
+class MorphStats(Stats):
     """
     Класс для вычисления морфологических статистик текста
 
@@ -124,6 +127,8 @@ class MorphStats:
 
     Методы:
         get_stats: Получение вычисленных морфологических статистик текста
+        to_dataframe: Получение статистик таблицей из одной строки
+        describe: Прочтение статистики по шкале; у морфологии шкал нет - None
         explain_text: Разбор текста по морфологическим статистикам
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
         get_markers: Получение долей грамматических форм глагола
@@ -134,9 +139,14 @@ class MorphStats:
         SourceError: Если в источнике данных отсутствуют слова
     """
 
+    stats_desc: ClassVar[Mapping[str, str]] = {
+        stat: desc["name"] for stat, desc in MORPHOLOGY_STATS_DESC.items()
+    }
+    messages = CORE_MESSAGES
+
     def __init__(self, source: str | Doc, words_extractor: anyts.WordsExtractor | None = None):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
-            raise SourceTypeError("Экстрактор слов должен быть WordsExtractor")
+            raise SourceTypeError(self.messages["words_extractor_type"])
         features: list[dict[str, str | None]]
         if isinstance(source, Doc) and words_extractor is not None:
             # Экстрактор слов применяется к тексту Doc, как в классах ядра
@@ -159,9 +169,9 @@ class MorphStats:
             self.words = words_extractor.extract(source)
             features = _words_to_ud(self.words, source)
         else:
-            raise SourceTypeError("Некорректный источник данных")
+            raise SourceTypeError(self.messages["source_type"])
         if not self.words:
-            raise SourceError("В источнике данных отсутствуют слова")
+            raise SourceError(self.messages["no_words"])
 
         self.tags = tuple(format_features(word_features) for word_features in features)
         self.pos = tuple(word_features["pos"] for word_features in features)
@@ -188,25 +198,37 @@ class MorphStats:
             lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
         )
 
-    def get_stats(self, *args: str, filter_none: bool = False) -> dict[str, dict[str, int]]:
+    def get_stats(  # type: ignore[override]
+        self, *args: str, filter_none: bool = False, flat: bool = False
+    ) -> dict[str, Any]:
         """
         Получение вычисленных морфологических статистик текста
 
         Аргументы:
             args (tuple[str]): Кортеж выбранных статистик
             filter_none (bool): Фильтровать пустые значения
+            flat (bool): Ключи вида pos_NOUN вместо вложенных справочников, без слов
+                без признака
 
         Вывод:
-            dict[str, dict[str, int]]: Справочник вычисленных морфологических статистик текста
+            dict[str, dict[str, int]]: Справочник вычисленных морфологических статистик текста;
+                при flat - справочник количеств по ключам статистика_значение
+
+        Исключения:
+            UnknownStatError: Если выбранной статистики нет в справочнике
         """
-        if not args:
-            args = tuple(MORPHOLOGY_STATS_DESC.keys())
-        else:
-            self.__check_stat(*args)
-        stats: dict[str, dict[str, int]] = {}
+        args = self._checked_stats(args)
+        stats: dict[str, dict[str | None, int]] = {}
         for arg in args:
             counts = dict(Counter(getattr(self, arg)))
             stats[arg] = {k: v for (k, v) in counts.items() if k} if filter_none else counts
+        if flat:
+            return {
+                f"{stat}_{value}": n
+                for stat, counts in stats.items()
+                for value, n in counts.items()
+                if value is not None
+            }
         return stats
 
     def explain_text(
@@ -222,10 +244,7 @@ class MorphStats:
         Вывод:
             tuple[str, dict[str, str]]: Кортеж слов текста с морфологическими статистиками
         """
-        if not args:
-            args = tuple(MORPHOLOGY_STATS_DESC.keys())
-        else:
-            self.__check_stat(*args)
+        args = self._checked_stats(args)
         values = tuple(zip(*(getattr(self, arg) for arg in args), strict=False))
         if filter_none:
             explains = tuple(
@@ -244,10 +263,7 @@ class MorphStats:
             args (tuple[str]): Кортеж выбранных статистик
             filter_none (bool): Фильтровать пустые значения
         """
-        if not args:
-            args = tuple(MORPHOLOGY_STATS_DESC.keys())
-        else:
-            self.__check_stat(*args)
+        args = self._checked_stats(args)
         stats = self.get_stats(*args)
         for stat, values in stats.items():
             stat_desc = MORPHOLOGY_STATS_DESC[stat]
@@ -343,27 +359,11 @@ class MorphStats:
         for marker, desc in MORPHOLOGY_MARKERS_DESC.items():
             print(f"{desc:50}|{markers[marker]:^12.2f}")
 
-    @staticmethod
-    def __check_stat(*args: str) -> bool:
-        """
-        Проверка выбранных морфологических статистик
-
-        Аргументы:
-            args (tuple[str]): Кортеж выбранных статистик
-
-        Вывод:
-            bool: Результат проверки
-
-        Исключения:
-            UnknownStatError: Если выбранная статистика отсутствует в справочнике
-        """
+    def _checked_stats(self, args: tuple[str, ...]) -> tuple[str, ...]:
+        """Выбранные статистики, проверенные по справочнику; все, если не выбраны"""
         for arg in args:
-            if arg not in MORPHOLOGY_STATS_DESC:
-                raise UnknownStatError(
-                    f"{arg} отсутствует в справочнике морфологических статистик, "
-                    f"доступны: {', '.join(MORPHOLOGY_STATS_DESC)}"
-                )
-        return True
+            self._check_stat(arg)
+        return args or self.stat_names()
 
 
 def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:
