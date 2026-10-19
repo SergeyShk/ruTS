@@ -3125,6 +3125,11 @@
 <td style="text-align: center;">Number of the connectors, their occurrences and their number by connector</td>
 </tr>
 <tr>
+<td style="text-align: center;"><code>n_inter_connectors</code></td>
+<td style="text-align: center;">int</td>
+<td style="text-align: center;">Number of the inter-sentential connectors</td>
+</tr>
+<tr>
 <td style="text-align: center;"><code>noun_overlap_adjacent</code>, <code>noun_overlap_all</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Shares of the adjacent and of all pairs of sentences sharing a noun</td>
@@ -3173,6 +3178,11 @@
 <td style="text-align: center;"><code>connectors</code></td>
 <td style="text-align: center;">float</td>
 <td style="text-align: center;">Connectors per 1000 words</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>connectors_inter</code>, <code>connectors_intra</code></td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">Inter-sentential connectors per 1000 words, which link a sentence to the ones before: those opening a sentence, unless the matcher takes them for a subordinating conjunction (<code>is_subordinator</code>: one of its <code>subordinators</code> or a one-word connector tagged <code>SCONJ</code>, <em>when he came, ...</em>), whose clause belongs to the same sentence; and intra-sentential ones, the others</td>
 </tr>
 <tr>
 <td style="text-align: center;"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></td>
@@ -3241,6 +3251,8 @@
 <span class="s1">'aspect_repetition'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
 <span class="s1">'temporal_cohesion'</span>:<span class="w"> </span><span class="m">0</span>.5,
 <span class="s1">'connectors'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
+<span class="s1">'connectors_inter'</span>:<span class="w"> </span><span class="m">0</span>.0,
+<span class="s1">'connectors_intra'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
 <span class="s1">'connectors_causal'</span>:<span class="w"> </span><span class="m">0</span>.0,
 <span class="s1">'connectors_adversative'</span>:<span class="w"> </span><span class="m">0</span>.0,
 <span class="s1">'connectors_concessive'</span>:<span class="w"> </span><span class="m">0</span>.0,
@@ -3293,6 +3305,8 @@
 Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
 Темпоральная<span class="w"> </span>связность<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
 Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                 </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
+Межпредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Внутрипредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">           </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
 Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
