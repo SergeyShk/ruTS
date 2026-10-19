@@ -100,7 +100,8 @@ class RussianConnectorMatcher(ConnectorMatcher):
         значит, ежели, коли); контекстные правила - списки CONNECTOR_BLOCKED_AFTER,
         CONNECTOR_BLOCKED_BEFORE, CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START
         и CONNECTOR_BLOCKED_AFTER_POS (после обеда, пока что, ещё раз, не правда ли),
-        через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего),
+        через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего;
+        после «Ревизора»),
         а знак внутри коннектора CONNECTOR_SPLIT_BY_MARKS его разделяет (так, как);
         многословные подчинительные союзы и предлоги и однословные союзы, которые
         модели или pymorphy3 размечают не SCONJ, - CONNECTOR_SUBORDINATORS (так как,
@@ -316,7 +317,11 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         extractor = self.words_extractor or WordsExtractor()
         texts = tuple(texts)
         sent_words = [tuple(extractor.extract(sent)) for sent in texts]
-        marks = [find_marks(sent, words) for sent, words in zip(texts, sent_words, strict=True)]
+        # Слова экстрактора - без знаков ударения, а знак комбинирующий не отличить от препинания
+        marks = [
+            find_marks(strip_marks(sent), [strip_marks(word) for word in words])
+            for sent, words in zip(texts, sent_words, strict=True)
+        ]
         return _cohesion_words(sent_words, text, marks)
 
 
@@ -361,7 +366,7 @@ def load_connectors() -> dict[str, tuple[str, str]]:
 
     Описание:
         Файл resources/connectors.tsv: коннектор, класс из CONNECTOR_CLASSES
-        и тип из CONNECTOR_TYPES; 317 коннекторов по классификации Криони, Никина
+        и тип из CONNECTOR_TYPES; 316 коннекторов по классификации Криони, Никина
         и Филипповой (2008) со сверкой по маркерам Ru-RSTreebank, базе Рускон
         и списку причинных маркеров Тольдовой и др. (2018)
 

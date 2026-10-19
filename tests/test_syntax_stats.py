@@ -457,6 +457,9 @@ def test_infinitive_periphrasis_hook(nlp):
         "Пора идти домой.",
         "Он взялся читать.",
         "Он кинулся бежать.",
+        "Мне пришлось уйти.",
+        "Мне приходится уходить.",
+        "Стоит отметить это.",
     ],
 )
 def test_model_periphrases_of_one_clause(nlp, text):

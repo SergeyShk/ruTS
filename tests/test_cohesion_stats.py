@@ -1,3 +1,4 @@
+import unicodedata
 from math import isnan
 
 import pytest
@@ -414,6 +415,8 @@ def test_connectors_hyphens_and_dots(nlp):
         ("Иди скорее домой.", [], 0),
         ("Моя правда.", [], 0),
         ("После него остался сын.", [], 0),
+        ("После «Ревизора» он уехал.", [], 0),
+        ("Он ушёл после.", ["после"], 0),
         ("Ради бога, простите.", [], 0),
     ],
 )
@@ -422,6 +425,16 @@ def test_connector_rules(nlp, text, found, inter):
         cs = CohesionStats(source)
         assert [connector.text for connector in cs.connector_spans] == found
         assert cs.n_inter_connectors == inter
+
+
+@pytest.mark.parametrize(
+    "text", ["Это, правда, было давно.", "Что значит ещё раз?", "Он не знал, отчего так."]
+)
+def test_connector_rules_with_stress_marks(text):
+    """Знаки ударения и буквы из двух символов (NFD) не меняют знаки препинания между словами"""
+    plain = [connector.text for connector in CohesionStats(text).connector_spans]
+    for marked in (text.replace("ра", "ра\u0301"), unicodedata.normalize("NFD", text)):
+        assert [connector.text for connector in CohesionStats(marked).connector_spans] == plain
 
 
 def test_connectors_pos(nlp):
