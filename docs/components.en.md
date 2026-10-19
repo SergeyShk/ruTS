@@ -235,6 +235,7 @@ Parameters:
 | `stopwords` | list[str] | `None` | List of water words for water content; if not given, pymorphy3 tags are used |
 | `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
 | `nausea_stopwords` | list[str] | `None` | Stop word list for academic nausea; if not given, pymorphy3 tags are used |
+| `cliches` | list[str] | `None` | List of cliches; if not given, `OFFICIALESE_CLICHES` is used |
 
 Usage example:
 
@@ -264,7 +265,7 @@ Usage example:
     0.0
     ```
 
-The stop word list and the number of the most frequent words are passed via `config`:
+The stop word list, the number of the most frequent words and your own list of cliches are passed via `config`:
 
 !!! example "Example"
 
@@ -272,6 +273,7 @@ The stop word list and the number of the most frequent words are passed via `con
     nlp.add_pipe(
         "ruts_style", name="style_short", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True
     )
+    nlp.add_pipe("ruts_style", name="style_cliches", config={"cliches": ["в целях", "в рамках"]})
     ```
 
 ## PhonStatsComponent

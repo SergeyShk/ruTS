@@ -169,6 +169,17 @@ def test_component_style_params(spacy_doc):
     assert custom.academic_nausea == pytest.approx(
         StyleStats(doc, top_n=3, nausea_stopwords=["и"]).academic_nausea
     )
+    assert custom.cliches_list == spacy_doc._.style.cliches_list
+
+
+def test_component_style_cliches():
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("ruts_style", name="style_cliches", config={"cliches": ["мама мыла"]})
+    stats = nlp("Мама мыла раму, в целях уборки")._.style_cliches
+    assert stats.cliches_list == ("мама мыла",)
+    assert stats.cliches == pytest.approx(100 / 6)
+    with pytest.raises(SourceTypeError):
+        StyleStatsComponent(nlp, name="style_wrong_cliches", cliches=iter(["мама мыла"]))
 
 
 def test_component_diversity_params(spacy_doc):

@@ -208,9 +208,10 @@ class StyleStatsComponent(_Component, anyts.components.StyleStatsComponent):
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
         nausea_stopwords (list[str]): Список стоп-слов для академической тошноты; если
             не задан, используется разметка pymorphy3
+        cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
 
     Исключения:
-        SourceTypeError: Если стоп-слова не набор строк
+        SourceTypeError: Если стоп-слова или штампы не набор строк
         ParameterError: Если количество самых частых слов не целое число или меньше 1
     """
 
