@@ -284,14 +284,8 @@ RUSSIAN = {
         "zipf",
         "zipf_theory",
     },
-    "ruts.visualizers.highlight": {"HighlightedText", "find_phrases", "get_doc_words"},
-}
-
-
-# Копии механики ядра до переезда классов на каркасы anyTS 0.3: каждый PR 0.18 убирает свои
-PENDING = {
     "ruts.visualizers.highlight": {
-        "ALLITERATION_THRESHOLD",
+        "HighlightedText",
         "calc_alliteration_runs",
         "find_alliteration",
         "find_complex_words",
@@ -299,6 +293,7 @@ PENDING = {
         "find_long_sents",
         "find_phrase_highlights",
         "find_split_predicate_highlights",
+        "get_doc_words",
     },
 }
 
@@ -314,7 +309,6 @@ def test_core_names(library, core):
             name.startswith("_")
             or isinstance(value, ModuleType)
             or not hasattr(library_module, name)
-            or name in PENDING.get(library, ())
         ):
             continue
         own = getattr(library_module, name)
