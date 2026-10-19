@@ -172,6 +172,7 @@ RUSSIAN = {
         "SYNTAX_STATS_DESC",
         "SyntaxStats",
         "is_clause_head",
+        "is_infinitive_clause",
         "is_subordinate_clause_head",
     },
     "ruts.style_stats": {

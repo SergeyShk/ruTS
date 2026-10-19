@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from math import nan
 from statistics import fmean
 
@@ -32,6 +32,8 @@ from spacy.tokens import Doc, Token
 
 from .constants import (
     CORE_MESSAGES,
+    HORTATIVE_WORDS,
+    INFINITIVE_PERIPHRASES,
     LIGHT_VERBS,
     NEGATION_PARTICLES,
     SPLIT_PREDICATE_NOUNS,
@@ -183,8 +185,12 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         self.mean_converb_clause_len = fmean(converb_clauses) if converb_clauses else nan
 
     def is_clause_head(self, token: Token) -> bool:
-        """Вершина клаузы по правилам русского языка (is_clause_head)"""
-        return is_clause_head(token)
+        """Вершина клаузы по правилам русского языка с крючком is_infinitive_periphrasis"""
+        return _is_clause_head(token, self.is_infinitive_periphrasis)
+
+    def is_infinitive_periphrasis(self, token: Token) -> bool:
+        """Инфинитив одной предикации с модальным или фазовым глаголом (is_infinitive_periphrasis)"""
+        return is_infinitive_periphrasis(token)
 
     def is_participle_clause(self, token: Token) -> bool:
         """Вершина причастного оборота - полного причастия (is_participle_clause)"""
@@ -260,7 +266,9 @@ def is_clause_head(token: Token) -> bool:
         Клаузу возглавляет вершина предложения или слово со связью ccomp, advcl, acl,
         acl:relcl, csubj или csubj:pass, кроме полных причастий, деепричастий
         и инфинитивов при существительном (желание уйти): причастные
-        и деепричастные обороты считаются отдельно
+        и деепричастные обороты считаются отдельно; со связью xcomp - инфинитив,
+        который не образует одну предикацию с глаголом (is_infinitive_clause:
+        хочет уйти, но не может уйти)
         Вставная конструкция (parataxis) и однородное сказуемое (conj от вершины
         клаузы) образуют свою клаузу, только если это глагол или у него есть
         собственное подлежащее: модели spaCy вешают parataxis и на вводные слова
@@ -272,6 +280,11 @@ def is_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
+    return _is_clause_head(token, is_infinitive_periphrasis)
+
+
+def _is_clause_head(token: Token, is_infinitive_periphrasis: Callable[[Token], bool]) -> bool:
+    """is_clause_head с проверкой сочетания одной предикации"""
     seen = set()
     # Вверх по цепочке однородных до слова, которое само не conj; петля разбора - не клауза
     while is_word(token) and token.i not in seen:
@@ -281,6 +294,8 @@ def is_clause_head(token: Token) -> bool:
             return False
         dep = base_dep(token)
         if dep != "conj":
+            if dep == "xcomp":
+                return _is_infinitive_clause(token, is_infinitive_periphrasis)
             if dep not in CLAUSE_DEPS:
                 return False
             if dep == "parataxis":
@@ -293,14 +308,68 @@ def is_clause_head(token: Token) -> bool:
     return False
 
 
+def is_infinitive_clause(token: Token) -> bool:
+    """
+    Проверка, возглавляет ли инфинитив при глаголе свою клаузу
+
+    Описание:
+        is_infinitive_clause ядра с русскими правилами is_infinitive_periphrasis
+        и is_clause_head: инфинитив со связью xcomp (хочет уйти, попросил его уйти),
+        кроме сочетаний одной предикации (может уйти, начал читать) и инфинитива
+        в обороте (решивший уйти, желая уйти); личная форма со связью xcomp
+        у русских моделей - ошибка разбора, а не клауза
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return _is_infinitive_clause(token, is_infinitive_periphrasis)
+
+
+def _is_infinitive_clause(
+    token: Token, is_infinitive_periphrasis: Callable[[Token], bool]
+) -> bool:
+    """is_infinitive_clause с проверкой сочетания одной предикации"""
+    return anyts.syntax_stats.is_infinitive_clause(
+        token,
+        is_infinitive_periphrasis,
+        lambda word: _is_clause_head(word, is_infinitive_periphrasis),
+    )
+
+
+def is_infinitive_periphrasis(token: Token) -> bool:
+    """
+    Проверка, образует ли инфинитив одну предикацию со своим глаголом
+
+    Описание:
+        Глагол - модальный или фазовый из INFINITIVE_PERIPHRASES (может уйти,
+        должен прийти, начал читать, перестал курить) или побудительная форма
+        из HORTATIVE_WORDS без отрицания (давайте играть, но не давайте детям играть)
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    head = token.head
+    if get_lemma(head) in INFINITIVE_PERIPHRASES:
+        return True
+    return head.text.lower() in HORTATIVE_WORDS and not any(
+        is_negation(child) for child in head.children
+    )
+
+
 def is_subordinate_clause_head(token: Token) -> bool:
     """
     Проверка, является ли токен вершиной придаточной клаузы
 
     Описание:
         is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head:
-        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами, а также
-        однородное сказуемое придаточной клаузы
+        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами или xcomp,
+        а также однородное сказуемое придаточной клаузы
 
     Аргументы:
         token (Token): Токен
