@@ -320,6 +320,9 @@ def find_long_sents(sents: Iterable[Sent], long_sent_word_factor: int) -> list[H
 
     Вывод:
         list[Highlight]: Фрагменты слоя long_sents
+
+    Исключения:
+        ParameterError: Если количество слов не целое число или меньше единицы
     """
     return core.find_long_sents(
         sents,
@@ -338,6 +341,9 @@ def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[H
 
     Вывод:
         list[Highlight]: Фрагменты слоя complex_words
+
+    Исключения:
+        ParameterError: Если количество слогов не целое число или меньше единицы
     """
     return core.find_complex_words(
         words,
@@ -416,11 +422,11 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя verbal_nouns
     """
+    words = list(words)
+    spans = style_stats.find_verbal_nouns([word.text for word in words])
+    starts = {words[start].start for start, _ in spans}
     return core.find_words(
-        words,
-        lambda word: bool(style_stats.find_verbal_nouns([word.text])),
-        "verbal_nouns",
-        "отглагольное существительное",
+        words, lambda word: word.start in starts, "verbal_nouns", "отглагольное существительное"
     )
 
 
@@ -444,6 +450,9 @@ def find_phrase_highlights(
 
     Вывод:
         list[Highlight]: Фрагменты слоя
+
+    Исключения:
+        SourceTypeError: Если словосочетания не список строк или словарь вариантов
     """
     return core.find_phrase_highlights(
         words, phrases, layer, lambda phrase: f"{label}: «{phrase}»", normalize_yo
@@ -525,7 +534,7 @@ def find_connector_highlights(
     """
     return core.find_connector_highlights(
         words,
-        sents,
+        sents or None,
         CohesionStats.connector_matcher(),
         lambda connector: (
             f"коннектор «{connector.text}»: {CONNECTOR_CLASSES[connector.cls]}, "
@@ -598,6 +607,10 @@ def calc_alliteration_runs(
     Вывод:
         list[tuple[int, int, str]]: Индексы первого и за последним словом цепочки
             и согласная в порядке появления в тексте
+
+    Исключения:
+        SourceTypeError: Если слова не список строк
+        ParameterError: Если порог не лежит в интервале (0, 1]
     """
     return core.calc_alliteration_runs(
         text, ALLITERATION_FREQUENCIES, threshold, _stem_letters, _is_transparent
@@ -623,6 +636,9 @@ def find_alliteration(
 
     Вывод:
         list[Highlight]: Фрагменты слоя alliteration
+
+    Исключения:
+        ParameterError: Если порог не лежит в интервале (0, 1]
     """
     return core.find_alliteration(
         words,

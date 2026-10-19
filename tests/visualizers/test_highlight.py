@@ -774,3 +774,25 @@ def test_byte_order_mark_doc():
         words = highlight(source, layers=["complex_words"]).highlights
         assert words and words[0].start == 1
     assert get_doc_words(spacy.blank("ru")(text))[0].start == 1
+
+
+@pytest.mark.parametrize(
+    ("call", "error"),
+    [
+        (lambda: find_long_sents([Sent(0, 3, 1)], 0), ValueError),
+        (lambda: find_complex_words([Word(0, 3, "кот", None)], 0), ValueError),
+        (lambda: calc_alliteration_runs(["кот"], 0), ValueError),
+        (lambda: find_alliteration([Word(0, 3, "кот", None)], 1.5), ValueError),
+        (lambda: calc_alliteration_runs("кот"), TypeError),
+    ],
+)
+def test_errors_of_the_finders(call, error):
+    with pytest.raises(error):
+        call()
+
+
+def test_connectors_without_sentence_bounds():
+    """Пустой список предложений - поиск по всему тексту, как без границ"""
+    words = [Word(0, 6, "однако", None)]
+    assert find_connector_highlights(words, []) == find_connector_highlights(words, None)
+    assert len(find_connector_highlights(words, [])) == 1
