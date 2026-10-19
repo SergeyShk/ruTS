@@ -91,7 +91,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
         контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
         CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
         (после обеда, пока что, ещё раз, не правда ли); многословные подчинительные
-        союзы и однословные, которые модели размечают не SCONJ, -
+        союзы и однословные, которые модели или pymorphy3 размечают не SCONJ, -
         CONNECTOR_SUBORDINATORS (так как, после того как, ежели)
     """
 
