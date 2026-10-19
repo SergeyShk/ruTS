@@ -1002,6 +1002,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2933,6 +2955,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3254,27 +3298,31 @@
 <span class="n">bs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">     </span>Статистика<span class="w">     </span><span class="p">|</span><span class="w"> </span>Значение
+<div class="highlight"><pre><span></span><code><span class="w">    </span>Статистика<span class="w">     </span><span class="p">|</span><span class="w"> </span>Значение
 ------------------------------
-Предложения<span class="w">         </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Слова<span class="w">               </span><span class="p">|</span><span class="w">    </span><span class="m">9</span>
-Уникальные<span class="w"> </span>слова<span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
-Длинные<span class="w"> </span>слова<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">3</span>
-Сложные<span class="w"> </span>слова<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Простые<span class="w"> </span>слова<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">7</span>
-Односложные<span class="w"> </span>слова<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">5</span>
-Многосложные<span class="w"> </span>слова<span class="w">  </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Символы<span class="w">             </span><span class="p">|</span><span class="w">    </span><span class="m">55</span>
-Буквы<span class="w">               </span><span class="p">|</span><span class="w">    </span><span class="m">45</span>
-Пробелы<span class="w">             </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
-Слоги<span class="w">               </span><span class="p">|</span><span class="w">    </span><span class="m">18</span>
-Знаки<span class="w"> </span>препинания<span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
+Предложения<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
+Слова<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">9</span>
+Уникальные<span class="w"> </span>слова<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
+Длинные<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">3</span>
+Сложные<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
+Простые<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">7</span>
+Односложные<span class="w"> </span>слова<span class="w">  </span><span class="p">|</span><span class="w">    </span><span class="m">5</span>
+Многосложные<span class="w"> </span>слова<span class="w"> </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
+Символы<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">55</span>
+Буквы<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">45</span>
+Пробелы<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
+Слоги<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">18</span>
+Знаки<span class="w"> </span>препинания<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
 </code></pre></div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The method does not print the normalized statistics attributes <code>p_*</code>.</p>
 </div>
+<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
+<p>Returns the flat statistics, <code>get_stats(flat=True)</code>, as a <code>pandas.DataFrame</code> of one row with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
+<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
+<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the basic statistics have no scales, so it always gives <code>None</code>.</p>
 <h2 id="punctuation">Punctuation profile<a class="headerlink" href="#punctuation" title="Permanent link">&para;</a></h2>
 <div class="admonition info">
 <p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>

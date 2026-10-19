@@ -1237,6 +1237,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#explain_text" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2912,6 +2934,28 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#to_dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        describe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#explain_text" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3212,6 +3256,12 @@
 <td style="text-align: center;"><code>False</code></td>
 <td style="text-align: center;">Filter empty values</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>flat</code></td>
+<td style="text-align: center;">bool</td>
+<td style="text-align: center;"><code>False</code></td>
+<td style="text-align: center;">Keys like <code>pos_NOUN</code> instead of nested dictionaries, without the words lacking the feature</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition warning">
@@ -3237,6 +3287,25 @@
 <span class="s1">'person'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'2'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'3'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
 <span class="s1">'pos'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'ADV'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'VERB'</span>:<span class="w"> </span><span class="m">6</span><span class="o">}</span>,
 <span class="s1">'tense'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Fut'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Past'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Pres'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}}</span>
+</code></pre></div>
+</div>
+<p>With <code>flat=True</code> every value of a feature becomes a key of its own, joined to the name of the statistic with an underscore; words without the feature are left out:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># Compute the statistics with flat keys</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'pos_VERB'</span>:<span class="w"> </span><span class="m">6</span>,
+<span class="s1">'pos_CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
+<span class="s1">'pos_SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
+<span class="s1">'pos_ADV'</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="s1">'tense_Pres'</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="s1">'tense_Fut'</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="s1">'tense_Past'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
@@ -3300,6 +3369,23 @@
 <span class="m">3</span><span class="w">                             </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
 </code></pre></div>
 </div>
+<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
+<p>Returns the flat statistics, <code>get_stats(flat=True)</code>, as a <code>pandas.DataFrame</code> of one row with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p><em>Code</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="c1"># The first columns of the frame of the statistics</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+</code></pre></div>
+<p><em>Result</em>:</p>
+<div class="highlight"><pre><span></span><code><span class="w">   </span>pos_VERB<span class="w">  </span>pos_CCONJ<span class="w">  </span>pos_SCONJ<span class="w">  </span>pos_ADV
+<span class="m">0</span><span class="w">         </span><span class="m">6</span><span class="w">          </span><span class="m">2</span><span class="w">          </span><span class="m">2</span><span class="w">        </span><span class="m">1</span>
+</code></pre></div>
+</div>
+<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
+<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the morphological statistics have no scales, so it always gives <code>None</code>.</p>
 <h3 id="explain_text">explain_text<a class="headerlink" href="#explain_text" title="Permanent link">&para;</a></h3>
 <p>Analyzes the text by morphological statistics. Returns a mapping whose keys are the words of the text and whose values are dictionaries of their morphological statistics.</p>
 <p>Parameters:</p>

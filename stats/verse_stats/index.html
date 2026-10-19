@@ -1887,6 +1887,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#accentuate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2892,6 +2903,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#to_dataframe-describe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        to_dataframe, describe
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#accentuate" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3129,7 +3151,8 @@
 </code></pre></div>
 </div>
 <h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Выводит на экран таблицу с вычисленными статистиками стиха.</p>
+<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
+<p>Выводит таблицу статистик из <code>stats_desc</code> с их описаниями под заголовками из <code>stats_headers</code>, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <p><em>Код</em>:</p>
@@ -3139,20 +3162,22 @@
 <span class="n">vs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
 <p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">               </span>Статистика<span class="w">               </span><span class="p">|</span><span class="w">  </span>Значение
-----------------------------------------------------
-Количество<span class="w"> </span>строк<span class="w">                        </span><span class="p">|</span><span class="w">     </span><span class="m">4</span>
-Количество<span class="w"> </span>строф<span class="w">                        </span><span class="p">|</span><span class="w">     </span><span class="m">1</span>
-Метр<span class="w">                                    </span><span class="p">|</span><span class="w">    </span>ямб
-Число<span class="w"> </span>стоп<span class="w">                              </span><span class="p">|</span><span class="w">     </span><span class="m">4</span>
-Доля<span class="w"> </span>отклонений<span class="w"> </span>от<span class="w"> </span>метра<span class="w">                </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Доля<span class="w"> </span>пропущенных<span class="w"> </span>ударений<span class="w"> </span>на<span class="w"> </span>иктах<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.19
-Доля<span class="w"> </span>рифмованных<span class="w"> </span>строк<span class="w">                  </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>.00
-Доля<span class="w"> </span>мужских<span class="w"> </span>окончаний<span class="w">                  </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.50
-Доля<span class="w"> </span>женских<span class="w"> </span>окончаний<span class="w">                  </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.50
-Доля<span class="w"> </span>дактилических<span class="w"> </span>окончаний<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+<div class="highlight"><pre><span></span><code><span class="w">            </span>Статистика<span class="w">             </span><span class="p">|</span><span class="w"> </span>Значение
+----------------------------------------------
+Количество<span class="w"> </span>строк<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
+Количество<span class="w"> </span>строф<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
+Метр<span class="w">                               </span><span class="p">|</span><span class="w">   </span>ямб
+Число<span class="w"> </span>стоп<span class="w">                         </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
+Доля<span class="w"> </span>отклонений<span class="w"> </span>от<span class="w"> </span>метра<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Доля<span class="w"> </span>пропущенных<span class="w"> </span>ударений<span class="w"> </span>на<span class="w"> </span>иктах<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
+Доля<span class="w"> </span>рифмованных<span class="w"> </span>строк<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Доля<span class="w"> </span>мужских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Доля<span class="w"> </span>женских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
+Доля<span class="w"> </span>дактилических<span class="w"> </span>окончаний<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
 </code></pre></div>
 </div>
+<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
+<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у стиховедческих статистик нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
 <h3 id="accentuate">accentuate<a class="headerlink" href="#accentuate" title="Permanent link">&para;</a></h3>
 <p>Возвращает текст с расставленными ударениями: после ударной гласной каждого ударного слова ставится знак акута (U+0301), безударные слова (клитики, односложные вне икта) и слова без найденного ударения остаются без знака. Возвращаются только строки со словами (как в <code>lines</code>), строфы разделяются пустой строкой.</p>
 <div class="admonition example">
