@@ -1139,6 +1139,8 @@ COHESION_STATS_DESC = {
     "aspect_repetition": "Повтор вида в соседних предложениях",
     "temporal_cohesion": "Темпоральная связность",
     "connectors": "Коннекторов на 1000 слов",
+    "connectors_inter": "Межпредложенческих коннекторов на 1000 слов",
+    "connectors_intra": "Внутрипредложенческих коннекторов на 1000 слов",
     "connectors_causal": "Причинных коннекторов на 1000 слов",
     "connectors_adversative": "Противительных коннекторов на 1000 слов",
     "connectors_concessive": "Уступительных коннекторов на 1000 слов",

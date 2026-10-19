@@ -144,6 +144,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'aspect_repetition': 0.3333333333333333,
         'temporal_cohesion': 0.5,
         'connectors': 47.61904761904762,
+        'connectors_inter': 0.0,
+        'connectors_intra': 47.61904761904762,
         'connectors_causal': 0.0,
         'connectors_adversative': 0.0,
         'connectors_concessive': 0.0,

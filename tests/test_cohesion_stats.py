@@ -350,6 +350,10 @@ def test_connectors():
         assert getattr(cs, f"connectors_{cls}") == pytest.approx(1 / 34 * 1000)
     assert cs.connectors_primary == pytest.approx(6 / 34 * 1000)
     assert cs.connectors_secondary == pytest.approx(2 / 34 * 1000)
+    # Однако, затем, во-первых открывают предложения; «если бы» начинает придаточное
+    assert cs.n_inter_connectors == 3
+    assert cs.connectors_inter == pytest.approx(3 / 34 * 1000)
+    assert cs.connectors_intra == pytest.approx(5 / 34 * 1000)
 
 
 def test_connectors_doc(nlp):
@@ -362,6 +366,7 @@ def test_connectors_doc(nlp):
     assert doc_cs.connector_spans[6] == Connector(4, 0, 1, "во-первых", "additive", "primary")
     assert doc_cs.connector_spans[7] == Connector(4, 1, 3, "из-за этого", "causal", "secondary")
     assert doc_cs.n_words == CohesionStats(connectors_text).n_words
+    assert doc_cs.n_inter_connectors == 3
 
 
 def test_connectors_hyphens_and_dots(nlp):

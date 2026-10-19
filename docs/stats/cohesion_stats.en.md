@@ -105,6 +105,8 @@ Returns a dictionary with the computed cohesion statistics.
     'aspect_repetition': 0.3333333333333333,
     'temporal_cohesion': 0.5,
     'connectors': 47.61904761904762,
+    'connectors_inter': 0.0,
+    'connectors_intra': 47.61904761904762,
     'connectors_causal': 0.0,
     'connectors_adversative': 0.0,
     'connectors_concessive': 0.0,
@@ -167,6 +169,8 @@ To illustrate the method, we reuse the code from the `get_stats` example:
     Повтор вида в соседних предложениях                      |   0.33
     Темпоральная связность                                   |   0.50
     Коннекторов на 1000 слов                                 |  47.62
+    Межпредложенческих коннекторов на 1000 слов              |   0.00
+    Внутрипредложенческих коннекторов на 1000 слов           |  47.62
     Причинных коннекторов на 1000 слов                       |   0.00
     Противительных коннекторов на 1000 слов                  |   0.00
     Уступительных коннекторов на 1000 слов                   |   0.00
