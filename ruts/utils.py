@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import functools
 import inspect
 import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
-from typing import Any, TypeVar, cast
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import anyts.utils
 import pymorphy3
@@ -15,8 +17,6 @@ from anyts.utils import (
     is_punctuation,
 )
 from razdel import sentenize, tokenize
-from spacy.language import Language
-from spacy.tokens import Doc
 
 from .constants import (
     LETTER,
@@ -28,6 +28,10 @@ from .constants import (
     VERBAL_NOUN_SUFFIXES,
 )
 from .exceptions import SourceTypeError
+
+if TYPE_CHECKING:
+    from spacy.language import Language
+    from spacy.tokens import Doc
 
 F = TypeVar("F", bound=Callable[..., Any])
 DASHES = frozenset("-—–―")
@@ -484,7 +488,7 @@ def strip_doc_marks(doc: Doc) -> Doc:
         spaces.append(bool(token.whitespace_))
         starts.append(start)
         start = False
-    return Doc(doc.vocab, words=words, spaces=spaces, sent_starts=starts if sents else None)
+    return type(doc)(doc.vocab, words=words, spaces=spaces, sent_starts=starts if sents else None)
 
 
 def add_dash_rules(nlp: Language) -> None:

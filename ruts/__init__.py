@@ -7,21 +7,12 @@
 
 import logging
 from importlib.metadata import PackageNotFoundError, version
+from typing import TYPE_CHECKING
+
+from anyts.utils import make_lazy
 
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats
-from .components import (
-    BasicStatsComponent,
-    CohesionStatsComponent,
-    DiversityStatsComponent,
-    LexicalStatsComponent,
-    MorphStatsComponent,
-    PhonStatsComponent,
-    ReadabilityStatsComponent,
-    StyleStatsComponent,
-    SyntaxStatsComponent,
-    VerseStatsComponent,
-)
 from .diversity_stats import DiversityStats
 from .exceptions import (
     DataFileError,
@@ -41,6 +32,20 @@ from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
 from .verse_stats import VerseStats
+
+if TYPE_CHECKING:
+    from .components import (
+        BasicStatsComponent,
+        CohesionStatsComponent,
+        DiversityStatsComponent,
+        LexicalStatsComponent,
+        MorphStatsComponent,
+        PhonStatsComponent,
+        ReadabilityStatsComponent,
+        StyleStatsComponent,
+        SyntaxStatsComponent,
+        VerseStatsComponent,
+    )
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -89,3 +94,23 @@ __all__ = [
     "WordsExtractor",
     "__version__",
 ]
+
+# Компоненты регистрируют фабрики spaCy и импортируют его: модуль грузится при первом обращении
+make_lazy(
+    __name__,
+    dict.fromkeys(
+        (
+            "BasicStatsComponent",
+            "CohesionStatsComponent",
+            "DiversityStatsComponent",
+            "LexicalStatsComponent",
+            "MorphStatsComponent",
+            "PhonStatsComponent",
+            "ReadabilityStatsComponent",
+            "StyleStatsComponent",
+            "SyntaxStatsComponent",
+            "VerseStatsComponent",
+        ),
+        "components",
+    ),
+)

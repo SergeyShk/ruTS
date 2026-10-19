@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Iterable, Mapping
 from math import floor, isfinite, isinf, isnan, nan
 from numbers import Real
+from typing import TYPE_CHECKING
 
 import anyts
 import anyts.readability_stats
@@ -10,8 +13,7 @@ from anyts.readability_stats import (
     calc_rix as calc_rix,
     scale_level as scale_level,
 )
-from anyts.utils import safe_divide
-from spacy.tokens import Doc
+from anyts.utils import is_doc, safe_divide
 
 from .basic_stats import BasicStats
 from .constants import (
@@ -34,6 +36,9 @@ from .constants import (
 )
 from .diversity_stats import DiversityStats
 from .exceptions import ParameterError, UnknownStatError
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
 _NORMS_FROM_MAX = {norm: speeds[::-1] for norm, speeds in READING_SPEED_NORMS.items()}
@@ -742,7 +747,7 @@ def level_features(source: str | Doc) -> dict[str, float]:
         >>> {stat: round(value, 2) for stat, value in features.items()}
         {'words_per_sent': 6.0, 'letters_per_word': 3.83, 'p_smog_complex_words': 0.0, 'mtld': 13.44}
     """
-    text = source.text if isinstance(source, Doc) else source
+    text = source.text if is_doc(source) else source
     bs = BasicStats(text)
     n_words = bs.n_words
     return {

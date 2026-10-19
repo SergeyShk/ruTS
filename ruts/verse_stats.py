@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import string
 from bisect import bisect_left
@@ -6,11 +8,11 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from itertools import pairwise
 from math import nan
+from typing import TYPE_CHECKING
 
 from anyts.extractors import BLANK_LINE
 from anyts.stats import Stats
-from anyts.utils import safe_divide
-from spacy.tokens import Doc
+from anyts.utils import is_doc, safe_divide
 
 from .constants import (
     CORE_MESSAGES,
@@ -35,6 +37,9 @@ from .syllables import (
     word_stress as word_stress,
 )
 from .utils import MARKED, take_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 ACUTE = "\u0301"
 WORD_PATTERN = re.compile(r"[а-яё]+(?:-[а-яё]+)*", re.IGNORECASE)
@@ -206,7 +211,7 @@ class VerseStats(Stats):
     messages = CORE_MESSAGES
 
     def __init__(self, source: str | Doc, stress_dict: StressDict | None = None):
-        if isinstance(source, Doc):
+        if is_doc(source):
             text = source.text
         elif isinstance(source, str):
             text = source

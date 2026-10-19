@@ -452,3 +452,67 @@ def test_stats_interface(name):
     assert issubclass(stats_class, Stats)
     assert stats_class.messages is CORE_MESSAGES
     assert stats_class.stats_desc
+
+
+def _run(code: str) -> str:
+    """Вывод кода в отдельном процессе, где ничего не импортировано заранее"""
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, check=True
+    )
+    return result.stdout.strip()
+
+
+@pytest.mark.parametrize(
+    ("statement", "absent"),
+    [
+        ("import ruts", ("spacy", "thinc", "scipy", "pandas", "matplotlib")),
+        ("from ruts.visualizers import highlight", ("spacy", "pandas", "matplotlib")),
+        ("from ruts.corpus import kwic", ("spacy", "pandas", "matplotlib")),
+    ],
+)
+def test_imports_are_light(statement, absent):
+    loaded = _run(f"import sys\n{statement}\nprint(' '.join(sorted(sys.modules)))").split()
+    assert not set(absent) & set(loaded)
+
+
+def test_only_components_import_spacy():
+    """spaCy грузят документы пользователя и компоненты, а не импорт модулей ruTS"""
+    code = (
+        "import importlib, pkgutil, sys, ruts\n"
+        "names = [m.name for m in pkgutil.walk_packages(ruts.__path__, 'ruts.')]\n"
+        "for name in names:\n"
+        "    if name != 'ruts.components':\n"
+        "        importlib.import_module(name)\n"
+        "print(len(names), 'spacy' in sys.modules, 'thinc' in sys.modules)"
+    )
+    n_modules, spacy, thinc = _run(code).split()
+    assert int(n_modules) > 40
+    assert (spacy, thinc) == ("False", "False")
+
+
+def test_components_on_first_use():
+    code = (
+        "import sys, ruts\n"
+        "before = 'spacy' in sys.modules\n"
+        "component = ruts.StyleStatsComponent\n"
+        "print(before, 'spacy' in sys.modules, component.__module__)"
+    )
+    assert _run(code) == "False True ruts.components"
+
+
+def test_factories_without_import():
+    """Фабрики находятся по точкам входа spacy_factories, без import ruts"""
+    code = (
+        "import spacy\n"
+        "nlp = spacy.blank('ru')\n"
+        "nlp.add_pipe('ruts_style')\n"
+        "print(nlp('мама мыла раму')._.ruts_style.water)"
+    )
+    assert _run(code) == "0.0"
+
+
+def test_lazy_packages_export_their_names():
+    for package in (ruts, ruts.corpus, ruts.visualizers):
+        assert set(package.__all__) <= set(dir(package))
+        assert all(getattr(package, name) is not None for name in package.__all__)
+    assert callable(ruts.visualizers.highlight) and callable(ruts.corpus.kwic)

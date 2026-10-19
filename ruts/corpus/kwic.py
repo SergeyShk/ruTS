@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import anyts.corpus
 from anyts.corpus.kwic import (
@@ -6,9 +9,11 @@ from anyts.corpus.kwic import (
     format_kwic as format_kwic,
     print_kwic as print_kwic,
 )
-from spacy.tokens import Doc, Token
 
 from ..utils import iter_text_sents, iter_text_words, lemmatize, normalize_yo, strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc, Token
 
 
 def kwic(

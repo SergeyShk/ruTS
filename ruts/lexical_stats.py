@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import re
 from collections.abc import Mapping, Sequence
 from functools import cache, lru_cache
+from typing import TYPE_CHECKING
 
 import anyts
 import anyts.lexical_stats
@@ -8,8 +11,7 @@ import anyts.utils
 import pymorphy3
 from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
 from anyts.lexical_stats import LexicalWord
-from anyts.utils import iter_doc_units
-from spacy.tokens import Doc
+from anyts.utils import is_doc, iter_doc_units
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
 from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, PROPER_NOUN_GRAMMEMES, RESOURCES_DIR
@@ -17,6 +19,9 @@ from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
 from .utils import normalize_yo, parse_all, parse_word
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
 DICTIONARY_WORD = re.compile(r"[а-яё'-]*[а-яё][а-яё'-]*", re.IGNORECASE)
@@ -133,9 +138,9 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         """Слова без чисел с леммами pymorphy3 и признаком знаменательного слова"""
         extractor = self._words_extractor
         infos: list[WordInfo]
-        if isinstance(source, Doc) and extractor is not None:
+        if is_doc(source) and extractor is not None:
             source = source.text
-        if isinstance(source, Doc):
+        if is_doc(source):
             units = [
                 unit
                 for unit in iter_doc_units(source, join_hyphens=True)

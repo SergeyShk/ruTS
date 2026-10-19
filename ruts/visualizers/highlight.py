@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
+from typing import TYPE_CHECKING
 
 import anyts.visualizers.highlight
 from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
@@ -11,7 +14,6 @@ from anyts.visualizers.highlight import (
     group_words_by_sents as group_words_by_sents,
     tokens_span,
 )
-from spacy.tokens import Doc, Token
 
 from .. import style_stats
 from ..cohesion_stats import CohesionStats, connector_pos, unit_pos, unit_text
@@ -54,6 +56,9 @@ from ..utils import (
     normalize_yo,
     parse_word,
 )
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc, Token
 
 RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
 ALLITERATION_FREQUENCIES = {

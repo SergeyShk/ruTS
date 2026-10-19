@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 from collections import Counter
 from collections.abc import Sequence
 from functools import lru_cache
+from typing import TYPE_CHECKING
 
 import anyts
 import anyts.phon_stats
 from anyts.phon_stats import calc_repetition_index, consonant_clusters, count_hiatus
 from anyts.utils import check_words, shannon_entropy
-from spacy.tokens import Doc
 
 from .constants import (
     CORE_MESSAGES,
@@ -18,6 +20,9 @@ from .constants import (
 from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
 from .utils import strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
 VOICED = frozenset(letter.lower() for letter in RU_CONSONANTS_HIGH)
