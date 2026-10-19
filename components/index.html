@@ -3356,6 +3356,12 @@
 <td style="text-align: center;"><code>None</code></td>
 <td style="text-align: center;">Список стоп-слов для академической тошноты; если не задан, используется разметка pymorphy3</td>
 </tr>
+<tr>
+<td style="text-align: center;"><code>cliches</code></td>
+<td style="text-align: center;">list[str]</td>
+<td style="text-align: center;"><code>None</code></td>
+<td style="text-align: center;">Список штампов; если не задан, используется <code>OFFICIALESE_CLICHES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Пример использования:</p>
@@ -3380,12 +3386,13 @@
 <div class="highlight"><pre><span></span><code><span class="m">0</span>.0
 </code></pre></div>
 </div>
-<p>Список стоп-слов и количество самых частых слов передаются через <code>config</code>:</p>
+<p>Список стоп-слов, количество самых частых слов и свой список штампов передаются через <code>config</code>:</p>
 <div class="admonition example">
 <p class="admonition-title">Пример</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
     <span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style_short"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style_cliches"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"cliches"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"в целях"</span><span class="p">,</span> <span class="s2">"в рамках"</span><span class="p">]})</span>
 </code></pre></div>
 </div>
 <h2 id="phonstatscomponent">PhonStatsComponent<a class="headerlink" href="#phonstatscomponent" title="Permanent link">&para;</a></h2>
