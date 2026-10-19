@@ -1,6 +1,7 @@
 from math import isnan
 from statistics import pstdev
 
+import anyts.syntax_stats
 import pytest
 import spacy
 from anyts.utils import iter_doc_units
@@ -19,6 +20,8 @@ from ruts.syntax_stats import (
     is_converb_clause,
     is_finite_verb,
     is_genitive_modifier,
+    is_infinitive_clause,
+    is_infinitive_periphrasis,
     is_light_verb,
     is_negation,
     is_participle,
@@ -179,9 +182,9 @@ def test_counts(ss):
     assert ss.n_leaves == 13
     assert ss.n_subtrees == 14
     assert ss.n_coordination_chains == 1
-    assert ss.n_clauses == 7
-    assert ss.n_subordinate_clauses == 1
-    assert ss.n_complex_sents == 1
+    assert ss.n_clauses == 8
+    assert ss.n_subordinate_clauses == 2
+    assert ss.n_complex_sents == 2
     assert ss.n_nouns == 8
     assert ss.n_genitive_chains == 1
     assert ss.n_participle_clauses == 1
@@ -220,10 +223,10 @@ def test_tree_shape(ss):
 def test_clauses(ss):
     assert ss.coordination_chains_per_sent == pytest.approx(1 / 5)
     assert ss.mean_coordination_chain_len == 2
-    assert ss.clauses_per_sent == pytest.approx(7 / 5)
-    assert ss.mean_clause_len == pytest.approx(27 / 7)
-    assert ss.subordinate_clauses_per_sent == pytest.approx(1 / 5)
-    assert ss.p_complex_sents == pytest.approx(1 / 5)
+    assert ss.clauses_per_sent == pytest.approx(8 / 5)
+    assert ss.mean_clause_len == pytest.approx(27 / 8)
+    assert ss.subordinate_clauses_per_sent == pytest.approx(2 / 5)
+    assert ss.p_complex_sents == pytest.approx(2 / 5)
 
 
 def test_constructions(ss):
@@ -381,10 +384,55 @@ def test_clause_heads(sents):
         "обсуждалось",
         "Ночь",
         "хотел",
+        "уйти",
     ]
     assert [
         token.text for sent in sents for token in sent if is_subordinate_clause_head(token)
-    ] == ["придёт"]
+    ] == ["придёт", "уйти"]
+
+
+@pytest.mark.parametrize(
+    ("text", "clauses", "subordinate"),
+    [
+        ("Он может уйти.", ["может"], []),
+        ("Она должна была прийти.", ["должна"], []),
+        ("Он начал читать и писать.", ["начал"], []),
+        ("Он перестал курить.", ["перестал"], []),
+        ("Давайте играть.", ["Давайте"], []),
+        ("Давай пойдём.", ["Давай"], []),
+        ("Он хочет уйти.", ["хочет", "уйти"], ["уйти"]),
+        ("Я попросил его уйти.", ["попросил", "уйти"], ["уйти"]),
+        ("Он решил уехать.", ["решил", "уехать"], ["уехать"]),
+    ],
+)
+def test_model_infinitive_clauses(nlp, text, clauses, subordinate):
+    """Инфинитив при глаголе - придаточная клауза, кроме сочетаний одной предикации"""
+    doc = nlp(text)
+    assert [token.text for token in doc if is_clause_head(token)] == clauses
+    assert [token.text for token in doc if is_subordinate_clause_head(token)] == subordinate
+    ss = SyntaxStats(doc)
+    assert (ss.n_clauses, ss.n_subordinate_clauses) == (len(clauses), len(subordinate))
+    assert [token.text for token in doc if is_infinitive_clause(token)] == subordinate
+    assert [ss.is_infinitive_periphrasis(token) for token in doc if token.dep_ == "xcomp"] == [
+        not subordinate
+    ]
+
+
+def test_finite_xcomp_is_no_clause():
+    """Личная форма со связью xcomp у русских моделей - ошибка разбора, а не клауза"""
+    doc = build_doc(
+        [
+            (
+                "Он сказал , пойдём .",
+                [1, 1, 3, 1, 1],
+                ["nsubj", "ROOT", "punct", "xcomp", "punct"],
+                ["PRON", "VERB", "PUNCT", "VERB", "PUNCT"],
+                ["", "VerbForm=Fin", "", "VerbForm=Fin", ""],
+            )
+        ]
+    )
+    assert not is_clause_head(doc[3]) and not is_infinitive_periphrasis(doc[3])
+    assert anyts.syntax_stats.is_clause_head(doc[3])
 
 
 def test_subordinate_conj():

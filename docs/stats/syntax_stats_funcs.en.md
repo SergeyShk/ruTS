@@ -85,13 +85,13 @@ The number of chains per sentence (`SOCHIN_NUMBER`, r = 0.93) and their mean len
 ## Clauses { #is_clause_head }
 
 !!! info ""
-    **ruts.syntax_stats.is_clause_head()**, **ruts.syntax_stats.is_subordinate_clause_head()**, **ruts.syntax_stats.is_predicate()**
+    **ruts.syntax_stats.is_clause_head()**, **ruts.syntax_stats.is_infinitive_clause()**, **ruts.syntax_stats.is_infinitive_periphrasis()**, **ruts.syntax_stats.is_subordinate_clause_head()**, **ruts.syntax_stats.is_predicate()**
 
-Checking whether a token heads a clause. A clause is headed by the sentence root or by a word with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, except full participles, adverbial participles and infinitives attached to a noun («желание уйти»): participial and adverbial participle clauses are counted separately. A parenthetical construction (`parataxis`) and a coordinated predicate (a `conj` relation from the clause head) form their own clause only if it can be a predicate (`is_predicate`): «Он сказал: „Уходи“» and «думала, что он умен» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as `parataxis`, are not.
+Checking whether a token heads a clause. A clause is headed by the sentence root or by a word with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, except full participles, adverbial participles and infinitives attached to a noun («желание уйти»): participial and adverbial participle clauses are counted separately. An infinitive attached to a verb (`xcomp`) heads a clause of its own («хочет уйти», «попросил его уйти», `is_infinitive_clause`), except in combinations of one predication (`is_infinitive_periphrasis`): with the modal and phasal verbs of `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «перестал курить») and the hortative «давай», «давайте» (`HORTATIVE_WORDS`). A parenthetical construction (`parataxis`) and a coordinated predicate (a `conj` relation from the clause head) form their own clause only if it can be a predicate (`is_predicate`): «Он сказал: „Уходи“» and «думала, что он умен» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as `parataxis`, are not.
 
 --8<-- "stats/syntax_stats_funcs.md:is_predicate"
 
-A subordinate clause is a clause with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` or `csubj:pass`, as well as a coordinated predicate of a subordinate clause (`PODCHIN_RATE`, r = 0.64). `SyntaxStats` counts clauses and subordinate clauses per sentence (`clauses_per_sent`, `subordinate_clauses_per_sent`), the mean clause length in words (`mean_clause_len`) and the share of sentences with at least one subordinate clause (`PODCHIN_NUMBER`, r = 0.62; `p_complex_sents`).
+A subordinate clause is a clause with the relation `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj`, `csubj:pass` or `xcomp`, as well as a coordinated predicate of a subordinate clause (`PODCHIN_RATE`, r = 0.64). `SyntaxStats` counts clauses and subordinate clauses per sentence (`clauses_per_sent`, `subordinate_clauses_per_sent`), the mean clause length in words (`mean_clause_len`) and the share of sentences with at least one subordinate clause (`PODCHIN_NUMBER`, r = 0.62; `p_complex_sents`).
 
 Parameters:
 

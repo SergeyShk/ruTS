@@ -106,14 +106,14 @@
 ## Клаузы { #is_clause_head }
 
 !!! info ""
-    **ruts.syntax_stats.is_clause_head()**, **ruts.syntax_stats.is_subordinate_clause_head()**, **ruts.syntax_stats.is_predicate()**
+    **ruts.syntax_stats.is_clause_head()**, **ruts.syntax_stats.is_infinitive_clause()**, **ruts.syntax_stats.is_infinitive_periphrasis()**, **ruts.syntax_stats.is_subordinate_clause_head()**, **ruts.syntax_stats.is_predicate()**
 
-Проверка, является ли токен вершиной клаузы. Клаузу возглавляет вершина предложения или слово со связью `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` или `csubj:pass`, кроме полных причастий, деепричастий и инфинитивов при существительном («желание уйти»): причастные и деепричастные обороты считаются отдельно. Вставная конструкция (`parataxis`) и однородное сказуемое (связь `conj` от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым (`is_predicate`): «Он сказал: „Уходи“» и «думала, что он умен» - клаузы, а вводные слова «например», «конечно», «во-первых», на которые модели spaCy тоже вешают `parataxis`, - нет.
+Проверка, является ли токен вершиной клаузы. Клаузу возглавляет вершина предложения или слово со связью `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` или `csubj:pass`, кроме полных причастий, деепричастий и инфинитивов при существительном («желание уйти»): причастные и деепричастные обороты считаются отдельно. Инфинитив при глаголе (`xcomp`) возглавляет свою клаузу («хочет уйти», «попросил его уйти», `is_infinitive_clause`), кроме сочетаний одной предикации (`is_infinitive_periphrasis`): с модальными и фазовыми глаголами `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «перестал курить») и побудительными «давай», «давайте» (`HORTATIVE_WORDS`). Вставная конструкция (`parataxis`) и однородное сказуемое (связь `conj` от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым (`is_predicate`): «Он сказал: „Уходи“» и «думала, что он умен» - клаузы, а вводные слова «например», «конечно», «во-первых», на которые модели spaCy тоже вешают `parataxis`, - нет.
 
 <!-- core: stats/syntax_stats_funcs.md:is_predicate f282b52 -->
 `is_predicate(token, join_hyphens=False)` проверяет, может ли слово быть сказуемым своей клаузы: глагол (`VERB`, `AUX`) или слово с собственным подлежащим (`nsubj`, `csubj` и их подтипы, `anyts.constants.SUBJECT_DEPS`), поэтому именное сказуемое в `он высок` проходит, а вводное слово - нет.
 
-Придаточная клауза - клауза со связью `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj` или `csubj:pass`, а также однородное сказуемое придаточной клаузы (`PODCHIN_RATE`, r = 0.64). Класс `SyntaxStats` считает клаузы и придаточные на предложение (`clauses_per_sent`, `subordinate_clauses_per_sent`), среднюю длину клаузы в словах (`mean_clause_len`) и долю предложений хотя бы с одной придаточной (`PODCHIN_NUMBER`, r = 0.62; `p_complex_sents`).
+Придаточная клауза - клауза со связью `ccomp`, `advcl`, `acl`, `acl:relcl`, `csubj`, `csubj:pass` или `xcomp`, а также однородное сказуемое придаточной клаузы (`PODCHIN_RATE`, r = 0.64). Класс `SyntaxStats` считает клаузы и придаточные на предложение (`clauses_per_sent`, `subordinate_clauses_per_sent`), среднюю длину клаузы в словах (`mean_clause_len`) и долю предложений хотя бы с одной придаточной (`PODCHIN_NUMBER`, r = 0.62; `p_complex_sents`).
 
 Параметры:
 
