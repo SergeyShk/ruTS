@@ -467,14 +467,15 @@ def test_connectors_by_place(nlp):
     text = (
         "Что касается денег, их нет. Для того чтобы успеть, он бежал. Так как он устал, "
         "он сел. Потому что поздно. Как бы там ни было, мы пошли. Когда он пришёл, все встали. "
-        "Однако дождь шёл."
+        "Однако дождь шёл. Ежели устал, сядь. Коли хочешь, иди. Пока он спал, шёл дождь. "
+        "Независимо от того, придёт ли он, мы начнём."
     )
     for source in (text, nlp(text)):
         cs = CohesionStats(source)
         # Межпредложенческие: что касается, потому что, как бы там ни было, однако
-        assert [connector.start for connector in cs.connector_spans] == [0] * 7
+        assert [connector.start for connector in cs.connector_spans] == [0] * 11
         assert cs.n_inter_connectors == 4
-        assert cs.connectors_intra == pytest.approx(3 / cs.n_words * 1000)
+        assert cs.connectors_intra == pytest.approx(7 / cs.n_words * 1000)
 
 
 def test_connector_rules_dictionary():

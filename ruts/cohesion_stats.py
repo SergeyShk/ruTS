@@ -91,7 +91,8 @@ class RussianConnectorMatcher(ConnectorMatcher):
         контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
         CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
         (после обеда, пока что, ещё раз, не правда ли); многословные подчинительные
-        союзы - CONNECTOR_SUBORDINATORS (так как, после того как)
+        союзы и однословные, которые модели размечают не SCONJ, -
+        CONNECTOR_SUBORDINATORS (так как, после того как, ежели)
     """
 
     pos_extra = CONNECTOR_POS_EXTRA
@@ -183,6 +184,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         n_content_words (int): Количество знаменательных слов
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
         n_connectors (int): Количество коннекторов
+        n_inter_connectors (int): Количество межпредложенческих коннекторов
         connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
         c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
@@ -201,6 +203,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         aspect_repetition (float): Доля пар соседних предложений с одинаковым преобладающим видом
         temporal_cohesion (float): Среднее повтора времени и вида
         connectors (float): Коннекторов на 1000 слов
+        connectors_inter (float): Межпредложенческих коннекторов на 1000 слов: открывают
+            предложение и не подчинительный союз (is_subordinator сопоставителя)
+        connectors_intra (float): Внутрипредложенческих коннекторов на 1000 слов
         connectors_causal (float): Причинных коннекторов на 1000 слов
         connectors_adversative (float): Противительных коннекторов на 1000 слов
         connectors_concessive (float): Уступительных коннекторов на 1000 слов
