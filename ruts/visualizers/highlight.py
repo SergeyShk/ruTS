@@ -1,7 +1,7 @@
 import re
 from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 
-import anyts.visualizers.highlight as core
+import anyts.visualizers.highlight
 from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
 from anyts.utils import check_words, iter_doc_units
 from anyts.visualizers.highlight import (
@@ -62,7 +62,7 @@ ALLITERATION_FREQUENCIES = {
 }
 
 
-class HighlightedText(core.HighlightedText):
+class HighlightedText(anyts.visualizers.highlight.HighlightedText):
     """
     Класс для подсветки текста по слоям в стиле Главреда и Тургенева
 
@@ -155,7 +155,7 @@ class HighlightedText(core.HighlightedText):
         cliches: Collection[str] | None = None,
         alliteration_threshold: float = ALLITERATION_THRESHOLD,
     ):
-        core.check_params(
+        anyts.visualizers.highlight.check_params(
             long_sent_word_factor,
             complex_syl_factor,
             alliteration_threshold,
@@ -324,7 +324,7 @@ def find_long_sents(sents: Iterable[Sent], long_sent_word_factor: int) -> list[H
     Исключения:
         ParameterError: Если количество слов не целое число или меньше единицы
     """
-    return core.find_long_sents(
+    return anyts.visualizers.highlight.find_long_sents(
         sents,
         long_sent_word_factor,
         lambda n: f"длинное предложение, {plural(n, 'слово', 'слова', 'слов')}",
@@ -345,7 +345,7 @@ def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[H
     Исключения:
         ParameterError: Если количество слогов не целое число или меньше единицы
     """
-    return core.find_complex_words(
+    return anyts.visualizers.highlight.find_complex_words(
         words,
         complex_syl_factor,
         count_syllables,
@@ -372,10 +372,10 @@ def find_stopwords(
     """
     if stopwords is not None:
         chosen = {normalize_yo(word) for word in stopwords}
-        return core.find_words(
+        return anyts.visualizers.highlight.find_words(
             words, lambda word: normalize_yo(word.text) in chosen, "stopwords", "стоп-слово"
         )
-    return core.find_words(
+    return anyts.visualizers.highlight.find_words(
         words, lambda word: is_water_word(word.text.lower()), "stopwords", "стоп-слово"
     )
 
@@ -396,7 +396,7 @@ def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя rare_words
     """
-    return core.find_words(
+    return anyts.visualizers.highlight.find_words(
         words,
         lambda word: bool(
             RUSSIAN_WORD.fullmatch(word.text)
@@ -425,7 +425,7 @@ def find_verbal_nouns(words: Iterable[Word]) -> list[Highlight]:
     words = list(words)
     spans = style_stats.find_verbal_nouns([word.text for word in words])
     starts = {words[start].start for start, _ in spans}
-    return core.find_words(
+    return anyts.visualizers.highlight.find_words(
         words, lambda word: word.start in starts, "verbal_nouns", "отглагольное существительное"
     )
 
@@ -454,7 +454,7 @@ def find_phrase_highlights(
     Исключения:
         SourceTypeError: Если словосочетания не список строк или словарь вариантов
     """
-    return core.find_phrase_highlights(
+    return anyts.visualizers.highlight.find_phrase_highlights(
         words, phrases, layer, lambda phrase: f"{label}: «{phrase}»", normalize_yo
     )
 
@@ -532,7 +532,7 @@ def find_connector_highlights(
     Вывод:
         list[Highlight]: Фрагменты слоя connectors
     """
-    return core.find_connector_highlights(
+    return anyts.visualizers.highlight.find_connector_highlights(
         words,
         sents or None,
         CohesionStats.connector_matcher(),
@@ -612,7 +612,7 @@ def calc_alliteration_runs(
         SourceTypeError: Если слова не список строк
         ParameterError: Если порог не лежит в интервале (0, 1]
     """
-    return core.calc_alliteration_runs(
+    return anyts.visualizers.highlight.calc_alliteration_runs(
         text, ALLITERATION_FREQUENCIES, threshold, _stem_letters, _is_transparent
     )
 
@@ -640,7 +640,7 @@ def find_alliteration(
     Исключения:
         ParameterError: Если порог не лежит в интервале (0, 1]
     """
-    return core.find_alliteration(
+    return anyts.visualizers.highlight.find_alliteration(
         words,
         sents,
         ALLITERATION_FREQUENCIES,
@@ -782,7 +782,7 @@ def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
     Вывод:
         list[Highlight]: Фрагменты слоя split_predicates
     """
-    return core.find_split_predicate_highlights(
+    return anyts.visualizers.highlight.find_split_predicate_highlights(
         find_split_predicates(doc),
         lambda verb, noun: f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}",
     )
