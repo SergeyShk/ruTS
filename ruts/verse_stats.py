@@ -211,11 +211,11 @@ class VerseStats(Stats):
         elif isinstance(source, str):
             text = source
         else:
-            raise SourceTypeError("Некорректный источник данных")
+            raise SourceTypeError(self.messages["source_type"])
         _check_stress_dict(stress_dict)
         self.stress_dict = stress_dict if stress_dict is not None else StressDict()
         if not re.search(r"[^\W\d_]", text):
-            raise SourceError("В источнике данных отсутствуют слова")
+            raise SourceError(self.messages["no_words"])
         text, marked = _take_stress_marks(text)
         lines = _parse_lines(text, self.stress_dict, marked)
         self._lines = lines

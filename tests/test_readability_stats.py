@@ -516,7 +516,7 @@ def test_describe_level_norm():
     assert describe_level_norm("mtld", float("nan"), 10) is None
     assert describe_level_norm("words_per_sent", 12, 8) is None
     for grade in (2, 8):
-        with pytest.raises(UnknownStatError, match="n_words отсутствует"):
+        with pytest.raises(UnknownStatError, match=r"^Неизвестная статистика: n_words"):
             describe_level_norm("n_words", 12, grade)
     with pytest.raises(ValueError):
         describe_level_norm("words_per_sent", "12", 2)

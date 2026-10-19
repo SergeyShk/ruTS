@@ -823,8 +823,7 @@ def describe_level_norm(stat: str, value: float, grade: float) -> str | None:
     """
     if not isinstance(stat, str) or stat not in LEVEL_NORMS_DESC:
         raise UnknownStatError(
-            f"{stat} отсутствует в справочнике признаков норм ступеней, "
-            f"доступны: {', '.join(LEVEL_NORMS_DESC)}"
+            CORE_MESSAGES["unknown_stat"].format(stat=stat, stats=tuple(LEVEL_NORMS_DESC))
         )
     number: object = value
     if isinstance(number, bool) or not isinstance(number, Real):
