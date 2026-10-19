@@ -96,7 +96,6 @@ theme:
     - navigation.tabs
     - navigation.top
     - content.code.copy
-    - content.tabs.link
     - search.highlight
     - search.suggest
 
