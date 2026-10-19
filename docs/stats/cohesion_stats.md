@@ -52,7 +52,7 @@
 
 ## Атрибуты
 
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes bda48ba -->
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 06c1393 -->
 | Атрибут | Тип | Описание |
 | :-----: | :-: | :------: |
 | `words`, `lemmas` | tuple[tuple[str]] | Слова и леммы каждого предложения, в котором есть слова |
@@ -60,6 +60,7 @@
 | `n_nouns`, `n_pronouns`, `n_demonstratives`, `n_content_words` | int | Количество слов по видам |
 | `n_given` | int | Количество знаменательных слов, лемма которых встречалась раньше |
 | `n_connectors`, `connector_spans`, `c_connectors` | int, tuple[Connector], dict[str, int] | Количество коннекторов, их вхождения и количество вхождений по коннекторам |
+| `n_inter_connectors` | int | Количество межпредложенческих коннекторов |
 | `noun_overlap_adjacent`, `noun_overlap_all` | float | Доли соседних и всех пар предложений с общим существительным |
 | `argument_overlap_adjacent`, `argument_overlap_all` | float | То же для существительного или местоимения |
 | `content_overlap_adjacent`, `content_overlap_all` | float | То же для знаменательного слова |
@@ -70,6 +71,7 @@
 | `tense_repetition`, `mood_repetition`, `aspect_repetition` | float | Доли соседних пар предложений с одинаковым преобладающим временем, наклонением и видом |
 | `temporal_cohesion` | float | Среднее повторов признаков `temporal_features` |
 | `connectors` | float | Коннекторов на 1000 слов |
+| `connectors_inter`, `connectors_intra` | float | Межпредложенческих коннекторов на 1000 слов, которые связывают предложение с предыдущими: открывающих предложение, если сопоставитель не считает их подчинительным союзом (`is_subordinator`: один из его `subordinators` или однословный коннектор с частью речи `SCONJ`, *когда он пришел, ...*), чья клауза принадлежит тому же предложению; и внутрипредложенческих - остальных |
 | `connectors_<class>`, `connectors_<kind>` | float | Коннекторов каждого класса и типа сопоставителя на 1000 слов: по умолчанию `connectors_causal`, `connectors_adversative`, `connectors_concessive`, `connectors_temporal`, `connectors_additive`, `connectors_conditional`, `connectors_reformulative`, `connectors_primary` и `connectors_secondary` |
 
 Повторы слов в тексте из одного предложения, повтор признака без двух соседних предложений с ним и доля, которой не на что делить, равны `nan`.
@@ -125,6 +127,8 @@
     'aspect_repetition': 0.3333333333333333,
     'temporal_cohesion': 0.5,
     'connectors': 47.61904761904762,
+    'connectors_inter': 0.0,
+    'connectors_intra': 47.61904761904762,
     'connectors_causal': 0.0,
     'connectors_adversative': 0.0,
     'connectors_concessive': 0.0,
@@ -188,6 +192,8 @@
     Повтор вида в соседних предложениях                      |   0.33
     Темпоральная связность                                   |   0.50
     Коннекторов на 1000 слов                                 |  47.62
+    Межпредложенческих коннекторов на 1000 слов              |   0.00
+    Внутрипредложенческих коннекторов на 1000 слов           |  47.62
     Причинных коннекторов на 1000 слов                       |   0.00
     Противительных коннекторов на 1000 слов                  |   0.00
     Уступительных коннекторов на 1000 слов                   |   0.00

@@ -27,6 +27,7 @@ from ruts.constants import (
     CONNECTOR_CLASSES,
     CONNECTOR_NOT_AT_START,
     CONNECTOR_ONLY_AFTER,
+    CONNECTOR_SUBORDINATORS,
     CONNECTOR_TYPES,
 )
 from ruts.exceptions import SourceError
@@ -350,6 +351,10 @@ def test_connectors():
         assert getattr(cs, f"connectors_{cls}") == pytest.approx(1 / 34 * 1000)
     assert cs.connectors_primary == pytest.approx(6 / 34 * 1000)
     assert cs.connectors_secondary == pytest.approx(2 / 34 * 1000)
+    # Однако, затем, во-первых открывают предложения; «если бы» начинает придаточное
+    assert cs.n_inter_connectors == 3
+    assert cs.connectors_inter == pytest.approx(3 / 34 * 1000)
+    assert cs.connectors_intra == pytest.approx(5 / 34 * 1000)
 
 
 def test_connectors_doc(nlp):
@@ -362,6 +367,7 @@ def test_connectors_doc(nlp):
     assert doc_cs.connector_spans[6] == Connector(4, 0, 1, "во-первых", "additive", "primary")
     assert doc_cs.connector_spans[7] == Connector(4, 1, 3, "из-за этого", "causal", "secondary")
     assert doc_cs.n_words == CohesionStats(connectors_text).n_words
+    assert doc_cs.n_inter_connectors == 3
 
 
 def test_connectors_hyphens_and_dots(nlp):
@@ -456,6 +462,22 @@ def test_connector_context_rules(nlp):
     assert [c.text for c in find_connectors(["и", "отсюда"])] == ["и", "отсюда"]
 
 
+def test_connectors_by_place(nlp):
+    """Подчинительный союз в начале предложения начинает его придаточное"""
+    text = (
+        "Что касается денег, их нет. Для того чтобы успеть, он бежал. Так как он устал, "
+        "он сел. Потому что поздно. Как бы там ни было, мы пошли. Когда он пришёл, все встали. "
+        "Однако дождь шёл. Ежели устал, сядь. Коли хочешь, иди. Пока он спал, шёл дождь. "
+        "Независимо от того, придёт ли он, мы начнём."
+    )
+    for source in (text, nlp(text)):
+        cs = CohesionStats(source)
+        # Межпредложенческие: что касается, потому что, как бы там ни было, однако
+        assert [connector.start for connector in cs.connector_spans] == [0] * 11
+        assert cs.n_inter_connectors == 4
+        assert cs.connectors_intra == pytest.approx(7 / cs.n_words * 1000)
+
+
 def test_connector_rules_dictionary():
     """Ключи правил - коннекторы словаря, слова правил - в форме normalize_yo"""
     connectors = load_connectors()
@@ -468,6 +490,7 @@ def test_connector_rules_dictionary():
     for rule in rules:
         assert set(rule) <= set(connectors)
     assert set(CONNECTOR_NOT_AT_START) <= set(connectors)
+    assert set(CONNECTOR_SUBORDINATORS) <= set(connectors)
     for rule in rules[:3]:
         for words in rule.values():
             assert all(word == normalize_yo(word) for word in words), words

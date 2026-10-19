@@ -33,6 +33,7 @@ from .constants import (
     CONNECTOR_NOT_AT_START,
     CONNECTOR_ONLY_AFTER,
     CONNECTOR_POS_EXTRA,
+    CONNECTOR_SUBORDINATORS,
     CONTENT_POS,
     CORE_MESSAGES,
     DEMONSTRATIVE_LEMMAS,
@@ -89,7 +90,9 @@ class RussianConnectorMatcher(ConnectorMatcher):
         CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее);
         контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
         CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
-        (после обеда, пока что, ещё раз, не правда ли)
+        (после обеда, пока что, ещё раз, не правда ли); многословные подчинительные
+        союзы и однословные, которые модели или pymorphy3 размечают не SCONJ, -
+        CONNECTOR_SUBORDINATORS (так как, после того как, ежели)
     """
 
     pos_extra = CONNECTOR_POS_EXTRA
@@ -98,6 +101,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
     only_after = CONNECTOR_ONLY_AFTER
     not_at_start = CONNECTOR_NOT_AT_START
     blocked_after_pos = CONNECTOR_BLOCKED_AFTER_POS
+    subordinators = CONNECTOR_SUBORDINATORS
     messages = CORE_MESSAGES
 
     def normalize(self, text: str) -> str:
@@ -144,6 +148,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'aspect_repetition': 0.3333333333333333,
         'temporal_cohesion': 0.5,
         'connectors': 47.61904761904762,
+        'connectors_inter': 0.0,
+        'connectors_intra': 47.61904761904762,
         'connectors_causal': 0.0,
         'connectors_adversative': 0.0,
         'connectors_concessive': 0.0,
@@ -178,6 +184,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         n_content_words (int): Количество знаменательных слов
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
         n_connectors (int): Количество коннекторов
+        n_inter_connectors (int): Количество межпредложенческих коннекторов
         connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
         c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
@@ -196,6 +203,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         aspect_repetition (float): Доля пар соседних предложений с одинаковым преобладающим видом
         temporal_cohesion (float): Среднее повтора времени и вида
         connectors (float): Коннекторов на 1000 слов
+        connectors_inter (float): Межпредложенческих коннекторов на 1000 слов: открывают
+            предложение и не подчинительный союз (is_subordinator сопоставителя)
+        connectors_intra (float): Внутрипредложенческих коннекторов на 1000 слов
         connectors_causal (float): Причинных коннекторов на 1000 слов
         connectors_adversative (float): Противительных коннекторов на 1000 слов
         connectors_concessive (float): Уступительных коннекторов на 1000 слов
