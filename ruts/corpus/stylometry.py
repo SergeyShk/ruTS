@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from collections import Counter
 from collections.abc import Sequence
+from typing import TYPE_CHECKING, cast
 
 from anyts.corpus.stylometry import (
     ZetaScore as ZetaScore,
@@ -12,13 +15,15 @@ from anyts.corpus.stylometry import (
     z_scores as z_scores,
     zeta as zeta,
 )
-from anyts.utils import check_words, is_punctuation, iter_doc_units
-from spacy.tokens import Doc
+from anyts.utils import check_words, is_doc, is_punctuation, iter_doc_units
 
 from ..constants import FUNCTION_UD_POS
 from ..exceptions import SourceError
 from ..morph_stats import tag_to_ud_pos
 from ..utils import parse_word
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 
 def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
@@ -43,7 +48,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
         SourceTypeError: Если слова не список строк
         SourceError: Если слов нет
     """
-    if isinstance(source, Doc):
+    if is_doc(source):
         units = list(iter_doc_units(source, join_hyphens=True))
         tagged = source.has_annotation("POS")
         tags = [
@@ -51,8 +56,9 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
             for unit in units
         ]
     else:
-        check_words(source)
-        tags = [_word_pos(word) for word in source if not is_punctuation(word)]
+        words = cast("Sequence[str]", source)
+        check_words(words)
+        tags = [_word_pos(word) for word in words if not is_punctuation(word)]
     if not tags:
         raise SourceError("В источнике данных отсутствуют слова")
     counts = Counter(tags)

@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 from collections.abc import Collection, Iterator, Sequence
 from functools import lru_cache
 from math import nan
+from typing import TYPE_CHECKING
 
 import anyts.style_stats
 import pymorphy3
@@ -10,7 +13,6 @@ from anyts.style_stats import (
     calc_spam as calc_spam,
 )
 from anyts.utils import check_words, safe_divide
-from spacy.tokens import Doc
 
 from .constants import (
     COMPOUND_PREPOSITIONS,
@@ -26,6 +28,9 @@ from .constants import (
 from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 
 def check_params(top_n: int) -> None:

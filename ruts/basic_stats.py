@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 from collections.abc import Mapping
 from re import Pattern
+from typing import TYPE_CHECKING
 
 import anyts
 import anyts.basic_stats
 from anyts.basic_stats import dash_pattern
-from anyts.utils import check_integer
-from spacy.tokens import Doc
+from anyts.utils import check_integer, is_doc
 
 from .constants import (
     BASIC_STATS_DESC,
@@ -17,6 +19,9 @@ from .exceptions import ParameterError
 from .extractors import SentsExtractor, WordsExtractor
 from .syllables import count_syllables
 from .utils import strip_doc_marks, strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
 DASH_PATTERN = dash_pattern(("и", "или", "либо"), hanging_before_comma=True)
@@ -135,7 +140,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
     ):
         if isinstance(source, str):
             source = strip_marks(source)
-        elif isinstance(source, Doc):
+        elif is_doc(source):
             source = strip_doc_marks(source)
         super().__init__(
             source,

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from collections.abc import Iterable, Mapping, Sequence
 from functools import cache, lru_cache
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 import anyts
 import anyts.cohesion_stats
@@ -23,7 +25,6 @@ from anyts.utils import (
     is_doc,
     split_doc_units as split_doc_units,
 )
-from spacy.tokens import Doc, Token
 
 from .constants import (
     COHESION_STATS_DESC,
@@ -51,6 +52,9 @@ from .utils import (
     parse_word,
     strip_marks,
 )
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc, Token
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 

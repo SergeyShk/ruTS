@@ -1,16 +1,17 @@
+from __future__ import annotations
+
 import re
 from collections import Counter, OrderedDict
 from collections.abc import Mapping, Sequence
 from functools import cached_property, lru_cache
 from inspect import getattr_static
 from math import nan
-from typing import Any, ClassVar
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import anyts
 import pymorphy3
 from anyts.stats import Stats
-from anyts.utils import iter_doc_units, safe_divide
-from spacy.tokens import Doc, Token
+from anyts.utils import is_doc, iter_doc_units, safe_divide
 
 from .constants import (
     ANSWER_PARTICLE_NEXT,
@@ -34,6 +35,9 @@ from .constants import (
 from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
 from .utils import lemmatize, parse_all, parse_word, strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc, Token
 
 VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 # «нет» вне дефисных слов (нет-нет, нет‑с) с дефисами, которые склеивает токенизатор
@@ -148,10 +152,10 @@ class MorphStats(Stats):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError(self.messages["words_extractor_type"])
         features: list[dict[str, str | None]]
-        if isinstance(source, Doc) and words_extractor is not None:
+        if is_doc(source) and words_extractor is not None:
             # Экстрактор слов применяется к тексту Doc, как в классах ядра
             source = source.text
-        if isinstance(source, Doc):
+        if is_doc(source):
             units = list(iter_doc_units(source, join_hyphens=True))
             self.words = tuple(
                 strip_marks("".join(token.text for token in unit)) for unit in units

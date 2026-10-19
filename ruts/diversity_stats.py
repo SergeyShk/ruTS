@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Mapping, Sequence
+from typing import TYPE_CHECKING
 
 import anyts
 import anyts.diversity_stats
@@ -51,13 +54,15 @@ from anyts.diversity_stats import (
     fit_zipf_mandelbrot as fit_zipf_mandelbrot,
     vocabulary_growth as vocabulary_growth,
 )
-from anyts.utils import iter_doc_words
-from spacy.tokens import Doc
+from anyts.utils import is_doc, iter_doc_words
 
 from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
 from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc
 
 
 def check_params(
@@ -247,12 +252,12 @@ class DiversityStats(anyts.DiversityStats):
             log_base,
             messages=self.messages,
         )
-        if isinstance(source, Doc) and words_extractor is None:
+        if is_doc(source) and words_extractor is None:
             words: Sequence[str] = [
                 strip_marks(word) for _, _, word in iter_doc_words(source, join_hyphens=True)
             ]
-        elif isinstance(source, Doc | str):
-            text = source.text if isinstance(source, Doc) else source
+        elif is_doc(source) or isinstance(source, str):
+            text = source if isinstance(source, str) else source.text
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
             raise SourceTypeError(self.messages["source_type"])

@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Iterable, Sequence
 from math import nan
 from statistics import fmean
+from typing import TYPE_CHECKING
 
 import anyts.syntax_stats
 from anyts.constants import CLAUSE_DEPS
@@ -28,7 +31,6 @@ from anyts.utils import (
     is_infinitive as is_infinitive,
     is_word as is_word,
 )
-from spacy.tokens import Doc, Token
 
 from .constants import (
     CORE_MESSAGES,
@@ -40,6 +42,9 @@ from .constants import (
     SYNTAX_STATS_DESC,
 )
 from .utils import is_verbal_noun, lemmatize, normalize_yo, strip_marks
+
+if TYPE_CHECKING:
+    from spacy.tokens import Doc, Token
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
