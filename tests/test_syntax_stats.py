@@ -400,6 +400,7 @@ def test_clause_heads(sents):
         ("Он перестал курить.", ["перестал"], [], True),
         ("Давайте играть.", ["Давайте"], [], True),
         ("Давай пойдём.", ["Давай"], [], True),
+        ("Не давайте детям играть.", ["давайте", "играть"], ["играть"], False),
         ("Он хочет уйти.", ["хочет", "уйти"], ["уйти"], False),
         ("Я попросил его уйти.", ["попросил", "уйти"], ["уйти"], False),
         ("Он решил уехать.", ["решил", "уехать"], ["уехать"], False),
@@ -421,6 +422,19 @@ def test_model_infinitive_clauses(nlp, text, clauses, subordinate, periphrasis):
     assert [token.text for token in doc if is_infinitive_clause(token)] == subordinate
     xcomp = next(token for token in doc if token.dep_ == "xcomp")
     assert ss.is_infinitive_periphrasis(xcomp) is is_infinitive_periphrasis(xcomp) is periphrasis
+
+
+def test_infinitive_periphrasis_hook(nlp):
+    """Крючок подкласса меняет и клаузы, и придаточные"""
+
+    class Wishes(SyntaxStats):
+        def is_infinitive_periphrasis(self, token):
+            return get_lemma(token.head) == "хотеть" or super().is_infinitive_periphrasis(token)
+
+    doc = nlp("Он хочет уйти, но может остаться.")
+    ss, wishes = SyntaxStats(doc), Wishes(doc)
+    assert (ss.n_clauses, ss.n_subordinate_clauses) == (3, 1)
+    assert (wishes.n_clauses, wishes.n_subordinate_clauses) == (2, 0)
 
 
 def test_finite_xcomp_is_no_clause():

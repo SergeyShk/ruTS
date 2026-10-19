@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from math import nan
 from statistics import fmean
 
@@ -185,8 +185,8 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         self.mean_converb_clause_len = fmean(converb_clauses) if converb_clauses else nan
 
     def is_clause_head(self, token: Token) -> bool:
-        """Вершина клаузы по правилам русского языка (is_clause_head)"""
-        return is_clause_head(token)
+        """Вершина клаузы по правилам русского языка с крючком is_infinitive_periphrasis"""
+        return _is_clause_head(token, self.is_infinitive_periphrasis)
 
     def is_infinitive_periphrasis(self, token: Token) -> bool:
         """Инфинитив одной предикации с модальным или фазовым глаголом (is_infinitive_periphrasis)"""
@@ -280,6 +280,11 @@ def is_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
+    return _is_clause_head(token, is_infinitive_periphrasis)
+
+
+def _is_clause_head(token: Token, is_infinitive_periphrasis: Callable[[Token], bool]) -> bool:
+    """is_clause_head с проверкой сочетания одной предикации"""
     seen = set()
     # Вверх по цепочке однородных до слова, которое само не conj; петля разбора - не клауза
     while is_word(token) and token.i not in seen:
@@ -290,7 +295,7 @@ def is_clause_head(token: Token) -> bool:
         dep = base_dep(token)
         if dep != "conj":
             if dep == "xcomp":
-                return is_infinitive_clause(token)
+                return _is_infinitive_clause(token, is_infinitive_periphrasis)
             if dep not in CLAUSE_DEPS:
                 return False
             if dep == "parataxis":
@@ -320,8 +325,17 @@ def is_infinitive_clause(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
+    return _is_infinitive_clause(token, is_infinitive_periphrasis)
+
+
+def _is_infinitive_clause(
+    token: Token, is_infinitive_periphrasis: Callable[[Token], bool]
+) -> bool:
+    """is_infinitive_clause с проверкой сочетания одной предикации"""
     return anyts.syntax_stats.is_infinitive_clause(
-        token, is_infinitive_periphrasis, is_clause_head
+        token,
+        is_infinitive_periphrasis,
+        lambda word: _is_clause_head(word, is_infinitive_periphrasis),
     )
 
 
@@ -332,7 +346,7 @@ def is_infinitive_periphrasis(token: Token) -> bool:
     Описание:
         Глагол - модальный или фазовый из INFINITIVE_PERIPHRASES (может уйти,
         должен прийти, начал читать, перестал курить) или побудительная форма
-        из HORTATIVE_WORDS (давайте играть)
+        из HORTATIVE_WORDS без отрицания (давайте играть, но не давайте детям играть)
 
     Аргументы:
         token (Token): Токен
@@ -341,7 +355,11 @@ def is_infinitive_periphrasis(token: Token) -> bool:
         bool: Результат проверки
     """
     head = token.head
-    return get_lemma(head) in INFINITIVE_PERIPHRASES or head.text.lower() in HORTATIVE_WORDS
+    if get_lemma(head) in INFINITIVE_PERIPHRASES:
+        return True
+    return head.text.lower() in HORTATIVE_WORDS and not any(
+        is_negation(child) for child in head.children
+    )
 
 
 def is_subordinate_clause_head(token: Token) -> bool:
