@@ -2857,6 +2857,7 @@
 </code></pre></div>
 <p>It adds the <a href="https://github.com/pymorphy2-fork/DAWG">DAWG2</a> C extension for pymorphy3 (CPython only, wheels are available for Linux, macOS and Windows): word form analysis gets about 5x faster (175 vs 34 thousand word forms per second), <code>MorphStats</code> on a 70-thousand-word text about a third faster, because analyses are cached per word form and the rest of the time goes into counting. Without the extra the library works the same, just slower.</p>
 </div>
+<p><code>import ruts</code> loads neither spaCy nor matplotlib nor pandas: spaCy comes with a <code>Doc</code> object or a component, and the plots and the corpus functions on first use. The statistics of a string work without them.</p>
 <div class="admonition tip">
 <p class="admonition-title">spaCy model</p>
 <p>The <a href="../components/">spaCy components</a>, the <a href="../stats/syntax_stats/">syntactic statistics</a> and the examples that start with <code>spacy.load("ru_core_news_sm")</code> need the Russian-language model; without it <code>spacy.load</code> fails with <code>OSError: [E050]</code>. The model is installed separately:</p>
