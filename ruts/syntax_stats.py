@@ -308,9 +308,10 @@ def is_infinitive_clause(token: Token) -> bool:
     Проверка, возглавляет ли инфинитив при глаголе свою клаузу
 
     Описание:
-        is_infinitive_clause ядра с русским правилом is_infinitive_periphrasis:
-        инфинитив со связью xcomp (хочет уйти, попросил его уйти), кроме сочетаний
-        одной предикации (может уйти, начал читать); личная форма со связью xcomp
+        is_infinitive_clause ядра с русскими правилами is_infinitive_periphrasis
+        и is_clause_head: инфинитив со связью xcomp (хочет уйти, попросил его уйти),
+        кроме сочетаний одной предикации (может уйти, начал читать) и инфинитива
+        в обороте (решивший уйти, желая уйти); личная форма со связью xcomp
         у русских моделей - ошибка разбора, а не клауза
 
     Аргументы:
@@ -319,7 +320,9 @@ def is_infinitive_clause(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return anyts.syntax_stats.is_infinitive_clause(token, is_infinitive_periphrasis)
+    return anyts.syntax_stats.is_infinitive_clause(
+        token, is_infinitive_periphrasis, is_clause_head
+    )
 
 
 def is_infinitive_periphrasis(token: Token) -> bool:

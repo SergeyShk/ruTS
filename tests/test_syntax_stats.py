@@ -392,20 +392,23 @@ def test_clause_heads(sents):
 
 
 @pytest.mark.parametrize(
-    ("text", "clauses", "subordinate"),
+    ("text", "clauses", "subordinate", "periphrasis"),
     [
-        ("Он может уйти.", ["может"], []),
-        ("Она должна была прийти.", ["должна"], []),
-        ("Он начал читать и писать.", ["начал"], []),
-        ("Он перестал курить.", ["перестал"], []),
-        ("Давайте играть.", ["Давайте"], []),
-        ("Давай пойдём.", ["Давай"], []),
-        ("Он хочет уйти.", ["хочет", "уйти"], ["уйти"]),
-        ("Я попросил его уйти.", ["попросил", "уйти"], ["уйти"]),
-        ("Он решил уехать.", ["решил", "уехать"], ["уехать"]),
+        ("Он может уйти.", ["может"], [], True),
+        ("Она должна была прийти.", ["должна"], [], True),
+        ("Он начал читать и писать.", ["начал"], [], True),
+        ("Он перестал курить.", ["перестал"], [], True),
+        ("Давайте играть.", ["Давайте"], [], True),
+        ("Давай пойдём.", ["Давай"], [], True),
+        ("Он хочет уйти.", ["хочет", "уйти"], ["уйти"], False),
+        ("Я попросил его уйти.", ["попросил", "уйти"], ["уйти"], False),
+        ("Он решил уехать.", ["решил", "уехать"], ["уехать"], False),
+        # Инфинитив в обороте принадлежит обороту
+        ("Желая уйти, он встал.", ["встал"], [], False),
+        ("Человек, решивший уйти, встал.", ["встал"], [], False),
     ],
 )
-def test_model_infinitive_clauses(nlp, text, clauses, subordinate):
+def test_model_infinitive_clauses(nlp, text, clauses, subordinate, periphrasis):
     """Инфинитив при глаголе - придаточная клауза, кроме сочетаний одной предикации"""
     doc = nlp(text)
     assert [token.text for token in doc if is_clause_head(token)] == clauses
@@ -413,9 +416,8 @@ def test_model_infinitive_clauses(nlp, text, clauses, subordinate):
     ss = SyntaxStats(doc)
     assert (ss.n_clauses, ss.n_subordinate_clauses) == (len(clauses), len(subordinate))
     assert [token.text for token in doc if is_infinitive_clause(token)] == subordinate
-    assert [ss.is_infinitive_periphrasis(token) for token in doc if token.dep_ == "xcomp"] == [
-        not subordinate
-    ]
+    xcomp = next(token for token in doc if token.dep_ == "xcomp")
+    assert ss.is_infinitive_periphrasis(xcomp) is is_infinitive_periphrasis(xcomp) is periphrasis
 
 
 def test_finite_xcomp_is_no_clause():
