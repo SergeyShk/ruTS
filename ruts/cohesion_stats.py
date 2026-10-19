@@ -27,6 +27,11 @@ from spacy.tokens import Doc, Token
 
 from .constants import (
     COHESION_STATS_DESC,
+    CONNECTOR_BLOCKED_AFTER,
+    CONNECTOR_BLOCKED_AFTER_POS,
+    CONNECTOR_BLOCKED_BEFORE,
+    CONNECTOR_NOT_AT_START,
+    CONNECTOR_ONLY_AFTER,
     CONNECTOR_POS_EXTRA,
     CONTENT_POS,
     CORE_MESSAGES,
@@ -81,10 +86,18 @@ class RussianConnectorMatcher(ConnectorMatcher):
     Описание:
         Коннекторы и слова сравниваются в нижнем регистре без буквы ё (normalize_yo);
         однословному коннектору, кроме частей речи CONNECTOR_POS, подходят части речи
-        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее)
+        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее);
+        контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
+        CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
+        (после обеда, пока что, ещё раз, не правда ли)
     """
 
     pos_extra = CONNECTOR_POS_EXTRA
+    blocked_after = CONNECTOR_BLOCKED_AFTER
+    blocked_before = CONNECTOR_BLOCKED_BEFORE
+    only_after = CONNECTOR_ONLY_AFTER
+    not_at_start = CONNECTOR_NOT_AT_START
+    blocked_after_pos = CONNECTOR_BLOCKED_AFTER_POS
     messages = CORE_MESSAGES
 
     def normalize(self, text: str) -> str:

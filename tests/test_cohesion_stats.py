@@ -19,9 +19,18 @@ from ruts.cohesion_stats import (
     unit_text,
     word_info,
 )
-from ruts.constants import COHESION_STATS_DESC, CONNECTOR_CLASSES, CONNECTOR_TYPES
+from ruts.constants import (
+    COHESION_STATS_DESC,
+    CONNECTOR_BLOCKED_AFTER,
+    CONNECTOR_BLOCKED_AFTER_POS,
+    CONNECTOR_BLOCKED_BEFORE,
+    CONNECTOR_CLASSES,
+    CONNECTOR_NOT_AT_START,
+    CONNECTOR_ONLY_AFTER,
+    CONNECTOR_TYPES,
+)
 from ruts.exceptions import SourceError
-from ruts.utils import lemmatize
+from ruts.utils import lemmatize, normalize_yo
 
 text = (
     "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. "
@@ -377,8 +386,6 @@ def test_connectors_pos(nlp):
     assert [connector.text for connector in CohesionStats(text).connector_spans] == [
         "раз",
         "значит",
-        "раз",
-        "значит",
         "словом",
         "пусть",
     ]
@@ -388,12 +395,13 @@ def test_connectors_pos(nlp):
     assert connector_pos("т.е.") == "X"
     for connector in load_connectors():
         if " " not in connector:
-            assert find_connectors([connector], pos=[connector_pos(connector)]), connector
+            words = ["кот", connector] if connector in CONNECTOR_NOT_AT_START else [connector]
+            assert find_connectors(words, pos=[connector_pos(word) for word in words]), connector
     assert find_connectors(["раз", "значит"]) == [
         Connector(0, 0, 1, "раз", "conditional", "primary"),
         Connector(0, 1, 2, "значит", "causal", "primary"),
     ]
-    assert find_connectors(["раз", "значит"], pos=["NOUN", "VERB"]) == []
+    assert find_connectors(["раз", "значит", "ждать"], pos=["NOUN", "VERB", "VERB"]) == []
     assert find_connectors(["раз", "значит"], pos=["SCONJ", None]) == [
         Connector(0, 0, 1, "раз", "conditional", "primary"),
         Connector(0, 1, 2, "значит", "causal", "primary"),
@@ -403,6 +411,54 @@ def test_connectors_pos(nlp):
         Connector(0, 1, 2, "т.е.", "reformulative", "primary"),
     ]
     assert find_connectors(["кот"], {"кот": ("additive", "secondary")}, pos=["NOUN"]) == []
+
+
+def test_connector_context_rules(nlp):
+    """Предлоги и омонимы коннекторов не считаются ни в строке, ни в Doc"""
+    text = (
+        "После обеда он уснул, а после проснулся. Пока что тихо, пока он спит. "
+        "Не правда ли, он устал? Правда, ненадолго. Ещё раз прошу. "
+        "Хоть бы дождь пошёл! Хоть устал, а идёт. Он едва ли придёт. Едва он вошёл, все встали. "
+        "И так далее. Отчего же? Он устал, отчего и уснул. Коли хочешь, иди. Ежели устал, сядь."
+    )
+    expected = [
+        (0, "а"),
+        (0, "после"),
+        (1, "пока"),
+        (3, "правда"),
+        (6, "хоть"),
+        (6, "а"),
+        (8, "едва"),
+        (9, "и"),
+        (11, "отчего"),
+        (11, "и"),
+        (12, "коли"),
+        (13, "ежели"),
+    ]
+    for source in (text, nlp(text)):
+        spans = CohesionStats(source).connector_spans
+        assert [(connector.sent, connector.text) for connector in spans] == expected
+    assert find_connectors(["раз", "в", "год"]) == []
+    assert find_connectors(["это", "главное"]) == []
+    assert find_connectors(["уйти", "отсюда"]) == []
+    assert [c.text for c in find_connectors(["и", "отсюда"])] == ["и", "отсюда"]
+
+
+def test_connector_rules_dictionary():
+    """Ключи правил - коннекторы словаря, слова правил - в форме normalize_yo"""
+    connectors = load_connectors()
+    rules = (
+        CONNECTOR_BLOCKED_AFTER,
+        CONNECTOR_BLOCKED_BEFORE,
+        CONNECTOR_ONLY_AFTER,
+        CONNECTOR_BLOCKED_AFTER_POS,
+    )
+    for rule in rules:
+        assert set(rule) <= set(connectors)
+    assert set(CONNECTOR_NOT_AT_START) <= set(connectors)
+    for rule in rules[:3]:
+        for words in rule.values():
+            assert all(word == normalize_yo(word) for word in words), words
 
 
 def test_hyphenated_verb_doc(nlp):

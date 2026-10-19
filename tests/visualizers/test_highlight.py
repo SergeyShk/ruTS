@@ -705,8 +705,6 @@ def test_connectors_pos(nlp):
     assert [h.note for h in highlight(source, "connectors").highlights] == [
         "коннектор «раз»: условные, первичные",
         "коннектор «значит»: причинные, первичные",
-        "коннектор «раз»: условные, первичные",
-        "коннектор «значит»: причинные, первичные",
     ]
     doc = nlp(source)
     words = get_doc_words(doc)
@@ -716,7 +714,11 @@ def test_connectors_pos(nlp):
         "коннектор «раз»: условные, первичные",
         "коннектор «значит»: причинные, первичные",
     ]
-    words = [Word(0, 3, "Раз", "NOUN"), Word(4, 10, "значит", "VERB"), Word(11, 14, "кот")]
+    words = [
+        Word(0, 3, "Раз", "NOUN"),
+        Word(4, 10, "значит", "VERB"),
+        Word(11, 16, "ждать", "VERB"),
+    ]
     assert find_connector_highlights(words, None) == []
     words = [Word(0, 3, "Раз", "SCONJ"), Word(4, 10, "значит"), Word(11, 14, "кот")]
     assert [h.note for h in find_connector_highlights(words, None)] == [
