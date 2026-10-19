@@ -21,6 +21,7 @@ from ruts.syntax_stats import (
     is_finite_verb,
     is_genitive_modifier,
     is_infinitive_clause,
+    is_infinitive_clause_head,
     is_infinitive_periphrasis,
     is_light_verb,
     is_negation,
@@ -183,8 +184,9 @@ def test_counts(ss):
     assert ss.n_subtrees == 14
     assert ss.n_coordination_chains == 1
     assert ss.n_clauses == 8
-    assert ss.n_subordinate_clauses == 2
-    assert ss.n_complex_sents == 2
+    assert ss.n_subordinate_clauses == 1
+    assert ss.n_complex_sents == 1
+    assert ss.n_infinitive_clauses == 1
     assert ss.n_nouns == 8
     assert ss.n_genitive_chains == 1
     assert ss.n_participle_clauses == 1
@@ -225,8 +227,9 @@ def test_clauses(ss):
     assert ss.mean_coordination_chain_len == 2
     assert ss.clauses_per_sent == pytest.approx(8 / 5)
     assert ss.mean_clause_len == pytest.approx(27 / 8)
-    assert ss.subordinate_clauses_per_sent == pytest.approx(2 / 5)
-    assert ss.p_complex_sents == pytest.approx(2 / 5)
+    assert ss.subordinate_clauses_per_sent == pytest.approx(1 / 5)
+    assert ss.p_complex_sents == pytest.approx(1 / 5)
+    assert ss.infinitive_clauses_per_sent == pytest.approx(1 / 5)
 
 
 def test_constructions(ss):
@@ -388,11 +391,14 @@ def test_clause_heads(sents):
     ]
     assert [
         token.text for sent in sents for token in sent if is_subordinate_clause_head(token)
-    ] == ["придёт", "уйти"]
+    ] == ["придёт"]
+    assert [
+        token.text for sent in sents for token in sent if is_infinitive_clause_head(token)
+    ] == ["уйти"]
 
 
 @pytest.mark.parametrize(
-    ("text", "clauses", "subordinate", "periphrasis"),
+    ("text", "clauses", "infinitive", "periphrasis"),
     [
         ("Он может уйти.", ["может"], [], True),
         ("Она должна была прийти.", ["должна"], [], True),
@@ -412,14 +418,16 @@ def test_clause_heads(sents):
         ("Человек, решивший уйти, встал.", ["встал"], [], False),
     ],
 )
-def test_model_infinitive_clauses(nlp, text, clauses, subordinate, periphrasis):
-    """Инфинитив при глаголе - придаточная клауза, кроме сочетаний одной предикации"""
+def test_model_infinitive_clauses(nlp, text, clauses, infinitive, periphrasis):
+    """Инфинитив при глаголе - своя клауза, но не придаточная, кроме сочетаний одной предикации"""
     doc = nlp(text)
     assert [token.text for token in doc if is_clause_head(token)] == clauses
-    assert [token.text for token in doc if is_subordinate_clause_head(token)] == subordinate
+    assert not any(is_subordinate_clause_head(token) for token in doc)
+    assert [token.text for token in doc if is_infinitive_clause_head(token)] == infinitive
     ss = SyntaxStats(doc)
-    assert (ss.n_clauses, ss.n_subordinate_clauses) == (len(clauses), len(subordinate))
-    assert [token.text for token in doc if is_infinitive_clause(token)] == subordinate
+    assert (ss.n_clauses, ss.n_subordinate_clauses) == (len(clauses), 0)
+    assert ss.n_infinitive_clauses == len(infinitive)
+    assert [token.text for token in doc if is_infinitive_clause(token)] == infinitive
     xcomp = next(token for token in doc if token.dep_ == "xcomp")
     assert ss.is_infinitive_periphrasis(xcomp) is is_infinitive_periphrasis(xcomp) is periphrasis
 
@@ -433,8 +441,29 @@ def test_infinitive_periphrasis_hook(nlp):
 
     doc = nlp("Он хочет уйти, но может остаться.")
     ss, wishes = SyntaxStats(doc), Wishes(doc)
-    assert (ss.n_clauses, ss.n_subordinate_clauses) == (3, 1)
-    assert (wishes.n_clauses, wishes.n_subordinate_clauses) == (2, 0)
+    assert (ss.n_clauses, ss.n_infinitive_clauses) == (3, 1)
+    assert (wishes.n_clauses, wishes.n_infinitive_clauses) == (2, 0)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Мне нужно уйти.",
+        "Мне надо уйти.",
+        "Можно войти?",
+        "Нельзя курить.",
+        "Необходимо проверить данные.",
+        "Вам следует уйти.",
+        "Пора идти домой.",
+        "Он взялся читать.",
+        "Он кинулся бежать.",
+    ],
+)
+def test_model_periphrases_of_one_clause(nlp, text):
+    """Инфинитив-подлежащее модального слова и инфинитив при «взяться», «кинуться» -
+    одна предикация"""
+    ss = SyntaxStats(nlp(text))
+    assert (ss.n_clauses, ss.n_subordinate_clauses, ss.n_infinitive_clauses) == (1, 0, 0)
 
 
 def test_finite_xcomp_is_no_clause():

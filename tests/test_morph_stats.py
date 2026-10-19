@@ -202,6 +202,13 @@ def test_init_doc_blank(ms):
     assert doc_ms.get_stats() == ms.get_stats()
 
 
+def test_init_doc_byte_order_mark():
+    """BOM в начале Doc не входит в слово, как в строке"""
+    text_ms, doc_ms = MorphStats("\ufeff2020 год"), MorphStats(spacy.blank("ru")("\ufeff2020 год"))
+    assert doc_ms.words == text_ms.words == ("2020", "год")
+    assert doc_ms.get_stats() == text_ms.get_stats()
+
+
 def test_init_doc_context(nlp):
     doc = nlp("Мы стали ждать, а нож сделан из стали.")
     ms = MorphStats(doc)

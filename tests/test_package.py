@@ -112,8 +112,11 @@ SUBPACKAGE_NAMES = {
 
 
 def test_package_names():
-    assert set(ruts.__all__) >= PACKAGE_NAMES
-    assert all(hasattr(ruts, name) for name in ruts.__all__)
+    # Компоненты - атрибуты пакета, но не __all__: import * не грузит spaCy
+    components = {name for name in PACKAGE_NAMES if name.endswith("Component")}
+    assert set(ruts.__all__) >= PACKAGE_NAMES - components
+    assert not set(ruts.__all__) & components
+    assert all(hasattr(ruts, name) for name in PACKAGE_NAMES | set(ruts.__all__))
 
 
 @pytest.mark.parametrize("name", SUBPACKAGE_NAMES)
@@ -173,6 +176,7 @@ RUSSIAN = {
         "SyntaxStats",
         "is_clause_head",
         "is_infinitive_clause",
+        "is_infinitive_clause_head",
         "is_subordinate_clause_head",
     },
     "ruts.style_stats": {
@@ -509,6 +513,30 @@ def test_factories_without_import():
         "print(nlp('мама мыла раму')._.ruts_style.water)"
     )
     assert _run(code) == "0.0"
+
+
+@pytest.mark.parametrize(
+    "stub", ["sys.modules['spacy'] = None", "sys.modules['spacy'] = types.ModuleType('spacy')"]
+)
+def test_import_with_a_stub_of_spacy(stub):
+    """Пометка «spaCy недоступен» и заглушка spaCy (Pyodide) не мешают импорту"""
+    code = (
+        f"import sys, types\n{stub}\n"
+        "import ruts\n"
+        "print(ruts.StyleStats('Мама мыла раму.').water, 'ruts.components' in sys.modules)"
+    )
+    assert _run(code) == "0.0 False"
+
+
+def test_star_import_and_help_without_spacy():
+    code = (
+        "import pydoc, sys\n"
+        "from ruts import *\n"
+        "import ruts\n"
+        "pydoc.render_doc(ruts)\n"
+        "print('BasicStats' in dir(), 'spacy' in sys.modules, 'ruts.components' in sys.modules)"
+    )
+    assert _run(code) == "True False False"
 
 
 def test_lazy_packages_export_their_names():

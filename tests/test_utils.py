@@ -2,6 +2,8 @@ import unicodedata
 
 import pytest
 
+import ruts.verse_stats
+from ruts.exceptions import SourceTypeError
 from ruts.utils import (
     add_dash_rules,
     find_phrases,
@@ -207,3 +209,19 @@ def test_marks_in_parse_and_folding():
     assert lemmatize("сказа\u0301л", "VERB") == "сказать"
     assert normalize_yo("Ёлка\u0301") == "елка"
     assert find_phrases(["в", "свя\u0301зи", "с"], ["в связи с"]) == [(0, 3)]
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        strip_marks,
+        iter_text_words,
+        iter_text_sents,
+        ruts.verse_stats.split_stanzas,
+        ruts.verse_stats.accentuate,
+    ],
+)
+@pytest.mark.parametrize("value", [None, 5, ["текст"]])
+def test_text_must_be_a_string(func, value):
+    with pytest.raises(SourceTypeError, match=r"^Ожидается строка текста, а не "):
+        func(value)

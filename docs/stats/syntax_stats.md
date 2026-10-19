@@ -30,7 +30,7 @@
 
 ## Атрибуты
 
-<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 5018989 -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 8fdbe73 -->
 | Атрибут | Тип | Описание |
 | :-----: | :-: | :------: |
 | `sents` | tuple[tuple[Token]] | Слова каждого предложения, в котором есть слова |
@@ -38,6 +38,7 @@
 | `n_leaves`, `n_subtrees` | int | Количество слов без зависимых слов и с ними |
 | `n_coordination_chains` | int | Количество сочинительных цепочек |
 | `n_clauses`, `n_subordinate_clauses`, `n_complex_sents` | int | Количество клауз, придаточных клауз и предложений с придаточной |
+| `n_infinitive_clauses` | int | Количество инфинитивных клауз при глаголе |
 | `n_nouns`, `n_verbs` | int | Количество существительных (`NOUN`, `PROPN`) и глагольных форм (`VERB`) |
 | `n_participle_clauses` | int | Количество причастных оборотов |
 | `n_passive`, `n_agentless_passive` | int | Количество пассивных форм и форм без агенса |
@@ -55,6 +56,7 @@
 | `coordination_chains_per_sent`, `mean_coordination_chain_len` | float | Сочинительных цепочек на предложение и их средняя длина |
 | `clauses_per_sent`, `mean_clause_len` | float | Клауз на предложение и их средняя длина в словах |
 | `subordinate_clauses_per_sent`, `p_complex_sents` | float | Придаточных клауз на предложение и доля предложений с придаточной |
+| `infinitive_clauses_per_sent` | float | Инфинитивных клауз при глаголе на предложение (*хочет уйти*), которые не придаточные |
 | `modifiers_per_noun` | float | Среднее число модификаторов существительного (`count_noun_modifiers`) |
 | `participle_clauses_per_sent`, `mean_participle_clause_len` | float | Причастных оборотов на предложение и их средняя длина в словах |
 | `p_passive`, `p_agentless_passive` | float | Доля пассивных форм среди глагольных форм и доля форм без агенса среди них |
@@ -117,6 +119,7 @@
     'mean_clause_len': 5.666666666666667,
     'subordinate_clauses_per_sent': 0.5,
     'p_complex_sents': 0.5,
+    'infinitive_clauses_per_sent': 0.0,
     'modifiers_per_noun': 0.4,
     'genitive_chains_per_sent': 0.0,
     'max_genitive_chain_len': 0,
@@ -185,6 +188,7 @@
     Средняя длина клаузы (слов)                      |   5.67
     Придаточных клауз на предложение                 |   0.50
     Доля предложений с придаточными                  |   0.50
+    Инфинитивных клауз при глаголе на предложение    |   0.00
     Модификаторов на именную группу                  |   0.40
     Цепочек родительных падежей на предложение       |   0.00
     Максимальная длина цепочки родительных падежей   |    0

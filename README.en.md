@@ -43,7 +43,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/en/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables by the rising sonority rule
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/)** - dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains, split predicates and other officialese markers over the spaCy parse
-* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class
+* **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class, inter- and intrasentential
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
 * **[Verse statistics](https://sergeyshk.github.io/ruTS/en/stats/verse_stats/)** - stresses by the Koziev dictionary, meter and number of feet, pyrrhics and stress profile, rhyme schemes, line endings and stanzas
 * **[Corpus measures](https://sergeyshk.github.io/ruTS/en/corpus/keyness/)** - keywords relative to a reference corpus or frequency dictionary, collocations, word dispersion, KWIC concordance, stylometry: Burrows's Delta, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile; corpus comparison across all features with effect sizes
@@ -560,7 +560,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
 *   Temporal cohesion: tense and aspect repetition in adjacent sentences
-*   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative) and type, by an own dictionary of 317 connectives
+*   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative), type and position - intersentential, opening a sentence, and intrasentential - by an own dictionary of 316 connectives
 
 ```python
 >>> from ruts import CohesionStats

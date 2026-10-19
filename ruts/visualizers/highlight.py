@@ -217,7 +217,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             "compound_prepositions": lambda: find_compound_prepositions(words),
             "cliches": lambda: find_cliches(words, self._cliches),
             "parentheticals": lambda: find_parentheticals(words),
-            "connectors": lambda: find_connector_highlights(words, sents),
+            "connectors": lambda: find_connector_highlights(words, sents, self.text),
             "alliteration": lambda: find_alliteration(words, self._alliteration_threshold, sents),
         }
         return finders[layer]()
@@ -519,7 +519,7 @@ def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
 
 
 def find_connector_highlights(
-    words: Sequence[Word], sents: Sequence[Sent] | None
+    words: Sequence[Word], sents: Sequence[Sent] | None, text: str | None = None
 ) -> list[Highlight]:
     """
     Поиск коннекторов
@@ -528,11 +528,14 @@ def find_connector_highlights(
         Коннекторы ищутся внутри каждого предложения сопоставителем CohesionStats,
         без границ предложений - по всему тексту; однословные коннекторы проверяются
         по части речи слова из разметки Doc, а без нее - по pymorphy3 (connector_pos);
-        в подсказке класс и тип коннектора
+        правила о словах до и после коннектора не действуют через знак препинания
+        между словами текста; в подсказке класс и тип коннектора
 
     Аргументы:
         words (list[Word]): Слова с позициями
         sents (list[Sent]): Предложения с позициями; None, если границы неизвестны
+        text (str): Текст слов, для знаков препинания между ними; без него знаки
+            не учитываются
 
     Вывод:
         list[Highlight]: Фрагменты слоя connectors
@@ -546,6 +549,7 @@ def find_connector_highlights(
             f"{CONNECTOR_TYPES[connector.kind]}"
         ),
         lambda word: word.pos or connector_pos(word.text),
+        text,
     )
 
 

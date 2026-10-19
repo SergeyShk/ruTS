@@ -83,6 +83,7 @@ Returns a dictionary with the computed syntactic statistics.
     'mean_clause_len': 5.666666666666667,
     'subordinate_clauses_per_sent': 0.5,
     'p_complex_sents': 0.5,
+    'infinitive_clauses_per_sent': 0.0,
     'modifiers_per_noun': 0.4,
     'genitive_chains_per_sent': 0.0,
     'max_genitive_chain_len': 0,
@@ -150,6 +151,7 @@ To illustrate the method, we reuse the code from the `get_stats` example:
     Средняя длина клаузы (слов)                      |   5.67
     Придаточных клауз на предложение                 |   0.50
     Доля предложений с придаточными                  |   0.50
+    Инфинитивных клауз при глаголе на предложение    |   0.00
     Модификаторов на именную группу                  |   0.40
     Цепочек родительных падежей на предложение       |   0.00
     Максимальная длина цепочки родительных падежей   |    0

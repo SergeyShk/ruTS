@@ -64,7 +64,7 @@ Parameters:
 
 | Parameter | Type | Default | Description |
 | :-------: | :--: | :-----: | :---------: |
-| `force` | bool | `-` | Download the dataset even if it is already downloaded |
+| `force` | bool | `False` | Download the dataset even if it is already downloaded |
 
 !!! example "Example"
 

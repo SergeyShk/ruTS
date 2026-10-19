@@ -36,7 +36,7 @@ from .syllables import (
     _word_stress,
     word_stress as word_stress,
 )
-from .utils import MARKED, take_marks
+from .utils import MARKED, _check_text, take_marks
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc
@@ -353,7 +353,11 @@ def split_stanzas(text: str) -> list[list[str]]:
 
     Вывод:
         list[list[str]]: Строки по строфам
+
+    Исключения:
+        SourceTypeError: Если текст не строка
     """
+    _check_text(text)
     stanzas = []
     for block in BLANK_LINE.split(text.strip()):
         lines = [line.strip() for line in block.split("\n") if WORD_PATTERN.search(line)]
@@ -789,9 +793,10 @@ def accentuate(text: str, stress_dict: StressDict | None = None) -> str:
         str: Текст с ударениями
 
     Исключения:
-        SourceTypeError: Если словарь ударений не StressDict
+        SourceTypeError: Если текст не строка или словарь ударений не StressDict
         DatasetNotFoundError: Если словарь ударений не загружен
     """
+    _check_text(text)
     _check_stress_dict(stress_dict)
     if stress_dict is None:
         stress_dict = StressDict()

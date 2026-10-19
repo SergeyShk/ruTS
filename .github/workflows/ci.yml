@@ -67,6 +67,25 @@ jobs:
         # Архивы наборов качаются с master, поэтому сетевые тесты - в задаче network
         run: uv run --no-sync pytest -m "not network" --cov ruts
 
+  test-lowest:
+    name: test (lowest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.11"
+      - name: Install dependencies
+        # Нижние границы зависимостей: пакет, который они пропускают, не импортируется
+        run: uv sync --resolution lowest-direct --no-default-groups --group test
+      - name: Fetch the pages of anyTS
+        run: uv run --no-sync python scripts/core_docs.py
+      - name: Run tests
+        run: uv run --no-sync pytest -m "not network"
+
   network:
     if: github.event_name != 'pull_request'
     name: network (${{ matrix.os }})

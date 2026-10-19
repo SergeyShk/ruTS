@@ -142,7 +142,8 @@ class PhonStats(anyts.phon_stats.PhonStats):
         window_len: int = PHON_WINDOW_LEN,
     ):
         super().__init__(source, words_extractor, window_len)
-        self.n_marks = sum(1 for word in self.words for letter in word if letter in MARKS)
+        letters = "".join(self.words)
+        self.n_marks = sum(map(letters.count, MARKS))
 
     def doc_words(self, doc: Doc) -> tuple[str, ...]:
         """Слова Doc ядра без знаков ударения"""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Collection, Iterable, Mapping, Sequence
 from functools import cache, lru_cache
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -21,6 +21,8 @@ from anyts.cohesion_stats import (
 )
 from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
 from anyts.utils import (
+    find_marks,
+    find_unit_marks,
     has_sents,
     is_doc,
     split_doc_units as split_doc_units,
@@ -33,7 +35,10 @@ from .constants import (
     CONNECTOR_BLOCKED_BEFORE,
     CONNECTOR_NOT_AT_START,
     CONNECTOR_ONLY_AFTER,
+    CONNECTOR_PARCELLATION,
     CONNECTOR_POS_EXTRA,
+    CONNECTOR_READ_THROUGH_MARKS,
+    CONNECTOR_SPLIT_BY_MARKS,
     CONNECTOR_SUBORDINATORS,
     CONTENT_POS,
     CORE_MESSAGES,
@@ -91,12 +96,16 @@ class RussianConnectorMatcher(ConnectorMatcher):
     Описание:
         Коннекторы и слова сравниваются в нижнем регистре без буквы ё (normalize_yo);
         однословному коннектору, кроме частей речи CONNECTOR_POS, подходят части речи
-        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее);
-        контекстные правила - списки CONNECTOR_BLOCKED_AFTER, CONNECTOR_BLOCKED_BEFORE,
-        CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START и CONNECTOR_BLOCKED_AFTER_POS
-        (после обеда, пока что, ещё раз, не правда ли); многословные подчинительные
-        союзы и однословные, которые модели или pymorphy3 размечают не SCONJ, -
-        CONNECTOR_SUBORDINATORS (так как, после того как, ежели)
+        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее,
+        значит, ежели, коли); контекстные правила - списки CONNECTOR_BLOCKED_AFTER,
+        CONNECTOR_BLOCKED_BEFORE, CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START
+        и CONNECTOR_BLOCKED_AFTER_POS (после обеда, пока что, ещё раз, не правда ли),
+        через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего),
+        а знак внутри коннектора CONNECTOR_SPLIT_BY_MARKS его разделяет (так, как);
+        многословные подчинительные союзы и предлоги и однословные союзы, которые
+        модели или pymorphy3 размечают не SCONJ, - CONNECTOR_SUBORDINATORS (так как,
+        после того как, несмотря на, ежели); союзы CONNECTOR_PARCELLATION (ибо)
+        в начале предложения связывают его с предыдущим
     """
 
     pos_extra = CONNECTOR_POS_EXTRA
@@ -105,12 +114,20 @@ class RussianConnectorMatcher(ConnectorMatcher):
     only_after = CONNECTOR_ONLY_AFTER
     not_at_start = CONNECTOR_NOT_AT_START
     blocked_after_pos = CONNECTOR_BLOCKED_AFTER_POS
+    read_through_marks = CONNECTOR_READ_THROUGH_MARKS
+    split_by_marks = CONNECTOR_SPLIT_BY_MARKS
     subordinators = CONNECTOR_SUBORDINATORS
     messages = CORE_MESSAGES
 
     def normalize(self, text: str) -> str:
         """Нижний регистр без буквы ё и знаков ударения (normalize_yo)"""
         return normalize_yo(text)
+
+    def is_subordinator(self, connector: Connector, pos: str | None = None) -> bool:
+        """Подчинительный союз или предлог (is_subordinator ядра), кроме CONNECTOR_PARCELLATION"""
+        return connector.text not in CONNECTOR_PARCELLATION and super().is_subordinator(
+            connector, pos
+        )
 
 
 class CohesionStats(anyts.cohesion_stats.CohesionStats):
@@ -266,20 +283,24 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             по разметке частей речи (unit_info, unit_pos), а без разметки - по pymorphy3
             (words_info, connector_pos). Для строки и Doc с экстрактором слов
             предложения - границы Doc или экстрактор предложений, слова - экстрактор
-            слов, признаки - по pymorphy3
+            слов, признаки - по pymorphy3. Знаки препинания между словами - по
+            токенам Doc (find_unit_marks) или по тексту предложения (find_marks)
         """
         if is_doc(source) and self.words_extractor is None:
             units = self.doc_units(source)
+            marks = [find_unit_marks(sent) for sent in units]
             if source.has_annotation("POS"):
                 return [
                     [
-                        _cohesion_word(unit_text(unit), unit_info(unit), unit_pos(unit))
-                        for unit in sent
+                        _cohesion_word(
+                            unit_text(unit), unit_info(unit), unit_pos(unit), i in sent_marks
+                        )
+                        for i, unit in enumerate(sent)
                     ]
-                    for sent in units
+                    for sent, sent_marks in zip(units, marks, strict=True)
                 ]
             sents = [[unit_text(unit) for unit in sent] for sent in units]
-            return _cohesion_words(sents, source.text)
+            return _cohesion_words(sents, source.text, marks)
         texts: Iterable[str]
         if isinstance(source, str):
             text = source
@@ -293,10 +314,15 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         else:
             raise SourceTypeError(self.messages["source_type"])
         extractor = self.words_extractor or WordsExtractor()
-        return _cohesion_words([tuple(extractor.extract(sent)) for sent in texts], text)
+        texts = tuple(texts)
+        sent_words = [tuple(extractor.extract(sent)) for sent in texts]
+        marks = [find_marks(sent, words) for sent, words in zip(texts, sent_words, strict=True)]
+        return _cohesion_words(sent_words, text, marks)
 
 
-def _cohesion_word(word: str, info: WordInfo, pos: str | None) -> CohesionWord:
+def _cohesion_word(
+    word: str, info: WordInfo, pos: str | None, break_before: bool = False
+) -> CohesionWord:
     """Слово с признаками для каркаса ядра, наклонение не учитывается"""
     return CohesionWord(
         word,
@@ -310,18 +336,21 @@ def _cohesion_word(word: str, info: WordInfo, pos: str | None) -> CohesionWord:
         info.tense,
         None,
         info.aspect,
+        break_before,
     )
 
 
-def _cohesion_words(sents: Sequence[Sequence[str]], text: str) -> list[list[CohesionWord]]:
-    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos)"""
+def _cohesion_words(
+    sents: Sequence[Sequence[str]], text: str, marks: Sequence[Collection[int]]
+) -> list[list[CohesionWord]]:
+    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos) и знаками"""
     infos = words_info(sents, text)
     return [
         [
-            _cohesion_word(word, info, connector_pos(word))
-            for word, info in zip(sent, sent_infos, strict=True)
+            _cohesion_word(word, info, connector_pos(word), i in sent_marks)
+            for i, (word, info) in enumerate(zip(sent, sent_infos, strict=True))
         ]
-        for sent, sent_infos in zip(sents, infos, strict=True)
+        for sent, sent_infos, sent_marks in zip(sents, infos, marks, strict=True)
     ]
 
 
@@ -353,6 +382,7 @@ def find_connectors(
     connectors: Mapping[str, tuple[str, str]] | None = None,
     sent_index: int = 0,
     pos: Sequence[str | None] | None = None,
+    breaks: Collection[int] | None = None,
 ) -> list[Connector]:
     """
     Поиск коннекторов в предложении
@@ -363,7 +393,8 @@ def find_connectors(
         («и все же» не распадается на «и»), найденные не пересекаются; дефис и точка
         внутри коннектора (во-первых, т.е.) могут быть отделены токенизатором. Если
         переданы части речи UD, однословный коннектор засчитывается только при части
-        речи из CONNECTOR_POS или из CONNECTOR_POS_EXTRA для этого слова
+        речи из CONNECTOR_POS или из CONNECTOR_POS_EXTRA для этого слова. Правила
+        о словах до и после коннектора не действуют через знак препинания (breaks)
 
     Аргументы:
         words (list[str]): Слова предложения
@@ -371,22 +402,24 @@ def find_connectors(
             по коннектору; если не задан, используется словарь из resources
         sent_index (int): Номер предложения для записи во вхождения
         pos (list[str]): Части речи UD слов предложения; без них части речи не проверяются
+        breaks (list[int]): Номера слов, перед которыми стоит знак препинания (find_marks)
 
     Вывод:
         list[Connector]: Вхождения коннекторов в порядке слов
 
     Исключения:
-        SourceTypeError: Если слова не список строк, словарь коннекторов или части речи
-            заданы неверно
+        SourceTypeError: Если слова не список строк, словарь коннекторов, части речи
+            или номера слов со знаком заданы неверно
         ParameterError: Если в словаре встречается неизвестный класс или тип, номер
-            предложения не целое число или частей речи не столько, сколько слов
+            предложения не целое число, частей речи не столько, сколько слов, или номер
+            слова со знаком не целое число
     """
     matcher = (
         CohesionStats.connector_matcher()
         if connectors is None
         else RussianConnectorMatcher(connectors)
     )
-    return matcher.find(words, sent_index, pos)
+    return matcher.find(words, sent_index, pos, breaks)
 
 
 def _is_connector_pos(word: str, pos: str | None) -> bool:
