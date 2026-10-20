@@ -34,7 +34,7 @@ from .constants import (
 )
 from .exceptions import SourceError, SourceTypeError
 from .extractors import WordsExtractor
-from .utils import lemmatize, parse_all, parse_word, strip_marks
+from .utils import BYTE_ORDER_MARK, lemmatize, parse_all, parse_word, strip_marks
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
@@ -158,7 +158,8 @@ class MorphStats(Stats):
         if is_doc(source):
             units = list(iter_doc_units(source, join_hyphens=True))
             self.words = tuple(
-                strip_marks("".join(token.text for token in unit)) for unit in units
+                strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
+                for unit in units
             )
             if source.has_annotation("POS"):
                 features = [

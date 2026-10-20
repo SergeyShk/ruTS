@@ -1,21 +1,17 @@
 # Syllables and stress
 
-!!! info ""
-    **ruts.syllables**
-
-## Description
-
-A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (`ruts.utils.strip_marks`), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.
+The `ruts.syllables` module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (`ruts.utils.strip_marks`), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.
 
 ## Syllabification { #syllabify }
 
-!!! info ""
-    **ruts.syllables.syllabify()**
+``` {.python .signature}
+syllabify(word)
+```
 
 Division of a word into syllables by the rising sonority rule (Avanesov): there are as many syllables as vowels, a word without vowels (в, к, с) has none. The syllable boundary follows these rules:
 
 | Rule | Example |
-| :--- | :-----: |
+| :--- | :------ |
 | a single consonant between vowels goes to the next syllable | ко-ро-ва, ра-йон |
 | a cluster of obstruents, or an obstruent followed by a sonorant, goes to the next syllable | ко-шка, се-стра, о-ткрыть, по-зна-ко-мить |
 | a sonorant before an obstruent goes to the previous syllable | кар-та, пол-ка |
@@ -26,125 +22,169 @@ Division of a word into syllables by the rising sonority rule (Avanesov): there 
 
 The division is orthographic, by letters, as in school phonetics; a compound word is divided part by part (`со-рок-во-ро-вка`).
 
-Parameters:
-
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
 
-!!! example "Example"
+Raises:
+
+- `SourceTypeError` - a word that is not a string.
+
+=== "Code"
 
     ``` python
     from ruts.syllables import syllabify
 
     syllabify("здравствуйте")
-    # ['здра', 'вствуй', 'те']
+    ```
+
+=== "Result"
+
+    ```
+    ['здра', 'вствуй', 'те']
     ```
 
 ## Syllable count { #count_syllables }
 
-!!! info ""
-    **ruts.syllables.count_syllables()**
+``` {.python .signature}
+count_syllables(word)
+```
 
 The number of syllables of a word - the number of vowel letters.
 
-Parameters:
-
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
 
-!!! example "Example"
+Raises:
+
+- `SourceTypeError` - a word that is not a string.
+
+=== "Code"
 
     ``` python
     from ruts.syllables import count_syllables
 
     count_syllables("здравствуйте")
-    # 3
+    ```
+
+=== "Result"
+
+    ```
+    3
     ```
 
 ## Stressed syllable { #word_stress }
 
-!!! info ""
-    **ruts.syllables.word_stress()**
+``` {.python .signature}
+word_stress(word, stress_dict=None)
+```
 
-The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the [algorithm](stats/verse_stats_funcs.md#algorithm) of the verse statistics).
-
-Parameters:
+The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the [algorithm](stats/verse_stats.md#algorithm) of the verse statistics); for a compound word, the last of the stresses of [`word_stresses`](#word_stresses).
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
-| `stress_dict` | StressDict | `None` | Stress dictionary; `StressDict()` if not given |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
+| `stress_dict` | `StressDict` | `None` | Stress dictionary; `StressDict()` by default |
 
 Returns `None` if the word is not found or has no vowels.
 
-!!! example "Example"
+Raises:
+
+- `SourceTypeError` - a word that is not a string, a stress dictionary of another type;
+- `DatasetNotFoundError` - the stress dictionary is not downloaded.
+
+=== "Code"
 
     ``` python
     from ruts.syllables import syllabify, word_stress
 
     word_stress("корова"), word_stress("ещё"), word_stress("желанье"), word_stress("кто-нибудь")
-    # (1, 1, 1, 0)
-    word_stress("хмурота")
-    # None
+    word_stress("за́мок"), word_stress("замо́к"), word_stress("сорок-воровка")
+    word_stress("хмурота"), word_stress("в")
     syllabify("корова")[word_stress("корова")]
-    # 'ро'
+    ```
+
+=== "Result"
+
+    ```
+    (1, 1, 1, 0)
+    (0, 1, 3)
+    (None, None)
+    'ро'
     ```
 
 ## All stresses { #word_stresses }
 
-!!! info ""
-    **ruts.syllables.word_stresses()**
+``` {.python .signature}
+word_stresses(word, stress_dict=None)
+```
 
 All stressed syllables of a word in ascending order. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (`со-рок-во-ро-вка` - 0 and 3), the particles (-то, -либо, -нибудь and others) are unstressed.
 
-Parameters:
-
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
-| `stress_dict` | StressDict | `None` | Stress dictionary; `StressDict()` if not given |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
+| `stress_dict` | `StressDict` | `None` | Stress dictionary; `StressDict()` by default |
 
 Returns an empty list if the word is not found or has no vowels.
 
-!!! example "Example"
+Raises:
+
+- `SourceTypeError` - a word that is not a string, a stress dictionary of another type;
+- `DatasetNotFoundError` - the stress dictionary is not downloaded.
+
+=== "Code"
 
     ``` python
     from ruts.syllables import word_stresses
 
     word_stresses("сорок-воровка"), word_stresses("северо-западный"), word_stresses("кто-нибудь")
-    # ([0, 3], [3], [0])
+    ```
+
+=== "Result"
+
+    ```
+    ([0, 3], [3], [0])
     ```
 
 ## Ending type { #stress_type }
 
-!!! info ""
-    **ruts.syllables.stress_type()**
+``` {.python .signature}
+stress_type(word, stress_dict=None)
+```
 
 The type of the ending of a word by the position of its main stress. The names are those of verse clausulas (`VERSE_CLAUSULAS`):
 
 | Type | Stress | Example |
-| :--- | :----- | :-----: |
+| :--- | :----- | :------ |
 | мужская (masculine) | on the last syllable | зем-**ля** |
 | женская (feminine) | on the penultimate syllable | ко-**ро**-ва |
 | дактилическая (dactylic) | on the third syllable from the end | **зо**-ло-то |
 | гипердактилическая (hyperdactylic) | earlier | **вы**-ско-чи-вший |
 
-Parameters:
-
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `word` | str | `-` | Word |
-| `stress_dict` | StressDict | `None` | Stress dictionary; `StressDict()` if not given |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
+| `stress_dict` | `StressDict` | `None` | Stress dictionary; `StressDict()` by default |
 
 Returns `None` if the word is not found or has no vowels.
 
-!!! example "Example"
+Raises:
+
+- `SourceTypeError` - a word that is not a string, a stress dictionary of another type;
+- `DatasetNotFoundError` - the stress dictionary is not downloaded.
+
+=== "Code"
 
     ``` python
     from ruts.syllables import stress_type
 
     tuple(stress_type(word) for word in ("земля", "корова", "золото", "выскочивший"))
-    # ('мужская', 'женская', 'дактилическая', 'гипердактилическая')
+    ```
+
+=== "Result"
+
+    ```
+    ('мужская', 'женская', 'дактилическая', 'гипердактилическая')
     ```

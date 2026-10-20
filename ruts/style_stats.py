@@ -463,16 +463,27 @@ def expand_phrases(text: Sequence[str], phrases: Collection[str]) -> dict[str, s
     check_words(text)
     check_words(phrases, "phrases", ordered=False)
     phrases = tuple(phrases)
-    words = {normalize_yo(word) for word in text}
-    expanded = {phrase: phrase for phrase in phrases}
-    for phrase in phrases:
-        parts = normalize_yo(phrase).split()
-        head = 1 if len(parts) > 1 and parts[0] == "не" else 0
-        if len(parts) <= head:
-            continue
-        for form in sorted(_verb_forms(parts[head]) & words):
-            expanded.setdefault(" ".join([*parts[:head], form, *parts[head + 1 :]]), phrase)
+    expanded = dict(zip(phrases, phrases, strict=True))
+    if verbal := _verbal_phrases(phrases):
+        words = set(map(normalize_yo, text))
+        for phrase, parts, head, forms in verbal:
+            for form in sorted(forms & words):
+                expanded.setdefault(" ".join([*parts[:head], form, *parts[head + 1 :]]), phrase)
     return expanded
+
+
+@lru_cache(maxsize=64)
+def _verbal_phrases(
+    phrases: tuple[str, ...],
+) -> tuple[tuple[str, tuple[str, ...], int, frozenset[str]], ...]:
+    """Словосочетания с глаголом в начале: их слова, место глагола и его формы (_verb_forms)"""
+    verbal = []
+    for phrase in phrases:
+        parts = tuple(normalize_yo(phrase).split())
+        head = 1 if len(parts) > 1 and parts[0] == "не" else 0
+        if len(parts) > head and (forms := _verb_forms(parts[head])):
+            verbal.append((phrase, parts, head, forms))
+    return tuple(verbal)
 
 
 @lru_cache(maxsize=4096)

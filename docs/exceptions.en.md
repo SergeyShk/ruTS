@@ -1,8 +1,5 @@
 # Exceptions and logging
 
-!!! info ""
-    **ruts.exceptions**
-
 ## Exceptions
 
 All library exceptions inherit the base class `RutsError` and one of the built-in Python classes, so they can be caught both by their ruTS name and by the familiar built-in type - existing code with `except ValueError` keeps working.
@@ -20,7 +17,7 @@ All library exceptions inherit the base class `RutsError` and one of the built-i
 
 The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of ruTS are in Russian, the messages of the statistics classes, the extractors, the components and the highlighting built on the core included (`ruts.constants.CORE_MESSAGES`). English remain the checks of the types of arguments in the code of the core (a string instead of a number and the like) and some functions of the core.
 
-!!! example "Example"
+=== "Code"
 
     ``` python
     from ruts import BasicStats, RutsError, SourceError
@@ -30,31 +27,41 @@ The classes are available from `ruts` and from `ruts.exceptions`. They are the c
         BasicStats("...")
     except SourceError as e:
         print(e)
-    # В источнике данных отсутствуют слова
 
     try:
         list(PoetryCorpus(data_dir="/nowhere").get_texts(limit=1))
     except RutsError as e:
         print(type(e).__name__)
-    # DatasetNotFoundError
+    ```
+
+=== "Result"
+
+    ```
+    В источнике данных отсутствуют слова
+    DatasetNotFoundError
     ```
 
 ## Logging
 
 The library prints nothing on its own: the anyTS core sends messages about downloading and extracting datasets (the `download()` methods) to the `anyts` logger at the `INFO` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
 
-!!! example "Example"
+=== "Code"
 
     ``` python
     import logging
 
-    from ruts.datasets import RussianLiterature
+    from ruts.datasets import SovChLit
 
     logging.basicConfig(level=logging.INFO, format="%(name)s: %(message)s")
-    RussianLiterature().download()
-    # anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip
-    # anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip
-    # anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip
+    SovChLit(data_dir="/tmp/ruts_data").download()
+    ```
+
+=== "Result"
+
+    ```
+    anyts.datasets: Downloading the file https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/sov_chrest_lit_v1.tar.xz
+    anyts.datasets: The file is downloaded: /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
+    anyts.datasets: Extracting the archive /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
     ```
 
 The `print_stats()` methods of the statistics classes and `print_kwic()` write to standard output by design; logging does not affect them.

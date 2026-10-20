@@ -1,3 +1,4 @@
+import unicodedata
 from math import isnan
 
 import pytest
@@ -316,7 +317,7 @@ connectors_text = (
 
 def test_connectors_dictionary():
     connectors = load_connectors()
-    assert len(connectors) == 317
+    assert len(connectors) == 316
     assert all(
         cls in CONNECTOR_CLASSES and kind in CONNECTOR_TYPES for cls, kind in connectors.values()
     )
@@ -381,19 +382,72 @@ def test_connectors_hyphens_and_dots(nlp):
     assert find_connectors(["т", "е"]) == [Connector(0, 0, 2, "т.е.", "reformulative", "primary")]
 
 
+@pytest.mark.parametrize(
+    ("text", "found", "inter"),
+    [
+        # Правила не читают слово через знак препинания
+        ("Ну, значит, придётся подождать.", ["значит"], 0),
+        ("Это, правда, было давно.", ["правда"], 0),
+        ("А это, главное, не важно.", ["а", "главное"], 1),
+        ("Значит бояться нечего.", [], 0),
+        # «Отчего» после глагола знания - через запятую
+        ("Он не знал, отчего так.", [], 0),
+        ("Он устал, отчего и заснул.", ["отчего", "и"], 0),
+        # Подчинительные союзы и предлоги в начале предложения, «ибо» - парцелляция
+        ("Он устал. Раз ты здесь, помоги.", ["раз"], 0),
+        ("Он устал. Хоть он и устал, он пошёл.", ["хоть", "и"], 0),
+        ("Он устал. Едва он вошёл, все встали.", ["едва"], 0),
+        ("Он устал. Несмотря на дождь, мы пошли.", ["несмотря на"], 0),
+        ("Он устал. Несмотря на это, мы пошли.", ["несмотря на это"], 1),
+        ("Он устал. Вопреки ожиданиям, он пришёл.", ["вопреки"], 0),
+        ("Он не пришёл. Ибо болен был.", ["ибо"], 1),
+        # «Раз» - не условный союз
+        ("Раз вечером сказал им отец.", [], 0),
+        ("Он садился отдыхать раз пять.", [], 0),
+        ("Десятки раз хвалил.", [], 0),
+        ("Выхожу раз другой поглядеть.", [], 0),
+        # Частые ложные коннекторы
+        ("Именно так он и сказал.", ["и"], 0),
+        ("Пусть он придёт.", [], 0),
+        ("Пускай и поздно, но пришёл.", ["пускай и", "но"], 0),
+        ("Луна вышла из-за облаков.", [], 0),
+        ("Он поступил иначе.", [], 0),
+        ("Иди скорее домой.", [], 0),
+        ("Моя правда.", [], 0),
+        ("После него остался сын.", [], 0),
+        ("После «Ревизора» он уехал.", [], 0),
+        ("Он ушёл после.", ["после"], 0),
+        ("Ради бога, простите.", [], 0),
+    ],
+)
+def test_connector_rules(nlp, text, found, inter):
+    for source in (text, nlp(text)):
+        cs = CohesionStats(source)
+        assert [connector.text for connector in cs.connector_spans] == found
+        assert cs.n_inter_connectors == inter
+
+
+@pytest.mark.parametrize(
+    "text", ["Это, правда, было давно.", "Что значит ещё раз?", "Он не знал, отчего так."]
+)
+def test_connector_rules_with_stress_marks(text):
+    """Знаки ударения и буквы из двух символов (NFD) не меняют знаки препинания между словами"""
+    plain = [connector.text for connector in CohesionStats(text).connector_spans]
+    for marked in (text.replace("ра", "ра\u0301"), unicodedata.normalize("NFD", text)):
+        assert [connector.text for connector in CohesionStats(marked).connector_spans] == plain
+
+
 def test_connectors_pos(nlp):
     text = "Раз он пришёл, значит, всё хорошо. В тот раз это значит много. Словом, пусть идёт."
     assert [connector.text for connector in CohesionStats(nlp(text)).connector_spans] == [
         "раз",
         "значит",
         "словом",
-        "пусть",
     ]
     assert [connector.text for connector in CohesionStats(text).connector_spans] == [
         "раз",
         "значит",
         "словом",
-        "пусть",
     ]
     assert connector_pos("раз") == "ADV"
     assert connector_pos("Отчего") == "CCONJ"

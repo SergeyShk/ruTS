@@ -36,16 +36,16 @@ from .verse_stats import VerseStats
 
 if TYPE_CHECKING:
     from .components import (
-        BasicStatsComponent,
-        CohesionStatsComponent,
-        DiversityStatsComponent,
-        LexicalStatsComponent,
-        MorphStatsComponent,
-        PhonStatsComponent,
-        ReadabilityStatsComponent,
-        StyleStatsComponent,
-        SyntaxStatsComponent,
-        VerseStatsComponent,
+        BasicStatsComponent as BasicStatsComponent,
+        CohesionStatsComponent as CohesionStatsComponent,
+        DiversityStatsComponent as DiversityStatsComponent,
+        LexicalStatsComponent as LexicalStatsComponent,
+        MorphStatsComponent as MorphStatsComponent,
+        PhonStatsComponent as PhonStatsComponent,
+        ReadabilityStatsComponent as ReadabilityStatsComponent,
+        StyleStatsComponent as StyleStatsComponent,
+        SyntaxStatsComponent as SyntaxStatsComponent,
+        VerseStatsComponent as VerseStatsComponent,
     )
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
@@ -63,42 +63,33 @@ __author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
 
 __all__ = [
     "BasicStats",
-    "BasicStatsComponent",
     "CharNgramsExtractor",
     "CohesionStats",
-    "CohesionStatsComponent",
     "DataFileError",
     "DatasetNotFoundError",
     "DiversityStats",
-    "DiversityStatsComponent",
     "DownloadError",
     "LexicalStats",
-    "LexicalStatsComponent",
     "MorphStats",
-    "MorphStatsComponent",
     "ParameterError",
     "PhonStats",
-    "PhonStatsComponent",
     "ReadabilityStats",
-    "ReadabilityStatsComponent",
     "RutsError",
     "SentsExtractor",
     "SourceError",
     "SourceTypeError",
     "StyleStats",
-    "StyleStatsComponent",
     "SyntaxStats",
-    "SyntaxStatsComponent",
     "UnknownStatError",
     "VerseStats",
-    "VerseStatsComponent",
     "WordsExtractor",
     "__version__",
 ]
 
 # Компоненты регистрируют фабрики spaCy и импортируют его: модуль грузится при первом обращении,
-# а при уже загруженном spaCy - сразу: точки входа он мог прочитать до установки ruTS
-if "spacy" in sys.modules:
+# а при уже загруженном spaCy - сразу: точки входа он мог прочитать до установки ruTS. Компонентов
+# нет в __all__, чтобы import * и help() не грузили spaCy; заглушка spaCy - не spaCy
+if sys.modules.get("spacy.language") is not None:
     from . import components as components
 
 make_lazy(

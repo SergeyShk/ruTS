@@ -88,6 +88,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'mean_clause_len': 5.666666666666667,
         'subordinate_clauses_per_sent': 0.5,
         'p_complex_sents': 0.5,
+        'infinitive_clauses_per_sent': 0.0,
         'modifiers_per_noun': 0.4,
         'genitive_chains_per_sent': 0.0,
         'max_genitive_chain_len': 0,
@@ -117,6 +118,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         n_clauses (int): Количество клауз
         n_subordinate_clauses (int): Количество придаточных клауз
         n_complex_sents (int): Количество предложений с придаточными
+        n_infinitive_clauses (int): Количество инфинитивных клауз при глаголе
         n_nouns (int): Количество существительных
         n_genitive_chains (int): Количество цепочек родительных падежей
         n_participle_clauses (int): Количество причастных оборотов
@@ -145,6 +147,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         mean_clause_len (float): Средняя длина клаузы в словах
         subordinate_clauses_per_sent (float): Придаточных клауз на предложение
         p_complex_sents (float): Доля предложений хотя бы с одной придаточной клаузой
+        infinitive_clauses_per_sent (float): Инфинитивных клауз при глаголе на предложение
         modifiers_per_noun (float): Среднее число модификаторов у существительного
         genitive_chains_per_sent (float): Цепочек родительных падежей на предложение
         max_genitive_chain_len (int): Максимальная длина цепочки родительных падежей
@@ -273,7 +276,8 @@ def is_clause_head(token: Token) -> bool:
         и инфинитивов при существительном (желание уйти): причастные
         и деепричастные обороты считаются отдельно; со связью xcomp - инфинитив,
         который не образует одну предикацию с глаголом (is_infinitive_clause:
-        хочет уйти, но не может уйти)
+        хочет уйти, но не может уйти); инфинитив-подлежащее (csubj) при модальном
+        слове одной предикации (нужно уйти, можно войти) клаузы не образует
         Вставная конструкция (parataxis) и однородное сказуемое (conj от вершины
         клаузы) образуют свою клаузу, только если это глагол или у него есть
         собственное подлежащее: модели spaCy вешают parataxis и на вводные слова
@@ -305,6 +309,8 @@ def _is_clause_head(token: Token, is_infinitive_periphrasis: Callable[[Token], b
                 return False
             if dep == "parataxis":
                 return is_predicate(token, join_hyphens=True)
+            if dep == "csubj" and is_infinitive(token):
+                return not is_infinitive_periphrasis(token)
             return not (token.dep_ == "acl" and is_infinitive(token))
         if not is_predicate(token, join_hyphens=True):
             return False
@@ -349,9 +355,10 @@ def is_infinitive_periphrasis(token: Token) -> bool:
     Проверка, образует ли инфинитив одну предикацию со своим глаголом
 
     Описание:
-        Глагол - модальный или фазовый из INFINITIVE_PERIPHRASES (может уйти,
-        должен прийти, начал читать, перестал курить) или побудительная форма
-        из HORTATIVE_WORDS без отрицания (давайте играть, но не давайте детям играть)
+        Глагол или слово - модальное или фазовое из INFINITIVE_PERIPHRASES (может уйти,
+        должен прийти, начал читать, взялся читать, нужно уйти, можно войти) или
+        побудительная форма из HORTATIVE_WORDS без отрицания (давайте играть, но
+        не давайте детям играть)
 
     Аргументы:
         token (Token): Токен
@@ -373,8 +380,10 @@ def is_subordinate_clause_head(token: Token) -> bool:
 
     Описание:
         is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head:
-        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами или xcomp,
-        а также однородное сказуемое придаточной клаузы
+        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами, а также
+        однородное сказуемое придаточной клаузы; инфинитивные клаузы при глаголе
+        (хочет уйти) - не придаточные, они считаются отдельно
+        (is_infinitive_clause_head)
 
     Аргументы:
         token (Token): Токен
@@ -383,6 +392,24 @@ def is_subordinate_clause_head(token: Token) -> bool:
         bool: Результат проверки
     """
     return anyts.syntax_stats.is_subordinate_clause_head(token, is_clause_head)
+
+
+def is_infinitive_clause_head(token: Token) -> bool:
+    """
+    Проверка, является ли токен вершиной инфинитивной клаузы при глаголе
+
+    Описание:
+        is_infinitive_clause_head ядра с русским правилом клаузы is_clause_head:
+        инфинитив со связью xcomp, который образует свою клаузу (хочет уйти,
+        попросил его уйти), а также однородный ему инфинитив
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return anyts.syntax_stats.is_infinitive_clause_head(token, is_clause_head)
 
 
 def is_genitive_modifier(token: Token) -> bool:
@@ -480,13 +507,13 @@ def is_light_verb(token: Token) -> bool:
     Проверка, является ли токен легким глаголом
 
     Описание:
-        Глагол с леммой из LIGHT_VERBS (осуществлять, производить, проводить,
-        обеспечивать, оказывать, принимать, иметь), который в расщепленном сказуемом
-        несет только грамматическое значение; возвратный пассив (проводиться,
-        приниматься, вестись) входит в список отдельными леммами, так как у части
-        возвратных форм другое значение (получиться, оказаться). Кроме леммы spaCy
-        проверяется лемма pymorphy3: лемматизатор модели оставляет часть форм
-        без изменений (ведётся)
+        Глагол с леммой из LIGHT_VERBS (например, осуществлять, производить, проводить,
+        вести, обеспечивать, оказывать, принимать, иметь), который в расщепленном
+        сказуемом несет только грамматическое значение; возвратный пассив (например,
+        проводиться, приниматься, вестись) входит в список отдельными леммами, так как
+        у части возвратных форм другое значение (получиться, оказаться). Лемма берется
+        из разбора pymorphy3 дважды: с частью речи токена (get_lemma) и как глагола
+        (lemmatize)
 
     Аргументы:
         token (Token): Токен
@@ -498,7 +525,7 @@ def is_light_verb(token: Token) -> bool:
 
 
 def _verb_lemmas(token: Token) -> set[str]:
-    """Леммы глагола по spaCy и pymorphy3"""
+    """Леммы глагола по pymorphy3: с частью речи токена и как глагола"""
     return {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
 
 

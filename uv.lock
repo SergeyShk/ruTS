@@ -52,7 +52,7 @@ wheels = [
 
 [[package]]
 name = "anyts"
-version = "0.3.4"
+version = "0.3.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "graphviz" },
@@ -64,9 +64,9 @@ dependencies = [
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "spacy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/56/96/4b33a6c40b077fc1ab86e02e97889519b4b40bf44ba69519591689e6075b/anyts-0.3.4.tar.gz", hash = "sha256:dc6f0dba27fd87e7ddd617abc8b734bf73d4cad41dda6606ba26994148ae9e0d", size = 150532, upload-time = "2026-10-19T15:25:21.051Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/ab/0080d6a333988dcc2e61c423d122bf52a3ee33a38efd3d64e9c5e3cf8b65/anyts-0.3.6.tar.gz", hash = "sha256:3ac72eedf1a351c07baf727f34e3efbfd9722771d6c381e1e30dd6477f80f7a9", size = 153053, upload-time = "2026-10-19T23:33:10.646Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/f9/515026aa72869cecf54194b9f302ee00f1ed94d3f5b9dc967009b3bafa15/anyts-0.3.4-py3-none-any.whl", hash = "sha256:36b64fe7479b1da44ea97c947f2b4a1cce86d538fec4a0361fd9a81308e4c4a5", size = 171510, upload-time = "2026-10-19T15:25:19.965Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/58/4fc77d58e0cc93d383eed7d7e27048adf1dbba6ae9022655e5accb1996c5/anyts-0.3.6-py3-none-any.whl", hash = "sha256:f720cafca4da9aae965159c508ee727eb3ad4439099a49875d6a153243df4968", size = 173983, upload-time = "2026-10-19T23:33:09.131Z" },
 ]
 
 [[package]]
@@ -3690,7 +3690,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.18.0.dev12"
+version = "0.18.0.dev13"
 source = { editable = "." }
 dependencies = [
     { name = "anyts" },
@@ -3749,7 +3749,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "anyts", specifier = ">=0.3.4,<0.4" },
+    { name = "anyts", specifier = ">=0.3.6,<0.4" },
     { name = "graphviz", specifier = ">=0.20.3" },
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=1.26" },
@@ -3759,7 +3759,7 @@ requires-dist = [
     { name = "pymorphy3-dicts-ru", specifier = ">=2.4.417150.4580142" },
     { name = "razdel", specifier = ">=0.5.0" },
     { name = "scipy", specifier = ">=1.11" },
-    { name = "spacy", specifier = ">=3.8.13" },
+    { name = "spacy", specifier = ">=3.8.15" },
 ]
 provides-extras = ["fast"]
 

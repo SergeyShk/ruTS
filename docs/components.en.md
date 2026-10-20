@@ -1,11 +1,43 @@
 # Components
 
+``` {.python .signature}
+StatsComponent(nlp, name)
+```
+
 --8<-- "components.md:StatsComponent"
 
 The components of ruTS are subclasses of the `StatsComponent` of the [anyTS](https://sergeyshk.github.io/anyTS/components/) core, one for every class of statistics.
 
 !!! note "Note"
     The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
+
+=== "Code"
+
+    ``` python
+    import ruts
+    import spacy
+
+    nlp = spacy.load("ru_core_news_sm")
+    nlp.add_pipe("ruts_basic", name="basic")
+    nlp("мама мыла раму")._.basic.c_letters
+    nlp("?!")._.basic is None
+    ```
+
+=== "Result"
+
+    ```
+    {4: 3}
+    True
+    ```
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `nlp` | `Language` | - | Pipeline the component is added to |
+| `name` | `str` | - | Name of the component in the pipeline and of the extension |
+
+spaCy sets both at `nlp.add_pipe(factory, name=...)`; the other parameters of a component are passed in the `config` dictionary of the same call.
 
 ## Names { #names }
 
@@ -21,533 +53,283 @@ Adding a component extends the tokenizer of its pipeline with the rules for the 
 
 ruTS removes stress marks from the words of a `Doc`, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after `accentuate` the `ru_core_news_sm` model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - `nlp(ruts.utils.strip_marks(text))`.
 
-## BasicStatsComponent
+## Components of the classes of statistics { #class-components }
 
-!!! info ""
-    **ruts.components.BasicStatsComponent**
+| Component | Factory | Class of statistics | Parameters |
+| :-------- | :------ | :------------------ | :--------- |
+| [`BasicStatsComponent`](#BasicStatsComponent) | `ruts_basic` | `BasicStats` | - |
+| [`MorphStatsComponent`](#MorphStatsComponent) | `ruts_morph` | `MorphStats` | - |
+| [`ReadabilityStatsComponent`](#ReadabilityStatsComponent) | `ruts_readability` | `ReadabilityStats` | `preset`, `basic` |
+| [`DiversityStatsComponent`](#DiversityStatsComponent) | `ruts_diversity` | `DiversityStats` | `window_len`, `mtld_threshold`, `mtld_min_len`, `hdd_sample_size`, `log_base` |
+| [`StyleStatsComponent`](#StyleStatsComponent) | `ruts_style` | `StyleStats` | `stopwords`, `top_n`, `nausea_stopwords`, `cliches` |
+| [`PhonStatsComponent`](#PhonStatsComponent) | `ruts_phon` | `PhonStats` | `window_len` |
+| [`SyntaxStatsComponent`](#SyntaxStatsComponent) | `ruts_syntax` | `SyntaxStats` | - |
+| [`CohesionStatsComponent`](#CohesionStatsComponent) | `ruts_cohesion` | `CohesionStats` | - |
+| [`LexicalStatsComponent`](#LexicalStatsComponent) | `ruts_lexical` | `LexicalStats` | `data_dir` |
+| [`VerseStatsComponent`](#VerseStatsComponent) | `ruts_verse` | `VerseStats` | `data_dir` |
 
-A module for the basic text statistics component.
+### Basic statistics { #BasicStatsComponent }
 
-Parameters:
+``` {.python .signature}
+BasicStatsComponent(nlp, name)
+```
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_basic"` | Component name in the pipeline |
+--8<-- "components.md:BasicStatsComponent"
 
-Usage example:
+### Morphological statistics { #MorphStatsComponent }
 
-!!! example "Example"
+``` {.python .signature}
+MorphStatsComponent(nlp, name)
+```
 
-    _Code_:
+`MorphStatsComponent` puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (`token.pos_`, `token.morph`), in a pipeline without a tagger - from pymorphy3.
 
-    ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_basic", name="basic", last=True)
-
-    # Access the computed metrics
-    doc = nlp("мама мыла раму")
-    doc._.basic.c_letters
-    ```
-
-    _Result_:
-
-    ``` bash
-    {4: 3}
-    ```
-
-## MorphStatsComponent
-
-!!! info ""
-    **ruts.components.MorphStatsComponent**
-
-A module for the morphological statistics component. Parts of speech and features are taken from the model annotation (`token.pos_`, `token.morph`), in a pipeline without a tagger - from pymorphy3.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_morph"` | Component name in the pipeline |
-
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_morph", name="morph", last=True)
-
-    # Access the computed metrics
-    doc = nlp("мама мыла раму")
-    doc._.morph.case
+    nlp.add_pipe("ruts_morph", name="morph")
+    nlp("мама мыла раму")._.morph.case
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     ('Nom', None, 'Acc')
     ```
 
-## ReadabilityStatsComponent
+### Readability metrics { #ReadabilityStatsComponent }
 
-!!! info ""
-    **ruts.components.ReadabilityStatsComponent**
+``` {.python .signature}
+ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
+```
 
-A module for the readability metrics component.
+--8<-- "components.md:ReadabilityStatsComponent"
 
-Parameters:
+The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`. In ruTS the class of statistics and its `basic_stats_class` are set, so the errors of `stats_class` and `SourceTypeError` do not occur; the message of `SourceError` names the component `ruts_basic` (`basic_factory`) to add before it.
+
+=== "Code"
+
+    ``` python
+    nlp.add_pipe("ruts_readability", name="readability")
+    config = {"preset": "fiction", "basic": "basic"}
+    nlp.add_pipe("ruts_readability", name="readability_fiction", config=config)
+    doc = nlp("Кот сидел на окне и смотрел на птиц, которые летали над крышами домов.")
+    doc._.readability.flesch_kincaid_grade
+    doc._.readability_fiction.flesch_kincaid_grade
+    ```
+
+=== "Result"
+
+    ```
+    -0.1506153846153886
+    6.41769230769231
+    ```
+
+### Lexical diversity metrics { #DiversityStatsComponent }
+
+``` {.python .signature}
+DiversityStatsComponent(nlp, name, window_len=50, mtld_threshold=0.72, mtld_min_len=10, hdd_sample_size=42, log_base=10)
+```
+
+--8<-- "components.md:DiversityStatsComponent"
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_readability"` | Component name in the pipeline |
-| `preset` | str | `None` | [Coefficient preset](stats/readability_stats.md#presets) (`plainrussian`, `fiction`, `academic`); `None` - the preset of the class, `plainrussian` |
-| `basic` | str | `None` | Extension of a basic statistics component to reuse instead of counting again |
+| :-------- | :--- | :------ | :---------- |
+| `window_len` | `int` | `50` | Window size for MATTR and segment size for MSTTR |
+| `mtld_threshold` | `float` | `0.72` | TTR threshold for MTLD, MA-MTLD and MTLD-W |
+| `mtld_min_len` | `int` | `10` | Minimum factor length for MTLD, MA-MTLD and MTLD-W |
+| `hdd_sample_size` | `int` | `42` | Sample size for HD-D |
+| `log_base` | `float` | `10` | Logarithm base for the Summer, Maas and Dugast metrics |
 
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_readability", name="readability", last=True)
-
-    # Access the computed metrics
-    doc = nlp("мама мыла раму")
-    doc._.readability.flesch_reading_easy
+    config = {"window_len": 100, "log_base": 2.718281828459045}
+    nlp.add_pipe("ruts_diversity", name="diversity", config=config)
+    nlp("мама мыла раму")._.diversity.rttr
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
-    82.735
     ```
-
-The coefficient preset is passed via `config`:
-
-!!! example "Example"
-
-    ``` python
-    nlp.add_pipe(
-        "ruts_readability", name="readability_fiction", config={"preset": "fiction"}, last=True
-    )
-    ```
-
-## DiversityStatsComponent
-
-!!! info ""
-    **ruts.components.DiversityStatsComponent**
-
-A module for the lexical diversity metrics component.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_diversity"` | Component name in the pipeline |
-| `window_len` | int | `50` | Window size for MATTR and segment size for MSTTR |
-| `mtld_threshold` | float | `0.72` | TTR threshold for MTLD, MA-MTLD and MTLD-W |
-| `mtld_min_len` | int | `10` | Minimum factor length for MTLD, MA-MTLD and MTLD-W |
-| `hdd_sample_size` | int | `42` | Sample size for HD-D |
-| `log_base` | float | `10` | Logarithm base for the Summer, Maas and Dugast metrics |
-
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
-
-    ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_diversity", name="diversity", last=True)
-
-    # Access the computed metrics
-    doc = nlp("мама мыла раму")
-    doc._.diversity.rttr
-    ```
-
-    _Result_:
-
-    ``` bash
     1.7320508075688774
     ```
 
-Windows, thresholds and the logarithm base are passed via `config`:
+### SEO style metrics { #StyleStatsComponent }
 
-!!! example "Example"
+``` {.python .signature}
+StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, cliches=None)
+```
 
-    ``` python
-    nlp.add_pipe(
-        "ruts_diversity",
-        name="diversity_ln",
-        config={"window_len": 100, "log_base": 2.718281828459045},
-        last=True,
-    )
-    ```
+--8<-- "components.md:StyleStatsComponent"
 
-## StyleStatsComponent
+Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` is a constant of `anyts.constants`.
 
-!!! info ""
-    **ruts.components.StyleStatsComponent**
-
-A module for the SEO style metrics component.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_style"` | Component name in the pipeline |
-| `stopwords` | list[str] | `None` | List of water words for water content; if not given, pymorphy3 tags are used |
-| `top_n` | int | `10` | Number of the most frequent words for academic nausea and naturalness by Zipf's law |
-| `nausea_stopwords` | list[str] | `None` | Stop word list for academic nausea; if not given, pymorphy3 tags are used |
-| `cliches` | list[str] | `None` | List of cliches; if not given, `OFFICIALESE_CLICHES` is used |
-
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_style", name="style", last=True)
-
-    # Access the computed metrics
-    doc = nlp("мама мыла раму")
-    doc._.style.water
-    ```
-
-    _Result_:
-
-    ``` bash
-    0.0
-    ```
-
-The stop word list, the number of the most frequent words and your own list of cliches are passed via `config`:
-
-!!! example "Example"
-
-    ``` python
-    nlp.add_pipe(
-        "ruts_style", name="style_short", config={"stopwords": ["и", "в", "не"], "top_n": 5}, last=True
-    )
+    nlp.add_pipe("ruts_style", name="style", config={"stopwords": ["и", "в", "не"], "top_n": 5})
+    nlp("мама мыла раму")._.style.water
     nlp.add_pipe("ruts_style", name="style_cliches", config={"cliches": ["в целях", "в рамках"]})
+    nlp("В целях экономии в рамках проекта мы закрыли склад.")._.style_cliches.cliches
     ```
 
-## PhonStatsComponent
+=== "Result"
 
-!!! info ""
-    **ruts.components.PhonStatsComponent**
+    ```
+    0.0
+    22.22222222222222
+    ```
 
-A module for the phonostatistics component.
+### Phonostatistics { #PhonStatsComponent }
 
-Parameters:
+``` {.python .signature}
+PhonStatsComponent(nlp, name, window_len=3)
+```
 
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_phon"` | Component name in the pipeline |
-| `window_len` | int | `3` | Window size in words for alliteration and assonance |
+--8<-- "components.md:PhonStatsComponent"
 
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_phon", name="phon", last=True)
-
-    # Access the computed statistics
-    doc = nlp("мама мыла раму")
-    doc._.phon.p_open_syllables
+    nlp.add_pipe("ruts_phon", name="phon", config={"window_len": 5})
+    nlp("мама мыла раму")._.phon.p_open_syllables
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     1.0
     ```
 
-The window size is passed via `config`:
+### Syntactic statistics { #SyntaxStatsComponent }
 
-!!! example "Example"
+``` {.python .signature}
+SyntaxStatsComponent(nlp, name)
+```
 
-    ``` python
-    nlp.add_pipe("ruts_phon", name="phon_windowed", config={"window_len": 5}, last=True)
-    ```
+--8<-- "components.md:SyntaxStatsComponent"
 
-## SyntaxStatsComponent
+The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser.
 
-!!! info ""
-    **ruts.components.SyntaxStatsComponent**
+Raises:
 
-A module for the syntactic statistics component. The component works over the dependency tree, so the pipeline must have a parser: the `ru_core_news_sm`, `ru_core_news_md` or `ru_core_news_lg` models; in a pipeline without a parser the component raises `SourceError`.
+- `SourceError` - a document without a dependency parse, in a pipeline without a parser.
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_syntax"` | Component name in the pipeline |
-
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_syntax", name="syntax", last=True)
-
-    # Access the computed statistics
-    doc = nlp("Дом, построенный рабочими в прошлом году, был продан")
-    doc._.syntax.tree_depth
+    nlp.add_pipe("ruts_syntax", name="syntax")
+    nlp("Дом, построенный рабочими в прошлом году, был продан")._.syntax.tree_depth
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     4.0
     ```
 
-## CohesionStatsComponent
+### Cohesion statistics { #CohesionStatsComponent }
 
-!!! info ""
-    **ruts.components.CohesionStatsComponent**
+``` {.python .signature}
+CohesionStatsComponent(nlp, name)
+```
 
-A module for the cohesion statistics component. The component only needs sentence boundaries (a model or `sentencizer`); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis.
 
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_cohesion"` | Component name in the pipeline |
-
-Usage example:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
-
-    # Access the computed statistics
+    nlp.add_pipe("ruts_cohesion", name="cohesion")
     doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул.")
     doc._.cohesion.noun_overlap_adjacent
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     0.5
     ```
 
-## LexicalStatsComponent
+### Lexical sophistication statistics { #LexicalStatsComponent }
 
-!!! info ""
-    **ruts.components.LexicalStatsComponent**
+``` {.python .signature}
+LexicalStatsComponent(nlp, name, data_dir=None)
+```
 
-A module for the lexical sophistication statistics component. The frequency dictionary metrics require a downloaded [`FreqDict`](datasets/freq2011.md); the bands and lexical density are computed without it.
-
-Parameters:
+`LexicalStatsComponent` puts the lexical sophistication statistics into the extension. The frequency dictionary metrics require a downloaded [`FreqDict`](datasets/freq2011.md); the bands and lexical density are computed without it.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_lexical"` | Component name in the pipeline |
-| `data_dir` | str | `None` | Path to the frequency dictionary directory; if not given, the default directory is used |
+| :-------- | :--- | :------ | :---------- |
+| `data_dir` | `str` | `None` | Path to the frequency dictionary directory; if not given, the default directory is used |
 
-Usage example:
+Raises:
 
-!!! example "Example"
+- `DatasetNotFoundError` - the frequency dictionary metrics and `get_stats()` when `FreqDict` is not downloaded.
 
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_lexical", name="lexical", last=True)
-
-    # Access the computed statistics
-    doc = nlp("Кот сидел на окне и смотрел на птиц")
-    doc._.lexical.p_top1000
+    nlp.add_pipe("ruts_lexical", name="lexical")
+    nlp("Кот сидел на окне и смотрел на птиц")._.lexical.p_top1000
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     0.75
     ```
 
-The dictionary directory is passed via `config`:
+### Verse statistics { #VerseStatsComponent }
 
-!!! example "Example"
+``` {.python .signature}
+VerseStatsComponent(nlp, name, data_dir=None)
+```
 
-    ``` python
-    nlp.add_pipe(
-        "ruts_lexical", name="lexical_dicts", config={"data_dir": "/path/to/dicts"}, last=True
-    )
-    ```
-
-## VerseStatsComponent
-
-!!! info ""
-    **ruts.components.VerseStatsComponent**
-
-A module for the verse statistics component. It requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary; the component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like `VerseStats`, so `nlp.pipe` over a corpus does not stop on it.
-
-Parameters:
+`VerseStatsComponent` puts the verse statistics into the extension; it requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary. The component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like `VerseStats`, so `nlp.pipe` over a corpus does not stop on it.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `nlp` | Language | `-` | Language object |
-| `name` | str | `"ruts_verse"` | Component name in the pipeline |
-| `data_dir` | str | `None` | Path to the stress dictionary directory; if not given, the default directory is used |
+| :-------- | :--- | :------ | :---------- |
+| `data_dir` | `str` | `None` | Path to the stress dictionary directory; if not given, the default directory is used |
 
-Usage example:
+Raises:
 
-!!! example "Example"
+- `DatasetNotFoundError` - the stress dictionary is not downloaded; the first document with letters raises it.
 
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
-    nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component
-    nlp.add_pipe("ruts_verse", name="verse", last=True)
-
-    # Access the computed statistics
-    doc = nlp(
-        "Буря мглою небо кроет,\nВихри снежные крутя;\nТо, как зверь, она завоет,\nТо заплачет, как дитя"
+    nlp.add_pipe("ruts_verse", name="verse")
+    poem = (
+        "Буря мглою небо кроет,\nВихри снежные крутя;\n"
+        "То, как зверь, она завоет,\nТо заплачет, как дитя"
     )
+    doc = nlp(poem)
     doc._.verse.meter, doc._.verse.n_feet
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     ('хорей', 4)
     ```
 
-The dictionary directory is passed via `config`:
-
-!!! example "Example"
-
-    ``` python
-    nlp.add_pipe("ruts_verse", name="verse_dicts", config={"data_dir": "/path/to/dicts"}, last=True)
-    ```
-
-## Blank lines { #blank_lines }
-
-!!! info ""
-    **ruts_blank_lines** (`anyts.components.start_sents_after_blank_lines`)
+## Sentences after blank lines { #blank_lines }
 
 --8<-- "components.md:start_sents_after_blank_lines"
 
 In ruTS the component is registered as `ruts_blank_lines`. Without it the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence, and the statistics of a `Doc` differ from those of the same string.
 
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
-    import ruts
-    import spacy
-
-    # Load the spaCy model
     nlp = spacy.load("ru_core_news_sm")
-
-    # Add the component before the parser
     nlp.add_pipe("ruts_blank_lines", before="parser")
-
-    # Sentences of the document
-    doc = nlp("Что нового\n\nБыстрый импорт. Меньше ошибок")
-    [sent.text.strip() for sent in doc.sents]
+    [sent.text.strip() for sent in nlp("Что нового\n\nБыстрый импорт. Меньше ошибок").sents]
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     ['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
     ```

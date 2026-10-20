@@ -7,11 +7,11 @@ The library can be installed with `pip` or by cloning the project repository wit
 ruTS relies on the following third-party libraries:
 
 *   `python` - 3.11 or newer
-*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.2.9 or newer within 0.2, the language-independent core ruTS is built on
+*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.3.6 or newer within 0.3, the language-independent core ruTS is built on
 *   `pymorphy3` with the Russian dictionaries `pymorphy3-dicts-ru`
 *   `razdel`
 *   `scipy`
-*   `spaCy` - 3.7.0 or newer
+*   `spaCy` - 3.8.15 or newer
 *   `numpy`
 *   `pandas`
 *   `matplotlib`

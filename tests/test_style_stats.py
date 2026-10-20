@@ -328,22 +328,22 @@ def test_style_norms_bounds(stat, value, expected):
 
 
 def doc_norms(page):
-    """Полосы норм из таблицы страницы: метрика - нижние границы по убыванию и подписи"""
+    """Полосы норм из карточек страницы: метрика - нижние границы по убыванию и подписи"""
     text = (Path(__file__).parent.parent / "docs" / "stats" / page).read_text(encoding="utf-8")
-    section = text.split("{ #norms }", 1)[1].split("\n## ", 1)[0]
-    rows = re.findall(
-        r"^\| `(\w+)` \| `([\[(])([\d.]+)[;,] ([\d.]+|∞)([\])])` \| ([^|]+?) \|$",
-        section,
-        re.MULTILINE,
-    )
     norms, lower = defaultdict(list), {}
-    for stat, opening, low, high, closing, label in rows:
-        if stat in lower:
-            # полосы смыкаются, и граница входит ровно в одну из них
-            assert high == lower[stat][0]
-            assert (lower[stat][1], closing) in {("(", "]"), ("[", ")")}
-        lower[stat] = (low, opening)
-        norms[stat].append((float(low) if opening == "[" else nextafter(float(low), inf), label))
+    for stat, card in re.findall(r"\{ #(\w+) \}\n(.*?)^</div>", text, re.MULTILINE | re.DOTALL):
+        rows = re.findall(
+            r"^\| `([\[(])([\d.]+)[;,] ([\d.]+|∞)([\])])` \| ([^|]+?) \|$", card, re.MULTILINE
+        )
+        for opening, low, high, closing, label in reversed(rows):
+            if stat in lower:
+                # полосы смыкаются, и граница входит ровно в одну из них
+                assert high == lower[stat][0]
+                assert (lower[stat][1], closing) in {("(", "]"), ("[", ")")}
+            lower[stat] = (low, opening)
+            norms[stat].append(
+                (float(low) if opening == "[" else nextafter(float(low), inf), label)
+            )
     return {stat: tuple(bands) for stat, bands in norms.items()}
 
 

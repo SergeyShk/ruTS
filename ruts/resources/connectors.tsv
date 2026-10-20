@@ -103,8 +103,6 @@ connector	class	type
 в свою очередь	adversative	secondary
 хотя	concessive	primary
 хоть	concessive	primary
-пусть	concessive	primary
-пускай	concessive	primary
 несмотря на	concessive	primary
 невзирая на	concessive	primary
 вопреки	concessive	primary
@@ -115,6 +113,7 @@ connector	class	type
 правда	concessive	primary
 хотя бы	concessive	primary
 пусть даже	concessive	primary
+пускай даже	concessive	primary
 даже если	concessive	primary
 даже когда	concessive	primary
 как бы ни	concessive	primary
@@ -122,6 +121,7 @@ connector	class	type
 сколько ни	concessive	primary
 хотя и	concessive	primary
 пусть и	concessive	primary
+пускай и	concessive	primary
 и всё же	concessive	primary
 и всё-таки	concessive	primary
 и тем не менее	concessive	primary
@@ -273,7 +273,6 @@ connector	class	type
 то есть	reformulative	primary
 т.е.	reformulative	primary
 а именно	reformulative	primary
-именно	reformulative	primary
 вернее	reformulative	primary
 точнее	reformulative	primary
 скорее	reformulative	primary

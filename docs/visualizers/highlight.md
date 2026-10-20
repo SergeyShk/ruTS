@@ -1,19 +1,26 @@
 # Подсветка текста
 
-!!! info ""
-    **ruts.visualizers.highlight()**, **ruts.visualizers.HighlightedText**, **ruts.visualizers.Highlight**
+``` {.python .signature}
+HighlightedText(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, stopwords=None, cliches=None, alliteration_threshold=0.001)
+```
 
-## Описание
-
-<!-- core: visualizers/highlight.md:HighlightedText a3f4037 -->
+<!-- core: visualizers/highlight.md:HighlightedText f056ba1 -->
 Подсветка текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. Источник данных - текст или объект класса `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Результат отображается в Jupyter как HTML со стилями и легендой; `to_html` возвращает разметку, а `highlights` хранит фрагменты для собственной отрисовки. Фрагменты разных слоев могут пересекаться.
+
+Исключения:
+
+- `SourceTypeError` - источник, который не строка и не `Doc`;
+- `SourceError` - источник без слов;
+- `ParameterError` - слои, которые не имя и не список имен, неизвестный слой или слой, которому нужна разметка, отсутствующая у источника.
+
+``` {.python .signature}
+highlight(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, stopwords=None, cliches=None, alliteration_threshold=0.001)
+```
 
 Функция `highlight` возвращает объект `HighlightedText` ruTS со слоями в стиле сервисов [Главред](https://glvrd.ru/) и [Тургенев](https://turgenev.ashmanov.com/): длинные предложения, сложные и редкие слова, пассив, обороты, цепочки родительных падежей, расщепленные сказуемые, отглагольные существительные, производные предлоги, штампы, стоп-слова, вводные слова, коннекторы, аллитерации. Одна картинка объясняет, из чего складываются значения метрик, лучше таблицы чисел.
 
-Слои подсветки:
-
 | Группа | Слой | Что отмечает | Статистика |
-| :----- | :--: | :----------: | :--------: |
+| :----- | :--- | :----------- | :--------- |
 | Читаемость | `long_sents` | Предложения с числом слов не меньше `long_sent_word_factor` | [BasicStats](../stats/basic_stats.md), [ReadabilityStats](../stats/readability_stats.md) |
 | | `complex_words` | Слова с числом слогов не меньше `complex_syl_factor` | [BasicStats](../stats/basic_stats.md), [ReadabilityStats](../stats/readability_stats.md) |
 | | `rare_words` | Слова с леммой вне вшитого списка топ-10000; числа, латиница, сокращения и стоп-слова не подсвечиваются | [LexicalStats](../stats/lexical_stats.md) |
@@ -32,79 +39,18 @@
 
 Группы заданы в `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. Слои группы «Синтаксис» считаются по дереву зависимостей и доступны только для объекта `Doc` с разбором зависимостей (модели `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`). По умолчанию включаются слои `HIGHLIGHT_DEFAULT_LAYERS` - длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы - из доступных источнику; `layers="all"` включает все доступные. Пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов, коннектор может быть вводным словом), поэтому выбирайте нужные.
 
-!!! note "Примечание"
+!!! note "Аллитерация"
     Аллитерация ищется внутри предложения как цепочка из двух и более соседних слов, в основе каждого из которых есть одна и та же согласная буква. Основа - общая начальная часть словоформы и ее леммы по pymorphy3 (*крупных* → *крупны*, *руках* → *рука*): окончания согласуются с соседними словами и повторяют согласные по грамматике, а не по звучанию (*этих крупных*, *своим целям и нуждам*). Вероятность цепочки при независимом распределении букв - произведение по словам вероятностей встретить согласную среди букв основы, $1 - (1 - f)^n$, где $f$ - [частота согласной](https://ru.wikipedia.org/wiki/Частотность) в русских текстах, $n$ - число букв основы; цепочка подсвечивается, если вероятность ниже порога `alliteration_threshold`. На каждой позиции проверяется около двадцати согласных, поэтому порог строгий: на прозе при 0.001 подсвечено около 5% слов, при 0.01 - около 20%, в основном случайные совпадения частых букв. Повтор редкой согласной (*слышно, бесшумно шуршат камыши*) заметен в двух-трех словах, повтор частой в длинных словах ожидаем и не подсвечивается. Слова короче трех букв, стоп-слова и слова без гласных цепочку не прерывают и не продолжают, буква *й* не учитывается, так как в именительном падеже входит в лемму прилагательного. Индекс аллитерации [PhonStats](../stats/phon_stats.md) измеряет сгруппированность повторов во всем тексте, подсветка показывает их места.
-
-## Языковые крючки
 
 Класс расширяет `HighlightedText` ядра [anyTS](https://sergeyshk.github.io/anyTS/visualizers/highlight/) крючками русского языка из `ruts.constants`: слои с их названиями в легенде - `HIGHLIGHT_LAYERS_DESC`, слои по умолчанию - `HIGHLIGHT_DEFAULT_LAYERS`, разметка `Doc`, которая нужна слою, - `HIGHLIGHT_LAYER_ANNOTATIONS` (синтаксическим слоям нужен только разбор зависимостей, так как леммы берутся из pymorphy3), стили слоев - `HIGHLIGHT_LAYER_STYLES`; префикс классов CSS - `ruts`. Слова строки выделяются так же, как в [`WordsExtractor`](../extractors/words.md), предложения - razdel; `Doc` без границ предложений (`spacy.blank`, пайплайн без `parser` и `senter`) тоже делится на предложения razdel, поэтому для него доступен слой `long_sents`, а части дефисного слова `Doc` составляют одно слово. Фрагменты слоев, кроме пассива, оборотов и цепочек родительных, находят [искатели ядра](https://sergeyshk.github.io/anyTS/visualizers/highlight/#finders) с русскими крючками: слоги `count_syllables`, сравнение без буквы ё (`normalize_yo`), сопоставитель коннекторов `RussianConnectorMatcher` с частями речи `connector_pos`, основы `get_stem` и частоты согласных `RU_LETTER_FREQUENCIES` без й для аллитерации.
 
-## Параметры
-
-<!-- core: visualizers/highlight.md:HighlightedText-parameters 94d89c2 -->
-| Параметр | Тип | По умолчанию | Описание |
-| :------: | :-: | :----------: | :------: |
-| `source` | str/Doc | `-` | Источник данных (строка или объект Doc) |
-| `layers` | list[str]/str | `None` | Слои подсветки; если не заданы, включаются слои по умолчанию, доступные источнику; `"all"` - все доступные |
-
-Источник, который не строка и не `Doc`, дает `SourceTypeError`, источник без слов - `SourceError`; слои, которые не имя и не список имен, неизвестный слой или слой, которому нужна разметка, отсутствующая у источника, дают `ParameterError`.
-
-Параметры слоев ruTS:
-
-| Параметр | Тип | По умолчанию | Описание |
-| :------: | :-: | :----------: | :------: |
-| `long_sent_word_factor` | int | `20` | Минимальное количество слов в длинном предложении |
-| `complex_syl_factor` | int | `4` | Минимальное количество слогов в сложном слове |
-| `stopwords` | list[str]/set[str] | `None` | Список или множество слов «воды»; если не задан, они определяются по части речи с помощью pymorphy3 |
-| `cliches` | list[str]/set[str] | `None` | Список или множество штампов; если не задан, используется `OFFICIALESE_CLICHES` |
-| `alliteration_threshold` | float | `0.001` | Порог вероятности повтора согласной при независимом распределении букв, ниже которого повтор считается аллитерацией |
-
-Порог, который не целое число не меньше единицы, или вероятность вне интервала (0, 1] дают `ParameterError`, стоп-слова или штампы, которые не строки, - `SourceTypeError`.
-
-## Атрибуты
-
-<!-- core: visualizers/highlight.md:HighlightedText-attributes d9379e7 -->
-| Атрибут | Тип | Описание |
-| :-----: | :-: | :------: |
-| `text` | str | Текст источника данных |
-| `layers` | tuple[str] | Включенные слои в порядке отрисовки |
-| `highlights` | tuple[Highlight] | Подсвеченные фрагменты, упорядоченные по началу, затем по убыванию конца |
-| `counts` | dict[str, int] | Количество фрагментов каждого слоя |
-
-<!-- core: visualizers/highlight.md:Highlight 58d8a45 -->
-Фрагмент `Highlight` - неизменяемый объект с полями `start` и `end` (позиции в тексте), `layer` (слой) и `note` (пояснение для всплывающей подсказки).
-
-Пояснение фрагмента - число слов в предложении, слогов в слове, длина цепочки или согласная аллитерации.
-
-## Методы
-
-### to_html
-
-<!-- core: visualizers/highlight.md:HighlightedText-to_html 1692b86 -->
-Возвращает HTML-разметку подсвеченного текста: блок `div` с классом `<префикс>-highlight`, в котором легенда со счетчиками и текст, где подсвеченный отрезок - `span` с классами `<префикс>-hl` и `<префикс>-hl-<слой>` с пояснениями в его `title`; `<префикс>` - `css_prefix`. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (`\n`, `\r\n`, `\r`) становятся символьными ссылками, по одной на перенос, поэтому разметку можно вставлять в Markdown.
-
-| Параметр | Тип | По умолчанию | Описание |
-| :------: | :-: | :----------: | :------: |
-| `legend` | bool | `True` | Добавлять легенду со счетчиками фрагментов |
-| `css` | bool | `True` | Добавлять стили слоев |
-
-### css
-
-<!-- core: visualizers/highlight.md:HighlightedText-css 42034ba -->
-Метод класса `css()` возвращает стили, которые добавляет `to_html`: стили контейнера, легенды и текста под классами `css_prefix`, объявления `layer_styles` для каждого слоя и темный цвет текста на слоях с фоном.
-
-## Пример использования
-
-!!! example "Пример"
-
-    _Код_:
+=== "Код"
 
     ``` python
-    # Загрузка библиотек
     import spacy
+
     from ruts.visualizers import highlight
 
-    # Подготовка данных
     nlp = spacy.load("ru_core_news_sm")
     text = (
         "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
@@ -115,30 +61,41 @@
         "Споры стихли, в кулуарах шумно шептались и шушукались, а решение было отложено "
         "до следующего заседания."
     )
-
-    # Подсветка текста слоями по умолчанию
     ht = highlight(nlp(text))
     ht.counts
-    # {'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2,
-    #  'split_predicates': 0, 'cliches': 1}
-
     ht.highlights[:2]
-    # (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))
-
-    # Все слои
     highlight(nlp(text), layers="all").counts
-    # {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,
-    #  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,
-    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,
-    #  'connectors': 4, 'alliteration': 1}
-
-    # Отображение в Jupyter или сохранение разметки
-    ht
-    html = ht.to_html()
     ```
 
-_Результат_ (наведите курсор на фрагмент, чтобы увидеть пояснение):
+=== "Результат"
+
+    ```
+    {'long_sents': 1,
+     'complex_words': 26,
+     'passive': 4,
+     'genitive_chains': 2,
+     'split_predicates': 0,
+     'cliches': 1}
+    (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))
+    {'long_sents': 1,
+     'complex_words': 26,
+     'rare_words': 3,
+     'passive': 4,
+     'participle_clauses': 2,
+     'converb_clauses': 1,
+     'genitive_chains': 2,
+     'split_predicates': 0,
+     'verbal_nouns': 10,
+     'compound_prepositions': 0,
+     'cliches': 1,
+     'stopwords': 7,
+     'parentheticals': 0,
+     'connectors': 4,
+     'alliteration': 1}
+    ```
+
+В Jupyter объект `ht` отображается так (наведите курсор на фрагмент, чтобы увидеть пояснение):
 
 <div class="ruts-highlight"><style>.ruts-highlight { line-height: 1.7; }
 .ruts-highlight-legend { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin-bottom: 0.8em; font-size: 0.9em; }
@@ -165,17 +122,91 @@ _Результат_ (наведите курсор на фрагмент, чт�
 
 Подсветка по строке без модели spaCy включает все слои, кроме синтаксических: по умолчанию длинные предложения, сложные слова и штампы.
 
-!!! example "Пример"
+=== "Код"
 
     ``` python
-    from ruts.visualizers import highlight
-
     text = "Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."
-    ht = highlight(text, layers=["complex_words", "alliteration"])
-    ht.highlights
-    # (Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),
-    #  Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),
-    #  Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))
+    highlight(text, layers=["complex_words", "alliteration"]).highlights
+    ```
+
+=== "Результат"
+
+    ```
+    (Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),
+     Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),
+     Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))
+    ```
+
+## Параметры
+
+<!-- core: visualizers/highlight.md:HighlightedText-parameters da96774 -->
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `source` | `str` / `Doc` | - | Источник данных (строка или объект Doc) |
+| `layers` | `list[str]` / `str` | `None` | Слои подсветки; если не заданы, включаются слои по умолчанию, доступные источнику; `"all"` - все доступные |
+
+Параметры слоев ruTS:
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `long_sent_word_factor` | `int` | `20` | Минимальное количество слов в длинном предложении |
+| `complex_syl_factor` | `int` | `4` | Минимальное количество слогов в сложном слове |
+| `stopwords` | `list[str]` / `set[str]` | `None` | Список или множество слов «воды»; если не задан, они определяются по части речи с помощью pymorphy3 |
+| `cliches` | `list[str]` / `set[str]` | `None` | Список или множество штампов; если не задан, используется `OFFICIALESE_CLICHES` |
+| `alliteration_threshold` | `float` | `0.001` | Порог вероятности повтора согласной при независимом распределении букв, ниже которого повтор считается аллитерацией |
+
+Порог, который не целое число не меньше единицы, или вероятность вне интервала (0, 1] дают `ParameterError`, стоп-слова или штампы, которые не строки, - `SourceTypeError`.
+
+## Атрибуты
+
+<!-- core: visualizers/highlight.md:HighlightedText-attributes 78a8c2b -->
+| Атрибут | Тип | Описание |
+| :------ | :-- | :------- |
+| `text` | `str` | Текст источника данных |
+| `layers` | `tuple[str]` | Включенные слои в порядке отрисовки |
+| `highlights` | `tuple[Highlight]` | Подсвеченные фрагменты, упорядоченные по началу, затем по убыванию конца |
+| `counts` | `dict[str, int]` | Количество фрагментов каждого слоя |
+
+<!-- core: visualizers/highlight.md:Highlight cfcf714 -->
+``` {.python .signature}
+Highlight(start, end, layer, note='')
+```
+
+Фрагмент подсветки: неизменяемый объект с параметрами в роли полей.
+
+| Поле | Тип | По умолчанию | Описание |
+| :--- | :-- | :----------- | :------- |
+| `start` | `int` | - | Позиция первого символа фрагмента в тексте |
+| `end` | `int` | - | Позиция после последнего символа фрагмента |
+| `layer` | `str` | - | Слой подсветки |
+| `note` | `str` | `''` | Пояснение фрагмента для всплывающей подсказки |
+
+Пояснение фрагмента ruTS - число слов в предложении, слогов в слове, длина цепочки или согласная аллитерации.
+
+## Методы
+
+<!-- core: visualizers/highlight.md:HighlightedText-to_html 1693b8b -->
+`to_html(legend=True, css=True)` возвращает HTML-разметку подсвеченного текста: блок `div` с классом `<префикс>-highlight`, в котором легенда со счетчиками и текст, где подсвеченный отрезок - `span` с классами `<префикс>-hl` и `<префикс>-hl-<слой>` с пояснениями в его `title`; `<префикс>` - `css_prefix`. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (`\n`, `\r\n`, `\r`) становятся символьными ссылками, по одной на перенос, поэтому разметку можно вставлять в Markdown.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `legend` | `bool` | `True` | Добавлять легенду со счетчиками фрагментов |
+| `css` | `bool` | `True` | Добавлять стили слоев |
+
+<!-- core: visualizers/highlight.md:HighlightedText-css 42034ba -->
+Метод класса `css()` возвращает стили, которые добавляет `to_html`: стили контейнера, легенды и текста под классами `css_prefix`, объявления `layer_styles` для каждого слоя и темный цвет текста на слоях с фоном.
+
+=== "Код"
+
+    ``` python
+    alliteration = highlight("Чуть слышно, бесшумно шуршат камыши.", layers="alliteration")
+    alliteration.to_html(legend=False, css=False)
+    ```
+
+=== "Результат"
+
+    ```
+    '<div class="ruts-highlight"><div class="ruts-highlight-text">Чуть <span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">слышно, бесшумно шуршат камыши</span>.</div></div>'
     ```

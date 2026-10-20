@@ -10,21 +10,145 @@
 
 ## Возможности
 
-*   создавать токенизаторы [слов](extractors/words.md), [предложений](extractors/sentences.md) и [символьных N-грамм](extractors/char_ngrams.md)
-*   считать [базовые текстовые статистики](stats/basic_stats.md) (количество слов, предложений, знаков препинания, слогов и др.)
-*   считать [метрики удобочитаемости](stats/readability_stats.md) текста (Тест Флеша-Кинкайда, Индекс SMOG, Индекс удобочитаемости LIX и др.)
-*   считать [метрики лексического разнообразия](stats/diversity_stats.md) текста (Type-Token Ratio, Measure of Textual Lexical Diversity, Гапакс-индекс и др.)
-*   извлекать [морфологические признаки](stats/morph_stats.md) из текста в терминах Universal Dependencies (часть речи, падеж, наклонение, переходность и др.)
-*   считать [SEO-метрики стиля](stats/style_stats.md) текста (тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов)
-*   считать [фоностатистики](stats/phon_stats.md) текста (доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги)
-*   считать [синтаксические статистики](stats/syntax_stats.md) текста по дереву зависимостей spaCy (длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей)
-*   считать [статистики связности](stats/cohesion_stats.md) текста (повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам)
-*   считать [статистики лексической сложности](stats/lexical_stats.md) текста (частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность)
-*   считать [стиховедческие статистики](stats/verse_stats.md) (ударения по словарю Козиева, метр и число стоп, пиррихии и профиль ударности, схемы рифмовки, окончания и строфы)
-*   считать корпусные меры ([ключевые слова](corpus/keyness.md) относительно эталонного корпуса или частотного словаря, [коллокации](corpus/collocations.md), [дисперсию слов](corpus/dispersion.md) по частям текста, [конкорданс KWIC](corpus/kwic.md)) и меры [стилометрии](corpus/stylometry.md) (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов), [сравнивать корпуса](corpus/compare.md) по всем признакам сразу (критерий Манна-Уитни, d Коэна, дельта Клиффа, бутстрэп-интервалы, AUC)
-*   работать с готовыми текстовыми наборами данных ([Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md), [Частотный словарь Ляшевской и Шарова](datasets/freq2011.md), [Корпус русской поэзии](datasets/poetrycorpus.md), [Русская классическая литература](datasets/russianliterature.md), [Словарь ударений Козиева](datasets/stressdict.md))
-*   визуализировать текстовые данные ([Закон Ципфа](visualizers/zipf.md), [Литературная дактилоскопия](visualizers/fingerprinting.md), [Дерево слов](visualizers/word_tree.md), [Подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md))
-*   создавать [компоненты](components.md) для встраивания в [spaCy](https://github.com/explosion/spaCy)
+<div class="grid cards" markdown>
+
+-   :material-scissors-cutting:{ .lg .middle } __Извлечение__
+
+    ---
+
+    Токенизаторы [слов](extractors/words.md), [предложений](extractors/sentences.md) и [символьных N-грамм](extractors/char_ngrams.md) с фильтрами, лемматизацией и N-граммами
+
+    [:octicons-arrow-right-24: Извлечение объектов](extractors/sentences.md)
+
+-   :material-format-letter-case:{ .lg .middle } __Слоги и ударение__
+
+    ---
+
+    Деление слов на слоги, количество слогов, ударный слог по словарю и тип окончания
+
+    [:octicons-arrow-right-24: Слоги и ударение](syllables.md)
+
+-   :material-counter:{ .lg .middle } __Базовые статистики__
+
+    ---
+
+    Количество слов, предложений, знаков препинания, слогов и другие базовые статистики текста
+
+    [:octicons-arrow-right-24: Базовые статистики](stats/basic_stats.md)
+
+-   :material-book-open-variant:{ .lg .middle } __Удобочитаемость__
+
+    ---
+
+    Тест Флеша-Кинкайда, индекс SMOG, индекс удобочитаемости LIX и другие метрики с коэффициентами для русского языка
+
+    [:octicons-arrow-right-24: Метрики удобочитаемости](stats/readability_stats.md)
+
+-   :material-chart-bell-curve:{ .lg .middle } __Лексическое разнообразие__
+
+    ---
+
+    Type-Token Ratio, Measure of Textual Lexical Diversity, гапакс-индекс и другие метрики
+
+    [:octicons-arrow-right-24: Метрики лексического разнообразия](stats/diversity_stats.md)
+
+-   :material-alphabetical-variant:{ .lg .middle } __Морфология__
+
+    ---
+
+    Морфологические признаки в терминах Universal Dependencies: часть речи, падеж, наклонение, переходность и другие
+
+    [:octicons-arrow-right-24: Морфологические статистики](stats/morph_stats.md)
+
+-   :material-feather:{ .lg .middle } __Стиль__
+
+    ---
+
+    SEO-метрики: тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов
+
+    [:octicons-arrow-right-24: SEO-метрики стиля](stats/style_stats.md)
+
+-   :material-waveform:{ .lg .middle } __Фонетика__
+
+    ---
+
+    Доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги
+
+    [:octicons-arrow-right-24: Фоностатистики](stats/phon_stats.md)
+
+-   :material-file-tree:{ .lg .middle } __Синтаксис__
+
+    ---
+
+    Статистики дерева зависимостей spaCy: длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей
+
+    [:octicons-arrow-right-24: Синтаксические статистики](stats/syntax_stats.md)
+
+-   :material-link-variant:{ .lg .middle } __Связность__
+
+    ---
+
+    Повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам, меж- и внутрипредложенческие
+
+    [:octicons-arrow-right-24: Статистики связности](stats/cohesion_stats.md)
+
+-   :material-school:{ .lg .middle } __Лексическая сложность__
+
+    ---
+
+    Частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность
+
+    [:octicons-arrow-right-24: Статистики лексической сложности](stats/lexical_stats.md)
+
+-   :material-music-note:{ .lg .middle } __Стиховедение__
+
+    ---
+
+    Ударения по словарю Козиева, метр и число стоп, пиррихии и профиль ударности, схемы рифмовки, окончания и строфы
+
+    [:octicons-arrow-right-24: Стиховедческие статистики](stats/verse_stats.md)
+
+-   :material-bookshelf:{ .lg .middle } __Корпусные меры__
+
+    ---
+
+    [Ключевые слова](corpus/keyness.md) относительно эталонного корпуса или частотного словаря, [коллокации](corpus/collocations.md), [дисперсия слов](corpus/dispersion.md) по частям текста, [конкорданс KWIC](corpus/kwic.md), меры [стилометрии](corpus/stylometry.md) (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов) и [сравнение корпусов](corpus/compare.md) по всем признакам сразу (критерий Манна-Уитни, d Коэна, дельта Клиффа, бутстрэп-интервалы, AUC)
+
+    [:octicons-arrow-right-24: Корпусные меры](corpus/keyness.md)
+
+-   :material-database:{ .lg .middle } __Наборы данных__
+
+    ---
+
+    [Советские христоматии по литературе](datasets/sovchlit.md), [Полное собрание сочинений И.В. Сталина](datasets/stalinworks.md), [Тексты с метками класса](datasets/textsbygrade.md), [Частотный словарь Ляшевской и Шарова](datasets/freq2011.md), [Корпус русской поэзии](datasets/poetrycorpus.md), [Русская классическая литература](datasets/russianliterature.md), [Словарь ударений Козиева](datasets/stressdict.md)
+
+    [:octicons-arrow-right-24: Наборы данных](datasets/sovchlit.md)
+
+-   :material-chart-scatter-plot:{ .lg .middle } __Визуализация__
+
+    ---
+
+    [Закон Ципфа](visualizers/zipf.md), [литературная дактилоскопия](visualizers/fingerprinting.md), [дерево слов](visualizers/word_tree.md), [подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md)
+
+    [:octicons-arrow-right-24: Визуализации](visualizers/zipf.md)
+
+-   :material-pipe:{ .lg .middle } __Компоненты__
+
+    ---
+
+    Компоненты для встраивания статистик в пайплайны spaCy
+
+    [:octicons-arrow-right-24: Компоненты](components.md)
+
+-   :material-alert-circle-outline:{ .lg .middle } __Исключения__
+
+    ---
+
+    Ошибки одной иерархии, классы которой одновременно встроенные исключения Python
+
+    [:octicons-arrow-right-24: Исключения и логирование](exceptions.md)
+
+</div>
 
 ## Установка
 
@@ -38,59 +162,80 @@ pip install ruts
 
 ## Быстрый старт
 
-``` python
->>> from ruts import BasicStats, DiversityStats, ReadabilityStats
+=== "Код"
 
->>> text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
+    ``` python
+    from ruts import BasicStats, DiversityStats, ReadabilityStats
 
->>> BasicStats(text).get_stats()
-{'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
- 'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
- 'n_sents': 1,
- 'n_words': 9,
- 'n_unique_words': 8,
- 'n_long_words': 3,
- 'n_complex_words': 2,
- 'n_simple_words': 7,
- 'n_monosyllable_words': 5,
- 'n_polysyllable_words': 4,
- 'n_chars': 55,
- 'n_letters': 45,
- 'n_spaces': 8,
- 'n_syllables': 18,
- 'n_punctuations': 2,
- 'c_punctuations': {'comma': 1, 'period': 0, 'question': 0, 'exclamation': 0,
-                    'ellipsis': 0, 'colon': 1, 'semicolon': 0, 'dash': 0,
-                    'hyphen': 0, 'angle_quotes': 0, 'straight_quotes': 0,
-                    'parentheses': 0, 'other': 0}}
+    text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
 
->>> ReadabilityStats(text).flesch_reading_easy
-74.93500000000003
+    BasicStats(text).get_stats()
+    ReadabilityStats(text).flesch_reading_easy
+    DiversityStats(text).ttr
+    ```
 
->>> DiversityStats(text).ttr
-0.8888888888888888
-```
+=== "Результат"
+
+    ```
+    {'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+     'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
+     'n_sents': 1,
+     'n_words': 9,
+     'n_unique_words': 8,
+     'n_long_words': 3,
+     'n_complex_words': 2,
+     'n_simple_words': 7,
+     'n_monosyllable_words': 5,
+     'n_polysyllable_words': 4,
+     'n_chars': 55,
+     'n_letters': 45,
+     'n_spaces': 8,
+     'n_syllables': 18,
+     'n_punctuations': 2,
+     'c_punctuations': {'comma': 1,
+                        'period': 0,
+                        'question': 0,
+                        'exclamation': 0,
+                        'ellipsis': 0,
+                        'colon': 1,
+                        'semicolon': 0,
+                        'dash': 0,
+                        'hyphen': 0,
+                        'angle_quotes': 0,
+                        'straight_quotes': 0,
+                        'parentheses': 0,
+                        'other': 0}}
+    74.93500000000003
+    0.8888888888888888
+    ```
 
 Любую статистику можно вывести на экран в читаемом виде:
 
-``` python
->>> BasicStats(text).print_stats()
-    Статистика     | Значение
-------------------------------
-Предложения        |    1
-Слова              |    9
-Уникальные слова   |    8
-Длинные слова      |    3
-Сложные слова      |    2
-Простые слова      |    7
-Односложные слова  |    5
-Многосложные слова |    4
-Символы            |    55
-Буквы              |    45
-Пробелы            |    8
-Слоги              |    18
-Знаки препинания   |    2
-```
+=== "Код"
+
+    ``` python
+    BasicStats(text).print_stats()
+    ```
+
+=== "Результат"
+
+    ```
+        Статистика     | Значение
+    ------------------------------
+    Предложения        |    1
+    Слова              |    9
+    Уникальные слова   |    8
+    Длинные слова      |    3
+    Сложные слова      |    2
+    Простые слова      |    7
+    Односложные слова  |    5
+    Многосложные слова |    4
+    Символы            |    55
+    Буквы              |    45
+    Пробелы            |    8
+    Слоги              |    18
+    Знаки препинания   |    2
+    ```
 
 Сквозной разбор одного рассказа всеми инструментами библиотеки - в ноутбуке [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), его можно открыть в [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); остальные ноутбуки - на странице [примеров](examples.md).
 

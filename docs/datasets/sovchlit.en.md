@@ -1,161 +1,112 @@
 # Soviet literature readers
 
-!!! info ""
-    **ruts.datasets.SovChLit**
+``` {.python .signature}
+SovChLit(data_dir=DEFAULT_DATASET_DIR)
+```
 
-## Description
-
-A module for working with the dataset of Soviet reading-books for literature classes.
-
-The dataset is built from digitized editions of the ["School textbooks of the USSR"](https://sheba.spb.ru/shkola/) project:
+The dataset of Soviet reading-books for literature classes. It is built from digitized editions of the ["School textbooks of the USSR"](https://sheba.spb.ru/shkola/) project:
 
 *   Родная речь. Книга для чтения в I классе начальной школы. Е.Е. Соловьева, Л.А. Карпинская, Н.Н. Щепетова
+
+Raises:
+
+- `SourceTypeError` - a `data_dir` that is neither a string nor a `Path`.
+
+=== "Code"
+
+    ``` python
+    from ruts.datasets import SovChLit
+
+    sc = SovChLit()
+    sc.download()
+    sc.info
+    ```
+
+=== "Result"
+
+    ```
+    {'Наименование': 'sov_chrest_lit',
+     'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
+     'description': 'Корпус советских хрестоматий по литературе',
+     'author': 'Шкарин С.С.'}
+    ```
 
 ## Parameters
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `data_dir` | str | `DEFAULT_DATA_DIR.joinpath("texts")` | Path to the dataset directory |
+| :-------- | :--- | :------ | :---------- |
+| `data_dir` | `str` / `Path` | `DEFAULT_DATASET_DIR` | Path to the dataset directory; `texts` in `DEFAULT_DATA_DIR` by default |
 
 ## Attributes
 
 | Attribute | Type | Description |
-| :-------: | :--: | :---------: |
-| `labels` | tuple[str] | Tuple of text grade levels |
+| :-------- | :--- | :---------- |
+| `labels` | `tuple[str]` | Tuple of text grade levels |
+| `info` | `dict[str, str]` | Name of the dataset and reference information about it |
 
 ## Methods
 
-### download
-
-Downloads the archive `sov_chrest_lit_v1.tar.xz` from the network with checksum verification and extracts the files into the `sov_chrest_lit_v1` directory.
-
-Parameters:
+`download(force=False)` downloads the archive `sov_chrest_lit_v1.tar.xz` from the network with checksum verification and extracts the files into the `sov_chrest_lit_v1` directory.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `force` | bool | `-` | Download the dataset even if it is already downloaded |
+| :-------- | :--- | :------ | :---------- |
+| `force` | `bool` | `False` | Download the dataset even if it is already downloaded |
 
-An example of downloading the dataset and printing its information:
+An archive that cannot be downloaded or fails the checksum twice raises `DownloadError`, an archive that cannot be extracted `DataFileError`.
 
-!!! example "Example"
+`check_data()` checks that the dataset is downloaded completely and returns `True`; a dataset that is not downloaded or incomplete raises `DatasetNotFoundError` with the commands to download it.
 
-    _Code_:
-
-    ``` python
-    # Import the library
-    from ruts.datasets import SovChLit
-
-    # Create the dataset object
-    sc = SovChLit(data_dir=".")
-
-    # Download the dataset
-    sc.download(force=True)
-
-    # Show the dataset information
-    sc.info
-    ```
-
-    _Result_:
-
-    ``` bash
-    {'Наименование': 'sov_chrest_lit',
-    'url': 'https://dataverse.harvard.edu/file.xhtml?fileId=3670902&version=DRAFT',
-    'description': 'Корпус советских хрестоматий по литературе',
-    'author': 'Шкарин С.С.'}
-    ```
-
-### get_texts
-
-Extracts texts (without headers) from the dataset.
-
-Parameters:
+`get_texts(grade=None, book=None, year=None, category=None, text_type=None, subject=None, author=None, min_len=None, max_len=None, limit=None)` extracts texts (without headers) from the dataset.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `grade` | int | `-` | Grade level of the texts |
-| `book` | str | `-` | Book title (substring, ignoring case and ё) |
-| `year` | int | `-` | Year of publication |
-| `category` | str | `-` | Text category (substring, ignoring case and ё) |
-| `text_type` | str | `-` | Text type |
-| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
-| `author` | str | `-` | Text author (substring, ignoring case and ё) |
-| `min_len` | int | `-` | Minimum text length (in characters) |
-| `max_len` | int | `-` | Maximum text length (in characters) |
-| `limit` | int | `-` | Number of texts |
+| :-------- | :--- | :------ | :---------- |
+| `grade` | `int` | `None` | Grade level of the texts (only 1) |
+| `book` | `str` | `None` | Book title (substring, ignoring case and ё) |
+| `year` | `int` | `None` | Year of publication |
+| `category` | `str` | `None` | Text category (substring, ignoring case and ё) |
+| `text_type` | `str` | `None` | Text type: `Рассказ`, `Стихотворение`, `Сказка`, `Пословица`, `Загадка`, `Песня`, `Басня`, `Совет` or `Шутка` |
+| `subject` | `str` | `None` | Text title (substring, ignoring case and ё) |
+| `author` | `str` | `None` | Text author (substring, ignoring case and ё) |
+| `min_len` | `int` | `None` | Minimum text length (in characters) |
+| `max_len` | `int` | `None` | Maximum text length (in characters) |
+| `limit` | `int` | `None` | Number of texts |
 
-An example of extracting texts from the dataset, taking only one text of the "Весна" (spring) category no longer than 100 characters:
+An unknown grade level or text type, a `book`, `category`, `subject` or `author` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the library
-    from ruts.datasets import SovChLit
-
-    # Create the dataset object
-    sc = SovChLit()
-
-    # Show the extracted texts
-    for i in sc.get_texts(max_len=100, category="Весна", limit=1):
-        print(i)
+    for text in sc.get_texts(max_len=100, category="Весна", limit=1):
+        print(text)
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     Рыхлый снег темнеет в марте, тают льдинки на окне.
     Зайчик бегает по парте и по карте на стене.
     ```
 
-### get_records
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `grade` - grade level, `book` - book, `year` - year of publication, `category` - category, `type` - text type, `subject` - title, `author` - author, `text` - text, `file` - path to the file.
 
-Extracts records (with headers) from the dataset.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `grade` | int | `-` | Grade level of the texts |
-| `book` | str | `-` | Book title (substring, ignoring case and ё) |
-| `year` | int | `-` | Year of publication |
-| `category` | str | `-` | Text category (substring, ignoring case and ё) |
-| `text_type` | str | `-` | Text type |
-| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
-| `author` | str | `-` | Text author (substring, ignoring case and ё) |
-| `min_len` | int | `-` | Minimum text length (in characters) |
-| `max_len` | int | `-` | Maximum text length (in characters) |
-| `limit` | int | `-` | Number of texts |
-
-An example of extracting records from the dataset, taking only one record of the "Весна" (spring) category no longer than 100 characters:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the library
-    from ruts.datasets import SovChLit
-
-    # Create the dataset object
-    sc = SovChLit()
-
-    # Show the extracted records
-    for i in sc.get_records(max_len=100, category="Весна", limit=1):
-        print(i)
+    record = next(sc.get_records(max_len=100, category="Весна", limit=1))
+    del record["file"]
+    record
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
-    {'author': 'С. Маршак',
-    'book': 'Родная речь. Книга для чтения в I классе начальной школы',
-    'category': 'Весна',
-    'file': PosixPath('../ruTS/ruts_data/texts/sov_chrest_lit_v1/grade_1/114'),
-    'grade': 1,
-    'subject': 'Март',
-    'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
-            'Зайчик бегает по парте и по карте на стене.',
-    'type': 'Стихотворение',
-    'year': 1963}
+    ```
+    {'grade': 1,
+     'book': 'Родная речь. Книга для чтения в I классе начальной школы',
+     'year': 1963,
+     'category': 'Весна',
+     'type': 'Стихотворение',
+     'subject': 'Март',
+     'author': 'С. Маршак',
+     'text': 'Рыхлый снег темнеет в марте, тают льдинки на окне.\n'
+             'Зайчик бегает по парте и по карте на стене.'}
     ```

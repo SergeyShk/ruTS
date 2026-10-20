@@ -10,3 +10,13 @@ window.MathJax = {
     processHtmlClass: "arithmatex"
   }
 };
+
+// Instant navigation swaps the page without loading MathJax again
+document$.subscribe(() => {
+  if (typeof MathJax.typesetPromise !== "function") {
+    return;
+  }
+  MathJax.typesetClear();
+  MathJax.texReset();
+  MathJax.typesetPromise();
+});

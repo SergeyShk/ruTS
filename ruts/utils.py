@@ -19,6 +19,7 @@ from anyts.utils import (
 from razdel import sentenize, tokenize
 
 from .constants import (
+    CORE_MESSAGES,
     LETTER,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
@@ -96,14 +97,24 @@ def strip_marks(text: str) -> str:
     Вывод:
         str: Текст без знаков
 
+    Исключения:
+        SourceTypeError: Если текст не строка
+
     Пример использования:
         >>> from ruts.utils import strip_marks
         >>> strip_marks("Моро\\u0301з и со\\u00adлнце, чтó, Café")
         'Мороз и солнце, что, Café'
     """
+    _check_text(text)
     if not MARKED.search(text):
         return text
     return MARKS.sub(_replace_mark, text)
+
+
+def _check_text(text: object) -> None:
+    """SourceTypeError с русским сообщением, если текст не строка"""
+    if not isinstance(text, str):
+        raise SourceTypeError(CORE_MESSAGES["text_type"].format(type=type(text).__name__))
 
 
 def with_stripped_marks(func: F, *names: str) -> F:
@@ -406,10 +417,16 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     Вывод:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого слова
+
+    Исключения:
+        SourceTypeError: Если текст не строка
     """
-    for start, stop, token in iter_tokens(text):
-        if not is_punctuation(token):
-            yield start, stop, token
+    _check_text(text)
+    return (
+        (start, stop, token)
+        for start, stop, token in iter_tokens(text)
+        if not is_punctuation(token)
+    )
 
 
 def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
@@ -431,6 +448,9 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого предложения
 
+    Исключения:
+        SourceTypeError: Если текст не строка
+
     Пример использования:
         >>> from ruts.utils import iter_text_sents
         >>> [sent for _, _, sent in iter_text_sents("Он кру\\u0301т. Мы тоже.")]
@@ -438,6 +458,7 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         >>> [sent for _, _, sent in iter_text_sents("Итоги\\n\\nВсе на месте.")]
         ['Итоги', 'Все на месте.']
     """
+    _check_text(text)
     return iter_part_sents(_iter_part_sents, text)
 
 
