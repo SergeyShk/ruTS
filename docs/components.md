@@ -124,7 +124,7 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
 - `SourceTypeError` - класс без `basic_stats_class` и без `basic`;
 - `SourceError` - документ, в расширении `basic` которого нет основных статистик класса.
 
-[Пресеты](stats/readability_stats.md#presets) ruTS - `plainrussian`, `fiction` и `academic`, пресет класса - `plainrussian`. В ruTS компонент дает `ParameterError` для неизвестного пресета и для пресета или имени расширения, которые не строка, а `SourceError` - для документа, в расширении `basic` которого нет `BasicStats`; сообщение называет компонент `ruts_basic` (`basic_factory`), который нужно добавить перед ним.
+[Пресеты](stats/readability_stats.md#presets) ruTS - `plainrussian`, `fiction` и `academic`, пресет класса - `plainrussian`. В ruTS класс статистик и его `basic_stats_class` заданы, поэтому ошибок `stats_class` и `SourceTypeError` не бывает; сообщение `SourceError` называет компонент `ruts_basic` (`basic_factory`), который нужно добавить перед ним.
 
 === "Код"
 

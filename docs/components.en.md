@@ -105,7 +105,7 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
 
 --8<-- "components.md:ReadabilityStatsComponent"
 
-The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`. In ruTS the component raises `ParameterError` for an unknown preset and for a preset or an extension name that is not a string, and `SourceError` for a document whose extension `basic` holds no `BasicStats`; the message names the component `ruts_basic` (`basic_factory`) to add before it.
+The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`. In ruTS the class of statistics and its `basic_stats_class` are set, so the errors of `stats_class` and `SourceTypeError` do not occur; the message of `SourceError` names the component `ruts_basic` (`basic_factory`) to add before it.
 
 === "Code"
 
