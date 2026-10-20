@@ -146,7 +146,7 @@ def page_target(page: Path, name: str) -> object:
     key = page.relative_to(DOCS).with_suffix("").as_posix().removesuffix(".en")
     module_name = PAGE_MODULES.get(key) or PAGE_MODULES.get(key.split("/")[0])
     if module_name is None:
-        module_name = "ruts." + key.replace("/", ".")
+        module_name = "ruts." + key.removeprefix("stats/").replace("/", ".")
     try:
         module = importlib.import_module(module_name)
     except ImportError:
