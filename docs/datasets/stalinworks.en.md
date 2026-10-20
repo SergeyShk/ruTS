@@ -1,13 +1,10 @@
 # Collected works of Stalin
 
-!!! info ""
-    **ruts.datasets.StalinWorks**
+``` {.python .signature}
+StalinWorks(data_dir=DEFAULT_DATASET_DIR)
+```
 
-## Description
-
-A module for working with the dataset of the complete collected works of J.V. Stalin.
-
-The dataset is built from the 16 main volumes of the digitized complete collected works:
+The dataset of the complete collected works of J.V. Stalin. It is built from the 16 main volumes of the digitized complete collected works:
 
 *   Volume 1. Works of 1901-1907
 *   Volume 2. Works of 1907-1913
@@ -26,163 +23,117 @@ The dataset is built from the 16 main volumes of the digitized complete collecte
 *   Volume 15. Works of 1941-1945
 *   Volume 16. Works of 1946-1952
 
+Raises:
+
+- `SourceTypeError` - a `data_dir` that is neither a string nor a `Path`.
+
+=== "Code"
+
+    ``` python
+    from ruts.datasets import StalinWorks
+
+    sw = StalinWorks()
+    sw.download()
+    sw.info
+    ```
+
+=== "Result"
+
+    ```
+    {'Наименование': 'stalin_works',
+     'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
+     'description': 'Полное собрание сочинений И.В. Сталина',
+     'author': 'Шкарин С.С.'}
+    ```
+
 ## Parameters
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `data_dir` | str | `DEFAULT_DATA_DIR.joinpath("texts")` | Path to the dataset directory |
+| :-------- | :--- | :------ | :---------- |
+| `data_dir` | `str` / `Path` | `DEFAULT_DATASET_DIR` | Path to the dataset directory; `texts` in `DEFAULT_DATA_DIR` by default |
 
 ## Attributes
 
 | Attribute | Type | Description |
-| :-------: | :--: | :---------: |
-| `labels` | tuple[str] | Tuple of volume numbers |
+| :-------- | :--- | :---------- |
+| `labels` | `tuple[str]` | Tuple of volume numbers |
+| `info` | `dict[str, str]` | Name of the dataset and reference information about it |
 
 ## Methods
 
-### download
-
-Downloads the archive `stalin_works_v1.tar.xz` from the network with checksum verification and extracts the files into the `stalin_works_v1` directory.
-
-Parameters:
+`download(force=False)` downloads the archive `stalin_works_v1.tar.xz` from the network with checksum verification and extracts the files into the `stalin_works_v1` directory.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `force` | bool | `False` | Download the dataset even if it is already downloaded |
+| :-------- | :--- | :------ | :---------- |
+| `force` | `bool` | `False` | Download the dataset even if it is already downloaded |
 
-An example of downloading the dataset and printing its information:
+An archive that cannot be downloaded or fails the checksum twice raises `DownloadError`, an archive that cannot be extracted `DataFileError`.
 
-!!! example "Example"
+`check_data()` checks that the dataset is downloaded completely and returns `True`; a dataset that is not downloaded or incomplete raises `DatasetNotFoundError` with the commands to download it.
 
-    _Code_:
-
-    ``` python
-    # Import the library
-    from ruts.datasets import StalinWorks
-
-    # Create the dataset object
-    sw = StalinWorks(data_dir=".")
-
-    # Download the dataset
-    sw.download(force=True)
-
-    # Show the dataset information
-    sw.info
-    ```
-
-    _Result_:
-
-    ``` bash
-    {'Наименование': 'stalin_works',
-    'url': 'https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/JMPSDM',
-    'description': 'Полное собрание сочинений И.В. Сталина',
-    'author': 'Шкарин С.С.'}
-    ```
-
-### get_texts
-
-Extracts texts (without headers) from the dataset.
-
-Parameters:
+`get_texts(volume=None, year=None, text_type=None, is_translation=None, source=None, subject=None, topic=None, min_len=None, max_len=None, limit=None)` extracts texts (without headers) from the dataset.
 
 | Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `volume` | int | `-` | Volume number |
-| `year` | int | `-` | Year of writing |
-| `text_type` | str | `-` | Text type |
-| `is_translation` | bool | `-` | Translation flag |
-| `source` | str | `-` | Original source of the texts (substring, ignoring case and ё) |
-| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
-| `topic` | str | `-` | Text subsection title (substring, ignoring case and ё) |
-| `min_len` | int | `-` | Minimum text length (in characters) |
-| `max_len` | int | `-` | Maximum text length (in characters) |
-| `limit` | int | `-` | Number of texts |
+| :-------- | :--- | :------ | :---------- |
+| `volume` | `int` | `None` | Volume number |
+| `year` | `int` | `None` | Year of writing |
+| `text_type` | `str` | `None` | Text type |
+| `is_translation` | `bool` | `None` | Translation flag |
+| `source` | `str` | `None` | Original source of the texts (substring, ignoring case and ё) |
+| `subject` | `str` | `None` | Text title (substring, ignoring case and ё) |
+| `topic` | `str` | `None` | Text subsection title (substring, ignoring case and ё) |
+| `min_len` | `int` | `None` | Minimum text length (in characters) |
+| `max_len` | `int` | `None` | Maximum text length (in characters) |
+| `limit` | `int` | `None` | Number of texts |
 
-An example of extracting texts from the dataset, taking only one letter of 1937:
+A volume number outside 1-16, an unknown text type, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the library
-    from ruts.datasets import StalinWorks
-
-    # Create the dataset object
-    sw = StalinWorks()
-
-    # Show the extracted texts
-    for i in sw.get_texts(year=1937, text_type="Письмо", limit=1):
-        print(i)
+    for text in sw.get_texts(year=1937, text_type="Письмо", limit=1):
+        print(text)
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
     Маме – моей привет!
     Как живет, как чувствует себя мама – моя? Передают, что ты здорова и бодра. Правда это? Если это правда, то я бесконечно рад этому. Наш род, видимо, крепкий род.
     Я здоров.
     Мои дети тоже чувствуют себя хорошо.
     Желаю здоровья, живи долгие годы, мама – моя.
     Твой Coco.
-    10. III.37 г.
+    10. III.37 г.
     ```
 
-### get_records
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `volume` - volume number, `year` - year of writing, `type` - text type, `is_translation` - translation flag, `source` - original source, `subject` - title, `topic` - subsection, `text` - text, `file` - path to the file.
 
-Extracts records (with headers) from the dataset.
-
-Parameters:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `volume` | int | `-` | Volume number |
-| `year` | int | `-` | Year of writing |
-| `text_type` | str | `-` | Text type |
-| `is_translation` | bool | `-` | Translation flag |
-| `source` | str | `-` | Original source of the texts (substring, ignoring case and ё) |
-| `subject` | str | `-` | Text title (substring, ignoring case and ё) |
-| `topic` | str | `-` | Text subsection title (substring, ignoring case and ё) |
-| `min_len` | int | `-` | Minimum text length (in characters) |
-| `max_len` | int | `-` | Maximum text length (in characters) |
-| `limit` | int | `-` | Number of texts |
-
-An example of extracting records from the dataset, taking only one letter of 1937:
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the library
-    from ruts.datasets import StalinWorks
-
-    # Create the dataset object
-    sw = StalinWorks()
-
-    # Show the extracted records
-    for i in sw.get_records(year=1937, text_type="Письмо", limit=1):
-        print(i)
+    record = next(sw.get_records(year=1937, text_type="Письмо", limit=1))
+    del record["file"]
+    record
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
-    {'file': PosixPath('../ruTS/ruts_data/texts/stalin_works_v1/volume_14/59'),
-    'is_translation': False,
-    'source': 'Книга "Иосиф Сталин в объятиях семьи"',
-    'subject': 'Письмо матери 10 марта 1937 года',
-    'text': 'Маме – моей привет!\n'
-            'Как живет, как чувствует себя мама – моя? Передают, что ты здорова и '
-            'бодра. Правда это? Если это правда, то я бесконечно рад этому. Наш '
-            'род, видимо, крепкий род.\n'
-            'Я здоров.\n'
-            'Мои дети тоже чувствуют себя хорошо.\n'
-            'Желаю здоровья, живи долгие годы, мама – моя.\n'
-            'Твой Coco.\n'
-            '10.\xa0III.37\xa0г.',
-    'topic': '',
-    'type': 'Письмо',
-    'volume': 14,
-    'year': 1937}
+    ```
+    {'volume': 14,
+     'year': 1937,
+     'type': 'Письмо',
+     'is_translation': False,
+     'source': 'Книга "Иосиф Сталин в объятиях семьи"',
+     'subject': 'Письмо матери 10 марта 1937 года',
+     'topic': '',
+     'text': 'Маме – моей привет!\n'
+             'Как живет, как чувствует себя мама – моя? Передают, что ты здорова и бодра. '
+             'Правда это? Если это правда, то я бесконечно рад этому. Наш род, видимо, '
+             'крепкий род.\n'
+             'Я здоров.\n'
+             'Мои дети тоже чувствуют себя хорошо.\n'
+             'Желаю здоровья, живи долгие годы, мама – моя.\n'
+             'Твой Coco.\n'
+             '10.\xa0III.37\xa0г.'}
     ```

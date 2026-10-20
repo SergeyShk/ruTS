@@ -37,11 +37,15 @@ The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/style_stats.md:StyleStats-parameters"
 
+## Attributes
+
+--8<-- "stats/style_stats.md:StyleStats-attributes"
+
 ## Metrics
 
 --8<-- "stats/style_stats.md:StyleStats-metrics"
 
-The cards give the bands that [`describe`](#describe) reads, after the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`). The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms.
+The cards give the bands that [`describe`](#methods) reads, after the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`). The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms.
 
 <div class="metric-card" markdown>
 
@@ -83,11 +87,21 @@ $$
 | `top_n` | `int` | `10` | Number of the most frequent words |
 | `stopwords` | `list[str]` | `None` | Stop words; without them `is_stopword` decides |
 
+A `top_n` that is not an integer of at least one raises `ParameterError`.
+
 ``` {.python .signature}
 find_nausea_words(text, top_n=10, stopwords=None)
 ```
 
-The words the academic nausea counts, with their occurrences, the most frequent first. A stop word is a word of `stopwords`, compared ignoring case and the letter ё, or, without the list, a word of `is_stopword`.
+The `top_n` most frequent words without the stop words, those the academic nausea counts, with their occurrences: the most frequent first, words of equal frequency in the order of the text. A stop word is a word of `stopwords`, compared ignoring case and the letter ё, or, without the list, a word of `is_stopword`.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `text` | `list[str]` | - | List of words |
+| `top_n` | `int` | `10` | Number of the most frequent words |
+| `stopwords` | `list[str]` | `None` | Stop words; without them `is_stopword` decides |
+
+A `top_n` that is not an integer of at least one raises `ParameterError`.
 
 ``` {.python .signature}
 is_stopword(word)
@@ -188,6 +202,8 @@ $$
 | `text` | `list[str]` | - | List of words |
 | `top_n` | `int` | `10` | Number of the most frequent words |
 
+A `top_n` that is not an integer of at least one raises `ParameterError`.
+
 | Value | Reading |
 | :---- | :------ |
 | `[0, 50)` | below the pr-cy and megaindex norm |
@@ -273,7 +289,9 @@ The occurrences of every keyword per 100 words. A keyword of several words separ
 
 </div>
 
-## Methods
+The functions check their words: words, stop words, keywords and phrases that are not a list of strings raise `SourceTypeError`.
+
+## Methods { #methods }
 
 --8<-- "stats/style_stats.md:StyleStats-keyword_density"
 
@@ -298,8 +316,6 @@ The occurrences of every keyword per 100 words. A keyword of several words separ
      'cliches': ('в кратчайшие сроки',)}
     {'целях': 1, 'повышения': 1}
     ```
-
-### describe
 
 --8<-- "stats/stats.md:Stats-describe"
 

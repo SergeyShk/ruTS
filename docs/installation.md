@@ -7,7 +7,7 @@
 Функционал ruTS использует следующие сторонние библиотеки:
 
 *   `python` - 3.11 и выше
-*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.3.5 и выше в пределах 0.3, независимое от языка ядро, на котором построен ruTS
+*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.3.6 и выше в пределах 0.3, независимое от языка ядро, на котором построен ruTS
 *   `pymorphy3` с русскими словарями `pymorphy3-dicts-ru`
 *   `razdel`
 *   `scipy`

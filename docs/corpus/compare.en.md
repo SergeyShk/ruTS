@@ -1,78 +1,16 @@
 # Corpus comparison
 
-!!! info ""
-    **ruts.corpus.compare_corpora()**, **ruts.corpus.compare_features()**, **ruts.corpus.check_comparison_params()**, **ruts.corpus.corpus_features()**, **ruts.corpus.text_features()**, **ruts.corpus.split_windows()**, **ruts.corpus.sentence_rhythm()**, **ruts.corpus.calc_cohen_d()**, **ruts.corpus.calc_cliff_delta()**, **ruts.corpus.bootstrap_median_diff()**, **ruts.corpus.holm_correction()**
+``` {.python .signature}
+compare_corpora(a, b, window=1000, features=None, labels=('A', 'B'), n_bootstrap=1000, seed=0, min_words=None)
+```
 
-## Description
+Compares two corpora of Russian texts by every feature of a text at once: which statistics tell authors, genres, translations, human and generated texts apart - and by how much. For single words [`keyness`](keyness.md) does the same, for the distances between texts - [`delta`](stylometry.md#delta).
 
-`compare_corpora` compares two corpora of Russian texts by every feature of a text at once: which statistics tell authors, genres, translations, human and generated texts apart - and by how much. For single words [`keyness`](keyness.md) does the same, for the distances between texts - [`delta`](stylometry.md#delta). It builds the tables of the features of the windows of both corpora and compares them with the `compare_features` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core:
-
---8<-- "corpus/compare.md:compare_features"
-
-The texts are cut in a row into windows of exactly `window` words by `split_windows`, so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by `text_features` or a function of one's own.
-
-## Features
-
-`text_features(text)` returns 113 features prefixed by source:
-
-| Prefix | Features | Source |
-| :----- | :------- | :----- |
-| `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
-| `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
-| `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
-| `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths (`sentence_rhythm`) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
-| `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
-
-A 1000-word window takes about 0.02 s. Features over the spaCy parse (`SyntaxStats`, `CohesionStats`) are not in the default set - the function works on strings; they can be added with your own feature function via `features`, see the example below.
-
-`corpus_features(texts, window, features)` returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; the level `text` of the index is what the bootstrap of `compare_features` resamples. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; the split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
-
-The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
-
-## Statistics
-
---8<-- "corpus/compare.md:compare_features-statistics"
-
-## Parameters
-
-Parameters of `compare_corpora`:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `a` | list[str] | `-` | Texts of the first corpus |
-| `b` | list[str] | `-` | Texts of the second corpus |
-| `window` | int | `1000` | Window size in words; `None` - whole texts |
-| `features` | callable | `None` | Text feature function; `None` - `text_features` |
-| `min_words` | int | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
-
-`labels`, `n_bootstrap` and `seed` go on to `compare_features`, whose parameters are:
-
---8<-- "corpus/compare.md:compare_features-parameters"
-
---8<-- "corpus/compare.md:check_comparison_params"
-
-`compare_corpora` calls it first, so a wrong name of a corpus or seed fails before any text is processed.
-
-## Functions of the statistics
-
-The statistics of a row are available one by one from `ruts.corpus`:
-
---8<-- "corpus/compare.md:calc_cohen_d"
-
---8<-- "corpus/compare.md:calc_cliff_delta"
-
---8<-- "corpus/compare.md:bootstrap_median_diff"
-
---8<-- "corpus/compare.md:holm_correction"
-
-## Usage example
+The texts are cut in a row into windows of exactly `window` words by [`split_windows`](#split_windows), so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by [`text_features`](#text_features) or a function of one's own, and the tables of the two corpora are compared by [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core.
 
 Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1423 windows of 1000 words, under a minute.
 
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
     from ruts.corpus import compare_corpora
@@ -94,13 +32,12 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
         "p_holm",
     ]
     result[columns].head(10).round(3)
-
     result.loc["sents_mean", ["n_Чехов", "n_Толстой", "n_texts_Чехов", "n_texts_Толстой"]].to_dict()
     ```
 
-    _Result_:
+=== "Result"
 
-    ``` bash
+    ```
                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
     punct_ellipsis                       14.000           2.000   5.000   23.000    1.869        0.707  0.853     0.0
     punct_exclamation                    14.000           4.000   7.000   13.000    1.670        0.658  0.829     0.0
@@ -112,17 +49,57 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
     readability_gunning_fog_index         6.088           7.730  -2.669   -0.863   -0.864       -0.481  0.260     0.0
     readability_smog_index                5.876           7.174  -2.323   -0.854   -0.840       -0.480  0.260     0.0
     morph_verb_form_Conv                  0.055           0.082  -0.041   -0.017   -0.800       -0.464  0.268     0.0
-
     {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
 Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs; Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the warning above): 87 of the 113 features have a corrected p-value below 0.01, but only 9 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 65 of those 87 features, and for the length of a sentence it spans −5.3 to −1.3 words, where the windows alone would give −4.2 to −2.7. For the ellipses it spans 5 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 87 of the 113 features have a corrected p-value below 0.01, but only 9 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 65 of those 87 features, and for the length of a sentence it spans −5.3 to −1.3 words, where the windows alone would give −4.2 to −2.7. For the ellipses it spans 5 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
-Your own features, for example syntactic ones by spaCy, are passed as a function:
+## Parameters
 
-!!! example "Example"
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `a` | `list[str]` | - | Texts of the first corpus |
+| `b` | `list[str]` | - | Texts of the second corpus |
+| `window` | `int` | `1000` | Window size in words; `None` - whole texts |
+| `features` | `Callable` | `None` | Text feature function; `None` - `text_features` |
+| `min_words` | `int` | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
+
+`labels`, `n_bootstrap` and `seed` go on to [`compare_features`](#compare_features). `compare_corpora` checks them with `check_comparison_params` first, so a wrong name of a corpus or seed fails before any text is processed. Texts that are not a list of strings and `features` that cannot be called raise `SourceTypeError`, a corpus without a window of `min_words` words or more `SourceError`, and a `window` or `min_words` that is not an integer of at least one and `min_words` above `window` `ParameterError`.
+
+## Features { #text_features }
+
+``` {.python .signature}
+text_features(text)
+```
+
+Returns 113 features of a text prefixed by source; an undefined feature is `nan`.
+
+| Prefix | Features | Source |
+| :----- | :------- | :----- |
+| `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
+| `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
+| `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
+| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
+| `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
+| `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
+
+A 1000-word window takes about 0.02 s. Features over the spaCy parse (`SyntaxStats`, `CohesionStats`) are not in the default set - the function works on strings; they can be added with your own feature function via `features`, see the example below.
+
+The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
+
+A text that is not a string raises `SourceTypeError`, and a text without words `SourceError`.
+
+``` {.python .signature}
+corpus_features(texts, window=1000, features=text_features, min_words=None)
+```
+
+Returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; the level `text` of the index is what the bootstrap of `compare_features` resamples. The parameters and the errors are those of `compare_corpora`; texts without words and windows shorter than `min_words` are skipped. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; the split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
+
+Your own features, for example syntactic ones by spaCy, are passed as a function; with the parse the same comparison takes about eight minutes:
+
+=== "Code"
 
     ``` python
     import spacy
@@ -137,5 +114,121 @@ Your own features, for example syntactic ones by spaCy, are passed as a function
         return {**text_features(text), **{f"syntax_{key}": value for key, value in stats.items()}}
 
 
-    compare_corpora(chekhov, tolstoy, window=1000, features=features, labels=("Чехов", "Толстой"))
+    result = compare_corpora(
+        chekhov, tolstoy, window=1000, features=features, labels=("Чехов", "Толстой")
+    )
+    result.filter(like="syntax_", axis=0)[columns].head(5).round(3)
+    ```
+
+=== "Result"
+
+    ```
+                                        median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+    syntax_converb_clauses_per_sent            0.106           0.212  -0.147   -0.077   -0.970       -0.574  0.213     0.0
+    syntax_participle_clauses_per_sent         0.054           0.135  -0.109   -0.051   -0.864       -0.566  0.217     0.0
+    syntax_mean_clause_len                     5.155           5.917  -1.110   -0.466   -0.833       -0.501  0.250     0.0
+    syntax_modifiers_per_noun                  0.479           0.593  -0.188   -0.052   -0.968       -0.500  0.250     0.0
+    syntax_genitive_chains_per_sent            0.000           0.018  -0.022   -0.014   -0.616       -0.487  0.257     0.0
+    ```
+
+## Comparison of feature tables { #compare_features }
+
+--8<-- "corpus/compare.md:compare_features"
+
+--8<-- "corpus/compare.md:compare_features-parameters"
+
+--8<-- "corpus/compare.md:check_comparison_params"
+
+## Statistics { #statistics }
+
+--8<-- "corpus/compare.md:compare_features-statistics"
+
+## Functions of the statistics
+
+The statistics of a row are available one by one from `ruts.corpus`:
+
+--8<-- "corpus/compare.md:calc_cohen_d"
+
+--8<-- "corpus/compare.md:calc_cliff_delta"
+
+--8<-- "corpus/compare.md:bootstrap_median_diff"
+
+--8<-- "corpus/compare.md:holm_correction"
+
+=== "Code"
+
+    ``` python
+    from ruts.corpus import calc_cliff_delta, calc_cohen_d, holm_correction
+
+    round(calc_cohen_d([2, 4, 6, 8], [1, 3, 5, 7]), 3)
+    calc_cliff_delta([2, 4, 6, 8], [1, 3, 5, 7])
+    holm_correction([0.01, 0.04, 0.03]).round(3).tolist()
+    ```
+
+=== "Result"
+
+    ```
+    0.387
+    0.25
+    [0.03, 0.06, 0.06]
+    ```
+
+## Windows of a text { #split_windows }
+
+``` {.python .signature}
+split_windows(text, window=1000, min_words=None)
+```
+
+Cuts a text into consecutive windows of exactly `window` words, so the features that depend on length are comparable between texts. The rest is a window only with at least `min_words` words (by default a whole window, so it is dropped). A boundary goes before the first word of a window and its opening marks; a symmetric mark, such as a straight quote or the dash of an aside, closes the previous window when glued to its last word or after a closing mark. Windows are stripped of whitespace; `window=None` gives the whole text. The words are those of [`WordsExtractor`](../extractors/words.md), and the marks those of `ruts.constants`: quotes, brackets and dashes open a phrase (`OPENING_MARKS`), the straight and the English quotes and the dashes are symmetric (`SYMMETRIC_MARKS`), and the final marks, the comma, the semicolon, the closing brackets and guillemet close one (`CLOSING_MARKS`).
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `text` | `str` | - | Text string |
+| `window` | `int` | `1000` | Size of a window in words; `None` - the whole text |
+| `min_words` | `int` | `None` | Smallest number of words in a window; `None` - a whole window, or one word without a window |
+
+A text that is not a string raises `SourceTypeError`, a `window` or `min_words` that is not an integer of at least one and `min_words` above the window `ParameterError`. A text without words or shorter than `min_words` gives an empty list.
+
+=== "Code"
+
+    ``` python
+    from ruts.corpus import split_windows
+
+    split_windows("Раз два три четыре пять", 2, min_words=1)
+    split_windows("Он сказал: «Иди домой». Потом он вышел из комнаты", 4)
+    ```
+
+=== "Result"
+
+    ```
+    ['Раз два', 'три четыре', 'пять']
+    ['Он сказал: «Иди домой».', 'Потом он вышел из']
+    ```
+
+## Rhythm of the sentences { #sentence_rhythm }
+
+``` {.python .signature}
+sentence_rhythm(lengths)
+```
+
+Gives the rhythm of the sentences from their lengths in words: the mean `sents_mean`, the standard deviation `sents_std`, the coefficient of variation `sents_cv` and the lag-1 autocorrelation of neighbouring lengths `sents_autocorr` (Yule, 1939). The deviation needs two sentences, the autocorrelation three of unequal lengths, the coefficient of variation a mean above zero; otherwise, and without sentences, a feature is `nan`.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `lengths` | `list[int]` | - | Lengths of the sentences in words |
+
+Lengths that are not a list of integers raise `SourceTypeError`, a negative length `ParameterError`.
+
+=== "Code"
+
+    ``` python
+    from ruts.corpus import sentence_rhythm
+
+    {key: round(value, 3) for key, value in sentence_rhythm([4, 8, 2, 7]).items()}
+    ```
+
+=== "Result"
+
+    ```
+    {'sents_mean': 5.25, 'sents_std': 2.754, 'sents_cv': 0.525, 'sents_autocorr': -0.794}
     ```

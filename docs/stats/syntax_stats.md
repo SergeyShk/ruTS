@@ -1,176 +1,36 @@
 # Синтаксические статистики
 
-!!! info ""
-    **ruts.syntax_stats.SyntaxStats**
+``` {.python .signature}
+SyntaxStats(source)
+```
 
-## Описание
+<!-- core: stats/syntax_stats.md:SyntaxStats 8e26f78 -->
+Синтаксические статистики текста по его дереву зависимостей ([Иванов, Солнышкина и Соловьёв 2018](https://dialogue-conf.org/media/4302/ivanovvv.pdf)): показатели дерева и синтаксических конструкций. Источник данных - объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) с разбором зависимостей. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов.
 
-<!-- core: stats/syntax_stats.md:SyntaxStats 8b1fa84 -->
-Синтаксические статистики текста по его дереву зависимостей (Иванов, Солнышкина и Соловьёв 2018): длины зависимостей, глубина дерева, листья и поддеревья, валентность финитных глаголов, сочинительные цепочки, клаузы, модификаторы существительного, причастные обороты, пассив, инфинитивы, отрицания, расщепленные сказуемые и отношение существительных к глаголам. Источник данных - объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) с разбором зависимостей. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.
+Исключения:
 
-Источник, который не является `Doc`, дает `SourceTypeError`; источник без разбора зависимостей (отношений и границ предложений), без лемм, если класс их требует, или без слов - `SourceError`.
+- `SourceTypeError` - источник, который не `Doc`;
+- `SourceError` - источник без разбора зависимостей (отношений и границ предложений), без лемм, если класс их требует, или без слов.
 
-Отношения и признаки берутся из разметки [Universal Dependencies](https://universaldependencies.org/u/dep/) моделей `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. [Иванов, Солнышкина и Соловьёв](https://dialogue-conf.org/media/4302/ivanovvv.pdf) проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93.
+Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем. Отношения и признаки берутся из разметки [Universal Dependencies](https://universaldependencies.org/u/dep/) моделей `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`; качество статистик ограничено качеством разбора: маленькая модель `ru_core_news_sm` ошибается в частях речи и связях заметно чаще, чем `ru_core_news_lg`. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица `print_stats` и сообщения об ошибках - по-русски (`SYNTAX_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
-!!! note "Примечание"
-    Качество статистик ограничено качеством разбора: маленькая модель `ru_core_news_sm` ошибается в частях речи и связях заметно чаще, чем `ru_core_news_lg`.
+Иванов, Солнышкина и Соловьёв проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93. Карточки метрик называют исходные признаки работы и их коэффициенты корреляции с классом учебника.
 
-!!! note "Примечание"
-    Вычисление статистик происходит в момент инициализации объекта класса `SyntaxStats`.
-
-## Языковые крючки
-
-Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем: части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка. Краткое причастие (`дом построен`) - сказуемое и возглавляет клаузу ([`is_clause_head`](syntax_stats_funcs.md#is_clause_head)), полные причастия и деепричастия возглавляют обороты, которые считаются отдельно, инфинитив при существительном (`желание уйти`) клаузы не образует, а инфинитив при глаголе образует придаточную клаузу (`хочет уйти`), кроме сочетаний с модальными и фазовыми глаголами (`может уйти`, `начал читать`); причастный оборот - полное причастие с зависимым словом ([`is_participle_clause`](syntax_stats_funcs.md#is_participle_clause)); отрицания - частицы с `Polarity=Neg` и частицы «не», «ни» ([`is_negation`](syntax_stats_funcs.md#is_negation)); расщепленное сказуемое - легкий глагол с существительным, которое несет его значение, например `осуществлять проверку` ([`find_split_predicates`](syntax_stats_funcs.md#find_split_predicates)). Свои статистики ruTS - цепочки родительных падежей ([`calc_genitive_chains`](syntax_stats_funcs.md#calc_genitive_chains) на основе `calc_modifier_chains` ядра) и деепричастные обороты. Таблица `print_stats` выводится с русскими заголовками и описаниями из `ruts.constants.SYNTAX_STATS_DESC`, сообщения об ошибках - по-русски (`CORE_MESSAGES`).
-
-## Параметры
-
-| Параметр | Тип | По умолчанию | Описание |
-| :------: | :-: | :----------: | :------: |
-| `source` | Doc | `-` | Источник данных (объект Doc с разбором зависимостей) |
-
-## Атрибуты
-
-<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 8fdbe73 -->
-| Атрибут | Тип | Описание |
-| :-----: | :-: | :------: |
-| `sents` | tuple[tuple[Token]] | Слова каждого предложения, в котором есть слова |
-| `n_sents`, `n_words` | int | Количество предложений со словами и количество слов |
-| `n_leaves`, `n_subtrees` | int | Количество слов без зависимых слов и с ними |
-| `n_coordination_chains` | int | Количество сочинительных цепочек |
-| `n_clauses`, `n_subordinate_clauses`, `n_complex_sents` | int | Количество клауз, придаточных клауз и предложений с придаточной |
-| `n_infinitive_clauses` | int | Количество инфинитивных клауз при глаголе |
-| `n_nouns`, `n_verbs` | int | Количество существительных (`NOUN`, `PROPN`) и глагольных форм (`VERB`) |
-| `n_participle_clauses` | int | Количество причастных оборотов |
-| `n_passive`, `n_agentless_passive` | int | Количество пассивных форм и форм без агенса |
-| `n_infinitives`, `n_negations` | int | Количество инфинитивов и слов отрицания |
-| `n_split_predicates`, `split_predicates` | int, tuple[str] | Количество расщепленных сказуемых и сами сказуемые - глагол и существительное |
-| `c_children` | dict[int, int] | Количество слов по числу зависимых слов |
-| `c_deps` | dict[str, int] | Количество слов по синтаксическим отношениям |
-| `mean_dependency_distance`, `std_dependency_distance` | float | Средняя длина зависимости и ее стандартное отклонение |
-| `max_dependency_distance` | float | Среднее наибольших длин зависимости предложений, в которых есть зависимости |
-| `p_adjacent_dependencies` | float | Доля зависимостей длины 1 |
-| `tree_depth` | float | Средняя глубина дерева предложения |
-| `leaves_per_sent`, `subtrees_per_sent` | float | Листьев и поддеревьев на предложение |
-| `nodes_per_leaf` | float | Среднее по предложениям число слов на лист |
-| `verb_valency` | float | Среднее число зависимых у финитного глагола |
-| `coordination_chains_per_sent`, `mean_coordination_chain_len` | float | Сочинительных цепочек на предложение и их средняя длина |
-| `clauses_per_sent`, `mean_clause_len` | float | Клауз на предложение и их средняя длина в словах |
-| `subordinate_clauses_per_sent`, `p_complex_sents` | float | Придаточных клауз на предложение и доля предложений с придаточной |
-| `infinitive_clauses_per_sent` | float | Инфинитивных клауз при глаголе на предложение (*хочет уйти*), которые не придаточные |
-| `modifiers_per_noun` | float | Среднее число модификаторов существительного (`count_noun_modifiers`) |
-| `participle_clauses_per_sent`, `mean_participle_clause_len` | float | Причастных оборотов на предложение и их средняя длина в словах |
-| `p_passive`, `p_agentless_passive` | float | Доля пассивных форм среди глагольных форм и доля форм без агенса среди них |
-| `infinitives_per_sent`, `negations_per_sent`, `split_predicates_per_sent` | float | Инфинитивов, слов отрицания и расщепленных сказуемых на предложение |
-| `noun_verb_ratio` | float | Отношение числа существительных к числу глагольных форм |
-
-Доля, отношение или среднее, которым не на что делить, равны `nan`.
-
-Статистики конструкций ruTS:
-
-| Атрибут | Тип | Описание |
-| :-----: | :-: | :------: |
-| `n_genitive_chains`, `n_converb_clauses` | int | Количество цепочек родительных падежей и деепричастных оборотов |
-| `genitive_chains_per_sent` | float | Цепочек родительных падежей на предложение |
-| `max_genitive_chain_len` | int | Максимальная длина цепочки родительных падежей, 0 без цепочек |
-| `converb_clauses_per_sent`, `mean_converb_clause_len` | float | Деепричастных оборотов на предложение и их средняя длина в словах |
-
-!!! note "Примечание"
-    Каждую статистику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о синтаксических статистиках и функциях, используемых для их вычисления, можно узнать в соответствующем [разделе](syntax_stats_funcs.md).
-
-## Методы
-
-### get_stats
-
-Возвращает справочник с вычисленными синтаксическими статистиками текста.
-
-!!! example "Пример"
-
-    _Код_:
+=== "Код"
 
     ``` python
-    # Загрузка библиотек
     import spacy
     from ruts import SyntaxStats
 
-    # Подготовка данных
     nlp = spacy.load("ru_core_news_sm")
     text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
-
-    # Вычисление статистик
     ss = SyntaxStats(nlp(text))
-    ss.get_stats()
-    ```
-
-    _Результат_:
-
-    ``` bash
-    {'mean_dependency_distance': 1.9333333333333333,
-    'std_dependency_distance': 1.6110727964792764,
-    'max_dependency_distance': 5.0,
-    'p_adjacent_dependencies': 0.6,
-    'tree_depth': 4.0,
-    'leaves_per_sent': 4.5,
-    'subtrees_per_sent': 4.0,
-    'nodes_per_leaf': 1.9,
-    'verb_valency': 2.0,
-    'coordination_chains_per_sent': 0.5,
-    'mean_coordination_chain_len': 2.0,
-    'clauses_per_sent': 1.5,
-    'mean_clause_len': 5.666666666666667,
-    'subordinate_clauses_per_sent': 0.5,
-    'p_complex_sents': 0.5,
-    'infinitive_clauses_per_sent': 0.0,
-    'modifiers_per_noun': 0.4,
-    'genitive_chains_per_sent': 0.0,
-    'max_genitive_chain_len': 0,
-    'participle_clauses_per_sent': 0.5,
-    'mean_participle_clause_len': 5.0,
-    'converb_clauses_per_sent': 0.5,
-    'mean_converb_clause_len': 2.0,
-    'p_passive': 0.4,
-    'p_agentless_passive': 0.5,
-    'infinitives_per_sent': 0.0,
-    'negations_per_sent': 0.5,
-    'split_predicates_per_sent': 0.0,
-    'noun_verb_ratio': 1.0}
-    ```
-
-Счетчики, распределения и слова предложений доступны как атрибуты:
-
-!!! example "Пример"
-
-    ``` python
-    ss.n_clauses, ss.n_nouns, ss.n_verbs
-    # (3, 5, 5)
-    ss.c_children
-    # {0: 9, 1: 2, 2: 5, 3: 1}
-    ss.c_deps
-    # {'ROOT': 2, 'acl': 1, 'advcl': 1, 'advmod': 1, 'amod': 1, 'aux:pass': 1, 'case': 1, 'cc': 1, 'ccomp': 1, 'conj': 1, 'iobj': 1, 'mark': 1, 'nsubj': 1, 'nsubj:pass': 1, 'obl': 1, 'obl:agent': 1}
-    ss.sents[0]
-    # (Дом, построенный, рабочими, в, прошлом, году, был, продан)
-    ```
-
-### print_stats
-
-<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
-Выводит таблицу статистик из `stats_desc` с их описаниями под заголовками из `stats_headers`, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.
-
-Для иллюстрации работы метода воспользуемся кодом из примера `get_stats`:
-
-!!! example "Пример"
-
-    _Код_:
-
-    ``` python
-    ...
-
-    # Отображение таблицы вычисленных статистик
     ss.print_stats()
     ```
 
-    _Результат_:
+=== "Результат"
 
-    ``` bash
+    ```
                        Статистика                    | Значение
     ------------------------------------------------------------
     Средняя длина зависимости                        |   1.93
@@ -204,6 +64,775 @@
     Отношение существительных к глаголам             |   1.00
     ```
 
-### to_dataframe, describe
+## Параметры
 
-Метод `to_dataframe` (статистики в `pandas.DataFrame` из одной строки) и метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у синтаксических статистик нет, поэтому `describe` всегда возвращает `None`.
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `source` | `Doc` | - | Источник данных - объект `Doc` с разбором зависимостей |
+
+## Атрибуты
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes bde5658 -->
+| Атрибут | Тип | Описание |
+| :------ | :-- | :------- |
+| `sents` | `tuple[tuple[Token]]` | Слова каждого предложения, в котором есть слова |
+| `n_sents`, `n_words` | `int` | Количество предложений со словами и количество слов |
+| `n_leaves`, `n_subtrees` | `int` | Количество слов без зависимых слов и с ними |
+| `n_coordination_chains` | `int` | Количество сочинительных цепочек |
+| `n_clauses`, `n_subordinate_clauses`, `n_complex_sents` | `int` | Количество клауз, придаточных клауз и предложений с придаточной |
+| `n_infinitive_clauses` | `int` | Количество инфинитивных клауз при глаголе |
+| `n_nouns`, `n_verbs` | `int` | Количество существительных (`NOUN`, `PROPN`) и глагольных форм (`VERB`) |
+| `n_participle_clauses` | `int` | Количество причастных оборотов |
+| `n_passive`, `n_agentless_passive` | `int` | Количество пассивных форм и форм без агенса |
+| `n_infinitives`, `n_negations` | `int` | Количество инфинитивов и слов отрицания |
+| `n_split_predicates`, `split_predicates` | `int`, `tuple[str]` | Количество расщепленных сказуемых и сами сказуемые - глагол и существительное |
+| `c_children` | `dict[int, int]` | Количество слов по числу зависимых слов |
+| `c_deps` | `dict[str, int]` | Количество слов по синтаксическим отношениям |
+
+Атрибуты конструкций ruTS - `n_genitive_chains` и `n_converb_clauses` (`int`): количество цепочек родительных падежей и деепричастных оборотов.
+
+=== "Код"
+
+    ``` python
+    ss.n_clauses, ss.n_nouns, ss.n_verbs
+    ss.c_children
+    ss.c_deps
+    ss.sents[0]
+    ```
+
+=== "Результат"
+
+    ```
+    (3, 5, 5)
+    {0: 9, 1: 2, 2: 5, 3: 1}
+    {'ROOT': 2,
+     'acl': 1,
+     'advcl': 1,
+     'advmod': 1,
+     'amod': 1,
+     'aux:pass': 1,
+     'case': 1,
+     'cc': 1,
+     'ccomp': 1,
+     'conj': 1,
+     'iobj': 1,
+     'mark': 1,
+     'nsubj': 1,
+     'nsubj:pass': 1,
+     'obl': 1,
+     'obl:agent': 1}
+    (Дом, построенный, рабочими, в, прошлом, году, был, продан)
+    ```
+
+## Метрики
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-metrics ccce8f7 -->
+Каждая метрика - атрибут объекта, который вычисляется при его создании, а `get_stats` дает их все. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.
+
+| Метрика | Что измеряет | Диапазон | Чем больше, тем |
+| :------ | :----------- | :------- | :-------------- |
+| [`mean_dependency_distance`](#dependency_distances) | Среднее расстояние между словом и его вершиной | от 1, `nan` без зависимостей | труднее восприятие |
+| [`std_dependency_distance`](#dependency_distances) | Стандартное отклонение длины зависимости | от 0, `nan` без зависимостей | неравномернее длины |
+| [`max_dependency_distance`](#dependency_distances) | Среднее наибольших длин зависимости предложений, в которых есть зависимости | от 1, `nan` без зависимостей | длиннее самые длинные зависимости |
+| [`p_adjacent_dependencies`](#dependency_distances) | Доля зависимостей длины 1 | 0-1, `nan` без зависимостей | больше связей между соседями |
+| [`tree_depth`](#tree_depth) | Средняя глубина дерева предложения | от 0 | глубже вложенность |
+| [`leaves_per_sent`](#leaves) | Листьев на предложение | от 0 | длиннее или площе предложения |
+| [`subtrees_per_sent`](#leaves) | Поддеревьев на предложение | от 0 | больше групп в предложении |
+| [`nodes_per_leaf`](#leaves) | Среднее по предложениям число слов на лист | от 1, `nan` для предложения без листьев | длиннее ветви |
+| [`verb_valency`](#valency) | Среднее число зависимых у финитного глагола | от 0, `nan` без финитных глаголов | больше зависимых у глагола |
+| [`coordination_chains_per_sent`](#coordination_chains) | Сочинительных цепочек на предложение | от 0 | больше сочинения |
+| [`mean_coordination_chain_len`](#coordination_chains) | Средняя длина сочинительной цепочки в словах | от 2, `nan` без цепочек | длиннее перечисления |
+| [`clauses_per_sent`](#clauses) | Клауз на предложение | от 0 | больше клауз в предложении |
+| [`mean_clause_len`](#clauses) | Средняя длина клаузы в словах | от 1, `nan` без клауз | длиннее клаузы |
+| [`subordinate_clauses_per_sent`](#subordinate_clauses) | Придаточных клауз на предложение | от 0 | больше подчинения |
+| [`p_complex_sents`](#subordinate_clauses) | Доля предложений с придаточной клаузой | 0-1 | больше сложных предложений |
+| [`infinitive_clauses_per_sent`](#infinitive_clauses) | Инфинитивных клауз при глаголе на предложение (*хочет уйти*), которые не придаточные | от 0 | больше инфинитивных дополнений |
+| [`modifiers_per_noun`](#noun_modifiers) | Среднее число модификаторов существительного | от 0, `nan` без существительных | тяжелее именные группы |
+| [`participle_clauses_per_sent`](#participle_clauses) | Причастных оборотов на предложение | от 0 | больше причастных оборотов |
+| [`mean_participle_clause_len`](#participle_clauses) | Средняя длина причастного оборота в словах | от 1, `nan` без причастных оборотов | длиннее причастные обороты |
+| [`p_passive`](#passive) | Доля пассивных форм среди глагольных форм | 0-1, `nan` без глагольных форм | больше пассива |
+| [`p_agentless_passive`](#passive) | Доля форм без агенса среди пассивных | 0-1, `nan` без пассивных форм | больше пассива без агенса |
+| [`infinitives_per_sent`](#constructions) | Инфинитивов на предложение | от 0 | больше инфинитивов |
+| [`negations_per_sent`](#constructions) | Слов отрицания на предложение | от 0 | больше отрицания |
+| [`split_predicates_per_sent`](#constructions) | Расщепленных сказуемых на предложение | от 0 | больше расщепленных сказуемых |
+| [`noun_verb_ratio`](#noun_verb_ratio) | Отношение существительных к глагольным формам | от 0, `nan` без глагольных форм | номинативнее стиль |
+
+Метрики конструкций ruTS:
+
+| Метрика | Что измеряет | Диапазон | Чем больше, тем |
+| :------ | :----------- | :------- | :-------------- |
+| [`genitive_chains_per_sent`](#genitive_chains) | Цепочек родительных падежей на предложение | от 0 | больше цепочек |
+| [`max_genitive_chain_len`](#genitive_chains) | Наибольшая длина цепочки родительных падежей в тексте | 0 без цепочек, иначе от 2 | длиннее цепочка |
+| [`converb_clauses_per_sent`](#converb_clauses) | Деепричастных оборотов на предложение | от 0 | больше деепричастных оборотов |
+| [`mean_converb_clause_len`](#converb_clauses) | Средняя длина деепричастного оборота в словах | от 2, `nan` без деепричастных оборотов | длиннее деепричастные обороты |
+
+<div class="metric-card" markdown>
+
+### Длина зависимости { #dependency_distances }
+
+`mean_dependency_distance` · `std_dependency_distance` · `max_dependency_distance` · `p_adjacent_dependencies`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:calc_dependency_distances ccf4d91 -->
+``` {.python .signature}
+calc_dependency_distances(tokens, join_hyphens=False)
+```
+
+Длины зависимостей (Liu 2008): расстояние между словом и его вершиной в позициях слов без учета знаков препинания, в порядке слов. Вершина предложения и слово, вершина которого лежит вне последовательности, пропускаются.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одной позицией |
+
+Средняя длина зависимости растет с длиной предложения, а наибольшая - лучший из древесных признаков на уровне отдельного предложения. Предложения из одного слова в метрики длин не входят.
+
+=== "Код"
+
+    ``` python
+    import spacy
+    from ruts.syntax_stats import calc_dependency_distances
+
+    nlp = spacy.load("ru_core_news_sm")
+    doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
+    calc_dependency_distances(doc)
+    ```
+
+=== "Результат"
+
+    ```
+    [5, 1, 1, 1, 1, 1, 2]
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Глубина дерева { #tree_depth }
+
+`tree_depth`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:calc_tree_depth 8fdd05e -->
+``` {.python .signature}
+calc_tree_depth(tokens, join_hyphens=False)
+```
+
+Глубина дерева зависимостей: самый длинный путь от вершины предложения до листа в связях между словами; для нескольких предложений - максимум, для предложения из одного слова - 0. С `join_hyphens` дефисное слово - одно слово, а слова, которые висят на любой из его частей, - на уровень ниже него.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+Глубина - признак `LONGEST_PATH` работы Иванова и др. (r = 0.84).
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Листья и поддеревья { #leaves }
+
+`leaves_per_sent` · `subtrees_per_sent` · `nodes_per_leaf`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-leaves 0162a04 -->
+Лист - слово без зависимых слов (`count_children`), поддерево - слово с ними. Число узлов на лист - количество слов предложения, деленное на количество его листьев, в среднем по $S$ предложениям.
+
+$$
+\frac{1}{S} \sum_{s=1}^{S} \frac{\textrm{Количество слов } s}{\textrm{Количество листьев } s}
+$$
+
+Признаки работы: `LEAVES_NUMBER` (r = 0.84), `PATH_NUMBER` (r = 0.87) и `AVERAGE_PATH` (r = 0.84). Распределение слов по числу зависимых - профиль ветвления - дает атрибут `c_children`.
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Валентность финитных глаголов { #valency }
+
+`verb_valency`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:calc_valency 4a77742 -->
+``` {.python .signature}
+calc_valency(token, join_hyphens=False)
+```
+
+Валентность токена: число его зависимых слов без связей `cc`, `conj`, `parataxis` и `punct` (`anyts.constants.VALENCY_IGNORED_DEPS`); с `join_hyphens=True` дефисное зависимое считается один раз, поэтому у `пришел` в `Кто-то пришел` одно зависимое, а не два.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+Финитный глагол - [`is_finite_verb`](#is_finite_verb); валентность - признак `VERBS_DEP` работы (r = 0.43).
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Сочинительные цепочки { #coordination_chains }
+
+`coordination_chains_per_sent` · `mean_coordination_chain_len`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:calc_coordination_chains 1f94356 -->
+``` {.python .signature}
+calc_coordination_chains(tokens, join_hyphens=False)
+```
+
+Длины сочинительных цепочек в порядке их первых слов. Цепочка - группа слов, связанных `conj`, к какому бы слову ни присоединялся каждый однородный член: Universal Dependencies вешает каждый однородный член на первый (`груши → яблоки`, `сливы → яблоки`), ClearNLP - на предыдущий (`груши → яблоки`, `сливы → груши`); в обоих случаях `яблоки, груши и сливы` - одна цепочка из трех слов. Вложенное сочинение (`кошки и собаки, или птицы`) и перечисление, разбитое между несколькими вершинами, - тоже одна цепочка. Длина цепочки - число ее слов; однородный член, вершина которого лежит вне последовательности, с ней не связывается. С `join_hyphens` дефисное слово - один однородный член, связанный отношением `conj` любой своей части (`членом совета и вице-губернатором` - цепочка из двух слов).
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+Число цепочек на предложение (`SOCHIN_NUMBER`, r = 0.93) и их средняя длина (`AVERAGE_SOCHIN_LENGTH`, r = 0.87) - сильнейшие синтаксические предикторы сложности учебника.
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Клаузы { #clauses }
+
+`clauses_per_sent` · `mean_clause_len`
+{ .metric-meta }
+
+``` {.python .signature}
+is_clause_head(token)
+```
+
+Проверяет, возглавляет ли слово клаузу: вершина предложения или слово со связью `ccomp`, `advcl`, `acl`, `csubj`, `parataxis` и их подтипами (`anyts.constants.CLAUSE_DEPS`), кроме полных причастий, деепричастий и инфинитивов при существительном («желание уйти»): причастные и деепричастные обороты считаются отдельно, а краткое причастие («дом построен») - сказуемое своей клаузы. Со связью `xcomp` клаузу возглавляет только инфинитив `is_infinitive_clause`: личная форма со связью `xcomp` у русских моделей - ошибка разбора. Инфинитив-подлежащее (`csubj`) модального слова («нужно уйти», «можно войти», «следует отметить») своей клаузы не образует. Вставная конструкция (`parataxis`) и однородное сказуемое (связь `conj` от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым ([`is_predicate`](#is_predicate)): «Он сказал: „Уходи“» и «думала, что он умен» - клаузы, а вводные слова «например», «конечно», «во-первых», на которые модели spaCy тоже вешают `parataxis`, - нет.
+
+``` {.python .signature}
+is_infinitive_clause(token)
+```
+
+Проверяет, возглавляет ли инфинитив со связью `xcomp` свою клаузу («хочет уйти», «попросил его уйти»): не возглавляет, если образует одну предикацию со своей вершиной (`is_infinitive_periphrasis`) или стоит в обороте («решивший уйти», «желая уйти»).
+
+``` {.python .signature}
+is_infinitive_periphrasis(token)
+```
+
+Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти») или побудительным «давай», «давайте» из `HORTATIVE_WORDS` без отрицания («давайте играть», но не «не давайте детям играть»).
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Придаточные клаузы { #subordinate_clauses }
+
+`subordinate_clauses_per_sent` · `p_complex_sents`
+{ .metric-meta }
+
+``` {.python .signature}
+is_subordinate_clause_head(token)
+```
+
+Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (`is_clause_head`) со связью `ccomp`, `advcl`, `acl`, `csubj` и их подтипами, а также однородное сказуемое придаточной клаузы.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+Признаки работы: `PODCHIN_RATE` (r = 0.64) - придаточные клаузы на предложение, `PODCHIN_NUMBER` (r = 0.62) - доля предложений хотя бы с одной придаточной.
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Инфинитивные клаузы { #infinitive_clauses }
+
+`infinitive_clauses_per_sent`
+{ .metric-meta }
+
+``` {.python .signature}
+is_infinitive_clause_head(token)
+```
+
+Проверяет, возглавляет ли слово инфинитивную клаузу при глаголе: инфинитив со связью `xcomp`, который образует свою клаузу (`is_infinitive_clause`: «хочет уйти», «попросил его уйти»), а также однородный ему инфинитив. Такая клауза считается отдельно от придаточных, так как грамматики многих языков считают ее частью простого предложения.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+=== "Код"
+
+    ``` python
+    import spacy
+    from ruts.syntax_stats import is_clause_head, is_infinitive_clause_head, is_subordinate_clause_head
+
+    nlp = spacy.load("ru_core_news_sm")
+    doc = nlp("Он хочет уйти, но может остаться, если его попросят.")
+    [token.text for token in doc if is_clause_head(token)]
+    [token.text for token in doc if is_subordinate_clause_head(token)]
+    [token.text for token in doc if is_infinitive_clause_head(token)]
+    ```
+
+=== "Результат"
+
+    ```
+    ['хочет', 'уйти', 'может', 'попросят']
+    ['попросят']
+    ['уйти']
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Модификаторы существительного { #noun_modifiers }
+
+`modifiers_per_noun`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:count_noun_modifiers 6775fc1 -->
+``` {.python .signature}
+count_noun_modifiers(token, join_hyphens=False)
+```
+
+Считает модификаторы именной группы: зависимые со связями `amod`, `det`, `nmod`, `nummod`, `acl` и их подтипами (`anyts.constants.NOUN_MODIFIER_DEPS`); `conj` и `appos` модификаторами не являются.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+Число модификаторов - признак `NOUNS_DEP` работы (r = 0.88).
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Цепочки родительных падежей { #genitive_chains }
+
+`genitive_chains_per_sent` · `max_genitive_chain_len`
+{ .metric-meta }
+
+``` {.python .signature}
+calc_genitive_chains(tokens)
+```
+
+Длины цепочек родительных падежей в порядке слов - цепочек [`calc_modifier_chains`](#calc_modifier_chains), модификаторы которых - беспредложные определения в родительном падеже: «повышение эффективности использования ресурсов» - цепочка длины 3.
+
+``` {.python .signature}
+is_genitive_modifier(token)
+```
+
+Проверяет, является ли слово беспредложным определением в родительном падеже: слово со связью `nmod` в родительном падеже без зависимого предлога (`case`) - «дом отца», но не «дом у дороги».
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов (`calc_genitive_chains`) |
+| `token` | `Token` | - | Токен (`is_genitive_modifier`) |
+
+=== "Код"
+
+    ``` python
+    import spacy
+    from ruts.syntax_stats import calc_genitive_chains
+
+    nlp = spacy.load("ru_core_news_sm")
+    calc_genitive_chains(
+        nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
+    )
+    ```
+
+=== "Результат"
+
+    ```
+    [4]
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Причастные обороты { #participle_clauses }
+
+`participle_clauses_per_sent` · `mean_participle_clause_len`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-participle_clauses 098c370 -->
+Обороты, которые возглавляют слова крючка `is_participle_clause`; длина оборота - число слов в поддереве его вершины (`subtree_len`).
+
+``` {.python .signature}
+is_participle_clause(token)
+```
+
+Проверяет, возглавляет ли слово причастный оборот: полное причастие ([`is_participle`](#is_finite_verb)) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Краткие причастия («дом построен») - сказуемые, а не определения, и оборотов не образуют. Признаки работы - `PRICH_RATE` (r = 0.91) и `PRICH_V`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Деепричастные обороты { #converb_clauses }
+
+`converb_clauses_per_sent` · `mean_converb_clause_len`
+{ .metric-meta }
+
+``` {.python .signature}
+is_converb_clause(token)
+```
+
+Проверяет, возглавляет ли слово деепричастный оборот: деепричастие ([`is_converb`](#is_finite_verb)) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Длина оборота - число слов в поддереве деепричастия (`subtree_len`). Признаки работы - `DEEPRICH_RATE` (r = 0.44) и `DEEPRICH_V`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Пассив { #passive }
+
+`p_passive` · `p_agentless_passive`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:is_passive eac7970 -->
+``` {.python .signature}
+is_passive(token, join_hyphens=False)
+```
+
+Проверяет, является ли слово пассивной глагольной формой: глаголом с `Voice=Pass` или с зависимым `nsubj:pass`, `csubj:pass`, `aux:pass` либо `nsubjpass`, `csubjpass`, `auxpass` ClearNLP (`PASSIVE_DEPS`).
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+<!-- core: stats/syntax_stats.md:has_agent 7563aef -->
+``` {.python .signature}
+has_agent(token, join_hyphens=False)
+```
+
+Проверяет, есть ли у слова агенс: зависимое `obl:agent` или `agent` ClearNLP (`AGENT_DEPS`). Аргументы - те же, что у `is_passive`.
+
+<!-- core: stats/syntax_stats.md:is_agentless 58b56c5 -->
+``` {.python .signature}
+is_agentless(token, join_hyphens=False)
+```
+
+Проверяет, является ли слово пассивной формой (`is_passive`) без агенса (`has_agent`), с теми же аргументами.
+
+В русском языке пассив - страдательные причастия и возвратный пассив («обсуждалось»), форма без агенса - «дом построен», но не «дом построен рабочими».
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Инфинитивы, отрицания и расщепленные сказуемые { #constructions }
+
+`infinitives_per_sent` · `negations_per_sent` · `split_predicates_per_sent`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-constructions 4d8a10f -->
+Инфинитивы (`is_infinitive` из `anyts.utils`), слова отрицания крючка `is_negation` и расщепленные сказуемые крючка `find_split_predicates` на предложение.
+
+``` {.python .signature}
+is_negation(token)
+```
+
+Проверяет, является ли слово отрицательной частицей - частицей (`PART`) с признаком `Polarity=Neg` или частицей «не», «ни» (`NEGATION_PARTICLES`); союз «ни» в конструкции «ни… ни» отрицанием не считается. Отрицания - признак `NEG` работы (r = 0.70).
+
+``` {.python .signature}
+find_split_predicates(tokens)
+```
+
+``` {.python .signature}
+is_light_verb(token)
+```
+
+``` {.python .signature}
+is_reflexive(token)
+```
+
+``` {.python .signature}
+is_split_predicate_noun(token, verb=None)
+```
+
+Расщепленные сказуемые - маркер канцелярита - пары глагола и существительного в порядке слов: легкий глагол (`is_light_verb`) с леммой из `LIGHT_VERBS` (осуществлять, производить, проводить, обеспечивать, оказывать, принимать, иметь и их возвратный пассив проводиться, приниматься, вестись) с именной частью (`is_split_predicate_noun`) - существительным с отглагольной леммой (`ruts.utils.is_verbal_noun`) или леммой из `SPLIT_PREDICATE_NOUNS` (роль, работа, помощь, мера) при глаголе своего оборота `verb` (оказать помощь, принять меры, но не получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. У глагола берется не больше одной именной части в порядке предпочтения `obj`, `nsubj:pass`, `nsubj` (только у возвратного или пассивного глагола, `is_reflexive`), `iobj`, `nmod`, `obl`; предложные обстоятельства и агенс пассива (`obl:agent`, творительный `obl`) не учитываются. Лемма глагола проверяется и по spaCy, и по pymorphy3 ([`get_lemma`](#helpers), `ruts.utils.lemmatize`).
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов (`find_split_predicates`) |
+| `verb` | `Token` | `None` | Легкий глагол (`is_split_predicate_noun`); без него оборот не проверяется |
+
+=== "Код"
+
+    ``` python
+    import spacy
+    from ruts.syntax_stats import find_split_predicates, is_negation
+
+    nlp = spacy.load("ru_core_news_sm")
+    doc = nlp("Проверка проводится ежегодно, но решение не принято.")
+    find_split_predicates(doc)
+    [token.text for token in doc if is_negation(token)]
+    ```
+
+=== "Результат"
+
+    ```
+    [(проводится, Проверка), (принято, решение)]
+    ['не']
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Отношение существительных к глаголам { #noun_verb_ratio }
+
+`noun_verb_ratio`
+{ .metric-meta }
+
+<!-- core: stats/syntax_stats.md:SyntaxStats-noun_verb_ratio e8f2957 -->
+Количество существительных `n_nouns`, деленное на количество глагольных форм `n_verbs`.
+
+$$
+\frac{\textrm{Количество существительных}}{\textrm{Количество глагольных форм}}
+$$
+
+</div>
+
+## Методы
+
+<!-- core: stats/stats.md:Stats-get_stats d388cfa -->
+`get_stats(flat=False)` возвращает копию статистик из `stat_names`: ее изменение не меняет объект. С `flat=True` значения статистики-словаря становятся отдельными ключами, присоединенными к ее имени через подчеркивание: распределение `{3: 5}` статистики `c_lengths` дает ключ `c_lengths_3`.
+
+<!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
+`to_dataframe()` возвращает плоские статистики, `get_stats(flat=True)`, таблицей `DataFrame` библиотеки [pandas](https://pandas.pydata.org/) из одной строки со столбцом на каждый ключ. Статистика-словарь дает столбцы только для ключей, которые есть в тексте, поэтому в таблицах нескольких текстов, объединенных `pandas.concat`, отсутствующее у текста количество равно `NaN`. Только такие столбцы можно заполнять нулями: в остальных `NaN` - неопределенное значение.
+
+<!-- core: stats/stats.md:Stats-print_stats b37b79d -->
+`print_stats()` выводит таблицу статистик из `stats_desc` с их описаниями под заголовками из `stats_headers`, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.
+
+<!-- core: stats/stats.md:Stats-describe d0ce257 -->
+`describe(stat)` возвращает полосу шкалы статистики `stat` (`level_scale`) и `None` для статистики без шкалы, с неопределенным значением (nan) или для ключа плоских статистик (`get_stats(flat=True)`). Имя, которого нет ни в `stat_names`, ни среди открытых свойств класса, дает `UnknownStatError`.
+
+Шкал у синтаксических статистик нет, поэтому `describe` всегда возвращает `None`.
+
+=== "Код"
+
+    ``` python
+    ss.get_stats()
+    ```
+
+=== "Результат"
+
+    ```
+    {'mean_dependency_distance': 1.9333333333333333,
+     'std_dependency_distance': 1.6110727964792764,
+     'max_dependency_distance': 5.0,
+     'p_adjacent_dependencies': 0.6,
+     'tree_depth': 4.0,
+     'leaves_per_sent': 4.5,
+     'subtrees_per_sent': 4.0,
+     'nodes_per_leaf': 1.9,
+     'verb_valency': 2.0,
+     'coordination_chains_per_sent': 0.5,
+     'mean_coordination_chain_len': 2.0,
+     'clauses_per_sent': 1.5,
+     'mean_clause_len': 5.666666666666667,
+     'subordinate_clauses_per_sent': 0.5,
+     'p_complex_sents': 0.5,
+     'infinitive_clauses_per_sent': 0.0,
+     'modifiers_per_noun': 0.4,
+     'genitive_chains_per_sent': 0.0,
+     'max_genitive_chain_len': 0,
+     'participle_clauses_per_sent': 0.5,
+     'mean_participle_clause_len': 5.0,
+     'converb_clauses_per_sent': 0.5,
+     'mean_converb_clause_len': 2.0,
+     'p_passive': 0.4,
+     'p_agentless_passive': 0.5,
+     'infinitives_per_sent': 0.0,
+     'negations_per_sent': 0.5,
+     'split_predicates_per_sent': 0.0,
+     'noun_verb_ratio': 1.0}
+    ```
+
+Функции работают с токенами spaCy: функции `calc_*` и `find_*` принимают последовательность токенов (`Doc`, `Span` или список), функции `is_*` и `count_*` - отдельный токен; слова последовательности - токены [`is_word`](#helpers). Функции дерева зависимостей взяты из ядра, функции русских конструкций - собственные функции ruTS. Подтипы отношений (`acl:relcl`, `nsubj:pass`, `nummod:gov`) учитываются по базовому отношению ([`base_dep`](#base_dep)) там, где это указано.
+
+## Слова последовательности { #get_words }
+
+<!-- core: stats/syntax_stats.md:get_words fb9eece -->
+``` {.python .signature}
+get_words(tokens, join_hyphens=False)
+```
+
+Слова последовательности токенов в их порядке; с `join_hyphens=True` слово, разрезанное токенизатором по дефисам, - одно слово, представленное частью, которая держит его связь, как у зависимых `get_children` (`губернатор` в `Он вице-губернатор`), или первой частью, если связь держит дефис.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+## Дефисные слова { #hyphenated-words }
+
+<!-- core: stats/syntax_stats.md:hyphenated_words 2598bfe -->
+Токенизатор может разрезать слово по дефисам (`во-первых` на `во`, `-`, `первых`), и тогда парсер вешает каждую часть на свою вершину. С `join_hyphens=True` функции дерева считают одним словом вместе с дефисами слово, части которого склеивает `anyts.utils.joins_previous`. У слова, которое держит вершину предложения, вершины нет; вершина другого слова - вершина его части, которая висит вне слова и ближе всех к корню (при равенстве - слова, а не дефиса). Зависимые слова - слова, чья часть, висящая вне слова, висит на одном из его токенов; каждое представлено этой частью (или своей первой частью, если наружу висит дефис). Поддерево слова - само слово и слова, которые висят на нем прямо или через знаки препинания. Так у каждого слова одна зависимость, и зависит оно от одного слова.
+
+`SyntaxStats` и функции русских конструкций всегда склеивают дефисные слова. Функции ядра, в том числе `is_predicate`, `count_noun_modifiers`, `is_passive`, `has_agent` и `is_agentless`, по умолчанию принимают `join_hyphens=False`: значения `SyntaxStats` они дают с `join_hyphens=True`.
+
+## Вершина предложения { #is_root }
+
+<!-- core: stats/syntax_stats.md:is_root bffd90b -->
+``` {.python .signature}
+is_root(token)
+```
+
+Проверяет, является ли токен вершиной своего предложения: его вершина - он сам.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+## Базовое отношение { #base_dep }
+
+<!-- core: stats/syntax_stats.md:base_dep 66fdc26 -->
+``` {.python .signature}
+base_dep(token)
+```
+
+Отношение токена без подтипа, который Universal Dependencies отделяет двоеточием: `nsubj:pass` дает `nsubj`, `expl:pass` - `expl`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+## Зависимые слова { #get_children }
+
+<!-- core: stats/syntax_stats.md:get_children 2fc8508 -->
+``` {.python .signature}
+get_children(token, join_hyphens=False)
+```
+
+Зависимые слова токена без знаков препинания и пробелов; с `join_hyphens=True` - зависимые всего дефисного слова, к которому относится токен.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+<!-- core: stats/syntax_stats.md:count_children 0178b39 -->
+``` {.python .signature}
+count_children(token, join_hyphens=False)
+```
+
+Количество зависимых слов токена; аргументы - те же, что у `get_children`.
+
+<!-- core: stats/syntax_stats.md:subtree_len bfb372e -->
+``` {.python .signature}
+subtree_len(token, join_hyphens=False)
+```
+
+Количество слов в поддереве токена: сам токен и все его прямые и косвенные зависимые; аргументы - те же, что у `get_children`.
+
+## Формы глагола { #is_finite_verb }
+
+<!-- core: utils/spacy.md:is_finite_verb b2c6b58 -->
+``` {.python .signature}
+is_finite_verb(token)
+```
+
+Проверяет, является ли токен финитным глаголом: часть речи `VERB` с `VerbForm=Fin`, поэтому финитный вспомогательный глагол (`AUX`) им не является.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+<!-- core: utils/spacy.md:is_infinitive 6d44bde -->
+``` {.python .signature}
+is_infinitive(token)
+```
+
+Проверяет, является ли токен инфинитивом: `VerbForm=Inf` при любой части речи.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+``` {.python .signature}
+is_participle(token)
+```
+
+``` {.python .signature}
+is_converb(token)
+```
+
+`is_participle` проверяет, является ли токен полным причастием (`VerbForm=Part` без `Variant=Short`), `is_converb` - деепричастием (`VerbForm=Conv`); аргумент - тот же токен.
+
+## Сказуемое клаузы { #is_predicate }
+
+<!-- core: stats/syntax_stats.md:is_predicate 1c57281 -->
+``` {.python .signature}
+is_predicate(token, join_hyphens=False)
+```
+
+Проверяет, может ли слово быть сказуемым своей клаузы: глагол (`VERB`, `AUX`) или слово с собственным подлежащим (`nsubj`, `csubj` и их подтипы, `anyts.constants.SUBJECT_DEPS`), поэтому именное сказуемое в `он высок` проходит, а вводное слово - нет.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+## Цепочки модификаторов { #calc_modifier_chains }
+
+<!-- core: stats/syntax_stats.md:calc_modifier_chains f16f96d -->
+``` {.python .signature}
+calc_modifier_chains(tokens, is_modifier, join_hyphens=False)
+```
+
+Длины цепочек вложенных модификаторов в порядке слов. Цепочка - два и более модификатора, каждый из которых висит на предыдущем, как дополнения в `повышение эффективности использования ресурсов` (длина 3); что считать модификатором (дополнение с предлогом, существительное в родительном падеже), решает проверка языка `is_modifier`. Цепочка начинается с модификатора, вершина которого модификатором не является, а ее длина - число модификаторов в самой длинной ветви. Связи - те же, что у `get_children`: знак препинания связью не является, а с `join_hyphens` дефисное слово - одно звено.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
+| `is_modifier` | `Callable[[Token], bool]` | - | Является ли слово модификатором цепочки |
+| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+
+Проверка, которую нельзя вызвать, дает `SourceTypeError`.
+
+## Вспомогательные функции { #helpers }
+
+<!-- core: utils/spacy.md:is_word 70a9990 -->
+``` {.python .signature}
+is_word(token)
+```
+
+Проверяет, является ли токен словом: не пробелом и не токеном `is_punctuation`, поэтому символы вроде `%`, `€`, `+` и невидимые знаки тоже не слова. Такие токены - слова `iter_doc_tokens` и узлы дерева зависимостей синтаксических статистик.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+
+<!-- core: utils/spacy.md:has_feature df7b055 -->
+``` {.python .signature}
+has_feature(token, field, value)
+```
+
+Проверяет, есть ли у токена морфологический признак с заданным значением: `has_feature(token, "VerbForm", "Fin")`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `token` | `Token` | - | Токен |
+| `field` | `str` | - | Название признака |
+| `value` | `str` | - | Значение признака |
+
+``` {.python .signature}
+get_lemma(token)
+```
+
+Лемма токена в нижнем регистре по разбору pymorphy3 с частью речи токена (`ruts.utils.lemmatize`), а не `token.lemma_`.
