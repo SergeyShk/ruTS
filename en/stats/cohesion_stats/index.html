@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/">
       
       
-        <link rel="prev" href="../syntax_stats_funcs/">
+        <link rel="prev" href="../syntax_stats/">
       
       
-        <link rel="next" href="../cohesion_stats_funcs/">
+        <link rel="next" href="../lexical_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Statistics module - RuTS</title>
+        <title>Cohesion statistics - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Statistics module
+              Cohesion statistics
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1322,92 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1423,7 +1059,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1436,94 +1072,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1548,7 +1096,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1566,7 +1114,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1592,28 +1140,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1636,22 +1162,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Binary overlap
       
     </span>
   </a>
@@ -1659,10 +1185,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#proportional_overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Proportional overlap
       
     </span>
   </a>
@@ -1670,10 +1196,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Pronouns and demonstratives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#given" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Givenness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal_cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal cohesion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connectors
       
     </span>
   </a>
@@ -1682,6 +1241,94 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_overlaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlaps at once
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ConnectorMatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connector matcher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connector search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#word_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Word features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_doc_units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Words of a Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_pronoun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pronoun
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_content_word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content word
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1701,92 +1348,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../lexical_stats/" class="md-nav__link">
         
   
@@ -1794,7 +1355,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1807,92 +1368,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1908,7 +1383,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1917,42 +1392,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2836,28 +2275,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2880,22 +2297,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Binary overlap
       
     </span>
   </a>
@@ -2903,10 +2320,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#proportional_overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Proportional overlap
       
     </span>
   </a>
@@ -2914,10 +2331,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Pronouns and demonstratives
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#given" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Givenness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal_cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal cohesion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connectors
       
     </span>
   </a>
@@ -2926,6 +2376,94 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_overlaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlaps at once
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ConnectorMatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connector matcher
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connector search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#word_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Word features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_doc_units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Words of a Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_pronoun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pronoun
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_content_word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content word
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,11 +2488,16 @@
 
 
 <h1 id="cohesion-statistics">Cohesion statistics<a class="headerlink" href="#cohesion-statistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.cohesion_stats.CohesionStats</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The cohesion statistics of a text in the manner of <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: the overlap of nouns, arguments (nouns and pronouns) and content words between adjacent and between all pairs of sentences; givenness - the share of pronouns, the pronoun-to-noun ratio, the share of demonstratives and the share of content words already seen in the text; temporal cohesion - the repetition of the tense and aspect of the verbs of adjacent sentences; the density of connectors by class and type per 1000 words. Sentences are compared by lemmas. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The cohesion statistics of a text in the manner of <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: the overlap of the sentences, the givenness, the temporal cohesion and the connectors of a dictionary. The sentences are compared by lemmas. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type, connectors that are not a dictionary of phrases and pairs of strings;</li>
+<li><code>SourceError</code> - a source without words;</li>
+<li><code>ParameterError</code> - an unknown class or kind of a connector.</li>
+</ul>
+<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the pymorphy3 analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first pymorphy3 analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <p>The words are classified by the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> tags or by the Universal Dependencies annotation of a <code>Doc</code>:</p>
 <table>
 <thead>
@@ -2972,8 +2515,8 @@
 </tr>
 <tr>
 <td style="text-align: left;">Pronouns</td>
-<td style="text-align: left;"><code>NPRO</code>, <code>Apro</code>, lemmas from <code>DEMONSTRATIVE_LEMMAS</code></td>
-<td style="text-align: left;"><code>PRON</code>, <code>DET</code>, lemmas from <code>DEMONSTRATIVE_LEMMAS</code></td>
+<td style="text-align: left;"><code>NPRO</code>, <code>Apro</code>, lemmas of <code>DEMONSTRATIVE_LEMMAS</code></td>
+<td style="text-align: left;"><code>PRON</code>, <code>DET</code>, lemmas of <code>DEMONSTRATIVE_LEMMAS</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Arguments</td>
@@ -2987,7 +2530,7 @@
 </tr>
 <tr>
 <td style="text-align: left;">Demonstratives</td>
-<td style="text-align: left;">lemmas from <code>DEMONSTRATIVE_LEMMAS</code>: этот, это, тот, такой, таковой, столько, сей, оный</td>
+<td style="text-align: left;">lemmas of <code>DEMONSTRATIVE_LEMMAS</code>: этот, это, тот, такой, таковой, столько, сей, оный</td>
 <td style="text-align: left;">the same lemmas</td>
 </tr>
 <tr>
@@ -2997,7 +2540,474 @@
 </tr>
 </tbody>
 </table>
-<p>Connectors are searched in every sentence by the dictionary <code>ruts/resources/connectors.tsv</code> (317 entries, see <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); your own dictionary is passed with the <code>connectors</code> parameter. A one-word connector counts only with a part of speech from <code>CONNECTOR_POS</code> (conjunction, particle, adverb, preposition, interjection) or from <code>CONNECTOR_POS_EXTRA</code> for particular words (словом, главное, допустим, точнее): «раз» as a noun does not count. Context rules drop the prepositions and homonyms of connectors: <em>после обеда</em>, <em>пока что</em>, <em>не правда ли</em>, <em>ещё раз</em>, <em>это значит</em>. The part of speech is taken from the <code>Doc</code> annotation; without it a word passes if a suitable part of speech appears in at least one pymorphy3 analysis. Classes after Krioni, Nikin and Filippova (2008):</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CohesionStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">cs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                       Статистика                        | Значение
+--------------------------------------------------------------------
+Повтор существительных в соседних предложениях           |   0.33
+Повтор существительных во всех парах предложений         |   0.50
+Повтор аргументов в соседних предложениях                |   0.33
+Повтор аргументов во всех парах предложений              |   0.67
+Повтор знаменательных слов в соседних предложениях       |   0.33
+Повтор знаменательных слов во всех парах предложений     |   0.50
+Доля общих знаменательных слов в соседних предложениях   |   0.11
+Доля общих знаменательных слов во всех парах предложений |   0.19
+Доля местоимений                                         |   0.14
+Отношение местоимений к существительным                  |   0.50
+Доля указательных местоимений                            |   0.05
+Доля знаменательных слов, встречавшихся ранее            |   0.29
+Повтор времени в соседних предложениях                   |   0.67
+Повтор вида в соседних предложениях                      |   0.33
+Темпоральная связность                                   |   0.50
+Коннекторов на 1000 слов                                 |  47.62
+Межпредложенческих коннекторов на 1000 слов              |   0.00
+Внутрипредложенческих коннекторов на 1000 слов           |  47.62
+Причинных коннекторов на 1000 слов                       |   0.00
+Противительных коннекторов на 1000 слов                  |   0.00
+Уступительных коннекторов на 1000 слов                   |   0.00
+Временных коннекторов на 1000 слов                       |   0.00
+Аддитивных коннекторов на 1000 слов                      |  47.62
+Условных коннекторов на 1000 слов                        |   0.00
+Переформулирующих коннекторов на 1000 слов               |   0.00
+Первичных коннекторов на 1000 слов                       |  47.62
+Вторичных коннекторов на 1000 слов                       |   0.00
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Sentence extraction tool; given, it splits a <code>Doc</code> by its text too, whatever its boundaries</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Word extraction tool; given, it is applied to the text of a <code>Doc</code> too</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>connectors</code></td>
+<td style="text-align: left;"><code>dict[str, tuple[str, str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Class and kind by connector; the dictionary of <code>load_connectors</code> by default</td>
+</tr>
+</tbody>
+</table>
+<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code>, <code>lemmas</code></td>
+<td style="text-align: left;"><code>tuple[tuple[str]]</code></td>
+<td style="text-align: left;">Words and lemmas of every sentence with words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the sentences with words and of the words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the words by kind</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_given</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the content words whose lemma was used before</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_connectors</code>, <code>connector_spans</code>, <code>c_connectors</code></td>
+<td style="text-align: left;"><code>int</code>, <code>tuple[Connector]</code>, <code>dict[str, int]</code></td>
+<td style="text-align: left;">Number of the connectors, their occurrences and their number by connector</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_inter_connectors</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the inter-sentential connectors</td>
+</tr>
+</tbody>
+</table>
+<p>The extractors given are kept in the attributes <code>sents_extractor</code> and <code>words_extractor</code>, <code>None</code> without them.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">lemmas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_pronouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_content_words</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_given</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">connector_spans</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">c_connectors</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('он', 'смотреть', 'на', 'птица')
+(6, 3, 14, 4)
+(Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
+{'и': 1}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Every metric is an attribute of the object, computed when it is created; <code>get_stats</code> gives those of <code>stats_desc</code>, all but <code>mood_repetition</code> by default. The functions of the cards take a sentence as the collection of its elements - lemmas of nouns, arguments or content words, values of a feature of its verbs - and see no language.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>noun_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs of sentences sharing a noun</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">Neighbouring sentences tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>noun_overlap_all</code></a></td>
+<td style="text-align: left;">Share of all the pairs of sentences sharing a noun</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">The whole text tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>argument_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs sharing a noun or a pronoun</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">Neighbouring sentences tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>argument_overlap_all</code></a></td>
+<td style="text-align: left;">Share of all the pairs sharing a noun or a pronoun</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">The whole text tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>content_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs sharing a content word</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">Neighbouring sentences tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>content_overlap_all</code></a></td>
+<td style="text-align: left;">Share of all the pairs sharing a content word</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">The whole text tied tighter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#proportional_overlap"><code>content_overlap_prop_adjacent</code></a></td>
+<td style="text-align: left;">Mean share of the shared content words (Dice) in the adjacent pairs</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">More words shared by neighbours</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#proportional_overlap"><code>content_overlap_prop_all</code></a></td>
+<td style="text-align: left;">Mean share of the shared content words (Dice) in all the pairs</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
+<td style="text-align: left;">More words shared across the text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>p_pronouns</code></a></td>
+<td style="text-align: left;">Share of the pronouns among the words</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">More reference by pronouns</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>pronoun_noun_ratio</code></a></td>
+<td style="text-align: left;">Ratio of the pronouns to the nouns</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without nouns</td>
+<td style="text-align: left;">More pronouns per noun</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>p_demonstratives</code></a></td>
+<td style="text-align: left;">Share of the demonstratives among the words</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">More pointing back</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#given"><code>p_given</code></a></td>
+<td style="text-align: left;">Share of the content words whose lemma was used before in the text</td>
+<td style="text-align: left;">0-1, <code>nan</code> without content words</td>
+<td style="text-align: left;">More given information</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>tense_repetition</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs of sentences with the same dominant tense</td>
+<td style="text-align: left;">0-1, <code>nan</code> without two adjacent sentences with the feature</td>
+<td style="text-align: left;">A steadier tense</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>mood_repetition</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs with the same dominant mood</td>
+<td style="text-align: left;">0-1, <code>nan</code> without two adjacent sentences with the feature</td>
+<td style="text-align: left;">A steadier mood</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>aspect_repetition</code></a></td>
+<td style="text-align: left;">Share of the adjacent pairs with the same dominant aspect</td>
+<td style="text-align: left;">0-1, <code>nan</code> without two adjacent sentences with the feature</td>
+<td style="text-align: left;">A steadier aspect</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>temporal_cohesion</code></a></td>
+<td style="text-align: left;">Mean of the repetitions of <code>temporal_features</code></td>
+<td style="text-align: left;">0-1, <code>nan</code> when one of them is <code>nan</code></td>
+<td style="text-align: left;">A steadier time frame</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors</code></a></td>
+<td style="text-align: left;">Connectors per 1000 words</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">More explicit links</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_inter</code></a></td>
+<td style="text-align: left;">Inter-sentential connectors per 1000 words</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">More links to the sentences before</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_intra</code></a></td>
+<td style="text-align: left;">Intra-sentential connectors per 1000 words</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">More links inside the sentences</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></a></td>
+<td style="text-align: left;">Connectors of a class or a kind of the matcher per 1000 words</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">More links of the class or the kind</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="overlap">Binary overlap<a class="headerlink" href="#overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_overlap_adjacent</code> · <code>noun_overlap_all</code> · <code>argument_overlap_adjacent</code> · <code>argument_overlap_all</code> · <code>content_overlap_adjacent</code> · <code>content_overlap_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>The binary overlap of Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 over the adjacent pairs, CRFNOa, CRFAOa, CRFSOa over all of them): the share of the pairs of sentences that share at least one element; <code>nan</code> for a text shorter than two sentences. All the pairs are counted as in <code>calc_overlaps</code>, without going through them.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of pairs sharing an element}}{\textrm{Number of pairs}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Elements of every sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>adjacent</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Count the adjacent pairs only, otherwise all the pairs</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="proportional_overlap">Proportional overlap<a class="headerlink" href="#proportional_overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>content_overlap_prop_adjacent</code> · <code>content_overlap_prop_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_proportional_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>The proportional overlap of Coh-Metrix (CRFCWO1, CRFCWOa): the Dice coefficient of a pair of sentences (<code>dice</code>) averaged over the pairs; <code>nan</code> for a text shorter than two sentences. Over all the pairs the sum is computed as in <code>calc_overlaps</code>, without going through them.</p>
+<div class="arithmatex">\[
+\frac{1}{\textrm{Number of pairs}} \sum_{(A, B)} \textrm{Dice}(A, B)
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Elements of every sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>adjacent</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Count the adjacent pairs only, otherwise all the pairs</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">dice</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+</code></pre></div>
+<p>The Dice coefficient of two sets, 0 for two empty sets.</p>
+<div class="arithmatex">\[
+\frac{2 \times |A \cap B|}{|A| + |B|}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>first</code></td>
+<td style="text-align: left;"><code>frozenset[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">First set</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>second</code></td>
+<td style="text-align: left;"><code>frozenset[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Second set</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="pronouns">Pronouns and demonstratives<a class="headerlink" href="#pronouns" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_pronouns</code> · <code>pronoun_noun_ratio</code> · <code>p_demonstratives</code></p>
+<p>The pronouns, the nouns and the demonstratives are the words <code>analyze</code> marks so, with the features of <code>word_info</code> by default.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of pronouns}}{\textrm{Number of words}}, \quad \frac{\textrm{Number of pronouns}}{\textrm{Number of nouns}}, \quad \frac{\textrm{Number of demonstratives}}{\textrm{Number of words}}
+\]</div>
+<p>In ruTS they are marked by the functions of the <a href="#word_info">word features</a> after the table of the classes of words.</p>
+</div>
+<div class="metric-card">
+<h3 id="given">Givenness<a class="headerlink" href="#given" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_given</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_given</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
+</code></pre></div>
+<p>The number of given elements: an element is given when the same lemma was used earlier in any sentence, the current one included; the first occurrence is new.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Lemmas of every sentence in the order of the text</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="temporal_cohesion">Temporal cohesion<a class="headerlink" href="#temporal_cohesion" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>tense_repetition</code> · <code>mood_repetition</code> · <code>aspect_repetition</code> · <code>temporal_cohesion</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_repetition</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
+</code></pre></div>
+<p>The repetition of the tense and of the aspect of Coh-Metrix (SMTEMP): the share of the adjacent pairs of sentences whose verbs have the same dominant value of the feature; a pair where one of the sentences has no verb with the feature is skipped, and without a single such pair the value is <code>nan</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of pairs with the same dominant value}}{\textrm{Number of pairs with the feature}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Values of the feature of the verbs of every sentence</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">dominant</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+</code></pre></div>
+<p>The dominant value: the most frequent one, the first of the equally frequent; <code>None</code> for an empty list.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Values</td>
+</tr>
+</tbody>
+</table>
+<p><code>CohesionStats</code> of ruTS does not compare the mood: <code>mood_repetition</code> is always <code>nan</code>, and <code>temporal_cohesion</code> is the mean of <code>tense_repetition</code> and <code>aspect_repetition</code>.</p>
+</div>
+<div class="metric-card">
+<h3 id="connectors">Connectors<a class="headerlink" href="#connectors" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>connectors</code> · <code>connectors_inter</code> · <code>connectors_intra</code> · <code>connectors_&lt;class&gt;</code> · <code>connectors_&lt;kind&gt;</code></p>
+<p>The occurrences of the connectors found in every sentence by the matcher of <code>connector_matcher_class</code>, per 1000 words. An inter-sentential connector links a sentence to the ones before: it opens a sentence, unless the matcher takes it for a subordinator (<code>is_subordinator</code>), whose clause or phrase belongs to the same sentence; the others are intra-sentential. Every class and kind of the matcher gives a density: <code>connectors_causal</code>, <code>connectors_adversative</code>, <code>connectors_concessive</code>, <code>connectors_temporal</code>, <code>connectors_additive</code>, <code>connectors_conditional</code>, <code>connectors_reformulative</code>, <code>connectors_primary</code> and <code>connectors_secondary</code> by default.</p>
+<div class="arithmatex">\[
+1000 \cdot \frac{\textrm{Number of connectors}}{\textrm{Number of words}}
+\]</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">load_connectors</span><span class="p">()</span>
+</code></pre></div>
+<p>The connector dictionary of ruTS: the file <code>ruts/resources/connectors.tsv</code>, 316 connectors with a class of <code>CONNECTOR_CLASSES</code> and a kind of <code>CONNECTOR_TYPES</code> of <code>ruts.constants</code>, compiled after the classification of Krioni, Nikin and Filippova (2008) and checked against the <a href="https://rstreebank.ru/markersFull">Ru-RSTreebank</a> marker list, the <a href="https://ruslinkers.github.io/">Ruscon</a> database and the causal marker list of Toldova et al. (2018). The one-word «и», «а», «но» are in the dictionary, as in Coh-Metrix and TAACO; «что» and «как» are no connectors.</p>
 <table>
 <thead>
 <tr>
@@ -3008,7 +3018,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">Causal (including consequential and purposive)</td>
+<td style="text-align: left;">Causal (consequential and purposive included)</td>
 <td style="text-align: left;"><code>causal</code></td>
 <td style="text-align: left;">потому что, поэтому, в результате, чтобы, таким образом</td>
 </tr>
@@ -3044,282 +3054,420 @@
 </tr>
 </tbody>
 </table>
-<p>Connector type: primary - conjunctions, adverbs and particles (потому что, однако, затем), secondary - lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами).</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>CohesionStats</code> object is initialized.</p>
+<p>The primary connectors (<code>primary</code>) are conjunctions, adverbs and particles (потому что, однако, затем), the secondary ones (<code>secondary</code>) lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами). The rules by which a word of the dictionary counts as a connector are those of the <a href="#ConnectorMatcher">matcher</a>.</p>
 </div>
-<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer. <code>analyze</code> reads a string as well as a <code>Doc</code>: for a <code>Doc</code> with part-of-speech annotation the parts of speech, tense and aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the pymorphy3 analysis with the part of speech of the token (<a href="../cohesion_stats_funcs/#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first pymorphy3 analysis (<a href="../cohesion_stats_funcs/#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>join_hyphens = True</code>, <code>во-первых</code> is one word). A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> (<code>sents_extractor_class</code>); the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given, a parameter the core does not have. The connectors come from the dictionary of <code>load_connectors</code> and are found by <code>RussianConnectorMatcher</code> (<a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>), the core <code>ConnectorMatcher</code> with the Russian normalization of words and parts of speech. The <code>print_stats</code> table has Russian headers and the descriptions of <code>ruts.constants.COHESION_STATS_DESC</code>, the error messages are in Russian (<code>CORE_MESSAGES</code>).</p>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Sentence extraction tool; when given, it is applied to the text of a Doc too</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; when given, it is applied to the text of a Doc too</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors</code></td>
-<td style="text-align: center;">dict[str, tuple[str, str]]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Connector dictionary - class and type by connector; if not given, the dictionary from <code>resources</code> is used</td>
-</tr>
-</tbody>
-</table>
-<p>A source that is neither a string nor a <code>Doc</code>, an extractor of another type and connectors that are not a dictionary of phrases and pairs of strings raise <code>SourceTypeError</code>; a source without words raises <code>SourceError</code>, and an unknown class or type of a connector <code>ParameterError</code>.</p>
-<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>words</code>, <code>lemmas</code></td>
-<td style="text-align: center;">tuple[tuple[str]]</td>
-<td style="text-align: center;">Words and lemmas of every sentence with words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the sentences with words and of the words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the words by kind</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_given</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of the content words whose lemma was used before</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_connectors</code>, <code>connector_spans</code>, <code>c_connectors</code></td>
-<td style="text-align: center;">int, tuple[Connector], dict[str, int]</td>
-<td style="text-align: center;">Number of the connectors, their occurrences and their number by connector</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_inter_connectors</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of the inter-sentential connectors</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_overlap_adjacent</code>, <code>noun_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Shares of the adjacent and of all pairs of sentences sharing a noun</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>argument_overlap_adjacent</code>, <code>argument_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">The same for a noun or a pronoun</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_adjacent</code>, <code>content_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">The same for a content word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_prop_adjacent</code>, <code>content_overlap_prop_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean share of the shared content words (Dice) in the adjacent and in all pairs</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_pronouns</code>, <code>p_demonstratives</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Shares of the pronouns and of the demonstratives among the words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>pronoun_noun_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Ratio of the pronouns to the nouns</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_given</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of the content words whose lemma was used before in the text</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tense_repetition</code>, <code>mood_repetition</code>, <code>aspect_repetition</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Shares of the adjacent pairs of sentences with the same dominant tense, mood and aspect</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>temporal_cohesion</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean of the repetitions of <code>temporal_features</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Connectors per 1000 words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_inter</code>, <code>connectors_intra</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Inter-sentential connectors per 1000 words, which link a sentence to the ones before: those opening a sentence, unless the matcher takes them for a subordinating conjunction (<code>is_subordinator</code>: one of its <code>subordinators</code> or a one-word connector tagged <code>SCONJ</code>, <em>when he came, ...</em>), whose clause belongs to the same sentence; and intra-sentential ones, the others</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Connectors of every class and kind of the matcher per 1000 words: <code>connectors_causal</code>, <code>connectors_adversative</code>, <code>connectors_concessive</code>, <code>connectors_temporal</code>, <code>connectors_additive</code>, <code>connectors_conditional</code>, <code>connectors_reformulative</code>, <code>connectors_primary</code> and <code>connectors_secondary</code> by default</td>
-</tr>
-</tbody>
-</table>
-<p>An overlap of a text of one sentence, a repetition without two adjacent sentences with the feature, and a share without anything to divide by are <code>nan</code>.</p>
-<p><code>CohesionStats</code> of ruTS does not compare the mood: <code>mood_repetition</code> is always <code>nan</code> and is not in <code>get_stats</code>, and <code>temporal_cohesion</code> is the mean of <code>tense_repetition</code> and <code>aspect_repetition</code>. The extractors given are kept as attributes:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;">Sentence extraction tool given, <code>None</code> without it</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;">Word extraction tool given, <code>None</code> without it</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Every statistic can be computed separately by calling the corresponding function. Detailed information on the cohesion statistics and the functions used to compute them is available in the corresponding <a href="../cohesion_stats_funcs/">section</a>.</p>
+<p>A list of sentences that is a string, a <code>Doc</code>, an iterator, a set or a table raises <code>SourceTypeError</code>, and so does a sentence that is not a list of strings (<code>check_words</code>), such as a list of spaCy tokens. The overlaps (<code>calc_overlap</code>, <code>calc_proportional_overlap</code>, <code>calc_overlaps</code>) take a sentence as a set too; <code>count_given</code> and <code>calc_repetition</code> count the words in order and refuse a set.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlap</span><span class="p">,</span> <span class="n">calc_repetition</span><span class="p">,</span> <span class="n">count_given</span>
+
+<span class="n">sets</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"окно"</span><span class="p">}]</span>
+<span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">),</span> <span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">count_given</span><span class="p">([[</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"птица"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">]])</span>
+<span class="n">calc_repetition</span><span class="p">([[</span><span class="s2">"past"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"past"</span><span class="p">,</span> <span class="s2">"pres"</span><span class="p">,</span> <span class="s2">"past"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"futr"</span><span class="p">]])</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(0.3333333333333333, 0.5)
+2
+0.5
+</code></pre></div>
+</div>
+</div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed cohesion statistics.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CohesionStats</span>
-
-<span class="c1"># Prepare the data</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
-
-<span class="c1"># Compute the statistics</span>
-<span class="n">cs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'noun_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'noun_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'argument_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'argument_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="s1">'content_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'content_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'content_overlap_prop_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.1111111111111111,
-<span class="s1">'content_overlap_prop_all'</span>:<span class="w"> </span><span class="m">0</span>.18650793650793648,
-<span class="s1">'p_pronouns'</span>:<span class="w"> </span><span class="m">0</span>.14285714285714285,
-<span class="s1">'pronoun_noun_ratio'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_demonstratives'</span>:<span class="w"> </span><span class="m">0</span>.047619047619047616,
-<span class="s1">'p_given'</span>:<span class="w"> </span><span class="m">0</span>.2857142857142857,
-<span class="s1">'tense_repetition'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="s1">'aspect_repetition'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'temporal_cohesion'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'connectors'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_inter'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_intra'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_causal'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_adversative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_concessive'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_temporal'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_additive'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_conditional'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_reformulative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_primary'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_secondary'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the cohesion statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<p>Words, lemmas and counters are available as attributes:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">lemmas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="c1"># ('он', 'смотреть', 'на', 'птица')</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_pronouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_content_words</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_given</span>
-<span class="c1"># (6, 3, 14, 4)</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">connector_spans</span>
-<span class="c1"># (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'noun_overlap_adjacent': 0.3333333333333333,
+ 'noun_overlap_all': 0.5,
+ 'argument_overlap_adjacent': 0.3333333333333333,
+ 'argument_overlap_all': 0.6666666666666666,
+ 'content_overlap_adjacent': 0.3333333333333333,
+ 'content_overlap_all': 0.5,
+ 'content_overlap_prop_adjacent': 0.1111111111111111,
+ 'content_overlap_prop_all': 0.18650793650793648,
+ 'p_pronouns': 0.14285714285714285,
+ 'pronoun_noun_ratio': 0.5,
+ 'p_demonstratives': 0.047619047619047616,
+ 'p_given': 0.2857142857142857,
+ 'tense_repetition': 0.6666666666666666,
+ 'aspect_repetition': 0.3333333333333333,
+ 'temporal_cohesion': 0.5,
+ 'connectors': 47.61904761904762,
+ 'connectors_inter': 0.0,
+ 'connectors_intra': 47.61904761904762,
+ 'connectors_causal': 0.0,
+ 'connectors_adversative': 0.0,
+ 'connectors_concessive': 0.0,
+ 'connectors_temporal': 0.0,
+ 'connectors_additive': 47.61904761904762,
+ 'connectors_conditional': 0.0,
+ 'connectors_reformulative': 0.0,
+ 'connectors_primary': 47.61904761904762,
+ 'connectors_secondary': 0.0}
 </code></pre></div>
 </div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
-<p>To illustrate the method, we reuse the code from the <code>get_stats</code> example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+</div>
+</div>
+<h2 id="calc_overlaps">Overlaps at once<a class="headerlink" href="#calc_overlaps" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_overlaps</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">proportional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>The values of <code>calc_overlap</code> and <code>calc_proportional_overlap</code> over the adjacent and over all the pairs at once, as an <code>Overlap</code> named tuple with the fields <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> and <code>prop_all</code>; without <code>proportional</code> the last two are <code>nan</code>. The values over all the pairs are computed without going through every pair: the sharing pairs are counted over bit masks of the sentences, and the sum of the Dice coefficients over the histograms of the lengths of the sentences holding each element, added by <code>math.fsum</code> so that it does not depend on the order of the elements.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Elements of every sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>proportional</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Compute the proportional overlap as well</td>
+</tr>
+</tbody>
+</table>
+<p><code>CohesionStats</code> computes with it the overlaps of the nouns and of the arguments without the proportional ones, and those of the content words with them.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlaps</span>
 
-<span class="c1"># Print the table of computed statistics</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                       </span>Статистика<span class="w">                        </span><span class="p">|</span><span class="w"> </span>Значение
---------------------------------------------------------------------
-Повтор<span class="w"> </span>существительных<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>существительных<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>местоимений<span class="w">                                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.14
-Отношение<span class="w"> </span>местоимений<span class="w"> </span>к<span class="w"> </span>существительным<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>указательных<span class="w"> </span>местоимений<span class="w">                            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
-Доля<span class="w"> </span>знаменательных<span class="w"> </span>слов,<span class="w"> </span>встречавшихся<span class="w"> </span>ранее<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Повтор<span class="w"> </span>времени<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Темпоральная<span class="w"> </span>связность<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                 </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Межпредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Внутрипредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">           </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Временных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Аддитивных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                      </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Условных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Переформулирующих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Первичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Вторичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+<span class="n">calc_overlaps</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"окно"</span><span class="p">}])</span>
 </code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>The <code>to_dataframe</code> method (the statistics as a one-row <code>pandas.DataFrame</code>) and the <code>describe</code> method are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the cohesion statistics have no scales, so <code>describe</code> always gives <code>None</code>.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>Overlap(adjacent=0.3333333333333333, all=0.5, prop_adjacent=0.2222222222222222, prop_all=0.3055555555555555)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="ConnectorMatcher">Connector matcher<a class="headerlink" href="#ConnectorMatcher" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">RussianConnectorMatcher</span><span class="p">(</span><span class="n">connectors</span><span class="p">)</span>
+</code></pre></div>
+<p>The search of the connectors (discourse markers: <em>because</em>, <em>however</em>, <em>on the other hand</em>) of a dictionary in the sentences of a text. The dictionary gives the class of every connector - causal, adversative, concessive, temporal, additive, conditional or reformulative (<code>CONNECTOR_CLASSES</code>) - and its kind, primary or secondary (<code>CONNECTOR_KINDS</code>). A connector is matched by the normalized forms of its words, the longest one at every position, without overlaps; a period or a hyphen inside a connector may be split off by the tokenizer (<em>e.g.</em> as <code>e</code>, <code>g</code>). An occurrence is a <code>Connector</code>: the number of the sentence <code>sent</code>, the positions <code>start</code> and <code>end</code> of its words, the connector <code>text</code> as the dictionary writes it, its class <code>cls</code> and kind <code>kind</code>.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a dictionary that is not a mapping of a phrase to a pair of strings;</li>
+<li><code>ParameterError</code> - an unknown class or kind.</li>
+</ul>
+<p><code>RussianConnectorMatcher</code> is a subclass of the core <code>ConnectorMatcher</code> with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (<code>normalize_yo</code>). A one-word connector takes a part of speech of the core <code>CONNECTOR_POS</code> (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) or of <code>CONNECTOR_POS_EXTRA</code> for its form (for example: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели and коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» as a noun is no connector. The context rules are lists of <code>ruts.constants</code>: words after a connector (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) and before it (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>) that make it no connector; connectors that count inside a sentence only after particular words (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) and do not count at its start (<code>CONNECTOR_NOT_AT_START</code>: the interrogative <em>отчего</em>); parts of speech of the word after a connector that make it a preposition or a member of the clause (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). The rules read through a punctuation mark only for <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>, <em>после «Ревизора»</em>), so the parenthetical <em>значит,</em> stays a connector, and a mark between the words of a connector of <code>CONNECTOR_SPLIT_BY_MARKS</code> splits it (<em>так, как</em>). These parts of speech and lists are attributes of the matcher: <code>CONNECTOR_POS</code> is <code>pos_tags</code>, the others are named without <code>CONNECTOR_</code> in lower case (<code>CONNECTOR_BLOCKED_AFTER</code> is <code>blocked_after</code>); the attributes <code>not_after_pos</code> and <code>start_only_pos</code> are empty in ruTS, so these rules of <code>find</code> do not apply.</p>
+<p><code>find(words, sent_index, pos, breaks)</code> returns the occurrences of the connectors in a sentence in the order of its words. The words are those of one sentence without punctuation, the first one its start. With the parts of speech, a one-word connector counts only with one of <code>pos_tags</code> or of <code>pos_extra</code> for its form, never after one of <code>not_after_pos</code>, and with one of <code>start_only_pos</code> only at the start of the sentence; a word without a part of speech (<code>None</code>) passes. Without the parts of speech the rules that read them are skipped. The positions of the punctuation marks <code>breaks</code> cut a connector off its neighbours: a rule does not read a word across a mark, so in <em>so, the end</em> the word after the comma neither blocks nor lets the connector count, unless the connector is one of <code>read_through_marks</code>, and a mark between the words of a connector of <code>split_by_marks</code> makes it none; without them the words are read as adjacent.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sent_index</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Number of the sentence, written into the occurrences</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Parts of speech of the words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>breaks</code></td>
+<td style="text-align: left;"><code>set[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Positions of the words a punctuation mark stands before</td>
+</tr>
+</tbody>
+</table>
+<p>Words that are not a list of strings and parts of speech that are not a list of strings and <code>None</code> (the tags <code>token.pos_</code> of spaCy, not the numbers <code>token.pos</code>) and positions of the marks that are not a collection raise <code>SourceTypeError</code>, a number of the sentence or a position of a mark that is not an integer and parts of speech not as many as the words <code>ParameterError</code>.</p>
+<p><code>is_subordinator(connector, pos=None)</code> checks whether an occurrence of a connector ties its clause or phrase to its own sentence: a connector of <code>subordinators</code>, or a one-word connector whose part of speech <code>pos</code> is <code>SCONJ</code> or <code>ADP</code>. The clause of a subordinating conjunction and the phrase of a preposition belong to the sentence of the connector wherever it stands, so a subordinator opening a sentence (<em>when he came, ...</em>, <em>despite the rain, ...</em>) does not link it to the ones before.</p>
+<p>The subordinators of ruTS besides the one-word ones tagged <code>SCONJ</code> and <code>ADP</code> are <code>CONNECTOR_SUBORDINATORS</code>: the multi-word conjunctions and prepositions (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) and the one-word ones the spaCy models or pymorphy3 tag otherwise (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). A conjunction of <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) opening a sentence attaches it to the one before, so it is no subordinator.</p>
+<h2 id="find_connectors">Connector search<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">find_connectors</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sent_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Searches a sentence for connectors with the <code>find</code> method of <code>RussianConnectorMatcher</code> over the dictionary <code>connectors</code>, that of <code>load_connectors</code> by default; the other parameters and the errors are those of the matcher and of <code>find</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>connectors</code></td>
+<td style="text-align: left;"><code>dict[str, tuple[str, str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Class and kind by connector</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">connector_pos</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>The UD part of speech of a word by pymorphy3 for the check of a connector: the first analysis with a part of speech that suits a connector (<code>CONNECTOR_POS</code> or <code>CONNECTOR_POS_EXTRA</code> for the word), otherwise the first analysis. This is how <code>CohesionStats</code> gets the parts of speech of a string and of a <code>Doc</code> without annotation.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_connectors</span>
+
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Затем"</span><span class="p">,</span> <span class="s2">"иными"</span><span class="p">,</span> <span class="s2">"словами"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"уснул"</span><span class="p">])</span>
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Раз"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"пришел"</span><span class="p">])</span>
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Раз"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"пришел"</span><span class="p">],</span> <span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="s2">"NOUN"</span><span class="p">,</span> <span class="s2">"PRON"</span><span class="p">,</span> <span class="s2">"VERB"</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[Connector(sent=0, start=0, end=1, text='затем', cls='temporal', kind='primary'),
+ Connector(sent=0, start=1, end=3, text='иными словами', cls='reformulative', kind='secondary')]
+[Connector(sent=0, start=0, end=1, text='раз', cls='conditional', kind='primary')]
+[]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="word_info">Word features<a class="headerlink" href="#word_info" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">word_info</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">token_info</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">ud_info</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tense</span><span class="p">,</span> <span class="n">aspect</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first pymorphy3 analysis; <code>words_info</code> does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle without tense. <code>token_info</code> takes them from the spaCy annotation (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> from a given part of speech, tense and aspect of UD; the lemma comes from the pymorphy3 analysis with that part of speech (<code>ruts.utils.lemmatize</code>), not from <code>token.lemma_</code>. <code>unit_info</code> gives the features of a word from its tokens: a single token by <code>token_info</code>, a hyphenated word of several tokens (жили-были, назовите-ка) by the pymorphy3 analysis of the joined text mapped to UD (<code>word_to_ud</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word (<code>word_info</code>, <code>ud_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the sentences of a text (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text the words are extracted from (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">spaCy token (<code>token_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code>, <code>tense</code>, <code>aspect</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Part of speech, tense and aspect of UD (<code>ud_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Tokens of a word (<code>unit_info</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_info</span>
+
+<span class="n">word_info</span><span class="p">(</span><span class="s2">"смотрел"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='past', aspect='impf')
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="split_doc_units">Words of a Doc<a class="headerlink" href="#split_doc_units" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">split_doc_units</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Splits the words of a <code>Doc</code> or a <code>Span</code> into the sentences of a sentence extractor, for a <code>Doc</code> without sentence boundaries or one to split otherwise: the sentences are found in its text in their order, and a word of <code>iter_doc_units</code> belongs to the sentence its first token lies in. The words outside the sentences found, those the extractor drops, are left out, so no sentence found gives no words.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Doc or Span object</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sentence extraction tool</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Join the parts of hyphenated words</td>
+</tr>
+</tbody>
+</table>
+<p><code>CohesionStats</code> always joins the parts of hyphenated words, the function only with <code>join_hyphens=True</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_pos</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<p><code>unit_text</code> gives the text of a word from its tokens without a byte order mark, stress marks and soft hyphens (<code>ruts.utils.strip_marks</code>), <code>unit_pos</code> its part of speech of UD: that of the token for a single token, and that of <code>connector_pos</code> of the joined text for a hyphenated word of several tokens.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Tokens of a word</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_doc_units</span><span class="p">,</span> <span class="n">unit_text</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">blank</span><span class="p">(</span><span class="s2">"ru"</span><span class="p">)(</span><span class="s2">"Жили-были дед да баба. Во-первых, кот спит."</span><span class="p">)</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">())</span>
+<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">(),</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[['Жили', 'были', 'дед', 'да', 'баба'], ['Во', 'первых', 'кот', 'спит']]
+[['Жили-были', 'дед', 'да', 'баба'], ['Во-первых', 'кот', 'спит']]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="is_pronoun">Pronoun<a class="headerlink" href="#is_pronoun" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_pronoun</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a pronoun by the pymorphy3 tags: <code>NPRO</code> (он, себя, кто) or <code>Apro</code> (этот, который, мой, весь).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
+</tr>
+</tbody>
+</table>
+<h2 id="is_content_word">Content word<a class="headerlink" href="#is_content_word" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_content_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a content word by the pymorphy3 tags: a part of speech of <code>CONTENT_POS</code> (nouns, adjectives, verbs in all forms, adverbs) without the grammemes of <code>STOPWORD_GRAMMEMES</code> (pronominal and parenthetical words).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3339,6 +3487,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3407,7 +3561,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

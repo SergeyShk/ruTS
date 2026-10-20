@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/">
       
       
-        <link rel="prev" href="../phon_stats_funcs/">
+        <link rel="prev" href="../phon_stats/">
       
       
-        <link rel="next" href="../syntax_stats_funcs/">
+        <link rel="next" href="../cohesion_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Statistics module - RuTS</title>
+        <title>Syntactic statistics - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Statistics module
+              Syntactic statistics
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1322,94 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1434,7 +1068,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1452,7 +1086,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1478,28 +1112,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1522,22 +1134,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#dependency_distances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Dependency distance
       
     </span>
   </a>
@@ -1545,10 +1157,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#tree_depth" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Tree depth
       
     </span>
   </a>
@@ -1556,10 +1168,142 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#leaves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Leaves and subtrees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#valency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Valency of the finite verbs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subordinate_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subordinate clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infinitive_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infinitive clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_modifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifiers of a noun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genitive_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Genitive chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#participle_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Participial clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converb_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adverbial participle clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infinitives, negations and split predicates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_verb_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ratio of the nouns to the verbs
       
     </span>
   </a>
@@ -1568,6 +1312,116 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Words of a sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hyphenated-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hyphenated words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Head of a sentence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#base_dep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base relation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependent words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_finite_verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verb forms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_predicate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Predicate of a clause
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_modifier_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chains of modifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helper functions
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1587,92 +1441,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../cohesion_stats/" class="md-nav__link">
         
   
@@ -1680,7 +1448,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1693,92 +1461,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1794,7 +1476,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1807,92 +1489,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1908,7 +1504,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1917,42 +1513,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2836,28 +2396,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2880,22 +2418,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#dependency_distances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Dependency distance
       
     </span>
   </a>
@@ -2903,10 +2441,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#tree_depth" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Tree depth
       
     </span>
   </a>
@@ -2914,10 +2452,142 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#leaves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Leaves and subtrees
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#valency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Valency of the finite verbs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordination chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subordinate_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subordinate clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infinitive_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infinitive clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_modifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifiers of a noun
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genitive_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Genitive chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#participle_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Participial clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converb_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adverbial participle clauses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Passive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infinitives, negations and split predicates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_verb_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ratio of the nouns to the verbs
       
     </span>
   </a>
@@ -2926,6 +2596,116 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Words of a sequence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hyphenated-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hyphenated words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Head of a sentence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#base_dep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base relation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependent words
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_finite_verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verb forms
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_predicate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Predicate of a clause
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_modifier_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chains of modifiers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helper functions
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,39 +2730,80 @@
 
 
 <h1 id="syntactic-statistics">Syntactic statistics<a class="headerlink" href="#syntactic-statistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.syntax_stats.SyntaxStats</strong></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStats</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+</code></pre></div>
+<p>The syntactic statistics of a text by its dependency tree (<a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev 2018</a>): the measures of the tree and of the syntactic constructions. The data source is a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> with a dependency parse. Punctuation, symbols and whitespace are no nodes of the tree, and the distances are counted in positions of words.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>;</li>
+<li><code>SourceError</code> - a source without a dependency parse (relations and sentence boundaries), without lemmas when the class requires them, or without words.</li>
+</ul>
+<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer. The relations and features are those of the <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> annotation of the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models; the quality of the statistics is bounded by the quality of the parse: the small <code>ru_core_news_sm</code> model errs in parts of speech and relations noticeably more often than <code>ru_core_news_lg</code>. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. ruTS adds its own metrics of genitive chains and adverbial participle clauses. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The <code>print_stats</code> table and the error messages are in Russian (<code>SYNTAX_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93. The cards of the metrics name the original features of the paper and their correlation coefficients with the textbook grade.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."</span>
+<span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
 </div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The syntactic statistics of a text by its dependency tree (Ivanov, Solnyshkina and Solovyev 2018): dependency distances, tree depth, leaves and subtrees, valency of the finite verbs, coordination chains, clauses, modifiers of a noun, participial clauses, passive, infinitives, negations, split predicates and the ratio of the nouns to the verbs. The data source is a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> with a dependency parse. Punctuation, symbols and whitespace are no nodes of the tree, and the distances are counted in positions of words. The measures of a sentence (the longest dependency, the depth, the nodes per leaf) are averaged over the sentences; the constructions are given per sentence.</p>
-<p>A source that is not a <code>Doc</code> raises <code>SourceTypeError</code>; a source without a dependency parse (relations and sentence boundaries), without lemmas when the class requires them, or without words raises <code>SourceError</code>.</p>
-<p>The relations and features are those of the <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> annotation of the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev</a> tested the features on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The quality of the statistics is bounded by the quality of the parse: the small <code>ru_core_news_sm</code> model errs in parts of speech and relations noticeably more often than <code>ru_core_news_lg</code>.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                   Статистика                    | Значение
+------------------------------------------------------------
+Средняя длина зависимости                        |   1.93
+Стандартное отклонение длины зависимости         |   1.61
+Средний максимум длины зависимости в предложении |   5.00
+Доля смежных связей                              |   0.60
+Средняя глубина дерева зависимостей предложения  |   4.00
+Листьев на предложение                           |   4.50
+Поддеревьев на предложение                       |   4.00
+Среднее число узлов на лист в предложении        |   1.90
+Валентность финитных глаголов                    |   2.00
+Сочинительных цепочек на предложение             |   0.50
+Средняя длина сочинительной цепочки              |   2.00
+Клауз на предложение                             |   1.50
+Средняя длина клаузы (слов)                      |   5.67
+Придаточных клауз на предложение                 |   0.50
+Доля предложений с придаточными                  |   0.50
+Инфинитивных клауз при глаголе на предложение    |   0.00
+Модификаторов на именную группу                  |   0.40
+Цепочек родительных падежей на предложение       |   0.00
+Максимальная длина цепочки родительных падежей   |    0
+Причастных оборотов на предложение               |   0.50
+Средняя длина причастного оборота (слов)         |   5.00
+Деепричастных оборотов на предложение            |   0.50
+Средняя длина деепричастного оборота (слов)      |   2.00
+Доля пассивных форм среди глаголов               |   0.40
+Доля безагентного пассива                        |   0.50
+Инфинитивов на предложение                       |   0.00
+Отрицаний на предложение                         |   0.50
+Расщеплённых сказуемых на предложение            |   0.00
+Отношение существительных к глаголам             |   1.00
+</code></pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>SyntaxStats</code> object is initialized.</p>
 </div>
-<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer: the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian. A short participle (<code>дом построен</code>) is a predicate and heads a clause (<a href="../syntax_stats_funcs/#is_clause_head"><code>is_clause_head</code></a>), full participles and adverbial participles head participial and adverbial participle clauses, counted apart, an infinitive under a noun (<code>желание уйти</code>) heads none, and an infinitive under a verb heads a subordinate clause (<code>хочет уйти</code>), except with the modal and phasal verbs (<code>может уйти</code>, <code>начал читать</code>); a participial clause is a full participle with a dependent (<a href="../syntax_stats_funcs/#is_participle_clause"><code>is_participle_clause</code></a>); negations are the particles with <code>Polarity=Neg</code> and the particles «не», «ни» (<a href="../syntax_stats_funcs/#is_negation"><code>is_negation</code></a>); a split predicate is a light verb with a noun that carries its meaning, such as <code>осуществлять проверку</code> (<a href="../syntax_stats_funcs/#find_split_predicates"><code>find_split_predicates</code></a>). ruTS adds the statistics of genitive chains (<a href="../syntax_stats_funcs/#calc_genitive_chains"><code>calc_genitive_chains</code></a>, built on the <code>calc_modifier_chains</code> of the core) and of adverbial participle clauses. The <code>print_stats</code> table has Russian headers and the descriptions of <code>ruts.constants.SYNTAX_STATS_DESC</code>, the error messages are in Russian (<code>CORE_MESSAGES</code>).</p>
+</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a Doc object with a dependency parse)</td>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source: a <code>Doc</code> with a dependency parse</td>
 </tr>
 </tbody>
 </table>
@@ -2990,294 +2811,1157 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>sents</code></td>
-<td style="text-align: center;">tuple[tuple[Token]]</td>
-<td style="text-align: center;">Words of every sentence with words</td>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>tuple[tuple[Token]]</code></td>
+<td style="text-align: left;">Words of every sentence with words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the sentences with words and of the words</td>
+<td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the sentences with words and of the words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_leaves</code>, <code>n_subtrees</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the words without and with dependent words</td>
+<td style="text-align: left;"><code>n_leaves</code>, <code>n_subtrees</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the words without and with dependent words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_coordination_chains</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of the coordination chains</td>
+<td style="text-align: left;"><code>n_coordination_chains</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the coordination chains</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_clauses</code>, <code>n_subordinate_clauses</code>, <code>n_complex_sents</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the clauses, of the subordinate clauses and of the sentences with one</td>
+<td style="text-align: left;"><code>n_clauses</code>, <code>n_subordinate_clauses</code>, <code>n_complex_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the clauses, of the subordinate clauses and of the sentences with one</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_nouns</code>, <code>n_verbs</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the nouns (<code>NOUN</code>, <code>PROPN</code>) and of the verb forms (<code>VERB</code>)</td>
+<td style="text-align: left;"><code>n_infinitive_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the infinitive clauses under a verb</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_participle_clauses</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of the participial clauses</td>
+<td style="text-align: left;"><code>n_nouns</code>, <code>n_verbs</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the nouns (<code>NOUN</code>, <code>PROPN</code>) and of the verb forms (<code>VERB</code>)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_passive</code>, <code>n_agentless_passive</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the passive forms and of those with no agent</td>
+<td style="text-align: left;"><code>n_participle_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the participial clauses</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_infinitives</code>, <code>n_negations</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the infinitives and of the words of negation</td>
+<td style="text-align: left;"><code>n_passive</code>, <code>n_agentless_passive</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the passive forms and of those with no agent</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_split_predicates</code>, <code>split_predicates</code></td>
-<td style="text-align: center;">int, tuple[str]</td>
-<td style="text-align: center;">Number of the split predicates and the predicates, the verb and the noun</td>
+<td style="text-align: left;"><code>n_infinitives</code>, <code>n_negations</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the infinitives and of the words of negation</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_children</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Number of the words by number of dependent words</td>
+<td style="text-align: left;"><code>n_split_predicates</code>, <code>split_predicates</code></td>
+<td style="text-align: left;"><code>int</code>, <code>tuple[str]</code></td>
+<td style="text-align: left;">Number of the split predicates and the predicates, the verb and the noun</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_deps</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Number of the words by relation</td>
+<td style="text-align: left;"><code>c_children</code></td>
+<td style="text-align: left;"><code>dict[int, int]</code></td>
+<td style="text-align: left;">Number of the words by number of dependent words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_dependency_distance</code>, <code>std_dependency_distance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean and standard deviation of the dependency distance</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>max_dependency_distance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean of the longest dependencies of the sentences that have dependencies</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_adjacent_dependencies</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of the dependencies of length 1</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tree_depth</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean depth of the tree of a sentence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>leaves_per_sent</code>, <code>subtrees_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Leaves and subtrees per sentence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>nodes_per_leaf</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean over the sentences of the words per leaf</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>verb_valency</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean number of the dependents of a finite verb</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>coordination_chains_per_sent</code>, <code>mean_coordination_chain_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Coordination chains per sentence and their mean length</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>clauses_per_sent</code>, <code>mean_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Clauses per sentence and their mean length in words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>subordinate_clauses_per_sent</code>, <code>p_complex_sents</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Subordinate clauses per sentence and the share of the sentences with one</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>modifiers_per_noun</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean number of the modifiers of a noun (<code>count_noun_modifiers</code>)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>participle_clauses_per_sent</code>, <code>mean_participle_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Participial clauses per sentence and their mean length in words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_passive</code>, <code>p_agentless_passive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of the passive forms among the verb forms and of those with no agent among them</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>infinitives_per_sent</code>, <code>negations_per_sent</code>, <code>split_predicates_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Infinitives, words of negation and split predicates per sentence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_verb_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Ratio of the nouns to the verb forms</td>
+<td style="text-align: left;"><code>c_deps</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Number of the words by relation</td>
 </tr>
 </tbody>
 </table>
-<p>A share, a ratio or a mean without anything to divide by is <code>nan</code>.</p>
-<p>The statistics of the constructions of ruTS:</p>
+<p>The attributes of the constructions of ruTS are <code>n_genitive_chains</code> and <code>n_converb_clauses</code> (<code>int</code>): the numbers of genitive chains and of adverbial participle clauses.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">c_children</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(3, 5, 5)
+{0: 9, 1: 2, 2: 5, 3: 1}
+{'ROOT': 2,
+ 'acl': 1,
+ 'advcl': 1,
+ 'advmod': 1,
+ 'amod': 1,
+ 'aux:pass': 1,
+ 'case': 1,
+ 'cc': 1,
+ 'ccomp': 1,
+ 'conj': 1,
+ 'iobj': 1,
+ 'mark': 1,
+ 'nsubj': 1,
+ 'nsubj:pass': 1,
+ 'obl': 1,
+ 'obl:agent': 1}
+(Дом, построенный, рабочими, в, прошлом, году, был, продан)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Every metric is an attribute of the object, computed when it is created, and <code>get_stats</code> gives them all. The measures of a sentence (the longest dependency, the depth, the nodes per leaf) are averaged over the sentences; the constructions are given per sentence.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>n_genitive_chains</code>, <code>n_converb_clauses</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of genitive chains and of adverbial participle clauses</td>
+<td style="text-align: left;"><a href="#dependency_distances"><code>mean_dependency_distance</code></a></td>
+<td style="text-align: left;">Mean distance between a word and its head</td>
+<td style="text-align: left;">1 and above, <code>nan</code> without dependencies</td>
+<td style="text-align: left;">Harder to process</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>genitive_chains_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Genitive chains per sentence</td>
+<td style="text-align: left;"><a href="#dependency_distances"><code>std_dependency_distance</code></a></td>
+<td style="text-align: left;">Standard deviation of the dependency distance</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without dependencies</td>
+<td style="text-align: left;">Less even distances</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>max_genitive_chain_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Maximum genitive chain length, 0 without chains</td>
+<td style="text-align: left;"><a href="#dependency_distances"><code>max_dependency_distance</code></a></td>
+<td style="text-align: left;">Mean of the longest dependencies of the sentences that have dependencies</td>
+<td style="text-align: left;">1 and above, <code>nan</code> without dependencies</td>
+<td style="text-align: left;">Longer longest dependencies</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>converb_clauses_per_sent</code>, <code>mean_converb_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Adverbial participle clauses per sentence and their mean length in words</td>
+<td style="text-align: left;"><a href="#dependency_distances"><code>p_adjacent_dependencies</code></a></td>
+<td style="text-align: left;">Share of the dependencies of length 1</td>
+<td style="text-align: left;">0-1, <code>nan</code> without dependencies</td>
+<td style="text-align: left;">More links between neighbours</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#tree_depth"><code>tree_depth</code></a></td>
+<td style="text-align: left;">Mean depth of the tree of a sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">Deeper embedding</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>leaves_per_sent</code></a></td>
+<td style="text-align: left;">Leaves per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">Longer or flatter sentences</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>subtrees_per_sent</code></a></td>
+<td style="text-align: left;">Subtrees per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More phrases in a sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>nodes_per_leaf</code></a></td>
+<td style="text-align: left;">Mean over the sentences of the words per leaf</td>
+<td style="text-align: left;">1 and above, <code>nan</code> for a sentence without leaves</td>
+<td style="text-align: left;">Longer branches</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#valency"><code>verb_valency</code></a></td>
+<td style="text-align: left;">Mean number of the dependents of a finite verb</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without finite verbs</td>
+<td style="text-align: left;">More dependents of a verb</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#coordination_chains"><code>coordination_chains_per_sent</code></a></td>
+<td style="text-align: left;">Coordination chains per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More coordination</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#coordination_chains"><code>mean_coordination_chain_len</code></a></td>
+<td style="text-align: left;">Mean length of a coordination chain in words</td>
+<td style="text-align: left;">2 and above, <code>nan</code> without chains</td>
+<td style="text-align: left;">Longer enumerations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clauses"><code>clauses_per_sent</code></a></td>
+<td style="text-align: left;">Clauses per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More clauses in a sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clauses"><code>mean_clause_len</code></a></td>
+<td style="text-align: left;">Mean length of a clause in words</td>
+<td style="text-align: left;">1 and above, <code>nan</code> without clauses</td>
+<td style="text-align: left;">Longer clauses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#subordinate_clauses"><code>subordinate_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Subordinate clauses per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More subordination</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#subordinate_clauses"><code>p_complex_sents</code></a></td>
+<td style="text-align: left;">Share of the sentences with a subordinate clause</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">More complex sentences</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#infinitive_clauses"><code>infinitive_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Infinitive clauses under a verb per sentence (<em>wants to leave</em>), which are not subordinate</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More infinitive complements</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#noun_modifiers"><code>modifiers_per_noun</code></a></td>
+<td style="text-align: left;">Mean number of the modifiers of a noun</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without nouns</td>
+<td style="text-align: left;">Heavier noun phrases</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#participle_clauses"><code>participle_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Participial clauses per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More participial clauses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#participle_clauses"><code>mean_participle_clause_len</code></a></td>
+<td style="text-align: left;">Mean length of a participial clause in words</td>
+<td style="text-align: left;">1 and above, <code>nan</code> without participial clauses</td>
+<td style="text-align: left;">Longer participial clauses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#passive"><code>p_passive</code></a></td>
+<td style="text-align: left;">Share of the passive forms among the verb forms</td>
+<td style="text-align: left;">0-1, <code>nan</code> without verb forms</td>
+<td style="text-align: left;">More passive</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#passive"><code>p_agentless_passive</code></a></td>
+<td style="text-align: left;">Share of the forms with no agent among the passive ones</td>
+<td style="text-align: left;">0-1, <code>nan</code> without passive forms</td>
+<td style="text-align: left;">More passive without an agent</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>infinitives_per_sent</code></a></td>
+<td style="text-align: left;">Infinitives per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More infinitives</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>negations_per_sent</code></a></td>
+<td style="text-align: left;">Words of negation per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More negation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>split_predicates_per_sent</code></a></td>
+<td style="text-align: left;">Split predicates per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More split predicates</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#noun_verb_ratio"><code>noun_verb_ratio</code></a></td>
+<td style="text-align: left;">Ratio of the nouns to the verb forms</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without verb forms</td>
+<td style="text-align: left;">A more nominal style</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Every statistic can be computed separately by calling the corresponding function. Detailed information on the syntactic statistics and the functions used to compute them is available in the corresponding <a href="../syntax_stats_funcs/">section</a>.</p>
+<p>The metrics of the constructions of ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#genitive_chains"><code>genitive_chains_per_sent</code></a></td>
+<td style="text-align: left;">Genitive chains per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More chains</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#genitive_chains"><code>max_genitive_chain_len</code></a></td>
+<td style="text-align: left;">Longest genitive chain of the text</td>
+<td style="text-align: left;">0 without chains, otherwise 2 and above</td>
+<td style="text-align: left;">A longer chain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#converb_clauses"><code>converb_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Adverbial participle clauses per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More adverbial participle clauses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#converb_clauses"><code>mean_converb_clause_len</code></a></td>
+<td style="text-align: left;">Mean length of an adverbial participle clause in words</td>
+<td style="text-align: left;">2 and above, <code>nan</code> without adverbial participle clauses</td>
+<td style="text-align: left;">Longer adverbial participle clauses</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="dependency_distances">Dependency distance<a class="headerlink" href="#dependency_distances" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>mean_dependency_distance</code> · <code>std_dependency_distance</code> · <code>max_dependency_distance</code> · <code>p_adjacent_dependencies</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The dependency distances (Liu 2008): the distance between a word and its head in positions of words, punctuation left out, in the order of the words. The head of a sentence and a word whose head lies outside the sequence are skipped.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one position</td>
+</tr>
+</tbody>
+</table>
+<p>The mean dependency distance grows with sentence length, and the longest one is the best of the tree features at the level of a single sentence. One-word sentences enter none of the metrics of the distances.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_dependency_distances</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[5, 1, 1, 1, 1, 1, 2]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="tree_depth">Tree depth<a class="headerlink" href="#tree_depth" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>tree_depth</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_tree_depth</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The depth of the dependency tree: the longest path from the head of a sentence to a leaf, in relations between words; the maximum for several sentences, 0 for a sentence of one word. With <code>join_hyphens</code> a hyphenated word is one word, and the words that hang on any of its parts are one level below it.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<p>The depth is <code>LONGEST_PATH</code> of the paper of Ivanov et al. (r = 0.84).</p>
+</div>
+<div class="metric-card">
+<h3 id="leaves">Leaves and subtrees<a class="headerlink" href="#leaves" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>leaves_per_sent</code> · <code>subtrees_per_sent</code> · <code>nodes_per_leaf</code></p>
+<p>A leaf is a word without dependent words (<code>count_children</code>), a subtree a word with them. The nodes per leaf are the words of a sentence over its leaves, averaged over the <span class="arithmatex">\(S\)</span> sentences.</p>
+<div class="arithmatex">\[
+\frac{1}{S} \sum_{s=1}^{S} \frac{\textrm{Number of words of } s}{\textrm{Number of leaves of } s}
+\]</div>
+<p>The features of the paper: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) and <code>AVERAGE_PATH</code> (r = 0.84). The distribution of the words by number of dependents, the branching profile, is the attribute <code>c_children</code>.</p>
+</div>
+<div class="metric-card">
+<h3 id="valency">Valency of the finite verbs<a class="headerlink" href="#valency" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>verb_valency</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_valency</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The valency of a token: the number of its dependent words, the relations <code>cc</code>, <code>conj</code>, <code>parataxis</code> and <code>punct</code> left out (<code>anyts.constants.VALENCY_IGNORED_DEPS</code>); with <code>join_hyphens=True</code> a hyphenated dependent counts once, so <code>came</code> in <code>Some-one came</code> has one dependent and not two.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<p>A finite verb is one of <a href="#is_finite_verb"><code>is_finite_verb</code></a>; the valency is <code>VERBS_DEP</code> of the paper (r = 0.43).</p>
+</div>
+<div class="metric-card">
+<h3 id="coordination_chains">Coordination chains<a class="headerlink" href="#coordination_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>coordination_chains_per_sent</code> · <code>mean_coordination_chain_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_coordination_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The lengths of the coordination chains, in the order of their first words. A chain is a group of words linked by <code>conj</code>, whichever word each conjunct hangs on: Universal Dependencies attaches every conjunct to the first one (<code>pears → apples</code>, <code>plums → apples</code>), ClearNLP to the previous one (<code>pears → apples</code>, <code>plums → pears</code>); both give one chain of three for <code>apples, pears and plums</code>. A nested coordination (<code>cats and dogs, or birds</code>) and an enumeration split between several heads are one chain too. The length of a chain is the number of its words; a conjunct whose head lies outside the sequence is not linked to it. With <code>join_hyphens</code> a hyphenated word is one conjunct, linked by the <code>conj</code> of any of its parts (<code>member and vice-governor</code> is a chain of two).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<p>The number of chains per sentence (<code>SOCHIN_NUMBER</code>, r = 0.93) and their mean length (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) are the strongest syntactic predictors of textbook complexity.</p>
+</div>
+<div class="metric-card">
+<h3 id="clauses">Clauses<a class="headerlink" href="#clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>clauses_per_sent</code> · <code>mean_clause_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word heads a clause: the head of the sentence or a word with <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> and their subtypes (<code>anyts.constants.CLAUSE_DEPS</code>), except full participles, adverbial participles and infinitives under a noun («желание уйти»): participial and adverbial participle clauses are counted apart, and a short participle («дом построен») is the predicate of its clause. Under <code>xcomp</code> only an infinitive of <code>is_infinitive_clause</code> heads a clause: a finite form under <code>xcomp</code> is a parse error of the Russian models. An infinitive subject (<code>csubj</code>) of a modal word («нужно уйти», «можно войти», «следует отметить») heads no clause of its own. A parenthetical construction (<code>parataxis</code>) and a coordinated predicate (a <code>conj</code> relation from the clause head) form their own clause only if they can be a predicate (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» and «думала, что он умен» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as <code>parataxis</code>, are not.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether an infinitive under <code>xcomp</code> heads a clause of its own («хочет уйти», «попросил его уйти»): it does not when it makes one predicate with its head (<code>is_infinitive_periphrasis</code>) or stands in a participial or adverbial participle clause («решивший уйти», «желая уйти»).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти») or the hortative «давай», «давайте» of <code>HORTATIVE_WORDS</code> without a negation («давайте играть», but not «не давайте детям играть»).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="subordinate_clauses">Subordinate clauses<a class="headerlink" href="#subordinate_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word heads a subordinate clause: a clause head (<code>is_clause_head</code>) with <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> and their subtypes, or a coordinated predicate of a subordinate clause.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<p>The features of the paper: <code>PODCHIN_RATE</code> (r = 0.64), the subordinate clauses per sentence, and <code>PODCHIN_NUMBER</code> (r = 0.62), the share of the sentences with at least one subordinate clause.</p>
+</div>
+<div class="metric-card">
+<h3 id="infinitive_clauses">Infinitive clauses<a class="headerlink" href="#infinitive_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word heads an infinitive clause under a verb: an infinitive under <code>xcomp</code> that heads a clause of its own (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_clause_head</span><span class="p">,</span> <span class="n">is_infinitive_clause_head</span><span class="p">,</span> <span class="n">is_subordinate_clause_head</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Он хочет уйти, но может остаться, если его попросят."</span><span class="p">)</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['хочет', 'уйти', 'может', 'попросят']
+['попросят']
+['уйти']
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="noun_modifiers">Modifiers of a noun<a class="headerlink" href="#noun_modifiers" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>modifiers_per_noun</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_noun_modifiers</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Counts the modifiers of a noun phrase: the dependents with the relations <code>amod</code>, <code>det</code>, <code>nmod</code>, <code>nummod</code>, <code>acl</code> and their subtypes (<code>anyts.constants.NOUN_MODIFIER_DEPS</code>); <code>conj</code> and <code>appos</code> are no modifiers.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<p>The number of modifiers is <code>NOUNS_DEP</code> of the paper (r = 0.88).</p>
+</div>
+<div class="metric-card">
+<h3 id="genitive_chains">Genitive chains<a class="headerlink" href="#genitive_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>genitive_chains_per_sent</code> · <code>max_genitive_chain_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_genitive_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<p>The lengths of the genitive chains in the order of the words: the chains of <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a> whose modifiers are prepositionless genitive modifiers; «повышение эффективности использования ресурсов» is a chain of length 3.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_genitive_modifier</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a prepositionless genitive modifier: a word with the <code>nmod</code> relation in the genitive case without a dependent preposition (<code>case</code>), «дом отца», but not «дом у дороги».</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens (<code>calc_genitive_chains</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token (<code>is_genitive_modifier</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_genitive_chains</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">calc_genitive_chains</span><span class="p">(</span>
+    <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[4]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="participle_clauses">Participial clauses<a class="headerlink" href="#participle_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>participle_clauses_per_sent</code> · <code>mean_participle_clause_len</code></p>
+<p>The clauses headed by the words of the hook <code>is_participle_clause</code>; the length of a clause is the number of the words in the subtree of its head (<code>subtree_len</code>).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_participle_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word heads a participial clause: a full participle (<a href="#is_finite_verb"><code>is_participle</code></a>) with at least one dependent word, the coordination and parenthetical relations left out. Short participles («дом построен») are predicates rather than modifiers and head no clauses. The features of the paper are <code>PRICH_RATE</code> (r = 0.91) and <code>PRICH_V</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="converb_clauses">Adverbial participle clauses<a class="headerlink" href="#converb_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>converb_clauses_per_sent</code> · <code>mean_converb_clause_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_converb_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word heads an adverbial participle clause: an adverbial participle (<a href="#is_finite_verb"><code>is_converb</code></a>) with at least one dependent word, the coordination and parenthetical relations left out. The length of a clause is the number of the words in the subtree of the adverbial participle (<code>subtree_len</code>). The features of the paper are <code>DEEPRICH_RATE</code> (r = 0.44) and <code>DEEPRICH_V</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="passive">Passive<a class="headerlink" href="#passive" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_passive</code> · <code>p_agentless_passive</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_passive</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a passive verb form: a verb with <code>Voice=Pass</code> or a dependent <code>nsubj:pass</code>, <code>csubj:pass</code>, <code>aux:pass</code>, or <code>nsubjpass</code>, <code>csubjpass</code>, <code>auxpass</code> of ClearNLP (<code>PASSIVE_DEPS</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">has_agent</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word has an agent: a dependent <code>obl:agent</code>, or <code>agent</code> of ClearNLP (<code>AGENT_DEPS</code>). The arguments are those of <code>is_passive</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_agentless</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a passive form (<code>is_passive</code>) without an agent (<code>has_agent</code>), with the same arguments.</p>
+<p>In Russian the passive is a passive participle or the reflexive passive («обсуждалось»), and an agentless form is «дом построен», but not «дом построен рабочими».</p>
+</div>
+<div class="metric-card">
+<h3 id="constructions">Infinitives, negations and split predicates<a class="headerlink" href="#constructions" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>infinitives_per_sent</code> · <code>negations_per_sent</code> · <code>split_predicates_per_sent</code></p>
+<p>The infinitives (<code>is_infinitive</code> of <code>anyts.utils</code>), the words of negation of the hook <code>is_negation</code> and the split predicates of the hook <code>find_split_predicates</code>, per sentence.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a negative particle: a particle (<code>PART</code>) with the feature <code>Polarity=Neg</code> or the particle «не», «ни» (<code>NEGATION_PARTICLES</code>); the conjunction «ни» of «ни… ни» is no negation. The negations are <code>NEG</code> of the paper (r = 0.70).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">find_split_predicates</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_light_verb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_reflexive</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_split_predicate_noun</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">verb</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (<code>is_light_verb</code>) with a lemma of <code>LIGHT_VERBS</code> (for example: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (<code>is_split_predicate_noun</code>), a noun with a verbal lemma (<code>ruts.utils.is_verbal_noun</code>) or a lemma of <code>SPLIT_PREDICATE_NOUNS</code> (for example: роль, работа, помощь, мера) with a verb <code>verb</code> of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (only for a reflexive or passive verb, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; prepositional adjuncts and the passive agent (<code>obl:agent</code>, instrumental <code>obl</code>) are not counted. The verb lemma is taken from the pymorphy3 analysis twice: with the part of speech of the token (<a href="#helpers"><code>get_lemma</code></a>) and as a verb (<code>ruts.utils.lemmatize</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens (<code>find_split_predicates</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>verb</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Light verb (<code>is_split_predicate_noun</code>); without it the phrase is not checked</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_split_predicates</span><span class="p">,</span> <span class="n">is_negation</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Проверка проводится ежегодно, но решение не принято."</span><span class="p">)</span>
+<span class="n">find_split_predicates</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[(проводится, Проверка), (принято, решение)]
+['не']
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="noun_verb_ratio">Ratio of the nouns to the verbs<a class="headerlink" href="#noun_verb_ratio" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_verb_ratio</code></p>
+<p>The number of the nouns <code>n_nouns</code> to the number of the verb forms <code>n_verbs</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of nouns}}{\textrm{Number of verb forms}}
+\]</div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed syntactic statistics.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
-
-<span class="c1"># Prepare the data</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."</span>
-
-<span class="c1"># Compute the statistics</span>
-<span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'mean_dependency_distance'</span>:<span class="w"> </span><span class="m">1</span>.9333333333333333,
-<span class="s1">'std_dependency_distance'</span>:<span class="w"> </span><span class="m">1</span>.6110727964792764,
-<span class="s1">'max_dependency_distance'</span>:<span class="w"> </span><span class="m">5</span>.0,
-<span class="s1">'p_adjacent_dependencies'</span>:<span class="w"> </span><span class="m">0</span>.6,
-<span class="s1">'tree_depth'</span>:<span class="w"> </span><span class="m">4</span>.0,
-<span class="s1">'leaves_per_sent'</span>:<span class="w"> </span><span class="m">4</span>.5,
-<span class="s1">'subtrees_per_sent'</span>:<span class="w"> </span><span class="m">4</span>.0,
-<span class="s1">'nodes_per_leaf'</span>:<span class="w"> </span><span class="m">1</span>.9,
-<span class="s1">'verb_valency'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'coordination_chains_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_coordination_chain_len'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'clauses_per_sent'</span>:<span class="w"> </span><span class="m">1</span>.5,
-<span class="s1">'mean_clause_len'</span>:<span class="w"> </span><span class="m">5</span>.666666666666667,
-<span class="s1">'subordinate_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_complex_sents'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'modifiers_per_noun'</span>:<span class="w"> </span><span class="m">0</span>.4,
-<span class="s1">'genitive_chains_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'max_genitive_chain_len'</span>:<span class="w"> </span><span class="m">0</span>,
-<span class="s1">'participle_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_participle_clause_len'</span>:<span class="w"> </span><span class="m">5</span>.0,
-<span class="s1">'converb_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_converb_clause_len'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.4,
-<span class="s1">'p_agentless_passive'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'infinitives_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'negations_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'split_predicates_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'noun_verb_ratio'</span>:<span class="w"> </span><span class="m">1</span>.0<span class="o">}</span>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the syntactic statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<p>Counters, distributions and the words of the sentences are available as attributes:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
-<span class="c1"># (3, 5, 5)</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">c_children</span>
-<span class="c1"># {0: 9, 1: 2, 2: 5, 3: 1}</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
-<span class="c1"># {'ROOT': 2, 'acl': 1, 'advcl': 1, 'advmod': 1, 'amod': 1, 'aux:pass': 1, 'case': 1, 'cc': 1, 'ccomp': 1, 'conj': 1, 'iobj': 1, 'mark': 1, 'nsubj': 1, 'nsubj:pass': 1, 'obl': 1, 'obl:agent': 1}</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="c1"># (Дом, построенный, рабочими, в, прошлом, году, был, продан)</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'mean_dependency_distance': 1.9333333333333333,
+ 'std_dependency_distance': 1.6110727964792764,
+ 'max_dependency_distance': 5.0,
+ 'p_adjacent_dependencies': 0.6,
+ 'tree_depth': 4.0,
+ 'leaves_per_sent': 4.5,
+ 'subtrees_per_sent': 4.0,
+ 'nodes_per_leaf': 1.9,
+ 'verb_valency': 2.0,
+ 'coordination_chains_per_sent': 0.5,
+ 'mean_coordination_chain_len': 2.0,
+ 'clauses_per_sent': 1.5,
+ 'mean_clause_len': 5.666666666666667,
+ 'subordinate_clauses_per_sent': 0.5,
+ 'p_complex_sents': 0.5,
+ 'infinitive_clauses_per_sent': 0.0,
+ 'modifiers_per_noun': 0.4,
+ 'genitive_chains_per_sent': 0.0,
+ 'max_genitive_chain_len': 0,
+ 'participle_clauses_per_sent': 0.5,
+ 'mean_participle_clause_len': 5.0,
+ 'converb_clauses_per_sent': 0.5,
+ 'mean_converb_clause_len': 2.0,
+ 'p_passive': 0.4,
+ 'p_agentless_passive': 0.5,
+ 'infinitives_per_sent': 0.0,
+ 'negations_per_sent': 0.5,
+ 'split_predicates_per_sent': 0.0,
+ 'noun_verb_ratio': 1.0}
 </code></pre></div>
 </div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
-<p>To illustrate the method, we reuse the code from the <code>get_stats</code> example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Print the table of computed statistics</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                   </span>Статистика<span class="w">                    </span><span class="p">|</span><span class="w"> </span>Значение
-------------------------------------------------------------
-Средняя<span class="w"> </span>длина<span class="w"> </span>зависимости<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.93
-Стандартное<span class="w"> </span>отклонение<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.61
-Средний<span class="w"> </span>максимум<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w"> </span>в<span class="w"> </span>предложении<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Доля<span class="w"> </span>смежных<span class="w"> </span>связей<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.60
-Средняя<span class="w"> </span>глубина<span class="w"> </span>дерева<span class="w"> </span>зависимостей<span class="w"> </span>предложения<span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Листьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.50
-Поддеревьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Среднее<span class="w"> </span>число<span class="w"> </span>узлов<span class="w"> </span>на<span class="w"> </span>лист<span class="w"> </span>в<span class="w"> </span>предложении<span class="w">        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.90
-Валентность<span class="w"> </span>финитных<span class="w"> </span>глаголов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Сочинительных<span class="w"> </span>цепочек<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>сочинительной<span class="w"> </span>цепочки<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>клаузы<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.67
-Придаточных<span class="w"> </span>клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>предложений<span class="w"> </span>с<span class="w"> </span>придаточными<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Модификаторов<span class="w"> </span>на<span class="w"> </span>именную<span class="w"> </span>группу<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Цепочек<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Максимальная<span class="w"> </span>длина<span class="w"> </span>цепочки<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>
-Причастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>причастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Деепричастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>деепричастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">      </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Доля<span class="w"> </span>пассивных<span class="w"> </span>форм<span class="w"> </span>среди<span class="w"> </span>глаголов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Доля<span class="w"> </span>безагентного<span class="w"> </span>пассива<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Инфинитивов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отрицаний<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Расщеплённых<span class="w"> </span>сказуемых<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отношение<span class="w"> </span>существительных<span class="w"> </span>к<span class="w"> </span>глаголам<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-</code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>The <code>to_dataframe</code> method (the statistics as a one-row <code>pandas.DataFrame</code>) and the <code>describe</code> method are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the syntactic statistics have no scales, so <code>describe</code> always gives <code>None</code>.</p>
+</div>
+<p>The functions work with spaCy tokens: the <code>calc_*</code> and <code>find_*</code> functions take a sequence of tokens (<code>Doc</code>, <code>Span</code> or a list), the <code>is_*</code> and <code>count_*</code> functions a single token; the words of a sequence are the tokens of <a href="#helpers"><code>is_word</code></a>. The functions of the dependency tree come from the core, those of the Russian constructions are ruTS's own. Relation subtypes (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) are counted by the base relation (<a href="#base_dep"><code>base_dep</code></a>) where noted.</p>
+<h2 id="get_words">Words of a sequence<a class="headerlink" href="#get_words" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The words of a sequence of tokens in their order; with <code>join_hyphens=True</code> a word the tokenizer split at its hyphens is one word, given by its part that holds its relation, as with the dependents of <code>get_children</code> (<code>governor</code> in <code>He is vice-governor</code>), or by its first part when a hyphen holds it.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hyphenated-words">Hyphenated words<a class="headerlink" href="#hyphenated-words" title="Permanent link">&para;</a></h2>
+<p>A tokenizer may split a word at its hyphens (<code>well-known</code> into <code>well</code>, <code>-</code>, <code>known</code>), and a parser then hangs every part on its own head. With <code>join_hyphens=True</code> the functions of the tree take a word whose parts <code>anyts.utils.joins_previous</code> joins for one word with its hyphens. A word holding the head of the sentence has no head; the head of another one is that of its part hanging outside it, the nearest to the root (a word rather than a hyphen when equal). The dependents of a word are the words whose head hangs on one of its tokens, each given by that part (or by its first part when it hangs by a hyphen); its subtree is the word and the words that hang on it, directly or through punctuation. So every word has one dependency and is the dependent of one word.</p>
+<p><code>SyntaxStats</code> and the functions of the Russian constructions always join hyphenated words. The functions of the core, <code>is_predicate</code>, <code>count_noun_modifiers</code>, <code>is_passive</code>, <code>has_agent</code> and <code>is_agentless</code> included, take <code>join_hyphens=False</code> by default: they give the values of <code>SyntaxStats</code> with <code>join_hyphens=True</code>.</p>
+<h2 id="is_root">Head of a sentence<a class="headerlink" href="#is_root" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a token is the head of its sentence: its head is the token itself.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<h2 id="base_dep">Base relation<a class="headerlink" href="#base_dep" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">base_dep</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>The relation of a token without its subtype, which Universal Dependencies separates by a colon: <code>nsubj:pass</code> gives <code>nsubj</code>, <code>expl:pass</code> gives <code>expl</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<h2 id="get_children">Dependent words<a class="headerlink" href="#get_children" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The dependent words of a token, punctuation and whitespace left out; with <code>join_hyphens=True</code>, the dependents of the whole hyphenated word the token belongs to.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The number of the dependent words of a token; the arguments are those of <code>get_children</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">subtree_len</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The number of words in the subtree of a token: the token itself and all of its direct and indirect dependents; the arguments are those of <code>get_children</code>.</p>
+<h2 id="is_finite_verb">Verb forms<a class="headerlink" href="#is_finite_verb" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_finite_verb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a token is a finite verb: the part of speech <code>VERB</code> with <code>VerbForm=Fin</code>, so a finite auxiliary (<code>AUX</code>) is not one.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a token is an infinitive, <code>VerbForm=Inf</code> whatever its part of speech.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_participle</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_converb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p><code>is_participle</code> checks whether a token is a full participle (<code>VerbForm=Part</code> without <code>Variant=Short</code> and <code>StyleVariant=Short</code>), <code>is_converb</code> whether it is an adverbial participle (<code>VerbForm=Conv</code>); the argument is the same token.</p>
+<h2 id="is_predicate">Predicate of a clause<a class="headerlink" href="#is_predicate" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_predicate</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word can be the predicate of its clause: a verb (<code>VERB</code>, <code>AUX</code>) or a word with a subject of its own (<code>nsubj</code>, <code>csubj</code> and their subtypes, <code>anyts.constants.SUBJECT_DEPS</code>), so the nominal predicate of <code>he is tall</code> passes and a parenthetical word does not.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_modifier_chains">Chains of modifiers<a class="headerlink" href="#calc_modifier_chains" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_modifier_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">is_modifier</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The lengths of the chains of nested modifiers, in the order of the words. A chain is two or more modifiers each hanging on the previous one, such as the complements of <code>the increase of the efficiency of the use of resources</code> (length 3); the check <code>is_modifier</code> of a language says what a modifier is (a complement with a preposition, a noun in the genitive). A chain starts at a modifier whose head is none, and its length is the number of modifiers in its longest branch. The links are those of <code>get_children</code>: punctuation is no link, and with <code>join_hyphens</code> a hyphenated word is one link.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>is_modifier</code></td>
+<td style="text-align: left;"><code>Callable[[Token], bool]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Whether a word is a modifier of the chain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphenated word for one word</td>
+</tr>
+</tbody>
+</table>
+<p>A check that is not callable raises <code>SourceTypeError</code>.</p>
+<h2 id="helpers">Helper functions<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_word</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a token is a word: not whitespace and not a token of <code>is_punctuation</code>, so symbols like <code>%</code>, <code>€</code>, <code>+</code> and invisible characters are no words either. The words of <code>iter_doc_tokens</code> and the nodes of the dependency tree of the syntactic statistics are such tokens.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">has_feature</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a token carries a morphological feature with a given value: <code>has_feature(token, "VerbForm", "Fin")</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>field</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Name of the feature</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Value of the feature</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_lemma</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>The lemma of a token in lower case by the pymorphy3 analysis with the part of speech of the token (<code>ruts.utils.lemmatize</code>), not <code>token.lemma_</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3297,6 +3981,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3365,7 +4055,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

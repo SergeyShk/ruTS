@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1967,28 +1309,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measures
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2011,13 +1331,107 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#measures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Measures
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Measures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutual information
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mi3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MI³
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#t_score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        t-score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dice coefficient
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logdice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        logDice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_likelihood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log-likelihood
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#npmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NPMI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_sensitivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum sensitivity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2795,28 +2209,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measures
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2839,13 +2231,107 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#measures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Measures
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Measures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutual information
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mi3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MI³
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#t_score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        t-score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dice coefficient
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logdice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        logDice
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_likelihood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log-likelihood
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#npmi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NPMI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#min_sensitivity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum sensitivity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2870,173 +2356,15 @@
 
 
 <h1 id="collocations">Collocations<a class="headerlink" href="#collocations" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.corpus.collocations()</strong>, <strong>ruts.corpus.Collocation</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'logdice'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
 <p>Collocation extraction - pairs of words that occur together more often than independence would give: fixed expressions, terminology, the combinatorics of a word. The measures of association are those of <a href="https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf">Sketch Engine</a> and of <a href="https://www.nltk.org/api/nltk.metrics.association.html"><code>nltk.metrics.association</code></a>.</p>
 <p>Pairs are ordered, as in NLTK: the right word occurs at most <code>window</code> words after the left one, each pair of positions counted once; <code>window=1</code> gives bigrams. The measures take the pair frequency divided by the window (Church and Hanks 1990, as in NLTK), which keeps the expected frequency independent of the window and Dice and the minimum sensitivity at most one; <code>freq_pair</code> stays undivided. So with <code>window &gt; 1</code> an always adjacent pair gets a logDice of <span class="arithmatex">\(14 - \log_2 window\)</span> (13 at a window of 2), not 14 as in Sketch Engine with its raw co-occurrence; 14 needs a pair at every distance within the window. <code>node</code> keeps the pairs with the given word on either side.</p>
 <p>Words are compared as they are: case, lemmatization and stop words belong to the word extractor; lemmas suit fixed expressions, word forms suit grammatical constructions.</p>
-<p>The module <code>ruts.corpus.collocations</code> re-exports the function and the measures of the <a href="https://sergeyshk.github.io/anyTS/corpus/collocations/">anyTS</a> core (<code>from ruts.corpus.collocations import calc_logdice</code>). Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>; for Russian fixed expressions such as «точка зрения» or «рабочий класс» take its lemmas (<code>use_lexemes=True</code>). Stress marks are stripped from the words and from <code>node</code>.</p>
-<h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
-<p>For a pair of words of frequencies <span class="arithmatex">\(f_a\)</span> and <span class="arithmatex">\(f_b\)</span>, a pair frequency <span class="arithmatex">\(f_{ab}\)</span> and a number of words <span class="arithmatex">\(N\)</span>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Measure</th>
-<th style="text-align: left;">Key</th>
-<th style="text-align: left;">Formula</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Mutual information</td>
-<td style="text-align: left;"><code>mi</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\log_2 \frac{f_{ab} N}{f_a f_b}\)</span></td>
-<td style="text-align: left;">Church and Hanks (1990); overrates rare pairs</td>
-</tr>
-<tr>
-<td style="text-align: left;">MI³</td>
-<td style="text-align: left;"><code>mi3</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\log_2 \frac{f_{ab}^3 N}{f_a f_b}\)</span></td>
-<td style="text-align: left;">Oakes (1998); favours frequent pairs</td>
-</tr>
-<tr>
-<td style="text-align: left;">t-score</td>
-<td style="text-align: left;"><code>t_score</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{f_{ab} - f_a f_b / N}{\sqrt{f_{ab}}}\)</span></td>
-<td style="text-align: left;">Church et al. (1991); favours frequent pairs</td>
-</tr>
-<tr>
-<td style="text-align: left;">Dice coefficient</td>
-<td style="text-align: left;"><code>dice</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{2 f_{ab}}{f_a + f_b}\)</span></td>
-<td style="text-align: left;">does not depend on the size of the text</td>
-</tr>
-<tr>
-<td style="text-align: left;">logDice</td>
-<td style="text-align: left;"><code>logdice</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(14 + \log_2 \frac{2 f_{ab}}{f_a + f_b}\)</span></td>
-<td style="text-align: left;"><a href="https://www.sketchengine.eu/glossary/logdice/">Rychlý (2008)</a>; does not depend on the size of the text, at most 14, below zero - a weak link; the default measure, as in Sketch Engine</td>
-</tr>
-<tr>
-<td style="text-align: left;">Log-likelihood</td>
-<td style="text-align: left;"><code>log_likelihood</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(G^2 = 2 \sum O \ln \frac{O}{E}\)</span></td>
-<td style="text-align: left;">Dunning (1993); over the 2×2 contingency table, <code>nan</code> if one of the words fills the whole text</td>
-</tr>
-<tr>
-<td style="text-align: left;">NPMI</td>
-<td style="text-align: left;"><code>npmi</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{MI}{-\log_2 (f_{ab} / N)}\)</span></td>
-<td style="text-align: left;">Bouma (2009); from −1 to 1, one means the words occur only together</td>
-</tr>
-<tr>
-<td style="text-align: left;">Minimum sensitivity</td>
-<td style="text-align: left;"><code>min_sensitivity</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\min(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b})\)</span></td>
-<td style="text-align: left;">Pedersen (1998); from 0 to 1</td>
-</tr>
-</tbody>
-</table>
-<p>The module <code>anyts.corpus.collocations</code> gives them as the functions <code>calc_mi</code>, <code>calc_mi3</code>, <code>calc_t_score</code>, <code>calc_dice</code>, <code>calc_logdice</code>, <code>calc_log_likelihood</code>, <code>calc_npmi</code> and <code>calc_min_sensitivity</code> of <code>(freq_a, freq_b, freq_ab, n)</code>; their names and descriptions are in <code>anyts.constants.COLLOCATION_MEASURES</code>.</p>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words of the text in order</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>window</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>5</code></td>
-<td style="text-align: center;">Greatest distance between the words of a pair</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>measure</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>logdice</code></td>
-<td style="text-align: center;">Measure of <code>anyts.constants.COLLOCATION_MEASURES</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>min_freq</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>2</code></td>
-<td style="text-align: center;">Minimum frequency of a pair</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>node</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word whose combinatorics is needed; <code>None</code> - every pair</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>top_n</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of collocations; <code>None</code> - all of them</td>
-</tr>
-</tbody>
-</table>
-<p>Words that are not a list of strings raise <code>SourceTypeError</code>, and no words <code>SourceError</code>. An unknown measure, a <code>window</code> or a <code>top_n</code> that is not an integer of at least one, a <code>min_freq</code> that is not an integer and a <code>node</code> that is not a string raise <code>ParameterError</code>.</p>
-<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
-<p>A list of <code>Collocation</code> named tuples by descending measure and frequency of the pair (ties broken alphabetically); <code>pd.DataFrame(found)</code> gives a table.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Field</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>left</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: left;">Left word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>right</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: left;">Right word, occurring within the window after the left one</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>freq_left</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: left;">Frequency of the left word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>freq_right</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: left;">Frequency of the right word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>freq_pair</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: left;">Frequency of the co-occurrence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>score</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Value of the chosen measure</td>
-</tr>
-</tbody>
-</table>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>The function wraps <code>collocations</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/collocations/">anyTS</a> core and strips stress marks from the words and from <code>node</code>. Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>; for Russian fixed expressions such as «точка зрения» or «рабочий класс» take its lemmas (<code>use_lexemes=True</code>).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">collocations</span>
 
@@ -3046,14 +2374,294 @@
 <span class="p">)</span>
 
 <span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># [Collocation(left='птица', right='улететь', freq_left=3, freq_right=1, freq_pair=2, score=13.0)]</span>
-
 <span class="p">[</span>
     <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">score</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s2">"mi"</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
 <span class="p">]</span>
-<span class="c1"># [('завтра', 'кот', 3.12), ('кот', 'снова', 3.12)]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[Collocation(left='птица', right='улететь', freq_left=3, freq_right=1, freq_pair=2, score=13.0)]
+[('завтра', 'кот', 3.12), ('кот', 'снова', 3.12)]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the text in order</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>5</code></td>
+<td style="text-align: left;">Greatest distance between the words of a pair</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>measure</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'logdice'</code></td>
+<td style="text-align: left;">Measure of <code>anyts.constants.COLLOCATION_MEASURES</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_freq</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>2</code></td>
+<td style="text-align: left;">Minimum frequency of a pair</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>node</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Word whose combinatorics is needed; <code>None</code> - every pair</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>top_n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Number of collocations; <code>None</code> - all of them</td>
+</tr>
+</tbody>
+</table>
+<p>Words that are not a list of strings raise <code>SourceTypeError</code>, and no words <code>SourceError</code>. An unknown measure, a <code>window</code> or a <code>top_n</code> that is not an integer of at least one, a <code>min_freq</code> that is not an integer and a <code>node</code> that is not a string raise <code>ParameterError</code>.</p>
+<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">Collocation</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">freq_left</span><span class="p">,</span> <span class="n">freq_right</span><span class="p">,</span> <span class="n">freq_pair</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+</code></pre></div>
+<p>A list of <code>Collocation</code> named tuples by descending measure and frequency of the pair (ties broken alphabetically); <code>pd.DataFrame(found)</code> gives a table.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>left</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Left word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>right</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Right word, occurring within the window after the left one</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_left</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Frequency of the left word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_right</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Frequency of the right word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_pair</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Frequency of the co-occurrence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>score</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Value of the chosen measure</td>
+</tr>
+</tbody>
+</table>
+<h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
+<p>The measures of <code>measure</code> by key, with their names and descriptions in <code>anyts.constants.COLLOCATION_MEASURES</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#mi"><code>mi</code></a></td>
+<td style="text-align: left;">Frequency of the pair against the expected one, in bits</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#mi3"><code>mi3</code></a></td>
+<td style="text-align: left;">MI with the frequency of the pair cubed</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#t_score"><code>t_score</code></a></td>
+<td style="text-align: left;">Difference of the observed and the expected frequency of the pair</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A surer association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dice"><code>dice</code></a></td>
+<td style="text-align: left;">Share of the pair in the occurrences of the two words</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#logdice"><code>logdice</code></a></td>
+<td style="text-align: left;">Dice coefficient on a logarithmic scale</td>
+<td style="text-align: left;">14 and below</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#log_likelihood"><code>log_likelihood</code></a></td>
+<td style="text-align: left;">Significance of the association</td>
+<td style="text-align: left;">0 and above, <code>nan</code> when a word fills the text or a cell is negative</td>
+<td style="text-align: left;">A more significant departure from independence, for attracted and avoided pairs alike</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#npmi"><code>npmi</code></a></td>
+<td style="text-align: left;">MI normalized by the information of the pair</td>
+<td style="text-align: left;">−1 to 1</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#min_sensitivity"><code>min_sensitivity</code></a></td>
+<td style="text-align: left;">Smaller share of the pair in the occurrences of either word</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">A stronger association</td>
+</tr>
+</tbody>
+</table>
+<p>Every measure is a function of the module <code>anyts.corpus.collocations</code> of the frequencies of the words and of the pair and the number of words:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>freq_a</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequency <span class="arithmatex">\(f_a\)</span> of the first word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_b</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequency <span class="arithmatex">\(f_b\)</span> of the second word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_ab</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequency <span class="arithmatex">\(f_{ab}\)</span> of the pair</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Number of words <span class="arithmatex">\(N\)</span> of the text</td>
+</tr>
+</tbody>
+</table>
+<p>A pair of zero frequency gives <code>nan</code> for MI, MI³, the t-score, logDice and NPMI.</p>
+<p>The module <code>ruts.corpus.collocations</code> re-exports the functions of the measures (<code>from ruts.corpus.collocations import calc_logdice</code>).</p>
+<div class="metric-card">
+<h3 id="mi">Mutual information<a class="headerlink" href="#mi" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>mi</code> · Church and Hanks (1990)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_mi</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The pointwise mutual information of the two words; it overrates rare pairs.</p>
+<div class="arithmatex">\[
+\log_2 \frac{f_{ab} N}{f_a f_b}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="mi3">MI³<a class="headerlink" href="#mi3" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>mi3</code> · Oakes (1998)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_mi3</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The mutual information with the frequency of the pair cubed, which favours frequent pairs.</p>
+<div class="arithmatex">\[
+\log_2 \frac{f_{ab}^3 N}{f_a f_b}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="t_score">t-score<a class="headerlink" href="#t_score" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>t_score</code> · Church et al. (1991)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_t_score</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The difference of the observed and the expected frequency of the pair over the root of the observed one; it favours frequent pairs.</p>
+<div class="arithmatex">\[
+\frac{f_{ab} - f_a f_b / N}{\sqrt{f_{ab}}}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="dice">Dice coefficient<a class="headerlink" href="#dice" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>dice</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dice</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The share of the pair in the occurrences of the two words; it does not depend on the size of the text.</p>
+<div class="arithmatex">\[
+\frac{2 f_{ab}}{f_a + f_b}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="logdice">logDice<a class="headerlink" href="#logdice" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>logdice</code> · <a href="https://www.sketchengine.eu/glossary/logdice/">Rychlý (2008)</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_logdice</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The Dice coefficient on a binary logarithmic scale, the default measure, as in Sketch Engine. It does not depend on the size of the text; below zero the link is weak.</p>
+<div class="arithmatex">\[
+14 + \log_2 \frac{2 f_{ab}}{f_a + f_b}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="log_likelihood">Log-likelihood<a class="headerlink" href="#log_likelihood" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>log_likelihood</code> · Dunning (1993)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_log_likelihood</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p><span class="arithmatex">\(G^2\)</span> over the 2×2 contingency table of the two words: the observed frequencies <span class="arithmatex">\(O\)</span> - <span class="arithmatex">\(f_{ab}\)</span>, <span class="arithmatex">\(f_a - f_{ab}\)</span>, <span class="arithmatex">\(f_b - f_{ab}\)</span> and <span class="arithmatex">\(N - f_a - f_b + f_{ab}\)</span> - against the expected ones <span class="arithmatex">\(E\)</span> under independence. A word that fills the whole text, or a negative cell, as of a word paired with itself in a window above one, gives <code>nan</code>.</p>
+<div class="arithmatex">\[
+G^2 = 2 \sum O \ln \frac{O}{E}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="npmi">NPMI<a class="headerlink" href="#npmi" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>npmi</code> · Bouma (2009)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_npmi</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The mutual information normalized by the information of the pair: one means the words occur only together. A pair as frequent as the text is long gives <code>nan</code>.</p>
+<div class="arithmatex">\[
+\frac{MI}{-\log_2 (f_{ab} / N)}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="min_sensitivity">Minimum sensitivity<a class="headerlink" href="#min_sensitivity" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>min_sensitivity</code> · Pedersen (1998)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_min_sensitivity</span><span class="p">(</span><span class="n">freq_a</span><span class="p">,</span> <span class="n">freq_b</span><span class="p">,</span> <span class="n">freq_ab</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div>
+<p>The smaller of the shares of the pair in the occurrences of each word.</p>
+<div class="arithmatex">\[
+\min\left(\frac{f_{ab}}{f_a}, \frac{f_{ab}}{f_b}\right)
+\]</div>
 </div>
 
 
@@ -3074,6 +2682,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3142,7 +2756,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

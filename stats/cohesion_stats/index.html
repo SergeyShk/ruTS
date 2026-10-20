@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/stats/cohesion_stats/">
       
       
-        <link rel="prev" href="../syntax_stats_funcs/">
+        <link rel="prev" href="../syntax_stats/">
       
       
-        <link rel="next" href="../cohesion_stats_funcs/">
+        <link rel="next" href="../lexical_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Модуль вычисления статистик - RuTS</title>
+        <title>Статистики связности - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Модуль вычисления статистик
+              Статистики связности
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1322,92 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1423,7 +1059,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1436,94 +1072,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1548,7 +1096,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1566,7 +1114,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1595,7 +1143,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -1606,7 +1154,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Языковые крючки
+        Атрибуты
       
     </span>
   </a>
@@ -1617,41 +1165,19 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Метрики
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Метрики">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Бинарный повтор
       
     </span>
   </a>
@@ -1659,10 +1185,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#proportional_overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Пропорциональный повтор
       
     </span>
   </a>
@@ -1670,10 +1196,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Местоимения и указательные
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#given" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Данность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal_cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Темпоральная связность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Коннекторы
       
     </span>
   </a>
@@ -1682,6 +1241,94 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_overlaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Все повторы за один расчет
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ConnectorMatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сопоставитель коннекторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Поиск коннекторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#word_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Признаки слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_doc_units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_pronoun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Местоимение
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_content_word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Знаменательное слово
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1701,92 +1348,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../lexical_stats/" class="md-nav__link">
         
   
@@ -1794,7 +1355,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1807,92 +1368,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1908,7 +1383,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1917,42 +1392,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2839,7 +2278,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2850,7 +2289,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Языковые крючки
+        Атрибуты
       
     </span>
   </a>
@@ -2861,41 +2300,19 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Метрики
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Метрики">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Бинарный повтор
       
     </span>
   </a>
@@ -2903,10 +2320,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#proportional_overlap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Пропорциональный повтор
       
     </span>
   </a>
@@ -2914,10 +2331,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Местоимения и указательные
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#given" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Данность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temporal_cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Темпоральная связность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Коннекторы
       
     </span>
   </a>
@@ -2926,6 +2376,94 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_overlaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Все повторы за один расчет
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ConnectorMatcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сопоставитель коннекторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#find_connectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Поиск коннекторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#word_info" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Признаки слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_doc_units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_pronoun" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Местоимение
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_content_word" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Знаменательное слово
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,11 +2488,16 @@
 
 
 <h1 id="_1">Статистики связности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.cohesion_stats.CohesionStats</strong></p>
-</div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Статистики связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы существительных, аргументов (существительных и местоимений) и знаменательных слов между соседними предложениями и всеми парами предложений; данность - доля местоимений, отношение местоимений к существительным, доля указательных и доля знаменательных слов, уже встречавшихся в тексте; темпоральная связность - повтор времени и вида глаголов в соседних предложениях; плотность коннекторов по классам и типам на 1000 слов. Предложения сравниваются по леммам. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Статистики связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы слов в предложениях, данность, темпоральная связность и коннекторы словаря. Предложения сравниваются по леммам. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа, коннекторы, которые не словарь словосочетаний и пар строк;</li>
+<li><code>SourceError</code> - источник без слов;</li>
+<li><code>ParameterError</code> - неизвестный класс или тип коннектора.</li>
+</ul>
+<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора pymorphy3 с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов - из первого разбора pymorphy3 (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <p>Слова классифицируются по разметке <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> или по разметке Universal Dependencies объекта <code>Doc</code>:</p>
 <table>
 <thead>
@@ -2997,7 +2540,484 @@
 </tr>
 </tbody>
 </table>
-<p>Коннекторы ищутся в каждом предложении по словарю <code>ruts/resources/connectors.tsv</code> (317 единиц, см. <a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>); свой словарь передается параметром <code>connectors</code>. Однословный коннектор засчитывается только при части речи из <code>CONNECTOR_POS</code> (союз, частица, наречие, предлог, междометие) или из <code>CONNECTOR_POS_EXTRA</code> для отдельных слов (словом, главное, допустим, точнее): «раз» как существительное не считается. Контекстные правила отсеивают предлоги и омонимы коннекторов: <em>после обеда</em>, <em>пока что</em>, <em>не правда ли</em>, <em>ещё раз</em>, <em>это значит</em>. Часть речи берется из разметки <code>Doc</code>; без разметки слово проходит, если подходящая часть речи есть хотя бы в одном разборе pymorphy3. Классы по Криони, Никину и Филипповой (2008):</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CohesionStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">cs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                       Статистика                        | Значение
+--------------------------------------------------------------------
+Повтор существительных в соседних предложениях           |   0.33
+Повтор существительных во всех парах предложений         |   0.50
+Повтор аргументов в соседних предложениях                |   0.33
+Повтор аргументов во всех парах предложений              |   0.67
+Повтор знаменательных слов в соседних предложениях       |   0.33
+Повтор знаменательных слов во всех парах предложений     |   0.50
+Доля общих знаменательных слов в соседних предложениях   |   0.11
+Доля общих знаменательных слов во всех парах предложений |   0.19
+Доля местоимений                                         |   0.14
+Отношение местоимений к существительным                  |   0.50
+Доля указательных местоимений                            |   0.05
+Доля знаменательных слов, встречавшихся ранее            |   0.29
+Повтор времени в соседних предложениях                   |   0.67
+Повтор вида в соседних предложениях                      |   0.33
+Темпоральная связность                                   |   0.50
+Коннекторов на 1000 слов                                 |  47.62
+Межпредложенческих коннекторов на 1000 слов              |   0.00
+Внутрипредложенческих коннекторов на 1000 слов           |  47.62
+Причинных коннекторов на 1000 слов                       |   0.00
+Противительных коннекторов на 1000 слов                  |   0.00
+Уступительных коннекторов на 1000 слов                   |   0.00
+Временных коннекторов на 1000 слов                       |   0.00
+Аддитивных коннекторов на 1000 слов                      |  47.62
+Условных коннекторов на 1000 слов                        |   0.00
+Переформулирующих коннекторов на 1000 слов               |   0.00
+Первичных коннекторов на 1000 слов                       |  47.62
+Вторичных коннекторов на 1000 слов                       |   0.00
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Инструмент для извлечения предложений; заданный, делит и <code>Doc</code> по его тексту независимо от границ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Инструмент для извлечения слов; заданный, применяется и к тексту <code>Doc</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>connectors</code></td>
+<td style="text-align: left;"><code>dict[str, tuple[str, str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Класс и тип по коннектору; по умолчанию словарь <code>load_connectors</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes ee54833 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Атрибут</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code>, <code>lemmas</code></td>
+<td style="text-align: left;"><code>tuple[tuple[str]]</code></td>
+<td style="text-align: left;">Слова и леммы каждого предложения, в котором есть слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество предложений со словами и количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество слов по видам</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_given</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество знаменательных слов, лемма которых встречалась раньше</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_connectors</code>, <code>connector_spans</code>, <code>c_connectors</code></td>
+<td style="text-align: left;"><code>int</code>, <code>tuple[Connector]</code>, <code>dict[str, int]</code></td>
+<td style="text-align: left;">Количество коннекторов, их вхождения и количество вхождений по коннекторам</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_inter_connectors</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество межпредложенческих коннекторов</td>
+</tr>
+</tbody>
+</table>
+<p>Заданные экстракторы хранятся в атрибутах <code>sents_extractor</code> и <code>words_extractor</code>, без них - <code>None</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">lemmas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_pronouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_content_words</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_given</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">connector_spans</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">c_connectors</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('он', 'смотреть', 'на', 'птица')
+(6, 3, 14, 4)
+(Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
+{'и': 1}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: stats/cohesion_stats.md:CohesionStats-metrics c90d75e -->
+<p>Каждая метрика - атрибут объекта, который вычисляется при его создании; <code>get_stats</code> дает метрики из <code>stats_desc</code>, по умолчанию все, кроме <code>mood_repetition</code>. Функции карточек принимают предложение как набор его элементов - лемм существительных, аргументов или знаменательных слов, значений признака его глаголов - и языка не знают.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Метрика</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>noun_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Доля соседних пар предложений с общим существительным</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связаны соседние предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>noun_overlap_all</code></a></td>
+<td style="text-align: left;">Доля всех пар предложений с общим существительным</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связан весь текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>argument_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Доля соседних пар с общим существительным или местоимением</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связаны соседние предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>argument_overlap_all</code></a></td>
+<td style="text-align: left;">Доля всех пар с общим существительным или местоимением</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связан весь текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>content_overlap_adjacent</code></a></td>
+<td style="text-align: left;">Доля соседних пар с общим знаменательным словом</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связаны соседние предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#overlap"><code>content_overlap_all</code></a></td>
+<td style="text-align: left;">Доля всех пар с общим знаменательным словом</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">теснее связан весь текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#proportional_overlap"><code>content_overlap_prop_adjacent</code></a></td>
+<td style="text-align: left;">Средняя доля общих знаменательных слов (Дайс) в соседних парах</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">больше общих слов у соседей</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#proportional_overlap"><code>content_overlap_prop_all</code></a></td>
+<td style="text-align: left;">Средняя доля общих знаменательных слов (Дайс) во всех парах</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
+<td style="text-align: left;">больше общих слов по всему тексту</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>p_pronouns</code></a></td>
+<td style="text-align: left;">Доля местоимений среди слов</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">больше отсылок местоимениями</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>pronoun_noun_ratio</code></a></td>
+<td style="text-align: left;">Отношение местоимений к существительным</td>
+<td style="text-align: left;">от 0, <code>nan</code> без существительных</td>
+<td style="text-align: left;">больше местоимений на существительное</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pronouns"><code>p_demonstratives</code></a></td>
+<td style="text-align: left;">Доля указательных среди слов</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">больше указаний назад</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#given"><code>p_given</code></a></td>
+<td style="text-align: left;">Доля знаменательных слов, лемма которых уже встречалась в тексте</td>
+<td style="text-align: left;">0-1, <code>nan</code> без знаменательных слов</td>
+<td style="text-align: left;">больше данной информации</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>tense_repetition</code></a></td>
+<td style="text-align: left;">Доля соседних пар предложений с одинаковым преобладающим временем</td>
+<td style="text-align: left;">0-1, <code>nan</code> без двух соседних предложений с признаком</td>
+<td style="text-align: left;">устойчивее время</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>mood_repetition</code></a></td>
+<td style="text-align: left;">Доля соседних пар с одинаковым преобладающим наклонением</td>
+<td style="text-align: left;">0-1, <code>nan</code> без двух соседних предложений с признаком</td>
+<td style="text-align: left;">устойчивее наклонение</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>aspect_repetition</code></a></td>
+<td style="text-align: left;">Доля соседних пар с одинаковым преобладающим видом</td>
+<td style="text-align: left;">0-1, <code>nan</code> без двух соседних предложений с признаком</td>
+<td style="text-align: left;">устойчивее вид</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#temporal_cohesion"><code>temporal_cohesion</code></a></td>
+<td style="text-align: left;">Среднее повторов признаков <code>temporal_features</code></td>
+<td style="text-align: left;">0-1, <code>nan</code>, если один из них <code>nan</code></td>
+<td style="text-align: left;">устойчивее временной план</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors</code></a></td>
+<td style="text-align: left;">Коннекторы на 1000 слов</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">больше явных связей</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_inter</code></a></td>
+<td style="text-align: left;">Межпредложенческие коннекторы на 1000 слов</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">больше связей с предыдущими предложениями</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_intra</code></a></td>
+<td style="text-align: left;">Внутрипредложенческие коннекторы на 1000 слов</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">больше связей внутри предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#connectors"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></a></td>
+<td style="text-align: left;">Коннекторы класса или типа сопоставителя на 1000 слов</td>
+<td style="text-align: left;">0-1000</td>
+<td style="text-align: left;">больше связей этого класса или типа</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="overlap">Бинарный повтор<a class="headerlink" href="#overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_overlap_adjacent</code> · <code>noun_overlap_all</code> · <code>argument_overlap_adjacent</code> · <code>argument_overlap_all</code> · <code>content_overlap_adjacent</code> · <code>content_overlap_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<!-- core: stats/cohesion_stats.md:calc_overlap 5615a5e -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Бинарный повтор Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 по соседним парам, CRFNOa, CRFAOa, CRFSOa по всем): доля пар предложений хотя бы с одним общим элементом; для текста короче двух предложений - <code>nan</code>. Все пары считаются, как в <code>calc_overlaps</code>, без их перебора.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество пар с общим элементом}}{\textrm{Количество пар}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Элементы каждого предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>adjacent</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Считать только соседние пары, иначе все пары</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="proportional_overlap">Пропорциональный повтор<a class="headerlink" href="#proportional_overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>content_overlap_prop_adjacent</code> · <code>content_overlap_prop_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<!-- core: stats/cohesion_stats.md:calc_proportional_overlap f3c7775 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_proportional_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Пропорциональный повтор Coh-Metrix (CRFCWO1, CRFCWOa): коэффициент Дайса пары предложений (<code>dice</code>), усредненный по парам; для текста короче двух предложений - <code>nan</code>. По всем парам сумма считается, как в <code>calc_overlaps</code>, без их перебора.</p>
+<div class="arithmatex">\[
+\frac{1}{\textrm{Количество пар}} \sum_{(A, B)} \textrm{Dice}(A, B)
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Элементы каждого предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>adjacent</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Считать только соседние пары, иначе все пары</td>
+</tr>
+</tbody>
+</table>
+<!-- core: stats/cohesion_stats.md:dice 990af72 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">dice</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)</span>
+</code></pre></div>
+<p>Коэффициент Дайса двух множеств, 0 для двух пустых множеств.</p>
+<div class="arithmatex">\[
+\frac{2 \times |A \cap B|}{|A| + |B|}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>first</code></td>
+<td style="text-align: left;"><code>frozenset[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Первое множество</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>second</code></td>
+<td style="text-align: left;"><code>frozenset[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Второе множество</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="pronouns">Местоимения и указательные<a class="headerlink" href="#pronouns" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_pronouns</code> · <code>pronoun_noun_ratio</code> · <code>p_demonstratives</code></p>
+<!-- core: stats/cohesion_stats.md:CohesionStats-pronouns 6f16dbf -->
+<p>Местоимения, существительные и указательные - слова, которые так размечает <code>analyze</code>, по умолчанию с признаками <code>word_info</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество местоимений}}{\textrm{Количество слов}}, \quad \frac{\textrm{Количество местоимений}}{\textrm{Количество существительных}}, \quad \frac{\textrm{Количество указательных}}{\textrm{Количество слов}}
+\]</div>
+<p>В ruTS их размечают функции <a href="#word_info">признаков слова</a> по таблице классов слов.</p>
+</div>
+<div class="metric-card">
+<h3 id="given">Данность<a class="headerlink" href="#given" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_given</code></p>
+<!-- core: stats/cohesion_stats.md:count_given f16b437 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">count_given</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
+</code></pre></div>
+<p>Количество данных элементов: элемент дан, если та же лемма уже встречалась раньше в любом предложении, включая текущее; первое вхождение - новое.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Леммы каждого предложения в порядке текста</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="temporal_cohesion">Темпоральная связность<a class="headerlink" href="#temporal_cohesion" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>tense_repetition</code> · <code>mood_repetition</code> · <code>aspect_repetition</code> · <code>temporal_cohesion</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
+<!-- core: stats/cohesion_stats.md:calc_repetition 011658f -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_repetition</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
+</code></pre></div>
+<p>Повтор времени и вида Coh-Metrix (SMTEMP): доля пар соседних предложений, у глаголов которых одинаковое преобладающее значение признака; пара, в которой у одного из предложений нет глагола с признаком, пропускается, а если ни одной такой пары нет, значение - <code>nan</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество пар с одинаковым преобладающим значением}}{\textrm{Количество пар с признаком}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения признака глаголов каждого предложения</td>
+</tr>
+</tbody>
+</table>
+<!-- core: stats/cohesion_stats.md:dominant 3232087 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">dominant</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+</code></pre></div>
+<p>Преобладающее значение: самое частое, из равно частых - первое; для пустого списка - <code>None</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения</td>
+</tr>
+</tbody>
+</table>
+<p>Наклонение <code>CohesionStats</code> в ruTS не сравнивает: <code>mood_repetition</code> всегда равен <code>nan</code>, а <code>temporal_cohesion</code> - среднее <code>tense_repetition</code> и <code>aspect_repetition</code>.</p>
+</div>
+<div class="metric-card">
+<h3 id="connectors">Коннекторы<a class="headerlink" href="#connectors" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>connectors</code> · <code>connectors_inter</code> · <code>connectors_intra</code> · <code>connectors_&lt;class&gt;</code> · <code>connectors_&lt;kind&gt;</code></p>
+<!-- core: stats/cohesion_stats.md:CohesionStats-connectors 0332772 -->
+<p>Вхождения коннекторов, найденных в каждом предложении сопоставителем <code>connector_matcher_class</code>, на 1000 слов. Межпредложенческий коннектор связывает предложение с предыдущими: он открывает предложение, если сопоставитель не считает его подчинительным (<code>is_subordinator</code>) - клауза или группа подчинительного принадлежит тому же предложению; остальные - внутрипредложенческие. Каждый класс и тип сопоставителя дает свою плотность: по умолчанию <code>connectors_causal</code>, <code>connectors_adversative</code>, <code>connectors_concessive</code>, <code>connectors_temporal</code>, <code>connectors_additive</code>, <code>connectors_conditional</code>, <code>connectors_reformulative</code>, <code>connectors_primary</code> и <code>connectors_secondary</code>.</p>
+<div class="arithmatex">\[
+1000 \cdot \frac{\textrm{Количество коннекторов}}{\textrm{Количество слов}}
+\]</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">load_connectors</span><span class="p">()</span>
+</code></pre></div>
+<p>Словарь коннекторов ruTS: файл <code>ruts/resources/connectors.tsv</code> - 316 коннекторов с классом из <code>CONNECTOR_CLASSES</code> и типом из <code>CONNECTOR_TYPES</code> модуля <code>ruts.constants</code>, составленных по классификации Криони, Никина и Филипповой (2008) со сверкой по списку маркеров <a href="https://rstreebank.ru/markersFull">Ru-RSTreebank</a>, базе <a href="https://ruslinkers.github.io/">Рускон</a> и списку причинных маркеров Тольдовой и др. (2018). Однословные «и», «а», «но» входят в словарь, как в Coh-Metrix и TAACO; «что» и «как» коннекторами не считаются.</p>
 <table>
 <thead>
 <tr>
@@ -3044,284 +3064,426 @@
 </tr>
 </tbody>
 </table>
-<p>Тип коннектора: первичные - союзы, наречия и частицы (потому что, однако, затем), вторичные - лексикализованные обороты с существительными и глаголами (в результате этого, с другой стороны, иными словами).</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Вычисление статистик происходит в момент инициализации объекта класса <code>CohesionStats</code>.</p>
+<p>Первичные коннекторы (<code>primary</code>) - союзы, наречия и частицы (потому что, однако, затем), вторичные (<code>secondary</code>) - лексикализованные обороты с существительными и глаголами (в результате этого, с другой стороны, иными словами). Правила, по которым слово словаря считается коннектором, - у <a href="#ConnectorMatcher">сопоставителя</a>.</p>
 </div>
-<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем. <code>analyze</code> читает и строку, и <code>Doc</code>: для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора pymorphy3 с частью речи токена (<a href="../cohesion_stats_funcs/#word_info"><code>unit_info</code></a>); для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов - из первого разбора pymorphy3 (<a href="../cohesion_stats_funcs/#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>join_hyphens = True</code>, <code>во-первых</code> - одно слово). Строка и <code>Doc</code> без границ предложений разбиваются на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> (<code>sents_extractor_class</code>); слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code> - параметр, которого у ядра нет. Коннекторы берутся из словаря <code>load_connectors</code> и ищутся сопоставителем <code>RussianConnectorMatcher</code> (<a href="../cohesion_stats_funcs/#find_connectors"><code>find_connectors</code></a>) - <code>ConnectorMatcher</code> ядра с русской нормализацией слов и частями речи. Таблица <code>print_stats</code> выводится с русскими заголовками и описаниями из <code>ruts.constants.COHESION_STATS_DESC</code>, сообщения об ошибках - по-русски (<code>CORE_MESSAGES</code>).</p>
-<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: stats/cohesion_stats.md:cohesion-checks 47eaf98 -->
+<p>Список предложений, который является строкой, <code>Doc</code>, итератором, множеством или таблицей, дает <code>SourceTypeError</code>, как и предложение, которое не список строк (<code>check_words</code>), например список токенов spaCy. Функции повторов (<code>calc_overlap</code>, <code>calc_proportional_overlap</code>, <code>calc_overlaps</code>) принимают предложение и в виде множества; <code>count_given</code> и <code>calc_repetition</code> считают слова по порядку и множество не принимают.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlap</span><span class="p">,</span> <span class="n">calc_repetition</span><span class="p">,</span> <span class="n">count_given</span>
+
+<span class="n">sets</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"окно"</span><span class="p">}]</span>
+<span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">),</span> <span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">count_given</span><span class="p">([[</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"птица"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">]])</span>
+<span class="n">calc_repetition</span><span class="p">([[</span><span class="s2">"past"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"past"</span><span class="p">,</span> <span class="s2">"pres"</span><span class="p">,</span> <span class="s2">"past"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"futr"</span><span class="p">]])</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(0.3333333333333333, 0.5)
+2
+0.5
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик связности нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'noun_overlap_adjacent': 0.3333333333333333,
+ 'noun_overlap_all': 0.5,
+ 'argument_overlap_adjacent': 0.3333333333333333,
+ 'argument_overlap_all': 0.6666666666666666,
+ 'content_overlap_adjacent': 0.3333333333333333,
+ 'content_overlap_all': 0.5,
+ 'content_overlap_prop_adjacent': 0.1111111111111111,
+ 'content_overlap_prop_all': 0.18650793650793648,
+ 'p_pronouns': 0.14285714285714285,
+ 'pronoun_noun_ratio': 0.5,
+ 'p_demonstratives': 0.047619047619047616,
+ 'p_given': 0.2857142857142857,
+ 'tense_repetition': 0.6666666666666666,
+ 'aspect_repetition': 0.3333333333333333,
+ 'temporal_cohesion': 0.5,
+ 'connectors': 47.61904761904762,
+ 'connectors_inter': 0.0,
+ 'connectors_intra': 47.61904761904762,
+ 'connectors_causal': 0.0,
+ 'connectors_adversative': 0.0,
+ 'connectors_concessive': 0.0,
+ 'connectors_temporal': 0.0,
+ 'connectors_additive': 47.61904761904762,
+ 'connectors_conditional': 0.0,
+ 'connectors_reformulative': 0.0,
+ 'connectors_primary': 47.61904761904762,
+ 'connectors_secondary': 0.0}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="calc_overlaps">Все повторы за один расчет<a class="headerlink" href="#calc_overlaps" title="Permanent link">&para;</a></h2>
+<!-- core: stats/cohesion_stats.md:calc_overlaps cb01e7a -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_overlaps</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">proportional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p>Значения <code>calc_overlap</code> и <code>calc_proportional_overlap</code> по соседним и по всем парам сразу - именованный кортеж <code>Overlap</code> с полями <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> и <code>prop_all</code>; без <code>proportional</code> последние два равны <code>nan</code>. Значения по всем парам вычисляются без перебора каждой пары: пары с общим элементом считаются по битовым маскам предложений, а сумма коэффициентов Дайса - по гистограммам длин предложений, в которых есть каждый элемент, и складывается <code>math.fsum</code>, чтобы не зависеть от порядка элементов.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Источник данных (строка или объект Doc)</td>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Элементы каждого предложения</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения предложений; если задан, применяется и к тексту Doc</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения слов; если задан, применяется и к тексту Doc</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors</code></td>
-<td style="text-align: center;">dict[str, tuple[str, str]]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Словарь коннекторов - класс и тип по коннектору; если не задан, используется словарь из <code>resources</code></td>
+<td style="text-align: left;"><code>proportional</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Вычислять и пропорциональный повтор</td>
 </tr>
 </tbody>
 </table>
-<p>Источник, который не строка и не <code>Doc</code>, экстрактор другого типа и коннекторы, которые не словарь словосочетаний и пар строк, дают <code>SourceTypeError</code>; источник без слов - <code>SourceError</code>, неизвестный класс или тип коннектора - <code>ParameterError</code>.</p>
-<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 06c1393 -->
+<p>Класс <code>CohesionStats</code> считает с ее помощью повторы существительных и аргументов без пропорциональных, а повторы знаменательных слов - с ними.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlaps</span>
+
+<span class="n">calc_overlaps</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">,</span> <span class="s2">"кот"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"окно"</span><span class="p">}])</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>Overlap(adjacent=0.3333333333333333, all=0.5, prop_adjacent=0.2222222222222222, prop_all=0.3055555555555555)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="ConnectorMatcher">Сопоставитель коннекторов<a class="headerlink" href="#ConnectorMatcher" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">RussianConnectorMatcher</span><span class="p">(</span><span class="n">connectors</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/cohesion_stats.md:ConnectorMatcher 4bd17e8 -->
+<p>Поиск коннекторов словаря (дискурсивных маркеров: <em>потому что</em>, <em>однако</em>, <em>с другой стороны</em>) в предложениях текста. Словарь задает класс каждого коннектора - причинный, противительный, уступительный, временной, аддитивный, условный или переформулирующий (<code>CONNECTOR_CLASSES</code>) - и его тип, первичный или вторичный (<code>CONNECTOR_KINDS</code>). Коннектор сопоставляется по нормализованным формам его слов: в каждой позиции берется самый длинный, найденные не пересекаются; точку и дефис внутри коннектора токенизатор может отделить (<em>т.е.</em> - <code>т</code>, <code>е</code>). Вхождение - <code>Connector</code>: номер предложения <code>sent</code>, позиции его слов <code>start</code> и <code>end</code>, коннектор <code>text</code> в написании словаря, его класс <code>cls</code> и тип <code>kind</code>.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - словарь, который не отображение словосочетания в пару строк;</li>
+<li><code>ParameterError</code> - неизвестный класс или тип.</li>
+</ul>
+<p><code>RussianConnectorMatcher</code> - подкласс <code>ConnectorMatcher</code> ядра с правилами русского языка. Слова и коннекторы сравниваются в нижнем регистре без буквы ё и знаков ударения (<code>normalize_yo</code>). Однословному коннектору подходит часть речи из <code>CONNECTOR_POS</code> ядра (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) или из <code>CONNECTOR_POS_EXTRA</code> для его формы (например: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели и коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» как существительное коннектором не считается. Контекстные правила - списки <code>ruts.constants</code>: слова после коннектора (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) и перед ним (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>), с которыми он не коннектор; коннекторы, которые внутри предложения засчитываются только после отдельных слов (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) и не засчитываются в его начале (<code>CONNECTOR_NOT_AT_START</code>: вопросительное <em>отчего</em>); части речи слова после коннектора, с которыми он предлог или член предложения (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). Через знак препинания правила читают только у <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>, <em>после «Ревизора»</em>), так что вводное <em>значит,</em> остается коннектором, а знак между словами коннектора из <code>CONNECTOR_SPLIT_BY_MARKS</code> его разделяет (<em>так, как</em>). Эти части речи и списки - атрибуты сопоставителя: <code>CONNECTOR_POS</code> - <code>pos_tags</code>, остальные - под именем без <code>CONNECTOR_</code> в нижнем регистре (<code>CONNECTOR_BLOCKED_AFTER</code> - <code>blocked_after</code>); атрибуты <code>not_after_pos</code> и <code>start_only_pos</code> в ruTS пусты, так что эти правила <code>find</code> не действуют.</p>
+<!-- core: stats/cohesion_stats.md:ConnectorMatcher-find a9d4226 -->
+<p><code>find(words, sent_index, pos, breaks)</code> возвращает вхождения коннекторов в предложении в порядке слов. Слова - слова одного предложения без знаков препинания, первое из них - его начало. С частями речи однословный коннектор засчитывается только при части речи из <code>pos_tags</code> или из <code>pos_extra</code> для его формы, никогда - после части речи из <code>not_after_pos</code>, а с частью речи из <code>start_only_pos</code> - только в начале предложения; слово без части речи (<code>None</code>) проходит. Без частей речи правила, которые их читают, пропускаются. Позиции знаков препинания <code>breaks</code> отделяют коннектор от соседей: правило не читает слово через знак, так что в <em>значит, пойдем</em> слово после запятой не запрещает коннектор и не разрешает его, если коннектор не из <code>read_through_marks</code>, а знак между словами коннектора из <code>split_by_marks</code> делает его не коннектором; без позиций слова читаются как соседние.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>words</code>, <code>lemmas</code></td>
-<td style="text-align: center;">tuple[tuple[str]]</td>
-<td style="text-align: center;">Слова и леммы каждого предложения, в котором есть слова</td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова предложения</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество предложений со словами и количество слов</td>
+<td style="text-align: left;"><code>sent_index</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Номер предложения для записи во вхождения</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество слов по видам</td>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Части речи слов</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_given</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество знаменательных слов, лемма которых встречалась раньше</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_connectors</code>, <code>connector_spans</code>, <code>c_connectors</code></td>
-<td style="text-align: center;">int, tuple[Connector], dict[str, int]</td>
-<td style="text-align: center;">Количество коннекторов, их вхождения и количество вхождений по коннекторам</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_inter_connectors</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество межпредложенческих коннекторов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_overlap_adjacent</code>, <code>noun_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доли соседних и всех пар предложений с общим существительным</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>argument_overlap_adjacent</code>, <code>argument_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">То же для существительного или местоимения</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_adjacent</code>, <code>content_overlap_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">То же для знаменательного слова</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>content_overlap_prop_adjacent</code>, <code>content_overlap_prop_all</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя доля общих знаменательных слов (коэффициент Дайса) в соседних и во всех парах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_pronouns</code>, <code>p_demonstratives</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доли местоимений и указательных среди слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>pronoun_noun_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Отношение числа местоимений к числу существительных</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_given</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля знаменательных слов, лемма которых встречалась раньше в тексте</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tense_repetition</code>, <code>mood_repetition</code>, <code>aspect_repetition</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доли соседних пар предложений с одинаковым преобладающим временем, наклонением и видом</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>temporal_cohesion</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее повторов признаков <code>temporal_features</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Коннекторов на 1000 слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_inter</code>, <code>connectors_intra</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Межпредложенческих коннекторов на 1000 слов, которые связывают предложение с предыдущими: открывающих предложение, если сопоставитель не считает их подчинительным союзом (<code>is_subordinator</code>: один из его <code>subordinators</code> или однословный коннектор с частью речи <code>SCONJ</code>, <em>когда он пришел, ...</em>), чья клауза принадлежит тому же предложению; и внутрипредложенческих - остальных</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>connectors_&lt;class&gt;</code>, <code>connectors_&lt;kind&gt;</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Коннекторов каждого класса и типа сопоставителя на 1000 слов: по умолчанию <code>connectors_causal</code>, <code>connectors_adversative</code>, <code>connectors_concessive</code>, <code>connectors_temporal</code>, <code>connectors_additive</code>, <code>connectors_conditional</code>, <code>connectors_reformulative</code>, <code>connectors_primary</code> и <code>connectors_secondary</code></td>
+<td style="text-align: left;"><code>breaks</code></td>
+<td style="text-align: left;"><code>set[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Позиции слов, перед которыми стоит знак препинания</td>
 </tr>
 </tbody>
 </table>
-<p>Повторы слов в тексте из одного предложения, повтор признака без двух соседних предложений с ним и доля, которой не на что делить, равны <code>nan</code>.</p>
-<p>Наклонение <code>CohesionStats</code> в ruTS не сравнивает: <code>mood_repetition</code> всегда равен <code>nan</code> и в <code>get_stats</code> не входит, а <code>temporal_cohesion</code> - среднее <code>tense_repetition</code> и <code>aspect_repetition</code>. Заданные экстракторы хранятся в атрибутах:</p>
+<p>Слова, которые не список строк, части речи, которые не список строк и <code>None</code> (теги <code>token.pos_</code> spaCy, а не числа <code>token.pos</code>), и позиции знаков, которые не коллекция, дают <code>SourceTypeError</code>; номер предложения или позиция знака, которые не целое число, и частей речи не столько, сколько слов, - <code>ParameterError</code>.</p>
+<!-- core: stats/cohesion_stats.md:ConnectorMatcher-is_subordinator 9d44a18 -->
+<p><code>is_subordinator(connector, pos=None)</code> проверяет, привязывает ли вхождение коннектора свою клаузу или группу к собственному предложению: коннектор из <code>subordinators</code> или однословный коннектор с частью речи <code>pos</code> <code>SCONJ</code> или <code>ADP</code>. Клауза подчинительного союза и группа предлога принадлежат предложению коннектора, где бы он ни стоял, поэтому подчинительный, открывающий предложение (<em>когда он пришел, ...</em>, <em>вопреки ожиданиям, ...</em>), не связывает его с предыдущими.</p>
+<p>Подчинительные в ruTS сверх однословных с частью речи <code>SCONJ</code> и <code>ADP</code> - <code>CONNECTOR_SUBORDINATORS</code>: многословные союзы и предлоги (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) и однословные, которые модели spaCy или pymorphy3 размечают иначе (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). Союз из <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) в начале предложения присоединяет его к предыдущему, поэтому подчинительным не считается.</p>
+<h2 id="find_connectors">Поиск коннекторов<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">find_connectors</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sent_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Ищет коннекторы в предложении методом <code>find</code> сопоставителя <code>RussianConnectorMatcher</code> по словарю <code>connectors</code>, по умолчанию - по словарю <code>load_connectors</code>; остальные параметры и исключения - те же, что у сопоставителя и <code>find</code>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;">Заданный инструмент для извлечения предложений, <code>None</code> без него</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;">Заданный инструмент для извлечения слов, <code>None</code> без него</td>
+<td style="text-align: left;"><code>connectors</code></td>
+<td style="text-align: left;"><code>dict[str, tuple[str, str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Класс и тип по коннектору</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Каждую статистику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о статистиках связности и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../cohesion_stats_funcs/">разделе</a>.</p>
-</div>
-<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Возвращает справочник с вычисленными статистиками связности текста.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">CohesionStats</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">connector_pos</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>Часть речи UD слова по pymorphy3 для проверки коннектора: первый разбор с частью речи, подходящей коннектору (<code>CONNECTOR_POS</code> или <code>CONNECTOR_POS_EXTRA</code> для этого слова), иначе первый разбор. Так <code>CohesionStats</code> получает части речи для строки и <code>Doc</code> без разметки.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слово</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_connectors</span>
 
-<span class="c1"># Подготовка данных</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Затем"</span><span class="p">,</span> <span class="s2">"иными"</span><span class="p">,</span> <span class="s2">"словами"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"уснул"</span><span class="p">])</span>
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Раз"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"пришел"</span><span class="p">])</span>
+<span class="n">find_connectors</span><span class="p">([</span><span class="s2">"Раз"</span><span class="p">,</span> <span class="s2">"он"</span><span class="p">,</span> <span class="s2">"пришел"</span><span class="p">],</span> <span class="n">pos</span><span class="o">=</span><span class="p">[</span><span class="s2">"NOUN"</span><span class="p">,</span> <span class="s2">"PRON"</span><span class="p">,</span> <span class="s2">"VERB"</span><span class="p">])</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[Connector(sent=0, start=0, end=1, text='затем', cls='temporal', kind='primary'),
+ Connector(sent=0, start=1, end=3, text='иными словами', cls='reformulative', kind='secondary')]
+[Connector(sent=0, start=0, end=1, text='раз', cls='conditional', kind='primary')]
+[]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="word_info">Признаки слова<a class="headerlink" href="#word_info" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">word_info</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">token_info</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">ud_info</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tense</span><span class="p">,</span> <span class="n">aspect</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора pymorphy3; <code>words_info</code> - так же для слов предложений текста, где ответное «нет» (Нет, не видел) - частица без времени. <code>token_info</code> берет их из разметки spaCy (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> - из заданных части речи, времени и вида UD; лемма берется из разбора pymorphy3 с этой частью речи (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору pymorphy3 склеенного текста, переведенному в UD (<code>word_to_ud</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слово (<code>word_info</code>, <code>ud_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова предложений текста (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Текст, из которого извлечены слова (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен spaCy (<code>token_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code>, <code>tense</code>, <code>aspect</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Часть речи, время и вид UD (<code>ud_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токены слова (<code>unit_info</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_info</span>
 
-<span class="c1"># Вычисление статистик</span>
-<span class="n">cs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'noun_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'noun_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'argument_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'argument_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="s1">'content_overlap_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'content_overlap_all'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'content_overlap_prop_adjacent'</span>:<span class="w"> </span><span class="m">0</span>.1111111111111111,
-<span class="s1">'content_overlap_prop_all'</span>:<span class="w"> </span><span class="m">0</span>.18650793650793648,
-<span class="s1">'p_pronouns'</span>:<span class="w"> </span><span class="m">0</span>.14285714285714285,
-<span class="s1">'pronoun_noun_ratio'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_demonstratives'</span>:<span class="w"> </span><span class="m">0</span>.047619047619047616,
-<span class="s1">'p_given'</span>:<span class="w"> </span><span class="m">0</span>.2857142857142857,
-<span class="s1">'tense_repetition'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="s1">'aspect_repetition'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'temporal_cohesion'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'connectors'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_inter'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_intra'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_causal'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_adversative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_concessive'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_temporal'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_additive'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_conditional'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_reformulative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'connectors_primary'</span>:<span class="w"> </span><span class="m">47</span>.61904761904762,
-<span class="s1">'connectors_secondary'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+<span class="n">word_info</span><span class="p">(</span><span class="s2">"смотрел"</span><span class="p">)</span>
 </code></pre></div>
 </div>
-<p>Слова, леммы и счетчики доступны как атрибуты:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">lemmas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="c1"># ('он', 'смотреть', 'на', 'птица')</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_pronouns</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_content_words</span><span class="p">,</span> <span class="n">cs</span><span class="o">.</span><span class="n">n_given</span>
-<span class="c1"># (6, 3, 14, 4)</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">connector_spans</span>
-<span class="c1"># (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='past', aspect='impf')
 </code></pre></div>
 </div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
-<p>Выводит таблицу статистик из <code>stats_desc</code> с их описаниями под заголовками из <code>stats_headers</code>, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.</p>
-<p>Для иллюстрации работы метода воспользуемся кодом из примера <code>get_stats</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+</div>
+</div>
+<h2 id="split_doc_units">Слова Doc<a class="headerlink" href="#split_doc_units" title="Permanent link">&para;</a></h2>
+<!-- core: utils/spacy.md:split_doc_units bc3b793 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">split_doc_units</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Разбивает слова <code>Doc</code> или <code>Span</code> по предложениям экстрактора предложений - для <code>Doc</code> без границ предложений или для того, который нужно разбить иначе: предложения находятся в его тексте по порядку, а слово <code>iter_doc_units</code> относится к предложению, в котором лежит его первый токен. Слова вне найденных предложений, отброшенные экстрактором, не учитываются, поэтому если ни одного предложения не найдено, слов нет.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Объект Doc или Span</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Инструмент для извлечения предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Склеивать части дефисных слов</td>
+</tr>
+</tbody>
+</table>
+<p>Класс <code>CohesionStats</code> склеивает части дефисных слов всегда, а функция - только с <code>join_hyphens=True</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">unit_pos</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+<p><code>unit_text</code> дает текст слова по его токенам без метки порядка байтов, знаков ударения и мягких переносов (<code>ruts.utils.strip_marks</code>), <code>unit_pos</code> - его часть речи UD: для отдельного токена - часть речи токена, для дефисного слова из нескольких токенов - часть речи <code>connector_pos</code> склеенного текста.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токены слова</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_doc_units</span><span class="p">,</span> <span class="n">unit_text</span>
 
-<span class="c1"># Отображение таблицы вычисленных статистик</span>
-<span class="n">cs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                       </span>Статистика<span class="w">                        </span><span class="p">|</span><span class="w"> </span>Значение
---------------------------------------------------------------------
-Повтор<span class="w"> </span>существительных<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>существительных<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>аргументов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Повтор<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w">     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
-Доля<span class="w"> </span>общих<span class="w"> </span>знаменательных<span class="w"> </span>слов<span class="w"> </span>во<span class="w"> </span>всех<span class="w"> </span>парах<span class="w"> </span>предложений<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>местоимений<span class="w">                                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.14
-Отношение<span class="w"> </span>местоимений<span class="w"> </span>к<span class="w"> </span>существительным<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>указательных<span class="w"> </span>местоимений<span class="w">                            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
-Доля<span class="w"> </span>знаменательных<span class="w"> </span>слов,<span class="w"> </span>встречавшихся<span class="w"> </span>ранее<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Повтор<span class="w"> </span>времени<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.67
-Повтор<span class="w"> </span>вида<span class="w"> </span>в<span class="w"> </span>соседних<span class="w"> </span>предложениях<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.33
-Темпоральная<span class="w"> </span>связность<span class="w">                                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                                 </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Межпредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Внутрипредложенческих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">           </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Причинных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Противительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Уступительных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Временных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Аддитивных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                      </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Условных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Переформулирующих<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Первичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">  </span><span class="m">47</span>.62
-Вторичных<span class="w"> </span>коннекторов<span class="w"> </span>на<span class="w"> </span><span class="m">1000</span><span class="w"> </span>слов<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+<span class="n">doc</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">blank</span><span class="p">(</span><span class="s2">"ru"</span><span class="p">)(</span><span class="s2">"Жили-были дед да баба. Во-первых, кот спит."</span><span class="p">)</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">())</span>
+<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">(),</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
 </code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик связности нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[['Жили', 'были', 'дед', 'да', 'баба'], ['Во', 'первых', 'кот', 'спит']]
+[['Жили-были', 'дед', 'да', 'баба'], ['Во-первых', 'кот', 'спит']]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="is_pronoun">Местоимение<a class="headerlink" href="#is_pronoun" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_pronoun</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово местоимением по разметке pymorphy3: <code>NPRO</code> (он, себя, кто) или <code>Apro</code> (этот, который, мой, весь).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слово</td>
+</tr>
+</tbody>
+</table>
+<h2 id="is_content_word">Знаменательное слово<a class="headerlink" href="#is_content_word" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_content_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово знаменательным по разметке pymorphy3: часть речи из <code>CONTENT_POS</code> (существительные, прилагательные, глаголы во всех формах, наречия) без граммем <code>STOPWORD_GRAMMEMES</code> (местоименные и вводные слова).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слово</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3341,6 +3503,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3409,7 +3577,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

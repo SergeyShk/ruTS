@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/corpus/keyness/">
       
       
-        <link rel="prev" href="../../stats/verse_stats_funcs/">
+        <link rel="prev" href="../../stats/verse_stats/">
       
       
         <link rel="next" href="../collocations/">
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1939,28 +1281,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measures
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1994,13 +1314,96 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#measures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Measures
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Measures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#log_likelihood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log-likelihood
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chi2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chi-square
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        %DIFF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log Ratio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BIC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ELL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#odds_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Odds ratio
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2806,28 +2209,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#measures" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Measures
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2861,13 +2242,96 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#measures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example
+        Measures
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Measures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#log_likelihood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log-likelihood
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chi2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chi-square
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        %DIFF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log Ratio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BIC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ell" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ELL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#odds_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Odds ratio
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2892,279 +2356,15 @@
 
 
 <h1 id="keywords">Keywords<a class="headerlink" href="#keywords" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.corpus.keyness()</strong>, <strong>ruts.corpus.Keyword</strong>, <strong>ruts.corpus.FrequencyReference</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
 <p>Keyword extraction (keyness) for a target corpus against a reference one: the words that occur significantly more often in the target corpus than in the reference.</p>
 <p>Every word gets two values that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (whether there is a difference) and Log Ratio (how large it is), plus the chosen measure <code>score</code>, which sorts the list. The measures of significance (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC) and ELL, the effect size of <span class="arithmatex">\(G^2\)</span>, are negative when the word is more frequent in the reference; %DIFF, Log Ratio and the odds ratio are directional by construction.</p>
 <p>The reference may be a list of words, a mapping of frequencies (its size is the sum of the counts) or a <code>FrequencyReference</code>. Words are compared as they are: case, lemmatization and stop words belong to the word extractor, and both corpora have to be extracted the same way.</p>
-<p>The function wraps <code>keyness</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> core and also takes the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> <code>FreqDict</code> as the reference; <code>FrequencyReference</code> is in <code>ruts.corpus</code> next to it, and the functions of the measures in <code>ruts.corpus.keyness</code> (<code>from ruts.corpus.keyness import calc_log_likelihood</code>). Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
-<h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
-<p>For a word of frequency <span class="arithmatex">\(a\)</span> in a target corpus of size <span class="arithmatex">\(c\)</span> and of frequency <span class="arithmatex">\(b\)</span> in a reference corpus of size <span class="arithmatex">\(d\)</span>, <span class="arithmatex">\(N = c + d\)</span>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Measure</th>
-<th style="text-align: left;">Key</th>
-<th style="text-align: left;">Formula</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Log-likelihood</td>
-<td style="text-align: left;"><code>log_likelihood</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(G^2 = 2\,(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2})\)</span>, <span class="arithmatex">\(E_1 = \frac{c\,(a+b)}{N}\)</span>, <span class="arithmatex">\(E_2 = \frac{d\,(a+b)}{N}\)</span></td>
-<td style="text-align: left;"><a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson and Garside (2000)</a>; critical values <code>anyts.constants.G2_CRITICAL_VALUES</code>: 3.84 for p &lt; 0.05, 6.63 for p &lt; 0.01, 10.83 for p &lt; 0.001, 15.13 for p &lt; 0.0001</td>
-</tr>
-<tr>
-<td style="text-align: left;">Chi-square</td>
-<td style="text-align: left;"><code>chi2</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\chi^2 = \frac{N\,\max(\lvert a(d-b) - b(c-a) \rvert - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}\)</span></td>
-<td style="text-align: left;">with Yates's correction over the 2×2 contingency table; when the correction exceeds the difference, the statistic is zero</td>
-</tr>
-<tr>
-<td style="text-align: left;">%DIFF</td>
-<td style="text-align: left;"><code>diff</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{NF_a - NF_b}{NF_b} \cdot 100\)</span></td>
-<td style="text-align: left;"><a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi (2011)</a>; <span class="arithmatex">\(NF\)</span> - frequency per million words</td>
-</tr>
-<tr>
-<td style="text-align: left;">Log Ratio</td>
-<td style="text-align: left;"><code>log_ratio</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\log_2 \frac{NF_a}{NF_b}\)</span></td>
-<td style="text-align: left;"><a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie (2014)</a>; one means the word is twice as frequent in the target corpus</td>
-</tr>
-<tr>
-<td style="text-align: left;">BIC</td>
-<td style="text-align: left;"><code>bic</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\operatorname{sign}(G^2) \cdot (\lvert G^2 \rvert - \ln N)\)</span></td>
-<td style="text-align: left;">Wilson (2013); in absolute value above 2 - positive evidence of a difference, above 6 - strong, above 10 - very strong; a negative value with <span class="arithmatex">\(\lvert G^2 \rvert &lt; \ln N\)</span> means no evidence, not the opposite direction</td>
-</tr>
-<tr>
-<td style="text-align: left;">ELL</td>
-<td style="text-align: left;"><code>ell</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{G^2}{N \ln \min(E_1, E_2)}\)</span></td>
-<td style="text-align: left;">Johnston, Berry and Mielke (2006); effect size of <span class="arithmatex">\(G^2\)</span>, the share of the greatest possible departure from the expected frequencies, from 0 to 1; <code>nan</code> when the least expected frequency is at most one (a logarithm of zero or below), unbounded just above one</td>
-</tr>
-<tr>
-<td style="text-align: left;">Odds ratio</td>
-<td style="text-align: left;"><code>odds_ratio</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{a / (c - a)}{b / (d - b)}\)</span></td>
-<td style="text-align: left;">one means equal odds; <code>inf</code> if the word fills the whole target corpus, 0 - the whole reference</td>
-</tr>
-</tbody>
-</table>
-<p>A zero frequency in one of the corpora is replaced with 0.5 for %DIFF, Log Ratio and the odds ratio (Hardie 2014). The p-value of <span class="arithmatex">\(G^2\)</span> comes from the chi-square distribution with one degree of freedom (<code>calc_p_value</code>). The module <code>anyts.corpus.keyness</code> gives them as the functions <code>calc_log_likelihood</code>, <code>calc_chi2</code>, <code>calc_diff</code>, <code>calc_log_ratio</code>, <code>calc_bic</code>, <code>calc_ell</code> and <code>calc_odds_ratio</code> of <code>(a, b, c, d)</code>; their names and descriptions are in <code>anyts.constants.KEYNESS_MEASURES</code>.</p>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>target</code></td>
-<td style="text-align: center;">list[str]/dict[str, int]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words of the target corpus or their frequencies</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>reference</code></td>
-<td style="text-align: center;">list[str]/dict[str, float]/FrequencyReference</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Words of the reference corpus, their frequencies or a reference by frequencies</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>measure</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>log_likelihood</code></td>
-<td style="text-align: center;">Measure of <code>anyts.constants.KEYNESS_MEASURES</code> for <code>score</code> and the sorting</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>min_freq</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>1</code></td>
-<td style="text-align: center;">Minimum frequency of a keyword in its own corpus</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>positive</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Positive keywords (more frequent in the target corpus) or negative ones (more frequent in the reference)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>top_n</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of keywords; <code>None</code> - all of them</td>
-</tr>
-</tbody>
-</table>
-<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>. A reference that is not a list of strings, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and an empty corpus raise <code>SourceError</code>.</p>
-<p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>lemmatize</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">The target corpus is word forms, <code>False</code> - lemmas (<code>FreqDict</code> only)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="reference-by-frequencies">Reference by frequencies<a class="headerlink" href="#reference-by-frequencies" title="Permanent link">&para;</a></h2>
-<p><code>FrequencyReference(counts, size, missing=0.0, key=None, keep=None)</code> describes a reference corpus by its frequencies alone, such as a frequency dictionary built from a corpus too large to pass as words:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Field</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>counts</code></td>
-<td style="text-align: center;">dict[str, float]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: left;">Frequencies of the keys in the reference corpus</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>size</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: left;">Size of the reference corpus in words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>missing</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>0.0</code></td>
-<td style="text-align: left;">Frequency of a key missing from <code>counts</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>key</code></td>
-<td style="text-align: center;">callable</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: left;">Key of a word of the target corpus in <code>counts</code>, such as its lemma; <code>None</code> - the word itself</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>keep</code></td>
-<td style="text-align: center;">callable</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: left;">Whether a word of the target corpus is counted; <code>None</code> - every word</td>
-</tr>
-</tbody>
-</table>
-<p>Only the words of the target that <code>keep</code> passes are counted, under their <code>key</code>, in the frequencies and in the size alike. A key missing from <code>counts</code> has the frequency <code>missing</code>, such as the least frequency of a dictionary: an upper bound, so its word may be a positive keyword but never a negative one. Negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. A frequency is checked as it is read, so a large dictionary is not gone through for positive keywords: one that is not a number raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite one <code>SourceError</code>. A <code>size</code> or a <code>missing</code> that is not a finite number or is negative raises <code>ParameterError</code>, and a <code>key</code> or a <code>keep</code> that cannot be called <code>SourceTypeError</code>.</p>
-<p>The frequency dictionary <code>FreqDict</code> passed as <code>reference</code> is turned into such a reference:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Field</th>
-<th style="text-align: left;"><code>FreqDict</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>counts</code></td>
-<td style="text-align: left;">the frequencies of <code>FreqDict.word_ipm</code> converted to occurrences in the corpus of the dictionary</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>size</code></td>
-<td style="text-align: left;"><code>CORPUS_SIZE</code> of <code>ruts.datasets.freq2011</code>, 92 million tokens of the modern subcorpus of the Russian National Corpus</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>missing</code></td>
-<td style="text-align: left;">the least frequency of the dictionary <code>FreqDict.min_ipm</code>, 0.4 ipm (about 37 occurrences)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>key</code></td>
-<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>keep</code></td>
-<td style="text-align: left;">the words of the Cyrillic letters of <code>ruts.lexical_stats.DICTIONARY_WORD</code>; numbers and words with Latin letters are left out</td>
-</tr>
-</tbody>
-</table>
-<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,100 for word forms and 1,500 for lemmas - are listed in the resources of the package; words that pymorphy3 only predicts («Михайлыч», «дитё») are not seen by the rule.</p>
-<p>With <code>lemmatize=False</code> the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.</p>
-<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
-<p>A list of <code>Keyword</code> named tuples by descending keyness (ties broken by descending frequency and alphabetically, words of an undefined measure last); <code>pd.DataFrame(keywords)</code> gives a table.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Field</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: left;">Word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>freq_target</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: left;">Frequency in the target corpus</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>freq_reference</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Frequency in the reference corpus</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>ipm_target</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Frequency in the target corpus per million words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>ipm_reference</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Frequency in the reference corpus per million words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>g2</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Signed <span class="arithmatex">\(G^2\)</span></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_value</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">p-value of <span class="arithmatex">\(G^2\)</span></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>log_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Log Ratio</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>score</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: left;">Value of the chosen measure</td>
-</tr>
-</tbody>
-</table>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>The function wraps <code>keyness</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> core and also takes the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> <code>FreqDict</code> as the reference; <code>FrequencyReference</code> is in <code>ruts.corpus</code> next to it. Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
 
@@ -3178,23 +2378,417 @@
 <span class="p">)</span>
 
 <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># [Keyword(word='кот', freq_target=3, freq_reference=0.0, ipm_target=115384.61538461539,</span>
-<span class="c1">#  ipm_reference=0.0, g2=2.8774384815713177, p_value=0.08982881315854577,</span>
-<span class="c1">#  log_ratio=1.8845227825800641, score=2.8774384815713177)]</span>
-
 <span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">g2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
-<span class="c1"># [('собака', -5.79), ('дремать', -3.86)]</span>
-
-<span class="c1"># Relative to the frequency dictionary (after FreqDict().download()) - by word forms</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[Keyword(word='кот', freq_target=3, freq_reference=0.0, ipm_target=115384.61538461539, ipm_reference=0.0, g2=2.8774384815713177, p_value=0.08982881315854577, log_ratio=1.8845227825800641, score=2.8774384815713177)]
+[('собака', -5.79), ('дремать', -3.86)]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>target</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, int]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the target corpus or their frequencies</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>reference</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, float]</code> / <code>FrequencyReference</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the reference corpus, their frequencies or a reference by frequencies</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>measure</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'log_likelihood'</code></td>
+<td style="text-align: left;">Measure of <code>anyts.constants.KEYNESS_MEASURES</code> for <code>score</code> and the sorting</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_freq</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Minimum frequency of a keyword in its own corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>positive</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Positive keywords (more frequent in the target corpus) or negative ones (more frequent in the reference)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>top_n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Number of keywords; <code>None</code> - all of them</td>
+</tr>
+</tbody>
+</table>
+<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>. A reference that is not a list of strings, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and an empty corpus raise <code>SourceError</code>.</p>
+<p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>lemmatize</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">The target corpus is word forms, <code>False</code> - lemmas (<code>FreqDict</code> only)</td>
+</tr>
+</tbody>
+</table>
+<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer and the number of keywords is <code>None</code> or an integer of at least one. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings or a mapping of strings to whole frequencies, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
+<h2 id="reference-by-frequencies">Reference by frequencies<a class="headerlink" href="#reference-by-frequencies" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>A reference corpus described by its frequencies alone, such as a frequency dictionary built from a corpus too large to pass as words:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>counts</code></td>
+<td style="text-align: left;"><code>dict[str, float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequencies of the keys in the reference corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>size</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Size of the reference corpus in words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>missing</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.0</code></td>
+<td style="text-align: left;">Frequency of a key missing from <code>counts</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>key</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Key of a word of the target corpus in <code>counts</code>, such as its lemma; <code>None</code> - the word itself</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keep</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Whether a word of the target corpus is counted; <code>None</code> - every word</td>
+</tr>
+</tbody>
+</table>
+<p>Only the words of the target that <code>keep</code> passes are counted, under their <code>key</code>, in the frequencies and in the size alike. A key missing from <code>counts</code> has the frequency <code>missing</code>, such as the least frequency of a dictionary: an upper bound, so its word may be a positive keyword but never a negative one. Negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. A frequency is checked as it is read, so a large dictionary is not gone through for positive keywords: one that is not a number raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite one <code>SourceError</code>. A <code>size</code> or a <code>missing</code> that is not a finite number or is negative raises <code>ParameterError</code>, and a <code>key</code> or a <code>keep</code> that cannot be called <code>SourceTypeError</code>.</p>
+<p>The frequency dictionary <code>FreqDict</code> passed as <code>reference</code> is turned into such a reference:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;"><code>FreqDict</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>counts</code></td>
+<td style="text-align: left;">the frequencies of <code>FreqDict.word_ipm</code> converted to occurrences in the corpus of the dictionary</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>size</code></td>
+<td style="text-align: left;"><code>CORPUS_SIZE</code> of <code>ruts.datasets.freq2011</code>, 92 million tokens of the modern subcorpus of the Russian National Corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>missing</code></td>
+<td style="text-align: left;">the least frequency of the dictionary <code>FreqDict.min_ipm</code>, 0.4 ipm (about 37 occurrences)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>key</code></td>
+<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keep</code></td>
+<td style="text-align: left;">the words of the Cyrillic letters of <code>ruts.lexical_stats.DICTIONARY_WORD</code>; numbers and words with Latin letters are left out</td>
+</tr>
+</tbody>
+</table>
+<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,100 for word forms and 1,500 for lemmas - are listed in the resources of the package; words that pymorphy3 only predicts («Михайлыч», «дитё») are not seen by the rule.</p>
+<p>With <code>lemmatize=False</code> the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
 
+<span class="c1"># The dictionary is downloaded once with FreqDict().download()</span>
 <span class="n">words</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
     <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "</span>
     <span class="s2">"Завтра кот снова будет сидеть на окне и смотреть на птиц."</span>
 <span class="p">)</span>
 <span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
-<span class="c1"># [('кот', 11.5), ('птица', 10.3)]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[('кот', 11.5), ('птица', 10.3)]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="result">Result<a class="headerlink" href="#result" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">Keyword</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">freq_target</span><span class="p">,</span> <span class="n">freq_reference</span><span class="p">,</span> <span class="n">ipm_target</span><span class="p">,</span> <span class="n">ipm_reference</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">log_ratio</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+</code></pre></div>
+<p>A list of <code>Keyword</code> named tuples by descending keyness (ties broken by descending frequency and alphabetically, words of an undefined measure last); <code>pd.DataFrame(keywords)</code> gives a table.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_target</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Frequency in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>freq_reference</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Frequency in the reference corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ipm_target</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Frequency in the target corpus per million words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ipm_reference</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Frequency in the reference corpus per million words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>g2</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Signed <span class="arithmatex">\(G^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>p_value</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">p-value of <span class="arithmatex">\(G^2\)</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>log_ratio</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Log Ratio</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>score</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Value of the chosen measure</td>
+</tr>
+</tbody>
+</table>
+<h2 id="measures">Measures<a class="headerlink" href="#measures" title="Permanent link">&para;</a></h2>
+<p>The measures of <code>measure</code> by key, with their names and descriptions in <code>anyts.constants.KEYNESS_MEASURES</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Key</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#log_likelihood"><code>log_likelihood</code></a></td>
+<td style="text-align: left;">Significance of the difference of the frequencies</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A more significant excess in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#chi2"><code>chi2</code></a></td>
+<td style="text-align: left;">Significance of the difference, with Yates's correction</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A more significant excess in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#diff"><code>diff</code></a></td>
+<td style="text-align: left;">Difference of the frequencies per million, in percent of the reference</td>
+<td style="text-align: left;">Above −100</td>
+<td style="text-align: left;">A larger excess in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#log_ratio"><code>log_ratio</code></a></td>
+<td style="text-align: left;">Binary logarithm of the ratio of the frequencies per million</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">A larger excess in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#bic"><code>bic</code></a></td>
+<td style="text-align: left;">Evidence of the difference: <span class="arithmatex">\(G^2\)</span> penalized by the size of the corpora</td>
+<td style="text-align: left;">Any number</td>
+<td style="text-align: left;">Stronger evidence of an excess in the target corpus, for a word more frequent there</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#ell"><code>ell</code></a></td>
+<td style="text-align: left;">Effect size of <span class="arithmatex">\(G^2\)</span></td>
+<td style="text-align: left;">−1 to 1 as a rule, <code>nan</code> for small expected frequencies</td>
+<td style="text-align: left;">A larger excess in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#odds_ratio"><code>odds_ratio</code></a></td>
+<td style="text-align: left;">Ratio of the odds of the word in the corpora</td>
+<td style="text-align: left;">0 to <code>inf</code>, <code>nan</code> if the word fills both corpora</td>
+<td style="text-align: left;">Higher odds in the target corpus</td>
+</tr>
+</tbody>
+</table>
+<p>Every measure is a function of the module <code>anyts.corpus.keyness</code> of the frequencies of a word and the sizes of the corpora, <span class="arithmatex">\(N = c + d\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequency of the word in the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Frequency of the word in the reference corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Size of the target corpus</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>d</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Size of the reference corpus</td>
+</tr>
+</tbody>
+</table>
+<p>A zero frequency in one of the corpora is replaced with 0.5 for %DIFF, Log Ratio and the odds ratio (Hardie 2014).</p>
+<p>The module <code>ruts.corpus.keyness</code> re-exports the functions of the measures (<code>from ruts.corpus.keyness import calc_log_likelihood</code>).</p>
+<div class="metric-card">
+<h3 id="log_likelihood">Log-likelihood<a class="headerlink" href="#log_likelihood" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>log_likelihood</code> · <code>g2</code> · <code>p_value</code> · <a href="https://ucrel.lancs.ac.uk/llwizard.html">Rayson and Garside (2000)</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_log_likelihood</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The log-likelihood of the frequencies of the word against the expected ones <span class="arithmatex">\(E_1\)</span> and <span class="arithmatex">\(E_2\)</span>; a term of zero frequency is zero. The critical values are <code>anyts.constants.G2_CRITICAL_VALUES</code>: 3.84 for p &lt; 0.05, 6.63 for p &lt; 0.01, 10.83 for p &lt; 0.001, 15.13 for p &lt; 0.0001. The sign is negative when the word is more frequent in the reference.</p>
+<div class="arithmatex">\[
+G^2 = 2 \left(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2}\right), \quad E_1 = \frac{c\,(a+b)}{N}, \quad E_2 = \frac{d\,(a+b)}{N}
+\]</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_p_value</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+</code></pre></div>
+<p>The p-value of a <span class="arithmatex">\(G^2\)</span> or a chi-square, whatever its sign, by the chi-square distribution with one degree of freedom; an array of values gives an array.</p>
+</div>
+<div class="metric-card">
+<h3 id="chi2">Chi-square<a class="headerlink" href="#chi2" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>chi2</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_chi2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The chi-square with Yates's correction over the 2×2 contingency table of the word and the other words of each corpus. When the correction exceeds the difference, the statistic is zero. The sign is negative when the word is more frequent in the reference.</p>
+<div class="arithmatex">\[
+\chi^2 = \frac{N\,\max(\lvert a(d-b) - b(c-a) \rvert - N/2,\ 0)^2}{(a+b)(N-a-b)\,c\,d}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="diff">%DIFF<a class="headerlink" href="#diff" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>diff</code> · <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi (2011)</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_diff</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The difference of the frequencies <span class="arithmatex">\(NF\)</span> per million words, in percent of the frequency in the reference.</p>
+<div class="arithmatex">\[
+\frac{NF_a - NF_b}{NF_b} \cdot 100
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="log_ratio">Log Ratio<a class="headerlink" href="#log_ratio" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>log_ratio</code> · <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie (2014)</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_log_ratio</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The binary logarithm of the ratio of the frequencies <span class="arithmatex">\(NF\)</span> per million words: one means the word is twice as frequent in the target corpus.</p>
+<div class="arithmatex">\[
+\log_2 \frac{NF_a}{NF_b}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="bic">BIC<a class="headerlink" href="#bic" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>bic</code> · Wilson (2013)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_bic</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The Bayesian information criterion of <span class="arithmatex">\(G^2\)</span>. In absolute value above 2 it is positive evidence of a difference, above 6 strong, above 10 very strong; a value of the sign opposite to <span class="arithmatex">\(G^2\)</span>, when <span class="arithmatex">\(\lvert G^2 \rvert &lt; \ln N\)</span>, means no evidence, not the opposite direction.</p>
+<div class="arithmatex">\[
+\operatorname{sign}(G^2) \cdot (\lvert G^2 \rvert - \ln N)
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="ell">ELL<a class="headerlink" href="#ell" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>ell</code> · Johnston, Berry and Mielke (2006)</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_ell</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The effect size of <span class="arithmatex">\(G^2\)</span>: the share of the greatest possible departure from the expected frequencies <span class="arithmatex">\(E_1\)</span> and <span class="arithmatex">\(E_2\)</span>. It grows without bound as the least expected frequency nears one and is <code>nan</code> when that frequency is at most one (a logarithm of zero or below). The sign is negative when the word is more frequent in the reference.</p>
+<div class="arithmatex">\[
+\frac{G^2}{N \ln \min(E_1, E_2)}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="odds_ratio">Odds ratio<a class="headerlink" href="#odds_ratio" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>odds_ratio</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_odds_ratio</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</code></pre></div>
+<p>The ratio of the odds of the word in the two corpora: one means equal odds. A word that fills the whole target corpus gives <code>inf</code>, the whole reference 0, both <code>nan</code>.</p>
+<div class="arithmatex">\[
+\frac{a / (c - a)}{b / (d - b)}
+\]</div>
 </div>
 
 
@@ -3215,6 +2809,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3283,7 +2883,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

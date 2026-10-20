@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/stats/verse_stats/">
       
       
-        <link rel="prev" href="../lexical_stats_funcs/">
+        <link rel="prev" href="../lexical_stats/">
       
       
-        <link rel="next" href="../verse_stats_funcs/">
+        <link rel="next" href="../../corpus/keyness/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Statistics module - RuTS</title>
+        <title>Verse statistics - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Statistics module
+              Verse statistics
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1322,92 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1423,7 +1059,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1436,92 +1072,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1537,7 +1087,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1550,92 +1100,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1651,7 +1115,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1664,94 +1128,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1776,7 +1152,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1794,7 +1170,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1820,17 +1196,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1853,22 +1218,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#meter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Meter and feet
       
     </span>
   </a>
@@ -1876,10 +1241,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#pyrrhics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Pyrrhics and the stress profile
       
     </span>
   </a>
@@ -1887,10 +1252,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#rhyme_scheme" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Rhyme
       
     </span>
   </a>
@@ -1898,10 +1263,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#accentuate" class="md-nav__link">
+  <a href="#clausulas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        accentuate
+        Line endings
       
     </span>
   </a>
@@ -1913,45 +1278,53 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accentuate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accentuation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_stanzas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stanzas
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
       
     </li>
   
@@ -2836,17 +2209,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2869,22 +2231,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#meter" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Meter and feet
       
     </span>
   </a>
@@ -2892,10 +2254,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#pyrrhics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Pyrrhics and the stress profile
       
     </span>
   </a>
@@ -2903,10 +2265,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#rhyme_scheme" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Rhyme
       
     </span>
   </a>
@@ -2914,10 +2276,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#accentuate" class="md-nav__link">
+  <a href="#clausulas" class="md-nav__link">
     <span class="md-ellipsis">
       
-        accentuate
+        Line endings
       
     </span>
   </a>
@@ -2926,6 +2288,50 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accentuate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accentuation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#split_stanzas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stanzas
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,39 +2356,71 @@
 
 
 <h1 id="verse-statistics">Verse statistics<a class="headerlink" href="#verse-statistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.verse_stats.VerseStats</strong></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">VerseStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The verse statistics of a text: stresses, the meter and the number of feet, pyrrhics and the stress profile, rhyme schemes, line ending types and stanzas. The data source is a text with line breaks or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library; the statistics are computed when the object is created.</p>
+<p>The text is split into lines and stanzas (by blank lines), the words are accented with the <a href="../../datasets/stressdict/"><code>StressDict</code></a> dictionary, then a syllabo-tonic meter is fitted with the algorithm of Barakhnin, Kozhemyakina and Kuznetsova and the remaining stress ambiguity is resolved; rhymes are found by the phonetic key of the line ending (<a href="#algorithm">algorithm</a>). A stress mark in the text overrides the dictionary, while the marks and soft hyphens do not get into the lines; a proclitic stressed by a mark takes the stress of the word after it separated by a space - на́ сердце. A stress mark is taken as the author's and is not moved to an ictus, so a text after the <a href="#accentuate"><code>accentuate</code></a> function, where the marks are placed by the dictionary without a meter, gives other values than the same text without marks.</p>
+<p>The class is built on the <code>Stats</code> statistics interface of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a> core. The stress dictionary is downloaded once: <code>StressDict().download()</code> (10 MB). A text with letters but without Russian words (Latin script) gives empty statistics - <code>n_lines</code> 0, meter <code>None</code>, shares <code>nan</code>.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, a stress dictionary of another type;</li>
+<li><code>SourceError</code> - a source without words (empty, digits and punctuation only);</li>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded, with a hint on how to download it.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">VerseStats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StressDict</span>
+
+<span class="n">StressDict</span><span class="p">()</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"""Мой дядя самых честных правил,</span>
+<span class="s2">Когда не в шутку занемог,</span>
+<span class="s2">Он уважать себя заставил</span>
+<span class="s2">И лучше выдумать не мог."""</span>
+<span class="n">vs</span> <span class="o">=</span> <span class="n">VerseStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
 </div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing verse statistics of a text: stress placement, meter and number of feet, pyrrhics and the stress profile, rhyme schemes, line ending types and stanzas. The data source can be either a text with line breaks or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The text is split into lines and stanzas (by blank lines), the words are accented with the <a href="../../datasets/stressdict/"><code>StressDict</code></a> dictionary (a stress mark in the text overrides the dictionary, while the marks and soft hyphens do not get into the lines; a proclitic stressed by a mark takes the stress of the word after it separated by a space - на́ сердце), then a syllabo-tonic meter is fitted with the algorithm of Barakhnin, Kozhemyakina and Kuznetsova and the remaining stress ambiguity is resolved; rhymes are found by the phonetic key of the line ending. The details of the algorithm and its accuracy on the RIFMA dataset are in the <a href="../verse_stats_funcs/">functions</a> section.</p>
-<p>The stress dictionary is downloaded once: <code>StressDict().download()</code> (10 MB). Without it the class raises <code>DatasetNotFoundError</code> with a hint.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>VerseStats</code> object is initialized.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>            Статистика             | Значение
+----------------------------------------------
+Количество строк                   |    4
+Количество строф                   |    1
+Метр                               |   ямб
+Число стоп                         |    4
+Доля отклонений от метра           |   0.00
+Доля пропущенных ударений на иктах |   0.19
+Доля рифмованных строк             |   1.00
+Доля мужских окончаний             |   0.50
+Доля женских окончаний             |   0.50
+Доля дактилических окончаний       |   0.00
+</code></pre></div>
+</div>
+</div>
 </div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (string or Doc object)</td>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stress_dict</code></td>
-<td style="text-align: center;">StressDict</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stress dictionary; <code>StressDict()</code> if not given</td>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
 </tr>
 </tbody>
 </table>
@@ -2990,208 +2428,407 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>lines</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Lines with Russian words</td>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;">Stress dictionary</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stanzas</code></td>
-<td style="text-align: center;">tuple[tuple[str, ...], ...]</td>
-<td style="text-align: center;">Lines by stanza</td>
+<td style="text-align: left;"><code>lines</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Lines with Russian words</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_lines</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of lines</td>
+<td style="text-align: left;"><code>stanzas</code></td>
+<td style="text-align: left;"><code>tuple[tuple[str, ...], ...]</code></td>
+<td style="text-align: left;">Lines by stanza</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_stanzas</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of stanzas</td>
+<td style="text-align: left;"><code>mean_line_len</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Mean line length in syllables</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mean_line_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean line length in syllables</td>
+<td style="text-align: left;"><code>stresses</code></td>
+<td style="text-align: left;"><code>tuple[tuple[int, ...], ...]</code></td>
+<td style="text-align: left;">Numbers of the stressed syllables of each line, counted from zero</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>meter</code></td>
-<td style="text-align: center;">str/None</td>
-<td style="text-align: center;">Meter - ямб (iamb), хорей (trochee), дактиль (dactyl), амфибрахий (amphibrach), анапест (anapest) or <code>None</code></td>
+<td style="text-align: left;"><code>patterns</code></td>
+<td style="text-align: left;"><code>tuple[str, ...]</code></td>
+<td style="text-align: left;">Line patterns of <code>c</code> (unstressed syllable) and <code>C</code> (stressed)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_feet</code></td>
-<td style="text-align: center;">int/None</td>
-<td style="text-align: center;">Prevailing number of feet per line</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_feet</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Distribution of lines by number of feet</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_deviations</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of polysyllabic word stresses on weak positions (deviations from the meter), <code>nan</code> without a meter</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_pyrrhics</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of unstressed ictuses (pyrrhics in binary meters)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stress_profile</code></td>
-<td style="text-align: center;">tuple[float, ...]</td>
-<td style="text-align: center;">Share of stressed ictuses by position in the line</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stresses</code></td>
-<td style="text-align: center;">tuple[tuple[int, ...], ...]</td>
-<td style="text-align: center;">Numbers of stressed syllables of each line</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>patterns</code></td>
-<td style="text-align: center;">tuple[str, ...]</td>
-<td style="text-align: center;">Line patterns of <code>c</code> (unstressed syllable) and <code>C</code> (stressed)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>rhyme_schemes</code></td>
-<td style="text-align: center;">tuple[str, ...]</td>
-<td style="text-align: center;">Rhyme schemes of the stanzas</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_rhymed</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of rhymed lines</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_clausulas</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Distribution of line endings by type</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_masculine</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of masculine endings (stress on the last syllable)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_feminine</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of feminine endings (one syllable after the stress)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_dactylic</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of dactylic endings (two syllables after the stress)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_stressed_vowels</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Distribution of stressed vowels</td>
+<td style="text-align: left;"><code>c_stressed_vowels</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Distribution of the stressed vowels</td>
 </tr>
 </tbody>
 </table>
-<p>The meter is not determined (<code>None</code>) if after fitting more than a tenth of the polysyllabic word stresses (<code>VERSE_MAX_DEVIATIONS</code>) remain on weak positions, or if more than 15% of the dictionary stresses had to be moved to an ictus (<code>VERSE_MAX_MOVED</code>) with four or more moves (<code>VERSE_MIN_MOVED</code>) - this filters out dolnik, accentual verse, syllabic verse, free verse and prose. The meter is also not fitted when there are fewer than six dictionary stresses of polysyllabic words (<code>VERSE_MIN_STRESSES</code>): one or two lines or a prose phrase fit some meter almost always, and such a result is not indicative. A text with letters but without Russian words (Latin script) gives empty statistics - <code>n_lines</code> 0, meter <code>None</code>, shares <code>nan</code>; a text without words (empty, digits and punctuation only) raises <code>SourceError</code>. A rhyme scheme is written with letters in order of appearance, unrhymed lines with a hyphen: <code>ABAB</code>, <code>-A-A</code>. Endings with three or more syllables after the stress count as hyperdactylic. A stress mark is taken as the author's and is not moved to an ictus, so a text after <a href="../verse_stats_funcs/#accentuate"><code>accentuate</code></a>, where the marks are placed by the dictionary without a meter, gives other values than the same text without marks.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Stresses, meter and rhyme can be obtained separately with the corresponding functions. Detailed information about the algorithm and the functions is in the corresponding <a href="../verse_stats_funcs/">section</a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">patterns</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">stresses</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">c_stressed_vowels</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('cCcCcCcCc', 'cCcCcccC', 'cccCcCcCc', 'cCcCcccC')
+(1, 3, 7)
+{'а': 5, 'я': 2, 'у': 2, 'о': 2, 'е': 1, 'ы': 1}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Every metric is an attribute of the object, computed when it is created, and <code>get_stats</code> gives them all.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_lines</code>, <code>n_stanzas</code></td>
+<td style="text-align: left;">Number of the lines with words and of the stanzas</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">A longer text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>meter</code></a></td>
+<td style="text-align: left;">Syllabo-tonic meter</td>
+<td style="text-align: left;">ямб (iamb), хорей (trochee), дактиль (dactyl), амфибрахий (amphibrach), анапест (anapest), <code>None</code> without a meter</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>n_feet</code></a></td>
+<td style="text-align: left;">Prevailing number of feet per line</td>
+<td style="text-align: left;">1 and above, <code>None</code> without a meter</td>
+<td style="text-align: left;">Longer lines</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>p_deviations</code></a></td>
+<td style="text-align: left;">Share of the stresses of polysyllabic words on weak positions</td>
+<td style="text-align: left;">0-0.1, <code>nan</code> without a meter</td>
+<td style="text-align: left;">Stresses further from the meter</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pyrrhics"><code>p_pyrrhics</code></a></td>
+<td style="text-align: left;">Share of the unstressed ictuses</td>
+<td style="text-align: left;">0-1, <code>nan</code> without a meter</td>
+<td style="text-align: left;">More skipped stresses</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#rhyme_scheme"><code>p_rhymed</code></a></td>
+<td style="text-align: left;">Share of the rhymed lines</td>
+<td style="text-align: left;">0-1, <code>nan</code> without lines</td>
+<td style="text-align: left;">More rhymes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clausulas"><code>p_masculine</code></a>, <a href="#clausulas"><code>p_feminine</code></a>, <a href="#clausulas"><code>p_dactylic</code></a></td>
+<td style="text-align: left;">Shares of the masculine, feminine and dactylic endings</td>
+<td style="text-align: left;">0-1, <code>nan</code> without endings</td>
+<td style="text-align: left;">More endings of the type</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="meter">Meter and feet<a class="headerlink" href="#meter" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>meter</code> · <code>n_feet</code> · <code>c_feet</code> · <code>p_deviations</code> · <a href="https://ceur-ws.org/Vol-2523/paper27.pdf">Barakhnin et al., 2019</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">detect_meter</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The meter of a poem by the <a href="#algorithm">algorithm</a>: ямб (iamb), хорей (trochee), дактиль (dactyl), амфибрахий (amphibrach), анапест (anapest) or <code>None</code> if no syllabo-tonic meter fits - this filters out dolnik, accentual verse, syllabic verse, free verse and prose. The number of feet of a line is the number of its ictuses: <code>n_feet</code> is the prevailing number of feet, <code>c_feet</code> the distribution of the lines by the number of feet. <code>p_deviations</code> is the share of the stresses of polysyllabic words left on weak positions after the fitting (deviations from the meter).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text of the poem</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
+</tr>
+</tbody>
+</table>
+<p>The errors are those of <code>VerseStats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_meter</span>
+
+<span class="n">lermontov</span> <span class="o">=</span> <span class="s2">"""Тучки небесные, вечные странники!</span>
+<span class="s2">Степью лазурною, цепью жемчужною</span>
+<span class="s2">Мчитесь вы, будто как я же, изгнанники,</span>
+<span class="s2">С милого севера в сторону южную.</span>
+
+<span class="s2">Кто же вас гонит: судьбы ли решение?</span>
+<span class="s2">Зависть ли тайная? злоба ль открытая?</span>
+<span class="s2">Или на вас тяготит преступление?</span>
+<span class="s2">Или друзей клевета ядовитая?"""</span>
+
+<span class="n">blok</span> <span class="o">=</span> <span class="s2">"""Девушка пела в церковном хоре</span>
+<span class="s2">О всех усталых в чужом краю,</span>
+<span class="s2">О всех кораблях, ушедших в море,</span>
+<span class="s2">О всех, забывших радость свою."""</span>
+
+<span class="n">detect_meter</span><span class="p">(</span><span class="n">lermontov</span><span class="p">),</span> <span class="n">detect_meter</span><span class="p">(</span><span class="n">blok</span><span class="p">)</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">c_feet</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('дактиль', None)
+{4: 4}
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="pyrrhics">Pyrrhics and the stress profile<a class="headerlink" href="#pyrrhics" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_pyrrhics</code> · <code>stress_profile</code></p>
+<p>The share of the unstressed ictuses (pyrrhics in binary meters) among all the ictuses of the lines; <code>stress_profile</code> is the share of the stressed ictuses by position in the line, from the first ictus to the last. Without a meter there are no ictuses: <code>p_pyrrhics</code> is <code>nan</code>, and the profile is empty.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of unstressed ictuses}}{\textrm{Number of ictuses}}
+\]</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">p_pyrrhics</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">stress_profile</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(0.1875, (0.75, 1.0, 0.5, 1.0))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="rhyme_scheme">Rhyme<a class="headerlink" href="#rhyme_scheme" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_rhymed</code> · <code>rhyme_schemes</code> · <a href="https://github.com/Koziev/Rifma">RIFMA</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The rhyme scheme of a poem: the stanza schemes separated by spaces, unrhymed lines marked with a hyphen (<code>ABAB</code>, <code>-A-A</code>, <code>AABB CC</code>). The object has the schemes by stanza in <code>rhyme_schemes</code> and the share of the rhymed lines in <code>p_rhymed</code>. How rhymes are found is described by the <a href="#algorithm">algorithm</a>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text of the poem</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
+</tr>
+</tbody>
+</table>
+<p>The errors are those of <code>VerseStats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">rhyme_scheme</span>
+
+<span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">lermontov</span><span class="p">),</span> <span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">blok</span><span class="p">)</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">rhyme_schemes</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">p_rhymed</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('ABAB ABAB', 'ABAB')
+(('ABAB',), 1.0)
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="clausulas">Line endings<a class="headerlink" href="#clausulas" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_masculine</code> · <code>p_feminine</code> · <code>p_dactylic</code> · <code>c_clausulas</code></p>
+<p>The type of the ending (clausula) of a line by the number of syllables after the last stress: masculine - the stress on the last syllable, feminine - one syllable after the stress, dactylic - two, hyperdactylic - three or more (<code>VERSE_CLAUSULAS</code>, as <a href="../../syllables/#stress_type"><code>stress_type</code></a> of a word). <code>c_clausulas</code> is the distribution of the lines by type; the shares are taken over the lines whose last word has a known stress.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">c_clausulas</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'мужская': 2, 'женская': 2}
+</code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed verse statistics.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Loading libraries</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">VerseStats</span>
-
-<span class="c1"># Preparing data</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"""Мой дядя самых честных правил,</span>
-<span class="s2">Когда не в шутку занемог,</span>
-<span class="s2">Он уважать себя заставил</span>
-<span class="s2">И лучше выдумать не мог."""</span>
-
-<span class="c1"># Computing statistics</span>
-<span class="n">vs</span> <span class="o">=</span> <span class="n">VerseStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'n_lines'</span>:<span class="w"> </span><span class="m">4</span>,
-<span class="s1">'n_stanzas'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'meter'</span>:<span class="w"> </span><span class="s1">'ямб'</span>,
-<span class="s1">'n_feet'</span>:<span class="w"> </span><span class="m">4</span>,
-<span class="s1">'p_deviations'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'p_pyrrhics'</span>:<span class="w"> </span><span class="m">0</span>.1875,
-<span class="s1">'p_rhymed'</span>:<span class="w"> </span><span class="m">1</span>.0,
-<span class="s1">'p_masculine'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_feminine'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_dactylic'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+<p><code>accentuate()</code> returns the text with stresses placed: an acute accent (U+0301) is put after the stressed vowel of every stressed word, while unstressed words (clitics, monosyllables off the ictus) and words without a found stress stay unmarked. Only the lines with words get into the text (as in <code>lines</code>), and stanzas are separated by a blank line. Unlike the <a href="#accentuate"><code>accentuate</code></a> function, the stresses are fitted to the meter.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">vs</span><span class="o">.</span><span class="n">accentuate</span><span class="p">())</span>
 </code></pre></div>
 </div>
-<p>Line patterns, the stress profile and the distributions are available as attributes:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">patterns</span>
-<span class="c1"># ('cCcCcCcCc', 'cCcCcccC', 'cccCcCcCc', 'cCcCcccC')</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">stresses</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="c1"># (1, 3, 7)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">stress_profile</span>
-<span class="c1"># (0.75, 1.0, 0.5, 1.0)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">rhyme_schemes</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">c_clausulas</span>
-<span class="c1"># (('ABAB',), {'мужская': 2, 'женская': 2})</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">c_stressed_vowels</span>
-<span class="c1"># {'а': 5, 'я': 2, 'у': 2, 'о': 2, 'е': 1, 'ы': 1}</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>Мой дя́дя са́мых че́стных пра́вил,
+Когда́ не в шу́тку занемо́г,
+Он уважа́ть себя́ заста́вил
+И лу́чше вы́думать не мо́г.
 </code></pre></div>
 </div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Printing the table of computed statistics</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">            </span>Статистика<span class="w">             </span><span class="p">|</span><span class="w"> </span>Значение
-----------------------------------------------
-Количество<span class="w"> </span>строк<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Количество<span class="w"> </span>строф<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Метр<span class="w">                               </span><span class="p">|</span><span class="w">   </span>ямб
-Число<span class="w"> </span>стоп<span class="w">                         </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Доля<span class="w"> </span>отклонений<span class="w"> </span>от<span class="w"> </span>метра<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Доля<span class="w"> </span>пропущенных<span class="w"> </span>ударений<span class="w"> </span>на<span class="w"> </span>иктах<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>рифмованных<span class="w"> </span>строк<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-Доля<span class="w"> </span>мужских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>женских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>дактилических<span class="w"> </span>окончаний<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+</div>
+</div>
+<p>The other methods - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> - are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the verse statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>The <code>to_dataframe</code> method (the statistics as a one-row <code>pandas.DataFrame</code>) and the <code>describe</code> method are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the verse statistics have no scales, so <code>describe</code> always gives <code>None</code>.</p>
-<h3 id="accentuate">accentuate<a class="headerlink" href="#accentuate" title="Permanent link">&para;</a></h3>
-<p>Returns the text with stresses placed: an acute accent (U+0301) is put after the stressed vowel of every stressed word; unstressed words (clitics, monosyllables off the ictus) and words without a found stress stay unmarked. Only lines with words are returned (as in <code>lines</code>), stanzas are separated by a blank line.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'n_lines': 4,
+ 'n_stanzas': 1,
+ 'meter': 'ямб',
+ 'n_feet': 4,
+ 'p_deviations': 0.0,
+ 'p_pyrrhics': 0.1875,
+ 'p_rhymed': 1.0,
+ 'p_masculine': 0.5,
+ 'p_feminine': 0.5,
+ 'p_dactylic': 0.0}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="algorithm">Algorithm<a class="headerlink" href="#algorithm" title="Permanent link">&para;</a></h2>
+<p>Stresses and the meter are determined with the algorithm of Barakhnin, Kozhemyakina and Kuznetsova (<a href="https://ceur-ws.org/Vol-2523/paper27.pdf">CEUR 2019</a>):</p>
+<ol>
+<li><strong>Dictionary stresses.</strong> The stressed syllable of every word is looked up: by the letter ё, the only syllable of a monosyllable, otherwise the <a href="../../datasets/stressdict/"><code>StressDict</code></a> dictionary with the <code>STRESS_CORRECTIONS</code> fixes (erroneous and mobile dictionary stresses collected from frequent PoetryCorpus forms and the RIFMA annotation: ещё, себе́, пе́ред, зо́лото, леса́х, спеши́т, земли́). Hyphenated compounds are looked up as a whole, then by parts; poetic contractions (желанье - желание) and converbs (забыв - забывший) are looked up by the full form.</li>
+<li><strong>Meter fitting.</strong> Each of the five meters has its own strong positions - ictuses: iamb <code>cC</code>, trochee <code>Cc</code>, dactyl <code>Ccc</code>, amphibrach <code>cCc</code>, anapest <code>ccC</code> (<code>VERSE_METERS</code>). The meter with the fewest dictionary stresses of polysyllabic words on weak positions wins, ties are broken by the number of stressed ictuses. A stress in the anacrusis - on the syllables before the first ictus of the line - does not count as a violation: it is common in ternary meters (<em>Ста́ли дни холоднее</em>).</li>
+<li><strong>Disambiguation.</strong> Monosyllabic prepositions, conjunctions and particles (<code>VERSE_PROCLITICS</code>) are unstressed, other monosyllables are stressed only on an ictus; polysyllabic function words (<code>VERSE_WEAK_WORDS</code>: или, чтобы, перед, через, после) are stressed if the dictionary stress falls on an ictus. A dictionary stress of a polysyllabic word on a weak position is moved to the ictus if the word contains exactly one ictus, it is the only such word in the line or all of them are disyllabic (forms with mobile stress: воды́ - во́ды, реки́ - ре́ки), and no violations remain in the line after the move - otherwise the line is considered non-metrical; a stress by the letter ё and a stress in the anacrusis are never moved. A word without a dictionary stress gets its only ictus; with several ictuses, the stress of the last word of a line is chosen by rhyme with the neighbouring lines, otherwise the last ictus.</li>
+<li><strong>Check.</strong> The meter is not determined if after fitting more than a tenth of the polysyllabic word stresses (<code>VERSE_MAX_DEVIATIONS</code>) remain on weak positions, or if more than 15% of the dictionary stresses of polysyllabic words had to be moved to an ictus (<code>VERSE_MAX_MOVED</code>) with four or more moves (<code>VERSE_MIN_MOVED</code>) - the text is dolnik, accentual verse, syllabic verse, free verse or prose: there the fitting moves the stresses of arbitrary disyllabic words rather than of mobile-stress forms, and without the second threshold a dolnik or accentual verse with frequent disyllabic words got a spurious trochee or iamb. On RIFMA only 1% of stanzas need more than 15% of moves, while the syllabic verse of Trediakovsky, accentual verse and songs need a third or more; on short stanzas the share is noisy (three mobile forms in a quatrain are normal), so the threshold applies from four moves. Stresses are then placed by the dictionary. The meter is also not fitted when there are fewer than six dictionary stresses of polysyllabic words (<code>VERSE_MIN_STRESSES</code>): shorter texts fit some meter almost always - 43% of prose phrases of 30-90 characters got a meter, 14% with the threshold, while on RIFMA 3% of stanzas (174 of 5,121) are left without a meter: mostly couplets (106), the rest are three- and four-line stanzas with short lines; on PoetryCorpus the threshold affects 11 poems of 16,694.</li>
+</ol>
+<p>Rhymes are searched within a window of <code>RHYME_WINDOW</code> (4) lines inside a stanza by the phonetic key of the ending - the tail of the line from the last stressed word: the stressed vowel (я/а, ё/о, ю/у, ы/и are merged; е is kept and rhymes with о to catch ё written as е), the consonant cluster after it (without ь and ъ, with final devoicing, simplification of unpronounceable clusters стн - сн, тс - ц, collapsing of doubled consonants and -ого/-его replaced with -ово/-ево, except for adverbs with a pronounced [г]: мно́го, стро́го, до́рого) and the number of syllables after the stress. The supporting consonant of open masculine endings and the post-tonic vowels are not compared, so both exact and approximate rhymes are found (<em>пламя - память</em>, <em>лето - одетой</em>); endings with different consonant clusters (<em>ветер - вечер</em>) do not rhyme. The letters of a rhyme scheme come in order of appearance: uppercase, then lowercase, and when the 52 letters run out within one stanza, the letter of a group that no line in the window can join any more is reused.</p>
+<p>The accuracy was checked on the <a href="https://github.com/Koziev/Rifma">RIFMA</a> dataset (5,121 stanzas with manual stress annotation and rhyme schemes, MIT): stresses agree with the annotation for 97% of words (97% for polysyllabic dictionary words, 71% for out-of-dictionary words), pairs of rhyming lines are found with 94% precision and 90% recall, the whole stanza scheme matches in 78% of cases; the meter is undetermined for 8% of stanzas, 3% of them because of the <code>VERSE_MIN_STRESSES</code> threshold. Part of the <code>STRESS_CORRECTIONS</code> fixes was collected from this very annotation (63 forms where the dictionary disagrees with it in 80% or more of five or more occurrences), so the stress estimate is partly in-sample: on a held-out half of the dataset, the fixes collected from the other half add 0.1-0.2 percentage points.</p>
+<h2 id="accentuate">Accentuation<a class="headerlink" href="#accentuate" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">accentuate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Places stresses in a text by the dictionary: an acute accent (U+0301) is put after the stressed vowel of every word, a stress mark already in the text is kept; monosyllabic prepositions, conjunctions and particles and words without a found stress stay unmarked. The meter is not taken into account: for verse with stresses fitted to the meter use the <code>VerseStats.accentuate</code> method.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
+</tr>
+</tbody>
+</table>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a text that is not a string, a stress dictionary of another type;</li>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">accentuate</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">vs</span><span class="o">.</span><span class="n">accentuate</span><span class="p">())</span>
+<span class="n">accentuate</span><span class="p">(</span><span class="s2">"Уже поздно, замерли на полночь."</span><span class="p">)</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code>Мой<span class="w"> </span>дя́дя<span class="w"> </span>са́мых<span class="w"> </span>че́стных<span class="w"> </span>пра́вил,
-Когда́<span class="w"> </span>не<span class="w"> </span>в<span class="w"> </span>шу́тку<span class="w"> </span>занемо́г,
-Он<span class="w"> </span>уважа́ть<span class="w"> </span>себя́<span class="w"> </span>заста́вил
-И<span class="w"> </span>лу́чше<span class="w"> </span>вы́думать<span class="w"> </span>не<span class="w"> </span>мо́г.
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'Уже́ по́здно, за́мерли на по́лночь.'
 </code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="split_stanzas">Stanzas<a class="headerlink" href="#split_stanzas" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">split_stanzas</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>Splits a text into stanzas and lines: stanzas are separated by blank lines, lines without Russian words (numbers, asterisks) are skipped.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text of the poem</td>
+</tr>
+</tbody>
+</table>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a text that is not a string.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Code</label><label for="__tabbed_10_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_stanzas</span>
+
+<span class="n">split_stanzas</span><span class="p">(</span>
+    <span class="s2">"Буря мглою небо кроет,</span><span class="se">\n</span><span class="s2">Вихри снежные крутя;</span><span class="se">\n\n</span><span class="s2">* * *</span><span class="se">\n\n</span><span class="s2">То, как зверь, она завоет,"</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[['Буря мглою небо кроет,', 'Вихри снежные крутя;'],
+ ['То, как зверь, она завоет,']]
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3212,6 +2849,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3280,7 +2923,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

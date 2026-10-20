@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/stats/morph_stats/">
       
       
-        <link rel="prev" href="../diversity_stats_funcs/">
+        <link rel="prev" href="../diversity_stats/">
       
       
         <link rel="next" href="../style_stats/">
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1173,7 +1031,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -1184,7 +1042,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Атрибуты
       
     </span>
   </a>
@@ -1195,10 +1053,60 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Статистики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Статистики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Часть речи
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Степень сравнения, отрицание и краткая форма
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opencorpora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Переходность и совместность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формы глагола
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1210,89 +1118,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Методы">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_text" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        explain_text
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1311,56 +1136,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1369,7 +1144,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1382,92 +1157,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1483,7 +1172,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1496,92 +1185,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1597,7 +1200,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1610,92 +1213,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1711,7 +1228,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1724,92 +1241,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1825,7 +1256,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1838,92 +1269,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1939,7 +1284,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1948,42 +1293,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2870,7 +2179,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2881,7 +2190,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Атрибуты
       
     </span>
   </a>
@@ -2892,10 +2201,60 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Статистики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Статистики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Часть речи
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Степень сравнения, отрицание и краткая форма
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opencorpora" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Переходность и совместность
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формы глагола
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2907,89 +2266,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Методы">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_text" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        explain_text
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3014,14 +2290,198 @@
 
 
 <h1 id="_1">Морфологические статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.morph_stats.MorphStats</strong></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">MorphStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Морфологические статистики текста: часть речи и грамматические признаки каждого слова в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> и их распределения. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>; статистики вычисляются при создании объекта.</p>
+<p>Класс построен на интерфейсе статистик <code>Stats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a>. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
+<li><code>SourceError</code> - источник без слов.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
 </div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления морфологических статистик текста. В качестве источника данных может использоваться как непосредственно текст, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>В модуле реализована возможность использования предварительно созданного объекта класса <a href="../../extractors/words/"><code>WordsExtractor</code></a> для проведения необходимой токенизации слов перед вычислением статистик.</p>
-<p>Части речи и грамматические признаки выдаются в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a>: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> и другие, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, так же <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code>, форма глагола <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>), степень сравнения <code>degree</code> (<code>Pos</code>, <code>Cmp</code>, <code>Sup</code>), отрицание <code>polarity</code> (<code>Neg</code>) и краткая форма <code>style_variant</code> (<code>Short</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>. Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>, граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>; признак, которому pymorphy3 дает два значения сразу (одушевленность слов на -кки), не определен.</p>
-<p>Соответствие частей речи OpenCorpora и UD:</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>---------------Часть речи---------------
+Глагол                        |    6
+Сочинительный союз            |    2
+Подчинительный союз           |    2
+Наречие                       |    1
+
+-----------------Время------------------
+Настоящее                     |    1
+Будущее                       |    1
+Прошедшее                     |    1
+
+-----------------Число------------------
+Множественное                 |    3
+Единственное                  |    1
+
+------------------Лицо------------------
+2                             |    1
+3                             |    1
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Инструмент для извлечения слов; применяется и к <code>Doc</code>, к его тексту</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Атрибут</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>lemmas</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Леммы слов: pymorphy3 по части речи слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tags</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Грамматические признаки слов строками в формате CoNLL-U (<code>Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing</code>, <code>_</code> без признаков)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Каждая статистика - атрибут объекта, кортеж значений признака по словам (<code>None</code> у слова без признака), а <code>get_stats</code> дает распределения их значений. Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>: граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>, а признак, которому pymorphy3 дает два значения сразу (одушевленность слов на -кки), не определен.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Статистика</th>
+<th style="text-align: left;">Признак</th>
+<th style="text-align: left;">Значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#pos"><code>pos</code></a></td>
+<td style="text-align: left;">Часть речи</td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>, <code>AUX</code>, <code>ADJ</code>, <code>DET</code>, <code>PRON</code>, <code>NUM</code>, <code>ADV</code>, <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>INTJ</code>, <code>X</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>animacy</code></td>
+<td style="text-align: left;">Одушевленность</td>
+<td style="text-align: left;"><code>Anim</code>, <code>Inan</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>aspect</code></td>
+<td style="text-align: left;">Вид</td>
+<td style="text-align: left;"><code>Perf</code>, <code>Imp</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>case</code></td>
+<td style="text-align: left;">Падеж</td>
+<td style="text-align: left;"><code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, <code>Par</code>, <code>Voc</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>degree</code></a></td>
+<td style="text-align: left;">Степень сравнения</td>
+<td style="text-align: left;"><code>Pos</code>, <code>Cmp</code>, <code>Sup</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gender</code></td>
+<td style="text-align: left;">Род</td>
+<td style="text-align: left;"><code>Masc</code>, <code>Fem</code>, <code>Neut</code>, <code>Com</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#opencorpora"><code>involvement</code></a></td>
+<td style="text-align: left;">Совместность</td>
+<td style="text-align: left;"><code>In</code>, <code>Ex</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mood</code></td>
+<td style="text-align: left;">Наклонение</td>
+<td style="text-align: left;"><code>Ind</code>, <code>Imp</code>, <code>Cnd</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;">Число</td>
+<td style="text-align: left;"><code>Sing</code>, <code>Plur</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>person</code></td>
+<td style="text-align: left;">Лицо</td>
+<td style="text-align: left;"><code>1</code>, <code>2</code>, <code>3</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>polarity</code></a></td>
+<td style="text-align: left;">Отрицание</td>
+<td style="text-align: left;"><code>Neg</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>style_variant</code></a></td>
+<td style="text-align: left;">Краткая форма</td>
+<td style="text-align: left;"><code>Short</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tense</code></td>
+<td style="text-align: left;">Время</td>
+<td style="text-align: left;"><code>Past</code>, <code>Pres</code>, <code>Fut</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#opencorpora"><code>transitivity</code></a></td>
+<td style="text-align: left;">Переходность</td>
+<td style="text-align: left;"><code>Tran</code>, <code>Intr</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>verb_form</code></td>
+<td style="text-align: left;">Форма глагола</td>
+<td style="text-align: left;"><code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>voice</code></td>
+<td style="text-align: left;">Залог</td>
+<td style="text-align: left;"><code>Act</code>, <code>Pass</code>, <code>Mid</code></td>
+</tr>
+</tbody>
+</table>
+<p>Русские названия значений для <code>print_stats</code> - <code>MORPHOLOGY_STATS_DESC</code> из <code>ruts.constants</code>. Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> личным формам и <code>Voice=Mid</code> возвратным глаголам, выделяет <code>AUX</code> и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.</p>
+<div class="metric-card">
+<h3 id="pos">Часть речи<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
+<p>Для строки части речи OpenCorpora переводятся в UD так:</p>
 <table>
 <thead>
 <tr>
@@ -3088,441 +2548,206 @@
 </tr>
 </tbody>
 </table>
-<p>Степень сравнения, отрицание и краткую форму для строки ruTS выводит по правилам русского UD: степень есть у прилагательных (кроме местоименных) и наречий - <code>Cmp</code> у сравнительной степени и у «более», «менее», «выше», «ниже», <code>Sup</code> у превосходной («красивейший»), <code>Pos</code> у остальных; отрицание - у частиц «не», «ни» и ответного «нет» («Нет, не пойду», но не «Денег нет»); краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), но не у форм на -о вроде «неверно», «нужно», поэтому у строки она встречается реже, чем у <code>Doc</code> модели. «Есть» считается формой «быть», а не «кушать».</p>
-<p>Переходность (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) и совместность (<code>involvement</code>: <code>In</code>, <code>Ex</code>) - признаки OpenCorpora, которых в русском UD нет; они считаются через pymorphy3 для глаголов (для <code>Doc</code> - по разбору с леммой spaCy) и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> личным формам и <code>Voice=Mid</code> возвратным глаголам, выделяет <code>AUX</code> и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.</p>
+<p>«Есть» считается формой «быть», а не «кушать».</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Вычисление статистик происходит в момент инициализации объекта класса <code>MorphStats</code>.</p>
+<div class="metric-card">
+<h3 id="derived">Степень сравнения, отрицание и краткая форма<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>degree</code> · <code>polarity</code> · <code>style_variant</code></p>
+<p>Для строки эти признаки выводятся по правилам русского UD. Степень есть у прилагательных (кроме местоименных) и наречий: <code>Cmp</code> у сравнительной степени и у «более», «менее», «выше», «ниже», <code>Sup</code> у превосходной («красивейший»), <code>Pos</code> у остальных. Отрицание - у частиц «не», «ни» и ответного «нет» («Нет, не пойду», но не «Денег нет»). Краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), но не у форм на -о вроде «неверно», «нужно», поэтому у строки она встречается реже, чем у <code>Doc</code> модели.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Нет, я не рад: книга прочитана быстрее красивейшей сказки"</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"polarity"</span><span class="p">,</span> <span class="s2">"style_variant"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
 </div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(('Нет', {'polarity': 'Neg'}),
+ ('я', {}),
+ ('не', {'polarity': 'Neg'}),
+ ('рад', {'degree': 'Pos', 'style_variant': 'Short'}),
+ ('книга', {}),
+ ('прочитана', {'style_variant': 'Short'}),
+ ('быстрее', {'degree': 'Cmp'}),
+ ('красивейшей', {'degree': 'Sup'}),
+ ('сказки', {}))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="opencorpora">Переходность и совместность<a class="headerlink" href="#opencorpora" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>transitivity</code> · <code>involvement</code> · <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a></p>
+<p>Признаки OpenCorpora, которых в русском UD нет: переходность (<code>Tran</code>, <code>Intr</code>) и совместность (<code>In</code> - говорящий включен в действие, <code>Ex</code> - не включен). Они считаются через pymorphy3 для глаголов (для <code>Doc</code> - по разбору с леммой spaCy) и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Постарайтесь получить то, что любите"</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">transitivity</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">involvement</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+(('Intr', 'Tran', None, None, 'Tran'), ('Ex', None, None, None, None))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="markers">Формы глагола<a class="headerlink" href="#markers" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>get_markers()</code> · <code>print_markers()</code></p>
+<p>Доли грамматических форм глагола (слов с частью речи <code>VERB</code> и <code>AUX</code>), каждая от своей базы; доля с пустой базой - <code>nan</code>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Источник данных (строка или объект Doc)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения слов; если задан, применяется и к тексту Doc</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж извлеченных слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>lemmas</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж лемм слов (pymorphy3 с учетом части речи слова)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tags</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж строк грамматических признаков в формате CoNLL-U (<code>Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing</code>, <code>_</code> без признаков)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>pos</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений части речи</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>animacy</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений одушевленности</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>aspect</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений вида</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>case</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений падежа</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>degree</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений степени сравнения</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>gender</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений рода</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>involvement</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений совместности</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mood</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений наклонения</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>number</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений числа</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>person</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений лица</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>polarity</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений отрицания</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>style_variant</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений краткой формы</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tense</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений времени</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>transitivity</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений переходности</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>verb_form</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений формы глагола</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>voice</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Кортеж значений залога</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Возвращает справочник с вычисленными морфологическими статистиками.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Перечень выбранных статистик</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Фильтровать пустые значения</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>flat</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Ключи вида <code>pos_NOUN</code> вместо вложенных справочников, без слов без признака</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
-</div>
-<p>Рассмотрим пример вычисления морфологических статистик, выбрав только часть речи, время, число и лицо, а также используя фильтрацию пустых значений:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
-
-<span class="c1"># Подготовка данных</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
-
-<span class="c1"># Вычисление статистик</span>
-<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Plur'</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="s1">'Sing'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'person'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'2'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'3'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'pos'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'ADV'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'VERB'</span>:<span class="w"> </span><span class="m">6</span><span class="o">}</span>,
-<span class="s1">'tense'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Fut'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Past'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Pres'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}}</span>
-</code></pre></div>
-</div>
-<p>С <code>flat=True</code> каждое значение признака становится отдельным ключом, присоединенным к имени статистики через подчеркивание; слова без признака не учитываются:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Вычисление статистик с плоскими ключами</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'pos_VERB'</span>:<span class="w"> </span><span class="m">6</span>,
-<span class="s1">'pos_CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'pos_SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'pos_ADV'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Pres'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Fut'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Past'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-</code></pre></div>
-</div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Выводит на экран таблицу с вычисленными морфологическими статистиками.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Перечень выбранных статистик</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Фильтровать пустые значения</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
-</div>
-<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Отображение таблицы вычисленных статистик</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code>---------------Часть<span class="w"> </span>речи---------------
-Глагол<span class="w">                        </span><span class="p">|</span><span class="w">    </span><span class="m">6</span>
-Сочинительный<span class="w"> </span>союз<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Подчинительный<span class="w"> </span>союз<span class="w">           </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Наречие<span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
------------------Время------------------
-Настоящее<span class="w">                     </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Будущее<span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Прошедшее<span class="w">                     </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
------------------Число------------------
-Множественное<span class="w">                 </span><span class="p">|</span><span class="w">    </span><span class="m">3</span>
-Единственное<span class="w">                  </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
-------------------Лицо------------------
-<span class="m">2</span><span class="w">                             </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-<span class="m">3</span><span class="w">                             </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-</code></pre></div>
-</div>
-<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
-<!-- core: stats/stats.md:Stats-to_dataframe 1d6db59 -->
-<p>Возвращает плоские статистики, <code>get_stats(flat=True)</code>, таблицей <code>pandas.DataFrame</code> из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных <code>pandas.concat</code>, количество, которого у текста нет, - <code>NaN</code>. Нулями можно заполнять только такие столбцы: в остальных <code>NaN</code> - неопределенное значение.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Первые столбцы таблицы статистик</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">   </span>pos_VERB<span class="w">  </span>pos_CCONJ<span class="w">  </span>pos_SCONJ<span class="w">  </span>pos_ADV
-<span class="m">0</span><span class="w">         </span><span class="m">6</span><span class="w">          </span><span class="m">2</span><span class="w">          </span><span class="m">2</span><span class="w">        </span><span class="m">1</span>
-</code></pre></div>
-</div>
-<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у морфологических статистик нет, поэтому он всегда возвращает <code>None</code>.</p>
-<h3 id="explain_text">explain_text<a class="headerlink" href="#explain_text" title="Permanent link">&para;</a></h3>
-<p>Выполняет разбор текста по морфологическим статистикам. Возвращает словарь, в котором ключами являются слова текста, а значениями - словарь их морфологических статистик.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Перечень выбранных статистик</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Фильтровать пустые значения</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Предупреждение</p>
-<p>Для выбора необходимых статистик их наименования необходимо передавать в метод непосредственно через запятую.</p>
-</div>
-<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Разбор текста по морфологическим статистикам</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">((</span><span class="s1">'Постарайтесь'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'любите'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'2'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Pres'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'иначе'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'ADV'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'придется'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Sing'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'3'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Fut'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'полюбить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получили'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Past'</span><span class="o">}))</span>
-</code></pre></div>
-</div>
-<h3 id="get_markers">get_markers<a class="headerlink" href="#get_markers" title="Permanent link">&para;</a></h3>
-<p>Возвращает доли грамматических форм глагола (слов с частью речи <code>VERB</code> и <code>AUX</code>), каждую от своей базы. Доля с пустой базой - <code>nan</code>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Маркер</th>
+<th style="text-align: left;">Маркер</th>
 <th style="text-align: left;">Доля</th>
 <th style="text-align: left;">База</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>p_indicative</code>, <code>p_imperative</code>, <code>p_conditional</code></td>
+<td style="text-align: left;"><code>p_indicative</code>, <code>p_imperative</code>, <code>p_conditional</code></td>
 <td style="text-align: left;">изъявительного, повелительного и сослагательного наклонения</td>
 <td style="text-align: left;">личные формы</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_infinitive</code>, <code>p_participle</code>, <code>p_converb</code></td>
+<td style="text-align: left;"><code>p_infinitive</code>, <code>p_participle</code>, <code>p_converb</code></td>
 <td style="text-align: left;">инфинитивов, причастий и деепричастий</td>
 <td style="text-align: left;">все формы глагола</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_perfective</code></td>
+<td style="text-align: left;"><code>p_perfective</code></td>
 <td style="text-align: left;">совершенного вида</td>
 <td style="text-align: left;">формы глагола с видом</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_passive</code></td>
+<td style="text-align: left;"><code>p_passive</code></td>
 <td style="text-align: left;">страдательных причастий</td>
 <td style="text-align: left;">все формы глагола</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_reflexive</code></td>
+<td style="text-align: left;"><code>p_reflexive</code></td>
 <td style="text-align: left;">возвратных форм на -ся, -сь</td>
 <td style="text-align: left;">все формы глагола</td>
 </tr>
 </tbody>
 </table>
-<p>Сослагательное наклонение определяется по частице бы.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
+<p>Сослагательное наклонение определяется по частице «бы» («б»), поэтому экстрактор слов не должен отбрасывать частицы.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
 
 <span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Если бы я знал, я бы пришел за книгами, прочитанными вчера"</span><span class="p">)</span>
 <span class="n">ms</span><span class="o">.</span><span class="n">get_markers</span><span class="p">()</span>
 </code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'p_indicative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_imperative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_conditional'</span>:<span class="w"> </span><span class="m">1</span>.0,
-<span class="w"> </span><span class="s1">'p_infinitive'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_participle'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="w"> </span><span class="s1">'p_converb'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_perfective'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="w"> </span><span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="w"> </span><span class="s1">'p_reflexive'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'p_indicative': 0.0,
+ 'p_imperative': 0.0,
+ 'p_conditional': 1.0,
+ 'p_infinitive': 0.0,
+ 'p_participle': 0.3333333333333333,
+ 'p_converb': 0.0,
+ 'p_perfective': 0.6666666666666666,
+ 'p_passive': 0.3333333333333333,
+ 'p_reflexive': 0.0}
 </code></pre></div>
 </div>
-<h3 id="print_markers">print_markers<a class="headerlink" href="#print_markers" title="Permanent link">&para;</a></h3>
-<p>Выводит на экран таблицу долей грамматических форм глагола.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+</div>
+</div>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p><code>get_stats(*args, filter_none=False, flat=False)</code> возвращает распределения значений статистик справочником количеств по каждой. Статистики выбираются именами через запятую, без имен берутся все; <code>filter_none=True</code> отбрасывает слова без признака (<code>None</code>), а <code>flat=True</code> дает ключи вида <code>pos_NOUN</code> вместо вложенных справочников, тоже без слов без признака. Имя, которого нет среди статистик, дает <code>UnknownStatError</code> - здесь и в <code>print_stats</code> и <code>explain_text</code>.</p>
+<p><code>print_stats(*args, filter_none=False)</code> выводит распределения выбранных статистик таблицами, начиная с частых значений, а <code>explain_text(*args, filter_none=False)</code> возвращает слова текста по порядку со значениями выбранных статистик.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
 
-<span class="n">ms</span><span class="o">.</span><span class="n">print_markers</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                      </span>Маркер<span class="w">                      </span><span class="p">|</span><span class="w">  </span>Значение
----------------------------------------------------------------
-Изъявительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Повелительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Сослагательное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>.00
-Инфинитив<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Причастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
-Деепричастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Совершенный<span class="w"> </span>вид<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w"> </span>с<span class="w"> </span>видом<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.67
-Страдательные<span class="w"> </span>причастия<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
-Возвратные<span class="w"> </span>формы<span class="w"> </span><span class="o">(</span>-ся,<span class="w"> </span>-сь<span class="o">)</span><span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+ 'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
+ 'number': {'Plur': 3, 'Sing': 1},
+ 'person': {'2': 1, '3': 1}}
+{'pos_VERB': 6,
+ 'pos_CCONJ': 2,
+ 'pos_SCONJ': 2,
+ 'pos_ADV': 1,
+ 'tense_Pres': 1,
+ 'tense_Fut': 1,
+ 'tense_Past': 1}
+(('Постарайтесь', {'pos': 'VERB', 'number': 'Plur'}),
+ ('получить', {'pos': 'VERB'}),
+ ('то', {'pos': 'CCONJ'}),
+ ('что', {'pos': 'SCONJ'}),
+ ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
+ ('иначе', {'pos': 'ADV'}),
+ ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
+ ('полюбить', {'pos': 'VERB'}),
+ ('то', {'pos': 'CCONJ'}),
+ ('что', {'pos': 'SCONJ'}),
+ ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
+</code></pre></div>
+</div>
+</div>
+</div>
+<!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
+<p><code>to_dataframe()</code> возвращает плоские статистики, <code>get_stats(flat=True)</code>, таблицей <code>DataFrame</code> библиотеки <a href="https://pandas.pydata.org/">pandas</a> из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных <code>pandas.concat</code>, количество, которого у текста нет, - <code>NaN</code>. Нулями можно заполнять только такие столбцы: в остальных <code>NaN</code> - неопределенное значение.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ms</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>   pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
+0         6          2          2        1
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code>get_markers()</code> возвращает <a href="#markers">доли форм глагола</a> справочником, а <code>print_markers()</code> выводит их таблицей.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Если бы я знал, я бы пришел за книгами, прочитанными вчера"</span><span class="p">)</span><span class="o">.</span><span class="n">print_markers</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                      Маркер                      |  Значение
+---------------------------------------------------------------
+Изъявительное наклонение среди личных форм        |    0.00
+Повелительное наклонение среди личных форм        |    0.00
+Сослагательное наклонение среди личных форм       |    1.00
+Инфинитив среди форм глагола                      |    0.00
+Причастие среди форм глагола                      |    0.33
+Деепричастие среди форм глагола                   |    0.00
+Совершенный вид среди форм глагола с видом        |    0.67
+Страдательные причастия среди форм глагола        |    0.33
+Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у морфологических статистик нет, поэтому он для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
 
 
 
@@ -3542,6 +2767,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3610,7 +2841,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

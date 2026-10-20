@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -67,6 +67,8 @@
   
   
     
+    
+      
     
     
     
@@ -122,7 +124,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -176,6 +204,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -959,56 +989,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="stats/readability_stats/" class="md-nav__link">
         
@@ -1017,7 +997,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -1030,92 +1010,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1131,7 +1025,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1140,42 +1034,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1215,56 +1073,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="stats/style_stats/" class="md-nav__link">
         
@@ -1273,7 +1081,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1286,92 +1094,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1387,7 +1109,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1400,92 +1122,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1501,7 +1137,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1514,92 +1150,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1615,7 +1165,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1628,92 +1178,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1729,7 +1193,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1742,92 +1206,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1843,7 +1221,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1852,42 +1230,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2829,78 +2171,192 @@
 <p>Работать можно как с обычными строками, так и с готовыми <code>Doc</code>-объектами <a href="https://github.com/explosion/spaCy">spaCy</a> - каждая статистика доступна и как отдельный класс, и как компонент пайплайна spaCy.</p>
 <p>Попробовать без установки можно в <a href="https://huggingface.co/spaces/SergeyShk/ruTS">демо на Hugging Face Spaces</a>: вставьте текст и получите класс удобочитаемости, метрики, графики и подсветку фрагментов.</p>
 <h2 id="_1">Возможности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<div class="grid cards">
 <ul>
-<li>создавать токенизаторы <a href="extractors/words/">слов</a>, <a href="extractors/sentences/">предложений</a> и <a href="extractors/char_ngrams/">символьных N-грамм</a></li>
-<li>считать <a href="stats/basic_stats/">базовые текстовые статистики</a> (количество слов, предложений, знаков препинания, слогов и др.)</li>
-<li>считать <a href="stats/readability_stats/">метрики удобочитаемости</a> текста (Тест Флеша-Кинкайда, Индекс SMOG, Индекс удобочитаемости LIX и др.)</li>
-<li>считать <a href="stats/diversity_stats/">метрики лексического разнообразия</a> текста (Type-Token Ratio, Measure of Textual Lexical Diversity, Гапакс-индекс и др.)</li>
-<li>извлекать <a href="stats/morph_stats/">морфологические признаки</a> из текста в терминах Universal Dependencies (часть речи, падеж, наклонение, переходность и др.)</li>
-<li>считать <a href="stats/style_stats/">SEO-метрики стиля</a> текста (тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов)</li>
-<li>считать <a href="stats/phon_stats/">фоностатистики</a> текста (доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги)</li>
-<li>считать <a href="stats/syntax_stats/">синтаксические статистики</a> текста по дереву зависимостей spaCy (длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей)</li>
-<li>считать <a href="stats/cohesion_stats/">статистики связности</a> текста (повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам)</li>
-<li>считать <a href="stats/lexical_stats/">статистики лексической сложности</a> текста (частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность)</li>
-<li>считать <a href="stats/verse_stats/">стиховедческие статистики</a> (ударения по словарю Козиева, метр и число стоп, пиррихии и профиль ударности, схемы рифмовки, окончания и строфы)</li>
-<li>считать корпусные меры (<a href="corpus/keyness/">ключевые слова</a> относительно эталонного корпуса или частотного словаря, <a href="corpus/collocations/">коллокации</a>, <a href="corpus/dispersion/">дисперсию слов</a> по частям текста, <a href="corpus/kwic/">конкорданс KWIC</a>) и меры <a href="corpus/stylometry/">стилометрии</a> (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов), <a href="corpus/compare/">сравнивать корпуса</a> по всем признакам сразу (критерий Манна-Уитни, d Коэна, дельта Клиффа, бутстрэп-интервалы, AUC)</li>
-<li>работать с готовыми текстовыми наборами данных (<a href="datasets/sovchlit/">Советские христоматии по литературе</a>, <a href="datasets/stalinworks/">Полное собрание сочинений И.В. Сталина</a>, <a href="datasets/textsbygrade/">Тексты с метками класса</a>, <a href="datasets/freq2011/">Частотный словарь Ляшевской и Шарова</a>, <a href="datasets/poetrycorpus/">Корпус русской поэзии</a>, <a href="datasets/russianliterature/">Русская классическая литература</a>, <a href="datasets/stressdict/">Словарь ударений Козиева</a>)</li>
-<li>визуализировать текстовые данные (<a href="visualizers/zipf/">Закон Ципфа</a>, <a href="visualizers/fingerprinting/">Литературная дактилоскопия</a>, <a href="visualizers/word_tree/">Дерево слов</a>, <a href="visualizers/highlight/">Подсветка текста</a>, <a href="visualizers/corpus/">корпусные</a> и <a href="visualizers/stylometry/">стилометрические</a> графики, <a href="visualizers/vocabulary/">рост словаря и спектр частот</a>, <a href="visualizers/sentences/">длины предложений</a>)</li>
-<li>создавать <a href="components/">компоненты</a> для встраивания в <a href="https://github.com/explosion/spaCy">spaCy</a></li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 21H7v-2h4zm4.5-2H17v2h-4v-2h.2l-1.4-6.1-2.5.6c-.1.5-.3.9-.5 1.3-.9 1.5-2.8 1.9-4.3 1s-1.9-2.8-1-4.3 2.8-1.9 4.3-1c.4.2.7.6.9.9l2.5-.6-.6-2.5c-.4-.1-.8-.3-1.2-.5C8 6.9 7.5 5 8.4 3.5s2.8-1.9 4.3-1 1.9 2.8 1 4.3c-.2.4-.6.7-.9.9zM7 11.8c-.7-.5-1.7-.2-2.2.5s-.2 1.7.5 2.1c.7.5 1.7.3 2.2-.5.4-.7.2-1.7-.5-2.1M12.4 6c.5-.7.2-1.7-.5-2.2s-1.7-.2-2.2.5c-.4.7-.2 1.7.6 2.2.7.4 1.7.2 2.1-.5m.4 5.3c-.2-.1-.4-.1-.5.1s-.1.4.1.5.4.1.5-.1c.2-.2.1-.4-.1-.5M21 8.5 14.5 10l.5 2.2 7.5-1.8.5-.7zM23 19h-4v2h4zM5 19H1v2h4z"/></svg></span> <strong>Извлечение</strong></p>
+<hr />
+<p>Токенизаторы <a href="extractors/words/">слов</a>, <a href="extractors/sentences/">предложений</a> и <a href="extractors/char_ngrams/">символьных N-грамм</a> с фильтрами, лемматизацией и N-граммами</p>
+<p><a href="extractors/sentences/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Извлечение объектов</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.06 18a4 4 0 0 1-.2-.89c-.67.7-1.48 1.05-2.41 1.05-.83 0-1.52-.24-2.05-.71-.53-.45-.8-1.06-.8-1.79 0-.88.33-1.56 1-2.05s1.61-.73 2.83-.73h1.4v-.64q0-.735-.45-1.17c-.3-.29-.75-.43-1.33-.43-.52 0-.95.12-1.3.36-.35.25-.52.54-.52.89h-1.46c0-.43.15-.84.45-1.24.28-.4.71-.71 1.22-.94.51-.21 1.06-.35 1.69-.35.98 0 1.74.24 2.29.73s.84 1.16.86 2.02V16c0 .8.1 1.42.3 1.88V18zm-2.4-1.12c.45 0 .88-.11 1.29-.32.4-.21.7-.49.88-.83v-1.57H18.7c-1.77 0-2.66.47-2.66 1.41 0 .43.15.73.46.96.3.23.68.35 1.16.35m-12.2-3.17h4.07L7.5 8.29zM6.64 6h1.72l4.71 12h-1.93l-.97-2.57H4.82L3.86 18H1.93z"/></svg></span> <strong>Слоги и ударение</strong></p>
+<hr />
+<p>Деление слов на слоги, количество слогов, ударный слог по словарю и тип окончания</p>
+<p><a href="syllables/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Слоги и ударение</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 2v12h7V6zm16 12V6h-1.24c.24.54.19 1.07.19 1.13-.07.67-.54 1.37-.71 1.62l-2.33 2.55 3.32-.02.01 1.22-5.2-.03-.04-1s3.05-3.23 3.2-3.52c.14-.28.71-1.95-.7-1.95-1.23.05-1.09 1.3-1.09 1.3l-1.54.01s.01-.66.38-1.31H13v12h2.58l-.01-.86.97-.01s.91-.16.92-1.05c.04-1-.81-1-.96-1-.13 0-1.07.05-1.07.87h-1.52s.04-2.06 2.59-2.06c2.6 0 2.46 2.02 2.46 2.02s.04 1.25-1.11 1.72l.52.37zM8.92 16h-1.5v-5.8l-1.8.56V9.53l3.14-1.12h.16z"/></svg></span> <strong>Базовые статистики</strong></p>
+<hr />
+<p>Количество слов, предложений, знаков препинания, слогов и другие базовые статистики текста</p>
+<p><a href="stats/basic_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Базовые статистики</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.5c-1.35-.85-3.8-1.5-5.5-1.5-1.65 0-3.35.3-4.75 1.05-.1.05-.15.05-.25.05-.25 0-.5-.25-.5-.5V6c.6-.45 1.25-.75 2-1 1.11-.35 2.33-.5 3.5-.5 1.95 0 4.05.4 5.5 1.5 1.45-1.1 3.55-1.5 5.5-1.5 1.17 0 2.39.15 3.5.5.75.25 1.4.55 2 1v14.6c0 .25-.25.5-.5.5-.1 0-.15 0-.25-.05-1.4-.75-3.1-1.05-4.75-1.05-1.7 0-4.15.65-5.5 1.5M12 8v11.5c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5V7c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5m1 3.5c1.11-.68 2.6-1 4.5-1 .91 0 1.76.09 2.5.28V9.23c-.87-.15-1.71-.23-2.5-.23q-2.655 0-4.5.84zm4.5.17c-1.71 0-3.21.26-4.5.79v1.69c1.11-.65 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24v-1.5c-.87-.16-1.71-.23-2.5-.23m2.5 2.9c-.87-.16-1.71-.24-2.5-.24-1.83 0-3.33.27-4.5.8v1.69c1.11-.66 2.6-.99 4.5-.99 1.04 0 1.88.08 2.5.24z"/></svg></span> <strong>Удобочитаемость</strong></p>
+<hr />
+<p>Тест Флеша-Кинкайда, индекс SMOG, индекс удобочитаемости LIX и другие метрики с коэффициентами для русского языка</p>
+<p><a href="stats/readability_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Метрики удобочитаемости</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.96 11.31C10.82 8.1 11.5 6 13 6s2.18 2.1 3.04 5.31C17 14.92 18.1 19 22 19v-2c-2.2 0-3-2.46-4.03-6.2C17.08 7.46 16.15 4 13 4s-4.08 3.46-4.97 6.8C7.03 14.54 6.2 17 4 17V2H2v20h20v-2H4v-1c3.9 0 5-4.08 5.96-7.69"/></svg></span> <strong>Лексическое разнообразие</strong></p>
+<hr />
+<p>Type-Token Ratio, Measure of Textual Lexical Diversity, гапакс-индекс и другие метрики</p>
+<p><a href="stats/diversity_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Метрики лексического разнообразия</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2zm0 2h2v2H3m12-.5V9a2 2 0 0 0-2-2H9v10h4a2 2 0 0 0 2-2v-1.5a1.54 1.54 0 0 0-1.5-1.5 1.54 1.54 0 0 0 1.5-1.5M13 15h-2v-2h2zm0-4h-2V9h2m6-2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1h-2v1h-2V9h2v1h2V9a2 2 0 0 0-2-2Z"/></svg></span> <strong>Морфология</strong></p>
+<hr />
+<p>Морфологические признаки в терминах Universal Dependencies: часть речи, падеж, наклонение, переходность и другие</p>
+<p><a href="stats/morph_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Морфологические статистики</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 2s-7.64-.37-13.66 7.88C3.72 16.21 2 22 2 22l1.94-1c1.44-2.5 2.19-3.53 3.6-5 2.53.74 5.17.65 7.46-2-2-.56-3.6-.43-5.96-.19C11.69 12 13.5 11.6 16 12l1-2c-1.8-.34-3-.37-4.78.04C14.19 8.65 15.56 7.87 18 8l1.21-1.93c-1.56-.11-2.5.06-4.29.5 1.61-1.46 3.08-2.12 5.22-2.25 0 0 1.05-1.89 1.86-2.32"/></svg></span> <strong>Стиль</strong></p>
+<hr />
+<p>SEO-метрики: тошнота, водность, заспамленность, естественность по Ципфу, плотность ключевых слов</p>
+<p><a href="stats/style_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> SEO-метрики стиля</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m22 12-2 1-1 1-1-1-1 3-1-3-1 8-1-8-1 2-1-2-1 4-1-4-1 9-1-9-1 6-1-6-1 1-1-1-2-1 2-1 1-1 1 1 1-6 1 6 1-9 1 9 1-4 1 4 1-2 1 2 1-8 1 8 1-3 1 3 1-1 1 1z"/></svg></span> <strong>Фонетика</strong></p>
+<hr />
+<p>Доли классов звуков, консонантные кластеры, аллитерация и ассонанс, слоги</p>
+<p><a href="stats/phon_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Фоностатистики</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3h6v4H3zm12 7h6v4h-6zm0 7h6v4h-6zm-2-4H7v5h6v2H5V9h2v2h6z"/></svg></span> <strong>Синтаксис</strong></p>
+<hr />
+<p>Статистики дерева зависимостей spaCy: длины зависимостей, глубина дерева, сочинительные цепочки, клаузы, обороты, пассив, цепочки родительных падежей</p>
+<p><a href="stats/syntax_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Синтаксические статистики</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10.59 13.41c.41.39.41 1.03 0 1.42-.39.39-1.03.39-1.42 0a5.003 5.003 0 0 1 0-7.07l3.54-3.54a5.003 5.003 0 0 1 7.07 0 5.003 5.003 0 0 1 0 7.07l-1.49 1.49c.01-.82-.12-1.64-.4-2.42l.47-.48a2.98 2.98 0 0 0 0-4.24 2.98 2.98 0 0 0-4.24 0l-3.53 3.53a2.98 2.98 0 0 0 0 4.24m2.82-4.24c.39-.39 1.03-.39 1.42 0a5.003 5.003 0 0 1 0 7.07l-3.54 3.54a5.003 5.003 0 0 1-7.07 0 5.003 5.003 0 0 1 0-7.07l1.49-1.49c-.01.82.12 1.64.4 2.43l-.47.47a2.98 2.98 0 0 0 0 4.24 2.98 2.98 0 0 0 4.24 0l3.53-3.53a2.98 2.98 0 0 0 0-4.24.973.973 0 0 1 0-1.42"/></svg></span> <strong>Связность</strong></p>
+<hr />
+<p>Повторы существительных, аргументов и знаменательных слов между предложениями, данность, темпоральная связность, коннекторы по классам, меж- и внутрипредложенческие</p>
+<p><a href="stats/cohesion_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Статистики связности</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17z"/></svg></span> <strong>Лексическая сложность</strong></p>
+<hr />
+<p>Частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность</p>
+<p><a href="stats/lexical_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Статистики лексической сложности</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z"/></svg></span> <strong>Стиховедение</strong></p>
+<hr />
+<p>Ударения по словарю Козиева, метр и число стоп, пиррихии и профиль ударности, схемы рифмовки, окончания и строфы</p>
+<p><a href="stats/verse_stats/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Стиховедческие статистики</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg></span> <strong>Корпусные меры</strong></p>
+<hr />
+<p><a href="corpus/keyness/">Ключевые слова</a> относительно эталонного корпуса или частотного словаря, <a href="corpus/collocations/">коллокации</a>, <a href="corpus/dispersion/">дисперсия слов</a> по частям текста, <a href="corpus/kwic/">конкорданс KWIC</a>, меры <a href="corpus/stylometry/">стилометрии</a> (дельта Барроуза с вариантами, Zeta, хи-квадрат Килгарриффа, кривая Менденхолла, профиль служебных слов) и <a href="corpus/compare/">сравнение корпусов</a> по всем признакам сразу (критерий Манна-Уитни, d Коэна, дельта Клиффа, бутстрэп-интервалы, AUC)</p>
+<p><a href="corpus/keyness/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Корпусные меры</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span> <strong>Наборы данных</strong></p>
+<hr />
+<p><a href="datasets/sovchlit/">Советские христоматии по литературе</a>, <a href="datasets/stalinworks/">Полное собрание сочинений И.В. Сталина</a>, <a href="datasets/textsbygrade/">Тексты с метками класса</a>, <a href="datasets/freq2011/">Частотный словарь Ляшевской и Шарова</a>, <a href="datasets/poetrycorpus/">Корпус русской поэзии</a>, <a href="datasets/russianliterature/">Русская классическая литература</a>, <a href="datasets/stressdict/">Словарь ударений Козиева</a></p>
+<p><a href="datasets/sovchlit/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Наборы данных</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2h2v18h18v2H2zm7 8a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m4-8a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m5 10a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3"/></svg></span> <strong>Визуализация</strong></p>
+<hr />
+<p><a href="visualizers/zipf/">Закон Ципфа</a>, <a href="visualizers/fingerprinting/">литературная дактилоскопия</a>, <a href="visualizers/word_tree/">дерево слов</a>, <a href="visualizers/highlight/">подсветка текста</a>, <a href="visualizers/corpus/">корпусные</a> и <a href="visualizers/stylometry/">стилометрические</a> графики, <a href="visualizers/vocabulary/">рост словаря и спектр частот</a>, <a href="visualizers/sentences/">длины предложений</a></p>
+<p><a href="visualizers/zipf/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Визуализации</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 14h-2v2h-6v-3h2v-2h-2V6a2 2 0 0 0-2-2H4V2H2v8h2V8h6v3H8v2h2v5a2 2 0 0 0 2 2h8v2h2"/></svg></span> <strong>Компоненты</strong></p>
+<hr />
+<p>Компоненты для встраивания статистик в пайплайны spaCy</p>
+<p><a href="components/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Компоненты</a></p>
+</li>
+<li>
+<p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm1-5C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 18a8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8 8 8 0 0 1-8 8"/></svg></span> <strong>Исключения</strong></p>
+<hr />
+<p>Ошибки одной иерархии, классы которой одновременно встроенные исключения Python</p>
+<p><a href="exceptions/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Исключения и логирование</a></p>
+</li>
 </ul>
+</div>
 <h2 id="_2">Установка<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <p>Требуется Python 3.11 или новее.</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ruts
 </code></pre></div>
 <p>Подробнее о зависимостях и установке из репозитория - на странице <a href="installation/">Установка</a>.</p>
 <h2 id="_3">Быстрый старт<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span><span class="p">,</span> <span class="n">DiversityStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span><span class="p">,</span> <span class="n">DiversityStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">text</span> <span class="o">=</span> <span class="s2">"Существуют три вида лжи: ложь, наглая ложь и статистика"</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Существуют три вида лжи: ложь, наглая ложь и статистика"</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-<span class="p">{</span><span class="s1">'c_letters'</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
- <span class="s1">'c_syllables'</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
- <span class="s1">'n_sents'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
- <span class="s1">'n_words'</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
- <span class="s1">'n_unique_words'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
- <span class="s1">'n_long_words'</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
- <span class="s1">'n_complex_words'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
- <span class="s1">'n_simple_words'</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
- <span class="s1">'n_monosyllable_words'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
- <span class="s1">'n_polysyllable_words'</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
- <span class="s1">'n_chars'</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
- <span class="s1">'n_letters'</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
- <span class="s1">'n_spaces'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
- <span class="s1">'n_syllables'</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
- <span class="s1">'n_punctuations'</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
- <span class="s1">'c_punctuations'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'comma'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'period'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'question'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'exclamation'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="s1">'ellipsis'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'colon'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'semicolon'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'dash'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="s1">'hyphen'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'angle_quotes'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'straight_quotes'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="s1">'parentheses'</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'other'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}}</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
-<span class="mf">74.93500000000003</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">DiversityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">ttr</span>
-<span class="mf">0.8888888888888888</span>
+<span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
+<span class="n">DiversityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">ttr</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+ 'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
+ 'n_sents': 1,
+ 'n_words': 9,
+ 'n_unique_words': 8,
+ 'n_long_words': 3,
+ 'n_complex_words': 2,
+ 'n_simple_words': 7,
+ 'n_monosyllable_words': 5,
+ 'n_polysyllable_words': 4,
+ 'n_chars': 55,
+ 'n_letters': 45,
+ 'n_spaces': 8,
+ 'n_syllables': 18,
+ 'n_punctuations': 2,
+ 'c_punctuations': {'comma': 1,
+                    'period': 0,
+                    'question': 0,
+                    'exclamation': 0,
+                    'ellipsis': 0,
+                    'colon': 1,
+                    'semicolon': 0,
+                    'dash': 0,
+                    'hyphen': 0,
+                    'angle_quotes': 0,
+                    'straight_quotes': 0,
+                    'parentheses': 0,
+                    'other': 0}}
+74.93500000000003
+0.8888888888888888
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Любую статистику можно вывести на экран в читаемом виде:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-    <span class="n">Статистика</span>     <span class="o">|</span> <span class="n">Значение</span>
-<span class="o">------------------------------</span>
-<span class="n">Предложения</span>        <span class="o">|</span>    <span class="mi">1</span>
-<span class="n">Слова</span>              <span class="o">|</span>    <span class="mi">9</span>
-<span class="n">Уникальные</span> <span class="n">слова</span>   <span class="o">|</span>    <span class="mi">8</span>
-<span class="n">Длинные</span> <span class="n">слова</span>      <span class="o">|</span>    <span class="mi">3</span>
-<span class="n">Сложные</span> <span class="n">слова</span>      <span class="o">|</span>    <span class="mi">2</span>
-<span class="n">Простые</span> <span class="n">слова</span>      <span class="o">|</span>    <span class="mi">7</span>
-<span class="n">Односложные</span> <span class="n">слова</span>  <span class="o">|</span>    <span class="mi">5</span>
-<span class="n">Многосложные</span> <span class="n">слова</span> <span class="o">|</span>    <span class="mi">4</span>
-<span class="n">Символы</span>            <span class="o">|</span>    <span class="mi">55</span>
-<span class="n">Буквы</span>              <span class="o">|</span>    <span class="mi">45</span>
-<span class="n">Пробелы</span>            <span class="o">|</span>    <span class="mi">8</span>
-<span class="n">Слоги</span>              <span class="o">|</span>    <span class="mi">18</span>
-<span class="n">Знаки</span> <span class="n">препинания</span>   <span class="o">|</span>    <span class="mi">2</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>    Статистика     | Значение
+------------------------------
+Предложения        |    1
+Слова              |    9
+Уникальные слова   |    8
+Длинные слова      |    3
+Сложные слова      |    2
+Простые слова      |    7
+Односложные слова  |    5
+Многосложные слова |    4
+Символы            |    55
+Буквы              |    45
+Пробелы            |    8
+Слоги              |    18
+Знаки препинания   |    2
+</code></pre></div>
+</div>
+</div>
+</div>
 <p>Сквозной разбор одного рассказа всеми инструментами библиотеки - в ноутбуке <a href="https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb">examples/01_text_walkthrough.ipynb</a>, его можно открыть в <a href="https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb">Colab</a>; остальные ноутбуки - на странице <a href="examples/">примеров</a>.</p>
 <details class="note">
 <summary>Структура проекта</summary>
@@ -2983,6 +2439,12 @@
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
+        
       </main>
       
         <footer class="md-footer">
@@ -3050,7 +2512,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.d7400e89.min.js"></script>

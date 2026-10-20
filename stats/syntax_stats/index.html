@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/stats/syntax_stats/">
       
       
-        <link rel="prev" href="../phon_stats_funcs/">
+        <link rel="prev" href="../phon_stats/">
       
       
-        <link rel="next" href="../syntax_stats_funcs/">
+        <link rel="next" href="../cohesion_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Модуль вычисления статистик - RuTS</title>
+        <title>Синтаксические статистики - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Модуль вычисления статистик
+              Синтаксические статистики
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1322,94 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1434,7 +1068,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1452,7 +1086,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1481,7 +1115,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -1492,7 +1126,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Языковые крючки
+        Атрибуты
       
     </span>
   </a>
@@ -1503,41 +1137,19 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Метрики
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Метрики">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#dependency_distances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Длина зависимости
       
     </span>
   </a>
@@ -1545,10 +1157,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#tree_depth" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Глубина дерева
       
     </span>
   </a>
@@ -1556,10 +1168,142 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#leaves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Листья и поддеревья
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#valency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Валентность финитных глаголов
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сочинительные цепочки
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subordinate_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Придаточные клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infinitive_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инфинитивные клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_modifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Модификаторы существительного
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genitive_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Цепочки родительных падежей
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#participle_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Причастные обороты
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converb_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Деепричастные обороты
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Пассив
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инфинитивы, отрицания и расщепленные сказуемые
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_verb_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отношение существительных к глаголам
       
     </span>
   </a>
@@ -1568,6 +1312,116 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова последовательности
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hyphenated-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дефисные слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вершина предложения
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#base_dep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Базовое отношение
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зависимые слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_finite_verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формы глагола
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_predicate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сказуемое клаузы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_modifier_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Цепочки модификаторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вспомогательные функции
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1587,92 +1441,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../cohesion_stats/" class="md-nav__link">
         
   
@@ -1680,7 +1448,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1693,92 +1461,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1794,7 +1476,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1807,92 +1489,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1908,7 +1504,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1917,42 +1513,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2839,7 +2399,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2850,7 +2410,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Языковые крючки
+        Атрибуты
       
     </span>
   </a>
@@ -2861,41 +2421,19 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Метрики
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Метрики">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#dependency_distances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Длина зависимости
       
     </span>
   </a>
@@ -2903,10 +2441,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#tree_depth" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Глубина дерева
       
     </span>
   </a>
@@ -2914,10 +2452,142 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
+  <a href="#leaves" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe, describe
+        Листья и поддеревья
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#valency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Валентность финитных глаголов
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordination_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сочинительные цепочки
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subordinate_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Придаточные клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infinitive_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инфинитивные клаузы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_modifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Модификаторы существительного
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#genitive_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Цепочки родительных падежей
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#participle_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Причастные обороты
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converb_clauses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Деепричастные обороты
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Пассив
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Инфинитивы, отрицания и расщепленные сказуемые
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#noun_verb_ratio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отношение существительных к глаголам
       
     </span>
   </a>
@@ -2926,6 +2596,116 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Слова последовательности
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hyphenated-words" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дефисные слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вершина предложения
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#base_dep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Базовое отношение
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get_children" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Зависимые слова
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_finite_verb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формы глагола
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is_predicate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сказуемое клаузы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calc_modifier_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Цепочки модификаторов
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Вспомогательные функции
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,337 +2730,1266 @@
 
 
 <h1 id="_1">Синтаксические статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.syntax_stats.SyntaxStats</strong></p>
-</div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/syntax_stats.md:SyntaxStats 8b1fa84 -->
-<p>Синтаксические статистики текста по его дереву зависимостей (Иванов, Солнышкина и Соловьёв 2018): длины зависимостей, глубина дерева, листья и поддеревья, валентность финитных глаголов, сочинительные цепочки, клаузы, модификаторы существительного, причастные обороты, пассив, инфинитивы, отрицания, расщепленные сказуемые и отношение существительных к глаголам. Источник данных - объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с разбором зависимостей. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.</p>
-<p>Источник, который не является <code>Doc</code>, дает <code>SourceTypeError</code>; источник без разбора зависимостей (отношений и границ предложений), без лемм, если класс их требует, или без слов - <code>SourceError</code>.</p>
-<p>Отношения и признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванов, Солнышкина и Соловьёв</a> проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Качество статистик ограничено качеством разбора: маленькая модель <code>ru_core_news_sm</code> ошибается в частях речи и связях заметно чаще, чем <code>ru_core_news_lg</code>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Вычисление статистик происходит в момент инициализации объекта класса <code>SyntaxStats</code>.</p>
-</div>
-<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем: части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка. Краткое причастие (<code>дом построен</code>) - сказуемое и возглавляет клаузу (<a href="../syntax_stats_funcs/#is_clause_head"><code>is_clause_head</code></a>), полные причастия и деепричастия возглавляют обороты, которые считаются отдельно, инфинитив при существительном (<code>желание уйти</code>) клаузы не образует, а инфинитив при глаголе образует придаточную клаузу (<code>хочет уйти</code>), кроме сочетаний с модальными и фазовыми глаголами (<code>может уйти</code>, <code>начал читать</code>); причастный оборот - полное причастие с зависимым словом (<a href="../syntax_stats_funcs/#is_participle_clause"><code>is_participle_clause</code></a>); отрицания - частицы с <code>Polarity=Neg</code> и частицы «не», «ни» (<a href="../syntax_stats_funcs/#is_negation"><code>is_negation</code></a>); расщепленное сказуемое - легкий глагол с существительным, которое несет его значение, например <code>осуществлять проверку</code> (<a href="../syntax_stats_funcs/#find_split_predicates"><code>find_split_predicates</code></a>). Свои статистики ruTS - цепочки родительных падежей (<a href="../syntax_stats_funcs/#calc_genitive_chains"><code>calc_genitive_chains</code></a> на основе <code>calc_modifier_chains</code> ядра) и деепричастные обороты. Таблица <code>print_stats</code> выводится с русскими заголовками и описаниями из <code>ruts.constants.SYNTAX_STATS_DESC</code>, сообщения об ошибках - по-русски (<code>CORE_MESSAGES</code>).</p>
-<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Источник данных (объект Doc с разбором зависимостей)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 5018989 -->
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>sents</code></td>
-<td style="text-align: center;">tuple[tuple[Token]]</td>
-<td style="text-align: center;">Слова каждого предложения, в котором есть слова</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_sents</code>, <code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество предложений со словами и количество слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_leaves</code>, <code>n_subtrees</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество слов без зависимых слов и с ними</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_coordination_chains</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество сочинительных цепочек</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_clauses</code>, <code>n_subordinate_clauses</code>, <code>n_complex_sents</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество клауз, придаточных клауз и предложений с придаточной</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_nouns</code>, <code>n_verbs</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество существительных (<code>NOUN</code>, <code>PROPN</code>) и глагольных форм (<code>VERB</code>)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_participle_clauses</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество причастных оборотов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_passive</code>, <code>n_agentless_passive</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество пассивных форм и форм без агенса</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_infinitives</code>, <code>n_negations</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество инфинитивов и слов отрицания</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_split_predicates</code>, <code>split_predicates</code></td>
-<td style="text-align: center;">int, tuple[str]</td>
-<td style="text-align: center;">Количество расщепленных сказуемых и сами сказуемые - глагол и существительное</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_children</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Количество слов по числу зависимых слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_deps</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Количество слов по синтаксическим отношениям</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_dependency_distance</code>, <code>std_dependency_distance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина зависимости и ее стандартное отклонение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>max_dependency_distance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее наибольших длин зависимости предложений, в которых есть зависимости</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_adjacent_dependencies</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля зависимостей длины 1</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tree_depth</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя глубина дерева предложения</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>leaves_per_sent</code>, <code>subtrees_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Листьев и поддеревьев на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>nodes_per_leaf</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее по предложениям число слов на лист</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>verb_valency</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее число зависимых у финитного глагола</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>coordination_chains_per_sent</code>, <code>mean_coordination_chain_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Сочинительных цепочек на предложение и их средняя длина</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>clauses_per_sent</code>, <code>mean_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Клауз на предложение и их средняя длина в словах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>subordinate_clauses_per_sent</code>, <code>p_complex_sents</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Придаточных клауз на предложение и доля предложений с придаточной</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>modifiers_per_noun</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Среднее число модификаторов существительного (<code>count_noun_modifiers</code>)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>participle_clauses_per_sent</code>, <code>mean_participle_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Причастных оборотов на предложение и их средняя длина в словах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_passive</code>, <code>p_agentless_passive</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля пассивных форм среди глагольных форм и доля форм без агенса среди них</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>infinitives_per_sent</code>, <code>negations_per_sent</code>, <code>split_predicates_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Инфинитивов, слов отрицания и расщепленных сказуемых на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>noun_verb_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Отношение числа существительных к числу глагольных форм</td>
-</tr>
-</tbody>
-</table>
-<p>Доля, отношение или среднее, которым не на что делить, равны <code>nan</code>.</p>
-<p>Статистики конструкций ruTS:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>n_genitive_chains</code>, <code>n_converb_clauses</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество цепочек родительных падежей и деепричастных оборотов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>genitive_chains_per_sent</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Цепочек родительных падежей на предложение</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>max_genitive_chain_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Максимальная длина цепочки родительных падежей, 0 без цепочек</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>converb_clauses_per_sent</code>, <code>mean_converb_clause_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Деепричастных оборотов на предложение и их средняя длина в словах</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Каждую статистику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о синтаксических статистиках и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../syntax_stats_funcs/">разделе</a>.</p>
-</div>
-<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Возвращает справочник с вычисленными синтаксическими статистиками текста.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStats</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/syntax_stats.md:SyntaxStats 8e26f78 -->
+<p>Синтаксические статистики текста по его дереву зависимостей (<a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванов, Солнышкина и Соловьёв 2018</a>): показатели дерева и синтаксических конструкций. Источник данных - объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с разбором зависимостей. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - источник, который не <code>Doc</code>;</li>
+<li><code>SourceError</code> - источник без разбора зависимостей (отношений и границ предложений), без лемм, если класс их требует, или без слов.</li>
+</ul>
+<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем. Отношения и признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>; качество статистик ограничено качеством разбора: маленькая модель <code>ru_core_news_sm</code> ошибается в частях речи и связях заметно чаще, чем <code>ru_core_news_lg</code>. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>SYNTAX_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Иванов, Солнышкина и Соловьёв проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93. Карточки метрик называют исходные признаки работы и их коэффициенты корреляции с классом учебника.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
 
-<span class="c1"># Подготовка данных</span>
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."</span>
-
-<span class="c1"># Вычисление статистик</span>
 <span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'mean_dependency_distance'</span>:<span class="w"> </span><span class="m">1</span>.9333333333333333,
-<span class="s1">'std_dependency_distance'</span>:<span class="w"> </span><span class="m">1</span>.6110727964792764,
-<span class="s1">'max_dependency_distance'</span>:<span class="w"> </span><span class="m">5</span>.0,
-<span class="s1">'p_adjacent_dependencies'</span>:<span class="w"> </span><span class="m">0</span>.6,
-<span class="s1">'tree_depth'</span>:<span class="w"> </span><span class="m">4</span>.0,
-<span class="s1">'leaves_per_sent'</span>:<span class="w"> </span><span class="m">4</span>.5,
-<span class="s1">'subtrees_per_sent'</span>:<span class="w"> </span><span class="m">4</span>.0,
-<span class="s1">'nodes_per_leaf'</span>:<span class="w"> </span><span class="m">1</span>.9,
-<span class="s1">'verb_valency'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'coordination_chains_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_coordination_chain_len'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'clauses_per_sent'</span>:<span class="w"> </span><span class="m">1</span>.5,
-<span class="s1">'mean_clause_len'</span>:<span class="w"> </span><span class="m">5</span>.666666666666667,
-<span class="s1">'subordinate_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_complex_sents'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'modifiers_per_noun'</span>:<span class="w"> </span><span class="m">0</span>.4,
-<span class="s1">'genitive_chains_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'max_genitive_chain_len'</span>:<span class="w"> </span><span class="m">0</span>,
-<span class="s1">'participle_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_participle_clause_len'</span>:<span class="w"> </span><span class="m">5</span>.0,
-<span class="s1">'converb_clauses_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'mean_converb_clause_len'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.4,
-<span class="s1">'p_agentless_passive'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'infinitives_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'negations_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'split_predicates_per_sent'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'noun_verb_ratio'</span>:<span class="w"> </span><span class="m">1</span>.0<span class="o">}</span>
-</code></pre></div>
-</div>
-<p>Счетчики, распределения и слова предложений доступны как атрибуты:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
-<span class="c1"># (3, 5, 5)</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">c_children</span>
-<span class="c1"># {0: 9, 1: 2, 2: 5, 3: 1}</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
-<span class="c1"># {'ROOT': 2, 'acl': 1, 'advcl': 1, 'advmod': 1, 'amod': 1, 'aux:pass': 1, 'case': 1, 'cc': 1, 'ccomp': 1, 'conj': 1, 'iobj': 1, 'mark': 1, 'nsubj': 1, 'nsubj:pass': 1, 'obl': 1, 'obl:agent': 1}</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="c1"># (Дом, построенный, рабочими, в, прошлом, году, был, продан)</span>
-</code></pre></div>
-</div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
-<p>Выводит таблицу статистик из <code>stats_desc</code> с их описаниями под заголовками из <code>stats_headers</code>, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.</p>
-<p>Для иллюстрации работы метода воспользуемся кодом из примера <code>get_stats</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Отображение таблицы вычисленных статистик</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                   </span>Статистика<span class="w">                    </span><span class="p">|</span><span class="w"> </span>Значение
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                   Статистика                    | Значение
 ------------------------------------------------------------
-Средняя<span class="w"> </span>длина<span class="w"> </span>зависимости<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.93
-Стандартное<span class="w"> </span>отклонение<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.61
-Средний<span class="w"> </span>максимум<span class="w"> </span>длины<span class="w"> </span>зависимости<span class="w"> </span>в<span class="w"> </span>предложении<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Доля<span class="w"> </span>смежных<span class="w"> </span>связей<span class="w">                              </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.60
-Средняя<span class="w"> </span>глубина<span class="w"> </span>дерева<span class="w"> </span>зависимостей<span class="w"> </span>предложения<span class="w">  </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Листьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.50
-Поддеревьев<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.00
-Среднее<span class="w"> </span>число<span class="w"> </span>узлов<span class="w"> </span>на<span class="w"> </span>лист<span class="w"> </span>в<span class="w"> </span>предложении<span class="w">        </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.90
-Валентность<span class="w"> </span>финитных<span class="w"> </span>глаголов<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Сочинительных<span class="w"> </span>цепочек<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>сочинительной<span class="w"> </span>цепочки<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>клаузы<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.67
-Придаточных<span class="w"> </span>клауз<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                 </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>предложений<span class="w"> </span>с<span class="w"> </span>придаточными<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Модификаторов<span class="w"> </span>на<span class="w"> </span>именную<span class="w"> </span>группу<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Цепочек<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Максимальная<span class="w"> </span>длина<span class="w"> </span>цепочки<span class="w"> </span>родительных<span class="w"> </span>падежей<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>
-Причастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>причастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">5</span>.00
-Деепричастных<span class="w"> </span>оборотов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Средняя<span class="w"> </span>длина<span class="w"> </span>деепричастного<span class="w"> </span>оборота<span class="w"> </span><span class="o">(</span>слов<span class="o">)</span><span class="w">      </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Доля<span class="w"> </span>пассивных<span class="w"> </span>форм<span class="w"> </span>среди<span class="w"> </span>глаголов<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Доля<span class="w"> </span>безагентного<span class="w"> </span>пассива<span class="w">                        </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Инфинитивов<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отрицаний<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Расщеплённых<span class="w"> </span>сказуемых<span class="w"> </span>на<span class="w"> </span>предложение<span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Отношение<span class="w"> </span>существительных<span class="w"> </span>к<span class="w"> </span>глаголам<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
+Средняя длина зависимости                        |   1.93
+Стандартное отклонение длины зависимости         |   1.61
+Средний максимум длины зависимости в предложении |   5.00
+Доля смежных связей                              |   0.60
+Средняя глубина дерева зависимостей предложения  |   4.00
+Листьев на предложение                           |   4.50
+Поддеревьев на предложение                       |   4.00
+Среднее число узлов на лист в предложении        |   1.90
+Валентность финитных глаголов                    |   2.00
+Сочинительных цепочек на предложение             |   0.50
+Средняя длина сочинительной цепочки              |   2.00
+Клауз на предложение                             |   1.50
+Средняя длина клаузы (слов)                      |   5.67
+Придаточных клауз на предложение                 |   0.50
+Доля предложений с придаточными                  |   0.50
+Инфинитивных клауз при глаголе на предложение    |   0.00
+Модификаторов на именную группу                  |   0.40
+Цепочек родительных падежей на предложение       |   0.00
+Максимальная длина цепочки родительных падежей   |    0
+Причастных оборотов на предложение               |   0.50
+Средняя длина причастного оборота (слов)         |   5.00
+Деепричастных оборотов на предложение            |   0.50
+Средняя длина деепричастного оборота (слов)      |   2.00
+Доля пассивных форм среди глаголов               |   0.40
+Доля безагентного пассива                        |   0.50
+Инфинитивов на предложение                       |   0.00
+Отрицаний на предложение                         |   0.50
+Расщеплённых сказуемых на предложение            |   0.00
+Отношение существительных к глаголам             |   1.00
 </code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у синтаксических статистик нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных - объект <code>Doc</code> с разбором зависимостей</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes bde5658 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Атрибут</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sents</code></td>
+<td style="text-align: left;"><code>tuple[tuple[Token]]</code></td>
+<td style="text-align: left;">Слова каждого предложения, в котором есть слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество предложений со словами и количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_leaves</code>, <code>n_subtrees</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество слов без зависимых слов и с ними</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_coordination_chains</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество сочинительных цепочек</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_clauses</code>, <code>n_subordinate_clauses</code>, <code>n_complex_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество клауз, придаточных клауз и предложений с придаточной</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_infinitive_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество инфинитивных клауз при глаголе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_nouns</code>, <code>n_verbs</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество существительных (<code>NOUN</code>, <code>PROPN</code>) и глагольных форм (<code>VERB</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_participle_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество причастных оборотов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_passive</code>, <code>n_agentless_passive</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество пассивных форм и форм без агенса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_infinitives</code>, <code>n_negations</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество инфинитивов и слов отрицания</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_split_predicates</code>, <code>split_predicates</code></td>
+<td style="text-align: left;"><code>int</code>, <code>tuple[str]</code></td>
+<td style="text-align: left;">Количество расщепленных сказуемых и сами сказуемые - глагол и существительное</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c_children</code></td>
+<td style="text-align: left;"><code>dict[int, int]</code></td>
+<td style="text-align: left;">Количество слов по числу зависимых слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c_deps</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Количество слов по синтаксическим отношениям</td>
+</tr>
+</tbody>
+</table>
+<p>Атрибуты конструкций ruTS - <code>n_genitive_chains</code> и <code>n_converb_clauses</code> (<code>int</code>): количество цепочек родительных падежей и деепричастных оборотов.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">c_children</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(3, 5, 5)
+{0: 9, 1: 2, 2: 5, 3: 1}
+{'ROOT': 2,
+ 'acl': 1,
+ 'advcl': 1,
+ 'advmod': 1,
+ 'amod': 1,
+ 'aux:pass': 1,
+ 'case': 1,
+ 'cc': 1,
+ 'ccomp': 1,
+ 'conj': 1,
+ 'iobj': 1,
+ 'mark': 1,
+ 'nsubj': 1,
+ 'nsubj:pass': 1,
+ 'obl': 1,
+ 'obl:agent': 1}
+(Дом, построенный, рабочими, в, прошлом, году, был, продан)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:SyntaxStats-metrics ccce8f7 -->
+<p>Каждая метрика - атрибут объекта, который вычисляется при его создании, а <code>get_stats</code> дает их все. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Метрика</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#dependency_distances"><code>mean_dependency_distance</code></a></td>
+<td style="text-align: left;">Среднее расстояние между словом и его вершиной</td>
+<td style="text-align: left;">от 1, <code>nan</code> без зависимостей</td>
+<td style="text-align: left;">труднее восприятие</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dependency_distances"><code>std_dependency_distance</code></a></td>
+<td style="text-align: left;">Стандартное отклонение длины зависимости</td>
+<td style="text-align: left;">от 0, <code>nan</code> без зависимостей</td>
+<td style="text-align: left;">неравномернее длины</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dependency_distances"><code>max_dependency_distance</code></a></td>
+<td style="text-align: left;">Среднее наибольших длин зависимости предложений, в которых есть зависимости</td>
+<td style="text-align: left;">от 1, <code>nan</code> без зависимостей</td>
+<td style="text-align: left;">длиннее самые длинные зависимости</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dependency_distances"><code>p_adjacent_dependencies</code></a></td>
+<td style="text-align: left;">Доля зависимостей длины 1</td>
+<td style="text-align: left;">0-1, <code>nan</code> без зависимостей</td>
+<td style="text-align: left;">больше связей между соседями</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#tree_depth"><code>tree_depth</code></a></td>
+<td style="text-align: left;">Средняя глубина дерева предложения</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">глубже вложенность</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>leaves_per_sent</code></a></td>
+<td style="text-align: left;">Листьев на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">длиннее или площе предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>subtrees_per_sent</code></a></td>
+<td style="text-align: left;">Поддеревьев на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше групп в предложении</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#leaves"><code>nodes_per_leaf</code></a></td>
+<td style="text-align: left;">Среднее по предложениям число слов на лист</td>
+<td style="text-align: left;">от 1, <code>nan</code> для предложения без листьев</td>
+<td style="text-align: left;">длиннее ветви</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#valency"><code>verb_valency</code></a></td>
+<td style="text-align: left;">Среднее число зависимых у финитного глагола</td>
+<td style="text-align: left;">от 0, <code>nan</code> без финитных глаголов</td>
+<td style="text-align: left;">больше зависимых у глагола</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#coordination_chains"><code>coordination_chains_per_sent</code></a></td>
+<td style="text-align: left;">Сочинительных цепочек на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше сочинения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#coordination_chains"><code>mean_coordination_chain_len</code></a></td>
+<td style="text-align: left;">Средняя длина сочинительной цепочки в словах</td>
+<td style="text-align: left;">от 2, <code>nan</code> без цепочек</td>
+<td style="text-align: left;">длиннее перечисления</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clauses"><code>clauses_per_sent</code></a></td>
+<td style="text-align: left;">Клауз на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше клауз в предложении</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clauses"><code>mean_clause_len</code></a></td>
+<td style="text-align: left;">Средняя длина клаузы в словах</td>
+<td style="text-align: left;">от 1, <code>nan</code> без клауз</td>
+<td style="text-align: left;">длиннее клаузы</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#subordinate_clauses"><code>subordinate_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Придаточных клауз на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше подчинения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#subordinate_clauses"><code>p_complex_sents</code></a></td>
+<td style="text-align: left;">Доля предложений с придаточной клаузой</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">больше сложных предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#infinitive_clauses"><code>infinitive_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Инфинитивных клауз при глаголе на предложение (<em>хочет уйти</em>), которые не придаточные</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше инфинитивных дополнений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#noun_modifiers"><code>modifiers_per_noun</code></a></td>
+<td style="text-align: left;">Среднее число модификаторов существительного</td>
+<td style="text-align: left;">от 0, <code>nan</code> без существительных</td>
+<td style="text-align: left;">тяжелее именные группы</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#participle_clauses"><code>participle_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Причастных оборотов на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше причастных оборотов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#participle_clauses"><code>mean_participle_clause_len</code></a></td>
+<td style="text-align: left;">Средняя длина причастного оборота в словах</td>
+<td style="text-align: left;">от 1, <code>nan</code> без причастных оборотов</td>
+<td style="text-align: left;">длиннее причастные обороты</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#passive"><code>p_passive</code></a></td>
+<td style="text-align: left;">Доля пассивных форм среди глагольных форм</td>
+<td style="text-align: left;">0-1, <code>nan</code> без глагольных форм</td>
+<td style="text-align: left;">больше пассива</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#passive"><code>p_agentless_passive</code></a></td>
+<td style="text-align: left;">Доля форм без агенса среди пассивных</td>
+<td style="text-align: left;">0-1, <code>nan</code> без пассивных форм</td>
+<td style="text-align: left;">больше пассива без агенса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>infinitives_per_sent</code></a></td>
+<td style="text-align: left;">Инфинитивов на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше инфинитивов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>negations_per_sent</code></a></td>
+<td style="text-align: left;">Слов отрицания на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше отрицания</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#constructions"><code>split_predicates_per_sent</code></a></td>
+<td style="text-align: left;">Расщепленных сказуемых на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше расщепленных сказуемых</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#noun_verb_ratio"><code>noun_verb_ratio</code></a></td>
+<td style="text-align: left;">Отношение существительных к глагольным формам</td>
+<td style="text-align: left;">от 0, <code>nan</code> без глагольных форм</td>
+<td style="text-align: left;">номинативнее стиль</td>
+</tr>
+</tbody>
+</table>
+<p>Метрики конструкций ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Метрика</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#genitive_chains"><code>genitive_chains_per_sent</code></a></td>
+<td style="text-align: left;">Цепочек родительных падежей на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше цепочек</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#genitive_chains"><code>max_genitive_chain_len</code></a></td>
+<td style="text-align: left;">Наибольшая длина цепочки родительных падежей в тексте</td>
+<td style="text-align: left;">0 без цепочек, иначе от 2</td>
+<td style="text-align: left;">длиннее цепочка</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#converb_clauses"><code>converb_clauses_per_sent</code></a></td>
+<td style="text-align: left;">Деепричастных оборотов на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше деепричастных оборотов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#converb_clauses"><code>mean_converb_clause_len</code></a></td>
+<td style="text-align: left;">Средняя длина деепричастного оборота в словах</td>
+<td style="text-align: left;">от 2, <code>nan</code> без деепричастных оборотов</td>
+<td style="text-align: left;">длиннее деепричастные обороты</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="dependency_distances">Длина зависимости<a class="headerlink" href="#dependency_distances" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>mean_dependency_distance</code> · <code>std_dependency_distance</code> · <code>max_dependency_distance</code> · <code>p_adjacent_dependencies</code></p>
+<!-- core: stats/syntax_stats.md:calc_dependency_distances ccf4d91 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Длины зависимостей (Liu 2008): расстояние между словом и его вершиной в позициях слов без учета знаков препинания, в порядке слов. Вершина предложения и слово, вершина которого лежит вне последовательности, пропускаются.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одной позицией</td>
+</tr>
+</tbody>
+</table>
+<p>Средняя длина зависимости растет с длиной предложения, а наибольшая - лучший из древесных признаков на уровне отдельного предложения. Предложения из одного слова в метрики длин не входят.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_dependency_distances</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[5, 1, 1, 1, 1, 1, 2]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="tree_depth">Глубина дерева<a class="headerlink" href="#tree_depth" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>tree_depth</code></p>
+<!-- core: stats/syntax_stats.md:calc_tree_depth 8fdd05e -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_tree_depth</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Глубина дерева зависимостей: самый длинный путь от вершины предложения до листа в связях между словами; для нескольких предложений - максимум, для предложения из одного слова - 0. С <code>join_hyphens</code> дефисное слово - одно слово, а слова, которые висят на любой из его частей, - на уровень ниже него.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<p>Глубина - признак <code>LONGEST_PATH</code> работы Иванова и др. (r = 0.84).</p>
+</div>
+<div class="metric-card">
+<h3 id="leaves">Листья и поддеревья<a class="headerlink" href="#leaves" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>leaves_per_sent</code> · <code>subtrees_per_sent</code> · <code>nodes_per_leaf</code></p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-leaves 0162a04 -->
+<p>Лист - слово без зависимых слов (<code>count_children</code>), поддерево - слово с ними. Число узлов на лист - количество слов предложения, деленное на количество его листьев, в среднем по <span class="arithmatex">\(S\)</span> предложениям.</p>
+<div class="arithmatex">\[
+\frac{1}{S} \sum_{s=1}^{S} \frac{\textrm{Количество слов } s}{\textrm{Количество листьев } s}
+\]</div>
+<p>Признаки работы: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) и <code>AVERAGE_PATH</code> (r = 0.84). Распределение слов по числу зависимых - профиль ветвления - дает атрибут <code>c_children</code>.</p>
+</div>
+<div class="metric-card">
+<h3 id="valency">Валентность финитных глаголов<a class="headerlink" href="#valency" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>verb_valency</code></p>
+<!-- core: stats/syntax_stats.md:calc_valency 4a77742 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_valency</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Валентность токена: число его зависимых слов без связей <code>cc</code>, <code>conj</code>, <code>parataxis</code> и <code>punct</code> (<code>anyts.constants.VALENCY_IGNORED_DEPS</code>); с <code>join_hyphens=True</code> дефисное зависимое считается один раз, поэтому у <code>пришел</code> в <code>Кто-то пришел</code> одно зависимое, а не два.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<p>Финитный глагол - <a href="#is_finite_verb"><code>is_finite_verb</code></a>; валентность - признак <code>VERBS_DEP</code> работы (r = 0.43).</p>
+</div>
+<div class="metric-card">
+<h3 id="coordination_chains">Сочинительные цепочки<a class="headerlink" href="#coordination_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>coordination_chains_per_sent</code> · <code>mean_coordination_chain_len</code></p>
+<!-- core: stats/syntax_stats.md:calc_coordination_chains 1f94356 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_coordination_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Длины сочинительных цепочек в порядке их первых слов. Цепочка - группа слов, связанных <code>conj</code>, к какому бы слову ни присоединялся каждый однородный член: Universal Dependencies вешает каждый однородный член на первый (<code>груши → яблоки</code>, <code>сливы → яблоки</code>), ClearNLP - на предыдущий (<code>груши → яблоки</code>, <code>сливы → груши</code>); в обоих случаях <code>яблоки, груши и сливы</code> - одна цепочка из трех слов. Вложенное сочинение (<code>кошки и собаки, или птицы</code>) и перечисление, разбитое между несколькими вершинами, - тоже одна цепочка. Длина цепочки - число ее слов; однородный член, вершина которого лежит вне последовательности, с ней не связывается. С <code>join_hyphens</code> дефисное слово - один однородный член, связанный отношением <code>conj</code> любой своей части (<code>членом совета и вице-губернатором</code> - цепочка из двух слов).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<p>Число цепочек на предложение (<code>SOCHIN_NUMBER</code>, r = 0.93) и их средняя длина (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) - сильнейшие синтаксические предикторы сложности учебника.</p>
+</div>
+<div class="metric-card">
+<h3 id="clauses">Клаузы<a class="headerlink" href="#clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>clauses_per_sent</code> · <code>mean_clause_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли слово клаузу: вершина предложения или слово со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> и их подтипами (<code>anyts.constants.CLAUSE_DEPS</code>), кроме полных причастий, деепричастий и инфинитивов при существительном («желание уйти»): причастные и деепричастные обороты считаются отдельно, а краткое причастие («дом построен») - сказуемое своей клаузы. Со связью <code>xcomp</code> клаузу возглавляет только инфинитив <code>is_infinitive_clause</code>: личная форма со связью <code>xcomp</code> у русских моделей - ошибка разбора. Инфинитив-подлежащее (<code>csubj</code>) модального слова («нужно уйти», «можно войти», «следует отметить») своей клаузы не образует. Вставная конструкция (<code>parataxis</code>) и однородное сказуемое (связь <code>conj</code> от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» и «думала, что он умен» - клаузы, а вводные слова «например», «конечно», «во-первых», на которые модели spaCy тоже вешают <code>parataxis</code>, - нет.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли инфинитив со связью <code>xcomp</code> свою клаузу («хочет уйти», «попросил его уйти»): не возглавляет, если образует одну предикацию со своей вершиной (<code>is_infinitive_periphrasis</code>) или стоит в обороте («решивший уйти», «желая уйти»).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти») или побудительным «давай», «давайте» из <code>HORTATIVE_WORDS</code> без отрицания («давайте играть», но не «не давайте детям играть»).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="subordinate_clauses">Придаточные клаузы<a class="headerlink" href="#subordinate_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (<code>is_clause_head</code>) со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> и их подтипами, а также однородное сказуемое придаточной клаузы.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<p>Признаки работы: <code>PODCHIN_RATE</code> (r = 0.64) - придаточные клаузы на предложение, <code>PODCHIN_NUMBER</code> (r = 0.62) - доля предложений хотя бы с одной придаточной.</p>
+</div>
+<div class="metric-card">
+<h3 id="infinitive_clauses">Инфинитивные клаузы<a class="headerlink" href="#infinitive_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли слово инфинитивную клаузу при глаголе: инфинитив со связью <code>xcomp</code>, который образует свою клаузу (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), а также однородный ему инфинитив. Такая клауза считается отдельно от придаточных, так как грамматики многих языков считают ее частью простого предложения.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_clause_head</span><span class="p">,</span> <span class="n">is_infinitive_clause_head</span><span class="p">,</span> <span class="n">is_subordinate_clause_head</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Он хочет уйти, но может остаться, если его попросят."</span><span class="p">)</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['хочет', 'уйти', 'может', 'попросят']
+['попросят']
+['уйти']
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="noun_modifiers">Модификаторы существительного<a class="headerlink" href="#noun_modifiers" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>modifiers_per_noun</code></p>
+<!-- core: stats/syntax_stats.md:count_noun_modifiers 6775fc1 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">count_noun_modifiers</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Считает модификаторы именной группы: зависимые со связями <code>amod</code>, <code>det</code>, <code>nmod</code>, <code>nummod</code>, <code>acl</code> и их подтипами (<code>anyts.constants.NOUN_MODIFIER_DEPS</code>); <code>conj</code> и <code>appos</code> модификаторами не являются.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<p>Число модификаторов - признак <code>NOUNS_DEP</code> работы (r = 0.88).</p>
+</div>
+<div class="metric-card">
+<h3 id="genitive_chains">Цепочки родительных падежей<a class="headerlink" href="#genitive_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>genitive_chains_per_sent</code> · <code>max_genitive_chain_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_genitive_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<p>Длины цепочек родительных падежей в порядке слов - цепочек <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a>, модификаторы которых - беспредложные определения в родительном падеже: «повышение эффективности использования ресурсов» - цепочка длины 3.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_genitive_modifier</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово беспредложным определением в родительном падеже: слово со связью <code>nmod</code> в родительном падеже без зависимого предлога (<code>case</code>) - «дом отца», но не «дом у дороги».</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов (<code>calc_genitive_chains</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен (<code>is_genitive_modifier</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_genitive_chains</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">calc_genitive_chains</span><span class="p">(</span>
+    <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[4]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="participle_clauses">Причастные обороты<a class="headerlink" href="#participle_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>participle_clauses_per_sent</code> · <code>mean_participle_clause_len</code></p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-participle_clauses 098c370 -->
+<p>Обороты, которые возглавляют слова крючка <code>is_participle_clause</code>; длина оборота - число слов в поддереве его вершины (<code>subtree_len</code>).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_participle_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли слово причастный оборот: полное причастие (<a href="#is_finite_verb"><code>is_participle</code></a>) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Краткие причастия («дом построен») - сказуемые, а не определения, и оборотов не образуют. Признаки работы - <code>PRICH_RATE</code> (r = 0.91) и <code>PRICH_V</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="converb_clauses">Деепричастные обороты<a class="headerlink" href="#converb_clauses" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>converb_clauses_per_sent</code> · <code>mean_converb_clause_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_converb_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, возглавляет ли слово деепричастный оборот: деепричастие (<a href="#is_finite_verb"><code>is_converb</code></a>) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Длина оборота - число слов в поддереве деепричастия (<code>subtree_len</code>). Признаки работы - <code>DEEPRICH_RATE</code> (r = 0.44) и <code>DEEPRICH_V</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="passive">Пассив<a class="headerlink" href="#passive" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_passive</code> · <code>p_agentless_passive</code></p>
+<!-- core: stats/syntax_stats.md:is_passive eac7970 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_passive</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово пассивной глагольной формой: глаголом с <code>Voice=Pass</code> или с зависимым <code>nsubj:pass</code>, <code>csubj:pass</code>, <code>aux:pass</code> либо <code>nsubjpass</code>, <code>csubjpass</code>, <code>auxpass</code> ClearNLP (<code>PASSIVE_DEPS</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<!-- core: stats/syntax_stats.md:has_agent 7563aef -->
+<div class="signature highlight"><pre><span></span><code><span class="n">has_agent</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, есть ли у слова агенс: зависимое <code>obl:agent</code> или <code>agent</code> ClearNLP (<code>AGENT_DEPS</code>). Аргументы - те же, что у <code>is_passive</code>.</p>
+<!-- core: stats/syntax_stats.md:is_agentless 58b56c5 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_agentless</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово пассивной формой (<code>is_passive</code>) без агенса (<code>has_agent</code>), с теми же аргументами.</p>
+<p>В русском языке пассив - страдательные причастия и возвратный пассив («обсуждалось»), форма без агенса - «дом построен», но не «дом построен рабочими».</p>
+</div>
+<div class="metric-card">
+<h3 id="constructions">Инфинитивы, отрицания и расщепленные сказуемые<a class="headerlink" href="#constructions" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>infinitives_per_sent</code> · <code>negations_per_sent</code> · <code>split_predicates_per_sent</code></p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-constructions 4d8a10f -->
+<p>Инфинитивы (<code>is_infinitive</code> из <code>anyts.utils</code>), слова отрицания крючка <code>is_negation</code> и расщепленные сказуемые крючка <code>find_split_predicates</code> на предложение.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово отрицательной частицей - частицей (<code>PART</code>) с признаком <code>Polarity=Neg</code> или частицей «не», «ни» (<code>NEGATION_PARTICLES</code>); союз «ни» в конструкции «ни… ни» отрицанием не считается. Отрицания - признак <code>NEG</code> работы (r = 0.70).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">find_split_predicates</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_light_verb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_reflexive</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_split_predicate_noun</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">verb</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Расщепленные сказуемые - маркер канцелярита - пары глагола и существительного в порядке слов: легкий глагол (<code>is_light_verb</code>) с леммой из <code>LIGHT_VERBS</code> (например: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь и их возвратный пассив проводиться, приниматься, вестись) с именной частью (<code>is_split_predicate_noun</code>) - существительным с отглагольной леммой (<code>ruts.utils.is_verbal_noun</code>) или леммой из <code>SPLIT_PREDICATE_NOUNS</code> (например: роль, работа, помощь, мера) при глаголе своего оборота <code>verb</code> (оказать помощь, принять меры, но не получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. У глагола берется не больше одной именной части в порядке предпочтения <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (только у возвратного или пассивного глагола, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; предложные обстоятельства и агенс пассива (<code>obl:agent</code>, творительный <code>obl</code>) не учитываются. Лемма глагола берется из разбора pymorphy3 дважды: с частью речи токена (<a href="#helpers"><code>get_lemma</code></a>) и как глагола (<code>ruts.utils.lemmatize</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов (<code>find_split_predicates</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>verb</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Легкий глагол (<code>is_split_predicate_noun</code>); без него оборот не проверяется</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_split_predicates</span><span class="p">,</span> <span class="n">is_negation</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Проверка проводится ежегодно, но решение не принято."</span><span class="p">)</span>
+<span class="n">find_split_predicates</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[(проводится, Проверка), (принято, решение)]
+['не']
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="noun_verb_ratio">Отношение существительных к глаголам<a class="headerlink" href="#noun_verb_ratio" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_verb_ratio</code></p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-noun_verb_ratio e8f2957 -->
+<p>Количество существительных <code>n_nouns</code>, деленное на количество глагольных форм <code>n_verbs</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество существительных}}{\textrm{Количество глагольных форм}}
+\]</div>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у синтаксических статистик нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'mean_dependency_distance': 1.9333333333333333,
+ 'std_dependency_distance': 1.6110727964792764,
+ 'max_dependency_distance': 5.0,
+ 'p_adjacent_dependencies': 0.6,
+ 'tree_depth': 4.0,
+ 'leaves_per_sent': 4.5,
+ 'subtrees_per_sent': 4.0,
+ 'nodes_per_leaf': 1.9,
+ 'verb_valency': 2.0,
+ 'coordination_chains_per_sent': 0.5,
+ 'mean_coordination_chain_len': 2.0,
+ 'clauses_per_sent': 1.5,
+ 'mean_clause_len': 5.666666666666667,
+ 'subordinate_clauses_per_sent': 0.5,
+ 'p_complex_sents': 0.5,
+ 'infinitive_clauses_per_sent': 0.0,
+ 'modifiers_per_noun': 0.4,
+ 'genitive_chains_per_sent': 0.0,
+ 'max_genitive_chain_len': 0,
+ 'participle_clauses_per_sent': 0.5,
+ 'mean_participle_clause_len': 5.0,
+ 'converb_clauses_per_sent': 0.5,
+ 'mean_converb_clause_len': 2.0,
+ 'p_passive': 0.4,
+ 'p_agentless_passive': 0.5,
+ 'infinitives_per_sent': 0.0,
+ 'negations_per_sent': 0.5,
+ 'split_predicates_per_sent': 0.0,
+ 'noun_verb_ratio': 1.0}
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Функции работают с токенами spaCy: функции <code>calc_*</code> и <code>find_*</code> принимают последовательность токенов (<code>Doc</code>, <code>Span</code> или список), функции <code>is_*</code> и <code>count_*</code> - отдельный токен; слова последовательности - токены <a href="#helpers"><code>is_word</code></a>. Функции дерева зависимостей взяты из ядра, функции русских конструкций - собственные функции ruTS. Подтипы отношений (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) учитываются по базовому отношению (<a href="#base_dep"><code>base_dep</code></a>) там, где это указано.</p>
+<h2 id="get_words">Слова последовательности<a class="headerlink" href="#get_words" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:get_words fb9eece -->
+<div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Слова последовательности токенов в их порядке; с <code>join_hyphens=True</code> слово, разрезанное токенизатором по дефисам, - одно слово, представленное частью, которая держит его связь, как у зависимых <code>get_children</code> (<code>губернатор</code> в <code>Он вице-губернатор</code>), или первой частью, если связь держит дефис.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hyphenated-words">Дефисные слова<a class="headerlink" href="#hyphenated-words" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:hyphenated_words 2598bfe -->
+<p>Токенизатор может разрезать слово по дефисам (<code>во-первых</code> на <code>во</code>, <code>-</code>, <code>первых</code>), и тогда парсер вешает каждую часть на свою вершину. С <code>join_hyphens=True</code> функции дерева считают одним словом вместе с дефисами слово, части которого склеивает <code>anyts.utils.joins_previous</code>. У слова, которое держит вершину предложения, вершины нет; вершина другого слова - вершина его части, которая висит вне слова и ближе всех к корню (при равенстве - слова, а не дефиса). Зависимые слова - слова, чья часть, висящая вне слова, висит на одном из его токенов; каждое представлено этой частью (или своей первой частью, если наружу висит дефис). Поддерево слова - само слово и слова, которые висят на нем прямо или через знаки препинания. Так у каждого слова одна зависимость, и зависит оно от одного слова.</p>
+<p><code>SyntaxStats</code> и функции русских конструкций всегда склеивают дефисные слова. Функции ядра, в том числе <code>is_predicate</code>, <code>count_noun_modifiers</code>, <code>is_passive</code>, <code>has_agent</code> и <code>is_agentless</code>, по умолчанию принимают <code>join_hyphens=False</code>: значения <code>SyntaxStats</code> они дают с <code>join_hyphens=True</code>.</p>
+<h2 id="is_root">Вершина предложения<a class="headerlink" href="#is_root" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:is_root bffd90b -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли токен вершиной своего предложения: его вершина - он сам.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<h2 id="base_dep">Базовое отношение<a class="headerlink" href="#base_dep" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:base_dep 66fdc26 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">base_dep</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Отношение токена без подтипа, который Universal Dependencies отделяет двоеточием: <code>nsubj:pass</code> дает <code>nsubj</code>, <code>expl:pass</code> - <code>expl</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<h2 id="get_children">Зависимые слова<a class="headerlink" href="#get_children" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:get_children 2fc8508 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">get_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Зависимые слова токена без знаков препинания и пробелов; с <code>join_hyphens=True</code> - зависимые всего дефисного слова, к которому относится токен.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<!-- core: stats/syntax_stats.md:count_children 0178b39 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">count_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Количество зависимых слов токена; аргументы - те же, что у <code>get_children</code>.</p>
+<!-- core: stats/syntax_stats.md:subtree_len bfb372e -->
+<div class="signature highlight"><pre><span></span><code><span class="n">subtree_len</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Количество слов в поддереве токена: сам токен и все его прямые и косвенные зависимые; аргументы - те же, что у <code>get_children</code>.</p>
+<h2 id="is_finite_verb">Формы глагола<a class="headerlink" href="#is_finite_verb" title="Permanent link">&para;</a></h2>
+<!-- core: utils/spacy.md:is_finite_verb b2c6b58 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_finite_verb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли токен финитным глаголом: часть речи <code>VERB</code> с <code>VerbForm=Fin</code>, поэтому финитный вспомогательный глагол (<code>AUX</code>) им не является.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<!-- core: utils/spacy.md:is_infinitive 6d44bde -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли токен инфинитивом: <code>VerbForm=Inf</code> при любой части речи.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_participle</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_converb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p><code>is_participle</code> проверяет, является ли токен полным причастием (<code>VerbForm=Part</code> без <code>Variant=Short</code> и <code>StyleVariant=Short</code>), <code>is_converb</code> - деепричастием (<code>VerbForm=Conv</code>); аргумент - тот же токен.</p>
+<h2 id="is_predicate">Сказуемое клаузы<a class="headerlink" href="#is_predicate" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:is_predicate 1c57281 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_predicate</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, может ли слово быть сказуемым своей клаузы: глагол (<code>VERB</code>, <code>AUX</code>) или слово с собственным подлежащим (<code>nsubj</code>, <code>csubj</code> и их подтипы, <code>anyts.constants.SUBJECT_DEPS</code>), поэтому именное сказуемое в <code>он высок</code> проходит, а вводное слово - нет.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<h2 id="calc_modifier_chains">Цепочки модификаторов<a class="headerlink" href="#calc_modifier_chains" title="Permanent link">&para;</a></h2>
+<!-- core: stats/syntax_stats.md:calc_modifier_chains f16f96d -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_modifier_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">is_modifier</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Длины цепочек вложенных модификаторов в порядке слов. Цепочка - два и более модификатора, каждый из которых висит на предыдущем, как дополнения в <code>повышение эффективности использования ресурсов</code> (длина 3); что считать модификатором (дополнение с предлогом, существительное в родительном падеже), решает проверка языка <code>is_modifier</code>. Цепочка начинается с модификатора, вершина которого модификатором не является, а ее длина - число модификаторов в самой длинной ветви. Связи - те же, что у <code>get_children</code>: знак препинания связью не является, а с <code>join_hyphens</code> дефисное слово - одно звено.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>is_modifier</code></td>
+<td style="text-align: left;"><code>Callable[[Token], bool]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Является ли слово модификатором цепочки</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>join_hyphens</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Считать дефисное слово одним словом</td>
+</tr>
+</tbody>
+</table>
+<p>Проверка, которую нельзя вызвать, дает <code>SourceTypeError</code>.</p>
+<h2 id="helpers">Вспомогательные функции<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h2>
+<!-- core: utils/spacy.md:is_word 70a9990 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">is_word</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли токен словом: не пробелом и не токеном <code>is_punctuation</code>, поэтому символы вроде <code>%</code>, <code>€</code>, <code>+</code> и невидимые знаки тоже не слова. Такие токены - слова <code>iter_doc_tokens</code> и узлы дерева зависимостей синтаксических статистик.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<!-- core: utils/spacy.md:has_feature df7b055 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">has_feature</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, есть ли у токена морфологический признак с заданным значением: <code>has_feature(token, "VerbForm", "Fin")</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>field</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Название признака</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значение признака</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_lemma</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Лемма токена в нижнем регистре по разбору pymorphy3 с частью речи токена (<code>ruts.utils.lemmatize</code>), а не <code>token.lemma_</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3300,6 +4009,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3368,7 +4083,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

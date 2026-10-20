@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/stats/phon_stats/">
       
       
-        <link rel="prev" href="../style_stats_funcs/">
+        <link rel="prev" href="../style_stats/">
       
       
-        <link rel="next" href="../phon_stats_funcs/">
+        <link rel="next" href="../syntax_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Statistics module - RuTS</title>
+        <title>Phonostatistics - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Statistics module
+              Phonostatistics
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1208,94 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1320,7 +1040,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1338,7 +1058,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1364,28 +1084,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1408,22 +1106,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#sound_shares" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Shares of the classes of the sounds
       
     </span>
   </a>
@@ -1431,10 +1129,76 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#consonant_vowel_ratio" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Ratio of the consonants to the vowels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consonant_clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consonant clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hiatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hiatuses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cv_entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entropy of the CV patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repetition_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alliteration and assonance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syllables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syllables
       
     </span>
   </a>
@@ -1443,6 +1207,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1462,92 +1237,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../syntax_stats/" class="md-nav__link">
         
   
@@ -1555,7 +1244,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1568,92 +1257,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1669,7 +1272,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1682,92 +1285,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1783,7 +1300,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1796,92 +1313,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1897,7 +1328,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1906,42 +1337,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2825,28 +2220,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2869,22 +2242,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Metrics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Metrics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#sound_shares" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Shares of the classes of the sounds
       
     </span>
   </a>
@@ -2892,10 +2265,76 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#consonant_vowel_ratio" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Ratio of the consonants to the vowels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consonant_clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consonant clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hiatus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hiatuses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cv_entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entropy of the CV patterns
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hardness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repetition_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alliteration and assonance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syllables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Syllables
       
     </span>
   </a>
@@ -2904,6 +2343,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2928,251 +2378,533 @@
 
 
 <h1 id="phonostatistics">Phonostatistics<a class="headerlink" href="#phonostatistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.phon_stats.PhonStats</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The phonetic statistics of a text: the shares of the vowels, the sonorants and the voiced and voiceless obstruents, the ratio of the consonants to the vowels, the consonant clusters, the hiatuses, the entropy of the CV patterns of the words, the hardness, the alliteration and the assonance, the open syllables and the mean length of a syllable. A sound is a letter of a word by default, or a sound of its transcription when a library gives one. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>; the words are taken in lower case, and an extractor passed explicitly is used on the text of a <code>Doc</code>.</p>
-<p>A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, a source without words <code>SourceError</code>, a window that is not an integer of at least 2 <code>ParameterError</code>.</p>
-<p>The computation time grows linearly with text length.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>PhonStats</code> object is initialized.</p>
-</div>
-<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress; the iotated е, ё, ю, я after a vowel make no hiatus, and a word is divided into syllables by the rising sonority rule (Avanesov) of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table has Russian headers and the Russian descriptions of <code>ruts.constants.PHON_STATS_DESC</code>, and the messages of the errors are in Russian, <code>ruts.constants.CORE_MESSAGES</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">PhonStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p>The phonetic statistics of a text: its sounds by class, their clusters, sequences and repetitions, and its syllables. A sound is a letter of a word by default, or a sound of its transcription when a library gives one. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>; the words are taken in lower case, and an extractor passed explicitly is used on the text of a <code>Doc</code>.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceError</code> - a source without words;</li>
+<li><code>ParameterError</code> - a window that is not an integer of at least 2.</li>
+</ul>
+<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress; the iotated е, ё, ю, я after a vowel make no hiatus, and a word is divided into syllables by the rising sonority rule (Avanesov) of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>PHON_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>). The computation time grows linearly with the length of the text.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Class</th>
-<th style="text-align: center;">Letters</th>
-<th style="text-align: center;">Constant</th>
+<th style="text-align: left;">Class</th>
+<th style="text-align: left;">Letters</th>
+<th style="text-align: left;">Constant</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">Vowels</td>
-<td style="text-align: center;">а, е, и, о, у, ы, э, ю, я, ё</td>
-<td style="text-align: center;"><code>RU_VOWELS</code></td>
+<td style="text-align: left;">Vowels</td>
+<td style="text-align: left;">а, е, и, о, у, ы, э, ю, я, ё</td>
+<td style="text-align: left;"><code>RU_VOWELS</code></td>
 </tr>
 <tr>
-<td style="text-align: center;">Sonorant consonants</td>
-<td style="text-align: center;">л, м, н, р, й</td>
-<td style="text-align: center;"><code>RU_CONSONANTS_SONOR</code>, <code>RU_CONSONANTS_YET</code></td>
+<td style="text-align: left;">Sonorant consonants</td>
+<td style="text-align: left;">л, м, н, р, й</td>
+<td style="text-align: left;"><code>RU_CONSONANTS_SONOR</code>, <code>RU_CONSONANTS_YET</code></td>
 </tr>
 <tr>
-<td style="text-align: center;">Voiced obstruents</td>
-<td style="text-align: center;">б, в, г, д, ж, з</td>
-<td style="text-align: center;"><code>RU_CONSONANTS_HIGH</code></td>
+<td style="text-align: left;">Voiced obstruents</td>
+<td style="text-align: left;">б, в, г, д, ж, з</td>
+<td style="text-align: left;"><code>RU_CONSONANTS_HIGH</code></td>
 </tr>
 <tr>
-<td style="text-align: center;">Voiceless obstruents</td>
-<td style="text-align: center;">к, п, с, т, ф, х, ц, ч, ш, щ</td>
-<td style="text-align: center;"><code>RU_CONSONANTS_LOW</code></td>
+<td style="text-align: left;">Voiceless obstruents</td>
+<td style="text-align: left;">к, п, с, т, ф, х, ц, ч, ш, щ</td>
+<td style="text-align: left;"><code>RU_CONSONANTS_LOW</code></td>
 </tr>
 <tr>
-<td style="text-align: center;">Signs</td>
-<td style="text-align: center;">ь, ъ - not sounds: not counted in the shares and do not break a consonant cluster</td>
-<td style="text-align: center;"><code>RU_MARKS</code></td>
+<td style="text-align: left;">Signs</td>
+<td style="text-align: left;">ь, ъ - no sounds: not counted in the shares and do not break a consonant cluster</td>
+<td style="text-align: left;"><code>RU_MARKS</code></td>
 </tr>
 </tbody>
 </table>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhonStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">ps</span> <span class="o">=</span> <span class="n">PhonStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>              Статистика              | Значение
+-------------------------------------------------
+Доля гласных                          |   0.40
+Доля сонорных согласных               |   0.11
+Доля звонких шумных согласных         |   0.19
+Доля глухих шумных согласных          |   0.29
+Отношение согласных к гласным         |   1.48
+Доля кластеров из 3 и более согласных |   0.03
+Зияний гласных на слово               |   0.00
+Энтропия CV-шаблонов слов (бит)       |   3.14
+Жёсткость                             |   0.56
+Индекс аллитерации                    |   1.09
+Индекс ассонанса                      |   0.83
+Доля открытых слогов                  |   0.76
+Средняя длина слога (букв)            |   2.60
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source</td>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>3</code></td>
-<td style="text-align: center;">Window in words of the alliteration and the assonance (<code>PHON_WINDOW_LEN</code>)</td>
+<td style="text-align: left;"><code>window_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>3</code></td>
+<td style="text-align: left;">Window in words of the alliteration and the assonance (<code>PHON_WINDOW_LEN</code>)</td>
 </tr>
 </tbody>
 </table>
-<p>The window is checked on its own by <code>ruts.phon_stats.check_params(window_len)</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">check_params</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks the window of the alliteration and the assonance apart from the class: one that is not an integer of at least 2 raises <code>ParameterError</code>.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Words in lower case</td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Words in lower case</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Window of the alliteration and the assonance</td>
+<td style="text-align: left;"><code>window_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Window of the alliteration and the assonance</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>syllables</code>, <code>sounds</code></td>
-<td style="text-align: center;">tuple</td>
-<td style="text-align: center;">Syllables (<code>syllabify</code>) and sounds (<code>transcribe</code>) of every word</td>
+<td style="text-align: left;"><code>syllables</code>, <code>sounds</code></td>
+<td style="text-align: left;"><code>tuple</code></td>
+<td style="text-align: left;">Syllables (<code>syllabify</code>) and sounds (<code>transcribe</code>) of every word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_vowels</code>, <code>n_sonorants</code>, <code>n_voiced</code>, <code>n_voiceless</code>, <code>n_consonants</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Numbers of the sounds by class</td>
+<td style="text-align: left;"><code>n_vowels</code>, <code>n_sonorants</code>, <code>n_voiced</code>, <code>n_voiceless</code>, <code>n_consonants</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Numbers of the sounds by class</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_clusters</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Number of the consonant clusters by length (<code>consonant_clusters</code>)</td>
+<td style="text-align: left;"><code>c_clusters</code></td>
+<td style="text-align: left;"><code>dict[int, int]</code></td>
+<td style="text-align: left;">Number of the consonant clusters by length (<code>consonant_clusters</code>)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_syllable_patterns</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Number of the syllables by CV pattern; a syllable without a sound of the classes (a number) is no syllable</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_vowels</code>, <code>p_sonorants</code>, <code>p_voiced</code>, <code>p_voiceless</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Shares of the sounds by class</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>consonant_vowel_ratio</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Ratio of the consonants to the vowels</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_heavy_clusters</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of the clusters of three consonants or more</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_hiatus</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Hiatuses per word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>cv_entropy</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Shannon entropy of the CV patterns of the words, in bits</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>hardness</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Voiceless consonants to the vowels and the sonorants</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>alliteration</code>, <code>assonance</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Repetition index of the consonants and of the vowels (<code>calc_repetition_index</code>)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_open_syllables</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Share of the syllables that end in a vowel</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_syllable_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Mean length of a syllable in sounds</td>
+<td style="text-align: left;"><code>c_syllable_patterns</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Number of the syllables by CV pattern</td>
 </tr>
 </tbody>
 </table>
-<p>A share or a ratio without sounds, clusters or syllables to divide by is <code>nan</code>, and so are the hiatuses per word and the entropy of a text without sounds.</p>
-<p>In ruTS <code>mean_syllable_len</code> counts the letters of a syllable, ь and ъ included, and the <code>n_marks</code> attribute (int) is the number of ь and ъ.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Every statistic can be computed separately by calling the corresponding function. Detailed information on the phonostatistics and the functions used to compute them is available in the corresponding <a href="../phon_stats_funcs/">section</a>.</p>
+<p>The ruTS attribute <code>n_marks</code> (<code>int</code>) is the number of ь and ъ.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ps</span><span class="o">.</span><span class="n">syllables</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">c_clusters</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">c_syllable_patterns</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">n_marks</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(('ног',), ('нет',), ('а',), ('хо', 'жу'))
+{1: 22, 2: 6, 3: 1}
+{'CCCV': 1, 'CCV': 5, 'CCVC': 1, 'CV': 11, 'CVC': 5, 'V': 2}
+3
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
+<p>Every metric is an attribute of the object, computed when it is created, and <code>get_stats</code> gives them all.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Measures</th>
+<th style="text-align: left;">Range</th>
+<th style="text-align: left;">Higher means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#sound_shares"><code>p_vowels</code></a></td>
+<td style="text-align: left;">Share of the vowels among the sounds of the classes</td>
+<td style="text-align: left;">0-1, <code>nan</code> without sounds</td>
+<td style="text-align: left;">A more vocalic text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#sound_shares"><code>p_sonorants</code></a></td>
+<td style="text-align: left;">Share of the sonorants among the sounds of the classes</td>
+<td style="text-align: left;">0-1, <code>nan</code> without sounds</td>
+<td style="text-align: left;">A more sonorous text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#sound_shares"><code>p_voiced</code></a></td>
+<td style="text-align: left;">Share of the voiced obstruents among the sounds of the classes</td>
+<td style="text-align: left;">0-1, <code>nan</code> without sounds</td>
+<td style="text-align: left;">More voiced obstruents</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#sound_shares"><code>p_voiceless</code></a></td>
+<td style="text-align: left;">Share of the voiceless obstruents among the sounds of the classes</td>
+<td style="text-align: left;">0-1, <code>nan</code> without sounds</td>
+<td style="text-align: left;">More voiceless obstruents</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#consonant_vowel_ratio"><code>consonant_vowel_ratio</code></a></td>
+<td style="text-align: left;">Ratio of the consonants to the vowels</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without vowels</td>
+<td style="text-align: left;">Denser consonants</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#consonant_clusters"><code>p_heavy_clusters</code></a></td>
+<td style="text-align: left;">Share of the clusters of three consonants or more</td>
+<td style="text-align: left;">0-1, <code>nan</code> without clusters</td>
+<td style="text-align: left;">Heavier clusters</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#hiatus"><code>p_hiatus</code></a></td>
+<td style="text-align: left;">Hiatuses of <code>word_hiatus</code> per word</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without sounds</td>
+<td style="text-align: left;">More vowels in a row</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#cv_entropy"><code>cv_entropy</code></a></td>
+<td style="text-align: left;">Shannon entropy of the CV patterns of the words, in bits</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without sounds</td>
+<td style="text-align: left;">More varied shapes of the words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#hardness"><code>hardness</code></a></td>
+<td style="text-align: left;">Voiceless obstruents to the vowels and the sonorants</td>
+<td style="text-align: left;">0 and above, <code>nan</code> without vowels and sonorants</td>
+<td style="text-align: left;">A harder sound</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#repetition_index"><code>alliteration</code></a></td>
+<td style="text-align: left;">Repetition index of the consonants in windows of <code>window_len</code> words</td>
+<td style="text-align: left;">0 and above, <code>nan</code> for a text shorter than the window or with no consonant shared by two words</td>
+<td style="text-align: left;">Consonants repeated closer together</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#repetition_index"><code>assonance</code></a></td>
+<td style="text-align: left;">Repetition index of the vowels in windows of <code>window_len</code> words</td>
+<td style="text-align: left;">0 and above, <code>nan</code> for a text shorter than the window or with no vowel shared by two words</td>
+<td style="text-align: left;">Vowels repeated closer together</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#syllables"><code>p_open_syllables</code></a></td>
+<td style="text-align: left;">Share of the syllables that end in a vowel</td>
+<td style="text-align: left;">0-1, <code>nan</code> without syllables</td>
+<td style="text-align: left;">More open syllables</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#syllables"><code>mean_syllable_len</code></a></td>
+<td style="text-align: left;">Mean length of a syllable in sounds</td>
+<td style="text-align: left;">1 and above, <code>nan</code> without syllables</td>
+<td style="text-align: left;">Longer syllables</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="sound_shares">Shares of the classes of the sounds<a class="headerlink" href="#sound_shares" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_vowels</code> · <code>p_sonorants</code> · <code>p_voiced</code> · <code>p_voiceless</code></p>
+<p>The share of the sounds of every class - the vowels, the sonorants and the voiced and voiceless obstruents - among the sounds of all of them; a sound of <code>skipped</code> or of no class (a digit, a letter of another script) counts in none.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of sounds of the class}}{\textrm{Number of vowels and consonants}}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="consonant_vowel_ratio">Ratio of the consonants to the vowels<a class="headerlink" href="#consonant_vowel_ratio" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>consonant_vowel_ratio</code></p>
+<p>The number of the consonants <code>n_consonants</code> to the number of the vowels <code>n_vowels</code>.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of consonants}}{\textrm{Number of vowels}}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="consonant_clusters">Consonant clusters<a class="headerlink" href="#consonant_clusters" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_heavy_clusters</code> · <code>c_clusters</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_consonant_clusters</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>The distribution of the consonant clusters of the words by length. A cluster is a run of consonants inside a word, a single consonant between vowels or at the edge of a word included; ь and ъ do not break a cluster.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">List of words</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="hiatus">Hiatuses<a class="headerlink" href="#hiatus" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_hiatus</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_hiatus</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>The number of the vowel hiatuses, two or more vowels in a row inside a word: аэропорт, аист, поэзия (о-э). The iotated е, ё, ю, я after a vowel denote [j] and a vowel and make no hiatus: заяц, моя, красивая, читает.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">List of words</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="cv_entropy">Entropy of the CV patterns<a class="headerlink" href="#cv_entropy" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>cv_entropy</code></p>
+<p>The Shannon entropy of the CV patterns of the words (<code>cv_pattern</code>), in bits, where <span class="arithmatex">\(P(p)\)</span> is the share of the words with the pattern <span class="arithmatex">\(p\)</span> among the words that have one.</p>
+<div class="arithmatex">\[
+-\sum_{p} P(p) \log_2 P(p)
+\]</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cv_entropy</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>The entropy of the CV patterns of a list of words: the higher the value, the more varied the phonetic shape of the words. Words without vowels and consonants (numbers, Latin script) are left out, and without other words the value is <code>nan</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">cv_pattern</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
+<p>The CV pattern of a word or a syllable: vowels are marked <code>V</code>, consonants <code>C</code>, and ь, ъ and the other characters are left out.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">List of words (<code>calc_cv_entropy</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word or syllable (<code>cv_pattern</code>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="hardness">Hardness<a class="headerlink" href="#hardness" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>hardness</code></p>
+<p>The number of the voiceless obstruents to the number of the vowels and the sonorants.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Number of voiceless obstruents}}{\textrm{Number of vowels} + \textrm{Number of sonorants}}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="repetition_index">Alliteration and assonance<a class="headerlink" href="#repetition_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>alliteration</code> · <code>assonance</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_alliteration</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_assonance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p>The alliteration and assonance indices of a list of words: the repetition index <code>calc_repetition_index</code> over the consonant and over the vowel letters of the words. Letters are compared, not sounds: devoicing, stress and reduction are not taken into account.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">List of words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>3</code></td>
+<td style="text-align: left;">Window in words (<code>PHON_WINDOW_LEN</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_repetition_index</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window_len</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The repetition index: the number of windows of <code>window_len</code> neighbouring words where a feature (a letter or a sound) occurs in two words or more, summed over the features, divided by the number expected if the words stood in random order. A window of shuffled words is a sample without replacement, so for a feature found in <span class="arithmatex">\(K\)</span> of the <span class="arithmatex">\(N\)</span> words, a window of <span class="arithmatex">\(w\)</span> words holds it in two words or more with the hypergeometric probability</p>
+<div class="arithmatex">\[
+P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
+\]</div>
+<p>and the expected number is the sum of these probabilities over the features times the <span class="arithmatex">\(N - w + 1\)</span> windows. Since the expectation comes from the text itself, the index shows whether the repetitions gather in neighbouring words, not how frequent a feature is: it averages to 1 over the orders of the words and is well above 1 when the repetitions come closer than chance. A word counts a feature once; the index is <code>nan</code> for a text shorter than the window or with no feature shared by two words.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>list[list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Features of every word: a string of its letters or a collection of its sounds</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Window in words, at least 2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>features</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Features to count, all of them by default</td>
+</tr>
+</tbody>
+</table>
+<p>Words that are not a list of strings or of collections of strings and features that are not a collection of strings raise <code>SourceTypeError</code>, and a <code>window_len</code> that is not an integer of at least 2 <code>ParameterError</code>.</p>
+</div>
+<div class="metric-card">
+<h3 id="syllables">Syllables<a class="headerlink" href="#syllables" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_open_syllables</code> · <code>mean_syllable_len</code></p>
+<p>The syllables are the sounds of every syllable of a word by <code>syllable_sounds</code>; a syllable without a sound of the classes (a number) is no syllable, in <code>c_syllable_patterns</code> too. An open syllable ends in a vowel by its CV pattern (<code>cv_pattern</code>), and the length of a syllable is the number of its sounds.</p>
+<p>In ruTS the length of a syllable is the number of its letters, ь and ъ included.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_open_syllable</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a syllable is open, that is ends in a vowel; ь and ъ after a vowel do not close it.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>syllable</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Syllable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The functions of ruTS take words as strings and count by the Russian classes of letters of the table above. The <code>calc_*</code> functions check their arguments: words that are not a list of strings raise <code>SourceTypeError</code>, and a window that is not an integer of at least 2 <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.phon_stats</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calc_alliteration</span><span class="p">,</span>
+    <span class="n">calc_consonant_clusters</span><span class="p">,</span>
+    <span class="n">calc_cv_entropy</span><span class="p">,</span>
+    <span class="n">calc_hiatus</span><span class="p">,</span>
+    <span class="n">cv_pattern</span><span class="p">,</span>
+    <span class="n">is_open_syllable</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"слышно"</span><span class="p">,</span> <span class="s2">"бесшумно"</span><span class="p">,</span> <span class="s2">"шуршат"</span><span class="p">,</span> <span class="s2">"камыши"</span><span class="p">,</span> <span class="s2">"у"</span><span class="p">,</span> <span class="s2">"поэта"</span><span class="p">]</span>
+<span class="n">cv_pattern</span><span class="p">(</span><span class="s2">"всплеск"</span><span class="p">),</span> <span class="n">is_open_syllable</span><span class="p">(</span><span class="s2">"съе"</span><span class="p">)</span>
+<span class="n">calc_consonant_clusters</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+<span class="n">calc_hiatus</span><span class="p">(</span><span class="n">words</span><span class="p">),</span> <span class="n">calc_cv_entropy</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+<span class="n">calc_alliteration</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('CCCCVCC', True)
+{1: 8, 2: 5}
+(1, 2.584962500721156)
+1.4999999999999998
+</code></pre></div>
+</div>
+</div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed phonostatistics.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhonStats</span>
-
-<span class="c1"># Prepare the data</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-
-<span class="c1"># Compute the statistics</span>
-<span class="n">ps</span> <span class="o">=</span> <span class="n">PhonStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'p_vowels'</span>:<span class="w"> </span><span class="m">0</span>.4032258064516129,
-<span class="s1">'p_sonorants'</span>:<span class="w"> </span><span class="m">0</span>.11290322580645161,
-<span class="s1">'p_voiced'</span>:<span class="w"> </span><span class="m">0</span>.1935483870967742,
-<span class="s1">'p_voiceless'</span>:<span class="w"> </span><span class="m">0</span>.2903225806451613,
-<span class="s1">'consonant_vowel_ratio'</span>:<span class="w"> </span><span class="m">1</span>.48,
-<span class="s1">'p_heavy_clusters'</span>:<span class="w"> </span><span class="m">0</span>.034482758620689655,
-<span class="s1">'p_hiatus'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'cv_entropy'</span>:<span class="w"> </span><span class="m">3</span>.1395722619867223,
-<span class="s1">'hardness'</span>:<span class="w"> </span><span class="m">0</span>.5625,
-<span class="s1">'alliteration'</span>:<span class="w"> </span><span class="m">1</span>.0916179337231968,
-<span class="s1">'assonance'</span>:<span class="w"> </span><span class="m">0</span>.8305084745762712,
-<span class="s1">'p_open_syllables'</span>:<span class="w"> </span><span class="m">0</span>.76,
-<span class="s1">'mean_syllable_len'</span>:<span class="w"> </span><span class="m">2</span>.6<span class="o">}</span>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the phonostatistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ps</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<p>Syllables and distributions are available as attributes:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">ps</span><span class="o">.</span><span class="n">syllables</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
-<span class="c1"># (('ног',), ('нет',), ('а',), ('хо', 'жу'))</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">c_clusters</span>
-<span class="c1"># {1: 22, 2: 6, 3: 1}</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">c_syllable_patterns</span>
-<span class="c1"># {'CCCV': 1, 'CCV': 5, 'CCVC': 1, 'CV': 11, 'CVC': 5, 'V': 2}</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'p_vowels': 0.4032258064516129,
+ 'p_sonorants': 0.11290322580645161,
+ 'p_voiced': 0.1935483870967742,
+ 'p_voiceless': 0.2903225806451613,
+ 'consonant_vowel_ratio': 1.48,
+ 'p_heavy_clusters': 0.034482758620689655,
+ 'p_hiatus': 0.0,
+ 'cv_entropy': 3.1395722619867223,
+ 'hardness': 0.5625,
+ 'alliteration': 1.0916179337231968,
+ 'assonance': 0.8305084745762712,
+ 'p_open_syllables': 0.76,
+ 'mean_syllable_len': 2.6}
 </code></pre></div>
 </div>
-<p><code>to_dataframe</code> returns the same statistics as a one-row <code>pandas.DataFrame</code>, and <code>describe</code> returns <code>None</code> for each of them: the phonostatistics have no interpretation scales.</p>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table of the statistics of <code>stats_desc</code> with their descriptions under the headers of <code>stats_headers</code>, floats with two decimals; each column is as wide as its longest text.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Print the table of computed statistics</span>
-<span class="n">ps</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">              </span>Статистика<span class="w">              </span><span class="p">|</span><span class="w"> </span>Значение
--------------------------------------------------
-Доля<span class="w"> </span>гласных<span class="w">                          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.40
-Доля<span class="w"> </span>сонорных<span class="w"> </span>согласных<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.11
-Доля<span class="w"> </span>звонких<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>глухих<span class="w"> </span>шумных<span class="w"> </span>согласных<span class="w">          </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Отношение<span class="w"> </span>согласных<span class="w"> </span>к<span class="w"> </span>гласным<span class="w">         </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.48
-Доля<span class="w"> </span>кластеров<span class="w"> </span>из<span class="w"> </span><span class="m">3</span><span class="w"> </span>и<span class="w"> </span>более<span class="w"> </span>согласных<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.03
-Зияний<span class="w"> </span>гласных<span class="w"> </span>на<span class="w"> </span>слово<span class="w">               </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Энтропия<span class="w"> </span>CV-шаблонов<span class="w"> </span>слов<span class="w"> </span><span class="o">(</span>бит<span class="o">)</span><span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">3</span>.14
-Жёсткость<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.56
-Индекс<span class="w"> </span>аллитерации<span class="w">                    </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.09
-Индекс<span class="w"> </span>ассонанса<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.83
-Доля<span class="w"> </span>открытых<span class="w"> </span>слогов<span class="w">                  </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.76
-Средняя<span class="w"> </span>длина<span class="w"> </span>слога<span class="w"> </span><span class="o">(</span>букв<span class="o">)</span><span class="w">            </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.60
-</code></pre></div>
+</div>
 </div>
 
 
@@ -3193,6 +2925,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3261,7 +2999,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

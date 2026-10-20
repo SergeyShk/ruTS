@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2248,17 +1590,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2288,67 +1619,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lookup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        lookup
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ipm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ipm
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_records" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_records
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_texts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_texts
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2845,17 +2115,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2886,67 +2145,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#download" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        download
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#lookup" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        lookup
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ipm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ipm
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_records" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_records
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_texts" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_texts
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
     </ul>
@@ -2970,33 +2168,51 @@
 
 
 <h1 id="lyashevskaya-and-sharoff-frequency-dictionary">Lyashevskaya and Sharoff frequency dictionary<a class="headerlink" href="#lyashevskaya-and-sharoff-frequency-dictionary" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.datasets.FreqDict</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for working with the <a href="http://dict.ruslang.ru/freq.php">frequency dictionary of modern Russian</a> by O. N. Lyashevskaya and S. A. Sharoff (Freq2011): 52,138 lemmas of the modern subcorpus of the Russian National Corpus (1950-2007, 92 million tokens) with the ipm frequency, the range R (the number of corpus segments out of 100 in which the lemma occurs), Juilland's D, the number of documents and the part of speech in MyStem tags (<code>s</code>, <code>v</code>, <code>a</code>, <code>adv</code>, <code>s.PROP</code> for proper names).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">FreqDict</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">DEFAULT_DATASET_DIR</span><span class="p">)</span>
+</code></pre></div>
+<p>The <a href="http://dict.ruslang.ru/freq.php">frequency dictionary of modern Russian</a> by O. N. Lyashevskaya and S. A. Sharoff (Freq2011): 52,138 lemmas of the modern subcorpus of the Russian National Corpus (1950-2007, 92 million tokens) with the ipm frequency, the range R (the number of corpus segments out of 100 in which the lemma occurs), Juilland's D, the number of documents and the part of speech in MyStem tags (<code>s</code>, <code>v</code>, <code>a</code>, <code>adv</code>, <code>s.PROP</code> for proper names).</p>
 <p>The dictionary is downloaded from <code>dict.ruslang.ru</code> (HTTP only, 493 KB). No license is stated; the authors ask to cite the original source:</p>
 <div class="admonition quote">
 <p class="admonition-title">Citation</p>
 <p>Ляшевская О. Н., Шаров С. А. Частотный словарь современного русского языка (на материалах Национального корпуса русского языка). М.: Азбуковник, 2009.</p>
 </div>
 <p>For lookup, a lemma with several parts of speech (а - conjunction, particle, interjection) is merged: ipm is summed, R, D and the number of documents are taken as maxima; the lemma is lowercased and ё is replaced with е, as in the dictionary. The parsed dictionary is cached by file path and read once per process, so creating <code>FreqDict()</code> for every text is cheap. The dictionary is used by <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a> and as a reference corpus in <a href="../../corpus/keyness/"><code>keyness</code></a> (the dictionary corpus size is <code>CORPUS_SIZE</code>, 92 million tokens).</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a <code>data_dir</code> that is neither a string nor a <code>Path</code>.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
+
+<span class="n">fd</span> <span class="o">=</span> <span class="n">FreqDict</span><span class="p">()</span>
+<span class="n">fd</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+<span class="n">fd</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">"citation"</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'Ляшевская О. Н., Шаров С. А. Частотный словарь современного русского языка (на материалах Национального корпуса русского языка). М.: Азбуковник, 2009.'
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>data_dir</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>DEFAULT_DATA_DIR.joinpath("dicts")</code></td>
-<td style="text-align: center;">Path to the dictionary directory</td>
+<td style="text-align: left;"><code>data_dir</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Path</code></td>
+<td style="text-align: left;"><code>DEFAULT_DATASET_DIR</code></td>
+<td style="text-align: left;">Path to the dictionary directory; <code>dicts</code> in <code>DEFAULT_DATA_DIR</code> by default</td>
 </tr>
 </tbody>
 </table>
@@ -3004,144 +2220,186 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>entries</code></td>
-<td style="text-align: center;">dict[str, Entry]</td>
-<td style="text-align: center;">Entries by normalized lemma</td>
+<td style="text-align: left;"><code>entries</code></td>
+<td style="text-align: left;"><code>dict[str, Entry]</code></td>
+<td style="text-align: left;">Entries by normalized lemma</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>min_ipm</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Minimum frequency in the dictionary (0.4)</td>
+<td style="text-align: left;"><code>min_ipm</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Minimum frequency in the dictionary (0.4)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>word_ipm</code></td>
-<td style="text-align: center;">dict[str, float]</td>
-<td style="text-align: center;">Frequencies by the entry a word form reaches without a part of speech - the reference of <a href="../../corpus/keyness/"><code>keyness</code></a></td>
+<td style="text-align: left;"><code>word_ipm</code></td>
+<td style="text-align: left;"><code>dict[str, float]</code></td>
+<td style="text-align: left;">Frequencies by the entry a word form reaches without a part of speech - the reference of <a href="../../corpus/keyness/"><code>keyness</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>info</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;">Name of the dictionary and reference information about it</td>
 </tr>
 </tbody>
 </table>
-<p>An <code>Entry</code> is a named tuple with the fields <code>lemma</code>, <code>pos</code> (tuple of parts of speech), <code>ipm</code>, <code>range</code>, <code>dispersion</code>, <code>docs</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">Entry</span><span class="p">(</span><span class="n">lemma</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ipm</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">dispersion</span><span class="p">,</span> <span class="n">docs</span><span class="p">)</span>
+</code></pre></div>
+<p>An entry of the dictionary: a named tuple.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>lemma</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Lemma</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>tuple[str, ...]</code></td>
+<td style="text-align: left;">Parts of speech of the lemma in MyStem tags</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>ipm</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Frequency per million tokens, summed over the parts of speech</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>range</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of corpus segments out of 100 in which the lemma occurs</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dispersion</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Juilland's D</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>docs</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of documents in which the lemma occurs</td>
+</tr>
+</tbody>
+</table>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="download">download<a class="headerlink" href="#download" title="Permanent link">&para;</a></h3>
-<p>Downloads the dictionary from the network and extracts the file. The downloaded archive is verified against a SHA-256 checksum (the file on the site has not changed since 2013); a corrupted or replaced file is deleted with a <code>DownloadError</code>, so that a repeated download is not skipped. If the archive is present but the dictionary file is not, the archive is extracted again.</p>
-<p>Parameters:</p>
+<p><code>download(force=False)</code> downloads the dictionary from the network and extracts the file. The downloaded archive is verified against a SHA-256 checksum (the file on the site has not changed since 2013); a corrupted or replaced file is deleted with a <code>DownloadError</code>, so that a repeated download is not skipped. If the archive is present but the dictionary file is not, the archive is extracted again.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>force</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Download the dictionary even if it is already downloaded</td>
+<td style="text-align: left;"><code>force</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Download the dictionary even if it is already downloaded</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
-
-<span class="n">fd</span> <span class="o">=</span> <span class="n">FreqDict</span><span class="p">()</span>
-<span class="n">fd</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
-<span class="n">fd</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">"citation"</span><span class="p">]</span>
-<span class="c1"># 'Ляшевская О. Н., Шаров С. А. Частотный словарь современного русского языка (на материалах Национального корпуса русского языка). М.: Азбуковник, 2009.'</span>
-</code></pre></div>
-</div>
-<h3 id="lookup">lookup<a class="headerlink" href="#lookup" title="Permanent link">&para;</a></h3>
-<p>Returns the dictionary entry for a lemma in any case, with or without ё, <code>None</code> for a lemma outside the dictionary.</p>
-<p>Parameters:</p>
+<p>A file that cannot be downloaded raises <code>DownloadError</code> too, an archive that cannot be extracted <code>DataFileError</code>.</p>
+<p><code>check_data()</code> checks that the dictionary file is in place and returns <code>True</code>; a dictionary that is not downloaded raises <code>DatasetNotFoundError</code> with the commands to download it, and so does reading its entries and frequencies.</p>
+<p><code>lookup(lemma)</code> returns the dictionary entry for a lemma in any case, with or without ё, <code>None</code> for a lemma outside the dictionary; <code>ipm(lemma)</code> returns the lemma frequency per million tokens, 0 for a lemma outside the dictionary.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>lemma</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Lemma</td>
+<td style="text-align: left;"><code>lemma</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Lemma</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>A lemma that is not a string raises <code>SourceTypeError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">fd</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">"кот"</span><span class="p">)</span>
-<span class="c1"># Entry(lemma='кот', pos=('s',), ipm=40.3, range=98, dispersion=90, docs=947)</span>
 <span class="n">fd</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">"Ещё"</span><span class="p">)</span>
-<span class="c1"># Entry(lemma='еще', pos=('adv', 'part'), ipm=2409.4, range=100, dispersion=97, docs=22654)</span>
-</code></pre></div>
-</div>
-<h3 id="ipm">ipm<a class="headerlink" href="#ipm" title="Permanent link">&para;</a></h3>
-<p>Returns the lemma frequency per million tokens, 0 for a lemma outside the dictionary.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">fd</span><span class="o">.</span><span class="n">ipm</span><span class="p">(</span><span class="s2">"котёнок"</span><span class="p">),</span> <span class="n">fd</span><span class="o">.</span><span class="n">ipm</span><span class="p">(</span><span class="s2">"котоведение"</span><span class="p">)</span>
-<span class="c1"># (14.5, 0.0)</span>
+<span class="n">fd</span><span class="o">.</span><span class="n">ipm</span><span class="p">(</span><span class="s2">"котёнок"</span><span class="p">),</span> <span class="n">fd</span><span class="o">.</span><span class="n">ipm</span><span class="p">(</span><span class="s2">"котоведение"</span><span class="p">)</span>
 <span class="s2">"кот"</span> <span class="ow">in</span> <span class="n">fd</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
-<span class="c1"># (True, 51682)</span>
 </code></pre></div>
 </div>
-<h3 id="get_records">get_records<a class="headerlink" href="#get_records" title="Permanent link">&para;</a></h3>
-<p>Returns a generator of dictionary records in file (alphabetical) order, filtered by part of speech and minimum frequency.</p>
-<p>Parameters:</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>Entry(lemma='кот', pos=('s',), ipm=40.3, range=98, dispersion=90, docs=947)
+Entry(lemma='еще', pos=('adv', 'part'), ipm=2409.4, range=100, dispersion=97, docs=22654)
+(14.5, 0.0)
+(True, 51682)
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code>get_records(pos=None, min_ipm=None, limit=None)</code> returns a generator of dictionary records in file (alphabetical) order, filtered by part of speech and minimum frequency; <code>get_texts</code> with the same parameters returns a generator of lemmas.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>pos</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Part of speech in MyStem tags</td>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Part of speech in MyStem tags</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>min_ipm</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Minimum frequency</td>
+<td style="text-align: left;"><code>min_ipm</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Minimum frequency</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>limit</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Number of records</td>
+<td style="text-align: left;"><code>limit</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Number of records</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>An unknown part of speech and a <code>limit</code> that is not a non-negative integer raise <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">get_records</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="s2">"s"</span><span class="p">,</span> <span class="n">min_ipm</span><span class="o">=</span><span class="mi">2700</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-<span class="c1"># {'lemma': 'год', 'pos': 's', 'ipm': 3727.5, 'range': 100, 'dispersion': 94, 'docs': 29477}</span>
-<span class="c1"># {'lemma': 'человек', 'pos': 's', 'ipm': 2723.0, 'range': 100, 'dispersion': 97, 'docs': 20423}</span>
+<span class="nb">list</span><span class="p">(</span><span class="n">fd</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="s2">"s"</span><span class="p">,</span> <span class="n">min_ipm</span><span class="o">=</span><span class="mi">2700</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </code></pre></div>
 </div>
-<h3 id="get_texts">get_texts<a class="headerlink" href="#get_texts" title="Permanent link">&para;</a></h3>
-<p>Returns a generator of dictionary lemmas with the same parameters as <code>get_records</code>.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'lemma': 'год', 'pos': 's', 'ipm': 3727.5, 'range': 100, 'dispersion': 94, 'docs': 29477}
+{'lemma': 'человек', 'pos': 's', 'ipm': 2723.0, 'range': 100, 'dispersion': 97, 'docs': 20423}
+['год', 'человек']
+</code></pre></div>
+</div>
+</div>
+</div>
 
 
 
@@ -3161,6 +2419,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3229,7 +2493,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

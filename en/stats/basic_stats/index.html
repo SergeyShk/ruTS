@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -914,28 +944,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -947,10 +955,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#attributes" class="md-nav__link">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributes
+        Statistics
       
     </span>
   </a>
@@ -966,66 +974,27 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#count_words_by_syllables-count_words_by_letters" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#count_punctuations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        count_words_by_syllables, count_words_by_letters
+        Punctuation marks
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#dash_pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Dashes typed with hyphens
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1055,56 +1024,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -1113,7 +1032,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -1126,92 +1045,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1227,7 +1060,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1236,42 +1069,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1311,56 +1108,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1369,7 +1116,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1382,92 +1129,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1483,7 +1144,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1496,92 +1157,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1597,7 +1172,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1610,92 +1185,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1711,7 +1200,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1724,92 +1213,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1825,7 +1228,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1838,92 +1241,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1939,7 +1256,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1948,42 +1265,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2867,28 +2148,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2900,10 +2159,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#attributes" class="md-nav__link">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Attributes
+        Statistics
       
     </span>
   </a>
@@ -2919,66 +2178,27 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#count_words_by_syllables-count_words_by_letters" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#count_punctuations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        count_words_by_syllables, count_words_by_letters
+        Punctuation marks
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#dash_pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Dashes typed with hyphens
       
     </span>
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -3014,333 +2234,417 @@
 
 
 <h1 id="basic-statistics">Basic statistics<a class="headerlink" href="#basic-statistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.basic_stats.BasicStats</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The basic statistics of a text: the counts of its sentences, words, characters, letters, spaces, syllables and punctuation marks, the distributions of the words by letters and by syllables, and the long, complex, simple, monosyllabic and polysyllabic words. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</code></pre></div>
+<p>The basic statistics of a text: the counts of its sentences, words, characters, syllables and punctuation marks and the distributions of its words. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
 <p>The words and the sentences of a string come from the extractors. A <code>Doc</code> gives its tokens as words, without punctuation marks and symbols such as <code>€</code> or <code>%</code>, and its boundaries as sentences, or those of the sentence extractor when it has none or only partial ones (<code>has_sents</code>); an extractor given is used on its text instead. A blank line ends a sentence of a string and of a <code>Doc</code> without boundaries; a <code>Doc</code> with boundaries does so when its pipeline has <code>start_sents_after_blank_lines</code> (registered by a language library under its own name) before the parser, <code>senter</code> or <code>sentencizer</code>. A sentence without words, such as punctuation alone, is not counted.</p>
-<p>In ruTS this component is called <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>.</p>
-<p>Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>BasicStats</code> object is initialized.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceError</code> - a source without words;</li>
+<li><code>ParameterError</code> - a threshold that is not an integer of at least one.</li>
+</ul>
+<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the punctuation marks are counted by the <a href="#count_punctuations"><code>count_punctuations</code></a> of ruTS, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The blank line component of ruTS is called <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>. Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the <code>print_stats</code> table is in Russian.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Существуют три вида лжи: ложь, наглая ложь и статистика"</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">bs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</code></pre></div>
 </div>
-<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
-<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). A <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) or with partial ones (<code>ruts_blank_lines</code> alone) takes its sentences from the text by <code>SentsExtractor</code>.</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>    Статистика     | Значение
+------------------------------
+Предложения        |    1
+Слова              |    9
+Уникальные слова   |    8
+Длинные слова      |    3
+Сложные слова      |    2
+Простые слова      |    7
+Односложные слова  |    5
+Многосложные слова |    4
+Символы            |    55
+Буквы              |    45
+Пробелы            |    8
+Слоги              |    18
+Знаки препинания   |    2
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source (a string or a Doc object)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Sentence extraction tool; used for a Doc too, on its text</td>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Sentence extraction tool; used for a Doc too, on its text</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; used for a Doc too, on its text</td>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Word extraction tool; used for a Doc too, on its text</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>normalize</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Compute normalized statistics</td>
+<td style="text-align: left;"><code>normalize</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Compute normalized statistics</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>complex_syl_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>COMPLEX_SYL_FACTOR</code></td>
-<td style="text-align: center;">Minimum number of syllables in a complex word</td>
+<td style="text-align: left;"><code>complex_syl_factor</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>COMPLEX_SYL_FACTOR</code></td>
+<td style="text-align: left;">Minimum number of syllables in a complex word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>long_word_letter_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>LONG_WORD_LETTER_FACTOR</code></td>
-<td style="text-align: center;">Minimum number of letters in a long word</td>
+<td style="text-align: left;"><code>long_word_letter_factor</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>LONG_WORD_LETTER_FACTOR</code></td>
+<td style="text-align: left;">Minimum number of letters in a long word</td>
 </tr>
 </tbody>
 </table>
-<p>A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, a source without words <code>SourceError</code>, a threshold that is not an integer of at least one <code>ParameterError</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<p>The object keeps <code>normalize</code>, <code>complex_syl_factor</code> and <code>long_word_letter_factor</code> under their names.</p>
 <p>In ruTS a complex word has four or more syllables and a long word six or more letters: <code>COMPLEX_SYL_FACTOR = 4</code> and <code>LONG_WORD_LETTER_FACTOR = 6</code> of <code>ruts.constants</code>.</p>
-</div>
-<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
+<h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Statistic</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Normalized</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>normalize</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;">Whether the normalized statistics are computed</td>
+<td style="text-align: left;"><code>c_letters</code></td>
+<td style="text-align: left;"><code>dict[int, int]</code></td>
+<td style="text-align: left;">Distribution of words by number of letters</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>complex_syl_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Minimum number of syllables in a complex word</td>
+<td style="text-align: left;"><code>c_syllables</code></td>
+<td style="text-align: left;"><code>dict[int, int]</code></td>
+<td style="text-align: left;">Distribution of words by number of syllables</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>long_word_letter_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Minimum number of letters in a long word</td>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of sentences containing words</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_letters</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Distribution of words by number of letters</td>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of words</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>c_syllables</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Distribution of words by number of syllables</td>
+<td style="text-align: left;"><code>n_unique_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of unique words, case ignored</td>
+<td style="text-align: left;"><code>p_unique_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_sents</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of sentences containing words</td>
+<td style="text-align: left;"><code>n_long_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of long words, of at least <code>long_word_letter_factor</code> letters</td>
+<td style="text-align: left;"><code>p_long_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of words</td>
+<td style="text-align: left;"><code>n_complex_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of complex words, of at least <code>complex_syl_factor</code> syllables</td>
+<td style="text-align: left;"><code>p_complex_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_unique_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of unique words, case ignored</td>
+<td style="text-align: left;"><code>n_simple_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of simple words: with a syllable, below the complex ones</td>
+<td style="text-align: left;"><code>p_simple_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_long_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of long words</td>
+<td style="text-align: left;"><code>n_monosyllable_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of monosyllabic words</td>
+<td style="text-align: left;"><code>p_monosyllable_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_complex_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of complex words</td>
+<td style="text-align: left;"><code>n_polysyllable_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of polysyllabic words, of two syllables or more</td>
+<td style="text-align: left;"><code>p_polysyllable_words</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_simple_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of simple words: with a syllable, below the complex ones</td>
+<td style="text-align: left;"><code>n_chars</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of characters without the line breaks</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_monosyllable_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of monosyllabic words</td>
+<td style="text-align: left;"><code>n_letters</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of letters</td>
+<td style="text-align: left;"><code>p_letters</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_polysyllable_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of polysyllabic words</td>
+<td style="text-align: left;"><code>n_spaces</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of spaces of Unicode (category Zs), such as the no-break space, and tabs</td>
+<td style="text-align: left;"><code>p_spaces</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_chars</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of characters without the line breaks</td>
+<td style="text-align: left;"><code>n_syllables</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of syllables</td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_letters</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of letters</td>
+<td style="text-align: left;"><code>n_punctuations</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of punctuation marks</td>
+<td style="text-align: left;"><code>p_punctuations</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>n_spaces</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of spaces of Unicode (category Zs), such as the no-break space, and tabs</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_syllables</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of syllables</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_punctuations</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Number of punctuation marks</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_punctuations</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Distribution of punctuation marks by type</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_unique_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of unique words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_long_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of long words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_complex_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of complex words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_simple_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of simple words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_monosyllable_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of monosyllabic words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_polysyllable_words</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of polysyllabic words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_letters</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of letters</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_spaces</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of spaces</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_punctuations</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Normalized number of punctuation marks</td>
+<td style="text-align: left;"><code>c_punctuations</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Distribution of punctuation marks by type (<a href="#count_punctuations"><code>count_punctuations</code></a>)</td>
+<td style="text-align: left;">-</td>
 </tr>
 </tbody>
 </table>
-<p>With <code>normalize=True</code> the counts of the words are divided by the number of words, those of the characters by the number of characters.</p>
+<p>With <code>normalize=True</code> the object has the normalized statistics too, of the type <code>float</code>: the counts of the words divided by the number of words, those of the characters by the number of characters.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="count_words_by_syllables-count_words_by_letters">count_words_by_syllables, count_words_by_letters<a class="headerlink" href="#count_words_by_syllables-count_words_by_letters" title="Permanent link">&para;</a></h3>
 <p><code>count_words_by_syllables(min_syllables)</code> and <code>count_words_by_letters(min_letters)</code> return the number of words with at least the given number of syllables or letters; a minimum that is not an integer raises <code>ParameterError</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>These methods recount complex and long words with a threshold different from the one set at initialization. For instance, <a href="../readability_stats/"><code>ReadabilityStats</code></a> uses them for the SMOG index (a complex word has 5+ syllables) and the LIX index (a long word has 7+ letters).</p>
-</div>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the counts of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
-<p>An example of computing basic text statistics with normalization:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span>
-
-<span class="c1"># Prepare the data</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Существуют три вида лжи: ложь, наглая ложь и статистика"</span>
-
-<span class="c1"># Compute the statistics</span>
-<span class="n">bs</span> <span class="o">=</span> <span class="n">BasicStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>The methods recount complex and long words with a threshold other than the one set when the object was created: this is how <a href="../readability_stats/"><code>ReadabilityStats</code></a> computes the SMOG index (a complex word has 5 or more syllables) and LIX (a long word has 7 or more letters).</p>
+<p><code>get_stats(flat)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the counts of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
+<p><code>print_stats()</code> prints a table with the counts of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
+<p>The normalized statistics <code>p_*</code> are not in the table.</p>
+<p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">bs</span><span class="o">.</span><span class="n">count_words_by_syllables</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">bs</span><span class="o">.</span><span class="n">count_words_by_letters</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
 <span class="n">bs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'c_letters'</span>:<span class="w"> </span><span class="o">{</span><span class="m">1</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">4</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">6</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">10</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>,
-<span class="s1">'c_punctuations'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'comma'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'period'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'question'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'exclamation'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'ellipsis'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'colon'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'semicolon'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'dash'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'hyphen'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'angle_quotes'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'straight_quotes'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'parentheses'</span>:<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="s1">'other'</span>:<span class="w"> </span><span class="m">0</span><span class="o">}</span>,
-<span class="s1">'c_syllables'</span>:<span class="w"> </span><span class="o">{</span><span class="m">1</span>:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="m">2</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">3</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">4</span>:<span class="w"> </span><span class="m">2</span><span class="o">}</span>,
-<span class="s1">'n_chars'</span>:<span class="w"> </span><span class="m">55</span>,
-<span class="s1">'n_complex_words'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'n_letters'</span>:<span class="w"> </span><span class="m">45</span>,
-<span class="s1">'n_long_words'</span>:<span class="w"> </span><span class="m">3</span>,
-<span class="s1">'n_monosyllable_words'</span>:<span class="w"> </span><span class="m">5</span>,
-<span class="s1">'n_polysyllable_words'</span>:<span class="w"> </span><span class="m">4</span>,
-<span class="s1">'n_punctuations'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'n_sents'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'n_simple_words'</span>:<span class="w"> </span><span class="m">7</span>,
-<span class="s1">'n_spaces'</span>:<span class="w"> </span><span class="m">8</span>,
-<span class="s1">'n_syllables'</span>:<span class="w"> </span><span class="m">18</span>,
-<span class="s1">'n_unique_words'</span>:<span class="w"> </span><span class="m">8</span>,
-<span class="s1">'n_words'</span>:<span class="w"> </span><span class="m">9</span>,
-<span class="s1">'p_complex_words'</span>:<span class="w"> </span><span class="m">0</span>.2222222222222222,
-<span class="s1">'p_letters'</span>:<span class="w"> </span><span class="m">0</span>.8181818181818182,
-<span class="s1">'p_long_words'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="s1">'p_monosyllable_words'</span>:<span class="w"> </span><span class="m">0</span>.5555555555555556,
-<span class="s1">'p_polysyllable_words'</span>:<span class="w"> </span><span class="m">0</span>.4444444444444444,
-<span class="s1">'p_punctuations'</span>:<span class="w"> </span><span class="m">0</span>.03636363636363636,
-<span class="s1">'p_simple_words'</span>:<span class="w"> </span><span class="m">0</span>.7777777777777778,
-<span class="s1">'p_spaces'</span>:<span class="w"> </span><span class="m">0</span>.14545454545454545,
-<span class="s1">'p_unique_words'</span>:<span class="w"> </span><span class="m">0</span>.8888888888888888<span class="o">}</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(0, 2)
+{'c_letters': {1: 1, 3: 2, 4: 3, 6: 1, 10: 2},
+ 'c_syllables': {1: 5, 2: 1, 3: 1, 4: 2},
+ 'n_sents': 1,
+ 'n_words': 9,
+ 'n_unique_words': 8,
+ 'n_long_words': 3,
+ 'n_complex_words': 2,
+ 'n_simple_words': 7,
+ 'n_monosyllable_words': 5,
+ 'n_polysyllable_words': 4,
+ 'n_chars': 55,
+ 'n_letters': 45,
+ 'n_spaces': 8,
+ 'n_syllables': 18,
+ 'n_punctuations': 2,
+ 'c_punctuations': {'comma': 1,
+                    'period': 0,
+                    'question': 0,
+                    'exclamation': 0,
+                    'ellipsis': 0,
+                    'colon': 1,
+                    'semicolon': 0,
+                    'dash': 0,
+                    'hyphen': 0,
+                    'angle_quotes': 0,
+                    'straight_quotes': 0,
+                    'parentheses': 0,
+                    'other': 0},
+ 'p_unique_words': 0.8888888888888888,
+ 'p_long_words': 0.3333333333333333,
+ 'p_complex_words': 0.2222222222222222,
+ 'p_simple_words': 0.7777777777777778,
+ 'p_monosyllable_words': 0.5555555555555556,
+ 'p_polysyllable_words': 0.4444444444444444,
+ 'p_letters': 0.8181818181818182,
+ 'p_spaces': 0.14545454545454545,
+ 'p_punctuations': 0.03636363636363636}
 </code></pre></div>
 </div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the counts of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
-<p>To illustrate the method, we reuse the code from the previous example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Print the table of computed statistics</span>
-<span class="n">bs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
+</div>
+</div>
+<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the basic statistics have no scales, so it gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<h2 id="count_punctuations">Punctuation marks<a class="headerlink" href="#count_punctuations" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="n">PUNCTUATION_MARKS</span><span class="p">,</span> <span class="n">dash_pattern</span><span class="o">=</span><span class="n">DASH_PATTERN</span><span class="p">)</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">    </span>Статистика<span class="w">     </span><span class="p">|</span><span class="w"> </span>Значение
-------------------------------
-Предложения<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Слова<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">9</span>
-Уникальные<span class="w"> </span>слова<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
-Длинные<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">3</span>
-Сложные<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Простые<span class="w"> </span>слова<span class="w">      </span><span class="p">|</span><span class="w">    </span><span class="m">7</span>
-Односложные<span class="w"> </span>слова<span class="w">  </span><span class="p">|</span><span class="w">    </span><span class="m">5</span>
-Многосложные<span class="w"> </span>слова<span class="w"> </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Символы<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">55</span>
-Буквы<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">45</span>
-Пробелы<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">8</span>
-Слоги<span class="w">              </span><span class="p">|</span><span class="w">    </span><span class="m">18</span>
-Знаки<span class="w"> </span>препинания<span class="w">   </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-</code></pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The method does not print the normalized statistics attributes <code>p_*</code>.</p>
-</div>
-<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
-<p>Returns the flat statistics, <code>get_stats(flat=True)</code>, as a <code>pandas.DataFrame</code> of one row with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
-<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the basic statistics have no scales, so it always gives <code>None</code>.</p>
-<h2 id="punctuation">Punctuation profile<a class="headerlink" href="#punctuation" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.basic_stats.count_punctuations()</strong>, <strong>ruts.basic_stats.punctuation_profile()</strong></p>
-</div>
-<p><code>count_punctuations(text, marks, dash_pattern)</code> counts punctuation marks by type, the distribution of <code>c_punctuations</code>: commas, periods, question and exclamation marks, ellipses, colons, semicolons, dashes, hyphens, guillemets, quotation marks, parentheses and other marks. Dashes typed with hyphens (<code>dash_pattern</code>) are counted first, then ellipses - <code>…</code>, three or more periods, or two after <code>?</code> and <code>!</code>, one mark whose periods are not counted as periods (<code>Who?..</code> is a question and an ellipsis) - then each mark by its type in <code>marks</code>; any other character of the Unicode categories P and S is another mark (<code>§</code>, <code>€</code>, <code>°</code>). A mark of <code>marks</code> that is not a single character or has an unknown type raises <code>ParameterError</code>; a text that is not a string, <code>marks</code> that are not a mapping and a <code>dash_pattern</code> that is not a compiled regular expression raise <code>SourceTypeError</code>.</p>
-<p>In ruTS <code>count_punctuations(text)</code> takes the marks of the core with the low quotation mark <code>„</code> as a quotation mark, and a hanging hyphen before <code>и</code>, <code>или</code>, <code>либо</code> or a comma stays a hyphen (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), while a dialogue dash typed with a hyphen is a dash (<code>- Ушли, - сказал он</code>). <code>punctuation_profile(text, n_words=None)</code> turns the counts into frequencies per 1000 words and adds <code>yo_share</code> - the share of the letter ё among the letters е and ё, that is, whether the author writes ё.</p>
-<p>The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see <a href="../../corpus/compare/">corpus comparison</a>). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span><span class="p">,</span> <span class="n">punctuation_profile</span>
+<p>Counts punctuation marks by type, the distribution of <code>c_punctuations</code>: commas, periods, question and exclamation marks, ellipses, colons, semicolons, dashes, hyphens, guillemets, quotation marks, parentheses and other marks. Dashes typed with hyphens (<code>dash_pattern</code>) are counted first, then ellipses - <code>…</code>, three or more periods, or two after <code>?</code> and <code>!</code>, one mark whose periods are not counted as periods (<code>Who?..</code> is a question and an ellipsis) - then each mark by its type in <code>marks</code>; any other character of the Unicode categories P and S is another mark (<code>§</code>, <code>€</code>, <code>°</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text string</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>marks</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>PUNCTUATION_MARKS</code></td>
+<td style="text-align: left;">Type of every mark, among <code>PUNCTUATION_TYPES</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dash_pattern</code></td>
+<td style="text-align: left;"><code>Pattern</code></td>
+<td style="text-align: left;"><code>DASH_PATTERN</code></td>
+<td style="text-align: left;">Dashes typed with hyphens</td>
+</tr>
+</tbody>
+</table>
+<p>A mark of <code>marks</code> that is not a single character or has an unknown type raises <code>ParameterError</code>; a text that is not a string, <code>marks</code> that are not a mapping and a <code>dash_pattern</code> that is not a compiled regular expression raise <code>SourceTypeError</code>.</p>
+<p>In ruTS the <code>PUNCTUATION_MARKS</code> and <code>DASH_PATTERN</code> of <code>ruts.basic_stats</code> are the marks of the core with the low quotation mark <code>„</code> as a quotation mark and the pattern of dashes by which a hanging hyphen before <code>и</code>, <code>или</code>, <code>либо</code> or a comma stays a hyphen (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), while a dialogue dash typed with a hyphen is a dash (<code>- Ушли, - сказал он</code>).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span>
 
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот — «зверь»... Пёс, конечно, - друг; а кто-то (тот, что ещё жив) — нет!"</span>
 <span class="p">{</span><span class="n">kind</span><span class="p">:</span> <span class="n">count</span> <span class="k">for</span> <span class="n">kind</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span><span class="p">}</span>
-<span class="c1"># {'comma': 3, 'exclamation': 1, 'ellipsis': 1, 'semicolon': 1, 'dash': 3, 'hyphen': 1, 'angle_quotes': 2, 'parentheses': 2}</span>
-
-<span class="nb">round</span><span class="p">(</span><span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="s2">"dash"</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="s2">"yo_share"</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="c1"># (250.0, 0.33)</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'comma': 3,
+ 'exclamation': 1,
+ 'ellipsis': 1,
+ 'semicolon': 1,
+ 'dash': 3,
+ 'hyphen': 1,
+ 'angle_quotes': 2,
+ 'parentheses': 2}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="dash_pattern">Dashes typed with hyphens<a class="headerlink" href="#dash_pattern" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">dash_pattern</span><span class="p">(</span><span class="n">conjunctions</span><span class="o">=</span><span class="p">(),</span> <span class="n">hanging_before_comma</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Builds the <code>dash_pattern</code> of <code>count_punctuations</code>. A hanging hyphen glued to a letter or a digit and carried on to a later word (<code>pre- and post-war</code>, <code>5- and 10-year</code>) stays a hyphen before spaces of a line and one of the <code>conjunctions</code>, case ignored, and with <code>hanging_before_comma</code> before a comma (<code>two-, three- and four-year</code>). A language whose dialogue closes a line with a hyphen before a comma (<code>-Come -he said-, and left</code>) leaves <code>hanging_before_comma</code> off. Without the parameters the pattern is <code>DASH_PATTERN</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>conjunctions</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;"><code>()</code></td>
+<td style="text-align: left;">Conjunctions after a hanging hyphen</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>hanging_before_comma</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Take a hyphen between a letter and a comma for a hanging one</td>
+</tr>
+</tbody>
+</table>
+<p>Conjunctions that are not a collection of strings raise <code>SourceTypeError</code>, and an empty conjunction <code>ParameterError</code>.</p>
+<p>Without the parameters the pattern is the <code>DASH_PATTERN</code> of the core (<code>anyts.basic_stats</code>), while the <code>DASH_PATTERN</code> of <code>ruts.basic_stats</code> is <code>dash_pattern(("и", "или", "либо"), hanging_before_comma=True)</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span><span class="p">,</span> <span class="n">dash_pattern</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Двух- и трёхкомнатные, сорока-, пятидесятилетние - сказал он"</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">counts</span><span class="p">[</span><span class="s2">"dash"</span><span class="p">],</span> <span class="n">counts</span><span class="p">[</span><span class="s2">"hyphen"</span><span class="p">]</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dash_pattern</span><span class="o">=</span><span class="n">dash_pattern</span><span class="p">())</span>
+<span class="n">counts</span><span class="p">[</span><span class="s2">"dash"</span><span class="p">],</span> <span class="n">counts</span><span class="p">[</span><span class="s2">"hyphen"</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(1, 2)
+(3, 0)
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="punctuation">Punctuation profile<a class="headerlink" href="#punctuation" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The frequencies of the punctuation marks by type (<code>count_punctuations</code>) per 1000 words and <code>yo_share</code> - the share of the letter ё among the letters е and ё, that is, whether the author writes ё. Without words or without the letters е and ё the values are <code>nan</code>. A text that is not a string raises <code>SourceTypeError</code>, a number of words that is not a non-negative integer <code>ParameterError</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Text string</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Number of words; without it the words are extracted by <code>WordsExtractor</code></td>
+</tr>
+</tbody>
+</table>
+<p>The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see <a href="../../corpus/compare/">corpus comparison</a>). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">punctuation_profile</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот — «зверь»... Пёс, конечно, - друг; а кто-то (тот, что ещё жив) — нет!"</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">punctuation_profile</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="nb">round</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="s2">"dash"</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">profile</span><span class="p">[</span><span class="s2">"yo_share"</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(250.0, 0.33)
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3361,6 +2665,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3429,7 +2739,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

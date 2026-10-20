@@ -50,8 +50,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -67,6 +67,8 @@
   
   
     
+    
+      
     
     
     
@@ -122,7 +124,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -176,6 +204,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -874,56 +904,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../stats/readability_stats/" class="md-nav__link">
         
@@ -932,7 +912,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -945,92 +925,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1046,7 +940,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1055,42 +949,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1130,56 +988,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../stats/style_stats/" class="md-nav__link">
         
@@ -1188,7 +996,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1201,92 +1009,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1302,7 +1024,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1315,92 +1037,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1416,7 +1052,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1429,92 +1065,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1530,7 +1080,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1543,92 +1093,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1644,7 +1108,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1657,92 +1121,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1758,7 +1136,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1767,42 +1145,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2696,6 +2038,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#names" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2707,112 +2060,129 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basicstatscomponent" class="md-nav__link">
+  <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        BasicStatsComponent
+        Components of the classes of statistics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components of the classes of statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#BasicStatsComponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#morphstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#MorphStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MorphStatsComponent
+        Morphological statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#readabilitystatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#ReadabilityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ReadabilityStatsComponent
+        Readability metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#diversitystatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#DiversityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DiversityStatsComponent
+        Lexical diversity metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#stylestatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#StyleStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        StyleStatsComponent
+        SEO style metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#phonstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#PhonStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PhonStatsComponent
+        Phonostatistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#syntaxstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#SyntaxStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SyntaxStatsComponent
+        Syntactic statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#cohesionstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#CohesionStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CohesionStatsComponent
+        Cohesion statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#lexicalstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#LexicalStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LexicalStatsComponent
+        Lexical sophistication statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#versestatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#VerseStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        VerseStatsComponent
+        Verse statistics
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2820,7 +2190,7 @@
   <a href="#blank_lines" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Blank lines
+        Sentences after blank lines
       
     </span>
   </a>
@@ -2870,6 +2240,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#names" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2881,112 +2262,129 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basicstatscomponent" class="md-nav__link">
+  <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        BasicStatsComponent
+        Components of the classes of statistics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Components of the classes of statistics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#BasicStatsComponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#morphstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#MorphStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MorphStatsComponent
+        Morphological statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#readabilitystatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#ReadabilityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ReadabilityStatsComponent
+        Readability metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#diversitystatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#DiversityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DiversityStatsComponent
+        Lexical diversity metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#stylestatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#StyleStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        StyleStatsComponent
+        SEO style metrics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#phonstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#PhonStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PhonStatsComponent
+        Phonostatistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#syntaxstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#SyntaxStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SyntaxStatsComponent
+        Syntactic statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#cohesionstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#CohesionStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CohesionStatsComponent
+        Cohesion statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#lexicalstatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#LexicalStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        LexicalStatsComponent
+        Lexical sophistication statistics
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#versestatscomponent" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#VerseStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        VerseStatsComponent
+        Verse statistics
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2994,7 +2392,7 @@
   <a href="#blank_lines" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Blank lines
+        Sentences after blank lines
       
     </span>
   </a>
@@ -3022,12 +2420,59 @@
 
 
 <h1 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h1>
+<div class="signature highlight"><pre><span></span><code><span class="n">StatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
 <p>The base of the components of <a href="https://github.com/explosion/spaCy">spaCy</a> that put the statistics of a text into an extension of <code>Doc</code>: a component registers the extension when added to a pipeline and puts the statistics of every document into <code>doc._.&lt;name&gt;</code>. Writing components in general is described in the <a href="https://spacy.io/usage/processing-pipelines#custom-components">documentation of spaCy</a>.</p>
 <p>The components of ruTS are subclasses of the <code>StatsComponent</code> of the <a href="https://sergeyshk.github.io/anyTS/components/">anyTS</a> core, one for every class of statistics.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The examples below use the <code>ru_core_news_sm</code> model, which is installed separately: <code>python -m spacy download ru_core_news_sm</code> (see <a href="../installation/">installation</a>).</p>
 </div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_basic"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"basic"</span><span class="p">)</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span><span class="o">.</span><span class="n">c_letters</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"?!"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span> <span class="ow">is</span> <span class="kc">None</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{4: 3}
+True
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>nlp</code></td>
+<td style="text-align: left;"><code>Language</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Pipeline the component is added to</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>name</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Name of the component in the pipeline and of the extension</td>
+</tr>
+</tbody>
+</table>
+<p>spaCy sets both at <code>nlp.add_pipe(factory, name=...)</code>; the other parameters of a component are passed in the <code>config</code> dictionary of the same call.</p>
 <h2 id="names">Names<a class="headerlink" href="#names" title="Permanent link">&para;</a></h2>
 <p>The factories carry the prefix of the library: <code>ruts_basic</code>, <code>ruts_readability</code>, <code>ruts_diversity</code>, <code>ruts_morph</code>, <code>ruts_syntax</code>, <code>ruts_cohesion</code>, <code>ruts_lexical</code>, <code>ruts_style</code>, <code>ruts_phon</code>, <code>ruts_verse</code>, and the component of sentence boundaries <a href="#blank_lines"><code>ruts_blank_lines</code></a>. They are declared as entry points of <code>spacy_factories</code>, so a pipeline saved with these components (<code>nlp.to_disk(path)</code>) loads with <code>spacy.load(path)</code> without <code>import ruts</code>. <code>import ruts</code> does not load the components while spaCy is not loaded - the entry points find them; from the sources without an installed package, <code>import ruts.components</code> comes before <code>add_pipe</code>.</p>
 <p>The name of the pipe is the name of the extension: <code>nlp.add_pipe(factory, name="basic")</code> puts the statistics into <code>doc._.basic</code>. Without <code>name</code> both take the name of the factory. The extension follows the pipe when the pipeline renames it (<code>nlp.rename_pipe</code>). A name taken by an extension of another package raises <code>ParameterError</code> instead of replacing it: at <code>add_pipe</code>, or at the first document after <code>rename_pipe</code>, which renames the pipe before the component learns its name. A component taken from another pipeline (<code>add_pipe(name, source=other)</code>) is the same object in both, so under a new name it writes to that extension in the other pipeline too; a separate component comes from the factory, <code>add_pipe(factory, name=...)</code>. The same component can be added twice under different names, with different parameters. A document with no words - an empty string, whitespace, punctuation alone - passes through a component untouched, its extension left at <code>None</code>.</p>
@@ -3038,704 +2483,460 @@
 </div>
 <p>Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (<code>ruts.utils.add_dash_rules</code>), so that a <code>Doc</code> is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.</p>
 <p>ruTS removes stress marks from the words of a <code>Doc</code>, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after <code>accentuate</code> the <code>ru_core_news_sm</code> model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
-<h2 id="basicstatscomponent">BasicStatsComponent<a class="headerlink" href="#basicstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.BasicStatsComponent</strong></p>
-</div>
-<p>A module for the basic text statistics component.</p>
-<p>Parameters:</p>
+<h2 id="class-components">Components of the classes of statistics<a class="headerlink" href="#class-components" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Component</th>
+<th style="text-align: left;">Factory</th>
+<th style="text-align: left;">Class of statistics</th>
+<th style="text-align: left;">Parameters</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
+<td style="text-align: left;"><a href="#BasicStatsComponent"><code>BasicStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_basic</code></td>
+<td style="text-align: left;"><code>BasicStats</code></td>
+<td style="text-align: left;">-</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_basic"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
+<td style="text-align: left;"><a href="#MorphStatsComponent"><code>MorphStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_morph</code></td>
+<td style="text-align: left;"><code>MorphStats</code></td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#ReadabilityStatsComponent"><code>ReadabilityStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_readability</code></td>
+<td style="text-align: left;"><code>ReadabilityStats</code></td>
+<td style="text-align: left;"><code>preset</code>, <code>basic</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#DiversityStatsComponent"><code>DiversityStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_diversity</code></td>
+<td style="text-align: left;"><code>DiversityStats</code></td>
+<td style="text-align: left;"><code>window_len</code>, <code>mtld_threshold</code>, <code>mtld_min_len</code>, <code>hdd_sample_size</code>, <code>log_base</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#StyleStatsComponent"><code>StyleStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_style</code></td>
+<td style="text-align: left;"><code>StyleStats</code></td>
+<td style="text-align: left;"><code>stopwords</code>, <code>top_n</code>, <code>nausea_stopwords</code>, <code>cliches</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#PhonStatsComponent"><code>PhonStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_phon</code></td>
+<td style="text-align: left;"><code>PhonStats</code></td>
+<td style="text-align: left;"><code>window_len</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#SyntaxStatsComponent"><code>SyntaxStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_syntax</code></td>
+<td style="text-align: left;"><code>SyntaxStats</code></td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#CohesionStatsComponent"><code>CohesionStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_cohesion</code></td>
+<td style="text-align: left;"><code>CohesionStats</code></td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#LexicalStatsComponent"><code>LexicalStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_lexical</code></td>
+<td style="text-align: left;"><code>LexicalStats</code></td>
+<td style="text-align: left;"><code>data_dir</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#VerseStatsComponent"><code>VerseStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_verse</code></td>
+<td style="text-align: left;"><code>VerseStats</code></td>
+<td style="text-align: left;"><code>data_dir</code></td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_basic"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"basic"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed metrics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span><span class="o">.</span><span class="n">c_letters</span>
+<h3 id="BasicStatsComponent">Basic statistics<a class="headerlink" href="#BasicStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">BasicStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="m">4</span>:<span class="w"> </span><span class="m">3</span><span class="o">}</span>
+<p><code>BasicStatsComponent</code> puts the basic statistics of a document into its extension.</p>
+<h3 id="MorphStatsComponent">Morphological statistics<a class="headerlink" href="#MorphStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<p><code>MorphStatsComponent</code> puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), in a pipeline without a tagger - from pymorphy3.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_morph"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"morph"</span><span class="p">)</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">morph</span><span class="o">.</span><span class="n">case</span>
 </code></pre></div>
 </div>
-<h2 id="morphstatscomponent">MorphStatsComponent<a class="headerlink" href="#morphstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.MorphStatsComponent</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('Nom', None, 'Acc')
+</code></pre></div>
 </div>
-<p>A module for the morphological statistics component. Parts of speech and features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), in a pipeline without a tagger - from pymorphy3.</p>
-<p>Parameters:</p>
+</div>
+</div>
+<h3 id="ReadabilityStatsComponent">Readability metrics<a class="headerlink" href="#ReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p><code>ReadabilityStatsComponent</code> puts the readability metrics into the extension, computed from the document or, with <code>basic</code>, from the basic statistics another component put into it. A library sets <code>basic_factory</code>, the factory of its component of the basic statistics, which the error names when that extension holds none.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
+<td style="text-align: left;"><code>preset</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Preset of the coefficients, one of the presets of the class; the default of the class if <code>None</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_morph"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
+<td style="text-align: left;"><code>basic</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Extension of a component of the basic statistics to reuse instead of computing them again</td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_morph"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"morph"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed metrics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">morph</span><span class="o">.</span><span class="n">case</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'Nom'</span>,<span class="w"> </span>None,<span class="w"> </span><span class="s1">'Acc'</span><span class="o">)</span>
+<p>With <code>preset</code> left at <code>None</code> the config of a saved pipeline holds no preset, and the pipeline takes the default of the class when it is loaded; a library that wants its default written into the config gives it in the signature of its subclass.</p>
+<p>Raises:</p>
+<ul>
+<li><code>ParameterError</code> - a <code>stats_class</code> that is not concrete, a preset that is not a string or not one of the class, an extension not named by a string;</li>
+<li><code>SourceTypeError</code> - a class without <code>basic_stats_class</code> and no <code>basic</code>;</li>
+<li><code>SourceError</code> - a document whose extension <code>basic</code> holds no basic statistics of the class.</li>
+</ul>
+<p>The <a href="../stats/readability_stats/#presets">presets</a> of ruTS are <code>plainrussian</code>, <code>fiction</code> and <code>academic</code>, the preset of the class <code>plainrussian</code>. In ruTS the class of statistics and its <code>basic_stats_class</code> are set, so the errors of <code>stats_class</code> and <code>SourceTypeError</code> do not occur; the message of <code>SourceError</code> names the component <code>ruts_basic</code> (<code>basic_factory</code>) to add before it.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability"</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"preset"</span><span class="p">:</span> <span class="s2">"fiction"</span><span class="p">,</span> <span class="s2">"basic"</span><span class="p">:</span> <span class="s2">"basic"</span><span class="p">}</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability_fiction"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц, которые летали над крышами домов."</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">readability</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">readability_fiction</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
 </code></pre></div>
 </div>
-<h2 id="readabilitystatscomponent">ReadabilityStatsComponent<a class="headerlink" href="#readabilitystatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.ReadabilityStatsComponent</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>-0.1506153846153886
+6.41769230769231
+</code></pre></div>
 </div>
-<p>A module for the readability metrics component.</p>
-<p>Parameters:</p>
+</div>
+</div>
+<h3 id="DiversityStatsComponent">Lexical diversity metrics<a class="headerlink" href="#DiversityStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">DiversityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">mtld_threshold</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">mtld_min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">hdd_sample_size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">log_base</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div>
+<p><code>DiversityStatsComponent</code> puts the lexical diversity metrics into the extension, by a class of the library that reads a <code>Doc</code>. Its parameters are those of <code>DiversityStats</code>, with the same defaults.</p>
+<p>Raises:</p>
+<ul>
+<li><code>ParameterError</code> - a wrong parameter (<code>check_params</code> of the diversity).</li>
+</ul>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
+<td style="text-align: left;"><code>window_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>50</code></td>
+<td style="text-align: left;">Window size for MATTR and segment size for MSTTR</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_readability"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
+<td style="text-align: left;"><code>mtld_threshold</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.72</code></td>
+<td style="text-align: left;">TTR threshold for MTLD, MA-MTLD and MTLD-W</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>preset</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;"><a href="../stats/readability_stats/#presets">Coefficient preset</a> (<code>plainrussian</code>, <code>fiction</code>, <code>academic</code>); <code>None</code> - the preset of the class, <code>plainrussian</code></td>
+<td style="text-align: left;"><code>mtld_min_len</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Minimum factor length for MTLD, MA-MTLD and MTLD-W</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>basic</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Extension of a basic statistics component to reuse instead of counting again</td>
+<td style="text-align: left;"><code>hdd_sample_size</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>42</code></td>
+<td style="text-align: left;">Sample size for HD-D</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>log_base</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Logarithm base for the Summer, Maas and Dugast metrics</td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed metrics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">readability</span><span class="o">.</span><span class="n">flesch_reading_easy</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">82</span>.735
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">}</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_diversity"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"diversity"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">diversity</span><span class="o">.</span><span class="n">rttr</span>
 </code></pre></div>
 </div>
-<p>The coefficient preset is passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
-    <span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability_fiction"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"preset"</span><span class="p">:</span> <span class="s2">"fiction"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>1.7320508075688774
 </code></pre></div>
 </div>
-<h2 id="diversitystatscomponent">DiversityStatsComponent<a class="headerlink" href="#diversitystatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.DiversityStatsComponent</strong></p>
 </div>
-<p>A module for the lexical diversity metrics component.</p>
-<p>Parameters:</p>
+</div>
+<h3 id="StyleStatsComponent">SEO style metrics<a class="headerlink" href="#StyleStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">StyleStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nausea_stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p><code>StyleStatsComponent</code> puts the style metrics into the extension.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
+<td style="text-align: left;"><code>stopwords</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stopwords of the water content; those of the class if <code>None</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_diversity"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
+<td style="text-align: left;"><code>top_n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Number of the most frequent words of the academic nausea and of the naturalness by Zipf's law (<code>NAUSEA_TOP_N</code>)</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>50</code></td>
-<td style="text-align: center;">Window size for MATTR and segment size for MSTTR</td>
+<td style="text-align: left;"><code>nausea_stopwords</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Words left out of the most frequent words of the academic nausea; those of the class if <code>None</code></td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>mtld_threshold</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>0.72</code></td>
-<td style="text-align: center;">TTR threshold for MTLD, MA-MTLD and MTLD-W</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mtld_min_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Minimum factor length for MTLD, MA-MTLD and MTLD-W</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>hdd_sample_size</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>42</code></td>
-<td style="text-align: center;">Sample size for HD-D</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>log_base</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Logarithm base for the Summer, Maas and Dugast metrics</td>
+<td style="text-align: left;"><code>cliches</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Cliches; those of the class (<code>cliches_list</code>) if <code>None</code></td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_diversity"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"diversity"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed metrics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">diversity</span><span class="o">.</span><span class="n">rttr</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">1</span>.7320508075688774
-</code></pre></div>
-</div>
-<p>Windows, thresholds and the logarithm base are passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
-    <span class="s2">"ruts_diversity"</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">"diversity_ln"</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">},</span>
-    <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
-</code></pre></div>
-</div>
-<h2 id="stylestatscomponent">StyleStatsComponent<a class="headerlink" href="#stylestatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.StyleStatsComponent</strong></p>
-</div>
-<p>A module for the SEO style metrics component.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_style"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of water words for water content; if not given, pymorphy3 tags are used</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>top_n</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Number of the most frequent words for academic nausea and naturalness by Zipf's law</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>nausea_stopwords</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stop word list for academic nausea; if not given, pymorphy3 tags are used</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>cliches</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List of cliches; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
-</tr>
-</tbody>
-</table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed metrics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">water</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">0</span>.0
-</code></pre></div>
-</div>
-<p>The stop word list, the number of the most frequent words and your own list of cliches are passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
-    <span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style_short"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - stopwords, nausea stopwords or cliches that are not a list of strings;</li>
+<li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
+</ul>
+<p>Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> is a constant of <code>anyts.constants</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">water</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style_cliches"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"cliches"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"в целях"</span><span class="p">,</span> <span class="s2">"в рамках"</span><span class="p">]})</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"В целях экономии в рамках проекта мы закрыли склад."</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">style_cliches</span><span class="o">.</span><span class="n">cliches</span>
 </code></pre></div>
 </div>
-<h2 id="phonstatscomponent">PhonStatsComponent<a class="headerlink" href="#phonstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.PhonStatsComponent</strong></p>
-</div>
-<p>A module for the phonostatistics component.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_phon"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>window_len</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>3</code></td>
-<td style="text-align: center;">Window size in words for alliteration and assonance</td>
-</tr>
-</tbody>
-</table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed statistics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">phon</span><span class="o">.</span><span class="n">p_open_syllables</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">1</span>.0
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.0
+22.22222222222222
 </code></pre></div>
 </div>
-<p>The window size is passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon_windowed"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</div>
+</div>
+<h3 id="PhonStatsComponent">Phonostatistics<a class="headerlink" href="#PhonStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">PhonStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+<p><code>PhonStatsComponent</code> puts the phonetic statistics into the extension; <code>window_len</code> (<code>PHON_WINDOW_LEN</code> by default) is the window in words of the alliteration and the assonance.</p>
+<p>Raises:</p>
+<ul>
+<li><code>ParameterError</code> - a <code>window_len</code> that is not an integer of at least 2.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">phon</span><span class="o">.</span><span class="n">p_open_syllables</span>
 </code></pre></div>
 </div>
-<h2 id="syntaxstatscomponent">SyntaxStatsComponent<a class="headerlink" href="#syntaxstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.SyntaxStatsComponent</strong></p>
-</div>
-<p>A module for the syntactic statistics component. The component works over the dependency tree, so the pipeline must have a parser: the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> or <code>ru_core_news_lg</code> models; in a pipeline without a parser the component raises <code>SourceError</code>.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_syntax"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-</tbody>
-</table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed statistics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Дом, построенный рабочими в прошлом году, был продан"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="n">tree_depth</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">4</span>.0
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>1.0
 </code></pre></div>
 </div>
-<h2 id="cohesionstatscomponent">CohesionStatsComponent<a class="headerlink" href="#cohesionstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.CohesionStatsComponent</strong></p>
 </div>
-<p>A module for the cohesion statistics component. The component only needs sentence boundaries (a model or <code>sentencizer</code>); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_cohesion"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-</tbody>
-</table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed statistics</span>
+</div>
+<h3 id="SyntaxStatsComponent">Syntactic statistics<a class="headerlink" href="#SyntaxStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<p><code>SyntaxStatsComponent</code> puts the syntactic statistics into the extension; they need a parser before it.</p>
+<p>The <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models have a parser.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceError</code> - a document without a dependency parse, in a pipeline without a parser.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">)</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"Дом, построенный рабочими в прошлом году, был продан"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">syntax</span><span class="o">.</span><span class="n">tree_depth</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>4.0
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="CohesionStatsComponent">Cohesion statistics<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">)</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул."</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">cohesion</span><span class="o">.</span><span class="n">noun_overlap_adjacent</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">0</span>.5
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.5
 </code></pre></div>
 </div>
-<h2 id="lexicalstatscomponent">LexicalStatsComponent<a class="headerlink" href="#lexicalstatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.LexicalStatsComponent</strong></p>
 </div>
-<p>A module for the lexical sophistication statistics component. The frequency dictionary metrics require a downloaded <a href="../datasets/freq2011/"><code>FreqDict</code></a>; the bands and lexical density are computed without it.</p>
-<p>Parameters:</p>
+</div>
+<h3 id="LexicalStatsComponent">Lexical sophistication statistics<a class="headerlink" href="#LexicalStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">LexicalStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p><code>LexicalStatsComponent</code> puts the lexical sophistication statistics into the extension. The frequency dictionary metrics require a downloaded <a href="../datasets/freq2011/"><code>FreqDict</code></a>; the bands and lexical density are computed without it.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_lexical"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>data_dir</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Path to the frequency dictionary directory; if not given, the default directory is used</td>
+<td style="text-align: left;"><code>data_dir</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Path to the frequency dictionary directory; if not given, the default directory is used</td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed statistics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц"</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">lexical</span><span class="o">.</span><span class="n">p_top1000</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="m">0</span>.75
+<p>Raises:</p>
+<ul>
+<li><code>DatasetNotFoundError</code> - the frequency dictionary metrics and <code>get_stats()</code> when <code>FreqDict</code> is not downloaded.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">)</span>
+<span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">lexical</span><span class="o">.</span><span class="n">p_top1000</span>
 </code></pre></div>
 </div>
-<p>The dictionary directory is passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span>
-    <span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical_dicts"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.75
 </code></pre></div>
 </div>
-<h2 id="versestatscomponent">VerseStatsComponent<a class="headerlink" href="#versestatscomponent" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.components.VerseStatsComponent</strong></p>
 </div>
-<p>A module for the verse statistics component. It requires a downloaded <a href="../datasets/stressdict/"><code>StressDict</code></a> stress dictionary; the component works on the <code>Doc</code> text with line breaks, so pass the poem text to <code>nlp</code> as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like <code>VerseStats</code>, so <code>nlp.pipe</code> over a corpus does not stop on it.</p>
-<p>Parameters:</p>
+</div>
+<h3 id="VerseStatsComponent">Verse statistics<a class="headerlink" href="#VerseStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">VerseStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p><code>VerseStatsComponent</code> puts the verse statistics into the extension; it requires a downloaded <a href="../datasets/stressdict/"><code>StressDict</code></a> stress dictionary. The component works on the <code>Doc</code> text with line breaks, so pass the poem text to <code>nlp</code> as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like <code>VerseStats</code>, so <code>nlp.pipe</code> over a corpus does not stop on it.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>nlp</code></td>
-<td style="text-align: center;">Language</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Language object</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>name</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>"ruts_verse"</code></td>
-<td style="text-align: center;">Component name in the pipeline</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>data_dir</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Path to the stress dictionary directory; if not given, the default directory is used</td>
+<td style="text-align: left;"><code>data_dir</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Path to the stress dictionary directory; if not given, the default directory is used</td>
 </tr>
 </tbody>
 </table>
-<p>Usage example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Access the computed statistics</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span>
-    <span class="s2">"Буря мглою небо кроет,</span><span class="se">\n</span><span class="s2">Вихри снежные крутя;</span><span class="se">\n</span><span class="s2">То, как зверь, она завоет,</span><span class="se">\n</span><span class="s2">То заплачет, как дитя"</span>
+<p>Raises:</p>
+<ul>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded; the first document with letters raises it.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Code</label><label for="__tabbed_10_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">)</span>
+<span class="n">poem</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"Буря мглою небо кроет,</span><span class="se">\n</span><span class="s2">Вихри снежные крутя;</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="s2">"То, как зверь, она завоет,</span><span class="se">\n</span><span class="s2">То заплачет, как дитя"</span>
 <span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">poem</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">verse</span><span class="o">.</span><span class="n">meter</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">verse</span><span class="o">.</span><span class="n">n_feet</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">(</span><span class="s1">'хорей'</span>,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('хорей', 4)
 </code></pre></div>
 </div>
-<p>The dictionary directory is passed via <code>config</code>:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse_dicts"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"data_dir"</span><span class="p">:</span> <span class="s2">"/path/to/dicts"</span><span class="p">},</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</div>
+</div>
+<h2 id="blank_lines">Sentences after blank lines<a class="headerlink" href="#blank_lines" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">start_sents_after_blank_lines</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 </code></pre></div>
-</div>
-<h2 id="blank_lines">Blank lines<a class="headerlink" href="#blank_lines" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts_blank_lines</strong> (<code>anyts.components.start_sents_after_blank_lines</code>)</p>
-</div>
 <p>A component that starts a sentence at the first token after a blank line - a line break, optional whitespace and another line break - so that a heading, a list item or a paragraph without a final mark is a sentence of its own, as in the sentence extractor. It goes before the parser, <code>senter</code> or <code>sentencizer</code>, which keeps its starts and places the others. The whitespace before such a start stays with the sentence before it, and the marks that open a paragraph (a dash of a dialogue, <code>¡</code>, <code>«</code>) stay with its first word. Alone, the component leaves the sentences within a paragraph unsplit and sets partial boundaries (<code>has_sents</code>), so the statistics take the sentences of such a document from its text. A parsed document, such as one passed through the pipeline again, passes untouched, since spaCy keeps its sentences. A language library registers the component under its prefix, <code>Language.component("&lt;prefix&gt;_blank_lines", func=start_sents_after_blank_lines)</code>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>doc</code></td>
-<td style="text-align: center;">Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Doc object</td>
+<td style="text-align: left;"><code>doc</code></td>
+<td style="text-align: left;"><code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Doc object</td>
 </tr>
 </tbody>
 </table>
 <p>In ruTS the component is registered as <code>ruts_blank_lines</code>. Without it the <code>ru_core_news_sm</code> model glues a paragraph without a final mark to the next sentence, and the statistics of a <code>Doc</code> differ from those of the same string.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="c1"># Load the spaCy model</span>
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-<span class="c1"># Add the component before the parser</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Code</label><label for="__tabbed_11_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_blank_lines"</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">"parser"</span><span class="p">)</span>
-
-<span class="c1"># Sentences of the document</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span>
-<span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
+<span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">[</span><span class="s1">'Что нового'</span>,<span class="w"> </span><span class="s1">'Быстрый импорт.'</span>,<span class="w"> </span><span class="s1">'Меньше ошибок'</span><span class="o">]</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
 </code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3756,6 +2957,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3824,7 +3031,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

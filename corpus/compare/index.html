@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2082,7 +1424,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2090,7 +1432,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#text_features" class="md-nav__link">
     <span class="md-ellipsis">
       
         Признаки
@@ -2101,7 +1443,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#compare_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сравнение таблиц признаков
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
         Статистики
@@ -2112,18 +1465,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Параметры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         Функции статистик
@@ -2134,10 +1476,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#split_windows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Пример использования
+        Окна текста
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sentence_rhythm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ритм предложений
       
     </span>
   </a>
@@ -2809,7 +2162,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2817,7 +2170,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#text_features" class="md-nav__link">
     <span class="md-ellipsis">
       
         Признаки
@@ -2828,7 +2181,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#compare_features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сравнение таблиц признаков
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
         Статистики
@@ -2839,18 +2203,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Параметры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
         Функции статистик
@@ -2861,10 +2214,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#split_windows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Пример использования
+        Окна текста
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sentence_rhythm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ритм предложений
       
     </span>
   </a>
@@ -2892,16 +2256,109 @@
 
 
 <h1 id="_1">Сравнение корпусов<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.corpus.compare_corpora()</strong>, <strong>ruts.corpus.compare_features()</strong>, <strong>ruts.corpus.check_comparison_params()</strong>, <strong>ruts.corpus.corpus_features()</strong>, <strong>ruts.corpus.text_features()</strong>, <strong>ruts.corpus.split_windows()</strong>, <strong>ruts.corpus.sentence_rhythm()</strong>, <strong>ruts.corpus.calc_cohen_d()</strong>, <strong>ruts.corpus.calc_cliff_delta()</strong>, <strong>ruts.corpus.bootstrap_median_diff()</strong>, <strong>ruts.corpus.holm_correction()</strong></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">compare_corpora</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Сравнивает два корпуса русских текстов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>.</p>
+<p>Тексты режутся подряд на окна ровно по <code>window</code> слов функцией <a href="#split_windows"><code>split_windows</code></a>, так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если <code>min_words</code> не разрешает окна короче. Признаки каждого окна считает <a href="#text_features"><code>text_features</code></a> или своя функция, а таблицы двух корпусов сравнивает <a href="#compare_features"><code>compare_features</code></a> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>.</p>
+<p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 249 и 1423 окна по 1000 слов, меньше минуты.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_corpora</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">RussianLiterature</span>
+
+<span class="n">rl</span> <span class="o">=</span> <span class="n">RussianLiterature</span><span class="p">()</span>
+<span class="n">chekhov</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">genre</span><span class="o">=</span><span class="s2">"prose"</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">"Чехов"</span><span class="p">))</span>
+<span class="n">tolstoy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">genre</span><span class="o">=</span><span class="s2">"prose"</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">"Толстой"</span><span class="p">))</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">compare_corpora</span><span class="p">(</span><span class="n">chekhov</span><span class="p">,</span> <span class="n">tolstoy</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">"Чехов"</span><span class="p">,</span> <span class="s2">"Толстой"</span><span class="p">))</span>
+<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"median_Чехов"</span><span class="p">,</span>
+    <span class="s2">"median_Толстой"</span><span class="p">,</span>
+    <span class="s2">"ci_low"</span><span class="p">,</span>
+    <span class="s2">"ci_high"</span><span class="p">,</span>
+    <span class="s2">"cohen_d"</span><span class="p">,</span>
+    <span class="s2">"cliff_delta"</span><span class="p">,</span>
+    <span class="s2">"auc"</span><span class="p">,</span>
+    <span class="s2">"p_holm"</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">result</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"sents_mean"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"n_Чехов"</span><span class="p">,</span> <span class="s2">"n_Толстой"</span><span class="p">,</span> <span class="s2">"n_texts_Чехов"</span><span class="p">,</span> <span class="s2">"n_texts_Толстой"</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+</code></pre></div>
 </div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p><code>compare_corpora</code> сравнивает два корпуса русских текстов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>. Функция строит таблицы признаков окон обоих корпусов и сравнивает их функцией <code>compare_features</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>:</p>
-<!-- core: corpus/compare.md:compare_features 0ac6ea0 -->
-<p>Сравнение двух корпусов признак за признаком. Каждый корпус - таблица признаков своих окон, частей текстов примерно одинакового размера, чтобы признаки не зависели от длины текстов. <code>compare_features(table_a, table_b, labels, n_bootstrap, seed)</code> дает по строке на столбец, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса; без него каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
-<p>Тексты режутся подряд на окна ровно по <code>window</code> слов функцией <code>split_windows</code>, так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если <code>min_words</code> не разрешает окна короче. Признаки каждого окна считает <code>text_features</code> или своя функция.</p>
-<h2 id="_3">Признаки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p><code>text_features(text)</code> возвращает 113 признаков с префиксом по источнику:</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                               median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+punct_ellipsis                       14.000           2.000   5.000   23.000    1.869        0.707  0.853     0.0
+punct_exclamation                    14.000           4.000   7.000   13.000    1.670        0.658  0.829     0.0
+morph_verb_form_Fin                   0.766           0.700   0.037    0.100    1.132        0.574  0.787     0.0
+punct_yo_share                        0.007           0.000   0.002    0.010    1.026        0.533  0.766     0.0
+morph_verb_form_Part                  0.043           0.077  -0.051   -0.017   -0.795       -0.492  0.254     0.0
+punct_other                           0.000           2.000  -4.000    0.000   -0.351       -0.489  0.256     0.0
+readability_dale_chall_index          5.280           6.566  -2.235   -0.754   -0.866       -0.488  0.256     0.0
+readability_gunning_fog_index         6.088           7.730  -2.669   -0.863   -0.864       -0.481  0.260     0.0
+readability_smog_index                5.876           7.174  -2.323   -0.854   -0.840       -0.480  0.260     0.0
+morph_verb_form_Conv                  0.055           0.082  -0.041   -0.017   -0.800       -0.464  0.268     0.0
+{'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>У Чехова в разы больше многоточий и восклицаний на 1000 слов, короче предложения, выше доля личных форм глагола и ниже - причастий и деепричастий; Толстой сложнее по всем формулам удобочитаемости. Двадцать произведений Чехова и одно Толстого короче 1000 слов и не дают ни одного окна, так что окна - из 57 и 41 произведения; с окном поменьше в сравнение вошли бы и они.</p>
+<p>p-значения считают 1672 окна независимыми (см. <a href="#statistics">предупреждение</a> ниже): у 87 из 113 признаков поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 9. Интервал разности медиан пересэмплирует целые произведения и надежнее: он не включает нуль у 65 из этих 87 признаков, а для длины предложения охватывает от −5.3 до −1.3 слова, тогда как по одним окнам вышло бы от −4.2 до −2.7. Для многоточий он охватывает от 5 до 23 на 1000 слов: произведения Чехова сильно различаются по ним - в среднем от долей единицы до 84 на 1000 слов.</p>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Тексты первого корпуса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Тексты второго корпуса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Размер окна в словах; <code>None</code> - тексты целиком</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>features</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Функция признаков текста; <code>None</code> - <code>text_features</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Наименьшее число слов в окне, не больше <code>window</code>; <code>None</code> - окно целиком, при <code>window=None</code> - одно слово</td>
+</tr>
+</tbody>
+</table>
+<p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <a href="#compare_features"><code>compare_features</code></a>. <code>compare_corpora</code> первым делом проверяет их функцией <code>check_comparison_params</code>, так что неверное имя корпуса или зерно дает ошибку до обработки текстов.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - тексты, которые не список строк, <code>features</code>, который нельзя вызвать;</li>
+<li><code>SourceError</code> - корпус без окна из <code>min_words</code> и более слов;</li>
+<li><code>ParameterError</code> - <code>window</code> или <code>min_words</code>, который не целое число не меньше единицы, <code>min_words</code> больше <code>window</code>, метки, число выборок или зерно, которые не проходят <code>check_comparison_params</code>.</li>
+</ul>
+<h2 id="text_features">Признаки<a class="headerlink" href="#text_features" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">text_features</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>Возвращает 113 признаков текста с префиксом по источнику; неопределенный признак равен <code>nan</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2933,7 +2390,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_</code></td>
-<td style="text-align: left;">средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (<code>sentence_rhythm</code>) - ритм текста</td>
+<td style="text-align: left;">средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (<a href="#sentence_rhythm"><code>sentence_rhythm</code></a>) - ритм текста</td>
 <td style="text-align: left;"><a href="../../visualizers/sentences/"><code>sentence_lengths</code></a></td>
 </tr>
 <tr>
@@ -2944,10 +2401,163 @@
 </tbody>
 </table>
 <p>На окно в 1000 слов уходит около 0.02 с. Признаки по разбору spaCy (<code>SyntaxStats</code>, <code>CohesionStats</code>) в набор по умолчанию не входят - функция работает по строкам; их можно добавить своей функцией признаков через <code>features</code>, см. пример ниже.</p>
-<p><code>corpus_features(texts, window, features)</code> отдает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; уровень <code>text</code> этого индекса и пересэмплирует бутстрэп <code>compare_features</code>. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
 <p>Доли пробелов, букв и знаков (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) считаются по символам как есть: отступы строк, двойные и неразрывные пробелы в файлах отражают верстку издания, а не текст. В корпусе из разных источников их стоит схлопнуть заранее, например <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
-<h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/compare.md:compare_features-statistics b032a50 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Строка текста</td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - текст, который не строка;</li>
+<li><code>SourceError</code> - текст без слов.</li>
+</ul>
+<div class="signature highlight"><pre><span></span><code><span class="n">corpus_features</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">text_features</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Возвращает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; уровень <code>text</code> этого индекса и пересэмплирует бутстрэп <code>compare_features</code>. Тексты без слов и окна короче <code>min_words</code> пропускаются. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>texts</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Тексты корпуса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Размер окна в словах; <code>None</code> - тексты целиком</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>features</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>text_features</code></td>
+<td style="text-align: left;">Функция признаков текста</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Наименьшее число слов в окне, не больше <code>window</code>; <code>None</code> - окно целиком, при <code>window=None</code> - одно слово</td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - тексты, которые не список строк, <code>features</code>, который нельзя вызвать;</li>
+<li><code>SourceError</code> - корпус без окна из <code>min_words</code> и более слов;</li>
+<li><code>ParameterError</code> - <code>window</code> или <code>min_words</code>, который не целое число не меньше единицы, <code>min_words</code> больше <code>window</code>.</li>
+</ul>
+<p>Свои признаки, например синтаксические по spaCy, передаются функцией; с разбором то же сравнение занимает около восьми минут:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_corpora</span><span class="p">,</span> <span class="n">text_features</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">features</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">text_features</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">"syntax_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span>
+
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">compare_corpora</span><span class="p">(</span>
+    <span class="n">chekhov</span><span class="p">,</span> <span class="n">tolstoy</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">"Чехов"</span><span class="p">,</span> <span class="s2">"Толстой"</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">like</span><span class="o">=</span><span class="s2">"syntax_"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+syntax_converb_clauses_per_sent            0.106           0.212  -0.147   -0.077   -0.970       -0.574  0.213     0.0
+syntax_participle_clauses_per_sent         0.054           0.135  -0.109   -0.051   -0.864       -0.566  0.217     0.0
+syntax_mean_clause_len                     5.155           5.917  -1.110   -0.466   -0.833       -0.501  0.250     0.0
+syntax_modifiers_per_noun                  0.479           0.593  -0.188   -0.052   -0.968       -0.500  0.250     0.0
+syntax_genitive_chains_per_sent            0.000           0.018  -0.022   -0.014   -0.616       -0.487  0.257     0.0
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="compare_features">Сравнение таблиц признаков<a class="headerlink" href="#compare_features" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/compare.md:compare_features 96478f4 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">compare_features</span><span class="p">(</span><span class="n">table_a</span><span class="p">,</span> <span class="n">table_b</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<p>Сравнивает два корпуса признак за признаком. Каждый корпус - таблица признаков своих окон, частей текстов примерно одинакового размера, чтобы признаки не зависели от длины текстов. Результат - по строке на столбец, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса; без него каждая строка считается отдельным текстом. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
+<!-- core: corpus/compare.md:compare_features-parameters 2ed21c1 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>table_a</code></td>
+<td style="text-align: left;"><code>DataFrame</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Признаки окон первого корпуса, по строке на окно</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>table_b</code></td>
+<td style="text-align: left;"><code>DataFrame</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Признаки окон второго корпуса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>tuple[str, str]</code></td>
+<td style="text-align: left;"><code>('A', 'B')</code></td>
+<td style="text-align: left;">Имена корпусов для столбцов, две строки, дающие разные столбцы</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_bootstrap</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Число выборок бутстрэпа</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>seed</code></td>
+<td style="text-align: left;"><code>int</code> / <code>Generator</code></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Зерно генератора случайных чисел, неотрицательное целое число, или <code>Generator</code> numpy; <code>None</code> - случайное</td>
+</tr>
+</tbody>
+</table>
+<p>Таблица, которая не <code>DataFrame</code>, повторяет имя столбца или содержит столбец, который не числовой, дает <code>SourceTypeError</code>; остальные параметры проверяет <code>check_comparison_params</code>.</p>
+<!-- core: corpus/compare.md:check_comparison_params a56a706 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">check_comparison_params</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет параметры <code>compare_features</code> до обработки текстов: дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy.</p>
+<h2 id="statistics">Статистики<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/compare.md:compare_features-statistics 99869be -->
 <p>Для признака со значениями <span class="arithmatex">\(x_1 \dots x_{n_A}\)</span> в корпусе A и <span class="arithmatex">\(y_1 \dots y_{n_B}\)</span> в корпусе B (неопределенные и бесконечные значения отброшены; при менее чем двух значениях на стороне - <code>nan</code>):</p>
 <table>
 <thead>
@@ -2995,175 +2605,267 @@
 </tr>
 </tbody>
 </table>
-<p>Столбцы - <code>anyts.corpus.COMPARISON_COLUMNS</code>, где <code>A</code> и <code>B</code> заменены метками корпусов. Дельта Клиффа и AUC считаются из той же U-статистики и согласованы; d Коэна чувствителен к выбросам и отклонениям от нормальности, его стоит смотреть рядом с дельтой.</p>
+<p>Столбцы - <code>anyts.corpus.COMPARISON_COLUMNS</code>, где суффиксы <code>a</code> и <code>b</code> заменены метками корпусов. Дельта Клиффа и AUC считаются из той же U-статистики и согласованы; d Коэна чувствителен к выбросам и отклонениям от нормальности, его стоит смотреть рядом с дельтой.</p>
 <div class="admonition warning">
 <p class="admonition-title">Окна одного текста не независимы</p>
 <p>Критерий и размеры эффекта считают окна независимыми наблюдениями, а окна одного текста не независимы: при небольшом числе текстов p-значения слишком малы и отражают выбор текстов не меньше, чем сами корпуса. Бутстрэп пересэмплирует целые тексты (кластерный бутстрэп), так что его интервал учитывает разброс между текстами; ему нужно не меньше двух текстов с каждой стороны, а при немногих текстах он груб.</p>
 </div>
-<h2 id="_5">Параметры<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>Параметры <code>compare_corpora</code>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>a</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Тексты первого корпуса</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>b</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Тексты второго корпуса</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>window</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>1000</code></td>
-<td style="text-align: center;">Размер окна в словах; <code>None</code> - тексты целиком</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>features</code></td>
-<td style="text-align: center;">callable</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Функция признаков текста; <code>None</code> - <code>text_features</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>min_words</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Наименьшее число слов в окне, не больше <code>window</code>; <code>None</code> - окно целиком, при <code>window=None</code> - одно слово</td>
-</tr>
-</tbody>
-</table>
-<p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <code>compare_features</code>, параметры которой:</p>
-<!-- core: corpus/compare.md:compare_features-parameters 552077d -->
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>table_a</code></td>
-<td style="text-align: center;">DataFrame</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Признаки окон первого корпуса, по строке на окно</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>table_b</code></td>
-<td style="text-align: center;">DataFrame</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Признаки окон второго корпуса</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>labels</code></td>
-<td style="text-align: center;">tuple[str, str]</td>
-<td style="text-align: center;"><code>("A", "B")</code></td>
-<td style="text-align: center;">Имена корпусов для столбцов, две строки, дающие разные столбцы</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_bootstrap</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>1000</code></td>
-<td style="text-align: center;">Число выборок бутстрэпа</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>seed</code></td>
-<td style="text-align: center;">int/Generator</td>
-<td style="text-align: center;"><code>0</code></td>
-<td style="text-align: center;">Зерно генератора случайных чисел, неотрицательное целое число, или <code>Generator</code> numpy; <code>None</code> - случайное</td>
-</tr>
-</tbody>
-</table>
-<p>Таблица, которая не <code>DataFrame</code>, повторяет имя столбца или содержит столбец, который не числовой, дает <code>SourceTypeError</code>; остальные параметры проверяет <code>check_comparison_params</code>.</p>
-<!-- core: corpus/compare.md:check_comparison_params 578280c -->
-<p><code>check_comparison_params(labels=("A", "B"), n_bootstrap=1000, seed=0)</code> проверяет параметры <code>compare_features</code> до обработки текстов: дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy.</p>
-<p><code>compare_corpora</code> вызывает ее первой, так что неверное имя корпуса или зерно дает ошибку до обработки текстов.</p>
-<h2 id="_6">Функции статистик<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h2 id="_3">Функции статистик<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Статистики строки доступны по отдельности из <code>ruts.corpus</code>:</p>
-<!-- core: corpus/compare.md:calc_cohen_d 1403a14 -->
-<p><code>calc_cohen_d(values_a, values_b)</code> - d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса. Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
-<!-- core: corpus/compare.md:calc_cliff_delta 35672f7 -->
-<p><code>calc_cliff_delta(values_a, values_b)</code> - дельта Клиффа, доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью. Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
-<!-- core: corpus/compare.md:bootstrap_median_diff 819bff8 -->
-<p><code>bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None)</code> - перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, а медиана выборки берется по значениям ее текстов; при менее чем двух текстах на стороне интервал - <code>nan</code>. Значение, которое не число и не пропуск, значения, которые не плоский список, и тексты, которые не метки одного типа, дают <code>SourceTypeError</code>; <code>n_bootstrap</code>, который не целое число не меньше единицы, <code>confidence</code>, который не число в интервале (0, 1), число текстов, не равное числу значений, и <code>rng</code>, который не <code>Generator</code> numpy, - <code>ParameterError</code>.</p>
-<!-- core: corpus/compare.md:holm_correction 61aa239 -->
-<p><code>holm_correction(p_values)</code> - поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>. P-значение, которое не число и не пропуск, и p-значения, которые не плоский список, дают <code>SourceTypeError</code>, а p-значение вне [0, 1] - <code>ParameterError</code>.</p>
-<h2 id="_7">Пример использования<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
-<p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 249 и 1423 окна по 1000 слов, меньше минуты.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_corpora</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">RussianLiterature</span>
-
-<span class="n">rl</span> <span class="o">=</span> <span class="n">RussianLiterature</span><span class="p">()</span>
-<span class="n">chekhov</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">genre</span><span class="o">=</span><span class="s2">"prose"</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">"Чехов"</span><span class="p">))</span>
-<span class="n">tolstoy</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rl</span><span class="o">.</span><span class="n">get_texts</span><span class="p">(</span><span class="n">genre</span><span class="o">=</span><span class="s2">"prose"</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s2">"Толстой"</span><span class="p">))</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">compare_corpora</span><span class="p">(</span><span class="n">chekhov</span><span class="p">,</span> <span class="n">tolstoy</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">"Чехов"</span><span class="p">,</span> <span class="s2">"Толстой"</span><span class="p">))</span>
-<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"median_Чехов"</span><span class="p">,</span>
-    <span class="s2">"median_Толстой"</span><span class="p">,</span>
-    <span class="s2">"ci_low"</span><span class="p">,</span>
-    <span class="s2">"ci_high"</span><span class="p">,</span>
-    <span class="s2">"cohen_d"</span><span class="p">,</span>
-    <span class="s2">"cliff_delta"</span><span class="p">,</span>
-    <span class="s2">"auc"</span><span class="p">,</span>
-    <span class="s2">"p_holm"</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">result</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="n">result</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"sents_mean"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"n_Чехов"</span><span class="p">,</span> <span class="s2">"n_Толстой"</span><span class="p">,</span> <span class="s2">"n_texts_Чехов"</span><span class="p">,</span> <span class="s2">"n_texts_Толстой"</span><span class="p">]]</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<!-- core: corpus/compare.md:calc_cohen_d 198b504 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cohen_d</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
 </code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                               </span>median_Чехов<span class="w">  </span>median_Толстой<span class="w">  </span>ci_low<span class="w">  </span>ci_high<span class="w">  </span>cohen_d<span class="w">  </span>cliff_delta<span class="w">    </span>auc<span class="w">  </span>p_holm
-punct_ellipsis<span class="w">                       </span><span class="m">14</span>.000<span class="w">           </span><span class="m">2</span>.000<span class="w">   </span><span class="m">5</span>.000<span class="w">   </span><span class="m">23</span>.000<span class="w">    </span><span class="m">1</span>.869<span class="w">        </span><span class="m">0</span>.707<span class="w">  </span><span class="m">0</span>.853<span class="w">     </span><span class="m">0</span>.0
-punct_exclamation<span class="w">                    </span><span class="m">14</span>.000<span class="w">           </span><span class="m">4</span>.000<span class="w">   </span><span class="m">7</span>.000<span class="w">   </span><span class="m">13</span>.000<span class="w">    </span><span class="m">1</span>.670<span class="w">        </span><span class="m">0</span>.658<span class="w">  </span><span class="m">0</span>.829<span class="w">     </span><span class="m">0</span>.0
-morph_verb_form_Fin<span class="w">                   </span><span class="m">0</span>.766<span class="w">           </span><span class="m">0</span>.700<span class="w">   </span><span class="m">0</span>.037<span class="w">    </span><span class="m">0</span>.100<span class="w">    </span><span class="m">1</span>.132<span class="w">        </span><span class="m">0</span>.574<span class="w">  </span><span class="m">0</span>.787<span class="w">     </span><span class="m">0</span>.0
-punct_yo_share<span class="w">                        </span><span class="m">0</span>.007<span class="w">           </span><span class="m">0</span>.000<span class="w">   </span><span class="m">0</span>.002<span class="w">    </span><span class="m">0</span>.010<span class="w">    </span><span class="m">1</span>.026<span class="w">        </span><span class="m">0</span>.533<span class="w">  </span><span class="m">0</span>.766<span class="w">     </span><span class="m">0</span>.0
-morph_verb_form_Part<span class="w">                  </span><span class="m">0</span>.043<span class="w">           </span><span class="m">0</span>.077<span class="w">  </span>-0.051<span class="w">   </span>-0.017<span class="w">   </span>-0.795<span class="w">       </span>-0.492<span class="w">  </span><span class="m">0</span>.254<span class="w">     </span><span class="m">0</span>.0
-punct_other<span class="w">                           </span><span class="m">0</span>.000<span class="w">           </span><span class="m">2</span>.000<span class="w">  </span>-4.000<span class="w">    </span><span class="m">0</span>.000<span class="w">   </span>-0.351<span class="w">       </span>-0.489<span class="w">  </span><span class="m">0</span>.256<span class="w">     </span><span class="m">0</span>.0
-readability_dale_chall_index<span class="w">          </span><span class="m">5</span>.280<span class="w">           </span><span class="m">6</span>.566<span class="w">  </span>-2.235<span class="w">   </span>-0.754<span class="w">   </span>-0.866<span class="w">       </span>-0.488<span class="w">  </span><span class="m">0</span>.256<span class="w">     </span><span class="m">0</span>.0
-readability_gunning_fog_index<span class="w">         </span><span class="m">6</span>.088<span class="w">           </span><span class="m">7</span>.730<span class="w">  </span>-2.669<span class="w">   </span>-0.863<span class="w">   </span>-0.864<span class="w">       </span>-0.481<span class="w">  </span><span class="m">0</span>.260<span class="w">     </span><span class="m">0</span>.0
-readability_smog_index<span class="w">                </span><span class="m">5</span>.876<span class="w">           </span><span class="m">7</span>.174<span class="w">  </span>-2.323<span class="w">   </span>-0.854<span class="w">   </span>-0.840<span class="w">       </span>-0.480<span class="w">  </span><span class="m">0</span>.260<span class="w">     </span><span class="m">0</span>.0
-morph_verb_form_Conv<span class="w">                  </span><span class="m">0</span>.055<span class="w">           </span><span class="m">0</span>.082<span class="w">  </span>-0.041<span class="w">   </span>-0.017<span class="w">   </span>-0.800<span class="w">       </span>-0.464<span class="w">  </span><span class="m">0</span>.268<span class="w">     </span><span class="m">0</span>.0
+<p>d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>values_a</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения в первом корпусе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>values_b</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения во втором корпусе</td>
+</tr>
+</tbody>
+</table>
+<p>Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
+<!-- core: corpus/compare.md:calc_cliff_delta ccd5938 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cliff_delta</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
+</code></pre></div>
+<p>Дельта Клиффа - доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>values_a</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения в первом корпусе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>values_b</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения во втором корпусе</td>
+</tr>
+</tbody>
+</table>
+<p>Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
+<!-- core: corpus/compare.md:bootstrap_median_diff b20d95f -->
+<div class="signature highlight"><pre><span></span><code><span class="n">bootstrap_median_diff</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">texts_a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts_b</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, а медиана выборки берется по значениям ее текстов; при менее чем двух текстах на стороне интервал - <code>nan</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>values_a</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения в первом корпусе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>values_b</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения во втором корпусе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_bootstrap</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Число выборок бутстрэпа</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>rng</code></td>
+<td style="text-align: left;"><code>Generator</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Генератор случайных чисел numpy; <code>None</code> - новый без зерна</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>confidence</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.95</code></td>
+<td style="text-align: left;">Уровень доверия</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texts_a</code></td>
+<td style="text-align: left;"><code>list</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Тексты значений в первом корпусе; <code>None</code> - каждое значение пересэмплируется отдельно</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>texts_b</code></td>
+<td style="text-align: left;"><code>list</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Тексты значений во втором корпусе</td>
+</tr>
+</tbody>
+</table>
+<p>Значение, которое не число и не пропуск, значения, которые не плоский список, и тексты, которые не метки одного типа, дают <code>SourceTypeError</code>; <code>n_bootstrap</code>, который не целое число не меньше единицы, <code>confidence</code>, который не число в интервале (0, 1), число текстов, не равное числу значений, и <code>rng</code>, который не <code>Generator</code> numpy, - <code>ParameterError</code>.</p>
+<!-- core: corpus/compare.md:holm_correction 7006482 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">holm_correction</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
+</code></pre></div>
+<p>Поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>p_values</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">p-значения</td>
+</tr>
+</tbody>
+</table>
+<p>P-значение, которое не число и не пропуск, и p-значения, которые не плоский список, дают <code>SourceTypeError</code>, а p-значение вне [0, 1] - <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_cliff_delta</span><span class="p">,</span> <span class="n">calc_cohen_d</span><span class="p">,</span> <span class="n">holm_correction</span>
 
-<span class="o">{</span><span class="s1">'n_Чехов'</span>:<span class="w"> </span><span class="m">249</span>,<span class="w"> </span><span class="s1">'n_Толстой'</span>:<span class="w"> </span><span class="m">1423</span>,<span class="w"> </span><span class="s1">'n_texts_Чехов'</span>:<span class="w"> </span><span class="m">57</span>,<span class="w"> </span><span class="s1">'n_texts_Толстой'</span>:<span class="w"> </span><span class="m">41</span><span class="o">}</span>
+<span class="nb">round</span><span class="p">(</span><span class="n">calc_cohen_d</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">calc_cliff_delta</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span>
+<span class="n">holm_correction</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">])</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<p>У Чехова в разы больше многоточий и восклицаний на 1000 слов, короче предложения, выше доля личных форм глагола и ниже - причастий и деепричастий; Толстой сложнее по всем формулам удобочитаемости. Двадцать произведений Чехова и одно Толстого короче 1000 слов и не дают ни одного окна, так что окна - из 57 и 41 произведения; с окном поменьше в сравнение вошли бы и они.</p>
-<p>p-значения считают 1672 окна независимыми (см. предупреждение выше): у 87 из 113 признаков поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 9. Интервал разности медиан пересэмплирует целые произведения и надежнее: он не включает нуль у 65 из этих 87 признаков, а для длины предложения охватывает от −5.3 до −1.3 слова, тогда как по одним окнам вышло бы от −4.2 до −2.7. Для многоточий он охватывает от 5 до 23 на 1000 слов: произведения Чехова сильно различаются по ним - в среднем от долей единицы до 84 на 1000 слов.</p>
-<p>Свои признаки, например синтаксические по spaCy, передаются функцией:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_corpora</span><span class="p">,</span> <span class="n">text_features</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">features</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">stats</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">text_features</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s2">"syntax_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span>
-
-
-<span class="n">compare_corpora</span><span class="p">(</span><span class="n">chekhov</span><span class="p">,</span> <span class="n">tolstoy</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s2">"Чехов"</span><span class="p">,</span> <span class="s2">"Толстой"</span><span class="p">))</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.387
+0.25
+[0.03, 0.06, 0.06]
 </code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="split_windows">Окна текста<a class="headerlink" href="#split_windows" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">split_windows</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Режет текст подряд на окна ровно по <code>window</code> слов, так что признаки, зависящие от длины, сравнимы между текстами. Остаток становится окном, только если в нем не меньше <code>min_words</code> слов (по умолчанию окно целиком, то есть остаток отбрасывается). Граница проходит перед первым словом окна и его открывающими знаками; симметричный знак, например прямая кавычка или тире вставки, закрывает предыдущее окно, если примыкает к его последнему слову или стоит после закрывающего знака. Пробельные символы по краям окон снимаются; <code>window=None</code> дает текст целиком. Слова - слова <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки - из <code>ruts.constants</code>: кавычки, скобки и тире открывают фразу (<code>OPENING_MARKS</code>), прямые и английские кавычки и тире симметричны (<code>SYMMETRIC_MARKS</code>), а конечные знаки, запятая, точка с запятой, закрывающие скобки и кавычка-елочка закрывают ее (<code>CLOSING_MARKS</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Строка текста</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Размер окна в словах; <code>None</code> - текст целиком</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Наименьшее число слов в окне; <code>None</code> - окно целиком, при <code>window=None</code> - одно слово</td>
+</tr>
+</tbody>
+</table>
+<p>Текст без слов или короче <code>min_words</code> дает пустой список.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - текст, который не строка;</li>
+<li><code>ParameterError</code> - <code>window</code> или <code>min_words</code>, который не целое число не меньше единицы, <code>min_words</code> больше окна.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_windows</span>
+
+<span class="n">split_windows</span><span class="p">(</span><span class="s2">"Раз два три четыре пять"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">split_windows</span><span class="p">(</span><span class="s2">"Он сказал: «Иди домой». Потом он вышел из комнаты"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['Раз два', 'три четыре', 'пять']
+['Он сказал: «Иди домой».', 'Потом он вышел из']
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="sentence_rhythm">Ритм предложений<a class="headerlink" href="#sentence_rhythm" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">sentence_rhythm</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
+</code></pre></div>
+<p>Дает ритм предложений по их длинам в словах: среднее <code>sents_mean</code>, стандартное отклонение <code>sents_std</code>, коэффициент вариации <code>sents_cv</code> и автокорреляцию лага 1 - связь длин соседних предложений <code>sents_autocorr</code> (Yule, 1939). Отклонению нужно два предложения, автокорреляции - три неравной длины, коэффициенту вариации - среднее больше нуля; иначе, как и без предложений, признак равен <code>nan</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>lengths</code></td>
+<td style="text-align: left;"><code>list[int]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Длины предложений в словах</td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - длины, которые не список целых чисел;</li>
+<li><code>ParameterError</code> - отрицательная длина.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">sentence_rhythm</span>
+
+<span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sentence_rhythm</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'sents_mean': 5.25, 'sents_std': 2.754, 'sents_cv': 0.525, 'sents_autocorr': -0.794}
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3184,6 +2886,12 @@ morph_verb_form_Conv<span class="w">                  </span><span class="m">0</
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3252,7 +2960,7 @@ morph_verb_form_Conv<span class="w">                  </span><span class="m">0</
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

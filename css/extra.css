@@ -10,3 +10,40 @@
 .md-typeset .contact svg {
     width: 48px;
 }
+
+.md-typeset .signature {
+    border-left: 0.2rem solid var(--md-accent-fg-color);
+}
+
+.md-typeset .signature code {
+    padding-right: 2.6em;
+    white-space: pre-wrap;
+}
+
+.md-typeset .metric-card {
+    border: 0.05rem solid var(--md-default-fg-color--lightest);
+    border-radius: 0.2rem;
+    margin: 1.5em 0;
+    padding: 0 1rem 0.2rem;
+}
+
+.md-typeset .metric-card > h3 {
+    margin-top: 0.8em;
+}
+
+.md-typeset .metric-meta {
+    color: var(--md-default-fg-color--light);
+    font-size: 0.85em;
+    margin-top: -0.4em;
+}
+
+.md-typeset .library-hooks {
+    border: 0.05rem dashed var(--md-default-fg-color--lighter);
+    border-radius: 0.2rem;
+    padding: 0.4rem 1rem;
+}
+
+.md-typeset .library-hooks > summary {
+    cursor: pointer;
+    font-weight: 700;
+}

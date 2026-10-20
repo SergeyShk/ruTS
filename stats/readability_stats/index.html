@@ -16,7 +16,7 @@
         <link rel="prev" href="../basic_stats/">
       
       
-        <link rel="next" href="../readability_stats_funcs/">
+        <link rel="next" href="../diversity_stats/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Модуль вычисления метрик - RuTS</title>
+        <title>Метрики удобочитаемости - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Модуль вычисления метрик
+              Метрики удобочитаемости
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -883,58 +913,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -950,7 +928,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -968,7 +946,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -997,40 +975,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Языковые крючки
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
         Параметры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
       
     </span>
   </a>
@@ -1049,13 +994,234 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interpretation" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Интерпретация
+        Метрики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Метрики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flesch_kincaid_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Тест Флеша-Кинкайда
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flesch_reading_easy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости Флеша
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coleman_liau_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Колман-Лиау
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smog_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс SMOG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automated_readability_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Автоматический индекс удобочитаемости (ARI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости LIX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости RIX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sis_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calc_sis_grade_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной с частотностью
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matskovsky_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Мацковского
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dale_chall_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Дейла-Чейла
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gunning_fog_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Ганнинга
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consensus_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сводный класс
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Время чтения
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mu_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legibilidad µ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шкалы
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Шкалы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grade_to_age" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Класс и возраст читателя
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Полоса шкалы
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1068,25 +1234,14 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Нормы ступеней">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#describe_grade" class="md-nav__link">
+  <a href="#level_features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe_grade
+        Признаки текста
       
     </span>
   </a>
@@ -1094,98 +1249,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe_level" class="md-nav__link">
+  <a href="#describe_level_norm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe_level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading_time_by_speed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        reading_time_by_speed
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading_time_by_norm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        reading_time_by_norm
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sis_grade_by_stage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        sis_grade_by_stage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sis_grade_by_freq" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        sis_grade_by_freq
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
+        Нормы и прочтение признака
       
     </span>
   </a>
@@ -1213,92 +1280,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../diversity_stats/" class="md-nav__link">
         
   
@@ -1306,7 +1287,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1315,42 +1296,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1390,56 +1335,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1448,7 +1343,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1461,92 +1356,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1562,7 +1371,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1575,92 +1384,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1676,7 +1399,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1689,92 +1412,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1790,7 +1427,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1803,92 +1440,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1904,7 +1455,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1917,92 +1468,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -2018,7 +1483,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -2027,42 +1492,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2949,40 +2378,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Языковые крючки
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
         Параметры
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Атрибуты
       
     </span>
   </a>
@@ -3001,13 +2397,234 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#interpretation" class="md-nav__link">
+  <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Интерпретация
+        Метрики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Метрики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flesch_kincaid_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Тест Флеша-Кинкайда
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flesch_reading_easy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости Флеша
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coleman_liau_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Колман-Лиау
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smog_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс SMOG
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automated_readability_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Автоматический индекс удобочитаемости (ARI)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости LIX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс удобочитаемости RIX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sis_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calc_sis_grade_freq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Соловьёва, Иванова, Солнышкиной с частотностью
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matskovsky_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Мацковского
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dale_chall_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Дейла-Чейла
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gunning_fog_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Индекс Ганнинга
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consensus_grade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Сводный класс
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reading_time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Время чтения
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mu_index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Legibilidad µ
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Шкалы
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Шкалы">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grade_to_age" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Класс и возраст читателя
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scale_level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Полоса шкалы
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3020,25 +2637,14 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Методы
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Методы">
+    <nav class="md-nav" aria-label="Нормы ступеней">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#describe_grade" class="md-nav__link">
+  <a href="#level_features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe_grade
+        Признаки текста
       
     </span>
   </a>
@@ -3046,98 +2652,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe_level" class="md-nav__link">
+  <a href="#describe_level_norm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe_level
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading_time_by_speed" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        reading_time_by_speed
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#reading_time_by_norm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        reading_time_by_norm
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sis_grade_by_stage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        sis_grade_by_stage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#sis_grade_by_freq" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        sis_grade_by_freq
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe
+        Нормы и прочтение признака
       
     </span>
   </a>
@@ -3170,656 +2688,1821 @@
 
 
 <h1 id="_1">Метрики удобочитаемости<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.readability_stats.ReadabilityStats</strong></p>
-</div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/readability_stats.md:ReadabilityStats b38cf74 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:ReadabilityStats 5dd9076 -->
 <p>Метрики <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%B4%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D1%82%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D1%8C">удобочитаемости</a> текста по его базовым статистикам: средней длине предложения в словах, средней длине слова в слогах или буквах, доле сложных и длинных слов и вариативности длины слова. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или готовые базовые статистики, которые берутся как есть; экстракторы передаются базовым статистикам текста или <code>Doc</code>. Формулы считают только буквы учтенных слов, поэтому экстрактор слов, который отбрасывает слова, не удлиняет среднее слово.</p>
 <p>Метрики - свойства, которые вычисляются при каждом обращении, поэтому изменение <code>coefficients</code> объекта действует сразу.</p>
-<p>Источник, который не строка, не <code>Doc</code> и не базовые статистики, базовые статистики не того класса, что у библиотеки, и экстрактор другого типа дают <code>SourceTypeError</code>, источник без слов или предложений - <code>SourceError</code>, неизвестный пресет или пресет, который не строка, - <code>ParameterError</code>.</p>
-<div class="admonition quote">
-<p class="admonition-title">Определение</p>
-<p>Удобочитаемость («читабельность») - свойство текстового материала, характеризующее лёгкость восприятия его человеком в процессе чтения.</p>
-<p>Следует различать удобочитаемость текста с точки зрения:</p>
+<p>Исключения:</p>
 <ul>
-<li>полиграфического исполнения текста;</li>
-<li>лингвистических особенностей текстового материала (сложность синтаксических конструкций, трудная для восприятия лексика и т.п.).</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не базовые статистики, базовые статистики не того класса, что у библиотеки, экстрактор другого типа, строка или <code>Doc</code> для класса без <code>basic_stats_class</code>;</li>
+<li><code>SourceError</code> - источник без слов или предложений;</li>
+<li><code>ParameterError</code> - неизвестный пресет или пресет, который не строка.</li>
 </ul>
-</div>
-<p>Коэффициенты формул, адаптированных для русского языка, задаются пресетом (см. <a href="#presets">ниже</a>): по умолчанию используются коэффициенты проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, полученные на 68 текстах с метками класса, доступны также коэффициенты Оборневой, полученные на художественных текстах (тест Флеша-Кинкайда по ним выше класса российской школы, см. <a href="#presets">ниже</a>), и казанской группы (Соловьёв, Иванов, Солнышкина), полученные на учебниках.</p>
-<p>Основные презумпции метрик удобочитаемости:</p>
-<ul>
-<li>короткие предложения читать легче, чем длинные;</li>
-<li>длинные слова затрудняют чтение;</li>
-<li>читатель замедляется, встречая низкочастотные и/или незнакомые ему слова.</li>
-</ul>
-<h2 id="_3">Языковые крючки<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, пресетами коэффициентов <code>ruts.constants.READABILITY_PRESETS</code>, русскими формулами - Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла в адаптации plainrussian, формулами класса для сводного класса <code>ruts.constants.READABILITY_GRADE_STATS</code>, сложными словами от пяти слогов в SMOG, индексе Ганнинга и индексе Дейла-Чейла (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), классами и возрастами таблицы plainrussian, шкалами индекса Флеша, LIX и RIX с русскими подписями (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), переводом индекса Флеша в класс по полосам его шкалы (<code>ruts.constants.READING_EASE_GRADES</code>) и скоростями чтения русских читателей.</p>
-<p>Атрибут <code>mu_index</code> ядра (Legibilidad µ) не входит в <code>get_stats</code>: он получен на испанских текстах.</p>
-<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc/BasicStats</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Источник данных (строка, объект Doc или готовые базовые статистики)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>sents_extractor</code></td>
-<td style="text-align: center;">SentsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения предложений</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Инструмент для извлечения слов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>preset</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>plainrussian</code></td>
-<td style="text-align: center;">Пресет коэффициентов (<code>plainrussian</code>, <code>fiction</code>, <code>academic</code>)</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_5">Атрибуты<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>flesch_kincaid_grade</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Тест Флеша-Кинкайда</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>flesch_reading_easy</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс удобочитаемости Флеша</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>coleman_liau_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс Колман-Лиау</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>smog_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс SMOG</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>automated_readability_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Автоматический индекс удобочитаемости</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>lix</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс удобочитаемости LIX</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>rix</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс удобочитаемости RIX</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>sis_grade</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Формула Соловьёва, Иванова, Солнышкиной (2023)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>matskovsky_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Формула Мацковского</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>dale_chall_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс Дейла-Чейла в адаптации plainrussian</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>gunning_fog_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Индекс Ганнинга в адаптации plainrussian</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>consensus_grade</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Сводный класс по всем формулам класса и индексу Флеша</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>reading_time</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Время чтения в минутах при скорости 180 слов в минуту</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mu_index</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Legibilidad µ ядра, вне <code>get_stats</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>bs</code></td>
-<td style="text-align: center;">BasicStats</td>
-<td style="text-align: center;">Базовые текстовые статистики</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>preset</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;">Название пресета коэффициентов</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>coefficients</code></td>
-<td style="text-align: center;">dict[str, tuple[float, float, float]]</td>
-<td style="text-align: center;">Коэффициенты формул пресета, копия, которую можно менять для отдельного объекта</td>
-</tr>
-</tbody>
-</table>
-<h2 id="presets">Пресеты коэффициентов<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
-<p>Пресет задает коэффициенты теста Флеша-Кинкайда и индекса Флеша. Коэффициенты индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из проекта plainrussian, так как других адаптаций для русского языка не опубликовано. Остальные формулы от пресета не зависят.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Пресет</th>
-<th style="text-align: center;">Источник</th>
-<th style="text-align: center;">Корпус</th>
-<th style="text-align: center;">Тест Флеша-Кинкайда</th>
-<th style="text-align: center;">Индекс Флеша</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>plainrussian</code></td>
-<td style="text-align: center;"><a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (Бегтин)</td>
-<td style="text-align: center;">68 текстов с метками класса</td>
-<td style="text-align: center;"><code>0.318·ASL + 14.2·ASW − 30.5</code></td>
-<td style="text-align: center;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Оборнева, вариант А, так как plainrussian индекс Флеша не выводит)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>fiction</code></td>
-<td style="text-align: center;">Оборнева (2005/2006)</td>
-<td style="text-align: center;">около 6 млн слов художественных текстов</td>
-<td style="text-align: center;"><code>0.5·ASL + 8.4·ASW − 15.59</code></td>
-<td style="text-align: center;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (вариант А)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>academic</code></td>
-<td style="text-align: center;">Соловьёв, Иванов, Солнышкина (2018); Солнышкина и Кисельников (2015)</td>
-<td style="text-align: center;">14 учебников обществознания для 5-11 классов</td>
-<td style="text-align: center;"><code>0.36·ASL + 5.76·ASW − 11.97</code> (FKG_SIS)</td>
-<td style="text-align: center;"><code>206.836 − 1.52·ASL − 65.14·ASW</code> (Оборнева, вариант Б)</td>
-</tr>
-</tbody>
-</table>
-<p>Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Справочник всех коэффициентов доступен как <code>ruts.constants.READABILITY_PRESETS</code>.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
+<p>Метрики оценивают удобочитаемость со стороны языка - сложности слов и синтаксических конструкций, а не полиграфического исполнения текста. Они исходят из того, что короткие предложения читать легче, чем длинные, длинные слова затрудняют чтение, а низкочастотные и незнакомые слова замедляют читателя.</p>
+<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка, о которых говорят карточки метрик: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, <a href="#presets">пресетами</a> коэффициентов, русскими формулами, сводным классом по формулам ruTS, ступенями обучения российской школы, шкалами с русскими подписями и скоростями чтения русских читателей. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>READABILITY_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
 
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
-<span class="c1"># -2.0633333333333326</span>
-<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fiction"</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
-<span class="c1"># 5.91</span>
-<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"academic"</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
-<span class="c1"># 3.0299999999999994</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                Метрика                 | Значение
+---------------------------------------------------
+Тест Флеша-Кинкайда                     |  -2.06
+Индекс удобочитаемости Флеша            |  87.17
+Индекс Колман-Лиау                      |   1.17
+Индекс SMOG                             |   0.05
+Автоматический индекс удобочитаемости   |   0.29
+Индекс удобочитаемости LIX              |  28.33
+Индекс удобочитаемости RIX              |   2.00
+Формула Соловьёва, Иванова, Солнышкиной |   1.52
+Формула Мацковского                     |   9.35
+Индекс Дейла-Чейла                      |   4.10
+Индекс Ганнинга                         |   6.00
+Сводный класс                           |   1.50
+Время чтения (мин.)                     |   0.08
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>BasicStats</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных (строка, объект Doc или готовые базовые статистики)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sents_extractor</code></td>
+<td style="text-align: left;"><code>SentsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Инструмент для извлечения предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Инструмент для извлечения слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>preset</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'plainrussian'</code></td>
+<td style="text-align: left;">Пресет коэффициентов: <code>plainrussian</code>, <code>fiction</code> или <code>academic</code></td>
+</tr>
+</tbody>
+</table>
+<p>Объект хранит базовые статистики текста в <code>bs</code>, название пресета - в <code>preset</code>, только для чтения, а коэффициенты формул пресета - в <code>coefficients</code>, копии, которую можно менять для отдельного объекта. Объект другого пресета может взять готовые базовые статистики: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
+<h2 id="presets">Пресеты коэффициентов<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
+<p>Коэффициенты формул - параметры их функций, а пресет задает их по формулам. Пресеты различаются коэффициентами теста Флеша-Кинкайда и индекса Флеша; коэффициенты индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из проекта plainrussian, так как других адаптаций для русского языка не опубликовано, а остальные формулы от пресета не зависят.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Пресет</th>
+<th style="text-align: left;">Источник</th>
+<th style="text-align: left;">Корпус</th>
+<th style="text-align: left;">Тест Флеша-Кинкайда</th>
+<th style="text-align: left;">Индекс Флеша</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>plainrussian</code></td>
+<td style="text-align: left;"><a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (Бегтин)</td>
+<td style="text-align: left;">68 текстов с метками класса</td>
+<td style="text-align: left;"><code>0.318·ASL + 14.2·ASW − 30.5</code></td>
+<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Оборнева, вариант А, так как plainrussian индекс Флеша не выводит)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>fiction</code></td>
+<td style="text-align: left;">Оборнева (2005/2006)</td>
+<td style="text-align: left;">около 6 млн слов художественных текстов</td>
+<td style="text-align: left;"><code>0.5·ASL + 8.4·ASW − 15.59</code></td>
+<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (вариант А)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>academic</code></td>
+<td style="text-align: left;">Соловьёв, Иванов, Солнышкина (2018); Солнышкина и Кисельников (2015)</td>
+<td style="text-align: left;">14 учебников обществознания для 5-11 классов</td>
+<td style="text-align: left;"><code>0.36·ASL + 5.76·ASW − 11.97</code> (FKG_SIS)</td>
+<td style="text-align: left;"><code>206.836 − 1.52·ASL − 65.14·ASW</code> (Оборнева, вариант Б)</td>
+</tr>
+</tbody>
+</table>
+<p>Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Справочник всех коэффициентов - <code>ruts.constants.READABILITY_PRESETS</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
+<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fiction"</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
+<span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"academic"</span><span class="p">)</span><span class="o">.</span><span class="n">flesch_kincaid_grade</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>-2.0633333333333326
+5.91
+3.0299999999999994
+</code></pre></div>
+</div>
+</div>
 </div>
 <p>Пресеты одинаково согласуются с меткой класса, но дают разную шкалу, а порядок текстов у них совпадает не полностью. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> корреляция Спирмена теста Флеша-Кинкайда с меткой класса у всех трех пресетов 0.79, а медианы теста по группам меток различаются:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Метка</th>
-<th style="text-align: center;">Текстов</th>
-<th style="text-align: center;"><code>plainrussian</code></th>
-<th style="text-align: center;"><code>fiction</code></th>
-<th style="text-align: center;"><code>academic</code></th>
+<th style="text-align: left;">Метка</th>
+<th style="text-align: left;">Текстов</th>
+<th style="text-align: left;"><code>plainrussian</code></th>
+<th style="text-align: left;"><code>fiction</code></th>
+<th style="text-align: left;"><code>academic</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">11</td>
-<td style="text-align: center;">2.9</td>
-<td style="text-align: center;">7.5</td>
-<td style="text-align: center;">4.0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">11</td>
+<td style="text-align: left;">2.9</td>
+<td style="text-align: left;">7.5</td>
+<td style="text-align: left;">4.0</td>
 </tr>
 <tr>
-<td style="text-align: center;">3-4</td>
-<td style="text-align: center;">10</td>
-<td style="text-align: center;">4.2</td>
-<td style="text-align: center;">8.7</td>
-<td style="text-align: center;">4.9</td>
+<td style="text-align: left;">3-4</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">4.2</td>
+<td style="text-align: left;">8.7</td>
+<td style="text-align: left;">4.9</td>
 </tr>
 <tr>
-<td style="text-align: center;">5-9</td>
-<td style="text-align: center;">12</td>
-<td style="text-align: center;">4.4</td>
-<td style="text-align: center;">8.7</td>
-<td style="text-align: center;">4.9</td>
+<td style="text-align: left;">5-9</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">4.4</td>
+<td style="text-align: left;">8.7</td>
+<td style="text-align: left;">4.9</td>
 </tr>
 <tr>
-<td style="text-align: center;">10-11</td>
-<td style="text-align: center;">18</td>
-<td style="text-align: center;">6.7</td>
-<td style="text-align: center;">11.7</td>
-<td style="text-align: center;">7.0</td>
+<td style="text-align: left;">10-11</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">6.7</td>
+<td style="text-align: left;">11.7</td>
+<td style="text-align: left;">7.0</td>
 </tr>
 <tr>
-<td style="text-align: center;">12-17</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">23.7</td>
-<td style="text-align: center;">24.4</td>
-<td style="text-align: center;">15.9</td>
+<td style="text-align: left;">12-17</td>
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">23.7</td>
+<td style="text-align: left;">24.4</td>
+<td style="text-align: left;">15.9</td>
 </tr>
 <tr>
-<td style="text-align: center;">1 (<a href="../../datasets/sovchlit/"><code>SovChLit</code></a>)</td>
-<td style="text-align: center;">179</td>
-<td style="text-align: center;">1.5</td>
-<td style="text-align: center;">6.1</td>
-<td style="text-align: center;">3.1</td>
+<td style="text-align: left;">1 (<a href="../../datasets/sovchlit/"><code>SovChLit</code></a>)</td>
+<td style="text-align: left;">179</td>
+<td style="text-align: left;">1.5</td>
+<td style="text-align: left;">6.1</td>
+<td style="text-align: left;">3.1</td>
 </tr>
 </tbody>
 </table>
 <p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.9 против −0.9 у <code>plainrussian</code> и −0.2 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Каждую метрику можно вычислить отдельно, выполнив соответствующую функцию. Подробную информацию о метриках удобочитаемости и функциях, используемых для их вычисления, можно узнать в соответствующем <a href="../readability_stats_funcs/">разделе</a>.</p>
-</div>
-<h2 id="interpretation">Интерпретация<a class="headerlink" href="#interpretation" title="Permanent link">&para;</a></h2>
-<!-- core: stats/readability_stats.md:ReadabilityStats-consensus c4a6ea5 -->
-<p>Атрибут <code>consensus_grade</code> - медиана значений формул класса (<code>grade_stats</code>), округленных арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления. Библиотека выравнивает границы <code>reading_ease_grades</code> и каждой шкалы <code>preset_reading_ease_grades</code> по своей шкале индекса Флеша, чтобы сводный класс и <code>describe</code> читали значение одинаково.</p>
-<p>Формулы класса в ruTS - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша <a href="../readability_stats_funcs/#flesch_reading_easy_to_grade">переводится в класс</a> по полосам своей шкалы прочтения, так что индекс 45 и в <code>describe</code>, и в сводном классе читается как университет. Метод <a href="#describe_grade"><code>describe_grade</code></a> переводит сводный класс или отдельную формулу в класс школы и возраст читателя по таблице проекта plainrussian:</p>
+<h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Формулу считает функция из ее карточки по количествам <code>bs</code>; коэффициенты по умолчанию функций адаптированы для русского языка. Формулы ядра берут коэффициенты из <code>coefficients</code>, где пресет задает коэффициенты теста Флеша-Кинкайда, индекса Флеша и индексов Колман-Лиау, SMOG и ARI; формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла считаются с коэффициентами своих функций, и <code>coefficients</code> на них не действует. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Класс</th>
-<th style="text-align: center;">Ступень</th>
-<th style="text-align: center;">Возраст</th>
+<th style="text-align: left;">Метрика</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">1-3</td>
-<td style="text-align: center;">1-3-й класс</td>
-<td style="text-align: center;">6-8 лет</td>
+<td style="text-align: left;"><a href="#flesch_kincaid_grade"><code>flesch_kincaid_grade</code></a></td>
+<td style="text-align: left;">Класс по длине предложения и слогам на слово</td>
+<td style="text-align: left;">годы обучения, ниже 0 у простейших текстов</td>
+<td style="text-align: left;">сложнее текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">4-6</td>
-<td style="text-align: center;">4-6-й класс</td>
-<td style="text-align: center;">9-11 лет</td>
+<td style="text-align: left;"><a href="#flesch_reading_easy"><code>flesch_reading_easy</code></a></td>
+<td style="text-align: left;">Легкость чтения по длине предложения и слогам на слово</td>
+<td style="text-align: left;">номинально 0-100, выше 100 у простейших текстов и ниже 0 у сложнейших</td>
+<td style="text-align: left;">легче текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">7-9</td>
-<td style="text-align: center;">7-9-й класс</td>
-<td style="text-align: center;">12-14 лет</td>
+<td style="text-align: left;"><a href="#coleman_liau_index"><code>coleman_liau_index</code></a></td>
+<td style="text-align: left;">Класс по буквам и предложениям на 100 слов</td>
+<td style="text-align: left;">годы обучения, ниже 0 у простейших текстов</td>
+<td style="text-align: left;">сложнее текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">10-11</td>
-<td style="text-align: center;">10-11-й класс</td>
-<td style="text-align: center;">15-16 лет</td>
+<td style="text-align: left;"><a href="#smog_index"><code>smog_index</code></a></td>
+<td style="text-align: left;">Класс по сложным словам на предложение</td>
+<td style="text-align: left;">годы обучения</td>
+<td style="text-align: left;">сложнее текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">12-14</td>
-<td style="text-align: center;">1-3-й курс вуза</td>
-<td style="text-align: center;">17-19 лет</td>
+<td style="text-align: left;"><a href="#automated_readability_index"><code>automated_readability_index</code></a></td>
+<td style="text-align: left;">Класс по буквам на слово и длине предложения</td>
+<td style="text-align: left;">годы обучения, ниже 0 у простейших текстов</td>
+<td style="text-align: left;">сложнее текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">15-17</td>
-<td style="text-align: center;">4-6-й курс вуза</td>
-<td style="text-align: center;">20-22 года</td>
+<td style="text-align: left;"><a href="#lix"><code>lix</code></a></td>
+<td style="text-align: left;">Длина предложения и доля длинных слов</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">сложнее текст</td>
 </tr>
 <tr>
-<td style="text-align: center;">больше 17</td>
-<td style="text-align: center;">аспирантура</td>
-<td style="text-align: center;">старше 22 лет</td>
+<td style="text-align: left;"><a href="#rix"><code>rix</code></a></td>
+<td style="text-align: left;">Длинные слова на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#sis_grade"><code>sis_grade</code></a></td>
+<td style="text-align: left;">Класс по длине предложения и буквам на слово</td>
+<td style="text-align: left;">класс школы, ниже 0 у простейших текстов</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#matskovsky_index"><code>matskovsky_index</code></a></td>
+<td style="text-align: left;">Длина предложения и доля сложных слов</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dale_chall_index"><code>dale_chall_index</code></a></td>
+<td style="text-align: left;">Класс по доле сложных слов и длине предложения</td>
+<td style="text-align: left;">годы обучения</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#gunning_fog_index"><code>gunning_fog_index</code></a></td>
+<td style="text-align: left;">Класс по длине предложения и доле сложных слов</td>
+<td style="text-align: left;">годы обучения</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#consensus_grade"><code>consensus_grade</code></a></td>
+<td style="text-align: left;">Медиана формул класса и индекса Флеша как класса</td>
+<td style="text-align: left;">годы обучения, ниже 0 у простейших текстов</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#reading_time"><code>reading_time</code></a></td>
+<td style="text-align: left;">Время чтения при скорости <code>reading_speed</code></td>
+<td style="text-align: left;">минуты, больше 0</td>
+<td style="text-align: left;">длиннее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#mu_index"><code>mu_index</code></a></td>
+<td style="text-align: left;">Средняя длина слова в буквах против ее дисперсии; вне <code>get_stats</code></td>
+<td style="text-align: left;">больше 0, <code>nan</code> меньше чем с двумя словами или без вариативности</td>
+<td style="text-align: left;">легче текст</td>
 </tr>
 </tbody>
 </table>
-<p>Метод <a href="#describe_level"><code>describe_level</code></a> читает индекс Флеша, LIX и RIX по их шкалам - таблицам страницы <a href="../readability_stats_funcs/">функций вычисления метрик</a>, а <a href="#describe"><code>describe</code></a> - любую метрику: формулу класса и сводный класс по таблице выше, индекс Флеша, LIX и RIX по их шкалам; для метрики без шкалы он возвращает <code>None</code>.</p>
-<p>Атрибут <code>reading_time</code> оценивает время чтения про себя при скорости 180 слов в минуту (верхняя граница нормы для взрослого по Кузнецову и Хромову, 1991). Другую скорость принимает метод <a href="#reading_time_by_speed"><code>reading_time_by_speed</code></a>, а метод <a href="#reading_time_by_norm"><code>reading_time_by_norm</code></a> считает время в границах нормы из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе школьных норм чтения вслух по ФГОС.</p>
+<div class="metric-card">
+<h3 id="flesch_kincaid_grade">Тест Флеша-Кинкайда<a class="headerlink" href="#flesch_kincaid_grade" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>flesch_kincaid_grade</code> · Kincaid et al., 1975</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_flesch_kincaid_grade</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.318</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">14.2</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">30.5</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_flesch_kincaid_grade d833b41 -->
+<p>Число лет обучения, необходимых для чтения текста, по средней длине предложения в словах и средней длине слова в слогах.</p>
+<div class="arithmatex">\[
+a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}} - c
+\]</div>
+<p>Коэффициенты по умолчанию взяты из актуальной версии проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. Другие коэффициенты для русского языка дают <a href="#presets">пресеты</a>: Оборневой (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) и FKG_SIS Соловьёва, Иванова и Солнышкиной (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_syllables</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слогов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.318</code></td>
+<td style="text-align: left;">Коэффициент a, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>14.2</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>30.5</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="flesch_reading_easy">Индекс удобочитаемости Флеша<a class="headerlink" href="#flesch_reading_easy" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>flesch_reading_easy</code> · Flesch, 1948</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_flesch_reading_easy</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">60.1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">206.835</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_flesch_reading_easy b94d937 -->
+<p>Легкость чтения текста по средней длине предложения в словах и средней длине слова в слогах.</p>
+<div class="arithmatex">\[
+c - a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
+\]</div>
+<p>Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), которым пользуется казанская группа, дает пресет <code>academic</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_syllables</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слогов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>1.3</code></td>
+<td style="text-align: left;">Коэффициент a, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>60.1</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>206.835</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+<p>Полосы <code>describe</code> - шкала <code>ruts.constants.READING_EASE_LEVELS</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Значение</th>
+<th style="text-align: left;">Прочтение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>[90; ∞)</code></td>
+<td style="text-align: left;">5-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[80; 90)</code></td>
+<td style="text-align: left;">6-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[70; 80)</code></td>
+<td style="text-align: left;">7-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[60; 70)</code></td>
+<td style="text-align: left;">8-й и 9-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[50; 60)</code></td>
+<td style="text-align: left;">10-й и 11-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[30; 50)</code></td>
+<td style="text-align: left;">университет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>(−∞; 30)</code></td>
+<td style="text-align: left;">выпускник университета</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="coleman_liau_index">Индекс Колман-Лиау<a class="headerlink" href="#coleman_liau_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>coleman_liau_index</code> · Coleman and Liau, 1975</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_coleman_liau_index</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.055</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">20.33</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_coleman_liau_index beffaf8 -->
+<p>Число лет обучения, необходимых для чтения текста, по буквам и предложениям на 100 слов.</p>
+<div class="arithmatex">\[
+a \cdot \frac{100 \cdot \textrm{Количество букв}}{\textrm{Количество слов}} - b \cdot \frac{100 \cdot \textrm{Количество предложений}}{\textrm{Количество слов}} - c
+\]</div>
+<p>Коэффициенты по умолчанию взяты из проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_letters</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество букв в словах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.055</code></td>
+<td style="text-align: left;">Коэффициент a, при буквах на 100 слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.35</code></td>
+<td style="text-align: left;">Коэффициент b, при предложениях на 100 слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>20.33</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="smog_index">Индекс SMOG<a class="headerlink" href="#smog_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>smog_index</code> · McLaughlin, 1969</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_smog_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">64.6</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_smog_index 8eac9a0 -->
+<p>Число лет обучения, необходимых для чтения текста, по сложным словам на предложение. В исходной формуле сложные слова - от трех слогов, а <code>b</code> приводит их количество к выборке из 30 предложений.</p>
+<div class="arithmatex">\[
+a \cdot \sqrt{b \cdot \frac{\textrm{Количество сложных слов}}{\textrm{Количество предложений}}} + c
+\]</div>
+<p>Количество слов или предложений, которое не целое неотрицательное число, дает <code>ParameterError</code>.</p>
+<p>Коэффициенты по умолчанию проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> получены для сложных слов от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), а не атрибут <code>n_complex_words</code> базовых статистик.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_complex</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>1.1</code></td>
+<td style="text-align: left;">Коэффициент a, при квадратном корне</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>64.6</code></td>
+<td style="text-align: left;">Коэффициент b, под квадратным корнем</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.05</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="automated_readability_index">Автоматический индекс удобочитаемости (ARI)<a class="headerlink" href="#automated_readability_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>automated_readability_index</code> · Smith and Senter, 1967</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_automated_readability_index</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">6.26</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.2805</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">31.04</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_automated_readability_index 74262c1 -->
+<p>Число лет обучения, необходимых для чтения текста, по буквам на слово и словам на предложение.</p>
+<div class="arithmatex">\[
+a \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}} + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - c
+\]</div>
+<p>Коэффициенты по умолчанию взяты из проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_letters</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество букв в словах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>6.26</code></td>
+<td style="text-align: left;">Коэффициент a, при буквах на слово</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.2805</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>31.04</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+<p>Класс можно читать как возраст читателя:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Значение</th>
+<th style="text-align: left;">Возраст</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">6-7 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>2</code></td>
+<td style="text-align: left;">7-8 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>3</code></td>
+<td style="text-align: left;">8-9 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>4</code></td>
+<td style="text-align: left;">9-10 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>5</code></td>
+<td style="text-align: left;">10-11 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>6</code></td>
+<td style="text-align: left;">11-12 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>7</code></td>
+<td style="text-align: left;">12-13 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>8</code></td>
+<td style="text-align: left;">13-14 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>9</code></td>
+<td style="text-align: left;">14-15 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">15-16 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>11</code></td>
+<td style="text-align: left;">16-17 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>12</code></td>
+<td style="text-align: left;">17-18 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>13</code></td>
+<td style="text-align: left;">18-24 года</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>14</code></td>
+<td style="text-align: left;">24+ года</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="lix">Индекс удобочитаемости LIX<a class="headerlink" href="#lix" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>lix</code> · Björnsson, 1968</p>
+<!-- core: stats/readability_stats.md:calc_lix 4fc8ad4 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_lix</span><span class="p">(</span><span class="n">n_long_words</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
+</code></pre></div>
+<p>Средняя длина предложения плюс процент длинных слов - слов длиннее шести букв; подбираемых коэффициентов нет. Значения читаются как типы текстов:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Значение</th>
+<th style="text-align: left;">Текст</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>0-30</code></td>
+<td style="text-align: left;">очень простые тексты, детские книги</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>30-40</code></td>
+<td style="text-align: left;">простые тексты, художественная литература, газетные статьи</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>40-50</code></td>
+<td style="text-align: left;">тексты средней сложности, журнальные статьи</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>50-60</code></td>
+<td style="text-align: left;">сложные тексты, научно-популярная литература, официальные тексты</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>60-100</code></td>
+<td style="text-align: left;">очень сложные тексты, законы и канцелярский язык</td>
+</tr>
+</tbody>
+</table>
+<div class="arithmatex">\[
+\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + \frac{100 \cdot \textrm{Количество длинных слов}}{\textrm{Количество слов}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_long_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество длинных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+</tbody>
+</table>
+<p>Эти полосы - шкала <code>describe</code>, <code>ruts.constants.LIX_LEVELS</code>; ее последняя полоса открыта сверху. Атрибут <code>n_long_words</code> базовых статистик ruTS считает слова от шести букв, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв.</p>
+</div>
+<div class="metric-card">
+<h3 id="rix">Индекс удобочитаемости RIX<a class="headerlink" href="#rix" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>rix</code> · Anderson, 1983</p>
+<!-- core: stats/readability_stats.md:calc_rix 139557a -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_rix</span><span class="p">(</span><span class="n">n_long_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
+</code></pre></div>
+<p>Количество длинных слов, длиннее шести букв, на предложение; подбираемых коэффициентов нет. Значения читаются как классы:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Значение</th>
+<th style="text-align: left;">Класс</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>&lt; 0.2</code></td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0.2-0.5</code></td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0.5-0.8</code></td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>0.8-1.3</code></td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>1.3-1.8</code></td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>1.8-2.4</code></td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>2.4-3.0</code></td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>3.0-3.7</code></td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>3.7-4.5</code></td>
+<td style="text-align: left;">9</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>4.5-5.3</code></td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>5.3-6.2</code></td>
+<td style="text-align: left;">11</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>6.2-7.2</code></td>
+<td style="text-align: left;">12</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>&gt; 7.2</code></td>
+<td style="text-align: left;">университет</td>
+</tr>
+</tbody>
+</table>
+<div class="arithmatex">\[
+\frac{\textrm{Количество длинных слов}}{\textrm{Количество предложений}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_long_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество длинных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+</tbody>
+</table>
+<p>Как и для LIX, класс <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв. Полосы <code>describe</code> - классы Андерсона как классы российской школы (<code>ruts.constants.RIX_LEVELS</code>); 12-го класса в ней нет, и его полоса входит в 11-й:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Значение</th>
+<th style="text-align: left;">Прочтение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>[0; 0.2)</code></td>
+<td style="text-align: left;">1-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[0.2; 0.5)</code></td>
+<td style="text-align: left;">2-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[0.5; 0.8)</code></td>
+<td style="text-align: left;">3-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[0.8; 1.3)</code></td>
+<td style="text-align: left;">4-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[1.3; 1.8)</code></td>
+<td style="text-align: left;">5-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[1.8; 2.4)</code></td>
+<td style="text-align: left;">6-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[2.4; 3.0)</code></td>
+<td style="text-align: left;">7-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[3.0; 3.7)</code></td>
+<td style="text-align: left;">8-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[3.7; 4.5)</code></td>
+<td style="text-align: left;">9-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[4.5; 5.3)</code></td>
+<td style="text-align: left;">10-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[5.3; 7.2)</code></td>
+<td style="text-align: left;">11-й класс</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[7.2; ∞)</code></td>
+<td style="text-align: left;">университет и выше</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="sis_grade">Формула Соловьёва, Иванова, Солнышкиной<a class="headerlink" href="#sis_grade" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>sis_grade</code> · <code>sis_grade_by_stage(stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.56</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.45</span><span class="p">)</span>
+</code></pre></div>
+<p>Класс школы, необходимый для чтения русского академического текста, по средней длине предложения в словах и средней длине слова в буквах, а не в слогах, как в тесте Флеша-Кинкайда. Формула получена на корпусе Russian Academic Corpus из 154 учебников для 2-11 классов (5.7 млн токенов), средняя ошибка - около одного класса. Авторы считали среднюю длину предложения по токенам spaCy, куда попадает пунктуация, поэтому расчет по словам ruTS дает класс чуть ниже.</p>
+<div class="arithmatex">\[
+a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + c \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_letters</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество букв в словах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>-17.5</code></td>
+<td style="text-align: left;">Коэффициент a, свободный член</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.56</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>2.45</code></td>
+<td style="text-align: left;">Коэффициент c, при средней длине слова</td>
+</tr>
+</tbody>
+</table>
+<p>Коэффициенты по умолчанию - общей формулы. Коэффициенты, которые авторы приводят для ступеней обучения, - в справочнике <code>ruts.constants.SIS_GRADE_STAGES</code>, их берет метод <a href="#sis_grade_by_stage"><code>sis_grade_by_stage</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Ступень</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">b</th>
+<th style="text-align: left;">c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">2-4 классы</td>
+<td style="text-align: left;"><code>-2.59</code></td>
+<td style="text-align: left;"><code>0.17</code></td>
+<td style="text-align: left;"><code>0.61</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">5-7 классы</td>
+<td style="text-align: left;"><code>-5.29</code></td>
+<td style="text-align: left;"><code>0.20</code></td>
+<td style="text-align: left;"><code>1.34</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">8-11 классы</td>
+<td style="text-align: left;"><code>-3.26</code></td>
+<td style="text-align: left;"><code>0.21</code></td>
+<td style="text-align: left;"><code>1.35</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="calc_sis_grade_freq">Формула Соловьёва, Иванова, Солнышкиной с частотностью<a class="headerlink" href="#calc_sis_grade_freq" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>sis_grade_by_freq(mean_ipm, stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade_freq</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">mean_ipm</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">14.46</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.58</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.15</span><span class="p">,</span> <span class="n">d</span><span class="o">=-</span><span class="mf">0.0026</span><span class="p">)</span>
+</code></pre></div>
+<p>Вариант общей формулы с четвертым признаком FREQ2 - средней частотностью слов текста по словарю Ляшевской и Шарова (таблица 7 статьи): чем чаще слова, тем ниже класс. В статье значения FREQ2 лежат в пределах 200-1000, что соответствует средней частотности знаменательных слов (<code>LexicalStats.mean_ipm_content</code>); среднее по всем словам с учетом союзов и предлогов в разы больше. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> формула с частотностью дает ту же корреляцию с классом, что и формула без нее (ρ Спирмена 0.76 против 0.77), как и в статье.</p>
+<div class="arithmatex">\[
+a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + c \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}} + d \cdot \textrm{FREQ2}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_letters</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество букв в словах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mean_ipm</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Средняя частотность знаменательных слов (ipm)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>-14.46</code></td>
+<td style="text-align: left;">Коэффициент a, свободный член</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.58</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>2.15</code></td>
+<td style="text-align: left;">Коэффициент c, при средней длине слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>d</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>-0.0026</code></td>
+<td style="text-align: left;">Коэффициент d, при средней частотности</td>
+</tr>
+</tbody>
+</table>
+<p>Коэффициенты по умолчанию - общей формулы. Коэффициенты ступеней обучения из той же таблицы - в справочнике <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>, их берет параметр <code>stage</code> метода <a href="#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Ступень</th>
+<th style="text-align: left;">a</th>
+<th style="text-align: left;">b</th>
+<th style="text-align: left;">c</th>
+<th style="text-align: left;">d</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">2-4 классы</td>
+<td style="text-align: left;"><code>-1.21</code></td>
+<td style="text-align: left;"><code>0.2</code></td>
+<td style="text-align: left;"><code>0.56</code></td>
+<td style="text-align: left;"><code>-0.0025</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">5-7 классы</td>
+<td style="text-align: left;"><code>-5.18</code></td>
+<td style="text-align: left;"><code>0.17</code></td>
+<td style="text-align: left;"><code>1.35</code></td>
+<td style="text-align: left;"><code>-0.00043</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">8-11 классы</td>
+<td style="text-align: left;"><code>1.3</code></td>
+<td style="text-align: left;"><code>0.23</code></td>
+<td style="text-align: left;"><code>0.88</code></td>
+<td style="text-align: left;"><code>-0.0035</code></td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexicalStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул."</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">sis_grade</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">sis_grade_by_stage</span><span class="p">(</span><span class="s2">"2-4"</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">sis_grade_by_freq</span><span class="p">(</span><span class="n">LexicalStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">mean_ipm_content</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(-4.625384615384615, 0.8142307692307695)
+-3.106298290598293
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="matskovsky_index">Формула Мацковского<a class="headerlink" href="#matskovsky_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>matskovsky_index</code> · Мацковский, 1976</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_matskovsky_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.62</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.123</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.051</span><span class="p">)</span>
+</code></pre></div>
+<p>Первая формула удобочитаемости для русского языка, полученная методом последовательных интервалов, - по средней длине предложения и проценту сложных слов. Сложное слово здесь - больше чем из трех слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 4 слогов.</p>
+<div class="arithmatex">\[
+a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + b \cdot \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}} + c
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_complex</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.62</code></td>
+<td style="text-align: left;">Коэффициент a, при средней длине предложения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.123</code></td>
+<td style="text-align: left;">Коэффициент b, при доле сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.051</code></td>
+<td style="text-align: left;">Коэффициент c, свободный член</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="dale_chall_index">Индекс Дейла-Чейла<a class="headerlink" href="#dale_chall_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>dale_chall_index</code> · <a href="https://en.wikipedia.org/wiki/Dale–Chall_readability_formula">Dale and Chall, 1948</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dale_chall_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.552</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.273</span><span class="p">)</span>
+</code></pre></div>
+<p>Число лет обучения в американской системе образования, необходимых для понимания текста, по проценту сложных слов и средней длине предложения. Исходная формула берет долю незнакомых слов по списку из 3000 знакомых, а для русского языка такого свободного списка нет, поэтому применяется адаптация проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> с долей сложных слов. Сложное слово - от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). Исходные коэффициенты формулы - <code>0.1579</code> и <code>0.0496</code>.</p>
+<div class="arithmatex">\[
+a \cdot \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}} + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_complex</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.552</code></td>
+<td style="text-align: left;">Коэффициент a, при доле сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.273</code></td>
+<td style="text-align: left;">Коэффициент b, при средней длине предложения</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="gunning_fog_index">Индекс Ганнинга<a class="headerlink" href="#gunning_fog_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>gunning_fog_index</code> · Gunning, 1952</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_gunning_fog_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_gunning_fog_index af8a243 -->
+<p>Число лет обучения, необходимых для чтения текста, по средней длине предложения и проценту сложных слов, в исходной формуле - слов от трех слогов.</p>
+<div class="arithmatex">\[
+a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}}\right)
+\]</div>
+<p>Индекс используется в адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>: сложное слово - от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). SEO-сервисы дополнительно умножают результат на <code>0.78</code>, обоснование этого множителя не опубликовано.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_complex</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество сложных слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.4</code></td>
+<td style="text-align: left;">Коэффициент a</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="consensus_grade">Сводный класс<a class="headerlink" href="#consensus_grade" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>consensus_grade</code></p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-consensus c4a6ea5 -->
+<p>Атрибут <code>consensus_grade</code> - медиана значений формул класса (<code>grade_stats</code>), округленных арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления. Библиотека выравнивает границы <code>reading_ease_grades</code> и каждой шкалы <code>preset_reading_ease_grades</code> по своей шкале индекса Флеша, чтобы сводный класс и <code>describe</code> читали значение одинаково.</p>
+<p>Формулы класса в ruTS (<code>ruts.constants.READABILITY_GRADE_STATS</code>) - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша переводится в класс по полосам своей шкалы прочтения, так что индекс 45 и в <code>describe</code>, и в сводном классе читается как университет. Сводный класс - аналог <code>text_standard</code> библиотеки textstat, где вместо медианы используется мода; медиана устойчивее к выбросам отдельных формул.</p>
+<!-- core: stats/readability_stats.md:calc_consensus_grade 3bb15f7 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_consensus_grade</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">flesch_reading_easy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_grade</span><span class="o">=</span><span class="n">flesch_reading_easy_to_grade</span><span class="p">)</span>
+</code></pre></div>
+<p>Медиана значений формул класса, округленных арифметически, вместе с индексом Флеша, переведенным в число лет обучения функцией <code>to_grade</code> без округления, - поэтому полоса с классом 8.5 голосует за 8.5.</p>
+<div class="arithmatex">\[
+\textrm{median}\left(\lfloor g_1 + 0.5 \rfloor, \ldots, \lfloor g_k + 0.5 \rfloor, \textrm{to\_grade}(\textrm{индекс Флеша})\right)
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>grades</code></td>
+<td style="text-align: left;"><code>list[float]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значения формул класса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>flesch_reading_easy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Значение индекса удобочитаемости Флеша</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>to_grade</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>flesch_reading_easy_to_grade</code></td>
+<td style="text-align: left;">Перевод индекса Флеша в число лет обучения</td>
+</tr>
+</tbody>
+</table>
+<p>Отсутствие значений, класс или индекс Флеша, которые не конечное число, дают <code>ParameterError</code>; классы, которые не список, и <code>to_grade</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">flesch_reading_easy_to_grade</span><span class="p">(</span><span class="n">flesch_reading_easy</span><span class="p">,</span> <span class="n">grades</span><span class="o">=</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">)),</span> <span class="n">below</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:flesch_reading_easy_to_grade f9bc88b -->
+<p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону. Индекс Флеша или <code>below</code>, которые не конечное число, дают <code>ParameterError</code>, как и <code>grades</code>, которые пусты или не состоят из пар конечных чисел с границами по убыванию.</p>
+<p>Полосы ruTS по умолчанию - полосы шкалы прочтения индекса (<code>READING_EASE_LEVELS</code>), чтобы сводный класс и <code>describe</code> читали значение одинаково: 8.5 и 10.5 - середины полос «8-й и 9-й класс» и «10-й и 11-й класс», 14 - «университет», 17 - «выпускник университета», то есть 1-3-й и 4-6-й курс вуза по <a href="#grade_to_age">таблице ступеней</a>. Эти полосы - <code>ruts.constants.READING_EASE_GRADES</code>, атрибут <code>reading_ease_grades</code> класса <code>ReadabilityStats</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Индекс Флеша</th>
+<th style="text-align: left;">Класс</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>[90; ∞)</code></td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[80; 90)</code></td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[70; 80)</code></td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[60; 70)</code></td>
+<td style="text-align: left;">8.5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[50; 60)</code></td>
+<td style="text-align: left;">10.5</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>[30; 50)</code></td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>(−∞; 30)</code></td>
+<td style="text-align: left;">17</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>flesch_reading_easy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значение индекса удобочитаемости Флеша</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grades</code></td>
+<td style="text-align: left;"><code>list[tuple[float, float]]</code></td>
+<td style="text-align: left;"><code>READING_EASE_GRADES</code></td>
+<td style="text-align: left;">Нижние границы и их классы по убыванию границ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>below</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>17</code></td>
+<td style="text-align: left;">Класс ниже последней границы</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="reading_time">Время чтения<a class="headerlink" href="#reading_time" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>reading_time</code> · <code>reading_time_by_speed(wpm)</code> · <code>reading_time_by_norm(norm)</code> · Кузнецов и Хромов, 1991</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_reading_time</span><span class="p">(</span><span class="n">n_words</span><span class="p">,</span> <span class="n">wpm</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="n">CORE_MESSAGES</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:calc_reading_time a9233be -->
+<p>Время чтения текста в минутах: количество слов, деленное на скорость чтения.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество слов}}{\textrm{wpm}}
+\]</div>
+<p>Количество слов, которое не целое неотрицательное число, и скорость, которая не положительное число, дают <code>ParameterError</code>.</p>
+<p>Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию берется верхняя граница. Нормы - в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе нормы чтения вслух для начальной школы по ФГОС:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Норма</th>
+<th style="text-align: left;">Слов в минуту</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>adult_silent</code></td>
+<td style="text-align: left;">120-180</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grade_1</code></td>
+<td style="text-align: left;">25-40</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grade_2</code></td>
+<td style="text-align: left;">60-80</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grade_3</code></td>
+<td style="text-align: left;">80-100</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grade_4</code></td>
+<td style="text-align: left;">90-110</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>wpm</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>180</code></td>
+<td style="text-align: left;">Скорость чтения, слов в минуту (<code>READING_SPEED_WPM</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>CORE_MESSAGES</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам, ключевой аргумент</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="metric-card">
+<h3 id="mu_index">Legibilidad µ<a class="headerlink" href="#mu_index" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>mu_index</code> · Muñoz Baquedano and Muñoz Urra, 2006</p>
+<p>Средняя длина слова в буквах, деленная на ее выборочную дисперсию и умноженная на 100; подбираемых коэффициентов нет. Слова без букв (числа) не учитываются; меньше чем с двумя словами или без вариативности индекс не определен (<code>nan</code>).</p>
+<div class="arithmatex">\[
+100 \cdot \frac{\bar{x}}{s^2}, \quad s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}
+\]</div>
+<p>где <span class="arithmatex">\(x_i\)</span> - количество букв слова, <span class="arithmatex">\(n\)</span> - количество слов.</p>
+<p>Индекс получен на испанских текстах, поэтому в <code>get_stats</code> ruTS не входит, хотя свойство <code>mu_index</code> у объекта есть. Его функция - <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/#mu_index"><code>calc_mu_index</code></a> ядра anyTS.</p>
+</div>
+<h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe_grade 01276a5 -->
+<p><code>describe_grade(stat)</code> возвращает ступень обучения и возраст читателя для сводного класса или формулы класса <code>stat</code>, по умолчанию <code>consensus_grade</code>; другая метрика дает <code>ParameterError</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe_level d50eec4 -->
+<p><code>describe_level(stat)</code> возвращает полосу шкалы интерпретации (<code>level_scale</code>) метрики <code>stat</code>, по умолчанию <code>flesch_reading_easy</code>; метрика без шкалы полос и неопределенное значение (nan) дают <code>ParameterError</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-describe 3fed408 -->
+<p><code>describe(stat)</code> возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (<code>describe_grade</code>), для метрики со шкалой полос (<code>level_scale</code>) - ее полосу, для другой метрики из <code>grade_scales</code> - ступень и возраст по числу лет обучения, которое дает ее шкала, и <code>None</code> для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в <code>stats_desc</code>, ни среди открытых свойств класса, дает <code>UnknownStatError</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_speed 02714c8 -->
+<p><code>reading_time_by_speed(wpm)</code> возвращает время чтения текста в минутах при скорости <code>wpm</code>, слов в минуту; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_norm 8a24e05 -->
+<p><code>reading_time_by_norm(norm)</code> возвращает время чтения текста в минутах при скоростях нормы <code>norm</code> из <code>reading_speed_norms</code> в их порядке; неизвестная норма дает <code>ParameterError</code>.</p>
+<p>В ruTS нормы - из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, и метод возвращает время чтения при верхней и при нижней границе нормы.</p>
+<p id="sis_grade_by_stage"><code>sis_grade_by_stage(stage)</code> возвращает значение <a href="#sis_grade">формулы Соловьёва, Иванова, Солнышкиной</a> с коэффициентами ступени обучения <code>stage</code>: <code>2-4</code>, <code>5-7</code> или <code>8-11</code>; неизвестная ступень дает <code>ParameterError</code>.</p>
+<p id="sis_grade_by_freq"><code>sis_grade_by_freq(mean_ipm, stage=None)</code> возвращает значение <a href="#calc_sis_grade_freq">формулы с частотностью</a> при средней частотности знаменательных слов <code>mean_ipm</code> - атрибуте <a href="../lexical_stats/#frequency"><code>mean_ipm_content</code></a> класса <code>LexicalStats</code> - с коэффициентами ступени <code>stage</code> или, без нее, общей формулы. Отрицательная или бесконечная частотность, частотность, которая не число, и неизвестная ступень дают <code>ParameterError</code>, а <code>nan</code> дает <code>nan</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-get_stats 0cb58e2 -->
+<p><code>get_stats()</code> возвращает справочник метрик удобочитаемости из <code>stats_desc</code>.</p>
+<!-- core: stats/readability_stats.md:ReadabilityStats-print_stats ac340b3 -->
+<p><code>print_stats()</code> выводит таблицу метрик удобочитаемости с их описаниями из <code>stats_desc</code> под заголовками из <code>stats_headers</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">(),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">(</span><span class="s2">"gunning_fog_index"</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"flesch_reading_easy"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe_level</span><span class="p">(</span><span class="s2">"lix"</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"rix"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"matskovsky_index"</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_speed</span><span class="p">(</span><span class="mi">120</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_norm</span><span class="p">(</span><span class="s2">"grade_1"</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('1-3-й класс (6-8 лет)', '4-6-й класс (9-11 лет)')
+('6-й класс', 'очень простые тексты, детские книги')
+('6-й класс', None)
+(0.125, (0.375, 0.6))
+{'flesch_kincaid_grade': -2.0633333333333326,
+ 'flesch_reading_easy': 87.16833333333334,
+ 'coleman_liau_index': 1.1700000000000053,
+ 'smog_index': 0.05,
+ 'automated_readability_index': 0.2941666666666656,
+ 'lix': 28.333333333333336,
+ 'rix': 2.0,
+ 'sis_grade': 1.5166666666666675,
+ 'matskovsky_index': 9.351,
+ 'dale_chall_index': 4.095000000000001,
+ 'gunning_fog_index': 6.0,
+ 'consensus_grade': 1.5,
+ 'reading_time': 0.08333333333333333}
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Метод <code>to_dataframe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS.</p>
+<h2 id="scales">Шкалы<a class="headerlink" href="#scales" title="Permanent link">&para;</a></h2>
+<p>Метод <code>describe_level</code> читает индекс Флеша, LIX и RIX по шкалам полос из их карточек (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), а <code>describe</code> - любую метрику: эти три по тем же шкалам, формулы класса и сводный класс - по ступеням обучения <a href="#grade_to_age"><code>grade_to_age</code></a>; для метрики без шкалы он возвращает <code>None</code>.</p>
+<h3 id="grade_to_age">Класс и возраст читателя<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">grade_to_age</span><span class="p">(</span><span class="n">grade</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'1-3-й класс'</span><span class="p">,</span> <span class="s1">'6-8 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">'4-6-й класс'</span><span class="p">,</span> <span class="s1">'9-11 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">'7-9-й класс'</span><span class="p">,</span> <span class="s1">'12-14 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">'10-11-й класс'</span><span class="p">,</span> <span class="s1">'15-16 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s1">'1-3-й курс вуза'</span><span class="p">,</span> <span class="s1">'17-19 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">'4-6-й курс вуза'</span><span class="p">,</span> <span class="s1">'20-22 года'</span><span class="p">)),</span> <span class="n">above</span><span class="o">=</span><span class="p">(</span><span class="s1">'аспирантура'</span><span class="p">,</span> <span class="s1">'старше 22 лет'</span><span class="p">))</span>
+</code></pre></div>
+<!-- core: stats/readability_stats.md:grade_to_age 751554e -->
+<p>Ступень обучения и возраст читателя по значению формулы класса: значение округляется арифметически и попадает в первую ступень, последний год которой оно не превышает, значения меньше 1 - в первую ступень; после последней ступени лежит <code>above</code>. Класс, который не конечное число, ступени, которые не четверки из двух целых лет и двух строк по возрастанию лет, и <code>above</code>, который не пара строк, дают <code>ParameterError</code>.</p>
+<p>Ступени ruTS по умолчанию взяты из таблицы <code>GRADE_TEXT</code> проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (<code>ruts.constants.GRADE_AGE_LEVELS</code> и <code>POSTGRADUATE_LEVEL</code>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Класс</th>
+<th style="text-align: left;">Ступень</th>
+<th style="text-align: left;">Возраст</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">1-3</td>
+<td style="text-align: left;">1-3-й класс</td>
+<td style="text-align: left;">6-8 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;">4-6</td>
+<td style="text-align: left;">4-6-й класс</td>
+<td style="text-align: left;">9-11 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;">7-9</td>
+<td style="text-align: left;">7-9-й класс</td>
+<td style="text-align: left;">12-14 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;">10-11</td>
+<td style="text-align: left;">10-11-й класс</td>
+<td style="text-align: left;">15-16 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;">12-14</td>
+<td style="text-align: left;">1-3-й курс вуза</td>
+<td style="text-align: left;">17-19 лет</td>
+</tr>
+<tr>
+<td style="text-align: left;">15-17</td>
+<td style="text-align: left;">4-6-й курс вуза</td>
+<td style="text-align: left;">20-22 года</td>
+</tr>
+<tr>
+<td style="text-align: left;">больше 17</td>
+<td style="text-align: left;">аспирантура</td>
+<td style="text-align: left;">старше 22 лет</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>grade</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значение формулы класса</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>list[tuple[int, int, str, str]]</code></td>
+<td style="text-align: left;"><code>GRADE_AGE_LEVELS</code></td>
+<td style="text-align: left;">Ступени - первый и последний год, ступень и возраст - по возрастанию</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>above</code></td>
+<td style="text-align: left;"><code>tuple[str, str]</code></td>
+<td style="text-align: left;"><code>POSTGRADUATE_LEVEL</code></td>
+<td style="text-align: left;">Ступень и возраст после последней ступени</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scale_level">Полоса шкалы<a class="headerlink" href="#scale_level" title="Permanent link">&para;</a></h3>
+<!-- core: stats/readability_stats.md:scale_level ad443b9 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">scale_level</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+</code></pre></div>
+<p>Полоса шкалы для значения: шкала задается нижними границами полос по убыванию, значение попадает в первую полосу, границы которой достигает, а нижняя полоса открыта вниз.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значение метрики</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scale</code></td>
+<td style="text-align: left;"><code>list[tuple[float, Any]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Нижние границы и их полосы по убыванию</td>
+</tr>
+</tbody>
+</table>
+<p>Значение, которое не конечное число, и шкала, которая пуста, не является списком пар из конечной нижней границы и полосы или с границами не по убыванию, дают <code>ParameterError</code>.</p>
+<p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> и <code>RIX_LEVELS</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_flesch_reading_easy</span><span class="p">,</span> <span class="n">scale_level</span>
+
+<span class="n">flesch</span> <span class="o">=</span> <span class="n">calc_flesch_reading_easy</span><span class="p">(</span><span class="n">n_syllables</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_sents</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">flesch</span><span class="p">,</span> <span class="n">scale_level</span><span class="p">(</span><span class="n">flesch</span><span class="p">,</span> <span class="n">READING_EASE_LEVELS</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(67.135, '8-й и 9-й класс')
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="level_norms">Нормы ступеней<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
 <p>Сводный класс говорит, для какой ступени текст, но не каким бывает текст этой ступени. Для этого в справочнике <code>ruts.constants.LEVEL_NORMS</code> есть нормы признаков ступеней: обычные диапазоны (квартили) длины предложения в словах, длины слова в буквах, доли слов от пяти слогов и лексического разнообразия MTLD у текстов от 100 слов с меткой ступени из наборов <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> и <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a>. Нормы есть у школьных ступеней, для которых в наборах не меньше 10 таких текстов:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Ступень</th>
-<th style="text-align: center;">Текстов</th>
-<th style="text-align: center;">Слов в предложении</th>
-<th style="text-align: center;">Букв в слове</th>
-<th style="text-align: center;">Доля слов от пяти слогов</th>
-<th style="text-align: center;">MTLD</th>
+<th style="text-align: left;">Ступень</th>
+<th style="text-align: left;">Текстов</th>
+<th style="text-align: left;">Слов в предложении</th>
+<th style="text-align: left;">Букв в слове</th>
+<th style="text-align: left;">Доля слов от пяти слогов</th>
+<th style="text-align: left;">MTLD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">1-3-й класс</td>
-<td style="text-align: center;">73</td>
-<td style="text-align: center;">8.1-10.7</td>
-<td style="text-align: center;">4.56-5.03</td>
-<td style="text-align: center;">0.0-0.022</td>
-<td style="text-align: center;">104-178</td>
+<td style="text-align: left;">1-3-й класс</td>
+<td style="text-align: left;">73</td>
+<td style="text-align: left;">8.1-10.7</td>
+<td style="text-align: left;">4.56-5.03</td>
+<td style="text-align: left;">0.0-0.022</td>
+<td style="text-align: left;">104-178</td>
 </tr>
 <tr>
-<td style="text-align: center;">4-6-й класс</td>
-<td style="text-align: center;">12</td>
-<td style="text-align: center;">10.2-14.6</td>
-<td style="text-align: center;">5.16-5.33</td>
-<td style="text-align: center;">0.039-0.052</td>
-<td style="text-align: center;">220-373</td>
+<td style="text-align: left;">4-6-й класс</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: left;">10.2-14.6</td>
+<td style="text-align: left;">5.16-5.33</td>
+<td style="text-align: left;">0.039-0.052</td>
+<td style="text-align: left;">220-373</td>
 </tr>
 <tr>
-<td style="text-align: center;">10-11-й класс</td>
-<td style="text-align: center;">18</td>
-<td style="text-align: center;">15.6-17.9</td>
-<td style="text-align: center;">5.11-5.57</td>
-<td style="text-align: center;">0.035-0.065</td>
-<td style="text-align: center;">277-513</td>
+<td style="text-align: left;">10-11-й класс</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">15.6-17.9</td>
+<td style="text-align: left;">5.11-5.57</td>
+<td style="text-align: left;">0.035-0.065</td>
+<td style="text-align: left;">277-513</td>
 </tr>
 </tbody>
 </table>
-<p>Нормы 1-3-го класса сняты почти целиком с текстов 1-го класса (70 из 73), поэтому текст для 2-3-го класса может выйти выше нормы, особенно по длине предложения. У 7-9-го класса в наборах семь текстов, а с метками вуза в <code>TextsByGrade</code> - статья Википедии, газетная статья и нормативные документы, написанные не для студентов определенного курса, поэтому у этих ступеней норм нет. Функция <a href="../readability_stats_funcs/#level_features"><code>level_features</code></a> считает признаки текста так же, как они считались для норм, <a href="../readability_stats_funcs/#level_norms"><code>level_norms</code></a> возвращает нормы ступени, к которой относится класс, а <a href="../readability_stats_funcs/#describe_level_norm"><code>describe_level_norm</code></a> читает признак по ним. Признаки текста короче 100 слов, особенно MTLD, с нормами сравнивать не стоит.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
+<p>Нормы 1-3-го класса сняты почти целиком с текстов 1-го класса (70 из 73), поэтому текст для 2-3-го класса может выйти выше нормы, особенно по длине предложения. У 7-9-го класса в наборах семь текстов, а с метками вуза в <code>TextsByGrade</code> - статья Википедии, газетная статья и нормативные документы, написанные не для студентов определенного курса, поэтому у этих ступеней норм нет. Признаки текста короче 100 слов, особенно MTLD, с нормами сравнивать не стоит.</p>
+<h3 id="level_features">Признаки текста<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">level_features</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+</code></pre></div>
+<p>Признаки текста, для которых есть нормы ступеней: слов в предложении, букв в слове (у слов, которые учитывают формулы класса), доля слов от пяти слогов (сложные слова SMOG, индексов Ганнинга и Дейла-Чейла) и лексическое разнообразие MTLD. Признаки считаются так же, как для норм, поэтому их можно сравнивать с нормами; признаки <code>Doc</code> считаются по его тексту, а не по границам предложений spaCy. Источник, который не строка и не <code>Doc</code>, дает <code>SourceTypeError</code>, источник без слов или предложений - <code>SourceError</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных (строка или объект Doc)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="describe_level_norm">Нормы и прочтение признака<a class="headerlink" href="#describe_level_norm" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">level_norms</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span>
+</code></pre></div>
+<p>Нормы признаков ступени обучения, к которой относится класс, - обычные диапазоны (квартили) каждого признака <code>level_features</code>, или <code>None</code> для ступени без норм. Класс относится к ступени, как в <a href="#grade_to_age"><code>grade_to_age</code></a>: округляется арифметически, класс меньше 1 - первая ступень. Класс, который не конечное число, дает <code>ParameterError</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>grade</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Класс читателя или сводный класс текста</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">describe_level_norm</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">grade</span><span class="p">)</span>
+</code></pre></div>
+<p>Прочтение признака текста по нормам ступени, к которой относится класс: «ниже нормы ступени», «в норме ступени» (между квартилями, включая их) или «выше нормы ступени» (<code>ruts.constants.LEVEL_NORM_BANDS</code>). Ступень без норм и неопределенное значение (nan) дают <code>None</code>, неизвестный признак - <code>UnknownStatError</code>, значение, которое не число, и класс, который не конечное число, - <code>ParameterError</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>stat</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Название признака из <code>ruts.constants.LEVEL_NORMS_DESC</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Значение признака</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>grade</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Класс читателя или сводный класс текста</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SovChLit</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe_level_norm</span><span class="p">,</span> <span class="n">level_features</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe_level_norm</span><span class="p">,</span> <span class="n">level_features</span><span class="p">,</span> <span class="n">level_norms</span>
 
+<span class="n">level_norms</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="s2">"words_per_sent"</span><span class="p">],</span> <span class="n">level_norms</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">text</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">SovChLit</span><span class="p">()</span><span class="o">.</span><span class="n">get_texts</span><span class="p">())</span>
 <span class="n">features</span> <span class="o">=</span> <span class="n">level_features</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span><span class="n">stat</span><span class="p">:</span> <span class="n">describe_level_norm</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">stat</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-<span class="c1"># {'words_per_sent': 'выше нормы ступени',</span>
-<span class="c1">#  'letters_per_word': 'выше нормы ступени',</span>
-<span class="c1">#  'p_smog_complex_words': 'выше нормы ступени',</span>
-<span class="c1">#  'mtld': 'в норме ступени'}</span>
 </code></pre></div>
 </div>
-<h2 id="_6">Методы<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<h3 id="describe_grade">describe_grade<a class="headerlink" href="#describe_grade" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-describe_grade af0b5e5 -->
-<p>Возвращает ступень обучения и возраст читателя для сводного класса или формулы класса; другая метрика дает <code>ParameterError</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>stat</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>consensus_grade</code></td>
-<td style="text-align: center;">Название формулы класса</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">()</span>
-<span class="c1"># '1-3-й класс (6-8 лет)'</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">describe_grade</span><span class="p">(</span><span class="s2">"gunning_fog_index"</span><span class="p">)</span>
-<span class="c1"># '4-6-й класс (9-11 лет)'</span>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>((8.1, 10.7), None)
+{'words_per_sent': 'выше нормы ступени',
+ 'letters_per_word': 'выше нормы ступени',
+ 'p_smog_complex_words': 'выше нормы ступени',
+ 'mtld': 'в норме ступени'}
 </code></pre></div>
 </div>
-<h3 id="describe_level">describe_level<a class="headerlink" href="#describe_level" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-describe_level cfbf0cd -->
-<p>Возвращает полосу шкалы интерпретации метрики (<code>level_scale</code>); метрика без шкалы полос и неопределенное значение (nan) дают <code>ParameterError</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>stat</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>flesch_reading_easy</code></td>
-<td style="text-align: center;">Название метрики</td>
-</tr>
-</tbody>
-</table>
-<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-describe 6148d1e -->
-<p>Возвращает прочтение любой метрики по ее шкале: для сводного класса и формулы класса - ступень обучения и возраст читателя (<code>describe_grade</code>), для метрики со шкалой полос (<code>level_scale</code>) - ее полосу, для другой метрики из <code>grade_scales</code> - ступень и возраст по числу лет обучения, которое дает ее шкала, и <code>None</code> для метрики без шкалы или с неопределенным значением (nan). Имя, которого нет ни в <code>stats_desc</code>, ни среди открытых свойств класса, дает <code>UnknownStatError</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>stat</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Название метрики</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"flesch_reading_easy"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe_level</span><span class="p">(</span><span class="s2">"lix"</span><span class="p">)</span>
-<span class="c1"># ('6-й класс', 'очень простые тексты, детские книги')</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"rix"</span><span class="p">),</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"matskovsky_index"</span><span class="p">)</span>
-<span class="c1"># ('6-й класс', None)</span>
-</code></pre></div>
 </div>
-<h3 id="reading_time_by_speed">reading_time_by_speed<a class="headerlink" href="#reading_time_by_speed" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_speed 7c6fa90 -->
-<p>Возвращает время чтения текста в минутах при заданной скорости; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>wpm</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Скорость чтения, слов в минуту</td>
-</tr>
-</tbody>
-</table>
-<h3 id="reading_time_by_norm">reading_time_by_norm<a class="headerlink" href="#reading_time_by_norm" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_norm dcb8ada -->
-<p>Возвращает время чтения текста в минутах при скоростях нормы из <code>reading_speed_norms</code> в их порядке; неизвестная норма дает <code>ParameterError</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>norm</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Название нормы скорости чтения</td>
-</tr>
-</tbody>
-</table>
-<p>Нормы справочника <code>ruts.constants.READING_SPEED_NORMS</code> - <code>adult_silent</code>, <code>grade_1</code>, <code>grade_2</code>, <code>grade_3</code> и <code>grade_4</code>, у каждой нижняя и верхняя граница, а метод возвращает время чтения при верхней и при нижней границе.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_speed</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
-<span class="c1"># 0.125</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">reading_time_by_norm</span><span class="p">(</span><span class="s2">"grade_1"</span><span class="p">)</span>
-<span class="c1"># (0.375, 0.6)</span>
-</code></pre></div>
 </div>
-<h3 id="sis_grade_by_stage">sis_grade_by_stage<a class="headerlink" href="#sis_grade_by_stage" title="Permanent link">&para;</a></h3>
-<p>Возвращает значение формулы Соловьёва, Иванова, Солнышкиной (2023) с коэффициентами для заданной ступени обучения. Общая формула доступна через атрибут <code>sis_grade</code>, коэффициенты ступеней - в справочнике <code>ruts.constants.SIS_GRADE_STAGES</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>stage</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Ступень обучения (<code>2-4</code>, <code>5-7</code>, <code>8-11</code>)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="sis_grade_by_freq">sis_grade_by_freq<a class="headerlink" href="#sis_grade_by_freq" title="Permanent link">&para;</a></h3>
-<p>Возвращает значение формулы Соловьёва, Иванова, Солнышкиной (2023) с частотностью слов: <code>−14.46 + 0.58·ASL + 2.15·AWL − 0.0026·FREQ2</code>, где FREQ2 - средняя частотность знаменательных слов текста по словарю Ляшевской и Шарова, атрибут <a href="../lexical_stats/"><code>mean_ipm_content</code></a> класса <code>LexicalStats</code>. Коэффициенты ступеней обучения - в справочнике <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>.</p>
-<p>Параметры:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>mean_ipm</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Средняя частотность знаменательных слов (ipm)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stage</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Ступень обучения (<code>2-4</code>, <code>5-7</code>, <code>8-11</code>); без нее - общая формула</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">LexicalStats</span><span class="p">,</span> <span class="n">ReadabilityStats</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул."</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">sis_grade</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">sis_grade_by_freq</span><span class="p">(</span><span class="n">LexicalStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">mean_ipm_content</span><span class="p">)</span>
-<span class="c1"># (-4.625384615384615, -3.106298290598293)</span>
-</code></pre></div>
-</div>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-get_stats be64711 -->
-<p>Возвращает справочник метрик удобочитаемости из <code>stats_desc</code>.</p>
-<p>Рассмотрим пример вычисления метрик удобочитаемости текста:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
-
-<span class="c1"># Подготовка данных</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"</span>
-
-<span class="c1"># Вычисление метрик</span>
-<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'flesch_kincaid_grade'</span>:<span class="w"> </span>-2.0633333333333326,
-<span class="s1">'flesch_reading_easy'</span>:<span class="w"> </span><span class="m">87</span>.16833333333334,
-<span class="s1">'coleman_liau_index'</span>:<span class="w"> </span><span class="m">1</span>.1700000000000053,
-<span class="s1">'smog_index'</span>:<span class="w"> </span><span class="m">0</span>.05,
-<span class="s1">'automated_readability_index'</span>:<span class="w"> </span><span class="m">0</span>.2941666666666656,
-<span class="s1">'lix'</span>:<span class="w"> </span><span class="m">28</span>.333333333333336,
-<span class="s1">'rix'</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="s1">'sis_grade'</span>:<span class="w"> </span><span class="m">1</span>.5166666666666675,
-<span class="s1">'matskovsky_index'</span>:<span class="w"> </span><span class="m">9</span>.351,
-<span class="s1">'dale_chall_index'</span>:<span class="w"> </span><span class="m">4</span>.095000000000001,
-<span class="s1">'gunning_fog_index'</span>:<span class="w"> </span><span class="m">6</span>.0,
-<span class="s1">'consensus_grade'</span>:<span class="w"> </span><span class="m">1</span>.5,
-<span class="s1">'reading_time'</span>:<span class="w"> </span><span class="m">0</span>.08333333333333333<span class="o">}</span>
-</code></pre></div>
-</div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/readability_stats.md:ReadabilityStats-print_stats 39627e6 -->
-<p>Выводит таблицу метрик удобочитаемости с их описаниями из <code>stats_desc</code> под заголовками из <code>stats_headers</code>.</p>
-<p>Для иллюстрации работы метода воспользуемся кодом из предыдущего примера:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Отображение таблицы вычисленных метрик</span>
-<span class="n">rs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                </span>Метрика<span class="w">                 </span><span class="p">|</span><span class="w"> </span>Значение
----------------------------------------------------
-Тест<span class="w"> </span>Флеша-Кинкайда<span class="w">                     </span><span class="p">|</span><span class="w">  </span>-2.06
-Индекс<span class="w"> </span>удобочитаемости<span class="w"> </span>Флеша<span class="w">            </span><span class="p">|</span><span class="w">  </span><span class="m">87</span>.17
-Индекс<span class="w"> </span>Колман-Лиау<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.17
-Индекс<span class="w"> </span>SMOG<span class="w">                             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.05
-Автоматический<span class="w"> </span>индекс<span class="w"> </span>удобочитаемости<span class="w">   </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.29
-Индекс<span class="w"> </span>удобочитаемости<span class="w"> </span>LIX<span class="w">              </span><span class="p">|</span><span class="w">  </span><span class="m">28</span>.33
-Индекс<span class="w"> </span>удобочитаемости<span class="w"> </span>RIX<span class="w">              </span><span class="p">|</span><span class="w">   </span><span class="m">2</span>.00
-Формула<span class="w"> </span>Соловьёва,<span class="w"> </span>Иванова,<span class="w"> </span>Солнышкиной<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.52
-Формула<span class="w"> </span>Мацковского<span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">9</span>.35
-Индекс<span class="w"> </span>Дейла-Чейла<span class="w">                      </span><span class="p">|</span><span class="w">   </span><span class="m">4</span>.10
-Индекс<span class="w"> </span>Ганнинга<span class="w">                         </span><span class="p">|</span><span class="w">   </span><span class="m">6</span>.00
-Сводный<span class="w"> </span>класс<span class="w">                           </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.50
-Время<span class="w"> </span>чтения<span class="w"> </span><span class="o">(</span>мин.<span class="o">)</span><span class="w">                     </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.08
-</code></pre></div>
-</div>
-<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
-<p>Метод <code>to_dataframe</code> (метрики в <code>pandas.DataFrame</code> из одной строки) - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS.</p>
 
 
 
@@ -3839,6 +4522,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3907,7 +4596,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

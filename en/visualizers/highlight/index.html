@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2501,28 +1843,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2549,45 +1869,6 @@
     <span class="md-ellipsis">
       
         Methods
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#to_html" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_html
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#css" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        css
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Usage example
       
     </span>
   </a>
@@ -2834,28 +2115,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#language-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Language hooks
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2886,45 +2145,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#to_html" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_html
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#css" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        css
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Usage example
-      
-    </span>
-  </a>
-  
 </li>
       
     </ul>
@@ -2948,264 +2168,133 @@
 
 
 <h1 id="text-highlighting">Text highlighting<a class="headerlink" href="#text-highlighting" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.visualizers.highlight()</strong>, <strong>ruts.visualizers.HighlightedText</strong>, <strong>ruts.visualizers.Highlight</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">HighlightedText</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">long_sent_word_factor</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alliteration_threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</code></pre></div>
 <p>Highlighting of a text by layers, in the manner of the style checkers: every layer marks the fragments of a text that a statistic counts - long sentences, complex words, the passive. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. The result shows in Jupyter as HTML with styles and a legend; <code>to_html</code> returns the markup, and <code>highlights</code> keeps the fragments for a rendering of one's own. Fragments of different layers may overlap.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>;</li>
+<li><code>SourceError</code> - a source without words;</li>
+<li><code>ParameterError</code> - layers that are not a name or a list of names, a layer that is unknown or one that needs an annotation the source lacks.</li>
+</ul>
+<div class="signature highlight"><pre><span></span><code><span class="n">highlight</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">long_sent_word_factor</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alliteration_threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</code></pre></div>
 <p>The function <code>highlight</code> returns a <code>HighlightedText</code> object of ruTS with the layers in the style of the <a href="https://glvrd.ru/">Glavred</a> and <a href="https://turgenev.ashmanov.com/">Turgenev</a> services: long sentences, complex and rare words, passive voice, participial and adverbial clauses, genitive chains, split predicates, verbal nouns, compound prepositions, clichés, stop words, parentheticals, connectives, alliterations. One picture explains what the metric values are made of better than a table of numbers.</p>
-<p>Highlighting layers:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Group</th>
-<th style="text-align: center;">Layer</th>
-<th style="text-align: center;">What it marks</th>
-<th style="text-align: center;">Statistic</th>
+<th style="text-align: left;">Layer</th>
+<th style="text-align: left;">What it marks</th>
+<th style="text-align: left;">Statistic</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">Readability</td>
-<td style="text-align: center;"><code>long_sents</code></td>
-<td style="text-align: center;">Sentences with at least <code>long_sent_word_factor</code> words</td>
-<td style="text-align: center;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
+<td style="text-align: left;"><code>long_sents</code></td>
+<td style="text-align: left;">Sentences with at least <code>long_sent_word_factor</code> words</td>
+<td style="text-align: left;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>complex_words</code></td>
-<td style="text-align: center;">Words with at least <code>complex_syl_factor</code> syllables</td>
-<td style="text-align: center;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
+<td style="text-align: left;"><code>complex_words</code></td>
+<td style="text-align: left;">Words with at least <code>complex_syl_factor</code> syllables</td>
+<td style="text-align: left;"><a href="../../stats/basic_stats/">BasicStats</a>, <a href="../../stats/readability_stats/">ReadabilityStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>rare_words</code></td>
-<td style="text-align: center;">Words whose lemma is outside the embedded top-10000 list; numbers, Latin script, abbreviations and stop words are not highlighted</td>
-<td style="text-align: center;"><a href="../../stats/lexical_stats/">LexicalStats</a></td>
+<td style="text-align: left;"><code>rare_words</code></td>
+<td style="text-align: left;">Words whose lemma is outside the embedded top-10000 list; numbers, Latin script, abbreviations and stop words are not highlighted</td>
+<td style="text-align: left;"><a href="../../stats/lexical_stats/">LexicalStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;">Syntax</td>
-<td style="text-align: center;"><code>passive</code></td>
-<td style="text-align: center;">Passive verb forms together with the auxiliary verb</td>
-<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+<td style="text-align: left;"><code>passive</code></td>
+<td style="text-align: left;">Passive verb forms together with the auxiliary verb</td>
+<td style="text-align: left;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>participle_clauses</code></td>
-<td style="text-align: center;">Participial clauses</td>
-<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+<td style="text-align: left;"><code>participle_clauses</code></td>
+<td style="text-align: left;">Participial clauses</td>
+<td style="text-align: left;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>converb_clauses</code></td>
-<td style="text-align: center;">Adverbial participle (converb) clauses</td>
-<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+<td style="text-align: left;"><code>converb_clauses</code></td>
+<td style="text-align: left;">Adverbial participle (converb) clauses</td>
+<td style="text-align: left;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>genitive_chains</code></td>
-<td style="text-align: center;">Genitive chains together with the governing word</td>
-<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+<td style="text-align: left;"><code>genitive_chains</code></td>
+<td style="text-align: left;">Genitive chains together with the governing word</td>
+<td style="text-align: left;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>split_predicates</code></td>
-<td style="text-align: center;">Split predicates from the verb to the nominal part</td>
-<td style="text-align: center;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
+<td style="text-align: left;"><code>split_predicates</code></td>
+<td style="text-align: left;">Split predicates from the verb to the nominal part</td>
+<td style="text-align: left;"><a href="../../stats/syntax_stats/">SyntaxStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;">Officialese</td>
-<td style="text-align: center;"><code>verbal_nouns</code></td>
-<td style="text-align: center;">Verbal nouns</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"><code>verbal_nouns</code></td>
+<td style="text-align: left;">Verbal nouns</td>
+<td style="text-align: left;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>compound_prepositions</code></td>
-<td style="text-align: center;">Compound prepositions from the <code>COMPOUND_PREPOSITIONS</code> list</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"><code>compound_prepositions</code></td>
+<td style="text-align: left;">Compound prepositions from the <code>COMPOUND_PREPOSITIONS</code> list</td>
+<td style="text-align: left;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>cliches</code></td>
-<td style="text-align: center;">Clichés from the <code>OFFICIALESE_CLICHES</code> list or the <code>cliches</code> parameter</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"><code>cliches</code></td>
+<td style="text-align: left;">Clichés from the <code>OFFICIALESE_CLICHES</code> list or the <code>cliches</code> parameter</td>
+<td style="text-align: left;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;">Style</td>
-<td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">Water words by part of speech (<code>is_water_word</code>) or from the given list</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"><code>stopwords</code></td>
+<td style="text-align: left;">Water words by part of speech (<code>is_water_word</code>) or from the given list</td>
+<td style="text-align: left;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>parentheticals</code></td>
-<td style="text-align: center;">Parenthetical words and phrases</td>
-<td style="text-align: center;"><a href="../../stats/style_stats/">StyleStats</a></td>
+<td style="text-align: left;"><code>parentheticals</code></td>
+<td style="text-align: left;">Parenthetical words and phrases</td>
+<td style="text-align: left;"><a href="../../stats/style_stats/">StyleStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;"></td>
-<td style="text-align: center;"><code>connectors</code></td>
-<td style="text-align: center;">Connectives by part of speech from the <code>Doc</code> annotation or pymorphy3, the tooltip shows the class and type</td>
-<td style="text-align: center;"><a href="../../stats/cohesion_stats/">CohesionStats</a></td>
+<td style="text-align: left;"><code>connectors</code></td>
+<td style="text-align: left;">Connectives by part of speech from the <code>Doc</code> annotation or pymorphy3, the tooltip shows the class and type</td>
+<td style="text-align: left;"><a href="../../stats/cohesion_stats/">CohesionStats</a></td>
 </tr>
 <tr>
 <td style="text-align: left;">Phonics</td>
-<td style="text-align: center;"><code>alliteration</code></td>
-<td style="text-align: center;">Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies</td>
-<td style="text-align: center;"><a href="../../stats/phon_stats/">PhonStats</a></td>
+<td style="text-align: left;"><code>alliteration</code></td>
+<td style="text-align: left;">Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies</td>
+<td style="text-align: left;"><a href="../../stats/phon_stats/">PhonStats</a></td>
 </tr>
 </tbody>
 </table>
 <p>The groups are defined in <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. The layers of the "Syntax" group are computed over the dependency tree and are available only for a <code>Doc</code> object with a dependency parse (the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code> models). By default the <code>HIGHLIGHT_DEFAULT_LAYERS</code> layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; <code>layers="all"</code> enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
+<p class="admonition-title">Alliteration</p>
 <p>Alliteration is searched within a sentence as a chain of two or more adjacent words each of whose stems contains the same consonant letter. The stem is the common initial part of the word form and its pymorphy3 lemma (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>): endings agree with neighboring words and repeat consonants by grammar rather than by sound (<em>этих крупных</em>, <em>своим целям и нуждам</em>). The probability of a chain under an independent letter distribution is the product over the words of the probabilities of meeting the consonant among the stem letters, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, where <span class="arithmatex">\(f\)</span> is the <a href="https://ru.wikipedia.org/wiki/Частотность">frequency of the consonant</a> in Russian texts and <span class="arithmatex">\(n\)</span> the number of stem letters; a chain is highlighted if the probability is below the <code>alliteration_threshold</code>. About twenty consonants are checked at every position, so the threshold is strict: in prose about 5% of words are highlighted at 0.001, about 20% at 0.01, mostly random coincidences of frequent letters. A repeat of a rare consonant (<em>слышно, бесшумно шуршат камыши</em>) is noticeable in two or three words, a repeat of a frequent one in long words is expected and not highlighted. Words shorter than three letters, stop words and words without vowels neither break nor continue a chain, the letter <em>й</em> is not counted, since in the nominative case it is part of the adjective lemma. The alliteration index of <a href="../../stats/phon_stats/">PhonStats</a> measures how clustered the repeats are across the whole text; the highlighting shows where they are.</p>
 </div>
-<h2 id="language-hooks">Language hooks<a class="headerlink" href="#language-hooks" title="Permanent link">&para;</a></h2>
 <p>The class extends the <code>HighlightedText</code> of the <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/">anyTS</a> core with the hooks of Russian from <code>ruts.constants</code>: the layers with their names in the legend are <code>HIGHLIGHT_LAYERS_DESC</code>, the layers on by default <code>HIGHLIGHT_DEFAULT_LAYERS</code>, the annotations of a <code>Doc</code> a layer needs <code>HIGHLIGHT_LAYER_ANNOTATIONS</code> (the syntactic layers need only a dependency parse, as the lemmas come from pymorphy3) and the styles of the layers <code>HIGHLIGHT_LAYER_STYLES</code>; the prefix of the CSS classes is <code>ruts</code>. The words of a string are split as by <a href="../../extractors/words/"><code>WordsExtractor</code></a> and its sentences by razdel; a <code>Doc</code> without sentence boundaries (<code>spacy.blank</code>, a pipeline without <code>parser</code> and <code>senter</code>) is split into sentences by razdel too, so the <code>long_sents</code> layer is available for it, and the parts of a hyphenated word of a <code>Doc</code> make one word. The fragments of the layers, except the passive, the participial and adverbial participle clauses and the genitive chains, are found by the <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/#finders">finders of the core</a> with the hooks of Russian: the syllables of <code>count_syllables</code>, the comparison without the letter ё (<code>normalize_yo</code>), the connector matcher <code>RussianConnectorMatcher</code> with the parts of speech of <code>connector_pos</code>, the stems of <code>get_stem</code> and the frequencies of the consonants <code>RU_LETTER_FREQUENCIES</code> without й for the alliteration.</p>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>layers</code></td>
-<td style="text-align: center;">list[str]/str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Layers of the highlighting; if not given, the default layers the source allows; <code>"all"</code> - every layer allowed</td>
-</tr>
-</tbody>
-</table>
-<p>A source that is neither a string nor a <code>Doc</code> raises <code>SourceTypeError</code>, a source without words <code>SourceError</code>; layers that are not a name or a list of names, a layer that is unknown or one that needs an annotation the source lacks raise <code>ParameterError</code>.</p>
-<p>The parameters of the layers of ruTS:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>long_sent_word_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>20</code></td>
-<td style="text-align: center;">Minimum number of words in a long sentence</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>complex_syl_factor</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>4</code></td>
-<td style="text-align: center;">Minimum number of syllables in a complex word</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stopwords</code></td>
-<td style="text-align: center;">list[str]/set[str]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List or set of water words; if not given, they are determined by part of speech with pymorphy3</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>cliches</code></td>
-<td style="text-align: center;">list[str]/set[str]</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">List or set of clichés; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>alliteration_threshold</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;"><code>0.001</code></td>
-<td style="text-align: center;">Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration</td>
-</tr>
-</tbody>
-</table>
-<p>A threshold that is not an integer of at least one or a probability outside (0, 1] raises <code>ParameterError</code>, stop words or clichés that are not strings <code>SourceTypeError</code>.</p>
-<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>text</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;">Text of the data source</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>layers</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Layers turned on, in the order of drawing</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>highlights</code></td>
-<td style="text-align: center;">tuple[Highlight]</td>
-<td style="text-align: center;">Highlighted fragments, sorted by their start and then by descending end</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>counts</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Number of fragments of every layer</td>
-</tr>
-</tbody>
-</table>
-<p>A <code>Highlight</code> fragment is an immutable object with the fields <code>start</code> and <code>end</code> (positions in the text), <code>layer</code> (the layer) and <code>note</code> (the explanation for the tooltip).</p>
-<p>The note of a fragment gives the number of words in the sentence, of syllables in the word, the length of the chain or the consonant of the alliteration.</p>
-<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="to_html">to_html<a class="headerlink" href="#to_html" title="Permanent link">&para;</a></h3>
-<p>Returns the HTML markup of the highlighted text: a <code>div</code> of the class <code>&lt;prefix&gt;-highlight</code> with the legend, its counts and the text, where a highlighted segment is a <code>span</code> of the classes <code>&lt;prefix&gt;-hl</code> and <code>&lt;prefix&gt;-hl-&lt;layer&gt;</code> with the notes in its <code>title</code>; <code>&lt;prefix&gt;</code> is <code>css_prefix</code>. Overlapping fragments of different layers give segments with several classes, in the order of drawing. Line breaks (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) become character references, one per break, so the markup can go into Markdown.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>legend</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Add the legend with the counts of the fragments</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>css</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>True</code></td>
-<td style="text-align: center;">Add the styles of the layers</td>
-</tr>
-</tbody>
-</table>
-<h3 id="css">css<a class="headerlink" href="#css" title="Permanent link">&para;</a></h3>
-<p>The class method <code>css()</code> returns the styles <code>to_html</code> adds: the container, the legend and the text under the classes of <code>css_prefix</code>, the declarations of <code>layer_styles</code> for every layer, and a dark colour of the text on the layers with a background.</p>
-<h2 id="usage-example">Usage example<a class="headerlink" href="#usage-example" title="Permanent link">&para;</a></h2>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the libraries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">highlight</span>
 
-<span class="c1"># Prepare the data</span>
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 <span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">"Проект, подготовленный за неделю, был одобрен советом без обсуждения. "</span>
@@ -3216,30 +2305,41 @@
     <span class="s2">"Споры стихли, в кулуарах шумно шептались и шушукались, а решение было отложено "</span>
     <span class="s2">"до следующего заседания."</span>
 <span class="p">)</span>
-
-<span class="c1"># Highlight the text with the default layers</span>
 <span class="n">ht</span> <span class="o">=</span> <span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">ht</span><span class="o">.</span><span class="n">counts</span>
-<span class="c1"># {'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2,</span>
-<span class="c1">#  'split_predicates': 0, 'cliches': 1}</span>
-
 <span class="n">ht</span><span class="o">.</span><span class="n">highlights</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-<span class="c1"># (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),</span>
-<span class="c1">#  Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))</span>
-
-<span class="c1"># All layers</span>
 <span class="n">highlight</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">layers</span><span class="o">=</span><span class="s2">"all"</span><span class="p">)</span><span class="o">.</span><span class="n">counts</span>
-<span class="c1"># {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,</span>
-<span class="c1">#  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,</span>
-<span class="c1">#  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,</span>
-<span class="c1">#  'connectors': 4, 'alliteration': 1}</span>
-
-<span class="c1"># Display in Jupyter or save the markup</span>
-<span class="n">ht</span>
-<span class="n">html</span> <span class="o">=</span> <span class="n">ht</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span>
 </code></pre></div>
 </div>
-<p><em>Result</em> (hover over a fragment to see the explanation):</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'long_sents': 1,
+ 'complex_words': 26,
+ 'passive': 4,
+ 'genitive_chains': 2,
+ 'split_predicates': 0,
+ 'cliches': 1}
+(Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),
+ Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))
+{'long_sents': 1,
+ 'complex_words': 26,
+ 'rare_words': 3,
+ 'passive': 4,
+ 'participle_clauses': 2,
+ 'converb_clauses': 1,
+ 'genitive_chains': 2,
+ 'split_predicates': 0,
+ 'verbal_nouns': 10,
+ 'compound_prepositions': 0,
+ 'cliches': 1,
+ 'stopwords': 7,
+ 'parentheticals': 0,
+ 'connectors': 4,
+ 'alliteration': 1}
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>In Jupyter the object <code>ht</code> displays like this (hover over a fragment to see the explanation):</p>
 <div class="ruts-highlight"><style>.ruts-highlight { line-height: 1.7; }
 .ruts-highlight-legend { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin-bottom: 0.8em; font-size: 0.9em; }
 .ruts-highlight-legend .ruts-hl { padding: 0 0.3em; }
@@ -3264,19 +2364,203 @@
 </style><div class="ruts-highlight-legend"><span><span class="ruts-hl ruts-hl-long_sents">Длинные предложения</span><span class="ruts-highlight-count">1</span></span><span><span class="ruts-hl ruts-hl-complex_words">Сложные слова</span><span class="ruts-highlight-count">26</span></span><span><span class="ruts-hl ruts-hl-passive">Пассив</span><span class="ruts-highlight-count">4</span></span><span><span class="ruts-hl ruts-hl-genitive_chains">Цепочки родительных</span><span class="ruts-highlight-count">2</span></span><span><span class="ruts-hl ruts-hl-split_predicates">Расщеплённые сказуемые</span><span class="ruts-highlight-count">0</span></span><span><span class="ruts-hl ruts-hl-cliches">Штампы</span><span class="ruts-highlight-count">1</span></span></div><div class="ruts-highlight-text">Проект, <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 5 слогов; пассив без агенса">подготовленный</span> за неделю, <span class="ruts-hl ruts-hl-passive" title="пассив">был одобрен</span> советом без <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">обсуждения</span>. <span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">Повышение</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 5 слогов; цепочка из 3 родительных">эффективности</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-genitive_chains" title="сложное слово, 6 слогов; цепочка из 3 родительных">использования</span><span class="ruts-hl ruts-hl-genitive_chains" title="цепочка из 3 родительных"> бюджетных средств</span> <span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">обсуждалось</span>, не выходя за рамки <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">регламента</span>. <span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">Участники</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">представлявшие</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 6 слогов">региональные</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">министерства</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, не смогли </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">согласовать</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">позиции</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-cliches" title="длинное предложение, 26 слов; штамп: «по вопросам»">по вопросам</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 7 слогов">финансирования</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> и </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 6 слогов">распределения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">ответственности</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> между </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 4 слога">ведомствами</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">, поскольку каждое из них </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words" title="длинное предложение, 26 слов; сложное слово, 5 слогов">настаивало</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов"> на собственной </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных">трактовке </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 4 слога; цепочка из 2 родительных">положений</span><span class="ruts-hl ruts-hl-long_sents ruts-hl-genitive_chains" title="длинное предложение, 26 слов; цепочка из 2 родительных"> </span><span class="ruts-hl ruts-hl-long_sents ruts-hl-complex_words ruts-hl-genitive_chains" title="длинное предложение, 26 слов; сложное слово, 5 слогов; цепочка из 2 родительных">соглашения</span><span class="ruts-hl ruts-hl-long_sents" title="длинное предложение, 26 слов">.</span> Споры стихли, в <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">кулуарах</span> шумно шептались и <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">шушукались</span>, а <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 4 слога">решение</span> <span class="ruts-hl ruts-hl-passive" title="пассив без агенса">было </span><span class="ruts-hl ruts-hl-complex_words ruts-hl-passive" title="сложное слово, 4 слога; пассив без агенса">отложено</span> до <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">следующего</span> <span class="ruts-hl ruts-hl-complex_words" title="сложное слово, 5 слогов">заседания</span>.</div></div>
 
 <p>Highlighting a string without a spaCy model enables all layers except the syntactic ones: by default long sentences, complex words and clichés.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">highlight</span>
-
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."</span>
-<span class="n">ht</span> <span class="o">=</span> <span class="n">highlight</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"complex_words"</span><span class="p">,</span> <span class="s2">"alliteration"</span><span class="p">])</span>
-<span class="n">ht</span><span class="o">.</span><span class="n">highlights</span>
-<span class="c1"># (Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),</span>
-<span class="c1">#  Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),</span>
-<span class="c1">#  Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),</span>
-<span class="c1">#  Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),</span>
-<span class="c1">#  Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))</span>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">text</span> <span class="o">=</span> <span class="s2">"Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."</span>
+<span class="n">highlight</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="p">[</span><span class="s2">"complex_words"</span><span class="p">,</span> <span class="s2">"alliteration"</span><span class="p">])</span><span class="o">.</span><span class="n">highlights</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),
+ Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),
+ Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),
+ Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),
+ Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source (a string or a Doc object)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>layers</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Layers of the highlighting; if not given, the default layers the source allows; <code>"all"</code> - every layer allowed</td>
+</tr>
+</tbody>
+</table>
+<p>The parameters of the layers of ruTS:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>long_sent_word_factor</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>20</code></td>
+<td style="text-align: left;">Minimum number of words in a long sentence</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>complex_syl_factor</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>4</code></td>
+<td style="text-align: left;">Minimum number of syllables in a complex word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stopwords</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>set[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">List or set of water words; if not given, they are determined by part of speech with pymorphy3</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>cliches</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>set[str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">List or set of clichés; if not given, <code>OFFICIALESE_CLICHES</code> is used</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>alliteration_threshold</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.001</code></td>
+<td style="text-align: left;">Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration</td>
+</tr>
+</tbody>
+</table>
+<p>A threshold that is not an integer of at least one or a probability outside (0, 1] raises <code>ParameterError</code>, stop words or clichés that are not strings <code>SourceTypeError</code>.</p>
+<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">Text of the data source</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>layers</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Layers turned on, in the order of drawing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>highlights</code></td>
+<td style="text-align: left;"><code>tuple[Highlight]</code></td>
+<td style="text-align: left;">Highlighted fragments, sorted by their start and then by descending end</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>counts</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Number of fragments of every layer</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">Highlight</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">note</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+</code></pre></div>
+<p>A fragment of the highlighting: an immutable object with the parameters as its fields.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Field</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>start</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Position of the first character of the fragment in the text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>end</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Position after the last character of the fragment</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>layer</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Layer of the highlighting</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>note</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>''</code></td>
+<td style="text-align: left;">Explanation of the fragment for the tooltip</td>
+</tr>
+</tbody>
+</table>
+<p>The note of a fragment of ruTS gives the number of words in the sentence, of syllables in the word, the length of the chain or the consonant of the alliteration.</p>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<p><code>to_html(legend=True, css=True)</code> returns the HTML markup of the highlighted text: a <code>div</code> of the class <code>&lt;prefix&gt;-highlight</code> with the legend, its counts and the text, where a highlighted segment is a <code>span</code> of the classes <code>&lt;prefix&gt;-hl</code> and <code>&lt;prefix&gt;-hl-&lt;layer&gt;</code> with the notes in its <code>title</code>; <code>&lt;prefix&gt;</code> is <code>css_prefix</code>. Overlapping fragments of different layers give segments with several classes, in the order of drawing. Line breaks (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) become character references, one per break, so the markup can go into Markdown.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>legend</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Add the legend with the counts of the fragments</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>css</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Add the styles of the layers</td>
+</tr>
+</tbody>
+</table>
+<p>The class method <code>css()</code> returns the styles <code>to_html</code> adds: the container, the legend and the text under the classes of <code>css_prefix</code>, the declarations of <code>layer_styles</code> for every layer, and a dark colour of the text on the layers with a background.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">alliteration</span> <span class="o">=</span> <span class="n">highlight</span><span class="p">(</span><span class="s2">"Чуть слышно, бесшумно шуршат камыши."</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="s2">"alliteration"</span><span class="p">)</span>
+<span class="n">alliteration</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">css</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'&lt;div class="ruts-highlight"&gt;&lt;div class="ruts-highlight-text"&gt;Чуть &lt;span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»"&gt;слышно, бесшумно шуршат камыши&lt;/span&gt;.&lt;/div&gt;&lt;/div&gt;'
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3297,6 +2581,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3365,7 +2655,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

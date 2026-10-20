@@ -13,10 +13,10 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/stats/verse_stats/">
       
       
-        <link rel="prev" href="../lexical_stats_funcs/">
+        <link rel="prev" href="../lexical_stats/">
       
       
-        <link rel="next" href="../verse_stats_funcs/">
+        <link rel="next" href="../../corpus/keyness/">
       
       
         
@@ -31,7 +31,7 @@
     
     
       
-        <title>Модуль вычисления статистик - RuTS</title>
+        <title>Стиховедческие статистики - RuTS</title>
       
     
     
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -116,7 +118,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Модуль вычисления статистик
+              Стиховедческие статистики
             
           </span>
         </div>
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1137,56 +995,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1195,7 +1003,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1208,92 +1016,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1309,7 +1031,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1322,92 +1044,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1423,7 +1059,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1436,92 +1072,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1537,7 +1087,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1550,92 +1100,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1651,7 +1115,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1664,94 +1128,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1776,7 +1152,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1794,7 +1170,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1823,7 +1199,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -1834,7 +1210,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Атрибуты
       
     </span>
   </a>
@@ -1845,10 +1221,60 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Метрики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Метрики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Метр и стопы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyrrhics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Пиррихии и профиль ударности
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rhyme_scheme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Рифма
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clausulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Окончания строк
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1861,97 +1287,44 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Методы">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Алгоритм
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
       
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe, describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+        <li class="md-nav__item">
   <a href="#accentuate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        accentuate
+        Расстановка ударений
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#split_stanzas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Строфы
+      
+    </span>
+  </a>
   
 </li>
       
     </ul>
   
 </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
       
     </li>
   
@@ -2839,7 +2212,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2850,7 +2223,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Атрибуты
       
     </span>
   </a>
@@ -2861,10 +2234,60 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Атрибуты
+        Метрики
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Метрики">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Метр и стопы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyrrhics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Пиррихии и профиль ударности
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rhyme_scheme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Рифма
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clausulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Окончания строк
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2877,55 +2300,38 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Методы">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Алгоритм
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
-    <span class="md-ellipsis">
       
-        print_stats
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#to_dataframe-describe" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_dataframe, describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+        <li class="md-nav__item">
   <a href="#accentuate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        accentuate
+        Расстановка ударений
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#split_stanzas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Строфы
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2950,249 +2356,479 @@
 
 
 <h1 id="_1">Стиховедческие статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.verse_stats.VerseStats</strong></p>
-</div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Модуль для вычисления стиховедческих статистик текста: расстановки ударений, метра и числа стоп, пиррихиев и профиля ударности, схем рифмовки, типов окончаний и строфики. В качестве источника данных может использоваться как непосредственно текст с переносами строк, так и объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Текст делится на строки и строфы (по пустым строкам), в словах расставляются ударения по словарю <a href="../../datasets/stressdict/"><code>StressDict</code></a> (знак ударения в тексте важнее словаря, а сами знаки и мягкие переносы в строки не попадают; ударная по знаку проклитика берет ударение слова, которое стоит за ней через пробел, - на́ сердце), затем по алгоритму Барахнина, Кожемякиной и Кузнецовой подбирается силлабо-тонический метр и снимается оставшаяся неоднозначность ударений; рифма ищется по фонетическому ключу окончания строки. Подробности алгоритма и точность на наборе RIFMA - в разделе <a href="../verse_stats_funcs/">функций</a>.</p>
-<p>Словарь ударений загружается один раз: <code>StressDict().download()</code> (10 МБ). Без него класс поднимает <code>DatasetNotFoundError</code> с подсказкой.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Вычисление статистик происходит в момент инициализации объекта класса <code>VerseStats</code>.</p>
-</div>
-<h2 id="_3">Параметры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Источник данных (строка или объект Doc)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stress_dict</code></td>
-<td style="text-align: center;">StressDict</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Словарь ударений; если не задан, используется <code>StressDict()</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="_4">Атрибуты<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Атрибут</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>lines</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Строки с русскими словами</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stanzas</code></td>
-<td style="text-align: center;">tuple[tuple[str, ...], ...]</td>
-<td style="text-align: center;">Строки по строфам</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_lines</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество строк</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_stanzas</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;">Количество строф</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mean_line_len</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Средняя длина строки в слогах</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>meter</code></td>
-<td style="text-align: center;">str/None</td>
-<td style="text-align: center;">Метр - ямб, хорей, дактиль, амфибрахий, анапест или <code>None</code></td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>n_feet</code></td>
-<td style="text-align: center;">int/None</td>
-<td style="text-align: center;">Преобладающее число стоп в строке</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_feet</code></td>
-<td style="text-align: center;">dict[int, int]</td>
-<td style="text-align: center;">Распределение строк по числу стоп</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_deviations</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля ударений многосложных слов на слабых позициях (отклонений от метра), <code>nan</code> без метра</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_pyrrhics</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля иктов без ударения (пиррихии в двусложных метрах)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stress_profile</code></td>
-<td style="text-align: center;">tuple[float, ...]</td>
-<td style="text-align: center;">Доля ударных иктов по позициям в строке</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>stresses</code></td>
-<td style="text-align: center;">tuple[tuple[int, ...], ...]</td>
-<td style="text-align: center;">Номера ударных слогов каждой строки</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>patterns</code></td>
-<td style="text-align: center;">tuple[str, ...]</td>
-<td style="text-align: center;">Схемы строк из символов <code>c</code> (безударный слог) и <code>C</code> (ударный)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>rhyme_schemes</code></td>
-<td style="text-align: center;">tuple[str, ...]</td>
-<td style="text-align: center;">Схемы рифмовки строф</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_rhymed</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля рифмованных строк</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_clausulas</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Распределение окончаний строк по типам</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_masculine</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля мужских окончаний (ударение на последнем слоге)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_feminine</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля женских окончаний (один заударный слог)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>p_dactylic</code></td>
-<td style="text-align: center;">float</td>
-<td style="text-align: center;">Доля дактилических окончаний (два заударных слога)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>c_stressed_vowels</code></td>
-<td style="text-align: center;">dict[str, int]</td>
-<td style="text-align: center;">Распределение ударных гласных</td>
-</tr>
-</tbody>
-</table>
-<p>Метр не определяется (<code>None</code>), если после подгонки больше десятой части ударений многосложных слов (<code>VERSE_MAX_DEVIATIONS</code>) остается на слабых позициях или если перенести на икт пришлось больше 15% словарных ударений (<code>VERSE_MAX_MOVED</code>) при четырех и более переносах (<code>VERSE_MIN_MOVED</code>) - так отсеиваются дольник, акцентный стих, силлабика, верлибр и проза. Метр не подбирается и при словарных ударениях многосложных слов меньше шести (<code>VERSE_MIN_STRESSES</code>): одна-две строки или фраза прозы укладываются в какой-нибудь метр почти всегда, и такой результат не показателен. Текст с буквами, но без русских слов (латиница) дает пустые статистики - <code>n_lines</code> 0, метр <code>None</code>, доли <code>nan</code>; текст без слов (пустой, из цифр и знаков) поднимает <code>SourceError</code>. Схема рифмовки записывается буквами по порядку появления, нерифмованные строки - дефисом: <code>ABAB</code>, <code>-A-A</code>. Окончания с тремя и более заударными слогами считаются гипердактилическими. Знак ударения считается авторским и на икт не переносится, поэтому текст после <a href="../verse_stats_funcs/#accentuate"><code>accentuate</code></a>, где знаки поставлены по словарю без метра, дает другие значения, чем тот же текст без знаков.</p>
-<div class="admonition note">
-<p class="admonition-title">Примечание</p>
-<p>Ударения, метр и рифму можно получить отдельно, выполнив соответствующую функцию. Подробную информацию об алгоритме и функциях можно узнать в соответствующем <a href="../verse_stats_funcs/">разделе</a>.</p>
-</div>
-<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Возвращает справочник с вычисленными статистиками стиха.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Загрузка библиотек</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">VerseStats</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">VerseStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Стиховедческие статистики текста: ударения, метр и число стоп, пиррихии и профиль ударности, схемы рифмовки, типы окончаний и строфика. Источник данных - текст с переносами строк или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>; статистики вычисляются при создании объекта.</p>
+<p>Текст делится на строки и строфы (по пустым строкам), в словах расставляются ударения по словарю <a href="../../datasets/stressdict/"><code>StressDict</code></a>, затем по алгоритму Барахнина, Кожемякиной и Кузнецовой подбирается силлабо-тонический метр и снимается оставшаяся неоднозначность ударений; рифма ищется по фонетическому ключу окончания строки (<a href="#algorithm">алгоритм</a>). Знак ударения в тексте важнее словаря, а сами знаки и мягкие переносы в строки не попадают; ударная по знаку проклитика берет ударение слова, которое стоит за ней через пробел, - на́ сердце. Знак ударения считается авторским и на икт не переносится, поэтому текст после функции <a href="#accentuate"><code>accentuate</code></a>, где знаки поставлены по словарю без метра, дает другие значения, чем тот же текст без знаков.</p>
+<p>Класс построен на интерфейсе статистик <code>Stats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a>. Словарь ударений загружается один раз: <code>StressDict().download()</code> (10 МБ). Текст с буквами, но без русских слов (латиница) дает пустые статистики - <code>n_lines</code> 0, метр <code>None</code>, доли <code>nan</code>.</p>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, словарь ударений другого типа;</li>
+<li><code>SourceError</code> - источник без слов (пустой, из цифр и знаков);</li>
+<li><code>DatasetNotFoundError</code> - словарь ударений не загружен, с подсказкой, как его загрузить.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">VerseStats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StressDict</span>
 
-<span class="c1"># Подготовка данных</span>
+<span class="n">StressDict</span><span class="p">()</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"""Мой дядя самых честных правил,</span>
 <span class="s2">Когда не в шутку занемог,</span>
 <span class="s2">Он уважать себя заставил</span>
 <span class="s2">И лучше выдумать не мог."""</span>
-
-<span class="c1"># Вычисление статистик</span>
 <span class="n">vs</span> <span class="o">=</span> <span class="n">VerseStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'n_lines'</span>:<span class="w"> </span><span class="m">4</span>,
-<span class="s1">'n_stanzas'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'meter'</span>:<span class="w"> </span><span class="s1">'ямб'</span>,
-<span class="s1">'n_feet'</span>:<span class="w"> </span><span class="m">4</span>,
-<span class="s1">'p_deviations'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="s1">'p_pyrrhics'</span>:<span class="w"> </span><span class="m">0</span>.1875,
-<span class="s1">'p_rhymed'</span>:<span class="w"> </span><span class="m">1</span>.0,
-<span class="s1">'p_masculine'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_feminine'</span>:<span class="w"> </span><span class="m">0</span>.5,
-<span class="s1">'p_dactylic'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
-</code></pre></div>
-</div>
-<p>Схемы строк, профиль ударности и распределения доступны как атрибуты:</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">patterns</span>
-<span class="c1"># ('cCcCcCcCc', 'cCcCcccC', 'cccCcCcCc', 'cCcCcccC')</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">stresses</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="c1"># (1, 3, 7)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">stress_profile</span>
-<span class="c1"># (0.75, 1.0, 0.5, 1.0)</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">rhyme_schemes</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">c_clausulas</span>
-<span class="c1"># (('ABAB',), {'мужская': 2, 'женская': 2})</span>
-<span class="n">vs</span><span class="o">.</span><span class="n">c_stressed_vowels</span>
-<span class="c1"># {'а': 5, 'я': 2, 'у': 2, 'о': 2, 'е': 1, 'ы': 1}</span>
-</code></pre></div>
-</div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<!-- core: stats/stats.md:Stats-print_stats d798c21 -->
-<p>Выводит таблицу статистик из <code>stats_desc</code> с их описаниями под заголовками из <code>stats_headers</code>, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Отображение таблицы вычисленных статистик</span>
 <span class="n">vs</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">            </span>Статистика<span class="w">             </span><span class="p">|</span><span class="w"> </span>Значение
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>            Статистика             | Значение
 ----------------------------------------------
-Количество<span class="w"> </span>строк<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Количество<span class="w"> </span>строф<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Метр<span class="w">                               </span><span class="p">|</span><span class="w">   </span>ямб
-Число<span class="w"> </span>стоп<span class="w">                         </span><span class="p">|</span><span class="w">    </span><span class="m">4</span>
-Доля<span class="w"> </span>отклонений<span class="w"> </span>от<span class="w"> </span>метра<span class="w">           </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
-Доля<span class="w"> </span>пропущенных<span class="w"> </span>ударений<span class="w"> </span>на<span class="w"> </span>иктах<span class="w"> </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.19
-Доля<span class="w"> </span>рифмованных<span class="w"> </span>строк<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">1</span>.00
-Доля<span class="w"> </span>мужских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>женских<span class="w"> </span>окончаний<span class="w">             </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.50
-Доля<span class="w"> </span>дактилических<span class="w"> </span>окончаний<span class="w">       </span><span class="p">|</span><span class="w">   </span><span class="m">0</span>.00
+Количество строк                   |    4
+Количество строф                   |    1
+Метр                               |   ямб
+Число стоп                         |    4
+Доля отклонений от метра           |   0.00
+Доля пропущенных ударений на иктах |   0.19
+Доля рифмованных строк             |   1.00
+Доля мужских окончаний             |   0.50
+Доля женских окончаний             |   0.50
+Доля дактилических окончаний       |   0.00
 </code></pre></div>
 </div>
-<h3 id="to_dataframe-describe">to_dataframe, describe<a class="headerlink" href="#to_dataframe-describe" title="Permanent link">&para;</a></h3>
-<p>Метод <code>to_dataframe</code> (статистики в <code>pandas.DataFrame</code> из одной строки) и метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у стиховедческих статистик нет, поэтому <code>describe</code> всегда возвращает <code>None</code>.</p>
-<h3 id="accentuate">accentuate<a class="headerlink" href="#accentuate" title="Permanent link">&para;</a></h3>
-<p>Возвращает текст с расставленными ударениями: после ударной гласной каждого ударного слова ставится знак акута (U+0301), безударные слова (клитики, односложные вне икта) и слова без найденного ударения остаются без знака. Возвращаются только строки со словами (как в <code>lines</code>), строфы разделяются пустой строкой.</p>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
-<p><em>Код</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Источник данных</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Словарь ударений; по умолчанию <code>StressDict()</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Атрибут</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;">Словарь ударений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>lines</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Строки с русскими словами</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stanzas</code></td>
+<td style="text-align: left;"><code>tuple[tuple[str, ...], ...]</code></td>
+<td style="text-align: left;">Строки по строфам</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mean_line_len</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Средняя длина строки в слогах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stresses</code></td>
+<td style="text-align: left;"><code>tuple[tuple[int, ...], ...]</code></td>
+<td style="text-align: left;">Номера ударных слогов каждой строки, считая с нуля</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>patterns</code></td>
+<td style="text-align: left;"><code>tuple[str, ...]</code></td>
+<td style="text-align: left;">Схемы строк из символов <code>c</code> (безударный слог) и <code>C</code> (ударный)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>c_stressed_vowels</code></td>
+<td style="text-align: left;"><code>dict[str, int]</code></td>
+<td style="text-align: left;">Распределение ударных гласных</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">patterns</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">stresses</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">c_stressed_vowels</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('cCcCcCcCc', 'cCcCcccC', 'cccCcCcCc', 'cCcCcccC')
+(1, 3, 7)
+{'а': 5, 'я': 2, 'у': 2, 'о': 2, 'е': 1, 'ы': 1}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Каждая метрика - атрибут объекта, вычисленный при его создании, а <code>get_stats</code> дает их все.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Метрика</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_lines</code>, <code>n_stanzas</code></td>
+<td style="text-align: left;">Количество строк со словами и строф</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">длиннее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>meter</code></a></td>
+<td style="text-align: left;">Силлабо-тонический метр</td>
+<td style="text-align: left;">ямб, хорей, дактиль, амфибрахий, анапест, <code>None</code> без метра</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>n_feet</code></a></td>
+<td style="text-align: left;">Преобладающее число стоп в строке</td>
+<td style="text-align: left;">от 1, <code>None</code> без метра</td>
+<td style="text-align: left;">длиннее строки</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#meter"><code>p_deviations</code></a></td>
+<td style="text-align: left;">Доля ударений многосложных слов на слабых позициях</td>
+<td style="text-align: left;">0-0.1, <code>nan</code> без метра</td>
+<td style="text-align: left;">дальше ударения от метра</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#pyrrhics"><code>p_pyrrhics</code></a></td>
+<td style="text-align: left;">Доля иктов без ударения</td>
+<td style="text-align: left;">0-1, <code>nan</code> без метра</td>
+<td style="text-align: left;">больше пропущенных ударений</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#rhyme_scheme"><code>p_rhymed</code></a></td>
+<td style="text-align: left;">Доля рифмованных строк</td>
+<td style="text-align: left;">0-1, <code>nan</code> без строк</td>
+<td style="text-align: left;">больше рифм</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#clausulas"><code>p_masculine</code></a>, <a href="#clausulas"><code>p_feminine</code></a>, <a href="#clausulas"><code>p_dactylic</code></a></td>
+<td style="text-align: left;">Доли мужских, женских и дактилических окончаний</td>
+<td style="text-align: left;">0-1, <code>nan</code> без окончаний</td>
+<td style="text-align: left;">больше таких окончаний</td>
+</tr>
+</tbody>
+</table>
+<div class="metric-card">
+<h3 id="meter">Метр и стопы<a class="headerlink" href="#meter" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>meter</code> · <code>n_feet</code> · <code>c_feet</code> · <code>p_deviations</code> · <a href="https://ceur-ws.org/Vol-2523/paper27.pdf">Барахнин и др., 2019</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">detect_meter</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Метр стихотворения по <a href="#algorithm">алгоритму</a>: ямб, хорей, дактиль, амфибрахий, анапест или <code>None</code>, если силлабо-тонический метр не подобран, - так отсеиваются дольник, акцентный стих, силлабика, верлибр и проза. Число стоп строки - число ее иктов: <code>n_feet</code> - преобладающее число стоп, <code>c_feet</code> - распределение строк по числу стоп. <code>p_deviations</code> - доля ударений многосложных слов, оставшихся после подгонки на слабых позициях (отклонений от метра).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Текст стихотворения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Словарь ударений; по умолчанию <code>StressDict()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Исключения - те же, что у <code>VerseStats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_meter</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">vs</span><span class="o">.</span><span class="n">accentuate</span><span class="p">())</span>
+<span class="n">lermontov</span> <span class="o">=</span> <span class="s2">"""Тучки небесные, вечные странники!</span>
+<span class="s2">Степью лазурною, цепью жемчужною</span>
+<span class="s2">Мчитесь вы, будто как я же, изгнанники,</span>
+<span class="s2">С милого севера в сторону южную.</span>
+
+<span class="s2">Кто же вас гонит: судьбы ли решение?</span>
+<span class="s2">Зависть ли тайная? злоба ль открытая?</span>
+<span class="s2">Или на вас тяготит преступление?</span>
+<span class="s2">Или друзей клевета ядовитая?"""</span>
+
+<span class="n">blok</span> <span class="o">=</span> <span class="s2">"""Девушка пела в церковном хоре</span>
+<span class="s2">О всех усталых в чужом краю,</span>
+<span class="s2">О всех кораблях, ушедших в море,</span>
+<span class="s2">О всех, забывших радость свою."""</span>
+
+<span class="n">detect_meter</span><span class="p">(</span><span class="n">lermontov</span><span class="p">),</span> <span class="n">detect_meter</span><span class="p">(</span><span class="n">blok</span><span class="p">)</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">c_feet</span>
 </code></pre></div>
-<p><em>Результат</em>:</p>
-<div class="highlight"><pre><span></span><code>Мой<span class="w"> </span>дя́дя<span class="w"> </span>са́мых<span class="w"> </span>че́стных<span class="w"> </span>пра́вил,
-Когда́<span class="w"> </span>не<span class="w"> </span>в<span class="w"> </span>шу́тку<span class="w"> </span>занемо́г,
-Он<span class="w"> </span>уважа́ть<span class="w"> </span>себя́<span class="w"> </span>заста́вил
-И<span class="w"> </span>лу́чше<span class="w"> </span>вы́думать<span class="w"> </span>не<span class="w"> </span>мо́г.
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('дактиль', None)
+{4: 4}
 </code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="pyrrhics">Пиррихии и профиль ударности<a class="headerlink" href="#pyrrhics" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_pyrrhics</code> · <code>stress_profile</code></p>
+<p>Доля иктов без ударения (пиррихиев в двусложных метрах) среди всех иктов строк; <code>stress_profile</code> - доля ударных иктов по позициям в строке, от первого икта к последнему. Без метра иктов нет: <code>p_pyrrhics</code> равна <code>nan</code>, а профиль пуст.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество иктов без ударения}}{\textrm{Количество иктов}}
+\]</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">p_pyrrhics</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">stress_profile</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(0.1875, (0.75, 1.0, 0.5, 1.0))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="rhyme_scheme">Рифма<a class="headerlink" href="#rhyme_scheme" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_rhymed</code> · <code>rhyme_schemes</code> · <a href="https://github.com/Koziev/Rifma">RIFMA</a></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Схема рифмовки стихотворения: схемы строф через пробел, нерифмованные строки обозначены дефисом (<code>ABAB</code>, <code>-A-A</code>, <code>AABB CC</code>). У объекта <code>rhyme_schemes</code> - схемы по строфам, а <code>p_rhymed</code> - доля рифмованных строк. Как ищется рифма, описывает <a href="#algorithm">алгоритм</a>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Текст стихотворения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Словарь ударений; по умолчанию <code>StressDict()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Исключения - те же, что у <code>VerseStats</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">rhyme_scheme</span>
+
+<span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">lermontov</span><span class="p">),</span> <span class="n">rhyme_scheme</span><span class="p">(</span><span class="n">blok</span><span class="p">)</span>
+<span class="n">vs</span><span class="o">.</span><span class="n">rhyme_schemes</span><span class="p">,</span> <span class="n">vs</span><span class="o">.</span><span class="n">p_rhymed</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('ABAB ABAB', 'ABAB')
+(('ABAB',), 1.0)
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="clausulas">Окончания строк<a class="headerlink" href="#clausulas" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_masculine</code> · <code>p_feminine</code> · <code>p_dactylic</code> · <code>c_clausulas</code></p>
+<p>Тип окончания (клаузулы) строки - по числу слогов после последнего ударения: мужское - ударение на последнем слоге, женское - один заударный слог, дактилическое - два, гипердактилическое - три и больше (<code>VERSE_CLAUSULAS</code>, как у <a href="../../syllables/#stress_type"><code>stress_type</code></a> слова). <code>c_clausulas</code> - распределение строк по типам; доли считаются от строк с известным ударением последнего слова.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">c_clausulas</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'мужская': 2, 'женская': 2}
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p><code>accentuate()</code> возвращает текст с расставленными ударениями: после ударной гласной каждого ударного слова ставится знак акута (U+0301), а безударные слова (клитики, односложные вне икта) и слова без найденного ударения остаются без знака. В текст попадают только строки со словами (как в <code>lines</code>), строфы разделяются пустой строкой. В отличие от функции <a href="#accentuate"><code>accentuate</code></a>, ударения подогнаны под метр.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">vs</span><span class="o">.</span><span class="n">accentuate</span><span class="p">())</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>Мой дя́дя са́мых че́стных пра́вил,
+Когда́ не в шу́тку занемо́г,
+Он уважа́ть себя́ заста́вил
+И лу́чше вы́думать не мо́г.
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Остальные методы - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у стиховедческих статистик нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">vs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'n_lines': 4,
+ 'n_stanzas': 1,
+ 'meter': 'ямб',
+ 'n_feet': 4,
+ 'p_deviations': 0.0,
+ 'p_pyrrhics': 0.1875,
+ 'p_rhymed': 1.0,
+ 'p_masculine': 0.5,
+ 'p_feminine': 0.5,
+ 'p_dactylic': 0.0}
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="algorithm">Алгоритм<a class="headerlink" href="#algorithm" title="Permanent link">&para;</a></h2>
+<p>Ударения и метр определяются по алгоритму Барахнина, Кожемякиной и Кузнецовой (<a href="https://ceur-ws.org/Vol-2523/paper27.pdf">CEUR 2019</a>):</p>
+<ol>
+<li><strong>Ударения по словарю.</strong> В каждом слове ищется ударный слог: по букве ё, у односложных слов - единственный, иначе по словарю <a href="../../datasets/stressdict/"><code>StressDict</code></a> с поправками <code>STRESS_CORRECTIONS</code> (ошибочные и подвижные ударения словаря, собранные по частым формам PoetryCorpus и разметке RIFMA: ещё, себе́, пе́ред, зо́лото, леса́х, спеши́т, земли́). Составные слова через дефис ищутся целиком, затем по частям, поэтические стяжения (желанье - желание) и деепричастия (забыв - забывший) - по полной форме.</li>
+<li><strong>Подбор метра.</strong> У каждого из пяти метров свои позиции сильных слогов - иктов: ямб <code>cC</code>, хорей <code>Cc</code>, дактиль <code>Ccc</code>, амфибрахий <code>cCc</code>, анапест <code>ccC</code> (<code>VERSE_METERS</code>). Выбирается метр, при котором меньше всего словарных ударений многосложных слов попадает на слабые позиции, при равенстве - с наибольшим числом ударных иктов. Ударение в анакрузе - на слогах до первого икта строки - нарушением не считается: в трехсложных метрах оно обычно (<em>Ста́ли дни холоднее</em>).</li>
+<li><strong>Снятие неоднозначности.</strong> Односложные предлоги, союзы и частицы (<code>VERSE_PROCLITICS</code>) безударны, остальные односложные слова ударны только на икте; многосложные служебные слова (<code>VERSE_WEAK_WORDS</code>: или, чтобы, перед, через, после) ударны, если словарное ударение попадает на икт. Словарное ударение многосложного слова на слабой позиции переносится на икт, если в слове ровно один икт, такое слово в строке одно или все они двусложные (формы с подвижным ударением: воды́ - во́ды, реки́ - ре́ки), и после переноса в строке не остается нарушений - иначе строка считается неметрической; ударение по букве ё и ударение в анакрузе не переносятся. Слово без словарного ударения получает единственный икт, при нескольких иктах ударение последнего слова строки выбирается по рифме с соседними, иначе - последний икт.</li>
+<li><strong>Проверка.</strong> Метр не определен, если после подгонки больше десятой части ударений многосложных слов (<code>VERSE_MAX_DEVIATIONS</code>) остается на слабых позициях или если перенести на икт пришлось больше 15% словарных ударений многосложных слов (<code>VERSE_MAX_MOVED</code>) при четырех и более переносах (<code>VERSE_MIN_MOVED</code>) - это дольник, акцентный стих, силлабика, верлибр или проза: подгонка переносит у них ударения не подвижных форм, а любых двусложных слов, и без второго порога дольник или акцентный стих с частыми двусложными словами получал ложный хорей или ямб. На RIFMA переносов больше 15% лишь у 1% строф, у силлабики Тредиаковского, акцентного стиха и песен - у трети текстов и больше; на коротких строфах доля шумит (три подвижные формы в четверостишии - норма), поэтому порог действует от четырех переносов. Ударения тогда ставятся по словарю. Метр не подбирается и при словарных ударениях многосложных слов меньше шести (<code>VERSE_MIN_STRESSES</code>): короче в какой-нибудь метр укладывается почти любой текст - 43% фраз прозы в 30-90 символов получали метр, с порогом 14%, а на RIFMA без метра остаются 3% строф (174 из 5121): в основном двустишия (106), остальные - трёх- и четверостишия с короткими строками; на PoetryCorpus порог затрагивает 11 стихотворений из 16 694.</li>
+</ol>
+<p>Рифма ищется в окне <code>RHYME_WINDOW</code> (4) строк внутри строфы по фонетическому ключу окончания - хвоста строки от последнего ударного слова: ударная гласная (я/а, ё/о, ю/у, ы/и сведены; е сохраняется и рифмуется с о, чтобы находить ё, записанное как е), группа согласных после нее (без ь и ъ, с оглушением, упрощением непроизносимых сочетаний стн - сн, тс - ц, стяжением двойных и заменой -ого/-его на -ово/-ево, кроме наречий с произносимым [г]: мно́го, стро́го, до́рого) и число заударных слогов. Опорный согласный открытых мужских окончаний и заударные гласные не сравниваются, поэтому находятся и точные, и приблизительные рифмы (<em>пламя - память</em>, <em>лето - одетой</em>); окончания с разной группой согласных (<em>ветер - вечер</em>) не рифмуются. Буквы схемы рифмовки идут по порядку появления: прописные, затем строчные, а когда 52 буквы в одной строфе кончаются, повторно используется буква группы, к которой в окне уже не может присоединиться ни одна строка.</p>
+<p>Точность проверена на наборе <a href="https://github.com/Koziev/Rifma">RIFMA</a> (5121 строфа с ручной расстановкой ударений и схемами рифмовки, MIT): ударения совпадают с разметкой у 97% слов (у многосложных слов из словаря - 97%, у слов вне словаря - 71%), пары рифмующихся строк находятся с точностью 94% и полнотой 90%, схема строфы целиком совпадает в 78% случаев; метр не определен у 8% строф, из них у 3% - из-за порога <code>VERSE_MIN_STRESSES</code>. Часть поправок <code>STRESS_CORRECTIONS</code> собрана по этой же разметке (63 формы, у которых словарь расходится с ней в 80% и более случаев из пяти и больше вхождений), поэтому оценка ударений отчасти внутривыборочная: на отложенной половине набора поправки, собранные по другой половине, добавляют 0.1-0.2 процентного пункта.</p>
+<h2 id="accentuate">Расстановка ударений<a class="headerlink" href="#accentuate" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">accentuate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Расстановка ударений в тексте по словарю: после ударной гласной каждого слова ставится знак акута (U+0301), уже стоящий в тексте знак ударения сохраняется; односложные предлоги, союзы и частицы и слова без найденного ударения остаются без знака. Метр не учитывается: для стихов с подгонкой ударений под метр служит метод <code>VerseStats.accentuate</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Словарь ударений; по умолчанию <code>StressDict()</code></td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - текст, который не строка, словарь ударений другого типа;</li>
+<li><code>DatasetNotFoundError</code> - словарь ударений не загружен.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">accentuate</span>
+
+<span class="n">accentuate</span><span class="p">(</span><span class="s2">"Уже поздно, замерли на полночь."</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'Уже́ по́здно, за́мерли на по́лночь.'
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="split_stanzas">Строфы<a class="headerlink" href="#split_stanzas" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">split_stanzas</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>Деление текста на строфы и строки: строфы разделяются пустыми строками, строки без русских слов (номера, звездочки) пропускаются.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Текст стихотворения</td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>SourceTypeError</code> - текст, который не строка.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Код</label><label for="__tabbed_10_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.verse_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_stanzas</span>
+
+<span class="n">split_stanzas</span><span class="p">(</span>
+    <span class="s2">"Буря мглою небо кроет,</span><span class="se">\n</span><span class="s2">Вихри снежные крутя;</span><span class="se">\n\n</span><span class="s2">* * *</span><span class="se">\n\n</span><span class="s2">То, как зверь, она завоет,"</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[['Буря мглою небо кроет,', 'Вихри снежные крутя;'],
+ ['То, как зверь, она завоет,']]
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3213,6 +2849,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3281,7 +2923,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

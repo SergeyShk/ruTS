@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://sergeyshk.github.io/ruTS/en/stats/morph_stats/">
       
       
-        <link rel="prev" href="../diversity_stats_funcs/">
+        <link rel="prev" href="../diversity_stats/">
       
       
         <link rel="next" href="../style_stats/">
@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -881,56 +911,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../readability_stats/" class="md-nav__link">
         
@@ -939,7 +919,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -952,92 +932,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1053,7 +947,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1062,42 +956,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1170,17 +1028,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,22 +1050,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Statistics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Statistics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#pos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Part of speech
       
     </span>
   </a>
@@ -1226,10 +1073,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#derived" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Degree, negation and short form
       
     </span>
   </a>
@@ -1237,10 +1084,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
+  <a href="#opencorpora" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe
+        Transitivity and clusivity
       
     </span>
   </a>
@@ -1248,43 +1095,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
+  <a href="#markers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_text" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        explain_text
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_markers
+        Verb forms
       
     </span>
   </a>
@@ -1293,6 +1107,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1311,56 +1136,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../style_stats/" class="md-nav__link">
         
@@ -1369,7 +1144,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1382,92 +1157,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1483,7 +1172,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1496,92 +1185,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1597,7 +1200,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1610,92 +1213,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1711,7 +1228,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1724,92 +1241,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1825,7 +1256,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1838,92 +1269,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1939,7 +1284,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1948,42 +1293,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2867,17 +2176,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2900,22 +2198,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#methods" class="md-nav__link">
+  <a href="#statistics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Methods
+        Statistics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Methods">
+    <nav class="md-nav" aria-label="Statistics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#get_stats" class="md-nav__link">
+  <a href="#pos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        get_stats
+        Part of speech
       
     </span>
   </a>
@@ -2923,10 +2221,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#print_stats" class="md-nav__link">
+  <a href="#derived" class="md-nav__link">
     <span class="md-ellipsis">
       
-        print_stats
+        Degree, negation and short form
       
     </span>
   </a>
@@ -2934,10 +2232,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#to_dataframe" class="md-nav__link">
+  <a href="#opencorpora" class="md-nav__link">
     <span class="md-ellipsis">
       
-        to_dataframe
+        Transitivity and clusivity
       
     </span>
   </a>
@@ -2945,43 +2243,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#describe" class="md-nav__link">
+  <a href="#markers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        describe
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#explain_text" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        explain_text
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#get_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        get_markers
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#print_markers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        print_markers
+        Verb forms
       
     </span>
   </a>
@@ -2990,6 +2255,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Methods
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3014,14 +2290,198 @@
 
 
 <h1 id="morphological-statistics">Morphological statistics<a class="headerlink" href="#morphological-statistics" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.morph_stats.MorphStats</strong></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">MorphStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The morphological statistics of a text: the part of speech and the grammatical features of every word in <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> terms and their distributions. The data source is a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library; the statistics are computed when the object is created.</p>
+<p>The class is built on the <code>Stats</code> statistics interface of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a> core. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined.</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceError</code> - a source without words.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
 </div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module for computing morphological statistics of a text. The data source can be either a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library.</p>
-<p>The module allows using a pre-built <a href="../../extractors/words/"><code>WordsExtractor</code></a> object for the word tokenization needed before computing the statistics.</p>
-<p>Parts of speech and grammatical features are given in <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> terms: <code>pos</code> - <code>NOUN</code>, <code>VERB</code>, <code>ADJ</code>, <code>PRON</code>, <code>DET</code> and others, <code>case</code> - <code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, likewise <code>animacy</code>, <code>aspect</code>, <code>gender</code>, <code>mood</code>, <code>number</code>, <code>person</code>, <code>tense</code>, <code>voice</code>, the verb form <code>verb_form</code> (<code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>), the degree of comparison <code>degree</code> (<code>Pos</code>, <code>Cmp</code>, <code>Sup</code>), the negation <code>polarity</code> (<code>Neg</code>) and the short form <code>style_variant</code> (<code>Short</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>. For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used, and the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>; a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
-<p>Correspondence between OpenCorpora and UD parts of speech:</p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>---------------Часть речи---------------
+Глагол                        |    6
+Сочинительный союз            |    2
+Подчинительный союз           |    2
+Наречие                       |    1
+
+-----------------Время------------------
+Настоящее                     |    1
+Будущее                       |    1
+Прошедшее                     |    1
+
+-----------------Число------------------
+Множественное                 |    3
+Единственное                  |    1
+
+------------------Лицо------------------
+2                             |    1
+3                             |    1
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>source</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Data source</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>words_extractor</code></td>
+<td style="text-align: left;"><code>WordsExtractor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
+</tr>
+</tbody>
+</table>
+<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Attribute</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>lemmas</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Lemmas of the words: pymorphy3 by the part of speech of the word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tags</code></td>
+<td style="text-align: left;"><code>tuple[str]</code></td>
+<td style="text-align: left;">Grammatical features of the words as strings in CoNLL-U format (<code>Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing</code>, <code>_</code> without features)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
+<p>Every statistic is an attribute of the object, a tuple of the values of a feature by word (<code>None</code> for a word without the feature), and <code>get_stats</code> gives the distributions of their values. For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used: the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Statistic</th>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#pos"><code>pos</code></a></td>
+<td style="text-align: left;">Part of speech</td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>, <code>AUX</code>, <code>ADJ</code>, <code>DET</code>, <code>PRON</code>, <code>NUM</code>, <code>ADV</code>, <code>ADP</code>, <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>INTJ</code>, <code>X</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>animacy</code></td>
+<td style="text-align: left;">Animacy</td>
+<td style="text-align: left;"><code>Anim</code>, <code>Inan</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>aspect</code></td>
+<td style="text-align: left;">Aspect</td>
+<td style="text-align: left;"><code>Perf</code>, <code>Imp</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>case</code></td>
+<td style="text-align: left;">Case</td>
+<td style="text-align: left;"><code>Nom</code>, <code>Gen</code>, <code>Dat</code>, <code>Acc</code>, <code>Ins</code>, <code>Loc</code>, <code>Par</code>, <code>Voc</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>degree</code></a></td>
+<td style="text-align: left;">Degree of comparison</td>
+<td style="text-align: left;"><code>Pos</code>, <code>Cmp</code>, <code>Sup</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>gender</code></td>
+<td style="text-align: left;">Gender</td>
+<td style="text-align: left;"><code>Masc</code>, <code>Fem</code>, <code>Neut</code>, <code>Com</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#opencorpora"><code>involvement</code></a></td>
+<td style="text-align: left;">Clusivity</td>
+<td style="text-align: left;"><code>In</code>, <code>Ex</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>mood</code></td>
+<td style="text-align: left;">Mood</td>
+<td style="text-align: left;"><code>Ind</code>, <code>Imp</code>, <code>Cnd</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;">Number</td>
+<td style="text-align: left;"><code>Sing</code>, <code>Plur</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>person</code></td>
+<td style="text-align: left;">Person</td>
+<td style="text-align: left;"><code>1</code>, <code>2</code>, <code>3</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>polarity</code></a></td>
+<td style="text-align: left;">Negation</td>
+<td style="text-align: left;"><code>Neg</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#derived"><code>style_variant</code></a></td>
+<td style="text-align: left;">Short form</td>
+<td style="text-align: left;"><code>Short</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>tense</code></td>
+<td style="text-align: left;">Tense</td>
+<td style="text-align: left;"><code>Past</code>, <code>Pres</code>, <code>Fut</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#opencorpora"><code>transitivity</code></a></td>
+<td style="text-align: left;">Transitivity</td>
+<td style="text-align: left;"><code>Tran</code>, <code>Intr</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>verb_form</code></td>
+<td style="text-align: left;">Verb form</td>
+<td style="text-align: left;"><code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>voice</code></td>
+<td style="text-align: left;">Voice</td>
+<td style="text-align: left;"><code>Act</code>, <code>Pass</code>, <code>Mid</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Russian names of the values for <code>print_stats</code> are <code>MORPHOLOGY_STATS_DESC</code> of <code>ruts.constants</code>. The values for a string and for an annotated <code>Doc</code> may differ: spaCy assigns <code>Voice=Act</code> to finite forms and <code>Voice=Mid</code> to reflexive verbs, distinguishes <code>AUX</code> and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.</p>
+<div class="metric-card">
+<h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
+<p>For a string the OpenCorpora parts of speech are mapped to UD as follows:</p>
 <table>
 <thead>
 <tr>
@@ -3088,440 +2548,205 @@
 </tr>
 </tbody>
 </table>
-<p>For a string ruTS derives the degree, the negation and the short form by the rules of Russian UD: adjectives (except pronominal ones) and adverbs have a degree - <code>Cmp</code> for the comparative and for более, менее, выше, ниже, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others; the particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation; short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a <code>Doc</code> of a model. есть is taken for a form of быть, not of есть meaning to eat.</p>
-<p>Transitivity (<code>transitivity</code>: <code>Tran</code>, <code>Intr</code>) and clusivity (<code>involvement</code>: <code>In</code>, <code>Ex</code>) are OpenCorpora features absent from Russian UD; they are computed via pymorphy3 for verbs (for a <code>Doc</code> - from the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Values for a string and for an annotated <code>Doc</code> may differ: spaCy assigns <code>Voice=Act</code> to finite forms and <code>Voice=Mid</code> to reflexive verbs, distinguishes <code>AUX</code> and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.</p>
+<p>есть is taken for a form of быть, not of есть meaning to eat.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The statistics are computed when the <code>MorphStats</code> object is initialized.</p>
+<div class="metric-card">
+<h3 id="derived">Degree, negation and short form<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>degree</code> · <code>polarity</code> · <code>style_variant</code></p>
+<p>For a string these features are derived by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: <code>Cmp</code> for the comparative and for более, менее, выше, ниже, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others. The particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a <code>Doc</code> of a model.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Нет, я не рад: книга прочитана быстрее красивейшей сказки"</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"degree"</span><span class="p">,</span> <span class="s2">"polarity"</span><span class="p">,</span> <span class="s2">"style_variant"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
 </div>
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(('Нет', {'polarity': 'Neg'}),
+ ('я', {}),
+ ('не', {'polarity': 'Neg'}),
+ ('рад', {'degree': 'Pos', 'style_variant': 'Short'}),
+ ('книга', {}),
+ ('прочитана', {'style_variant': 'Short'}),
+ ('быстрее', {'degree': 'Cmp'}),
+ ('красивейшей', {'degree': 'Sup'}),
+ ('сказки', {}))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="opencorpora">Transitivity and clusivity<a class="headerlink" href="#opencorpora" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>transitivity</code> · <code>involvement</code> · <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a></p>
+<p>OpenCorpora features absent from Russian UD: transitivity (<code>Tran</code>, <code>Intr</code>) and clusivity (<code>In</code> - the speaker is included in the action, <code>Ex</code> - not included). They are computed via pymorphy3 for verbs (for a <code>Doc</code> - from the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Постарайтесь получить то, что любите"</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">transitivity</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">involvement</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+(('Intr', 'Tran', None, None, 'Tran'), ('Ex', None, None, None, None))
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
+<h3 id="markers">Verb forms<a class="headerlink" href="#markers" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>get_markers()</code> · <code>print_markers()</code></p>
+<p>The shares of the grammatical forms of the verb (the words with the part of speech <code>VERB</code> and <code>AUX</code>), each of its own base; a share with an empty base is <code>nan</code>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>source</code></td>
-<td style="text-align: center;">str/Doc</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Data source (a string or a Doc object)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>words_extractor</code></td>
-<td style="text-align: center;">WordsExtractor</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Word extraction tool; when given, it is applied to the text of a Doc too</td>
-</tr>
-</tbody>
-</table>
-<h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Attribute</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of extracted words</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>lemmas</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of lemmas of the words (pymorphy3 by the part of speech of the word)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tags</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of grammatical feature strings in CoNLL-U format (<code>Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing</code>, <code>_</code> without features)</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>pos</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of part-of-speech values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>animacy</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of animacy values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>aspect</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of aspect values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>case</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of case values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>degree</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of degree values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>gender</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of gender values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>involvement</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of clusivity values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>mood</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of mood values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>number</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of number values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>person</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of person values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>polarity</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of negation values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>style_variant</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of short form values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>tense</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of tense values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>transitivity</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of transitivity values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>verb_form</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of verb form values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>voice</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;">Tuple of voice values</td>
-</tr>
-</tbody>
-</table>
-<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<h3 id="get_stats">get_stats<a class="headerlink" href="#get_stats" title="Permanent link">&para;</a></h3>
-<p>Returns a dictionary with the computed morphological statistics.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Selected statistics</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Filter empty values</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>flat</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Keys like <code>pos_NOUN</code> instead of nested dictionaries, without the words lacking the feature</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>To select statistics, pass their names directly to the method separated by commas.</p>
-</div>
-<p>An example of computing morphological statistics, selecting only part of speech, tense, number and person, and filtering empty values:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Import the library</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
-
-<span class="c1"># Prepare the data</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
-
-<span class="c1"># Compute the statistics</span>
-<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Plur'</span>:<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="s1">'Sing'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'person'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'2'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'3'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>,
-<span class="s1">'pos'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'ADV'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="s1">'VERB'</span>:<span class="w"> </span><span class="m">6</span><span class="o">}</span>,
-<span class="s1">'tense'</span>:<span class="w"> </span><span class="o">{</span><span class="s1">'Fut'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Past'</span>:<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="s1">'Pres'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}}</span>
-</code></pre></div>
-</div>
-<p>With <code>flat=True</code> every value of a feature becomes a key of its own, joined to the name of the statistic with an underscore; words without the feature are left out:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Compute the statistics with flat keys</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'pos_VERB'</span>:<span class="w"> </span><span class="m">6</span>,
-<span class="s1">'pos_CCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'pos_SCONJ'</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="s1">'pos_ADV'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Pres'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Fut'</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="s1">'tense_Past'</span>:<span class="w"> </span><span class="m">1</span><span class="o">}</span>
-</code></pre></div>
-</div>
-<h3 id="print_stats">print_stats<a class="headerlink" href="#print_stats" title="Permanent link">&para;</a></h3>
-<p>Prints a table with the computed morphological statistics.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Selected statistics</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Filter empty values</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>To select statistics, pass their names directly to the method separated by commas.</p>
-</div>
-<p>To illustrate the method, we reuse the code from the previous example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Print the table of computed statistics</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">print_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code>---------------Часть<span class="w"> </span>речи---------------
-Глагол<span class="w">                        </span><span class="p">|</span><span class="w">    </span><span class="m">6</span>
-Сочинительный<span class="w"> </span>союз<span class="w">            </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Подчинительный<span class="w"> </span>союз<span class="w">           </span><span class="p">|</span><span class="w">    </span><span class="m">2</span>
-Наречие<span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
------------------Время------------------
-Настоящее<span class="w">                     </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Будущее<span class="w">                       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-Прошедшее<span class="w">                     </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
------------------Число------------------
-Множественное<span class="w">                 </span><span class="p">|</span><span class="w">    </span><span class="m">3</span>
-Единственное<span class="w">                  </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-
-------------------Лицо------------------
-<span class="m">2</span><span class="w">                             </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-<span class="m">3</span><span class="w">                             </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>
-</code></pre></div>
-</div>
-<h3 id="to_dataframe">to_dataframe<a class="headerlink" href="#to_dataframe" title="Permanent link">&para;</a></h3>
-<p>Returns the flat statistics, <code>get_stats(flat=True)</code>, as a <code>pandas.DataFrame</code> of one row with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># The first columns of the frame of the statistics</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">   </span>pos_VERB<span class="w">  </span>pos_CCONJ<span class="w">  </span>pos_SCONJ<span class="w">  </span>pos_ADV
-<span class="m">0</span><span class="w">         </span><span class="m">6</span><span class="w">          </span><span class="m">2</span><span class="w">          </span><span class="m">2</span><span class="w">        </span><span class="m">1</span>
-</code></pre></div>
-</div>
-<h3 id="describe">describe<a class="headerlink" href="#describe" title="Permanent link">&para;</a></h3>
-<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the morphological statistics have no scales, so it always gives <code>None</code>.</p>
-<h3 id="explain_text">explain_text<a class="headerlink" href="#explain_text" title="Permanent link">&para;</a></h3>
-<p>Analyzes the text by morphological statistics. Returns a mapping whose keys are the words of the text and whose values are dictionaries of their morphological statistics.</p>
-<p>Parameters:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>args</code></td>
-<td style="text-align: center;">tuple[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Selected statistics</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>filter_none</code></td>
-<td style="text-align: center;">bool</td>
-<td style="text-align: center;"><code>False</code></td>
-<td style="text-align: center;">Filter empty values</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>To select statistics, pass their names directly to the method separated by commas.</p>
-</div>
-<p>To illustrate the method, we reuse the code from the previous example:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
-
-<span class="c1"># Analyze the text by morphological statistics</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">((</span><span class="s1">'Постарайтесь'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'любите'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'2'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Pres'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'иначе'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'ADV'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'придется'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Sing'</span>,<span class="w"> </span><span class="s1">'person'</span>:<span class="w"> </span><span class="s1">'3'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Fut'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'полюбить'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'то'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'CCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'что'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'SCONJ'</span><span class="o">})</span>,
-<span class="o">(</span><span class="s1">'получили'</span>,<span class="w"> </span><span class="o">{</span><span class="s1">'number'</span>:<span class="w"> </span><span class="s1">'Plur'</span>,<span class="w"> </span><span class="s1">'pos'</span>:<span class="w"> </span><span class="s1">'VERB'</span>,<span class="w"> </span><span class="s1">'tense'</span>:<span class="w"> </span><span class="s1">'Past'</span><span class="o">}))</span>
-</code></pre></div>
-</div>
-<h3 id="get_markers">get_markers<a class="headerlink" href="#get_markers" title="Permanent link">&para;</a></h3>
-<p>Returns the shares of the grammatical forms of verbs (words with the part of speech <code>VERB</code> and <code>AUX</code>), each of its own base. A share with an empty base is <code>nan</code>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Marker</th>
+<th style="text-align: left;">Marker</th>
 <th style="text-align: left;">Share</th>
 <th style="text-align: left;">Base</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>p_indicative</code>, <code>p_imperative</code>, <code>p_conditional</code></td>
+<td style="text-align: left;"><code>p_indicative</code>, <code>p_imperative</code>, <code>p_conditional</code></td>
 <td style="text-align: left;">of the indicative, imperative and conditional mood</td>
 <td style="text-align: left;">finite forms</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_infinitive</code>, <code>p_participle</code>, <code>p_converb</code></td>
+<td style="text-align: left;"><code>p_infinitive</code>, <code>p_participle</code>, <code>p_converb</code></td>
 <td style="text-align: left;">of infinitives, participles and converbs</td>
 <td style="text-align: left;">all verb forms</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_perfective</code></td>
+<td style="text-align: left;"><code>p_perfective</code></td>
 <td style="text-align: left;">of the perfective aspect</td>
-<td style="text-align: left;">verb forms with an aspect</td>
+<td style="text-align: left;">verb forms with aspect</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_passive</code></td>
+<td style="text-align: left;"><code>p_passive</code></td>
 <td style="text-align: left;">of passive participles</td>
 <td style="text-align: left;">all verb forms</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>p_reflexive</code></td>
+<td style="text-align: left;"><code>p_reflexive</code></td>
 <td style="text-align: left;">of reflexive forms in -ся, -сь</td>
 <td style="text-align: left;">all verb forms</td>
 </tr>
 </tbody>
 </table>
-<p>The conditional mood is detected by the particle бы.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
+<p>The conditional mood is detected by the particle бы (б), so the words extractor must not drop particles.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
 
 <span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Если бы я знал, я бы пришел за книгами, прочитанными вчера"</span><span class="p">)</span>
 <span class="n">ms</span><span class="o">.</span><span class="n">get_markers</span><span class="p">()</span>
 </code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">{</span><span class="s1">'p_indicative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_imperative'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_conditional'</span>:<span class="w"> </span><span class="m">1</span>.0,
-<span class="w"> </span><span class="s1">'p_infinitive'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_participle'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="w"> </span><span class="s1">'p_converb'</span>:<span class="w"> </span><span class="m">0</span>.0,
-<span class="w"> </span><span class="s1">'p_perfective'</span>:<span class="w"> </span><span class="m">0</span>.6666666666666666,
-<span class="w"> </span><span class="s1">'p_passive'</span>:<span class="w"> </span><span class="m">0</span>.3333333333333333,
-<span class="w"> </span><span class="s1">'p_reflexive'</span>:<span class="w"> </span><span class="m">0</span>.0<span class="o">}</span>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'p_indicative': 0.0,
+ 'p_imperative': 0.0,
+ 'p_conditional': 1.0,
+ 'p_infinitive': 0.0,
+ 'p_participle': 0.3333333333333333,
+ 'p_converb': 0.0,
+ 'p_perfective': 0.6666666666666666,
+ 'p_passive': 0.3333333333333333,
+ 'p_reflexive': 0.0}
 </code></pre></div>
 </div>
-<h3 id="print_markers">print_markers<a class="headerlink" href="#print_markers" title="Permanent link">&para;</a></h3>
-<p>Prints a table of the shares of the grammatical forms of verbs.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p><em>Code</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="o">...</span>
+</div>
+</div>
+</div>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<p><code>get_stats(*args, filter_none=False, flat=False)</code> returns the distributions of the values of the statistics as a dictionary of counts for each. The statistics are chosen by their names separated by commas, all of them without names; <code>filter_none=True</code> drops the words without the feature (<code>None</code>), and <code>flat=True</code> gives keys like <code>pos_NOUN</code> instead of nested dictionaries, also without the words lacking the feature. A name that is not a statistic raises <code>UnknownStatError</code> - here and in <code>print_stats</code> and <code>explain_text</code>.</p>
+<p><code>print_stats(*args, filter_none=False)</code> prints the distributions of the chosen statistics as tables, the frequent values first, and <code>explain_text(*args, filter_none=False)</code> returns the words of the text in order with the values of the chosen statistics.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
 
-<span class="n">ms</span><span class="o">.</span><span class="n">print_markers</span><span class="p">()</span>
-</code></pre></div>
-<p><em>Result</em>:</p>
-<div class="highlight"><pre><span></span><code><span class="w">                      </span>Маркер<span class="w">                      </span><span class="p">|</span><span class="w">  </span>Значение
----------------------------------------------------------------
-Изъявительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Повелительное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Сослагательное<span class="w"> </span>наклонение<span class="w"> </span>среди<span class="w"> </span>личных<span class="w"> </span>форм<span class="w">       </span><span class="p">|</span><span class="w">    </span><span class="m">1</span>.00
-Инфинитив<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Причастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                      </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
-Деепричастие<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">                   </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
-Совершенный<span class="w"> </span>вид<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w"> </span>с<span class="w"> </span>видом<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.67
-Страдательные<span class="w"> </span>причастия<span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">        </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.33
-Возвратные<span class="w"> </span>формы<span class="w"> </span><span class="o">(</span>-ся,<span class="w"> </span>-сь<span class="o">)</span><span class="w"> </span>среди<span class="w"> </span>форм<span class="w"> </span>глагола<span class="w">    </span><span class="p">|</span><span class="w">    </span><span class="m">0</span>.00
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"</span>
+<span class="n">ms</span> <span class="o">=</span> <span class="n">MorphStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">get_stats</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ms</span><span class="o">.</span><span class="n">explain_text</span><span class="p">(</span><span class="s2">"pos"</span><span class="p">,</span> <span class="s2">"tense"</span><span class="p">,</span> <span class="s2">"number"</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="n">filter_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+ 'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
+ 'number': {'Plur': 3, 'Sing': 1},
+ 'person': {'2': 1, '3': 1}}
+{'pos_VERB': 6,
+ 'pos_CCONJ': 2,
+ 'pos_SCONJ': 2,
+ 'pos_ADV': 1,
+ 'tense_Pres': 1,
+ 'tense_Fut': 1,
+ 'tense_Past': 1}
+(('Постарайтесь', {'pos': 'VERB', 'number': 'Plur'}),
+ ('получить', {'pos': 'VERB'}),
+ ('то', {'pos': 'CCONJ'}),
+ ('что', {'pos': 'SCONJ'}),
+ ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
+ ('иначе', {'pos': 'ADV'}),
+ ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
+ ('полюбить', {'pos': 'VERB'}),
+ ('то', {'pos': 'CCONJ'}),
+ ('что', {'pos': 'SCONJ'}),
+ ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">ms</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>   pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
+0         6          2          2        1
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><code>get_markers()</code> returns the <a href="#markers">shares of the verb forms</a> as a dictionary, and <code>print_markers()</code> prints them as a table.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorphStats</span>
+
+<span class="n">MorphStats</span><span class="p">(</span><span class="s2">"Если бы я знал, я бы пришел за книгами, прочитанными вчера"</span><span class="p">)</span><span class="o">.</span><span class="n">print_markers</span><span class="p">()</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>                      Маркер                      |  Значение
+---------------------------------------------------------------
+Изъявительное наклонение среди личных форм        |    0.00
+Повелительное наклонение среди личных форм        |    0.00
+Сослагательное наклонение среди личных форм       |    1.00
+Инфинитив среди форм глагола                      |    0.00
+Причастие среди форм глагола                      |    0.33
+Деепричастие среди форм глагола                   |    0.00
+Совершенный вид среди форм глагола с видом        |    0.67
+Страдательные причастия среди форм глагола        |    0.33
+Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the morphological statistics have no scales, so it gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
 
 
 
@@ -3541,6 +2766,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3609,7 +2840,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>

@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -876,56 +906,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики удобочитаемости
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики удобочитаемости
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/readability_stats/" class="md-nav__link">
         
@@ -934,7 +914,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики удобочитаемости
   
 
     
@@ -947,92 +927,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Метрики лексического разнообразия
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Метрики лексического разнообразия
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1048,7 +942,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    Метрики лексического разнообразия
   
 
     
@@ -1057,42 +951,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1132,56 +990,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO-метрики стиля
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO-метрики стиля
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../../stats/style_stats/" class="md-nav__link">
         
@@ -1190,7 +998,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления метрик
+    SEO-метрики стиля
   
 
     
@@ -1203,92 +1011,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления метрик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Фоностатистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Фоностатистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1304,7 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Фоностатистики
   
 
     
@@ -1317,92 +1039,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Синтаксические статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Синтаксические статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1418,7 +1054,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Синтаксические статистики
   
 
     
@@ -1431,92 +1067,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики связности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики связности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1532,7 +1082,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики связности
   
 
     
@@ -1545,92 +1095,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Статистики лексической сложности
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Статистики лексической сложности
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1646,7 +1110,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Статистики лексической сложности
   
 
     
@@ -1659,92 +1123,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Стиховедческие статистики
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Стиховедческие статистики
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1760,7 +1138,7 @@
   <span class="md-ellipsis">
     
   
-    Модуль вычисления статистик
+    Стиховедческие статистики
   
 
     
@@ -1769,42 +1147,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Функции вычисления статистик
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1998,7 +1340,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2009,7 +1351,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Меры
+        Результат
       
     </span>
   </a>
@@ -2020,32 +1362,82 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Меры
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Меры">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отклонение пропорций DP
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#dp_norm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Нормированное DP
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#juilland_d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Пример
+        D Жюйана
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#carroll_d2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D2 Кэрролла
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rosengren_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S Розенгрена
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kl_divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дивергенция Кульбака-Лейблера
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2798,7 +2190,7 @@
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Описание
+        Параметры
       
     </span>
   </a>
@@ -2809,7 +2201,7 @@
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Меры
+        Результат
       
     </span>
   </a>
@@ -2820,32 +2212,82 @@
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Параметры
+        Меры
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Меры">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Отклонение пропорций DP
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#dp_norm" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Результат
+        Нормированное DP
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#juilland_d" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Пример
+        D Жюйана
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#carroll_d2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        D2 Кэрролла
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rosengren_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S Розенгрена
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kl_divergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Дивергенция Кульбака-Лейблера
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2870,112 +2312,16 @@
 
 
 <h1 id="_1">Дисперсия слов<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.corpus.dispersion()</strong>, <strong>ruts.corpus.Dispersion</strong></p>
-</div>
-<h2 id="_2">Описание<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/dispersion.md:dispersion bb96d7a -->
+<!-- core: corpus/dispersion.md:dispersion f0bdceb -->
+<div class="signature highlight"><pre><span></span><code><span class="n">dispersion</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
 <p>Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной из них; меры дисперсии (<a href="https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf">Gries 2008</a>, <a href="https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf">2020</a>) дополняют частоту.</p>
 <p><code>parts</code> - число частей примерно равного размера или размеры частей по порядку (предложения, абзацы, главы, документы корпуса), в сумме равные числу слов. По частотам каждого слова по частям считаются шесть мер; Gries рекомендует DP как основную.</p>
 <p>Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.</p>
-<p>Модуль <code>ruts.corpus.dispersion</code> реэкспортирует функцию и меры ядра <a href="https://sergeyshk.github.io/anyTS/corpus/dispersion/">anyTS</a> (<code>from ruts.corpus.dispersion import calc_dp</code>). Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>; знаки ударения снимаются со слов и с <code>word</code>.</p>
-<h2 id="_3">Меры<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/dispersion.md:dispersion-measures 305e725 -->
-<p>Для <span class="arithmatex">\(n\)</span> частей с долями <span class="arithmatex">\(s_i\)</span> в тексте, частотами слова по частям <span class="arithmatex">\(v_i\)</span> и общей частотой <span class="arithmatex">\(f = \sum v_i\)</span>; <span class="arithmatex">\(p_i = v_i / n_i\)</span> - относительная частота в части размером <span class="arithmatex">\(n_i\)</span>:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Мера</th>
-<th style="text-align: left;">Поле</th>
-<th style="text-align: left;">Формула</th>
-<th style="text-align: left;">Значения</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Отклонение пропорций DP</td>
-<td style="text-align: left;"><code>dp</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{1}{2} \sum \left\lvert \frac{v_i}{f} - s_i \right\rvert\)</span></td>
-<td style="text-align: left;">0 - пропорционально размерам частей, <span class="arithmatex">\(1 - s_i\)</span> - все в части <span class="arithmatex">\(i\)</span>, так что не больше <span class="arithmatex">\(1 - \min s_i\)</span>; Gries (2008)</td>
-</tr>
-<tr>
-<td style="text-align: left;">Нормированное DP</td>
-<td style="text-align: left;"><code>dp_norm</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{DP}{1 - \min s_i}\)</span></td>
-<td style="text-align: left;">наибольшее значение равно единице при любом делении; Lijffijt и Gries (2012)</td>
-</tr>
-<tr>
-<td style="text-align: left;">D Жюйана</td>
-<td style="text-align: left;"><code>juilland_d</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(1 - \frac{V}{\sqrt{n - 1}}\)</span>, <span class="arithmatex">\(V = \frac{\sigma(p)}{\mu(p)}\)</span></td>
-<td style="text-align: left;">1 - равномерно, 0 - в одной части; Juilland и Chang-Rodríguez (1964), со стандартным отклонением генеральной совокупности <span class="arithmatex">\(\sigma\)</span>, как в Gries (2020); Gries (2008) берет выборочное</td>
-</tr>
-<tr>
-<td style="text-align: left;">D2 Кэрролла</td>
-<td style="text-align: left;"><code>carroll_d2</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{H(p)}{\log_2 n}\)</span></td>
-<td style="text-align: left;">энтропия распределения <span class="arithmatex">\(p_i\)</span>; 1 - равномерно, 0 - в одной части; Carroll (1970)</td>
-</tr>
-<tr>
-<td style="text-align: left;">S Розенгрена</td>
-<td style="text-align: left;"><code>rosengren_s</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\frac{(\sum \sqrt{s_i v_i})^2}{f}\)</span></td>
-<td style="text-align: left;">1 - пропорционально, стремится к <span class="arithmatex">\(1/n\)</span> при сосредоточении в одной из равных частей; Rosengren (1971)</td>
-</tr>
-<tr>
-<td style="text-align: left;">Дивергенция Кульбака-Лейблера</td>
-<td style="text-align: left;"><code>kl_divergence</code></td>
-<td style="text-align: left;"><span class="arithmatex">\(\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}\)</span></td>
-<td style="text-align: left;">в битах; 0 - пропорционально, растет при сосредоточении в малых частях; Gries (2020)</td>
-</tr>
-</tbody>
-</table>
-<p>Модуль <code>anyts.corpus.dispersion</code> дает их как функции <code>calc_dp</code>, <code>calc_dp_norm</code>, <code>calc_juilland_d</code>, <code>calc_carroll_d2</code>, <code>calc_rosengren_s</code> и <code>calc_kl_divergence</code> от <code>(frequencies, sizes)</code>, частот слова по частям и размеров частей; их названия - в <code>anyts.constants.DISPERSION_STATS_DESC</code>. Для слова с нулевой частотой все меры <code>nan</code>.</p>
-<h2 id="_4">Параметры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/dispersion.md:dispersion-parameters a94f488 -->
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">Параметр</th>
-<th style="text-align: center;">Тип</th>
-<th style="text-align: center;">По умолчанию</th>
-<th style="text-align: center;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;"><code>words</code></td>
-<td style="text-align: center;">list[str]</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Слова текста по порядку</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>parts</code></td>
-<td style="text-align: center;">int/list[int]</td>
-<td style="text-align: center;"><code>10</code></td>
-<td style="text-align: center;">Число частей (от 2 до числа слов) или размеры частей</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Слово, дисперсия которого нужна; <code>None</code> - все слова</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>min_freq</code></td>
-<td style="text-align: center;">int</td>
-<td style="text-align: center;"><code>1</code></td>
-<td style="text-align: center;">Минимальная частота слова</td>
-</tr>
-</tbody>
-</table>
-<p>Слова, которые не список строк, дают <code>SourceTypeError</code>, а отсутствие слов - <code>SourceError</code>. <code>parts</code>, который не целое число от 2 до числа слов и не два или более положительных целых числа, в сумме равных ему, <code>word</code>, который не строка, и <code>min_freq</code>, который не целое число, дают <code>ParameterError</code>.</p>
-<h2 id="_5">Результат<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/dispersion.md:Dispersion 4c8585a -->
-<p>Список именованных кортежей <code>Dispersion</code> по убыванию частоты: <code>word</code>, <code>freq</code>, <code>dp</code>, <code>dp_norm</code>, <code>juilland_d</code>, <code>carroll_d2</code>, <code>rosengren_s</code> и <code>kl_divergence</code>; <code>pd.DataFrame(result)</code> дает таблицу.</p>
-<h2 id="_6">Пример<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<div class="admonition example">
-<p class="admonition-title">Пример</p>
+<p>Функция оборачивает <code>dispersion</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/dispersion/">anyTS</a> и снимает знаки ударения со слов и с <code>word</code>. Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span><span class="p">,</span> <span class="n">WordsExtractor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">dispersion</span>
 
@@ -2987,17 +2333,207 @@
 <span class="n">words</span> <span class="o">=</span> <span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">we</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">sent</span><span class="p">))</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">SentsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">text</span><span class="p">)]</span>
 <span class="n">sizes</span>
-<span class="c1"># [8, 7, 11]</span>
-
 <span class="n">dispersion</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span> <span class="n">word</span><span class="o">=</span><span class="s2">"кот"</span><span class="p">)</span>
-<span class="c1"># [Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966,</span>
-<span class="c1">#  juilland_d=0.8725780285943101, carroll_d2=0.984770130157433,</span>
-<span class="c1">#  rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]</span>
 
 <span class="c1"># Три равные части: «птица» - только в первой и последней</span>
 <span class="p">[(</span><span class="n">d</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dp</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dispersion</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">parts</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">)]</span>
-<span class="c1"># [('на', 0.15), ('кот', 0.32), ('окно', 0.03), ('и', 0.03), ('птица', 0.35)]</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[8, 7, 11]
+[Dispersion(word='кот', freq=3, dp=0.08974358974358976, dp_norm=0.12280701754385966, juilland_d=0.8725780285943101, carroll_d2=0.984770130157433, rosengren_s=0.9907464277073554, kl_divergence=0.0265483705216355)]
+[('на', 0.15), ('кот', 0.32), ('окно', 0.03), ('и', 0.03), ('птица', 0.35)]
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:dispersion-parameters 2fdf192 -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова текста по порядку</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>parts</code></td>
+<td style="text-align: left;"><code>int</code> / <code>list[int]</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Число частей (от 2 до числа слов) или размеры частей</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Слово, дисперсия которого нужна; <code>None</code> - все слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_freq</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Минимальная частота слова</td>
+</tr>
+</tbody>
+</table>
+<p>Слова, которые не список строк, дают <code>SourceTypeError</code>, а отсутствие слов - <code>SourceError</code>. <code>parts</code>, который не целое число от 2 до числа слов и не два или более положительных целых числа, в сумме равных ему, <code>word</code>, который не строка, и <code>min_freq</code>, который не целое число, дают <code>ParameterError</code>.</p>
+<h2 id="_3">Результат<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:Dispersion 536c09a -->
+<div class="signature highlight"><pre><span></span><code><span class="n">Dispersion</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dp_norm</span><span class="p">,</span> <span class="n">juilland_d</span><span class="p">,</span> <span class="n">carroll_d2</span><span class="p">,</span> <span class="n">rosengren_s</span><span class="p">,</span> <span class="n">kl_divergence</span><span class="p">)</span>
+</code></pre></div>
+<p>Список именованных кортежей <code>Dispersion</code> по убыванию частоты: слово, его частота и меры; <code>pd.DataFrame(result)</code> дает таблицу.</p>
+<h2 id="_4">Меры<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/dispersion.md:dispersion-measures dc6c36a -->
+<p>Меры - поля <code>Dispersion</code>, с названиями в <code>anyts.constants.DISPERSION_STATS_DESC</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Поле</th>
+<th style="text-align: left;">Что измеряет</th>
+<th style="text-align: left;">Диапазон</th>
+<th style="text-align: left;">Чем больше, тем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="#dp"><code>dp</code></a></td>
+<td style="text-align: left;">Отклонение долей вхождений от долей частей</td>
+<td style="text-align: left;">от 0 до <span class="arithmatex">\(1 - \min s_i\)</span></td>
+<td style="text-align: left;">неравномернее</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#dp_norm"><code>dp_norm</code></a></td>
+<td style="text-align: left;">DP, деленное на наибольшее возможное значение</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">неравномернее</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#juilland_d"><code>juilland_d</code></a></td>
+<td style="text-align: left;">Вариация относительных частот по частям</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">равномернее</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#carroll_d2"><code>carroll_d2</code></a></td>
+<td style="text-align: left;">Энтропия относительных частот по частям</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">равномернее</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#rosengren_s"><code>rosengren_s</code></a></td>
+<td style="text-align: left;">Разброс вхождений относительно размеров частей</td>
+<td style="text-align: left;">от <span class="arithmatex">\(\min s_i\)</span> до 1</td>
+<td style="text-align: left;">равномернее</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#kl_divergence"><code>kl_divergence</code></a></td>
+<td style="text-align: left;">Расхождение долей вхождений с долями частей, в битах</td>
+<td style="text-align: left;">от 0 до <span class="arithmatex">\(-\log_2 \min s_i\)</span></td>
+<td style="text-align: left;">неравномернее</td>
+</tr>
+</tbody>
+</table>
+<p>Каждая мера - функция модуля <code>anyts.corpus.dispersion</code> от частот слова по частям и размеров частей. Для <span class="arithmatex">\(n\)</span> частей размерами <span class="arithmatex">\(n_i\)</span> с долями <span class="arithmatex">\(s_i\)</span> в тексте, частот слова по частям <span class="arithmatex">\(v_i\)</span> и общей частоты <span class="arithmatex">\(f = \sum v_i\)</span> относительная частота в части - <span class="arithmatex">\(p_i = v_i / n_i\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>frequencies</code></td>
+<td style="text-align: left;"><code>list[int]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Частоты слова по частям</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>sizes</code></td>
+<td style="text-align: left;"><code>list[int]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Размеры частей</td>
+</tr>
+</tbody>
+</table>
+<p>Для слова с нулевой частотой все меры <code>nan</code>.</p>
+<p>Модуль <code>ruts.corpus.dispersion</code> реэкспортирует функции мер (<code>from ruts.corpus.dispersion import calc_dp</code>).</p>
+<div class="metric-card">
+<h3 id="dp">Отклонение пропорций DP<a class="headerlink" href="#dp" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>dp</code> · <a href="https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf">Gries (2008)</a></p>
+<!-- core: corpus/dispersion.md:calc_dp 6c51955 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dp</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>Насколько доли вхождений слова по частям отличаются от долей частей: 0 - слово распределено пропорционально размерам частей, <span class="arithmatex">\(1 - s_i\)</span> - все вхождения в части <span class="arithmatex">\(i\)</span>.</p>
+<div class="arithmatex">\[
+DP = \frac{1}{2} \sum \left\lvert \frac{v_i}{f} - s_i \right\rvert
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="dp_norm">Нормированное DP<a class="headerlink" href="#dp_norm" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>dp_norm</code> · Lijffijt и Gries (2012)</p>
+<!-- core: corpus/dispersion.md:calc_dp_norm bab9d44 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dp_norm</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>DP, деленное на наибольшее возможное значение, так что максимум равен единице при любом делении.</p>
+<div class="arithmatex">\[
+\frac{DP}{1 - \min s_i}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="juilland_d">D Жюйана<a class="headerlink" href="#juilland_d" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>juilland_d</code> · Juilland и Chang-Rodríguez (1964)</p>
+<!-- core: corpus/dispersion.md:calc_juilland_d c172dee -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_juilland_d</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>Единица минус коэффициент вариации <span class="arithmatex">\(V\)</span> относительных частот <span class="arithmatex">\(p_i\)</span>, деленный на его наибольшее значение <span class="arithmatex">\(\sqrt{n - 1}\)</span>: 1 - равномерно, 0 - все в одной части. Стандартное отклонение <span class="arithmatex">\(\sigma\)</span> - генеральной совокупности, как в Gries (2020); Gries (2008) берет выборочное.</p>
+<div class="arithmatex">\[
+1 - \frac{V}{\sqrt{n - 1}}, \quad V = \frac{\sigma(p)}{\mu(p)}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="carroll_d2">D2 Кэрролла<a class="headerlink" href="#carroll_d2" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>carroll_d2</code> · Carroll (1970)</p>
+<!-- core: corpus/dispersion.md:calc_carroll_d2 82075b3 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_carroll_d2</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>Энтропия распределения относительных частот <span class="arithmatex">\(p_i\)</span> по частям, деленная на ее наибольшее значение: 1 - равномерно, 0 - все в одной части.</p>
+<div class="arithmatex">\[
+\frac{H(p)}{\log_2 n}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="rosengren_s">S Розенгрена<a class="headerlink" href="#rosengren_s" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>rosengren_s</code> · Rosengren (1971)</p>
+<!-- core: corpus/dispersion.md:calc_rosengren_s 29fcb9c -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_rosengren_s</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>1 - слово распределено пропорционально размерам частей; все вхождения в части <span class="arithmatex">\(i\)</span> дают <span class="arithmatex">\(s_i\)</span>, то есть <span class="arithmatex">\(1/n\)</span> в одной из <span class="arithmatex">\(n\)</span> равных частей.</p>
+<div class="arithmatex">\[
+\frac{(\sum \sqrt{s_i v_i})^2}{f}
+\]</div>
+</div>
+<div class="metric-card">
+<h3 id="kl_divergence">Дивергенция Кульбака-Лейблера<a class="headerlink" href="#kl_divergence" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>kl_divergence</code> · <a href="https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf">Gries (2020)</a></p>
+<!-- core: corpus/dispersion.md:calc_kl_divergence f5095d5 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_kl_divergence</span><span class="p">(</span><span class="n">frequencies</span><span class="p">,</span> <span class="n">sizes</span><span class="p">)</span>
+</code></pre></div>
+<p>Расхождение долей вхождений слова по частям с долями частей: 0 - пропорционально; растет, когда слово сосредоточено в малых частях.</p>
+<div class="arithmatex">\[
+\sum \frac{v_i}{f} \log_2 \frac{v_i / f}{s_i}
+\]</div>
 </div>
 
 
@@ -3018,6 +2554,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  К началу
+</button>
         
       </main>
       
@@ -3086,7 +2628,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>

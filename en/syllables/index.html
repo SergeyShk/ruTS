@@ -52,8 +52,8 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,700,700i%7CSource+Code+Pro:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Source Sans Pro";--md-code-font:"Source Code Pro"}</style>
       
     
     
@@ -69,6 +69,8 @@
   
   
     
+    
+      
     
     
     
@@ -124,7 +126,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Темная тема"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Темная тема" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Светлая тема"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Светлая тема" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
       <div class="md-header__option">
@@ -178,6 +206,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -832,17 +862,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#syllabify" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -989,56 +1008,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Readability metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Readability metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../stats/readability_stats/" class="md-nav__link">
         
@@ -1047,7 +1016,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Readability metrics
   
 
     
@@ -1060,92 +1029,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/readability_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical diversity metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical diversity metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1161,7 +1044,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    Lexical diversity metrics
   
 
     
@@ -1170,42 +1053,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/diversity_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1245,56 +1092,6 @@
   
   
   
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SEO style metrics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    SEO style metrics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
       <a href="../stats/style_stats/" class="md-nav__link">
         
@@ -1303,7 +1100,7 @@
   <span class="md-ellipsis">
     
   
-    Metrics module
+    SEO style metrics
   
 
     
@@ -1316,92 +1113,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/style_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Metric functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Phonostatistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Phonostatistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1417,7 +1128,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Phonostatistics
   
 
     
@@ -1430,92 +1141,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/phon_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Syntactic statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Syntactic statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1531,7 +1156,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Syntactic statistics
   
 
     
@@ -1544,92 +1169,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/syntax_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cohesion statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Cohesion statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1645,7 +1184,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Cohesion statistics
   
 
     
@@ -1658,92 +1197,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/cohesion_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lexical sophistication statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_9">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Lexical sophistication statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1759,7 +1212,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Lexical sophistication statistics
   
 
     
@@ -1772,92 +1225,6 @@
   
 
               
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/lexical_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Verse statistics
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_10">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Verse statistics
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -1873,7 +1240,7 @@
   <span class="md-ellipsis">
     
   
-    Statistics module
+    Verse statistics
   
 
     
@@ -1882,42 +1249,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stats/verse_stats_funcs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Statistic functions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -2801,17 +2132,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Description
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#syllabify" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2887,265 +2207,306 @@
 
 
 <h1 id="syllables-and-stress">Syllables and stress<a class="headerlink" href="#syllables-and-stress" title="Permanent link">&para;</a></h1>
-<div class="admonition info">
-<p><strong>ruts.syllables</strong></p>
-</div>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A module that divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (<code>ruts.utils.strip_marks</code>), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.</p>
+<p>The <code>ruts.syllables</code> module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (<code>ruts.utils.strip_marks</code>), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.</p>
 <h2 id="syllabify">Syllabification<a class="headerlink" href="#syllabify" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.syllables.syllabify()</strong></p>
-</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">syllabify</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
 <p>Division of a word into syllables by the rising sonority rule (Avanesov): there are as many syllables as vowels, a word without vowels (в, к, с) has none. The syllable boundary follows these rules:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Rule</th>
-<th style="text-align: center;">Example</th>
+<th style="text-align: left;">Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">a single consonant between vowels goes to the next syllable</td>
-<td style="text-align: center;">ко-ро-ва, ра-йон</td>
+<td style="text-align: left;">ко-ро-ва, ра-йон</td>
 </tr>
 <tr>
 <td style="text-align: left;">a cluster of obstruents, or an obstruent followed by a sonorant, goes to the next syllable</td>
-<td style="text-align: center;">ко-шка, се-стра, о-ткрыть, по-зна-ко-мить</td>
+<td style="text-align: left;">ко-шка, се-стра, о-ткрыть, по-зна-ко-мить</td>
 </tr>
 <tr>
 <td style="text-align: left;">a sonorant before an obstruent goes to the previous syllable</td>
-<td style="text-align: center;">кар-та, пол-ка</td>
+<td style="text-align: left;">кар-та, пол-ка</td>
 </tr>
 <tr>
 <td style="text-align: left;">the boundary goes between two sonorants</td>
-<td style="text-align: center;">вол-на, кар-ман</td>
+<td style="text-align: left;">вол-на, кар-ман</td>
 </tr>
 <tr>
 <td style="text-align: left;">й before a consonant goes to the previous syllable</td>
-<td style="text-align: center;">май-ка, вой-на</td>
+<td style="text-align: left;">май-ка, вой-на</td>
 </tr>
 <tr>
 <td style="text-align: left;">ь and ъ go with the preceding letter</td>
-<td style="text-align: center;">боль-шой, по-дъезд</td>
+<td style="text-align: left;">боль-шой, по-дъезд</td>
 </tr>
 <tr>
 <td style="text-align: left;">every vowel of a hiatus forms its own syllable</td>
-<td style="text-align: center;">а-э-ро-порт, а-ист</td>
+<td style="text-align: left;">а-э-ро-порт, а-ист</td>
 </tr>
 </tbody>
 </table>
 <p>The division is orthographic, by letters, as in school phonetics; a compound word is divided part by part (<code>со-рок-во-ро-вка</code>).</p>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word</td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a word that is not a string.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syllables</span><span class="w"> </span><span class="kn">import</span> <span class="n">syllabify</span>
 
 <span class="n">syllabify</span><span class="p">(</span><span class="s2">"здравствуйте"</span><span class="p">)</span>
-<span class="c1"># ['здра', 'вствуй', 'те']</span>
 </code></pre></div>
 </div>
-<h2 id="count_syllables">Syllable count<a class="headerlink" href="#count_syllables" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.syllables.count_syllables()</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['здра', 'вствуй', 'те']
+</code></pre></div>
 </div>
+</div>
+</div>
+<h2 id="count_syllables">Syllable count<a class="headerlink" href="#count_syllables" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_syllables</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+</code></pre></div>
 <p>The number of syllables of a word - the number of vowel letters.</p>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word</td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a word that is not a string.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syllables</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_syllables</span>
 
 <span class="n">count_syllables</span><span class="p">(</span><span class="s2">"здравствуйте"</span><span class="p">)</span>
-<span class="c1"># 3</span>
 </code></pre></div>
 </div>
-<h2 id="word_stress">Stressed syllable<a class="headerlink" href="#word_stress" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.syllables.word_stress()</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>3
+</code></pre></div>
 </div>
-<p>The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the <a href="../stats/verse_stats_funcs/#algorithm">algorithm</a> of the verse statistics).</p>
-<p>Parameters:</p>
+</div>
+</div>
+<h2 id="word_stress">Stressed syllable<a class="headerlink" href="#word_stress" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">word_stress</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>The number of the stressed syllable of a word, counting from zero: by the letter ё, the only syllable of a monosyllable, otherwise by the dictionary (step 1 of the <a href="../stats/verse_stats/#algorithm">algorithm</a> of the verse statistics); for a compound word, the last of the stresses of <a href="#word_stresses"><code>word_stresses</code></a>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word</td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stress_dict</code></td>
-<td style="text-align: center;">StressDict</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stress dictionary; <code>StressDict()</code> if not given</td>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
 </tr>
 </tbody>
 </table>
 <p>Returns <code>None</code> if the word is not found or has no vowels.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a word that is not a string, a stress dictionary of another type;</li>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syllables</span><span class="w"> </span><span class="kn">import</span> <span class="n">syllabify</span><span class="p">,</span> <span class="n">word_stress</span>
 
 <span class="n">word_stress</span><span class="p">(</span><span class="s2">"корова"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"ещё"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"желанье"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"кто-нибудь"</span><span class="p">)</span>
-<span class="c1"># (1, 1, 1, 0)</span>
-<span class="n">word_stress</span><span class="p">(</span><span class="s2">"хмурота"</span><span class="p">)</span>
-<span class="c1"># None</span>
+<span class="n">word_stress</span><span class="p">(</span><span class="s2">"за́мок"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"замо́к"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"сорок-воровка"</span><span class="p">)</span>
+<span class="n">word_stress</span><span class="p">(</span><span class="s2">"хмурота"</span><span class="p">),</span> <span class="n">word_stress</span><span class="p">(</span><span class="s2">"в"</span><span class="p">)</span>
 <span class="n">syllabify</span><span class="p">(</span><span class="s2">"корова"</span><span class="p">)[</span><span class="n">word_stress</span><span class="p">(</span><span class="s2">"корова"</span><span class="p">)]</span>
-<span class="c1"># 'ро'</span>
 </code></pre></div>
 </div>
-<h2 id="word_stresses">All stresses<a class="headerlink" href="#word_stresses" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.syllables.word_stresses()</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(1, 1, 1, 0)
+(0, 1, 3)
+(None, None)
+'ро'
+</code></pre></div>
 </div>
+</div>
+</div>
+<h2 id="word_stresses">All stresses<a class="headerlink" href="#word_stresses" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">word_stresses</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
 <p>All stressed syllables of a word in ascending order. A hyphenated compound that the dictionary lacks as a whole gets the stress of every content part (<code>со-рок-во-ро-вка</code> - 0 and 3), the particles (-то, -либо, -нибудь and others) are unstressed.</p>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word</td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stress_dict</code></td>
-<td style="text-align: center;">StressDict</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stress dictionary; <code>StressDict()</code> if not given</td>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
 </tr>
 </tbody>
 </table>
 <p>Returns an empty list if the word is not found or has no vowels.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a word that is not a string, a stress dictionary of another type;</li>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syllables</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_stresses</span>
 
 <span class="n">word_stresses</span><span class="p">(</span><span class="s2">"сорок-воровка"</span><span class="p">),</span> <span class="n">word_stresses</span><span class="p">(</span><span class="s2">"северо-западный"</span><span class="p">),</span> <span class="n">word_stresses</span><span class="p">(</span><span class="s2">"кто-нибудь"</span><span class="p">)</span>
-<span class="c1"># ([0, 3], [3], [0])</span>
 </code></pre></div>
 </div>
-<h2 id="stress_type">Ending type<a class="headerlink" href="#stress_type" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p><strong>ruts.syllables.stress_type()</strong></p>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>([0, 3], [3], [0])
+</code></pre></div>
 </div>
+</div>
+</div>
+<h2 id="stress_type">Ending type<a class="headerlink" href="#stress_type" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">stress_type</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">stress_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
 <p>The type of the ending of a word by the position of its main stress. The names are those of verse clausulas (<code>VERSE_CLAUSULAS</code>):</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Type</th>
 <th style="text-align: left;">Stress</th>
-<th style="text-align: center;">Example</th>
+<th style="text-align: left;">Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">мужская (masculine)</td>
 <td style="text-align: left;">on the last syllable</td>
-<td style="text-align: center;">зем-<strong>ля</strong></td>
+<td style="text-align: left;">зем-<strong>ля</strong></td>
 </tr>
 <tr>
 <td style="text-align: left;">женская (feminine)</td>
 <td style="text-align: left;">on the penultimate syllable</td>
-<td style="text-align: center;">ко-<strong>ро</strong>-ва</td>
+<td style="text-align: left;">ко-<strong>ро</strong>-ва</td>
 </tr>
 <tr>
 <td style="text-align: left;">дактилическая (dactylic)</td>
 <td style="text-align: left;">on the third syllable from the end</td>
-<td style="text-align: center;"><strong>зо</strong>-ло-то</td>
+<td style="text-align: left;"><strong>зо</strong>-ло-то</td>
 </tr>
 <tr>
 <td style="text-align: left;">гипердактилическая (hyperdactylic)</td>
 <td style="text-align: left;">earlier</td>
-<td style="text-align: center;"><strong>вы</strong>-ско-чи-вший</td>
+<td style="text-align: left;"><strong>вы</strong>-ско-чи-вший</td>
 </tr>
 </tbody>
 </table>
-<p>Parameters:</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">Parameter</th>
-<th style="text-align: center;">Type</th>
-<th style="text-align: center;">Default</th>
-<th style="text-align: center;">Description</th>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>word</code></td>
-<td style="text-align: center;">str</td>
-<td style="text-align: center;"><code>-</code></td>
-<td style="text-align: center;">Word</td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Word</td>
 </tr>
 <tr>
-<td style="text-align: center;"><code>stress_dict</code></td>
-<td style="text-align: center;">StressDict</td>
-<td style="text-align: center;"><code>None</code></td>
-<td style="text-align: center;">Stress dictionary; <code>StressDict()</code> if not given</td>
+<td style="text-align: left;"><code>stress_dict</code></td>
+<td style="text-align: left;"><code>StressDict</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Stress dictionary; <code>StressDict()</code> by default</td>
 </tr>
 </tbody>
 </table>
 <p>Returns <code>None</code> if the word is not found or has no vowels.</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
+<p>Raises:</p>
+<ul>
+<li><code>SourceTypeError</code> - a word that is not a string, a stress dictionary of another type;</li>
+<li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syllables</span><span class="w"> </span><span class="kn">import</span> <span class="n">stress_type</span>
 
 <span class="nb">tuple</span><span class="p">(</span><span class="n">stress_type</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"земля"</span><span class="p">,</span> <span class="s2">"корова"</span><span class="p">,</span> <span class="s2">"золото"</span><span class="p">,</span> <span class="s2">"выскочивший"</span><span class="p">))</span>
-<span class="c1"># ('мужская', 'женская', 'дактилическая', 'гипердактилическая')</span>
 </code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>('мужская', 'женская', 'дактилическая', 'гипердактилическая')
+</code></pre></div>
+</div>
+</div>
 </div>
 
 
@@ -3166,6 +2527,12 @@
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -3234,7 +2601,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
