@@ -21,29 +21,15 @@ nav:
     - Слоги и ударение: syllables.md
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
-        - Метрики удобочитаемости:
-          - Модуль вычисления метрик: stats/readability_stats.md
-          - Функции вычисления метрик: stats/readability_stats_funcs.md
-        - Метрики лексического разнообразия:
-          - Модуль вычисления метрик: stats/diversity_stats.md
-          - Функции вычисления метрик: stats/diversity_stats_funcs.md
+        - Метрики удобочитаемости: stats/readability_stats.md
+        - Метрики лексического разнообразия: stats/diversity_stats.md
         - Морфологические статистики: stats/morph_stats.md
         - SEO-метрики стиля: stats/style_stats.md
-        - Фоностатистики:
-          - Модуль вычисления статистик: stats/phon_stats.md
-          - Функции вычисления статистик: stats/phon_stats_funcs.md
-        - Синтаксические статистики:
-          - Модуль вычисления статистик: stats/syntax_stats.md
-          - Функции вычисления статистик: stats/syntax_stats_funcs.md
-        - Статистики связности:
-          - Модуль вычисления статистик: stats/cohesion_stats.md
-          - Функции вычисления статистик: stats/cohesion_stats_funcs.md
-        - Статистики лексической сложности:
-          - Модуль вычисления статистик: stats/lexical_stats.md
-          - Функции вычисления статистик: stats/lexical_stats_funcs.md
-        - Стиховедческие статистики:
-          - Модуль вычисления статистик: stats/verse_stats.md
-          - Функции вычисления статистик: stats/verse_stats_funcs.md
+        - Фоностатистики: stats/phon_stats.md
+        - Синтаксические статистики: stats/syntax_stats.md
+        - Статистики связности: stats/cohesion_stats.md
+        - Статистики лексической сложности: stats/lexical_stats.md
+        - Стиховедческие статистики: stats/verse_stats.md
     - Корпусные меры:
         - Ключевые слова: corpus/keyness.md
         - Коллокации: corpus/collocations.md
@@ -99,6 +85,9 @@ theme:
     - search.highlight
     - search.suggest
 
+validation:
+  anchors: warn
+
 plugins:
   - search:
       lang:
@@ -133,14 +122,10 @@ plugins:
             Подсчет статистик: Statistics
             Базовые статистики: Basic statistics
             Метрики удобочитаемости: Readability metrics
-            Модуль вычисления метрик: Metrics module
-            Функции вычисления метрик: Metric functions
             Метрики лексического разнообразия: Lexical diversity metrics
             Морфологические статистики: Morphological statistics
             SEO-метрики стиля: SEO style metrics
             Фоностатистики: Phonostatistics
-            Модуль вычисления статистик: Statistics module
-            Функции вычисления статистик: Statistic functions
             Синтаксические статистики: Syntactic statistics
             Статистики связности: Cohesion statistics
             Статистики лексической сложности: Lexical sophistication statistics

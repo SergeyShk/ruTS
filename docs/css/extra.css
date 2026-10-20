@@ -16,6 +16,7 @@
 }
 
 .md-typeset .signature code {
+    padding-right: 2.6em;
     white-space: pre-wrap;
 }
 

@@ -8,10 +8,17 @@
 """
 
 import hashlib
+import importlib
+import inspect
+import pkgutil
 import re
 from pathlib import Path
 
+import anyts.constants
 import pytest
+
+import ruts
+import ruts.constants
 
 DOCS = Path(__file__).parent.parent / "docs"
 CORE = DOCS / "core"
@@ -79,3 +86,89 @@ def test_core_translations(page):
     assert [ref for ref, _ in marks] == included, "русская страница переводит другие секции"
     for ref, translated in marks:
         assert translated == digest(ref), f"{ref}: перевод с {translated}, в ядре {digest(ref)}"
+
+
+# Блок сигнатуры: ``` {.python .signature} с одним вызовом в одной строке
+SIGNATURE = re.compile(r"^``` \{\.python \.signature\}\n(\w+)\((.*)\)\n```$", re.MULTILINE)
+MODULES = [
+    importlib.import_module(info.name)
+    for info in pkgutil.walk_packages(ruts.__path__, "ruts.")
+    if not info.name.endswith("__main__")
+]
+CONSTANTS = [ruts.constants, anyts.constants, *MODULES]
+# Страницы, имя которых не совпадает с модулем
+PAGE_MODULES = {
+    "extractors": "ruts.extractors",
+    "datasets/poetrycorpus": "ruts.datasets.poetry_corpus",
+    "datasets/russianliterature": "ruts.datasets.russian_literature",
+    "datasets/sovchlit": "ruts.datasets.sov_chrest_lit",
+    "datasets/stalinworks": "ruts.datasets.stalin_works",
+    "datasets/stressdict": "ruts.datasets.stress_dict",
+    "datasets/textsbygrade": "ruts.datasets.texts_by_grade",
+}
+
+
+def default_text(value: object) -> str:
+    """Значение по умолчанию так, как его пишет блок сигнатуры: литерал, имя или константа"""
+    if value is None or isinstance(value, bool | int | float | str | tuple):
+        return repr(value)
+    if callable(value) and hasattr(value, "__qualname__"):
+        return value.__qualname__
+    for module in CONSTANTS:
+        for name, constant in vars(module).items():
+            if name.isupper() and constant is value:
+                return name
+    return repr(value)
+
+
+def signature_text(target: object) -> str:
+    """Параметры вызываемого объекта так, как их пишет блок сигнатуры"""
+    parts = []
+    keyword_only = False
+    for param in inspect.signature(target).parameters.values():
+        if param.kind is param.KEYWORD_ONLY and not keyword_only:
+            parts.append("*")
+            keyword_only = True
+        if param.kind is param.VAR_POSITIONAL:
+            parts.append(f"*{param.name}")
+            keyword_only = True
+        elif param.kind is param.VAR_KEYWORD:
+            parts.append(f"**{param.name}")
+        elif param.default is param.empty:
+            parts.append(param.name)
+        else:
+            parts.append(f"{param.name}={default_text(param.default)}")
+    return ", ".join(parts)
+
+
+def page_target(page: Path, name: str) -> object:
+    """Вызываемый объект страницы: из модуля страницы или единственный с этим именем в ruTS"""
+    key = page.relative_to(DOCS).with_suffix("").as_posix().removesuffix(".en")
+    module_name = PAGE_MODULES.get(key) or PAGE_MODULES.get(key.split("/")[0])
+    if module_name is None:
+        module_name = "ruts." + key.replace("/", ".")
+    try:
+        module = importlib.import_module(module_name)
+    except ImportError:
+        module = None
+    if module is not None and name in vars(module):
+        return vars(module)[name]
+    targets = {id(vars(m)[name]): vars(m)[name] for m in MODULES if name in vars(m)}
+    return next(iter(targets.values())) if len(targets) == 1 else None
+
+
+def test_signatures_match_the_code():
+    found = 0
+    for page in sorted(path for path in DOCS.rglob("*.md") if not path.is_relative_to(CORE)):
+        text = INCLUDE.sub(
+            lambda match: core_section(match["ref"]), page.read_text(encoding="utf-8")
+        )
+        for name, written in SIGNATURE.findall(text):
+            target = page_target(page, name)
+            where = page.relative_to(DOCS)
+            assert target is not None, f"{where}: {name} нет в ruTS"
+            assert written == signature_text(target), (
+                f"{where}: {name}({written}) расходится с кодом"
+            )
+            found += 1
+    assert found
