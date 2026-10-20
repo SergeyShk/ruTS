@@ -26,7 +26,15 @@ ax.figure.savefig("fingerprinting.png")
 
 ## Parameters
 
---8<-- "visualizers/fingerprinting.md:fingerprinting-parameters"
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `texts` | `list[list[str]]` | - | List of lists of words |
+| `segment_len` | `int` | `10` | Size of a segment |
+| `metric` | `Callable` | `None` | Function of a measure of lexical diversity; `calc_ttr` by default |
+| `x_size` | `int` | `800` | Half the width of the drawing area, greater than 25 (the margin between the blocks) |
+| `y_size` | `int` | `600` | Half the height of the drawing area, which grows when the blocks need more |
+| `cmap` | `str` | `'PuOr'` | Colour map |
+| `ax` | `Axes` | `None` | Axes of matplotlib for the plot; if not given, a 15×10 figure is created |
+| `labels` | `dict[str, str]` | `None` | Labels over the defaults: `title` |
 
-!!! note "Note"
-    In ruTS the colour map is `PuOr` by default.
+The function returns the `Axes` with the visualization, set to an equal aspect so the squares stay square; the figure is `ax.figure`. Texts that are not a list of lists of strings and a `metric` that cannot be called raise `SourceTypeError`, a list without texts or a text without words `SourceError`. A `segment_len` or a `y_size` that is not an integer above zero, an `x_size` that is not an integer above 25, an unknown `cmap`, labels that `merge_labels` refuses and an `ax` that is not a matplotlib `Axes` raise `ParameterError`.

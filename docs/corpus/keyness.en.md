@@ -44,6 +44,8 @@ The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/co
 | :-------- | :--- | :------ | :---------- |
 | `lemmatize` | `bool` | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
+A frequency dictionary that is not downloaded raises `DatasetNotFoundError`.
+
 --8<-- "corpus/keyness.md:check_keyness_params"
 
 ## Reference by frequencies

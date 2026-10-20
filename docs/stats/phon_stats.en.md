@@ -266,15 +266,7 @@ The functions of ruTS take words as strings and count by the Russian classes of 
 
 ## Methods
 
---8<-- "stats/stats.md:Stats-get_stats"
-
---8<-- "stats/stats.md:Stats-to_dataframe"
-
---8<-- "stats/stats.md:Stats-print_stats"
-
---8<-- "stats/stats.md:Stats-describe"
-
-The phonostatistics have no scales, so `describe` always returns `None`.
+The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the phonostatistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
 
 === "Code"
 

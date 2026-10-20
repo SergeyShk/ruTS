@@ -78,7 +78,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-Works without a year do not pass the year filters. An unknown genre, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file that cannot be read `DataFileError`.
+Works without a year do not pass the year filters. An unknown genre, an `author` that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file that cannot be read `DataFileError`.
 
 === "Code"
 

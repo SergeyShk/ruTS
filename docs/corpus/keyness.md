@@ -59,6 +59,8 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
 
+Незагруженный частотный словарь дает `DatasetNotFoundError`.
+
 <!-- core: corpus/keyness.md:check_keyness_params 9ffcaab -->
 ``` {.python .signature}
 check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None)

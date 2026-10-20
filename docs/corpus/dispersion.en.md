@@ -2,7 +2,7 @@
 
 --8<-- "corpus/dispersion.md:dispersion"
 
-The module `ruts.corpus.dispersion` re-exports the function of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) core. Words are extracted with [`WordsExtractor`](../extractors/words.md); stress marks are stripped from the words and from `word`.
+The function wraps `dispersion` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) core and strips stress marks from the words and from `word`. Words are extracted with [`WordsExtractor`](../extractors/words.md).
 
 === "Code"
 

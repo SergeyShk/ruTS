@@ -59,7 +59,7 @@ MorphStats(source, words_extractor=None)
 | :------ | :-- | :------- |
 | `words` | `tuple[str]` | Слова |
 | `lemmas` | `tuple[str]` | Леммы слов: pymorphy3 по части речи слова |
-| `tags` | `tuple[str]` | Грамматические признаки слов строками в формате CoNLL-U (`Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing`, `_` без признаков) |
+| `tags` | `tuple[str]` | Грамматические признаки слов строками в формате CoNLL-U (`Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing`, `_` без признаков) |
 
 ## Статистики
 
@@ -306,4 +306,4 @@ MorphStats(source, words_extractor=None)
     Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
     ```
 
-Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у морфологических статистик нет, поэтому он всегда возвращает `None`.
+Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у морфологических статистик нет, поэтому он для статистик `get_stats` возвращает `None`.

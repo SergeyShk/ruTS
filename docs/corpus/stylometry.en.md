@@ -130,7 +130,10 @@ The shares of adpositions, coordinating and subordinating conjunctions, particle
 | :-------- | :--- | :------ | :---------- |
 | `source` | `list[str]` / `Doc` | - | Words of the text or Doc object |
 
-Words that are not a list of strings raise `SourceTypeError`, and no words `SourceError`.
+Raises:
+
+- `SourceTypeError` - a source that is neither a list of strings nor a `Doc`;
+- `SourceError` - a source without words.
 
 === "Code"
 

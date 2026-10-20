@@ -8,7 +8,7 @@ ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='pla
 
 The metrics assess readability on the side of the language - the complexity of words and syntactic constructions, not the typographic design of the text. They presume that short sentences are easier to read than long ones, long words make reading harder, and low-frequency and unfamiliar words slow a reader down.
 
-The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core with the hooks of Russian, given in the cards of the metrics: the [basic statistics](basic_stats.md) of ruTS, which take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient [presets](#presets), the Russian formulas, the consensus grade over the formulas of ruTS, the stages of the Russian school, the scales with Russian labels and the reading speeds of Russian readers. The `print_stats` table and the error messages are in Russian.
+The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core with the hooks of Russian, given in the cards of the metrics: the [basic statistics](basic_stats.md) of ruTS, which take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient [presets](#presets), the Russian formulas, the consensus grade over the formulas of ruTS, the stages of the Russian school, the scales with Russian labels and the reading speeds of Russian readers. The `print_stats` table and the error messages are in Russian (`READABILITY_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -94,7 +94,7 @@ On school texts (labels 1-11) the test with the `fiction` preset is about four g
 
 ## Metrics
 
-A formula is computed by the function of its card on the counts of `bs`, with its coefficients in `coefficients`; the default coefficients of the functions are adapted for Russian. A formula of counts gives `nan` when the number of words or of sentences it divides by is zero.
+A formula is computed by the function of its card on the counts of `bs`; the default coefficients of the functions are adapted for Russian. The core formulas take their coefficients from `coefficients`, where the preset sets those of the Flesch-Kincaid test, the Flesch index and the Coleman-Liau, SMOG and ARI indices, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall are computed with the coefficients of their functions, and `coefficients` does not affect them. A formula of counts gives `nan` when the number of words or of sentences it divides by is zero.
 
 | Metric | Measures | Range | Higher means |
 | :----- | :------- | :---- | :----------- |
@@ -282,7 +282,7 @@ The grade can be read as reader age:
 
 --8<-- "stats/readability_stats.md:calc_lix"
 
-These bands are the scale of `describe`, `ruts.constants.LIX_LEVELS`. The `n_long_words` attribute of the basic statistics of ruTS counts words of six or more letters, so `ReadabilityStats` passes the number of words of at least 7 letters to the function.
+These bands are the scale of `describe`, `ruts.constants.LIX_LEVELS`; its last band is open above. The `n_long_words` attribute of the basic statistics of ruTS counts words of six or more letters, so `ReadabilityStats` passes the number of words of at least 7 letters to the function.
 
 </div>
 
@@ -438,7 +438,7 @@ $$
 
 ### Dale-Chall index { #dale_chall_index }
 
-`dale_chall_index` · [Dale-Chall](https://en.wikipedia.org/wiki/Dale–Chall_readability_formula)
+`dale_chall_index` · [Dale and Chall, 1948](https://en.wikipedia.org/wiki/Dale–Chall_readability_formula)
 { .metric-meta }
 
 ``` {.python .signature}
@@ -504,17 +504,17 @@ flesch_reading_easy_to_grade(flesch_reading_easy, grades=((90, 5), (80, 6), (70,
 
 --8<-- "stats/readability_stats.md:flesch_reading_easy_to_grade"
 
-The default bands of ruTS are the bands of the reading scale of the index (`READING_EASE_LEVELS`), so that the consensus grade and `describe` read a value alike: 8.5 and 10.5 are the middles of the bands "8th and 9th grade" and "10th and 11th grade", 14 is "university" and 17 is "university graduate", that is university years 1-3 and 4-6 by the [table of stages](#grade_to_age). Values below 0 belong to the last band, as in the reading scale. These bands are `ruts.constants.READING_EASE_GRADES`, the `reading_ease_grades` attribute of `ReadabilityStats`:
+The default bands of ruTS are the bands of the reading scale of the index (`READING_EASE_LEVELS`), so that the consensus grade and `describe` read a value alike: 8.5 and 10.5 are the middles of the bands "8th and 9th grade" and "10th and 11th grade", 14 is "university" and 17 is "university graduate", that is university years 1-3 and 4-6 by the [table of stages](#grade_to_age). These bands are `ruts.constants.READING_EASE_GRADES`, the `reading_ease_grades` attribute of `ReadabilityStats`:
 
 | Flesch index | Grade |
 | :----------- | :---- |
-| `90-100` | 5 |
-| `80-90` | 6 |
-| `70-80` | 7 |
-| `60-70` | 8.5 |
-| `50-60` | 10.5 |
-| `30-50` | 14 |
-| `0-30` | 17 |
+| `[90; ∞)` | 5 |
+| `[80; 90)` | 6 |
+| `[70; 80)` | 7 |
+| `[60; 70)` | 8.5 |
+| `[50; 60)` | 10.5 |
+| `[30; 50)` | 14 |
+| `(−∞; 30)` | 17 |
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -591,7 +591,7 @@ In ruTS the norms come from the `ruts.constants.READING_SPEED_NORMS` table, and 
 `sis_grade_by_stage(stage)` returns the value of the [Solovyev, Ivanov and Solnyshkina formula](#sis_grade) with the coefficients of the education stage `stage`: `2-4`, `5-7` or `8-11`; an unknown stage raises `ParameterError`.
 { #sis_grade_by_stage }
 
-`sis_grade_by_freq(mean_ipm, stage=None)` returns the value of the [formula with frequency](#calc_sis_grade_freq) at the mean frequency of content words `mean_ipm` - the [`mean_ipm_content`](lexical_stats.md) attribute of `LexicalStats` - with the coefficients of the stage `stage` or, without it, of the general formula; a frequency that is not a non-negative number and an unknown stage raise `ParameterError`.
+`sis_grade_by_freq(mean_ipm, stage=None)` returns the value of the [formula with frequency](#calc_sis_grade_freq) at the mean frequency of content words `mean_ipm` - the [`mean_ipm_content`](lexical_stats.md#frequency) attribute of `LexicalStats` - with the coefficients of the stage `stage` or, without it, of the general formula. A negative or infinite frequency, a frequency that is not a number and an unknown stage raise `ParameterError`, and `nan` gives `nan`.
 { #sis_grade_by_freq }
 
 --8<-- "stats/readability_stats.md:ReadabilityStats-get_stats"
@@ -609,6 +609,7 @@ In ruTS the norms come from the `ruts.constants.READING_SPEED_NORMS` table, and 
     rs.describe("flesch_reading_easy"), rs.describe_level("lix")
     rs.describe("rix"), rs.describe("matskovsky_index")
     rs.reading_time_by_speed(120), rs.reading_time_by_norm("grade_1")
+    rs.get_stats()
     ```
 
 === "Result"
@@ -618,9 +619,22 @@ In ruTS the norms come from the `ruts.constants.READING_SPEED_NORMS` table, and 
     ('6-й класс', 'очень простые тексты, детские книги')
     ('6-й класс', None)
     (0.125, (0.375, 0.6))
+    {'flesch_kincaid_grade': -2.0633333333333326,
+     'flesch_reading_easy': 87.16833333333334,
+     'coleman_liau_index': 1.1700000000000053,
+     'smog_index': 0.05,
+     'automated_readability_index': 0.2941666666666656,
+     'lix': 28.333333333333336,
+     'rix': 2.0,
+     'sis_grade': 1.5166666666666675,
+     'matskovsky_index': 9.351,
+     'dale_chall_index': 4.095000000000001,
+     'gunning_fog_index': 6.0,
+     'consensus_grade': 1.5,
+     'reading_time': 0.08333333333333333}
     ```
 
-The frame of the metrics (`to_dataframe`) is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
+The `to_dataframe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
 
 ## Scales { #scales }
 
@@ -714,7 +728,7 @@ The norms of the features of the stage a grade belongs to - the usual range (qua
 describe_level_norm(stat, value, grade)
 ```
 
-The reading of a feature of a text by the norms of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of `ruts.constants.LEVEL_NORM_BANDS`. A stage without norms and an undefined value (nan) give `None`, an unknown feature raises `UnknownStatError`, and a value that is not a number raises `ParameterError`.
+The reading of a feature of a text by the norms of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of `ruts.constants.LEVEL_NORM_BANDS`. A stage without norms and an undefined value (nan) give `None`, an unknown feature raises `UnknownStatError`, and a value that is not a number and a grade that is not a finite number raise `ParameterError`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

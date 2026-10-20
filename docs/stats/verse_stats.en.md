@@ -257,9 +257,28 @@ The type of the ending (clausula) of a line by the number of syllables after the
     И лу́чше вы́думать не мо́г.
     ```
 
---8<-- "stats/stats.md:Stats-print_stats"
+The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the verse statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
 
-The other methods - `get_stats`, `to_dataframe` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core: `get_stats` and `to_dataframe` give the metrics as a dictionary and a one-row `pandas.DataFrame`. The verse statistics have no scales, so `describe` always gives `None`.
+=== "Code"
+
+    ``` python
+    vs.get_stats()
+    ```
+
+=== "Result"
+
+    ```
+    {'n_lines': 4,
+     'n_stanzas': 1,
+     'meter': 'ямб',
+     'n_feet': 4,
+     'p_deviations': 0.0,
+     'p_pyrrhics': 0.1875,
+     'p_rhymed': 1.0,
+     'p_masculine': 0.5,
+     'p_feminine': 0.5,
+     'p_dactylic': 0.0}
+    ```
 
 ## Algorithm { #algorithm }
 

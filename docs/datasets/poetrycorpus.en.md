@@ -11,8 +11,8 @@ The Russian poetry corpus [PoetryCorpus](https://github.com/IlyaGusev/PoetryCorp
 | О любви (love) | 2,839 | О природе (nature) | 76 |
 | Военные (war) | 724 | Патриотические (patriotic) | 72 |
 | О дружбе (friendship) | 155 | Посвящения (dedications) | 38 |
-| Детские (children's) | 106 | the other 13 themes | up to 30 each |
-| О животных (animals) | 78 | | |
+| Детские (children's) | 106 | Спортивные (sports) | 36 |
+| О животных (animals) | 78 | the other 11 themes | up to 21 each |
 
 The most poems are by Vysotsky (539), Pushkin (401), Blok (286), Akhmatova (277) and Fet (251). The corpus is distributed under the [Apache-2.0](https://github.com/IlyaGusev/PoetryCorpus/blob/master/LICENSE) license and suits [stylometry](../corpus/stylometry.md) - comparing authors and periods, verse studies and model training.
 
@@ -80,7 +80,7 @@ A file that cannot be downloaded or fails the checksum twice raises `DownloadErr
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-Poems without a year do not pass the year filters. A theme that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a corpus that is not downloaded `DatasetNotFoundError`, a file the records cannot be extracted from `DataFileError`.
+Poems without a year do not pass the year filters. An `author` or a `theme` that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a corpus that is not downloaded `DatasetNotFoundError`, a file the records cannot be extracted from `DataFileError`.
 
 === "Code"
 

@@ -105,7 +105,7 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
 
 --8<-- "components.md:ReadabilityStatsComponent"
 
-The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`; `basic_factory` is `ruts_basic`.
+The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`. In ruTS the component raises `ParameterError` for an unknown preset and for a preset or an extension name that is not a string, and `SourceError` for a document whose extension `basic` holds no `BasicStats`; the message names the component `ruts_basic` (`basic_factory`) to add before it.
 
 === "Code"
 
@@ -163,19 +163,22 @@ StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, 
 
 --8<-- "components.md:StyleStatsComponent"
 
-Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from `OFFICIALESE_CLICHES`.
+Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` is a constant of `anyts.constants`.
 
 === "Code"
 
     ``` python
     nlp.add_pipe("ruts_style", name="style", config={"stopwords": ["и", "в", "не"], "top_n": 5})
     nlp("мама мыла раму")._.style.water
+    nlp.add_pipe("ruts_style", name="style_cliches", config={"cliches": ["в целях", "в рамках"]})
+    nlp("В целях экономии в рамках проекта мы закрыли склад.")._.style_cliches.cliches
     ```
 
 === "Result"
 
     ```
     0.0
+    22.22222222222222
     ```
 
 ### Phonostatistics { #PhonStatsComponent }
@@ -207,7 +210,11 @@ SyntaxStatsComponent(nlp, name)
 
 --8<-- "components.md:SyntaxStatsComponent"
 
-The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser; in a pipeline without a parser the component raises `SourceError`.
+The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser.
+
+Raises:
+
+- `SourceError` - a document without a dependency parse, in a pipeline without a parser.
 
 === "Code"
 
@@ -228,7 +235,7 @@ The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a par
 CohesionStatsComponent(nlp, name)
 ```
 
-`CohesionStatsComponent` puts the cohesion statistics into the extension. The component only needs sentence boundaries (a model or `sentencizer`); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis.
 
 === "Code"
 
@@ -256,6 +263,10 @@ LexicalStatsComponent(nlp, name, data_dir=None)
 | :-------- | :--- | :------ | :---------- |
 | `data_dir` | `str` | `None` | Path to the frequency dictionary directory; if not given, the default directory is used |
 
+Raises:
+
+- `DatasetNotFoundError` - the frequency dictionary metrics and `get_stats()` when `FreqDict` is not downloaded.
+
 === "Code"
 
     ``` python
@@ -280,6 +291,10 @@ VerseStatsComponent(nlp, name, data_dir=None)
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `data_dir` | `str` | `None` | Path to the stress dictionary directory; if not given, the default directory is used |
+
+Raises:
+
+- `DatasetNotFoundError` - the stress dictionary is not downloaded; the first document with letters raises it.
 
 === "Code"
 

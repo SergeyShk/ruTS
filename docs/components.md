@@ -124,7 +124,7 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
 - `SourceTypeError` - класс без `basic_stats_class` и без `basic`;
 - `SourceError` - документ, в расширении `basic` которого нет основных статистик класса.
 
-[Пресеты](stats/readability_stats.md#presets) ruTS - `plainrussian`, `fiction` и `academic`, пресет класса - `plainrussian`; `basic_factory` - `ruts_basic`.
+[Пресеты](stats/readability_stats.md#presets) ruTS - `plainrussian`, `fiction` и `academic`, пресет класса - `plainrussian`. В ruTS компонент дает `ParameterError` для неизвестного пресета и для пресета или имени расширения, которые не строка, а `SourceError` - для документа, в расширении `basic` которого нет `BasicStats`; сообщение называет компонент `ruts_basic` (`basic_factory`), который нужно добавить перед ним.
 
 === "Код"
 
@@ -200,19 +200,22 @@ StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, 
 - `SourceTypeError` - стоп-слова, стоп-слова тошноты или штампы, которые не список строк;
 - `ParameterError` - `top_n`, который не целое число не меньше единицы.
 
-Без списков слова «воды» и стоп-слова тошноты определяются по разметке pymorphy3, а штампы берутся из `OFFICIALESE_CLICHES`.
+Без списков слова «воды» и стоп-слова тошноты определяются по разметке pymorphy3, а штампы берутся из `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` - константа `anyts.constants`.
 
 === "Код"
 
     ``` python
     nlp.add_pipe("ruts_style", name="style", config={"stopwords": ["и", "в", "не"], "top_n": 5})
     nlp("мама мыла раму")._.style.water
+    nlp.add_pipe("ruts_style", name="style_cliches", config={"cliches": ["в целях", "в рамках"]})
+    nlp("В целях экономии в рамках проекта мы закрыли склад.")._.style_cliches.cliches
     ```
 
 === "Результат"
 
     ```
     0.0
+    22.22222222222222
     ```
 
 ### Фоностатистики { #PhonStatsComponent }
@@ -250,7 +253,11 @@ SyntaxStatsComponent(nlp, name)
 <!-- core: components.md:SyntaxStatsComponent 95e9f18 -->
 `SyntaxStatsComponent` кладет в расширение синтаксические статистики; перед ним нужен парсер.
 
-Парсер есть в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`; в пайплайне без парсера компонент дает `SourceError`.
+Парсер есть в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`.
+
+Исключения:
+
+- `SourceError` - документ без разбора зависимостей, в пайплайне без парсера.
 
 === "Код"
 
@@ -271,7 +278,7 @@ SyntaxStatsComponent(nlp, name)
 CohesionStatsComponent(nlp, name)
 ```
 
-`CohesionStatsComponent` кладет в расширение статистики связности. Компоненту нужны только границы предложений (модель или `sentencizer`); при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена.
+`CohesionStatsComponent` кладет в расширение статистики связности. Парсер ему не нужен, а `Doc` без границ предложений делится на предложения русским [`SentsExtractor`](extractors/sentences.md); при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3.
 
 === "Код"
 
@@ -299,6 +306,10 @@ LexicalStatsComponent(nlp, name, data_dir=None)
 | :------- | :-- | :----------- | :------- |
 | `data_dir` | `str` | `None` | Путь к директории с частотным словарем; если не задан, используется директория по умолчанию |
 
+Исключения:
+
+- `DatasetNotFoundError` - метрики частотного словаря и `get_stats()`, когда `FreqDict` не загружен.
+
 === "Код"
 
     ``` python
@@ -323,6 +334,10 @@ VerseStatsComponent(nlp, name, data_dir=None)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `data_dir` | `str` | `None` | Путь к директории со словарем ударений; если не задан, используется директория по умолчанию |
+
+Исключения:
+
+- `DatasetNotFoundError` - словарь ударений не загружен; ошибку дает первый документ с буквами.
 
 === "Код"
 

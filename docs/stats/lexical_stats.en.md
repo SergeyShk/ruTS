@@ -207,4 +207,30 @@ $$
     {100: 0.375, 500: 0.75}
     ```
 
-The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core: the metrics as a dictionary, a one-row `pandas.DataFrame` and a table. The lexical sophistication statistics have no scales, so `describe` always gives `None`.
+The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical sophistication statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
+
+=== "Code"
+
+    ``` python
+    ls.get_stats()
+    ```
+
+=== "Result"
+
+    ```
+    {'coverage': 1.0,
+     'mean_ipm': 8645.5375,
+     'mean_ipm_content': 324.18,
+     'mean_log_ipm': 3.0674194359404705,
+     'mean_log_ipm_content': 2.316850597556863,
+     'mean_range': 99.75,
+     'mean_dispersion': 95.125,
+     'surprisal': 9.74182176626998,
+     'perplexity': 856.2105288389297,
+     'p_top1000': 0.75,
+     'p_top2000': 0.875,
+     'p_top5000': 1.0,
+     'p_top10000': 1.0,
+     'p_beyond_top10000': 0.0,
+     'lexical_density': 0.625}
+    ```

@@ -221,15 +221,7 @@ The primary connectors (`primary`) are conjunctions, adverbs and particles (по
 
 ## Methods
 
---8<-- "stats/stats.md:Stats-get_stats"
-
---8<-- "stats/stats.md:Stats-to_dataframe"
-
---8<-- "stats/stats.md:Stats-print_stats"
-
---8<-- "stats/stats.md:Stats-describe"
-
-The cohesion statistics have no scales, so `describe` always returns `None`.
+The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the cohesion statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
 
 === "Code"
 
@@ -297,7 +289,7 @@ RussianConnectorMatcher(connectors)
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher"
 
-`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (`normalize_yo`). A one-word connector takes a part of speech of `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`, значит - `VERB`, ежели and коли - `NOUN`, `PROPN`, `VERB`): «раз» as a noun is no connector. The context rules are lists of `ruts.constants`: words after a connector (`CONNECTOR_BLOCKED_AFTER`: *пока что*, *хоть бы*) and before it (`CONNECTOR_BLOCKED_BEFORE`: *ещё раз*, *и так далее*) that make it no connector; connectors that count inside a sentence only after particular words (`CONNECTOR_ONLY_AFTER`: *и отсюда*) and do not count at its start (`CONNECTOR_NOT_AT_START`: the interrogative *отчего*); parts of speech of the word after a connector that make it a preposition or a member of the clause (`CONNECTOR_BLOCKED_AFTER_POS`: *после обеда*, *едва заметный*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*, *после «Ревизора»*), so the parenthetical *значит,* stays a connector, and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*).
+`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (`normalize_yo`). A one-word connector takes a part of speech of the core `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (for example: словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`, значит - `VERB`, ежели and коли - `NOUN`, `PROPN`, `VERB`): «раз» as a noun is no connector. The context rules are lists of `ruts.constants`: words after a connector (`CONNECTOR_BLOCKED_AFTER`: *пока что*, *хоть бы*) and before it (`CONNECTOR_BLOCKED_BEFORE`: *ещё раз*, *и так далее*) that make it no connector; connectors that count inside a sentence only after particular words (`CONNECTOR_ONLY_AFTER`: *и отсюда*) and do not count at its start (`CONNECTOR_NOT_AT_START`: the interrogative *отчего*); parts of speech of the word after a connector that make it a preposition or a member of the clause (`CONNECTOR_BLOCKED_AFTER_POS`: *после обеда*, *едва заметный*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*, *после «Ревизора»*), so the parenthetical *значит,* stays a connector, and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*). These parts of speech and lists are attributes of the matcher: `CONNECTOR_POS` is `pos_tags`, the others are named without `CONNECTOR_` in lower case (`CONNECTOR_BLOCKED_AFTER` is `blocked_after`); the attributes `not_after_pos` and `start_only_pos` are empty in ruTS, so these rules of `find` do not apply.
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher-find"
 
@@ -322,6 +314,10 @@ connector_pos(word)
 ```
 
 The UD part of speech of a word by pymorphy3 for the check of a connector: the first analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis. This is how `CohesionStats` gets the parts of speech of a string and of a `Doc` without annotation.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `word` | `str` | - | Word |
 
 === "Code"
 
@@ -404,6 +400,10 @@ unit_pos(unit)
 ```
 
 `unit_text` gives the text of a word from its tokens without a byte order mark, stress marks and soft hyphens (`ruts.utils.strip_marks`), `unit_pos` its part of speech of UD: that of the token for a single token, and that of `connector_pos` of the joined text for a hyphenated word of several tokens.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `unit` | `list[Token]` | - | Tokens of a word |
 
 === "Code"
 

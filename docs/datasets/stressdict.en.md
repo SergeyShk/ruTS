@@ -36,6 +36,12 @@ Raises:
 | :-------- | :--- | :------ | :---------- |
 | `data_dir` | `str` / `Path` | `DEFAULT_DATASET_DIR` | Path to the dictionary directory; `dicts` in `DEFAULT_DATA_DIR` by default |
 
+## Attributes
+
+| Attribute | Type | Description |
+| :-------- | :--- | :---------- |
+| `info` | `dict[str, str]` | Name of the dictionary and reference information about it |
+
 ## Methods
 
 `download(force=False)` downloads the dictionary and extracts the file. The downloaded archive is checked against a SHA-256 checksum; a corrupted or replaced file is deleted with a `DownloadError` so that the next download is not skipped. If the archive exists but the dictionary file does not, the archive is extracted again.
@@ -53,6 +59,8 @@ A file that cannot be downloaded raises `DownloadError` too, an archive that can
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `word` | `str` | - | Word form |
+
+A word form that is not a string raises `SourceTypeError`.
 
 === "Code"
 

@@ -59,7 +59,7 @@ Raises:
 | :-------- | :--- | :---------- |
 | `words` | `tuple[str]` | Words |
 | `lemmas` | `tuple[str]` | Lemmas of the words: pymorphy3 by the part of speech of the word |
-| `tags` | `tuple[str]` | Grammatical features of the words as strings in CoNLL-U format (`Animacy=Inan\|Case=Nom\|Gender=Masc\|Number=Sing`, `_` without features) |
+| `tags` | `tuple[str]` | Grammatical features of the words as strings in CoNLL-U format (`Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing`, `_` without features) |
 
 ## Statistics
 
@@ -305,4 +305,4 @@ The conditional mood is detected by the particle бы (б), so the words extract
     Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
     ```
 
-The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the morphological statistics have no scales, so it always gives `None`.
+The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the morphological statistics have no scales, so it gives `None` for the statistics of `get_stats`.

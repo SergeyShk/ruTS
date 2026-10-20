@@ -435,7 +435,7 @@ is_reflexive(token)
 is_split_predicate_noun(token, verb=None)
 ```
 
-The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (`is_light_verb`) with a lemma of `LIGHT_VERBS` (осуществлять, производить, проводить, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (`is_split_predicate_noun`), a noun with a verbal lemma (`ruts.utils.is_verbal_noun`) or a lemma of `SPLIT_PREDICATE_NOUNS` (роль, работа, помощь, мера) with a verb `verb` of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference `obj`, `nsubj:pass`, `nsubj` (only for a reflexive or passive verb, `is_reflexive`), `iobj`, `nmod`, `obl`; prepositional adjuncts and the passive agent (`obl:agent`, instrumental `obl`) are not counted. The verb lemma is checked both by spaCy and by pymorphy3 ([`get_lemma`](#helpers), `ruts.utils.lemmatize`).
+The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (`is_light_verb`) with a lemma of `LIGHT_VERBS` (for example: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (`is_split_predicate_noun`), a noun with a verbal lemma (`ruts.utils.is_verbal_noun`) or a lemma of `SPLIT_PREDICATE_NOUNS` (for example: роль, работа, помощь, мера) with a verb `verb` of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference `obj`, `nsubj:pass`, `nsubj` (only for a reflexive or passive verb, `is_reflexive`), `iobj`, `nmod`, `obl`; prepositional adjuncts and the passive agent (`obl:agent`, instrumental `obl`) are not counted. The verb lemma is taken from the pymorphy3 analysis twice: with the part of speech of the token ([`get_lemma`](#helpers)) and as a verb (`ruts.utils.lemmatize`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -477,15 +477,7 @@ The split predicates, a marker of officialese, are pairs of a verb and a noun in
 
 ## Methods
 
---8<-- "stats/stats.md:Stats-get_stats"
-
---8<-- "stats/stats.md:Stats-to_dataframe"
-
---8<-- "stats/stats.md:Stats-print_stats"
-
---8<-- "stats/stats.md:Stats-describe"
-
-The syntactic statistics have no scales, so `describe` always returns `None`.
+The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the syntactic statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
 
 === "Code"
 
@@ -569,7 +561,7 @@ is_participle(token)
 is_converb(token)
 ```
 
-`is_participle` checks whether a token is a full participle (`VerbForm=Part` without `Variant=Short`), `is_converb` whether it is an adverbial participle (`VerbForm=Conv`); the argument is the same token.
+`is_participle` checks whether a token is a full participle (`VerbForm=Part` without `Variant=Short` and `StyleVariant=Short`), `is_converb` whether it is an adverbial participle (`VerbForm=Conv`); the argument is the same token.
 
 ## Predicate of a clause { #is_predicate }
 
@@ -590,3 +582,7 @@ get_lemma(token)
 ```
 
 The lemma of a token in lower case by the pymorphy3 analysis with the part of speech of the token (`ruts.utils.lemmatize`), not `token.lemma_`.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `token` | `Token` | - | Token |

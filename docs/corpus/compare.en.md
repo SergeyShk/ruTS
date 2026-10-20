@@ -66,7 +66,13 @@ The p-values take the 1672 windows for independent (see the [warning](#statistic
 | `features` | `Callable` | `None` | Text feature function; `None` - `text_features` |
 | `min_words` | `int` | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
 
-`labels`, `n_bootstrap` and `seed` go on to [`compare_features`](#compare_features). `compare_corpora` checks them with `check_comparison_params` first, so a wrong name of a corpus or seed fails before any text is processed. Texts that are not a list of strings and `features` that cannot be called raise `SourceTypeError`, a corpus without a window of `min_words` words or more `SourceError`, and a `window` or `min_words` that is not an integer of at least one and `min_words` above `window` `ParameterError`.
+`labels`, `n_bootstrap` and `seed` go on to [`compare_features`](#compare_features). `compare_corpora` checks them with `check_comparison_params` first, so a wrong name of a corpus or seed fails before any text is processed.
+
+Raises:
+
+- `SourceTypeError` - texts that are not a list of strings, `features` that cannot be called;
+- `SourceError` - a corpus without a window of `min_words` words or more;
+- `ParameterError` - a `window` or `min_words` that is not an integer of at least one, `min_words` above `window`, labels, a number of samples or a seed that `check_comparison_params` rejects.
 
 ## Features { #text_features }
 
@@ -89,13 +95,33 @@ A 1000-word window takes about 0.02 s. Features over the spaCy parse (`SyntaxSta
 
 The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
 
-A text that is not a string raises `SourceTypeError`, and a text without words `SourceError`.
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `text` | `str` | - | Text string |
+
+Raises:
+
+- `SourceTypeError` - a text that is not a string;
+- `SourceError` - a text without words.
 
 ``` {.python .signature}
 corpus_features(texts, window=1000, features=text_features, min_words=None)
 ```
 
-Returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; the level `text` of the index is what the bootstrap of `compare_features` resamples. The parameters and the errors are those of `compare_corpora`; texts without words and windows shorter than `min_words` are skipped. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; the split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
+Returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; the level `text` of the index is what the bootstrap of `compare_features` resamples. Texts without words and windows shorter than `min_words` are skipped. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; the split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `texts` | `list[str]` | - | Texts of the corpus |
+| `window` | `int` | `1000` | Window size in words; `None` - whole texts |
+| `features` | `Callable` | `text_features` | Text feature function |
+| `min_words` | `int` | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
+
+Raises:
+
+- `SourceTypeError` - texts that are not a list of strings, `features` that cannot be called;
+- `SourceError` - a corpus without a window of `min_words` words or more;
+- `ParameterError` - a `window` or `min_words` that is not an integer of at least one, `min_words` above `window`.
 
 Your own features, for example syntactic ones by spaCy, are passed as a function; with the parse the same comparison takes about eight minutes:
 
@@ -187,7 +213,12 @@ Cuts a text into consecutive windows of exactly `window` words, so the features 
 | `window` | `int` | `1000` | Size of a window in words; `None` - the whole text |
 | `min_words` | `int` | `None` | Smallest number of words in a window; `None` - a whole window, or one word without a window |
 
-A text that is not a string raises `SourceTypeError`, a `window` or `min_words` that is not an integer of at least one and `min_words` above the window `ParameterError`. A text without words or shorter than `min_words` gives an empty list.
+A text without words or shorter than `min_words` gives an empty list.
+
+Raises:
+
+- `SourceTypeError` - a text that is not a string;
+- `ParameterError` - a `window` or `min_words` that is not an integer of at least one, `min_words` above the window.
 
 === "Code"
 
@@ -217,7 +248,10 @@ Gives the rhythm of the sentences from their lengths in words: the mean `sents_m
 | :-------- | :--- | :------ | :---------- |
 | `lengths` | `list[int]` | - | Lengths of the sentences in words |
 
-Lengths that are not a list of integers raise `SourceTypeError`, a negative length `ParameterError`.
+Raises:
+
+- `SourceTypeError` - lengths that are not a list of integers;
+- `ParameterError` - a negative length.
 
 === "Code"
 

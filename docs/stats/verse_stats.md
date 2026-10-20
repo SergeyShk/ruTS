@@ -257,10 +257,28 @@ rhyme_scheme(text, stress_dict=None)
     И лу́чше вы́думать не мо́г.
     ```
 
-<!-- core: stats/stats.md:Stats-print_stats b37b79d -->
-`print_stats()` выводит таблицу статистик из `stats_desc` с их описаниями под заголовками из `stats_headers`, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.
+Остальные методы - `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у стиховедческих статистик нет, поэтому `describe` для статистик `get_stats` возвращает `None`.
 
-Остальные методы - `get_stats`, `to_dataframe` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS: `get_stats` и `to_dataframe` дают метрики справочником и таблицей `pandas.DataFrame` из одной строки. Шкал у стиховедческих статистик нет, поэтому `describe` всегда возвращает `None`.
+=== "Код"
+
+    ``` python
+    vs.get_stats()
+    ```
+
+=== "Результат"
+
+    ```
+    {'n_lines': 4,
+     'n_stanzas': 1,
+     'meter': 'ямб',
+     'n_feet': 4,
+     'p_deviations': 0.0,
+     'p_pyrrhics': 0.1875,
+     'p_rhymed': 1.0,
+     'p_masculine': 0.5,
+     'p_feminine': 0.5,
+     'p_dactylic': 0.0}
+    ```
 
 ## Алгоритм { #algorithm }
 

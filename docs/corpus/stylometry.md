@@ -244,7 +244,10 @@ function_words_profile(source)
 | :------- | :-- | :----------- | :------- |
 | `source` | `list[str]` / `Doc` | - | Слова текста или объект Doc |
 
-Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`.
+Исключения:
+
+- `SourceTypeError` - источник, который не список строк и не `Doc`;
+- `SourceError` - источник без слов.
 
 === "Код"
 

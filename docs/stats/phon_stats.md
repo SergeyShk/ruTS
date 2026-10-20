@@ -342,19 +342,7 @@ is_open_syllable(syllable)
 
 ## Методы
 
-<!-- core: stats/stats.md:Stats-get_stats d388cfa -->
-`get_stats(flat=False)` возвращает копию статистик из `stat_names`: ее изменение не меняет объект. С `flat=True` значения статистики-словаря становятся отдельными ключами, присоединенными к ее имени через подчеркивание: распределение `{3: 5}` статистики `c_lengths` дает ключ `c_lengths_3`.
-
-<!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
-`to_dataframe()` возвращает плоские статистики, `get_stats(flat=True)`, таблицей `DataFrame` библиотеки [pandas](https://pandas.pydata.org/) из одной строки со столбцом на каждый ключ. Статистика-словарь дает столбцы только для ключей, которые есть в тексте, поэтому в таблицах нескольких текстов, объединенных `pandas.concat`, отсутствующее у текста количество равно `NaN`. Только такие столбцы можно заполнять нулями: в остальных `NaN` - неопределенное значение.
-
-<!-- core: stats/stats.md:Stats-print_stats b37b79d -->
-`print_stats()` выводит таблицу статистик из `stats_desc` с их описаниями под заголовками из `stats_headers`, дробные числа - с двумя знаками после запятой; каждый столбец шириной в свой самый длинный текст.
-
-<!-- core: stats/stats.md:Stats-describe d0ce257 -->
-`describe(stat)` возвращает полосу шкалы статистики `stat` (`level_scale`) и `None` для статистики без шкалы, с неопределенным значением (nan) или для ключа плоских статистик (`get_stats(flat=True)`). Имя, которого нет ни в `stat_names`, ни среди открытых свойств класса, дает `UnknownStatError`.
-
-Шкал у фоностатистик нет, поэтому `describe` всегда возвращает `None`.
+Методы `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у фоностатистик нет, поэтому `describe` для статистик `get_stats` возвращает `None`.
 
 === "Код"
 

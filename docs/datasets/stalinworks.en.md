@@ -77,7 +77,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | :-------- | :--- | :------ | :---------- |
 | `volume` | `int` | `None` | Volume number |
 | `year` | `int` | `None` | Year of writing |
-| `text_type` | `str` | `None` | Text type |
+| `text_type` | `str` | `None` | Text type: `Протокол`, `Прошение`, `Стихотворение`, `Телеграмма`, `Доклад`, `Приказ`, `Статья`, `Выступление`, `Беседа`, `Записка`, `Отчет`, `Письмо`, `Брошюра`, `Прокламация`, `Постановление`, `Резолюция` or `Комментарий`; the dataset has no texts of `Протокол`, `Прошение` and `Стихотворение` |
 | `is_translation` | `bool` | `None` | Translation flag |
 | `source` | `str` | `None` | Original source of the texts (substring, ignoring case and ё) |
 | `subject` | `str` | `None` | Text title (substring, ignoring case and ё) |
@@ -86,7 +86,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-A volume number outside 1-16, an unknown text type, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
+A volume number outside 1-16, an unknown text type, a `source`, `subject` or `topic` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
 === "Code"
 

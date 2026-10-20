@@ -6,7 +6,7 @@ StyleStats(source, words_extractor=None, stopwords=None, top_n=10, cliches=None,
 
 --8<-- "stats/style_stats.md:StyleStats"
 
-The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) core with the hooks of Russian, given in the cards of the metrics. The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) and are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a `WordsExtractor` with `use_lexemes=True` and `lowercase=True`. The given word lists and the phrases are compared without the letter ё (`normalize_yo`). The words of a `Doc` lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian.
+The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) core with the hooks of Russian, given in the cards of the metrics. The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) and are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a `WordsExtractor` with `use_lexemes=True` and `lowercase=True`. The given word lists and the phrases are compared without the letter ё (`normalize_yo`). The words of a `Doc` lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`STYLE_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -36,6 +36,8 @@ The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/an
 ## Parameters
 
 --8<-- "stats/style_stats.md:StyleStats-parameters"
+
+`NAUSEA_TOP_N` is a constant of `anyts.constants`.
 
 ## Attributes
 
@@ -89,6 +91,12 @@ $$
 
 A `top_n` that is not an integer of at least one raises `ParameterError`.
 
+| Value | Reading |
+| :---- | :------ |
+| `[0, 5)` | below the Advego norm |
+| `[5, 15]` | the Advego norm |
+| `(15, 100]` | above the Advego norm |
+
 ``` {.python .signature}
 find_nausea_words(text, top_n=10, stopwords=None)
 ```
@@ -108,12 +116,6 @@ is_stopword(word)
 ```
 
 Whether a word is insignificant for the academic nausea by its part of speech in pymorphy3: conjunctions, particles, prepositions, pronominal nouns, interjections and predicatives (`CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED`), and the words with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` - pronominal adjectives, parenthetical words, demonstrative and interrogative adverbs. The sets are `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`.
-
-| Value | Reading |
-| :---- | :------ |
-| `[0, 5)` | below the Advego norm |
-| `[5, 15]` | the Advego norm |
-| `(15, 100]` | above the Advego norm |
 
 === "Code"
 
@@ -149,17 +151,17 @@ The share of the words without content, in percent: the words of `stopwords`, co
 | `text` | `list[str]` | - | List of words |
 | `stopwords` | `list[str]` | `None` | Water words |
 
-``` {.python .signature}
-is_water_word(word)
-```
-
-Whether a word is "water" by its part of speech in pymorphy3, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles, pronominal nouns and interjections (`CONJ`, `PRCL`, `NPRO`, `INTJ`; the set `ruts.constants.WATER_POS`). pymorphy3 tags the parenthetical words конечно and например as conjunctions, so they are water too. Prepositions, pronominal adjectives and predicatives, unlike in `is_stopword`, are not water.
-
 | Value | Reading |
 | :---- | :------ |
 | `[0, 15)` | natural water content by Text.ru |
 | `[15, 30]` | excessive water content by Text.ru |
 | `(30, 100]` | high water content by Text.ru |
+
+``` {.python .signature}
+is_water_word(word)
+```
+
+Whether a word is "water" by its part of speech in pymorphy3, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles, pronominal nouns and interjections (`CONJ`, `PRCL`, `NPRO`, `INTJ`; the set `ruts.constants.WATER_POS`). pymorphy3 tags the parenthetical words конечно and например as conjunctions, so they are water too. Prepositions, pronominal adjectives and predicatives, unlike in `is_stopword`, are not water.
 
 </div>
 
@@ -317,7 +319,7 @@ The functions check their words: words, stop words, keywords and phrases that ar
     {'целях': 1, 'повышения': 1}
     ```
 
---8<-- "stats/stats.md:Stats-describe"
+The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` reads the SEO metrics by the bands of the norms of their cards and gives `None` for the markers of the officialese.
 
 === "Code"
 
@@ -326,13 +328,23 @@ The functions check their words: words, stop words, keywords and phrases that ar
 
     text = "Ног нет, а хожу, рта нет, а скажу: когда спать, когда вставать, когда работу начинать"
     ss = StyleStats(text)
+    ss.keyword_density("когда", "нет а")
     ss.describe("water"), ss.describe("cliches")
+    ss.get_stats()
     ```
 
 === "Result"
 
     ```
+    {'когда': 20.0, 'нет а': 13.333333333333334}
     ('высокая водность по Text.ru', None)
+    {'classic_nausea': 1.7320508075688772,
+     'academic_nausea': 53.333333333333336,
+     'water': 33.333333333333336,
+     'spam': 26.666666666666668,
+     'zipf_naturalness': 33.333333333333336,
+     'verbal_nouns': 0.0,
+     'compound_prepositions': 0.0,
+     'parentheticals': 0.0,
+     'cliches': 0.0}
     ```
-
-The other methods - `get_stats`, `to_dataframe` and `print_stats` - give the metrics as a dictionary, a one-row `pandas.DataFrame` and a table.

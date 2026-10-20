@@ -75,6 +75,8 @@ The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.i
 | `hdd_sample_size` | `int` | `42` | Sample size for HD-D (`HDD_SAMPLE_SIZE`) |
 | `log_base` | `float` | `10` | Logarithm base for the Summer, Maas and Dugast metrics (`DIVERSITY_LOG_BASE`) |
 
+The constants of the defaults in parentheses, here and in the cards, are those of `anyts.constants`.
+
 --8<-- "stats/diversity_stats.md:DiversityStats-attributes"
 
 ``` {.python .signature}
@@ -535,4 +537,47 @@ In ruTS `messages` defaults to `CORE_MESSAGES`.
 
 --8<-- "stats/diversity_stats.md:DiversityStats-print_stats"
 
-The `to_dataframe` method (the metrics as a one-row `pandas.DataFrame`) and the `describe` method are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical diversity metrics have no scales, so `describe` always gives `None`.
+=== "Code"
+
+    ``` python
+    ds.get_stats()
+    ```
+
+=== "Result"
+
+    ```
+    {'ttr': 0.7333333333333333,
+     'rttr': 2.840187787218772,
+     'cttr': 2.008316044185609,
+     'httr': 0.8854692840710255,
+     'sttr': 0.2500605793160848,
+     'mttr': 0.09738250756232528,
+     'dttr': 10.268784661968118,
+     'mattr': 0.7333333333333333,
+     'msttr': 0.7333333333333333,
+     'mtld': 15.0,
+     'mamtld': 12.0,
+     'mtldw': 13.25,
+     'hdd': nan,
+     'simpson_index': 0.047619047619047616,
+     'inverse_simpson_index': 21.0,
+     'gini_simpson_index': 0.9523809523809523,
+     'hapax_index': 992.9517404041437,
+     'yule_k': 444.44444444444446,
+     'yule_i': 8.642857142857142,
+     'herdan_vm': 0.1421338109037403,
+     'sichel_s': 0.18181818181818182,
+     'michea_m': 5.5,
+     'brunet_w': 6.00637847898991,
+     'dugast_k': 14.783895126869226,
+     'baayen_p': 0.5333333333333333,
+     'hapax_ratio': 0.7272727272727273,
+     'alpha2': 0.5,
+     'entropy': 3.3232314287976203,
+     'evenness': 0.9606293157795304,
+     'perplexity': 10.009038104159247,
+     'zipf_alpha': 0.4884512334695912,
+     'heaps_beta': 0.8366147342060046}
+    ```
+
+The other methods - `to_dataframe` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical diversity metrics have no scales, so `describe` gives `None` for the metrics of `get_stats`.

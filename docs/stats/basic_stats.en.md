@@ -62,8 +62,6 @@ The normalized statistics `p_*` are not in the table.
 
 --8<-- "stats/stats.md:Stats-to_dataframe"
 
-The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, so it always gives `None`.
-
 === "Code"
 
     ``` python
@@ -113,6 +111,8 @@ The `describe` method is that of the [statistics interface](https://sergeyshk.gi
      'p_spaces': 0.14545454545454545,
      'p_punctuations': 0.03636363636363636}
     ```
+
+The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, so it gives `None` for the statistics of `get_stats`.
 
 ## Punctuation marks { #count_punctuations }
 

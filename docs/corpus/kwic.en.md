@@ -6,7 +6,7 @@ kwic(source, keyword, window=5, by_lemma=False, ignore_case=True)
 
 --8<-- "corpus/kwic.md:kwic"
 
-The function calls the `kwic` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/kwic/) core with the hooks of Russian: the words and the sentences of a string and of the keyword are those of [razdel](https://github.com/natasha/razdel), the lemma of a word is the pymorphy3 one, in a `Doc` with part-of-speech annotation taken with the part of speech of the token (`ruts.utils.lemmatize`), so «стали» is found by «сталь» or by «стать» depending on the annotation, and the word forms (with `ignore_case`) and the lemmas are compared in lower case with ё as е. The parts of a hyphenated word that spaCy splits are joined (`кто-то` is one word).
+The function calls the `kwic` of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/kwic/) core with the hooks of Russian: the words and the sentences of a string and of the keyword are those of [razdel](https://github.com/natasha/razdel), the lemma of a word is the pymorphy3 one, in a `Doc` with part-of-speech annotation taken with the part of speech of the token (`ruts.utils.lemmatize`), so «стали» is found by «сталь» or by «стать» depending on the annotation. Stress marks are stripped for the comparison, and the word forms (with `ignore_case`) and the lemmas are compared in lower case with ё as е. The parts of a hyphenated word that spaCy splits are joined (`кто-то` is one word).
 
 === "Code"
 

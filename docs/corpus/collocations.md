@@ -11,7 +11,7 @@ collocations(words, window=5, measure='logdice', min_freq=2, node=None, top_n=No
 
 Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов; для устойчивых сочетаний подходят леммы, для грамматических конструкций - словоформы.
 
-Модуль `ruts.corpus.collocations` реэкспортирует функцию ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/). Слова извлекает [`WordsExtractor`](../extractors/words.md); для русских устойчивых сочетаний вроде «точка зрения» или «рабочий класс» берут его леммы (`use_lexemes=True`). Знаки ударения снимаются со слов и с `node`.
+Функция оборачивает `collocations` ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/collocations/) и снимает знаки ударения со слов и с `node`. Слова извлекает [`WordsExtractor`](../extractors/words.md); для русских устойчивых сочетаний вроде «точка зрения» или «рабочий класс» берут его леммы (`use_lexemes=True`).
 
 === "Код"
 

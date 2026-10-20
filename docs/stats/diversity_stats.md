@@ -76,6 +76,8 @@ DiversityStats(source, words_extractor=None, window_len=50, mtld_threshold=0.72,
 | `hdd_sample_size` | `int` | `42` | Размер выборки для HD-D (`HDD_SAMPLE_SIZE`) |
 | `log_base` | `float` | `10` | Основание логарифма для метрик Summer, Maas и Dugast (`DIVERSITY_LOG_BASE`) |
 
+Константы умолчаний в скобках, здесь и в карточках, - из `anyts.constants`.
+
 <!-- core: stats/diversity_stats.md:DiversityStats-attributes 2e73f9a -->
 Объект хранит слова в `words`, кортежем, и пять параметров под их именами, изменяемые у объекта. `frequency_spectrum` - спектр частот слов (`calc_frequency_spectrum`), а `honore_r` - псевдоним `hapax_index`.
 
@@ -1052,4 +1054,47 @@ calc_windowed(text, func, window_len=100, step=None, confidence=0.95, *, message
 <!-- core: stats/diversity_stats.md:DiversityStats-print_stats 8d60982 -->
 `print_stats()` выводит таблицу вычисленных метрик с их описаниями из `stats_desc` под заголовками из `stats_headers`.
 
-Метод `to_dataframe` (метрики в `pandas.DataFrame` из одной строки) и метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у метрик лексического разнообразия нет, поэтому `describe` всегда возвращает `None`.
+=== "Код"
+
+    ``` python
+    ds.get_stats()
+    ```
+
+=== "Результат"
+
+    ```
+    {'ttr': 0.7333333333333333,
+     'rttr': 2.840187787218772,
+     'cttr': 2.008316044185609,
+     'httr': 0.8854692840710255,
+     'sttr': 0.2500605793160848,
+     'mttr': 0.09738250756232528,
+     'dttr': 10.268784661968118,
+     'mattr': 0.7333333333333333,
+     'msttr': 0.7333333333333333,
+     'mtld': 15.0,
+     'mamtld': 12.0,
+     'mtldw': 13.25,
+     'hdd': nan,
+     'simpson_index': 0.047619047619047616,
+     'inverse_simpson_index': 21.0,
+     'gini_simpson_index': 0.9523809523809523,
+     'hapax_index': 992.9517404041437,
+     'yule_k': 444.44444444444446,
+     'yule_i': 8.642857142857142,
+     'herdan_vm': 0.1421338109037403,
+     'sichel_s': 0.18181818181818182,
+     'michea_m': 5.5,
+     'brunet_w': 6.00637847898991,
+     'dugast_k': 14.783895126869226,
+     'baayen_p': 0.5333333333333333,
+     'hapax_ratio': 0.7272727272727273,
+     'alpha2': 0.5,
+     'entropy': 3.3232314287976203,
+     'evenness': 0.9606293157795304,
+     'perplexity': 10.009038104159247,
+     'zipf_alpha': 0.4884512334695912,
+     'heaps_beta': 0.8366147342060046}
+    ```
+
+Остальные методы - `to_dataframe` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у метрик лексического разнообразия нет, поэтому `describe` для метрик `get_stats` возвращает `None`.

@@ -11,7 +11,7 @@ dispersion(words, parts=10, word=None, min_freq=1)
 
 Слова сравниваются как есть: регистр и лемматизация - на стороне экстрактора слов.
 
-Модуль `ruts.corpus.dispersion` реэкспортирует функцию ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/). Слова извлекает [`WordsExtractor`](../extractors/words.md); знаки ударения снимаются со слов и с `word`.
+Функция оборачивает `dispersion` ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/dispersion/) и снимает знаки ударения со слов и с `word`. Слова извлекает [`WordsExtractor`](../extractors/words.md).
 
 === "Код"
 

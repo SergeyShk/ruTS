@@ -257,4 +257,30 @@ $$
     {100: 0.375, 500: 0.75}
     ```
 
-Остальные методы - `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS: метрики справочником, таблицей `pandas.DataFrame` из одной строки и таблицей на экране. Шкал у статистик лексической сложности нет, поэтому `describe` всегда возвращает `None`.
+Остальные методы - `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у статистик лексической сложности нет, поэтому `describe` для статистик `get_stats` возвращает `None`.
+
+=== "Код"
+
+    ``` python
+    ls.get_stats()
+    ```
+
+=== "Результат"
+
+    ```
+    {'coverage': 1.0,
+     'mean_ipm': 8645.5375,
+     'mean_ipm_content': 324.18,
+     'mean_log_ipm': 3.0674194359404705,
+     'mean_log_ipm_content': 2.316850597556863,
+     'mean_range': 99.75,
+     'mean_dispersion': 95.125,
+     'surprisal': 9.74182176626998,
+     'perplexity': 856.2105288389297,
+     'p_top1000': 0.75,
+     'p_top2000': 0.875,
+     'p_top5000': 1.0,
+     'p_top10000': 1.0,
+     'p_beyond_top10000': 0.0,
+     'lexical_density': 0.625}
+    ```

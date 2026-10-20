@@ -105,8 +105,6 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 <!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
 `to_dataframe()` возвращает плоские статистики, `get_stats(flat=True)`, таблицей `DataFrame` библиотеки [pandas](https://pandas.pydata.org/) из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных `pandas.concat`, количество, которого у текста нет, - `NaN`. Нулями можно заполнять только такие столбцы: в остальных `NaN` - неопределенное значение.
 
-Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у базовых статистик нет, поэтому он всегда возвращает `None`.
-
 === "Код"
 
     ``` python
@@ -156,6 +154,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
      'p_spaces': 0.14545454545454545,
      'p_punctuations': 0.03636363636363636}
     ```
+
+Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у базовых статистик нет, поэтому он для статистик `get_stats` возвращает `None`.
 
 ## Знаки препинания { #count_punctuations }
 

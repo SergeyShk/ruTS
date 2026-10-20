@@ -60,18 +60,18 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `grade` | `int` | `None` | Grade level of the texts |
+| `grade` | `int` | `None` | Grade level of the texts (only 1) |
 | `book` | `str` | `None` | Book title (substring, ignoring case and ё) |
 | `year` | `int` | `None` | Year of publication |
 | `category` | `str` | `None` | Text category (substring, ignoring case and ё) |
-| `text_type` | `str` | `None` | Text type |
+| `text_type` | `str` | `None` | Text type: `Рассказ`, `Стихотворение`, `Сказка`, `Пословица`, `Загадка`, `Песня`, `Басня`, `Совет` or `Шутка` |
 | `subject` | `str` | `None` | Text title (substring, ignoring case and ё) |
 | `author` | `str` | `None` | Text author (substring, ignoring case and ё) |
 | `min_len` | `int` | `None` | Minimum text length (in characters) |
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-An unknown grade level or text type, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
+An unknown grade level or text type, a `book`, `category`, `subject` or `author` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
 === "Code"
 
