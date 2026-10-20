@@ -1,5 +1,5 @@
 import re
-from math import isnan
+from math import inf, isnan
 from pathlib import Path
 
 import anyts.basic_stats
@@ -267,48 +267,46 @@ def test_scale_level():
         scale_level(float("nan"), LIX_LEVELS)
 
 
-FUNCS_PAGE = Path(__file__).parent.parent / "docs" / "stats" / "readability_stats_funcs.md"
+PAGE = Path(__file__).parent.parent / "docs" / "stats" / "readability_stats.md"
 
 
-def doc_scale(heading, after=""):
+def doc_scale(anchor, after=""):
     """
-    Шкала из таблицы раздела страницы функций: нижние границы по убыванию и подписи;
-    after - текст, после которого начинается таблица шкалы
+    Шкала из таблицы карточки страницы: нижние границы по убыванию и подписи; after - текст,
+    после которого начинается таблица шкалы. Полоса пишется интервалом ([90; ∞), (−∞; 30))
+    или диапазоном (0-30); нижняя граница −∞ - последняя полоса, которая берет и значения ниже
     """
-    page = FUNCS_PAGE.read_text(encoding="utf-8")
-    section = page.split(f"## {heading}\n", 1)[1].split("\n## ", 1)[0]
+    page = PAGE.read_text(encoding="utf-8")
+    section = page.split(f"{{ #{anchor} }}", 1)[1].split("</div>", 1)[0]
     if after:
         section = section.split(after, 1)[1]
-    rows = re.findall(
-        r"^\|\s*`(?:([\d.]+)-([\d.]+)|> ([\d.]+))`\s*\|\s*([^|]+?)\s*\|$", section, re.MULTILINE
-    )
-    return tuple(
-        sorted(
-            (
-                (float(above) if above else min(float(a), float(b)), label.lower())
-                for a, b, above, label in rows
-            ),
-            reverse=True,
-        )
-    )
+    bands = []
+    for bound, label in re.findall(r"^\| `([^`]+)` \| ([^|]+?) \|$", section, re.MULTILINE):
+        if interval := re.fullmatch(r"[\[(](−∞|[\d.]+); ([\d.]+|∞)[\])]", bound):
+            low = -inf if interval[1] == "−∞" else float(interval[1])
+        else:
+            low = min(map(float, bound.split("-")))
+        bands.append((low, label.lower()))
+    return tuple(sorted(bands, reverse=True))
 
 
 @pytest.mark.parametrize(
-    ("heading", "scale", "after"),
+    ("anchor", "scale", "after"),
     [
-        ("Индекс удобочитаемости Флеша", READING_EASE_LEVELS, ""),
-        ("Индекс удобочитаемости LIX", LIX_LEVELS, ""),
-        ("Индекс удобочитаемости RIX", RIX_LEVELS, "RIX_LEVELS"),
-        (
-            "Перевод индекса Флеша в класс { #flesch_reading_easy_to_grade }",
-            READING_EASE_GRADES,
-            "READING_EASE_GRADES",
-        ),
+        ("flesch_reading_easy", READING_EASE_LEVELS, ""),
+        ("lix", LIX_LEVELS, ""),
+        ("rix", RIX_LEVELS, "RIX_LEVELS"),
+        ("consensus_grade", READING_EASE_GRADES, "READING_EASE_GRADES"),
     ],
 )
-def test_level_scales_follow_docs(heading, scale, after):
+def test_level_scales_follow_docs(anchor, scale, after):
     """Шкалы прочтения и перевода в класс совпадают с таблицами документации"""
-    assert tuple((bound, str(label)) for bound, label in scale) == doc_scale(heading, after)
+    documented = doc_scale(anchor, after)
+    expected = tuple((bound, str(label)) for bound, label in scale)
+    # Последняя полоса берет и значения ниже своей границы
+    if documented[-1][0] == -inf:
+        documented = (*documented[:-1], (expected[-1][0], documented[-1][1]))
+    assert documented == expected
 
 
 def test_calc_consensus_grade():

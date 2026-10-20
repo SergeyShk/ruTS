@@ -1,18 +1,19 @@
 # Text highlighting
 
-!!! info ""
-    **ruts.visualizers.highlight()**, **ruts.visualizers.HighlightedText**, **ruts.visualizers.Highlight**
-
-## Description
+``` {.python .signature}
+HighlightedText(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, stopwords=None, cliches=None, alliteration_threshold=0.001)
+```
 
 --8<-- "visualizers/highlight.md:HighlightedText"
 
+``` {.python .signature}
+highlight(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, stopwords=None, cliches=None, alliteration_threshold=0.001)
+```
+
 The function `highlight` returns a `HighlightedText` object of ruTS with the layers in the style of the [Glavred](https://glvrd.ru/) and [Turgenev](https://turgenev.ashmanov.com/) services: long sentences, complex and rare words, passive voice, participial and adverbial clauses, genitive chains, split predicates, verbal nouns, compound prepositions, clichés, stop words, parentheticals, connectives, alliterations. One picture explains what the metric values are made of better than a table of numbers.
 
-Highlighting layers:
-
 | Group | Layer | What it marks | Statistic |
-| :---- | :---: | :-----------: | :-------: |
+| :---- | :---- | :------------ | :-------- |
 | Readability | `long_sents` | Sentences with at least `long_sent_word_factor` words | [BasicStats](../stats/basic_stats.md), [ReadabilityStats](../stats/readability_stats.md) |
 | | `complex_words` | Words with at least `complex_syl_factor` syllables | [BasicStats](../stats/basic_stats.md), [ReadabilityStats](../stats/readability_stats.md) |
 | | `rare_words` | Words whose lemma is outside the embedded top-10000 list; numbers, Latin script, abbreviations and stop words are not highlighted | [LexicalStats](../stats/lexical_stats.md) |
@@ -31,59 +32,18 @@ Highlighting layers:
 
 The groups are defined in `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. The layers of the "Syntax" group are computed over the dependency tree and are available only for a `Doc` object with a dependency parse (the `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` models). By default the `HIGHLIGHT_DEFAULT_LAYERS` layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; `layers="all"` enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.
 
-!!! note "Note"
+!!! note "Alliteration"
     Alliteration is searched within a sentence as a chain of two or more adjacent words each of whose stems contains the same consonant letter. The stem is the common initial part of the word form and its pymorphy3 lemma (*крупных* → *крупны*, *руках* → *рука*): endings agree with neighboring words and repeat consonants by grammar rather than by sound (*этих крупных*, *своим целям и нуждам*). The probability of a chain under an independent letter distribution is the product over the words of the probabilities of meeting the consonant among the stem letters, $1 - (1 - f)^n$, where $f$ is the [frequency of the consonant](https://ru.wikipedia.org/wiki/Частотность) in Russian texts and $n$ the number of stem letters; a chain is highlighted if the probability is below the `alliteration_threshold`. About twenty consonants are checked at every position, so the threshold is strict: in prose about 5% of words are highlighted at 0.001, about 20% at 0.01, mostly random coincidences of frequent letters. A repeat of a rare consonant (*слышно, бесшумно шуршат камыши*) is noticeable in two or three words, a repeat of a frequent one in long words is expected and not highlighted. Words shorter than three letters, stop words and words without vowels neither break nor continue a chain, the letter *й* is not counted, since in the nominative case it is part of the adjective lemma. The alliteration index of [PhonStats](../stats/phon_stats.md) measures how clustered the repeats are across the whole text; the highlighting shows where they are.
-
-## Language hooks
 
 The class extends the `HighlightedText` of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/highlight/) core with the hooks of Russian from `ruts.constants`: the layers with their names in the legend are `HIGHLIGHT_LAYERS_DESC`, the layers on by default `HIGHLIGHT_DEFAULT_LAYERS`, the annotations of a `Doc` a layer needs `HIGHLIGHT_LAYER_ANNOTATIONS` (the syntactic layers need only a dependency parse, as the lemmas come from pymorphy3) and the styles of the layers `HIGHLIGHT_LAYER_STYLES`; the prefix of the CSS classes is `ruts`. The words of a string are split as by [`WordsExtractor`](../extractors/words.md) and its sentences by razdel; a `Doc` without sentence boundaries (`spacy.blank`, a pipeline without `parser` and `senter`) is split into sentences by razdel too, so the `long_sents` layer is available for it, and the parts of a hyphenated word of a `Doc` make one word. The fragments of the layers, except the passive, the participial and adverbial participle clauses and the genitive chains, are found by the [finders of the core](https://sergeyshk.github.io/anyTS/visualizers/highlight/#finders) with the hooks of Russian: the syllables of `count_syllables`, the comparison without the letter ё (`normalize_yo`), the connector matcher `RussianConnectorMatcher` with the parts of speech of `connector_pos`, the stems of `get_stem` and the frequencies of the consonants `RU_LETTER_FREQUENCIES` without й for the alliteration.
 
-## Parameters
-
---8<-- "visualizers/highlight.md:HighlightedText-parameters"
-
-The parameters of the layers of ruTS:
-
-| Parameter | Type | Default | Description |
-| :-------: | :--: | :-----: | :---------: |
-| `long_sent_word_factor` | int | `20` | Minimum number of words in a long sentence |
-| `complex_syl_factor` | int | `4` | Minimum number of syllables in a complex word |
-| `stopwords` | list[str]/set[str] | `None` | List or set of water words; if not given, they are determined by part of speech with pymorphy3 |
-| `cliches` | list[str]/set[str] | `None` | List or set of clichés; if not given, `OFFICIALESE_CLICHES` is used |
-| `alliteration_threshold` | float | `0.001` | Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration |
-
-A threshold that is not an integer of at least one or a probability outside (0, 1] raises `ParameterError`, stop words or clichés that are not strings `SourceTypeError`.
-
-## Attributes
-
---8<-- "visualizers/highlight.md:HighlightedText-attributes"
-
---8<-- "visualizers/highlight.md:Highlight"
-
-The note of a fragment gives the number of words in the sentence, of syllables in the word, the length of the chain or the consonant of the alliteration.
-
-## Methods
-
-### to_html
-
---8<-- "visualizers/highlight.md:HighlightedText-to_html"
-
-### css
-
---8<-- "visualizers/highlight.md:HighlightedText-css"
-
-## Usage example
-
-!!! example "Example"
-
-    _Code_:
+=== "Code"
 
     ``` python
-    # Import the libraries
     import spacy
+
     from ruts.visualizers import highlight
 
-    # Prepare the data
     nlp = spacy.load("ru_core_news_sm")
     text = (
         "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
@@ -94,30 +54,41 @@ The note of a fragment gives the number of words in the sentence, of syllables i
         "Споры стихли, в кулуарах шумно шептались и шушукались, а решение было отложено "
         "до следующего заседания."
     )
-
-    # Highlight the text with the default layers
     ht = highlight(nlp(text))
     ht.counts
-    # {'long_sents': 1, 'complex_words': 26, 'passive': 4, 'genitive_chains': 2,
-    #  'split_predicates': 0, 'cliches': 1}
-
     ht.highlights[:2]
-    # (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))
-
-    # All layers
     highlight(nlp(text), layers="all").counts
-    # {'long_sents': 1, 'complex_words': 26, 'rare_words': 3, 'passive': 4, 'participle_clauses': 2,
-    #  'converb_clauses': 1, 'genitive_chains': 2, 'split_predicates': 0, 'verbal_nouns': 10,
-    #  'compound_prepositions': 0, 'cliches': 1, 'stopwords': 7, 'parentheticals': 0,
-    #  'connectors': 4, 'alliteration': 1}
-
-    # Display in Jupyter or save the markup
-    ht
-    html = ht.to_html()
     ```
 
-_Result_ (hover over a fragment to see the explanation):
+=== "Result"
+
+    ```
+    {'long_sents': 1,
+     'complex_words': 26,
+     'passive': 4,
+     'genitive_chains': 2,
+     'split_predicates': 0,
+     'cliches': 1}
+    (Highlight(start=8, end=22, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=8, end=22, layer='passive', note='пассив без агенса'))
+    {'long_sents': 1,
+     'complex_words': 26,
+     'rare_words': 3,
+     'passive': 4,
+     'participle_clauses': 2,
+     'converb_clauses': 1,
+     'genitive_chains': 2,
+     'split_predicates': 0,
+     'verbal_nouns': 10,
+     'compound_prepositions': 0,
+     'cliches': 1,
+     'stopwords': 7,
+     'parentheticals': 0,
+     'connectors': 4,
+     'alliteration': 1}
+    ```
+
+In Jupyter the object `ht` displays like this (hover over a fragment to see the explanation):
 
 <div class="ruts-highlight"><style>.ruts-highlight { line-height: 1.7; }
 .ruts-highlight-legend { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin-bottom: 0.8em; font-size: 0.9em; }
@@ -144,17 +115,62 @@ _Result_ (hover over a fragment to see the explanation):
 
 Highlighting a string without a spaCy model enables all layers except the syntactic ones: by default long sentences, complex words and clichés.
 
-!!! example "Example"
+=== "Code"
 
     ``` python
-    from ruts.visualizers import highlight
-
     text = "Чуть слышно, бесшумно шуршат камыши. Повышение эффективности использования ресурсов обсуждалось."
-    ht = highlight(text, layers=["complex_words", "alliteration"])
-    ht.highlights
-    # (Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),
-    #  Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),
-    #  Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),
-    #  Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))
+    highlight(text, layers=["complex_words", "alliteration"]).highlights
+    ```
+
+=== "Result"
+
+    ```
+    (Highlight(start=5, end=35, layer='alliteration', note='аллитерация на «ш»'),
+     Highlight(start=37, end=46, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=47, end=60, layer='complex_words', note='сложное слово, 5 слогов'),
+     Highlight(start=61, end=74, layer='complex_words', note='сложное слово, 6 слогов'),
+     Highlight(start=84, end=95, layer='complex_words', note='сложное слово, 4 слога'))
+    ```
+
+## Parameters
+
+--8<-- "visualizers/highlight.md:HighlightedText-parameters"
+
+The parameters of the layers of ruTS:
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `long_sent_word_factor` | `int` | `20` | Minimum number of words in a long sentence |
+| `complex_syl_factor` | `int` | `4` | Minimum number of syllables in a complex word |
+| `stopwords` | `list[str]` / `set[str]` | `None` | List or set of water words; if not given, they are determined by part of speech with pymorphy3 |
+| `cliches` | `list[str]` / `set[str]` | `None` | List or set of clichés; if not given, `OFFICIALESE_CLICHES` is used |
+| `alliteration_threshold` | `float` | `0.001` | Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration |
+
+A threshold that is not an integer of at least one or a probability outside (0, 1] raises `ParameterError`, stop words or clichés that are not strings `SourceTypeError`.
+
+## Attributes
+
+--8<-- "visualizers/highlight.md:HighlightedText-attributes"
+
+--8<-- "visualizers/highlight.md:Highlight"
+
+The note of a fragment of ruTS gives the number of words in the sentence, of syllables in the word, the length of the chain or the consonant of the alliteration.
+
+## Methods
+
+--8<-- "visualizers/highlight.md:HighlightedText-to_html"
+
+--8<-- "visualizers/highlight.md:HighlightedText-css"
+
+=== "Code"
+
+    ``` python
+    alliteration = highlight("Чуть слышно, бесшумно шуршат камыши.", layers="alliteration")
+    alliteration.to_html(legend=False, css=False)
+    ```
+
+=== "Result"
+
+    ```
+    '<div class="ruts-highlight"><div class="ruts-highlight-text">Чуть <span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">слышно, бесшумно шуршат камыши</span>.</div></div>'
     ```

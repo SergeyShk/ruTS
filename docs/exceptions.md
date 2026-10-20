@@ -1,8 +1,5 @@
 # Исключения и логирование
 
-!!! info ""
-    **ruts.exceptions**
-
 ## Исключения
 
 Все исключения библиотеки наследуют базовый класс `RutsError` и один из встроенных классов Python, поэтому их можно ловить как по имени ruTS, так и по привычному встроенному типу - прежний код с `except ValueError` продолжает работать.
@@ -20,7 +17,7 @@
 
 Классы доступны из `ruts` и из `ruts.exceptions`. Это классы ядра [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) под теми же именами, а `RutsError` - его `anyts.exceptions.AnyTSError`: псевдонимы, а не подклассы, поэтому `except RutsError` ловит и ошибки, поднятые кодом ядра, а в трассировке стоит `anyts.exceptions.SourceError`. Сообщения ruTS - на русском, в том числе сообщения классов статистик, экстракторов, компонентов и подсветки, построенных на ядре (`ruts.constants.CORE_MESSAGES`). На английском остаются проверки типов аргументов в коде ядра (строка вместо числа и т. п.) и отдельные функции ядра.
 
-!!! example "Пример"
+=== "Код"
 
     ``` python
     from ruts import BasicStats, RutsError, SourceError
@@ -30,31 +27,41 @@
         BasicStats("...")
     except SourceError as e:
         print(e)
-    # В источнике данных отсутствуют слова
 
     try:
         list(PoetryCorpus(data_dir="/nowhere").get_texts(limit=1))
     except RutsError as e:
         print(type(e).__name__)
-    # DatasetNotFoundError
+    ```
+
+=== "Результат"
+
+    ```
+    В источнике данных отсутствуют слова
+    DatasetNotFoundError
     ```
 
 ## Логирование
 
 Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (методы `download()`) ядро anyTS отправляет в логгер `anyts` уровня `INFO`. По умолчанию у логгера стоит `NullHandler`, и сообщения не видны; чтобы включить их, настройте логирование в приложении:
 
-!!! example "Пример"
+=== "Код"
 
     ``` python
     import logging
 
-    from ruts.datasets import RussianLiterature
+    from ruts.datasets import SovChLit
 
     logging.basicConfig(level=logging.INFO, format="%(name)s: %(message)s")
-    RussianLiterature().download()
-    # anyts.datasets: Downloading the file https://github.com/d0rj/RusLit/archive/....zip
-    # anyts.datasets: The file is downloaded: .../ruts_data/texts/russian_literature.zip
-    # anyts.datasets: Extracting the archive .../ruts_data/texts/russian_literature.zip
+    SovChLit(data_dir="/tmp/ruts_data").download()
+    ```
+
+=== "Результат"
+
+    ```
+    anyts.datasets: Downloading the file https://github.com/SergeyShk/ruTS/raw/master/ruts/datasets/data/sov_chrest_lit_v1.tar.xz
+    anyts.datasets: The file is downloaded: /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
+    anyts.datasets: Extracting the archive /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
     ```
 
 Методы `print_stats()` классов статистик и `print_kwic()` печатают в стандартный вывод по своему назначению, логирование их не касается.

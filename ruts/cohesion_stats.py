@@ -96,7 +96,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
     Описание:
         Коннекторы и слова сравниваются в нижнем регистре без буквы ё (normalize_yo);
         однословному коннектору, кроме частей речи CONNECTOR_POS, подходят части речи
-        CONNECTOR_POS_EXTRA для отдельных слов (словом, главное, допустим, точнее,
+        CONNECTOR_POS_EXTRA для отдельных слов (например, словом, главное, допустим, точнее,
         значит, ежели, коли); контекстные правила - списки CONNECTOR_BLOCKED_AFTER,
         CONNECTOR_BLOCKED_BEFORE, CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START
         и CONNECTOR_BLOCKED_AFTER_POS (после обеда, пока что, ещё раз, не правда ли),
