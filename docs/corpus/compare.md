@@ -91,7 +91,7 @@ text_features(text, nlp=None)
 | `sents_` | средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин ([`sentence_rhythm`](#sentence_rhythm)) - ритм текста | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | частоты знаков по типам на 1000 слов и доля буквы ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | повторы слов в предложениях, местоимения, данность, темпоральная связность и коннекторы; без повторов между абзацами (`*_para`): окно режет абзацы текста | [`CohesionStats`](../stats/cohesion_stats.md) по pymorphy3 |
-| `syntax_` | все синтаксические статистики разбора, только с пайплайном `nlp`; пустая строка завершает предложение разбора, как в остальных группах | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | все синтаксические статистики разбора, только с пайплайном `nlp`; предложения разбора - те же, что в остальных группах | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 На окно в 1000 слов уходит около 0.04 с. Синтаксическим признакам нужен разбор, поэтому в набор по умолчанию они не входят: их добавляет пайплайн spaCy с парсером и частями речи в `nlp`, а в `compare_corpora` и `corpus_features` он передается через `functools.partial`, см. пример ниже.
 
@@ -151,11 +151,11 @@ corpus_features(texts, window=1000, features=text_features, min_words=None)
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.106           0.200  -0.132   -0.068   -0.910       -0.542  0.229     0.0
-    syntax_participle_clauses_per_sent         0.054           0.127  -0.103   -0.043   -0.813       -0.535  0.232     0.0
-    syntax_modifiers_per_noun                  0.479           0.590  -0.178   -0.053   -0.953       -0.492  0.254     0.0
-    syntax_mean_converb_clause_len             5.080           6.461  -2.024   -1.078   -0.762       -0.479  0.261     0.0
-    syntax_genitive_chains_per_sent            0.000           0.017  -0.021   -0.013   -0.603       -0.476  0.262     0.0
+    syntax_converb_clauses_per_sent            0.091           0.197  -0.134   -0.081   -1.035       -0.611  0.195     0.0
+    syntax_participle_clauses_per_sent         0.046           0.121  -0.100   -0.051   -0.855       -0.581  0.210     0.0
+    syntax_mean_clause_len                     5.025           5.841  -1.239   -0.485   -0.879       -0.520  0.240     0.0
+    syntax_tree_depth                          3.063           3.653  -0.911   -0.357   -0.968       -0.512  0.244     0.0
+    syntax_verb_phrases_per_t_unit             1.639           1.938  -0.462   -0.204   -0.850       -0.511  0.245     0.0
     ```
 
 ## Сравнение таблиц признаков { #compare_features }

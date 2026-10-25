@@ -4,8 +4,8 @@
 UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 ```
 
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 6ba8a57 -->
-Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или готовый объект `BasicStats`, как у `ReadabilityStats`.
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 0fc386b -->
+Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Слово без слогов (число, предлог из одной согласной) в FORCAST и венских формулах считается односложным, а в Linsear Write - легким, как в textstat. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или готовый объект `BasicStats`, как у `ReadabilityStats`.
 
 Исключения:
 
@@ -14,9 +14,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 
 Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md). Таблица `print_stats` и сообщения об ошибках - по-русски (`UNADAPTED_READABILITY_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
-Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 15.4, класса Пауэрса-Самнера-Керла - 8.2, Венской формулы 1 - 9.6. Поэтому шкал прочтения у этих формул нет, `describe` возвращает для них `None`, а в [сводный класс](readability_stats.md#consensus_grade) они не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
-
-Слово без гласных (предлоги *в*, *с*, *к*) - слово без слогов, и FORCAST и Linsear Write ядра не считают его ни односложным, ни легким, поэтому на русском тексте FORCAST выше, а Linsear Write ниже, чем у инструментов, которые относят такие слова к коротким.
+Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.2, Венской формулы 1 - 9.4. Поэтому шкал прочтения у этих формул нет, `describe` возвращает для них `None`, а в [сводный класс](readability_stats.md#consensus_grade) они не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
 
 === "Код"
 
@@ -154,12 +152,12 @@ $$
 `linsear_write`
 { .metric-meta }
 
-<!-- core: stats/unadapted_readability_stats.md:calc_linsear_write 2fb2e5f -->
+<!-- core: stats/unadapted_readability_stats.md:calc_linsear_write fe19083 -->
 ``` {.python .signature}
 calc_linsear_write(n_easy_words, n_hard_words, n_sents)
 ```
 
-Класс Linsear Write в форме textstat; формула Lensear Write (O'Hayre, 1966) - другая, по односложным словам и предложениям выборки из 100 слов. Легкое слово, из одного или двух слогов, весит 1, а сложное - 3; их сумма на предложение $r$ больше 20 делится пополам, а иначе перед делением уменьшается на 2. Формула считается по всему тексту, а не по выборке из 100 слов; `nan` без предложений.
+Класс Linsear Write в форме textstat; формула Lensear Write (O'Hayre, 1966) - другая, по односложным словам и предложениям выборки из 100 слов. Легкое слово, не длиннее двух слогов, весит 1, а сложное - 3; их сумма на предложение $r$ больше 20 делится пополам, а иначе перед делением уменьшается на 2. Формула считается по всему тексту, а не по выборке из 100 слов; `nan` без предложений.
 
 $$
 r = \frac{\textrm{Количество легких слов} + 3 \times \textrm{Количество сложных слов}}{\textrm{Количество предложений}}, \quad \textrm{LW} = \begin{cases} r / 2 & r > 20 \\ (r - 2) / 2 & r \le 20 \end{cases}

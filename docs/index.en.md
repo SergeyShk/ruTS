@@ -192,6 +192,8 @@ More on dependencies and installing from the repository - on the [Installation](
      'n_spaces': 8,
      'n_syllables': 18,
      'n_punctuations': 2,
+     'letters_entropy': 2.197159723424149,
+     'syllables_entropy': 1.6577427265048887,
      'c_punctuations': {'comma': 1,
                         'period': 0,
                         'question': 0,
@@ -220,21 +222,23 @@ Any statistic can be printed in a readable form:
 === "Result"
 
     ```
-        Статистика     | Значение
-    ------------------------------
-    Предложения        |    1
-    Слова              |    9
-    Уникальные слова   |    8
-    Длинные слова      |    3
-    Сложные слова      |    2
-    Простые слова      |    7
-    Односложные слова  |    5
-    Многосложные слова |    4
-    Символы            |    55
-    Буквы              |    45
-    Пробелы            |    8
-    Слоги              |    18
-    Знаки препинания   |    2
+                Статистика            | Значение
+    ---------------------------------------------
+    Предложения                       |    1
+    Слова                             |    9
+    Уникальные слова                  |    8
+    Длинные слова                     |    3
+    Сложные слова                     |    2
+    Простые слова                     |    7
+    Односложные слова                 |    5
+    Многосложные слова                |    4
+    Символы                           |    55
+    Буквы                             |    45
+    Пробелы                           |    8
+    Слоги                             |    18
+    Знаки препинания                  |    2
+    Энтропия длин слов в буквах (бит) |   2.20
+    Энтропия длин слов в слогах (бит) |   1.66
     ```
 
 A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), which opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); the other notebooks are on the [examples](examples.md) page.

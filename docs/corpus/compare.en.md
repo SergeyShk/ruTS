@@ -91,7 +91,7 @@ Returns 146 features of a text prefixed by source, 189 with the pipeline `nlp`; 
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
-| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; a blank line ends a sentence of the parse, as in the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
 
@@ -151,11 +151,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.106           0.200  -0.132   -0.068   -0.910       -0.542  0.229     0.0
-    syntax_participle_clauses_per_sent         0.054           0.127  -0.103   -0.043   -0.813       -0.535  0.232     0.0
-    syntax_modifiers_per_noun                  0.479           0.590  -0.178   -0.053   -0.953       -0.492  0.254     0.0
-    syntax_mean_converb_clause_len             5.080           6.461  -2.024   -1.078   -0.762       -0.479  0.261     0.0
-    syntax_genitive_chains_per_sent            0.000           0.017  -0.021   -0.013   -0.603       -0.476  0.262     0.0
+    syntax_converb_clauses_per_sent            0.091           0.197  -0.134   -0.081   -1.035       -0.611  0.195     0.0
+    syntax_participle_clauses_per_sent         0.046           0.121  -0.100   -0.051   -0.855       -0.581  0.210     0.0
+    syntax_mean_clause_len                     5.025           5.841  -1.239   -0.485   -0.879       -0.520  0.240     0.0
+    syntax_tree_depth                          3.063           3.653  -0.911   -0.357   -0.968       -0.512  0.244     0.0
+    syntax_verb_phrases_per_t_unit             1.639           1.938  -0.462   -0.204   -0.850       -0.511  0.245     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

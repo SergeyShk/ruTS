@@ -101,8 +101,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 <!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
 `get_stats(flat)` возвращает справочник с распределениями `c_letters` и `c_syllables`, статистиками из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
 
-<!-- core: stats/basic_stats.md:BasicStats-print_stats da79e92 -->
-`print_stats()` выводит таблицу с количествами из `stats_desc`, их описаниями и заголовками из `stats_headers`.
+<!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
+`print_stats()` выводит таблицу со статистиками из `stats_desc`, их описаниями и заголовками из `stats_headers`.
 
 Нормализованных статистик `p_*` в таблице нет.
 
