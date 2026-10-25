@@ -91,7 +91,7 @@ text_features(text, nlp=None)
 | `sents_` | средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин ([`sentence_rhythm`](#sentence_rhythm)) - ритм текста | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | частоты знаков по типам на 1000 слов и доля буквы ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | повторы слов в предложениях, местоимения, данность, темпоральная связность и коннекторы; без повторов между абзацами (`*_para`): окно режет абзацы текста | [`CohesionStats`](../stats/cohesion_stats.md) по pymorphy3 |
-| `syntax_` | все синтаксические статистики разбора, только с пайплайном `nlp` | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | все синтаксические статистики разбора, только с пайплайном `nlp`; пустая строка завершает предложение разбора, как в остальных группах | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 На окно в 1000 слов уходит около 0.04 с. Синтаксическим признакам нужен разбор, поэтому в набор по умолчанию они не входят: их добавляет пайплайн spaCy с парсером и частями речи в `nlp`, а в `compare_corpora` и `corpus_features` он передается через `functools.partial`, см. пример ниже.
 
@@ -105,7 +105,7 @@ text_features(text, nlp=None)
 Исключения:
 
 - `SourceTypeError` - текст, который не строка, `nlp`, который не объект `Language` spaCy;
-- `SourceError` - текст без слов, пайплайн без парсера или частей речи.
+- `SourceError` - текст без слов, текст длиннее `max_length` пайплайна, пайплайн без парсера или частей речи.
 
 ``` {.python .signature}
 corpus_features(texts, window=1000, features=text_features, min_words=None)
@@ -126,7 +126,7 @@ corpus_features(texts, window=1000, features=text_features, min_words=None)
 - `SourceError` - корпус без окна из `min_words` и более слов;
 - `ParameterError` - `window` или `min_words`, который не целое число не меньше единицы, `min_words` больше `window`.
 
-Свои признаки передаются в `features` функцией текста, в том числе `text_features` с пайплайном; с разбором то же сравнение занимает около девяти минут:
+Свои признаки передаются в `features` функцией текста, в том числе `text_features` с пайплайном; с разбором то же сравнение занимает около пяти минут:
 
 === "Код"
 
@@ -151,11 +151,11 @@ corpus_features(texts, window=1000, features=text_features, min_words=None)
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.106           0.212  -0.142   -0.073   -0.970       -0.574  0.213     0.0
-    syntax_participle_clauses_per_sent         0.054           0.135  -0.108   -0.052   -0.864       -0.566  0.217     0.0
-    syntax_verb_phrases_per_t_unit             1.804           2.112  -0.495   -0.221   -0.835       -0.513  0.244     0.0
-    syntax_mean_clause_len                     5.155           5.893  -1.162   -0.461   -0.833       -0.503  0.248     0.0
-    syntax_modifiers_per_noun                  0.479           0.593  -0.181   -0.057   -0.968       -0.500  0.250     0.0
+    syntax_converb_clauses_per_sent            0.106           0.200  -0.132   -0.068   -0.910       -0.542  0.229     0.0
+    syntax_participle_clauses_per_sent         0.054           0.127  -0.103   -0.043   -0.813       -0.535  0.232     0.0
+    syntax_modifiers_per_noun                  0.479           0.590  -0.178   -0.053   -0.953       -0.492  0.254     0.0
+    syntax_mean_converb_clause_len             5.080           6.461  -2.024   -1.078   -0.762       -0.479  0.261     0.0
+    syntax_genitive_chains_per_sent            0.000           0.017  -0.021   -0.013   -0.603       -0.476  0.262     0.0
     ```
 
 ## Сравнение таблиц признаков { #compare_features }

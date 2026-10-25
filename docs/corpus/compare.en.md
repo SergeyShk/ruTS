@@ -91,7 +91,7 @@ Returns 146 features of a text prefixed by source, 189 with the pipeline `nlp`; 
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
-| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp` | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; a blank line ends a sentence of the parse, as in the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
 
@@ -105,7 +105,7 @@ The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_
 Raises:
 
 - `SourceTypeError` - a text that is not a string, an `nlp` that is not a spaCy `Language` object;
-- `SourceError` - a text without words, a pipeline without a parser or parts of speech.
+- `SourceError` - a text without words, a text longer than the `max_length` of the pipeline, a pipeline without a parser or parts of speech.
 
 ``` {.python .signature}
 corpus_features(texts, window=1000, features=text_features, min_words=None)
@@ -126,7 +126,7 @@ Raises:
 - `SourceError` - a corpus without a window of `min_words` words or more;
 - `ParameterError` - a `window` or `min_words` that is not an integer of at least one, `min_words` above `window`.
 
-Features of your own go to `features` as a function of a text, `text_features` with a pipeline among them; with the parse the same comparison takes about nine minutes:
+Features of your own go to `features` as a function of a text, `text_features` with a pipeline among them; with the parse the same comparison takes about five minutes:
 
 === "Code"
 
@@ -151,11 +151,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.106           0.212  -0.142   -0.073   -0.970       -0.574  0.213     0.0
-    syntax_participle_clauses_per_sent         0.054           0.135  -0.108   -0.052   -0.864       -0.566  0.217     0.0
-    syntax_verb_phrases_per_t_unit             1.804           2.112  -0.495   -0.221   -0.835       -0.513  0.244     0.0
-    syntax_mean_clause_len                     5.155           5.893  -1.162   -0.461   -0.833       -0.503  0.248     0.0
-    syntax_modifiers_per_noun                  0.479           0.593  -0.181   -0.057   -0.968       -0.500  0.250     0.0
+    syntax_converb_clauses_per_sent            0.106           0.200  -0.132   -0.068   -0.910       -0.542  0.229     0.0
+    syntax_participle_clauses_per_sent         0.054           0.127  -0.103   -0.043   -0.813       -0.535  0.232     0.0
+    syntax_modifiers_per_noun                  0.479           0.590  -0.178   -0.053   -0.953       -0.492  0.254     0.0
+    syntax_mean_converb_clause_len             5.080           6.461  -2.024   -1.078   -0.762       -0.479  0.261     0.0
+    syntax_genitive_chains_per_sent            0.000           0.017  -0.021   -0.013   -0.603       -0.476  0.262     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

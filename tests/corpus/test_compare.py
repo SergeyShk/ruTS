@@ -157,6 +157,19 @@ def test_text_features_syntax():
         text_features(text, nlp="ru_core_news_sm")
     with pytest.raises(ValueError):
         text_features(text, nlp=spacy.blank("ru"))
+    short = spacy.load("ru_core_news_sm")
+    short.max_length = 10
+    with pytest.raises(
+        ValueError, match=r"^Текст из \d+ символов длиннее предела пайплайна \(10\)"
+    ):
+        text_features(text, nlp=short)
+
+
+def test_text_features_syntax_blank_lines():
+    """Пустая строка завершает предложение разбора, как в остальных группах признаков"""
+    nlp = pytest.importorskip("ru_core_news_sm").load()
+    dialogue = "— Ты пришел?\n\n— Пришел.\n\n— Ну и хорошо."
+    assert text_features(dialogue, nlp=nlp)["syntax_clauses_per_sent"] == 1.0
 
 
 def test_text_features_blank_lines():

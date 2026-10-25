@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import anyts.corpus.compare
 import pandas as pd
+from anyts.components import start_sents_after_blank_lines
 from anyts.corpus.compare import (
     COMPARISON_COLUMNS as COMPARISON_COLUMNS,
     bootstrap_median_diff as bootstrap_median_diff,
@@ -38,6 +39,8 @@ if TYPE_CHECKING:
     from spacy.language import Language
 
 Features = Callable[[str], Mapping[str, float]]
+# Компоненты моделей ru_core_news, разметка которых синтаксическим признакам не нужна
+_UNUSED_COMPONENTS = ("ner", "lemmatizer")
 
 # Монотонно повторяют другие признаки (ранговое сравнение дает те же U, p и |δ|) или постоянны
 REDUNDANT_FEATURES = frozenset(
@@ -136,8 +139,9 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         punct_ - частоты знаков на 1000 слов и доля буквы ё; cohesion_ - статистики
         связности (CohesionStats по pymorphy3), кроме повторов между абзацами: окно режет
         абзацы текста; с пайплайном nlp - еще syntax_, синтаксические статистики
-        (SyntaxStats) его разбора. Признаки, повторяющие другие, отброшены
-        (REDUNDANT_FEATURES)
+        (SyntaxStats) его разбора: пустая строка завершает предложение, как в других
+        группах (start_sents_after_blank_lines), распознавание сущностей и лемматизатор
+        не запускаются. Признаки, повторяющие другие, отброшены (REDUNDANT_FEATURES)
         Доли пробелов, букв и знаков считаются по символам как есть, поэтому
         верстку издания (отступы, двойные пробелы) стоит выровнять заранее
 
@@ -151,14 +155,19 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
 
     Исключения:
         SourceTypeError: Если текст не строка или пайплайн не объект Language spaCy
-        SourceError: Если в тексте нет слов или разбор пайплайна без зависимостей
-            или частей речи
+        SourceError: Если в тексте нет слов, текст длиннее max_length пайплайна
+            или разбор пайплайна без зависимостей или частей речи
     """
     if not isinstance(text, str):
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
     if nlp is not None and not is_language(nlp):
         raise SourceTypeError(
             f"Пайплайн должен быть объектом Language spaCy, а не {type(nlp).__name__}"
+        )
+    if nlp is not None and len(text) > nlp.max_length:
+        raise SourceError(
+            f"Текст из {len(text)} символов длиннее предела пайплайна ({nlp.max_length}): "
+            "разбейте его на окна или увеличьте max_length своего пайплайна"
         )
     positions = list(iter_text_words(text))
     spans = [(start, stop) for start, stop, sent in iter_text_sents(text) if sent.strip()]
@@ -208,9 +217,10 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         if not key.endswith("_para")
     )
     if nlp is not None:
+        doc = start_sents_after_blank_lines(nlp.make_doc(text))
         features.update(
             (f"syntax_{key}", float(value))
-            for key, value in SyntaxStats(nlp(text)).get_stats().items()
+            for key, value in SyntaxStats(nlp(doc, disable=_UNUSED_COMPONENTS)).get_stats().items()
         )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
 
