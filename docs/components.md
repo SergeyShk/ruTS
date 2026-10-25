@@ -87,7 +87,10 @@ BasicStatsComponent(nlp, name)
 MorphStatsComponent(nlp, name)
 ```
 
-`MorphStatsComponent` кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), в пайплайне без `morphologizer` - из pymorphy3.
+<!-- core: components.md:MorphStatsComponent 5d99bc4 -->
+`MorphStatsComponent` кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.
+
+В ruTS части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), а в пайплайне без `morphologizer` - из pymorphy3.
 
 === "Код"
 

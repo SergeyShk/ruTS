@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import re
-from collections import Counter, OrderedDict
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from functools import cached_property, lru_cache
 from inspect import getattr_static
 from math import nan
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 import anyts
+import anyts.morph_stats
 import pymorphy3
-from anyts.stats import Stats
+from anyts.morph_stats import MorphWord as MorphWord
 from anyts.utils import is_doc, iter_doc_units, safe_divide, source_type_error
 
 from .constants import (
@@ -32,7 +33,7 @@ from .constants import (
     TENSED_PREDICATIVES,
     UD_PERSONS,
 )
-from .exceptions import SourceError, SourceTypeError
+from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import BYTE_ORDER_MARK, lemmatize, parse_all, parse_word, strip_marks
 
@@ -56,12 +57,13 @@ TAG_GRAMMEMES = {
 }
 
 
-class MorphStats(Stats):
+class MorphStats(anyts.morph_stats.MorphStats):
     """
     Класс для вычисления морфологических статистик текста
 
     Описание:
-        Части речи и грамматические признаки выдаются в терминах Universal Dependencies:
+        Расширяет MorphStats ядра anyTS русским разбором слов (analyze) и маркерами
+        форм глагола. Части речи и грамматические признаки выдаются в терминах Universal Dependencies:
         pos - NOUN, VERB, ADJ, PRON, DET и другие, case - Nom, Gen, Dat, Acc, Ins, Loc,
         так же animacy, aspect, degree, gender, mood, number, person, polarity, tense,
         voice, verb_form и краткая форма style_variant
@@ -130,6 +132,7 @@ class MorphStats(Stats):
         voice (tuple[str]): Кортеж значений залога
 
     Методы:
+        analyze: Слова источника с частью речи и признаками UD
         get_stats: Получение вычисленных морфологических статистик текста
         to_dataframe: Получение статистик таблицей из одной строки
         describe: Прочтение статистики по шкале; у морфологии шкал нет - None
@@ -143,58 +146,80 @@ class MorphStats(Stats):
         SourceError: Если в источнике данных отсутствуют слова
     """
 
+    feature_names = MORPHOLOGY_FEATURES
     stats_desc: ClassVar[Mapping[str, str]] = {
         stat: desc["name"] for stat, desc in MORPHOLOGY_STATS_DESC.items()
     }
+    values_desc: ClassVar[Mapping[str, Mapping[str, str]]] = {
+        stat: desc["values"] for stat, desc in MORPHOLOGY_STATS_DESC.items()
+    }
+    unknown_value = "Неизвестно"
+    markers_desc = MORPHOLOGY_MARKERS_DESC
+    markers_headers = ("Маркер", "Значение")
     messages = CORE_MESSAGES
+    # Русские признаки поверх признаков ядра по умолчанию
+    involvement: tuple[str | None, ...]
+    style_variant: tuple[str | None, ...]
+    transitivity: tuple[str | None, ...]
 
     def __init__(self, source: str | Doc, words_extractor: anyts.WordsExtractor | None = None):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError(self.messages["words_extractor_type"])
+        self._words_extractor = words_extractor
+        super().__init__(source)
+
+    def analyze(self, source: str | Doc) -> list[MorphWord]:
+        """
+        Слова источника с частью речи и признаками UD
+
+        Описание:
+            Для Doc с разметкой частей речи - token.pos_ и token.morph (token_to_ud),
+            дефисные слова склеиваются; для строки, Doc без разметки и Doc с заданным
+            экстрактором слов (он применяется к тексту Doc) - первый разбор pymorphy3
+
+        Аргументы:
+            source (str|Doc): Источник данных
+
+        Вывод:
+            list[MorphWord]: Слова с частью речи и признаками
+
+        Исключения:
+            SourceTypeError: Если источник данных не строка и не объект Doc
+        """
         features: list[dict[str, str | None]]
-        if is_doc(source) and words_extractor is not None:
-            # Экстрактор слов применяется к тексту Doc, как в классах ядра
+        extractor = self._words_extractor
+        if is_doc(source) and extractor is not None:
             source = source.text
         if is_doc(source):
             units = list(iter_doc_units(source, join_hyphens=True))
-            self.words = tuple(
+            words: Sequence[str] = [
                 strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
                 for unit in units
-            )
+            ]
             if source.has_annotation("POS"):
                 features = [
                     token_to_ud(unit[0]) if len(unit) == 1 else _word_to_ud(word)
-                    for unit, word in zip(units, self.words, strict=True)
+                    for unit, word in zip(units, words, strict=True)
                 ]
             else:
-                features = _words_to_ud(self.words, source.text)
+                features = _words_to_ud(words, source.text)
         elif isinstance(source, str):
-            if not words_extractor:
-                words_extractor = WordsExtractor()
-            self.words = words_extractor.extract(source)
-            features = _words_to_ud(self.words, source)
+            words = (extractor or WordsExtractor()).extract(source)
+            features = _words_to_ud(words, source)
         else:
             raise source_type_error(self.messages, source)
-        if not self.words:
-            raise SourceError(self.messages["no_words"])
-
-        self.tags = tuple(format_features(word_features) for word_features in features)
-        self.pos = tuple(word_features["pos"] for word_features in features)
-        self.animacy = tuple(word_features["animacy"] for word_features in features)
-        self.aspect = tuple(word_features["aspect"] for word_features in features)
-        self.case = tuple(word_features["case"] for word_features in features)
-        self.degree = tuple(word_features["degree"] for word_features in features)
-        self.gender = tuple(word_features["gender"] for word_features in features)
-        self.involvement = tuple(word_features["involvement"] for word_features in features)
-        self.mood = tuple(word_features["mood"] for word_features in features)
-        self.number = tuple(word_features["number"] for word_features in features)
-        self.person = tuple(word_features["person"] for word_features in features)
-        self.polarity = tuple(word_features["polarity"] for word_features in features)
-        self.style_variant = tuple(word_features["style_variant"] for word_features in features)
-        self.tense = tuple(word_features["tense"] for word_features in features)
-        self.transitivity = tuple(word_features["transitivity"] for word_features in features)
-        self.verb_form = tuple(word_features["verb_form"] for word_features in features)
-        self.voice = tuple(word_features["voice"] for word_features in features)
+        return [
+            MorphWord(
+                word,
+                found["pos"],
+                {
+                    name: value
+                    for stat, name in MORPHOLOGY_FEATURES.items()
+                    if (value := found[stat])
+                },
+            )
+            for word, found in zip(words, features, strict=True)
+        ]
 
     @cached_property
     def lemmas(self) -> tuple[str, ...]:
@@ -202,87 +227,6 @@ class MorphStats(Stats):
         return tuple(
             lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
         )
-
-    def get_stats(  # type: ignore[override]
-        self, *args: str, filter_none: bool = False, flat: bool = False
-    ) -> dict[str, Any]:
-        """
-        Получение вычисленных морфологических статистик текста
-
-        Аргументы:
-            args (tuple[str]): Кортеж выбранных статистик
-            filter_none (bool): Фильтровать пустые значения
-            flat (bool): Ключи вида pos_NOUN вместо вложенных справочников, без слов
-                без признака
-
-        Вывод:
-            dict[str, dict[str, int]]: Справочник вычисленных морфологических статистик текста;
-                при flat - справочник количеств по ключам статистика_значение
-
-        Исключения:
-            UnknownStatError: Если выбранной статистики нет в справочнике
-        """
-        args = self._checked_stats(args)
-        stats: dict[str, dict[str | None, int]] = {}
-        for arg in args:
-            counts = dict(Counter(getattr(self, arg)))
-            stats[arg] = {k: v for (k, v) in counts.items() if k} if filter_none else counts
-        if flat:
-            return {
-                f"{stat}_{value}": n
-                for stat, counts in stats.items()
-                for value, n in counts.items()
-                if value is not None
-            }
-        return stats
-
-    def explain_text(
-        self, *args: str, filter_none: bool = False
-    ) -> tuple[tuple[str, dict[str, str]], ...]:
-        """
-        Разбор текста по морфологическим статистикам
-
-        Аргументы:
-            args (tuple[str]): Кортеж выбранных статистик
-            filter_none (bool): Фильтровать пустые значения
-
-        Вывод:
-            tuple[str, dict[str, str]]: Кортеж слов текста с морфологическими статистиками
-        """
-        args = self._checked_stats(args)
-        values = tuple(zip(*(getattr(self, arg) for arg in args), strict=False))
-        if filter_none:
-            explains = tuple(
-                {k: v for (k, v) in dict(zip(args, value, strict=False)).items() if v}
-                for value in values
-            )
-        else:
-            explains = tuple(dict(zip(args, value, strict=False)) for value in values)
-        return tuple(zip(self.words, explains, strict=False))
-
-    def print_stats(self, *args: str, filter_none: bool = False) -> None:
-        """
-        Отображение вычисленных морфологических статистик текста с описанием на экран
-
-        Аргументы:
-            args (tuple[str]): Кортеж выбранных статистик
-            filter_none (bool): Фильтровать пустые значения
-        """
-        args = self._checked_stats(args)
-        stats = self.get_stats(*args)
-        for stat, values in stats.items():
-            stat_desc = MORPHOLOGY_STATS_DESC[stat]
-            print(f"{stat_desc['name'].center(40, '-')}")
-            value_desc = stat_desc["values"]
-            for value, number in OrderedDict(
-                sorted(values.items(), key=lambda x: x[1], reverse=True)
-            ).items():
-                if filter_none and not value:
-                    continue
-                print(
-                    f"{value_desc.get(value, value) if value else 'Неизвестно':30}|{number!s:^10}"
-                )
-            print()
 
     def get_markers(self) -> dict[str, float]:
         """
@@ -338,37 +282,6 @@ class MorphStats(Stats):
             "p_passive": safe_divide(n_passive, n_forms, nan),
             "p_reflexive": safe_divide(n_reflexive, n_forms, nan),
         }
-
-    def print_markers(self) -> None:
-        """
-        Отображение долей грамматических форм глагола с описанием на экран
-
-        Пример использования:
-            >>> from ruts import MorphStats
-            >>> MorphStats("Иди сюда и не спорь").print_markers()
-                                Маркер                     | Значение
-            ---------------------------------------------------------------
-            Изъявительное наклонение среди личных форм       |   0.00
-            Повелительное наклонение среди личных форм       |   1.00
-            Сослагательное наклонение среди личных форм      |   0.00
-            Инфинитив среди форм глагола                     |   0.00
-            Причастие среди форм глагола                     |   0.00
-            Деепричастие среди форм глагола                  |   0.00
-            Совершенный вид среди форм глагола с видом       |   0.00
-            Страдательные причастия среди форм глагола       |   0.00
-            Возвратные формы (-ся, -сь) среди форм глагола   |   0.00
-        """
-        markers = self.get_markers()
-        print(f"{'Маркер':^50}|{'Значение':^12}")
-        print("-" * 63)
-        for marker, desc in MORPHOLOGY_MARKERS_DESC.items():
-            print(f"{desc:50}|{markers[marker]:^12.2f}")
-
-    def _checked_stats(self, args: tuple[str, ...]) -> tuple[str, ...]:
-        """Выбранные статистики, проверенные по справочнику; все, если не выбраны"""
-        for arg in args:
-            self._check_stat(arg)
-        return args or self.stat_names()
 
 
 def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:
@@ -624,7 +537,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     Получение признаков Universal Dependencies токена spaCy
 
     Описание:
-        Часть речи и признаки берутся из token.pos_ и token.morph; лицо First, Second,
+        Часть речи и признаки берутся из token.pos_ и token.morph (признак из нескольких
+        значений - через запятую, как в разметке); лицо First, Second,
         Third моделей ru_core_news переводится в 1, 2, 3; краткая форма - StyleVariant
         моделей ru_core_news или Variant=Short разметки русского UD
         Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
@@ -640,7 +554,7 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     morph = token.morph.to_dict()
     for stat, feature in MORPHOLOGY_FEATURES.items():
         value = morph.get(feature)
-        features[stat] = value.split(",", 1)[0] if value else None
+        features[stat] = value or None
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
     if features["style_variant"] is None and "Short" in morph.get("Variant", "").split(","):
         features["style_variant"] = "Short"
@@ -649,27 +563,3 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     features["transitivity"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.transitivity) if tag else None
     features["involvement"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.involvement) if tag else None
     return features
-
-
-def format_features(features: dict[str, str | None]) -> str:
-    """
-    Запись признаков слова строкой в формате CoNLL-U
-
-    Описание:
-        Признаки перечисляются через | в алфавитном порядке названий UD
-        (Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing), часть речи не включается,
-        переходность и совместность записываются как Subcat и Clusivity;
-        для слова без признаков возвращается _
-
-    Аргументы:
-        features (dict[str, str|None]): Признаки по ключам MORPHOLOGY_STATS_DESC
-
-    Вывод:
-        str: Строка признаков
-    """
-    pairs = sorted(
-        (feature, features[stat])
-        for stat, feature in MORPHOLOGY_FEATURES.items()
-        if features.get(stat)
-    )
-    return "|".join(f"{feature}={value}" for feature, value in pairs) or "_"

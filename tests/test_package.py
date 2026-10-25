@@ -139,6 +139,7 @@ CORE_MODULES = {
     "ruts.syntax_stats": "anyts.syntax_stats",
     "ruts.style_stats": "anyts.style_stats",
     "ruts.lexical_stats": "anyts.lexical_stats",
+    "ruts.morph_stats": "anyts.morph_stats",
     "ruts.corpus": "anyts.corpus",
     "ruts.corpus.collocations": "anyts.corpus.collocations",
     "ruts.corpus.dispersion": "anyts.corpus.dispersion",
@@ -195,6 +196,7 @@ RUSSIAN = {
         "find_parentheticals",
     },
     "ruts.lexical_stats": {"LEXICAL_STATS_DESC", "LexicalStats", "calc_surprisal"},
+    "ruts.morph_stats": {"MorphStats"},
     "ruts.corpus": {
         "collocations",
         "dispersion",
@@ -255,6 +257,8 @@ RUSSIAN = {
         "DiversityStatsComponent",
         "LexicalStats",
         "LexicalStatsComponent",
+        "MorphStats",
+        "MorphStatsComponent",
         "PhonStats",
         "PhonStatsComponent",
         "ReadabilityStats",
@@ -303,9 +307,6 @@ RUSSIAN = {
     },
 }
 
-# Имена ядра, которые библиотека еще не перевела на объект ядра: MorphStats до каркаса ядра
-PENDING = {"ruts.components": {"MorphStats", "MorphStatsComponent"}}
-
 
 @pytest.mark.parametrize(("library", "core"), CORE_MODULES.items())
 def test_core_names(library, core):
@@ -318,7 +319,6 @@ def test_core_names(library, core):
             name.startswith("_")
             or isinstance(value, ModuleType)
             or not hasattr(library_module, name)
-            or name in PENDING.get(library, ())
         ):
             continue
         own = getattr(library_module, name)
