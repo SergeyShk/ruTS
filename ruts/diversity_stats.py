@@ -208,6 +208,7 @@ class DiversityStats(anyts.DiversityStats):
         brunet_w (float): Мера Брюне (Brunet's W)
         dugast_k (float): Мера Дюга (Dugast's k)
         baayen_p (float): Мера Баайена (Baayen's P)
+        orlov_z (float): Мера Орлова (Orlov's Z) - длина текста в словах
         hapax_ratio (float): Доля гапаксов среди лексем
         alpha2 (float): Показатель α₂
         entropy (float): Энтропия Шеннона в битах
@@ -215,6 +216,7 @@ class DiversityStats(anyts.DiversityStats):
         perplexity (float): Перплексия
         zipf_alpha (float): Наклон закона Ципфа
         heaps_beta (float): Показатель закона Хипса
+        burstiness (float): Средняя взрывность лексем, встречающихся не реже BURSTINESS_MIN_FREQ раз
 
     Методы:
         windowed: Оконный расчет метрики со средним и доверительным интервалом

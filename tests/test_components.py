@@ -294,6 +294,16 @@ def test_component_syntax_requires_parser():
         nlp(text)
 
 
+def test_component_syntax_requires_pos():
+    """Пайплайн без частей речи spaCy называет проблемой до первого документа"""
+    pytest.importorskip("ru_core_news_sm")
+    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    nlp.add_pipe("ruts_syntax", name="syntax", last=True)
+    assert nlp.analyze_pipes(pretty=False)["problems"]["syntax"] == ["token.pos"]
+    with pytest.raises(ValueError, match="части речи"):
+        nlp("Кот спит на окне.")
+
+
 FACTORIES = (
     "ruts_basic",
     "ruts_readability",

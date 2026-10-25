@@ -22,6 +22,7 @@ from anyts.cohesion_stats import (
 )
 from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
 from anyts.utils import (
+    BLANK_LINE,
     find_marks,
     find_paragraph_starts,
     find_unit_marks,
@@ -211,6 +212,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
         n_connectors (int): Количество коннекторов
         n_inter_connectors (int): Количество межпредложенческих коннекторов
+        n_paragraphs (int): Количество абзацев - частей текста между пустыми строками
         connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
         c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
@@ -221,6 +223,12 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         content_overlap_all (float): Доля всех пар предложений с общим знаменательным словом
         content_overlap_prop_adjacent (float): Средняя доля общих знаменательных слов в соседних предложениях
         content_overlap_prop_all (float): Средняя доля общих знаменательных слов во всех парах предложений
+        noun_overlap_2_sent (float): Доля существительных предложения, повторенных в одном из двух следующих
+        argument_overlap_2_sent (float): Доля аргументов предложения, повторенных в одном из двух следующих
+        content_overlap_2_sent (float): Доля знаменательных слов предложения, повторенных в одном из двух следующих
+        noun_overlap_para (float): Доля существительных абзаца, повторенных в следующем
+        argument_overlap_para (float): Доля аргументов абзаца, повторенных в следующем
+        content_overlap_para (float): Доля знаменательных слов абзаца, повторенных в следующем
         p_pronouns (float): Доля местоимений среди слов
         pronoun_noun_ratio (float): Отношение числа местоимений к числу существительных
         p_demonstratives (float): Доля указательных местоимений среди слов
@@ -333,15 +341,11 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         extractor = self.words_extractor or WordsExtractor()
         texts = tuple(texts)
         sent_words = [tuple(extractor.extract(sent)) for sent in texts]
-        # Слова экстрактора - без знаков ударения, а знак комбинирующий не отличить от препинания
         marks = [
-            find_marks(strip_marks(sent), [strip_marks(word) for word in words])
+            find_marks(*_searchable(sent, words))
             for sent, words in zip(texts, sent_words, strict=True)
         ]
-        starts = find_paragraph_starts(
-            strip_marks(text), [strip_marks(word) for words in sent_words for word in words]
-        )
-        return _cohesion_words(sent_words, text, marks, starts)
+        return _cohesion_words(sent_words, text, marks, _paragraph_starts(text, texts, sent_words))
 
 
 def _cohesion_word(
@@ -367,6 +371,42 @@ def _cohesion_word(
         break_before,
         paragraph_start=paragraph_start,
     )
+
+
+def _searchable(sent: str, words: Sequence[str]) -> tuple[str, list[str]]:
+    """Текст и слова для поиска слов в тексте: экстрактор снимает знаки ударения (комбинирующий
+    знак не отличить от препинания) и может привести слова к нижнему регистру"""
+    return strip_marks(sent).lower(), [strip_marks(word).lower() for word in words]
+
+
+def _paragraph_starts(
+    text: str, texts: Sequence[str], sent_words: Sequence[Sequence[str]]
+) -> frozenset[int]:
+    """Сквозные номера слов, перед которыми пустая строка: между предложениями - в промежутке
+    между ними (find_paragraph_starts по текстам предложений) или в начале и конце предложения
+    вне его слов, внутри предложения - между словами; абзац, который начинается предложением
+    без слов, открывает первое слово следующего"""
+    after_blank = find_paragraph_starts(strip_marks(text), [strip_marks(sent) for sent in texts])
+    starts: set[int] = set()
+    position = 0
+    pending = False
+    for index, (sent, words) in enumerate(zip(texts, sent_words, strict=True)):
+        pending = pending or index in after_blank
+        if not words:
+            pending = pending or BLANK_LINE.search(sent) is not None
+            continue
+        searched, found = _searchable(sent, words)
+        # Не найденное слово (лемма экстрактора) - край предложения по пробелам
+        first = searched.find(found[0])
+        head = first if first != -1 else len(searched) - len(searched.lstrip())
+        last = searched.rfind(found[-1])
+        tail = last + len(found[-1]) if last != -1 else len(searched.rstrip())
+        if position and (pending or BLANK_LINE.search(searched, 0, head)):
+            starts.add(position)
+        starts.update(position + i for i in find_paragraph_starts(searched, found))
+        pending = BLANK_LINE.search(searched, tail) is not None
+        position += len(words)
+    return frozenset(starts)
 
 
 def _positions(sents: Sequence[Sequence[object]]) -> list[range]:

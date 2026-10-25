@@ -82,7 +82,7 @@ BasicStatsComponent(nlp, name)
 MorphStatsComponent(nlp, name)
 ```
 
-`MorphStatsComponent` puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (`token.pos_`, `token.morph`), in a pipeline without a tagger - from pymorphy3.
+`MorphStatsComponent` puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (`token.pos_`, `token.morph`), in a pipeline without `morphologizer` - from pymorphy3.
 
 === "Code"
 
@@ -214,7 +214,7 @@ The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a par
 
 Raises:
 
-- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or tagger.
+- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or `morphologizer`.
 
 === "Code"
 

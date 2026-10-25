@@ -670,16 +670,37 @@ paragraphs = "Кот сидел на окне.\n\nКот смотрел на п�
 
 def test_paragraphs(nlp):
     """Абзацы после пустой строки - у строки, Doc и Doc с экстрактором слов"""
+    doc = nlp(paragraphs)
     sources = [
         CohesionStats(paragraphs),
-        CohesionStats(nlp(paragraphs)),
+        CohesionStats(doc),
         CohesionStats(spacy.blank("ru")(paragraphs)),
-        CohesionStats(nlp(paragraphs), words_extractor=WordsExtractor()),
+        CohesionStats(doc, words_extractor=WordsExtractor()),
     ]
+    # Экстрактор, который меняет слова, не теряет абзацы: у Doc пустая строка - хвост предложения
+    for extractor in (WordsExtractor(lowercase=True), WordsExtractor(use_lexemes=True)):
+        sources += [
+            CohesionStats(paragraphs, words_extractor=extractor),
+            CohesionStats(doc, words_extractor=extractor),
+        ]
     for stats in sources:
         assert stats.n_paragraphs == 3
         # {кот, окно} -> {кот, птица}: 1 из 2; {кот, птица} -> {птица, кот}: 2 из 2
         assert stats.noun_overlap_para == pytest.approx(3 / 4)
+
+
+@pytest.mark.parametrize(
+    ("text", "n_paragraphs"),
+    [
+        ("***\n\nКот спал.\n\nКот ушел.", 2),
+        ("Кот спал.\n\n***\nКот ушел. Пес лаял.\n\nПес спал.", 3),
+        ("Кот спал.\r\n\r\nКот ушел.", 2),
+    ],
+)
+def test_paragraphs_without_words(nlp, text, n_paragraphs):
+    """Абзац, который начинается строкой без слов, открывает первое слово после нее"""
+    assert CohesionStats(text).n_paragraphs == n_paragraphs
+    assert CohesionStats(nlp(text)).n_paragraphs == n_paragraphs
 
 
 def test_paragraph_inside_sentence(nlp):

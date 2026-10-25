@@ -1,4 +1,5 @@
 import importlib
+import re
 import subprocess
 import sys
 from types import MappingProxyType, ModuleType
@@ -471,6 +472,15 @@ def test_stats_interface(name):
     assert issubclass(stats_class, Stats)
     assert stats_class.messages is CORE_MESSAGES
     assert stats_class.stats_desc
+
+
+@pytest.mark.parametrize("name", [*TEXT_STATS, "SyntaxStats"])
+def test_stats_in_docstring(name):
+    """Каждая метрика get_stats описана в разделе «Атрибуты» докстринга своего класса"""
+    stats_class = getattr(ruts, name)
+    attributes = re.search(r"Атрибуты:\n(.*?)\n\n", stats_class.__doc__, re.DOTALL)
+    assert attributes is not None
+    assert [key for key in stats_class.stats_desc if f" {key} (" not in attributes[1]] == []
 
 
 def _run(code: str) -> str:

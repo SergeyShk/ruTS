@@ -96,6 +96,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
         n_spaces (int): Количество пробелов
         n_syllables (int): Количество слогов
         n_punctuations (int): Количество знаков препинания
+        letters_entropy (float): Энтропия Шеннона в битах распределения слов по количеству букв
+        syllables_entropy (float): Энтропия Шеннона в битах распределения слов по количеству слогов
         c_punctuations (dict[str, int]): Распределение знаков препинания по типам
         p_unique_words (float): Нормализованное количество уникальных слов
         p_long_words (float): Нормализованное количество длинных слов

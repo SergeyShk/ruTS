@@ -530,7 +530,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/phon_stats
 
 <br>
 
-The library counts over the spaCy dependency tree (a model with a parser is required):
+The library counts over the spaCy dependency tree (a model with a parser and parts of speech is required):
 
 *   Dependency distances, tree depth, numbers of leaves and subtrees, verb valency
 *   Coordination chains, clauses and subordinate clauses, the L2SCA indices by T-units
