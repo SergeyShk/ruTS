@@ -39,7 +39,7 @@ kwic(source, keyword, window=5, by_lemma=False, ignore_case=True)
 
 ## Параметры
 
-<!-- core: corpus/kwic.md:kwic-parameters ef54df9 -->
+<!-- core: corpus/kwic.md:kwic-parameters cc1548f -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `source` | `str` / `Doc` | - | Текст или объект Doc |
@@ -48,7 +48,7 @@ kwic(source, keyword, window=5, by_lemma=False, ignore_case=True)
 | `by_lemma` | `bool` | `False` | Сравнивать леммы, а не словоформы |
 | `ignore_case` | `bool` | `True` | Не учитывать регистр при сравнении словоформ |
 
-Ключевое слово без слов и отрицательное окно дают `ParameterError`; источник, который не строка и не `Doc`, ключевое слово, которое не строка, и крючок, который нельзя вызвать, - `SourceTypeError`.
+Ключевое слово без слов, окно, которое не целое число или отрицательно, и `by_lemma` или `ignore_case`, который не `bool`, дают `ParameterError`; источник, который не строка и не `Doc`, ключевое слово, которое не строка, и крючок, который нельзя вызвать, - `SourceTypeError`.
 
 ## Результат
 

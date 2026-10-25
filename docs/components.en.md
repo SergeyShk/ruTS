@@ -210,11 +210,11 @@ SyntaxStatsComponent(nlp, name)
 
 --8<-- "components.md:SyntaxStatsComponent"
 
-The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser.
+The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser and the parts of speech.
 
 Raises:
 
-- `SourceError` - a document without a dependency parse, in a pipeline without a parser.
+- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or tagger.
 
 === "Code"
 

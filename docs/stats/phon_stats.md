@@ -50,7 +50,7 @@ PhonStats(source, words_extractor=None, window_len=3)
     Индекс аллитерации                    |   1.09
     Индекс ассонанса                      |   0.83
     Доля открытых слогов                  |   0.76
-    Средняя длина слога (букв)            |   2.60
+    Средняя длина слога (звуков)          |   2.48
     ```
 
 ## Параметры
@@ -293,10 +293,10 @@ $$
 `p_open_syllables` · `mean_syllable_len`
 { .metric-meta }
 
-<!-- core: stats/phon_stats.md:PhonStats-syllables 005a7e8 -->
-Слоги - звуки каждого слога слова по `syllable_sounds`; слог без звука из классов (число) слогом не считается, в том числе в `c_syllable_patterns`. Открытый слог оканчивается на гласную по своему CV-шаблону (`cv_pattern`), а длина слога - число его звуков.
+<!-- core: stats/phon_stats.md:PhonStats-syllables eb2f919 -->
+Слоги - звуки каждого слога слова по `syllable_sounds`; слог без звука из классов (число) слогом не считается, в том числе в `c_syllable_patterns`. Открытый слог оканчивается на гласную по своему CV-шаблону (`cv_pattern`), а длина слога - длина этого шаблона: звуки классов без `skipped` и символов вне классов.
 
-В ruTS длина слога - число его букв вместе с ь и ъ.
+В ruTS длина слога - число его букв без ь и ъ.
 
 ``` {.python .signature}
 is_open_syllable(syllable)
@@ -365,5 +365,5 @@ is_open_syllable(syllable)
      'alliteration': 1.0916179337231968,
      'assonance': 0.8305084745762712,
      'p_open_syllables': 0.76,
-     'mean_syllable_len': 2.6}
+     'mean_syllable_len': 2.48}
     ```

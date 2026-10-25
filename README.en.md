@@ -98,6 +98,8 @@ For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pym
  'n_spaces': 8,
  'n_syllables': 18,
  'n_punctuations': 2,
+ 'letters_entropy': 2.197159723424149,
+ 'syllables_entropy': 1.6577427265048887,
  'c_punctuations': {'comma': 1, 'period': 0, 'question': 0, 'exclamation': 0,
                     'ellipsis': 0, 'colon': 1, 'semicolon': 0, 'dash': 0,
                     'hyphen': 0, 'angle_quotes': 0, 'straight_quotes': 0,
@@ -166,6 +168,7 @@ The library allows extracting the following statistics from a text:
 *   the number of punctuation marks
 *   the distribution of words by the number of letters
 *   the distribution of words by the number of syllables
+*   the entropy of word lengths in letters and in syllables
 
 Any statistic can be printed in a readable form:
 
@@ -174,21 +177,23 @@ Any statistic can be printed in a readable form:
 
 >>> text = "Существуют три вида лжи: ложь, наглая ложь и статистика"
 >>> BasicStats(text).print_stats()
-    Статистика     | Значение
-------------------------------
-Предложения        |    1
-Слова              |    9
-Уникальные слова   |    8
-Длинные слова      |    3
-Сложные слова      |    2
-Простые слова      |    7
-Односложные слова  |    5
-Многосложные слова |    4
-Символы            |    55
-Буквы              |    45
-Пробелы            |    8
-Слоги              |    18
-Знаки препинания   |    2
+            Статистика            | Значение
+---------------------------------------------
+Предложения                       |    1
+Слова                             |    9
+Уникальные слова                  |    8
+Длинные слова                     |    3
+Сложные слова                     |    2
+Простые слова                     |    7
+Односложные слова                 |    5
+Многосложные слова                |    4
+Символы                           |    55
+Буквы                             |    45
+Пробелы                           |    8
+Слоги                             |    18
+Знаки препинания                  |    2
+Энтропия длин слов в буквах (бит) |   2.20
+Энтропия длин слов в слогах (бит) |   1.66
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/basic_stats/).
@@ -292,6 +297,7 @@ The library allows counting the following lexical diversity metrics for a text:
 *   Hapax Legomena Index (Honoré's R), hapax ratio, Baayen's P and α₂
 *   Yule's K and I, Herdan's Vm, Sichel's S, Michéa's M, Brunet's W and Dugast's k
 *   Shannon entropy, evenness and perplexity
+*   Orlov's Z and the burstiness of frequent lexemes
 *   Zipf's law slope (α) and Heaps' law exponent (β)
 
 Windows, thresholds and the logarithm base are parameters of `DiversityStats`; any measure can be computed over windows with a confidence interval via the `windowed` method. Some of the implementations were borrowed from the [lexical_diversity](https://github.com/kristopherkyle/lexical_diversity) project, the frequency-spectrum measures were checked against Tweedie and Baayen (1998), zipfR and quanteda.
@@ -306,6 +312,7 @@ Windows, thresholds and the logarithm base are parameters of `DiversityStats`; a
 {'alpha2': 0.5,
  'baayen_p': 0.5333333333333333,
  'brunet_w': 6.00637847898991,
+ 'burstiness': nan,
  'cttr': 2.008316044185609,
  'dttr': 10.268784661968118,
  'dugast_k': 14.783895126869226,
@@ -326,6 +333,7 @@ Windows, thresholds and the logarithm base are parameters of `DiversityStats`; a
  'mtld': 15.0,
  'mtldw': 13.25,
  'mttr': 0.09738250756232528,
+ 'orlov_z': nan,
  'perplexity': 10.009038104159247,
  'rttr': 2.840187787218772,
  'sichel_s': 0.18181818181818182,
@@ -500,7 +508,7 @@ The library counts by letters, without devoicing or stress:
  'consonant_vowel_ratio': 1.48,
  'cv_entropy': 3.1395722619867223,
  'hardness': 0.5625,
- 'mean_syllable_len': 2.6,
+ 'mean_syllable_len': 2.48,
  'p_heavy_clusters': 0.034482758620689655,
  'p_hiatus': 0.0,
  'p_open_syllables': 0.76,
@@ -525,8 +533,9 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/phon_stats
 The library counts over the spaCy dependency tree (a model with a parser is required):
 
 *   Dependency distances, tree depth, numbers of leaves and subtrees, verb valency
-*   Coordination chains, clauses and subordinate clauses
-*   Noun phrase modifiers and genitive chains
+*   Coordination chains, clauses and subordinate clauses, the L2SCA indices by T-units
+*   Noun phrase modifiers, prepositional chains and genitive chains
+*   Words before the root of a sentence, preverbal subjects and objects, syntactic similarity of adjacent sentences
 *   Participial and adverbial participial clauses, passive voice, infinitives and negations
 *   Syntactic officialese markers: split predicates ("осуществлять проверку"), noun-to-verb ratio
 
@@ -557,7 +566,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_sta
 
 The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a string), no dependency parse is needed:
 
-*   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix)
+*   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix), with the next two sentences and between paragraphs (as in TAACO)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
 *   Temporal cohesion: tense and aspect repetition in adjacent sentences
 *   Connective density per 1000 words by class (causal, adversative, concessive, temporal, additive, conditional, reformulative), type and position - intersentential, opening a sentence, and intrasentential - by an own dictionary of 316 connectives
@@ -661,12 +670,12 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/verse_stat
 
 Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpackage, results are lists of named tuples (`pd.DataFrame(result)` gives a table):
 
-*   Keywords relative to a reference corpus or the Lyashevskaya-Sharoff frequency dictionary: G² with p-value, Log Ratio, %DIFF, BIC, ELL, odds ratio
-*   Collocations within a window by logDice, MI, MI³, t-score, Dice, G², NPMI, minimum sensitivity; collocates of a single word
+*   Keywords relative to a reference corpus or the Lyashevskaya-Sharoff frequency dictionary: G² with p-value, Log Ratio, %DIFF, BIC, ELL, odds ratio; by words or n-grams
+*   Collocations within a window by logDice, MI, MI³, t-score, Dice, G², NPMI, minimum sensitivity; collocates of a single word, on its left or right
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: 113 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 115 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor

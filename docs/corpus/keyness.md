@@ -1,15 +1,15 @@
 # Ключевые слова
 
 ``` {.python .signature}
-keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, lemmatize=True)
+keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True)
 ```
 
-<!-- core: corpus/keyness.md:keyness bbbd1ba -->
+<!-- core: corpus/keyness.md:keyness 4394918 -->
 Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном.
 
 Для каждого слова считаются две величины, которые [Gabrielatos и Marchi](http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf) и [Hardie](http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/) рекомендуют смотреть вместе: логарифм правдоподобия $G^2$ с p-значением (есть ли различие) и Log Ratio (насколько оно велико), а также выбранная мера `score`, по которой список сортируется. Меры значимости ($G^2$, хи-квадрат, BIC) и ELL, размер эффекта $G^2$, отрицательны, если слово чаще в эталоне; %DIFF, Log Ratio и отношение шансов направленные по построению.
 
-Эталоном может быть список слов, справочник частот (его объем - сумма частот) или `FrequencyReference`. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково.
+Эталоном может быть список слов, справочник частот (его объем - сумма частот) или `FrequencyReference`. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково. Корпус из нескольких текстов передается списком их списков слов. При `n` больше 1 ключевыми становятся N-граммы слов каждого текста, соединенные подчеркиванием, как N-граммы `WordsExtractor` (*черный_кот*), так что N-грамма никогда не переходит через границу текстов; частоты и объемы - это частоты и объемы N-грамм, а частоты на миллион - на миллион N-грамм. Частоты N-грамм - сумма `Counter` N-грамм каждого текста или частотный словарь N-грамм - передаются с `n=1`: справочник частот и `FrequencyReference` при `n` больше 1 не принимаются.
 
 Функция оборачивает `keyness` ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/keyness/) и принимает эталоном также [частотный словарь Ляшевской и Шарова](../datasets/freq2011.md) `FreqDict`; `FrequencyReference` лежит рядом с ней в `ruts.corpus`. Слова извлекает [`WordsExtractor`](../extractors/words.md).
 
@@ -41,17 +41,18 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 
 ## Параметры
 
-<!-- core: corpus/keyness.md:keyness-parameters c87c5b2 -->
+<!-- core: corpus/keyness.md:keyness-parameters a26b20f -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `target` | `list[str]` / `dict[str, int]` | - | Слова целевого корпуса или их частоты |
-| `reference` | `list[str]` / `dict[str, float]` / `FrequencyReference` | - | Слова эталонного корпуса, их частоты или эталон по частотам |
+| `target` | `list[str]` / `list[list[str]]` / `dict[str, int]` | - | Слова целевого корпуса - одного текста или списка текстов - или их частоты |
+| `reference` | `list[str]` / `list[list[str]]` / `dict[str, float]` / `FrequencyReference` | - | Слова эталонного корпуса - одного текста или списка текстов, - их частоты или эталон по частотам |
 | `measure` | `str` | `'log_likelihood'` | Мера из `anyts.constants.KEYNESS_MEASURES` для `score` и сортировки |
 | `min_freq` | `int` | `1` | Минимальная частота ключевого слова в своем корпусе |
 | `positive` | `bool` | `True` | Положительные ключевые слова (чаще в целевом корпусе) или отрицательные (чаще в эталонном) |
 | `top_n` | `int` | `None` | Количество ключевых слов; `None` - все |
+| `n` | `int` | `1` | Длина N-грамм слов каждого текста; `1` - слова |
 
-Параметры и целевой корпус проверяет `check_keyness_params`. Эталон, который не список строк, не справочник частот и не `FrequencyReference`, дает `SourceTypeError`, а отрицательная, `nan` или бесконечная частота справочника и пустой корпус - `SourceError`.
+Параметры и целевой корпус проверяет `check_keyness_params`; `n` больше 1 при частотах или `FrequencyReference` дает `ParameterError`. Эталон, который не список строк, не список таких списков, не справочник частот и не `FrequencyReference`, дает `SourceTypeError`, а отрицательная, `nan` или бесконечная частота справочника и корпус без слов или короче `n` слов - `SourceError`.
 
 `reference` может быть и `FreqDict`, и еще один параметр говорит, из чего при нем целевой корпус:
 
@@ -59,14 +60,14 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
 
-Незагруженный частотный словарь дает `DatasetNotFoundError`.
+Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`: словарь хранит слова.
 
-<!-- core: corpus/keyness.md:check_keyness_params 9ffcaab -->
+<!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
 ``` {.python .signature}
-check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None)
+check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None, n=1, positive=True)
 ```
 
-Проверяет параметры `keyness` до чтения частотного словаря: дает `ParameterError`, если мера не из `KEYNESS_MEASURES`, минимальная частота не целое число или количество ключевых слов не `None` и не целое число не меньше единицы. С `target` дает также `SourceTypeError`, если целевой корпус не список строк и не справочник строк с целыми частотами, и `SourceError` для отрицательной, `nan` или бесконечной частоты.
+Проверяет параметры `keyness` до чтения частотного словаря: дает `ParameterError`, если мера не из `KEYNESS_MEASURES`, минимальная частота не целое число, количество ключевых слов не `None` и не целое число не меньше единицы, длина N-грамм `n` не целое число не меньше единицы или `positive` не `bool`. С `target` дает также `SourceTypeError`, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и `SourceError` для отрицательной, `nan` или бесконечной частоты.
 
 ## Эталон по частотам
 
@@ -124,7 +125,7 @@ FrequencyReference(counts, size, missing=0.0, key=None, keep=None)
 
 ## Результат
 
-<!-- core: corpus/keyness.md:Keyword 8a09d1b -->
+<!-- core: corpus/keyness.md:Keyword 6f45611 -->
 ``` {.python .signature}
 Keyword(word, freq_target, freq_reference, ipm_target, ipm_reference, g2, p_value, log_ratio, score)
 ```
@@ -136,8 +137,8 @@ Keyword(word, freq_target, freq_reference, ipm_target, ipm_reference, g2, p_valu
 | `word` | `str` | Слово |
 | `freq_target` | `int` | Частота в целевом корпусе |
 | `freq_reference` | `float` | Частота в эталонном корпусе |
-| `ipm_target` | `float` | Частота в целевом корпусе на миллион слов |
-| `ipm_reference` | `float` | Частота в эталонном корпусе на миллион слов |
+| `ipm_target` | `float` | Частота в целевом корпусе на миллион слов или N-грамм |
+| `ipm_reference` | `float` | Частота в эталонном корпусе на миллион слов или N-грамм |
 | `g2` | `float` | $G^2$ со знаком направления |
 | `p_value` | `float` | p-значение $G^2$ |
 | `log_ratio` | `float` | Log Ratio |

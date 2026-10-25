@@ -25,37 +25,51 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
 === "Result"
 
     ```
-                       Статистика                    | Значение
-    ------------------------------------------------------------
-    Средняя длина зависимости                        |   1.93
-    Стандартное отклонение длины зависимости         |   1.61
-    Средний максимум длины зависимости в предложении |   5.00
-    Доля смежных связей                              |   0.60
-    Средняя глубина дерева зависимостей предложения  |   4.00
-    Листьев на предложение                           |   4.50
-    Поддеревьев на предложение                       |   4.00
-    Среднее число узлов на лист в предложении        |   1.90
-    Валентность финитных глаголов                    |   2.00
-    Сочинительных цепочек на предложение             |   0.50
-    Средняя длина сочинительной цепочки              |   2.00
-    Клауз на предложение                             |   1.50
-    Средняя длина клаузы (слов)                      |   5.67
-    Придаточных клауз на предложение                 |   0.50
-    Доля предложений с придаточными                  |   0.50
-    Инфинитивных клауз при глаголе на предложение    |   0.00
-    Модификаторов на именную группу                  |   0.40
-    Цепочек родительных падежей на предложение       |   0.00
-    Максимальная длина цепочки родительных падежей   |    0
-    Причастных оборотов на предложение               |   0.50
-    Средняя длина причастного оборота (слов)         |   5.00
-    Деепричастных оборотов на предложение            |   0.50
-    Средняя длина деепричастного оборота (слов)      |   2.00
-    Доля пассивных форм среди глаголов               |   0.40
-    Доля безагентного пассива                        |   0.50
-    Инфинитивов на предложение                       |   0.00
-    Отрицаний на предложение                         |   0.50
-    Расщеплённых сказуемых на предложение            |   0.00
-    Отношение существительных к глаголам             |   1.00
+                           Статистика                        | Значение
+    --------------------------------------------------------------------
+    Средняя длина зависимости                                |   1.93
+    Стандартное отклонение длины зависимости                 |   1.61
+    Средний максимум длины зависимости в предложении         |   5.00
+    Доля смежных связей                                      |   0.60
+    Средняя глубина дерева зависимостей предложения          |   4.00
+    Листьев на предложение                                   |   4.50
+    Поддеревьев на предложение                               |   4.00
+    Среднее число узлов на лист в предложении                |   1.90
+    Среднее число слов до вершины предложения                |   4.00
+    Валентность финитных глаголов                            |   2.00
+    Сочинительных цепочек на предложение                     |   0.50
+    Средняя длина сочинительной цепочки                      |   2.00
+    Клауз на предложение                                     |   1.50
+    Средняя длина клаузы (слов)                              |   5.67
+    Придаточных клауз на предложение                         |   0.50
+    Доля предложений с придаточными                          |   0.50
+    Инфинитивных клауз при глаголе на предложение            |   0.00
+    T-единиц на предложение                                  |   1.00
+    Средняя длина T-единицы (слов)                           |   8.50
+    Клауз на T-единицу                                       |   1.50
+    Доля T-единиц с придаточными                             |   0.50
+    Глагольных групп на T-единицу                            |   2.50
+    Сочинённых групп на клаузу                               |   0.33
+    Сложных именных групп на клаузу                          |   1.00
+    Модификаторов на именную группу                          |   0.40
+    Предложных цепочек на предложение                        |   0.00
+    Максимальная длина предложной цепочки                    |    0
+    Цепочек родительных падежей на предложение               |   0.00
+    Максимальная длина цепочки родительных падежей           |    0
+    Причастных оборотов на предложение                       |   0.50
+    Средняя длина причастного оборота (слов)                 |   5.00
+    Деепричастных оборотов на предложение                    |   0.50
+    Средняя длина деепричастного оборота (слов)              |   2.00
+    Доля пассивных форм среди глаголов                       |   0.40
+    Доля безагентного пассива                                |   0.50
+    Инфинитивов на предложение                               |   0.00
+    Отрицаний на предложение                                 |   0.50
+    Расщеплённых сказуемых на предложение                    |   0.00
+    Доля именных подлежащих перед вершиной                   |   1.00
+    Доля именных дополнений перед вершиной                   |   nan
+    Редакционное расстояние частей речи соседних предложений |   0.78
+    Синтаксическая схожесть соседних предложений             |   0.06
+    Отношение существительных к глаголам                     |   1.00
     ```
 
 ## Parameters
@@ -169,6 +183,17 @@ The depth is `LONGEST_PATH` of the paper of Ivanov et al. (r = 0.84).
 --8<-- "stats/syntax_stats.md:SyntaxStats-leaves"
 
 The features of the paper: `LEAVES_NUMBER` (r = 0.84), `PATH_NUMBER` (r = 0.87) and `AVERAGE_PATH` (r = 0.84). The distribution of the words by number of dependents, the branching profile, is the attribute `c_children`.
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Words before the root { #words_before_root }
+
+`words_before_root` · [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664)
+{ .metric-meta }
+
+--8<-- "stats/syntax_stats.md:SyntaxStats-words_before_root"
 
 </div>
 
@@ -292,6 +317,17 @@ Checks whether a word heads an infinitive clause under a verb: an infinitive und
 
 <div class="metric-card" markdown>
 
+### Production units of L2SCA { #l2sca }
+
+`t_units_per_sent` · `mean_t_unit_len` · `clauses_per_t_unit` · `p_complex_t_units` · `verb_phrases_per_t_unit` · `coordinate_phrases_per_clause` · `complex_nominals_per_clause` · [Lu 2010](https://doi.org/10.1075/ijcl.15.4.02lu)
+{ .metric-meta }
+
+--8<-- "stats/syntax_stats.md:SyntaxStats-l2sca"
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Modifiers of a noun { #noun_modifiers }
 
 `modifiers_per_noun`
@@ -300,6 +336,19 @@ Checks whether a word heads an infinitive clause under a verb: an infinitive und
 --8<-- "stats/syntax_stats.md:count_noun_modifiers"
 
 The number of modifiers is `NOUNS_DEP` of the paper (r = 0.88).
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Prepositional chains { #prep_chains }
+
+`prep_chains_per_sent` · `max_prep_chain_len` · [Profiling-UD](https://aclanthology.org/2020.lrec-1.883/)
+{ .metric-meta }
+
+--8<-- "stats/syntax_stats.md:SyntaxStats-prep_chains"
+
+The genitive chains of ruTS ([`genitive_chains_per_sent`](#genitive_chains)) are counted apart: their links are prepositionless genitive modifiers («повышение эффективности использования ресурсов»), and those of a prepositional chain are complements with a preposition.
 
 </div>
 
@@ -466,6 +515,28 @@ The split predicates, a marker of officialese, are pairs of a verb and a noun in
 
 <div class="metric-card" markdown>
 
+### Order of the subjects and the objects { #word_order }
+
+`p_preverbal_subjects` · `p_preverbal_objects` · [Profiling-UD](https://aclanthology.org/2020.lrec-1.883/)
+{ .metric-meta }
+
+--8<-- "stats/syntax_stats.md:SyntaxStats-word_order"
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Similarity of adjacent sentences { #similarity }
+
+`pos_edit_distance` · `syntax_similarity` · [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664)
+{ .metric-meta }
+
+--8<-- "stats/syntax_stats.md:SyntaxStats-similarity"
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Ratio of the nouns to the verbs { #noun_verb_ratio }
 
 `noun_verb_ratio`
@@ -496,6 +567,7 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'leaves_per_sent': 4.5,
      'subtrees_per_sent': 4.0,
      'nodes_per_leaf': 1.9,
+     'words_before_root': 4.0,
      'verb_valency': 2.0,
      'coordination_chains_per_sent': 0.5,
      'mean_coordination_chain_len': 2.0,
@@ -504,7 +576,16 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'subordinate_clauses_per_sent': 0.5,
      'p_complex_sents': 0.5,
      'infinitive_clauses_per_sent': 0.0,
+     't_units_per_sent': 1.0,
+     'mean_t_unit_len': 8.5,
+     'clauses_per_t_unit': 1.5,
+     'p_complex_t_units': 0.5,
+     'verb_phrases_per_t_unit': 2.5,
+     'coordinate_phrases_per_clause': 0.3333333333333333,
+     'complex_nominals_per_clause': 1.0,
      'modifiers_per_noun': 0.4,
+     'prep_chains_per_sent': 0.0,
+     'max_prep_chain_len': 0,
      'genitive_chains_per_sent': 0.0,
      'max_genitive_chain_len': 0,
      'participle_clauses_per_sent': 0.5,
@@ -516,10 +597,14 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'infinitives_per_sent': 0.0,
      'negations_per_sent': 0.5,
      'split_predicates_per_sent': 0.0,
+     'p_preverbal_subjects': 1.0,
+     'p_preverbal_objects': nan,
+     'pos_edit_distance': 0.7777777777777778,
+     'syntax_similarity': 0.0625,
      'noun_verb_ratio': 1.0}
     ```
 
-The functions work with spaCy tokens: the `calc_*` and `find_*` functions take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions a single token; the words of a sequence are the tokens of [`is_word`](#helpers). The functions of the dependency tree come from the core, those of the Russian constructions are ruTS's own. Relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation ([`base_dep`](#base_dep)) where noted.
+The functions work with spaCy tokens: the `calc_*` and `find_*` functions and `dependency_triples` take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions a single token, and `calc_edit_distance` and `calc_multiset_similarity` lists of the items of sentences; the words of a sequence are the tokens of [`is_word`](#helpers). The functions of the dependency tree come from the core, those of the Russian constructions are ruTS's own. Relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation ([`base_dep`](#base_dep)) where noted.
 
 ## Words of a sequence { #get_words }
 
@@ -570,6 +655,20 @@ is_converb(token)
 ## Chains of modifiers { #calc_modifier_chains }
 
 --8<-- "stats/syntax_stats.md:calc_modifier_chains"
+
+## Complements with a preposition { #is_prep_complement }
+
+--8<-- "stats/syntax_stats.md:is_prep_complement"
+
+## Dependency triples { #dependency_triples }
+
+--8<-- "stats/syntax_stats.md:dependency_triples"
+
+## Edit distance and multiset similarity { #calc_edit_distance }
+
+--8<-- "stats/syntax_stats.md:calc_edit_distance"
+
+--8<-- "stats/syntax_stats.md:calc_multiset_similarity"
 
 ## Helper functions { #helpers }
 

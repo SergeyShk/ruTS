@@ -4,12 +4,12 @@
 WordsExtractor(tokenizer=None, filter_punct=True, filter_nums=False, use_lexemes=False, stopwords=None, lowercase=False, ngram_range=(1, 1), min_len=0, max_len=0)
 ```
 
-<!-- core: extractors/words.md:WordsExtractor 45872ab -->
+<!-- core: extractors/words.md:WordsExtractor ee077d8 -->
 Класс для извлечения слов из текста.
 
 Исключения:
 
-- `ParameterError` - `ngram_range`, который не пара целых чисел или чья нижняя граница меньше единицы или больше верхней, граница длины, которая не целое число, отрицательная граница, минимум больше максимума;
+- `ParameterError` - `ngram_range`, который не пара целых чисел или чья нижняя граница меньше единицы или больше верхней, граница длины, которая не целое число, отрицательная граница, минимум больше максимума, переключатель, который не `bool`;
 - `SourceTypeError` - стоп-слова, которые не набор строк.
 
 Класс расширяет `WordsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/words/) крючками русского языка: токенизатор `tokenize(text)` - функция `tokenize` библиотеки [razdel](https://github.com/natasha/razdel) с отделением приклеенных к словам тире реплик (`ruts.utils.iter_tokens`), лемма `lemmatize(word)` - первый разбор `MorphAnalyzer` библиотеки [pymorphy3](https://github.com/no-plagiarism/pymorphy3) (`ruts.utils.parse_all`: «её» разбирается как «ее» - у pymorphy3 нет разбора «её» как личного местоимения, «нем» - как «нём», «есть» - как «быть»), а шаблон чисел `number_pattern` подходит и к диапазонам, дробям и порядковым числительным: `2020-2021`, `5.5`, `1,5`, `3-й`, `90-х`. До любого токенизатора из текста снимаются знаки ударения и мягкие переносы, а й и ё из двух символов собираются в одну букву (`ruts.utils.strip_marks`).
