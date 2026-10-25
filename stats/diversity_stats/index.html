@@ -1320,6 +1320,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#orlov_z" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Мера Орлова (Orlov's Z)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#hapax_ratio" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1401,6 +1412,17 @@
     <span class="md-ellipsis">
       
         Показатель закона Хипса
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#burstiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Взрывность
       
     </span>
   </a>
@@ -2837,6 +2859,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#orlov_z" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Мера Орлова (Orlov's Z)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#hapax_ratio" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2918,6 +2951,17 @@
     <span class="md-ellipsis">
       
         Показатель закона Хипса
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#burstiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Взрывность
       
     </span>
   </a>
@@ -3021,6 +3065,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 Мера Брюне (Brunet's W)                                                |   6.01
 Мера Дюга (Dugast's k)                                                 |  14.78
 Мера Баайена (Baayen's P)                                              |   0.53
+Мера Орлова (Orlov's Z, слов)                                          |   nan
 Доля гапаксов                                                          |   0.73
 Показатель α₂                                                          |   0.50
 Энтропия Шеннона (бит)                                                 |   3.32
@@ -3028,6 +3073,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 Перплексия                                                             |  10.01
 Наклон закона Ципфа (α)                                                |   0.49
 Показатель закона Хипса (β)                                            |   0.84
+Взрывность частых лексем                                               |   nan
 </code></pre></div>
 </div>
 </div>
@@ -3140,7 +3186,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 </table>
 <p>По Zenker и Kyle (2021) MATTR, MTLD и HD-D стабильны на текстах от 50-200 слов, MTLD-W, MA-MTLD и Maas нестабильны на коротких текстах, а семейство TTR не стабилизируется вовсе. Тексты разной длины сравниваются <a href="#windowed">оконным расчетом</a> с доверительными интервалами.</p>
 <h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/diversity_stats.md:DiversityStats-metrics bc5ee7c -->
+<!-- core: stats/diversity_stats.md:DiversityStats-metrics 07cb8f8 -->
 <p>Каждая метрика - свойство объекта, которое вычисляется при каждом обращении функцией из ее карточки с параметрами объекта, а <code>get_stats</code> дает их все.</p>
 <table>
 <thead>
@@ -3303,6 +3349,12 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <td style="text-align: left;">быстрее растет словарь</td>
 </tr>
 <tr>
+<td style="text-align: left;"><a href="#orlov_z"><code>orlov_z</code></a></td>
+<td style="text-align: left;">Длина текста в словах, при которой закон Ципфа лучше всего описывает словарь</td>
+<td style="text-align: left;">больше 0, <code>nan</code> без решения, <code>inf</code> за пределами <code>float</code></td>
+<td style="text-align: left;">богаче словарь</td>
+</tr>
+<tr>
 <td style="text-align: left;"><a href="#hapax_ratio"><code>hapax_ratio</code></a></td>
 <td style="text-align: left;">Доля гапаксов среди лексем</td>
 <td style="text-align: left;">0-1</td>
@@ -3343,6 +3395,12 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <td style="text-align: left;">Рост словаря с длиной текста</td>
 <td style="text-align: left;">от 0, <code>nan</code> для текста короче двух слов</td>
 <td style="text-align: left;">быстрее растет словарь</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#burstiness"><code>burstiness</code></a></td>
+<td style="text-align: left;">Средняя взрывность лексем с пятью и более вхождениями</td>
+<td style="text-align: left;">от -1 до 1, <code>nan</code> без таких лексем</td>
+<td style="text-align: left;">слова идут всплесками</td>
 </tr>
 </tbody>
 </table>
@@ -3679,10 +3737,10 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <div class="metric-card">
 <h3 id="mamtld">Moving Average Measure of Textual Lexical Diversity (MA-MTLD)<a class="headerlink" href="#mamtld" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>mamtld</code></p>
-<!-- core: stats/diversity_stats.md:calc_mamtld c845458 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_mamtld</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.72</span><span class="p">)</span>
+<!-- core: stats/diversity_stats.md:calc_mamtld 8e538bd -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_mamtld</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
-<p>Модификация метрики MTLD со скользящим окном по образцу MTLD-MA из koRpus: фактор начинается с каждой позиции текста, а значение - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. koRpus делает только прямой проход, закрывает фактор при TTR строго ниже порога и отбрасывает факторы короче минимальной длины, а не продлевает их. Если ни один фактор не завершен, значение равно <code>nan</code>. Метрика нестабильна на коротких текстах.</p>
+<p>Модификация метрики MTLD со скользящим окном по образцу MTLD-MA из koRpus: фактор начинается с каждой позиции текста, а значение - средняя длина завершенных факторов по двум проходам, в прямом и обратном порядке. koRpus делает только прямой проход, закрывает фактор при TTR строго ниже порога и отбрасывает факторы короче минимальной длины, а не продлевает их. С шагом <code>step</code>, равным k, фактор начинается с каждой k-й позиции от каждого из концов текста, как <code>MTLDMA.steps</code> в koRpus, и вычисляются только эти факторы: шаг 10 в несколько раз быстрее. Если ни один фактор не завершен, значение равно <code>nan</code>. Метрика нестабильна на коротких текстах.</p>
 <table>
 <thead>
 <tr>
@@ -3711,9 +3769,15 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <td style="text-align: left;"><code>0.72</code></td>
 <td style="text-align: left;">Порог TTR для завершения фактора (<code>MTLD_TTR_THRESHOLD</code>)</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>step</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Расстояние между началами факторов</td>
+</tr>
 </tbody>
 </table>
-<p><code>min_len</code>, который не целое неотрицательное число, и <code>threshold</code>, который не число в интервале (0, 1), дают <code>ParameterError</code>.</p>
+<p><code>min_len</code>, который не целое неотрицательное число, <code>threshold</code>, который не число в интервале (0, 1), и <code>step</code>, который не целое число больше 0, дают <code>ParameterError</code>.</p>
 </div>
 <div class="metric-card">
 <h3 id="mtldw">MTLD со скользящим окном и заворотом текста (MTLD-W)<a class="headerlink" href="#mtldw" title="Permanent link">&para;</a></h3>
@@ -4178,6 +4242,50 @@ P = \frac{V_1}{N}
 </table>
 </div>
 <div class="metric-card">
+<h3 id="orlov_z">Мера Орлова (Orlov's Z)<a class="headerlink" href="#orlov_z" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>orlov_z</code> · <a href="https://doi.org/10.1023/A:1001749303137">Tweedie и Baayen (1998)</a></p>
+<!-- core: stats/diversity_stats.md:calc_orlov_z f1f1b1c -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_orlov_z</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div>
+<p>Длина текста, при которой закон Ципфа лучше всего описывает словарь (Орлов, 1983): решение <span class="arithmatex">\(Z\)</span> для <span class="arithmatex">\(N\)</span> слов, <span class="arithmatex">\(V\)</span> лексем и доли <span class="arithmatex">\(p\)</span> самой частой лексемы. У правой части есть минимум по <span class="arithmatex">\(Z\)</span>, и <span class="arithmatex">\(Z\)</span> - решение больше точки минимума; значение равно <code>nan</code>, если <span class="arithmatex">\(V\)</span> не больше этого минимума или каждое слово - отдельная лексема, и <code>inf</code>, если <span class="arithmatex">\(V\)</span> так близко к <span class="arithmatex">\(N\)</span>, что <span class="arithmatex">\(Z\)</span> выходит за пределы <code>float</code>. Вместе с Yule's K мера Z лучше всех мер, которые сравнивали Tweedie и Baayen, различала авторов.</p>
+<div class="arithmatex">\[
+V = \frac{Z}{\ln(pZ)} \cdot \frac{N}{N - Z} \cdot \ln \frac{N}{Z}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Список слов</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.diversity_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_orlov_z</span>
+
+<span class="n">words</span> <span class="o">=</span> <span class="s2">"снесла курочка яичко не простое а золотое дед бил бил не разбил баба била била не разбила"</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="nb">round</span><span class="p">(</span><span class="n">calc_orlov_z</span><span class="p">(</span><span class="n">words</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>279.56
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
 <h3 id="hapax_ratio">Доля гапаксов<a class="headerlink" href="#hapax_ratio" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>hapax_ratio</code></p>
 <!-- core: stats/diversity_stats.md:calc_hapax_ratio d3c3e24 -->
@@ -4375,7 +4483,7 @@ H = -\sum_k p_k \log_2 p_k
 </table>
 <p>Счетчик, слова которого не строки или частоты не числа, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота - <code>SourceError</code> (<code>check_counts</code>).</p>
 <p>Визуализатор <a href="../../visualizers/zipf/">закона Ципфа</a> строит эту подгонку при <code>show_fit=True</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.diversity_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">fit_zipf_mandelbrot</span>
@@ -4427,6 +4535,59 @@ H = -\sum_k p_k \log_2 p_k
 </code></pre></div>
 <p>Подгонка закона Хипса по кривой роста словаря списка слов, как в <code>calc_heaps_beta</code>. Возвращает именованный кортеж <code>HeapsFit</code> с параметрами <code>k</code>, <code>beta</code> и коэффициентом детерминации <code>r2</code>, все <code>nan</code> для текстов короче двух слов; <code>r2</code> равен <code>nan</code> и для текста из одной лексемы.</p>
 <p>По <code>fit_heaps</code> строится график <a href="../../visualizers/vocabulary/">закона Хипса</a>.</p>
+</div>
+<div class="metric-card">
+<h3 id="burstiness">Взрывность<a class="headerlink" href="#burstiness" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>burstiness</code> · <a href="https://doi.org/10.1103/PhysRevE.94.032311">Kim и Jo (2016)</a></p>
+<!-- core: stats/diversity_stats.md:calc_burstiness d0ce1ff -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_burstiness</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+<p>Насколько лексема встречается всплесками, а не равномерно по тексту, - взрывность Kim и Jo, которая поправляет взрывность Goh и Barabási на конечное число событий <span class="arithmatex">\(n\)</span>, усредненная по лексемам, встретившимся не меньше <code>min_freq</code> раз (<code>BURSTINESS_MIN_FREQ</code>). Для <span class="arithmatex">\(n\)</span> вхождений лексемы <span class="arithmatex">\(r\)</span> - коэффициент вариации их <span class="arithmatex">\(n\)</span> интервалов, включая интервал от последнего вхождения до первого через конец текста. Значение равно −1 для вхождений через равные интервалы, включая интервал через конец (<em>a x a x a x a x a x</em> - −1, <em>a x a x a x a x a</em> - около −0.69), близко к 0 для редкой лексемы в случайных местах и доходит до 1 для вхождений всплесками; без таких лексем значение - <code>nan</code>.</p>
+<div class="arithmatex">\[
+A_n = \frac{\sqrt{n + 1} \cdot r - \sqrt{n - 1}}{(\sqrt{n + 1} - 2) \cdot r + \sqrt{n - 1}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Список слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>min_freq</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>5</code></td>
+<td style="text-align: left;">Наименьшее количество вхождений измеряемой лексемы</td>
+</tr>
+</tbody>
+</table>
+<p><code>min_freq</code>, который не целое число не меньше 2, дает <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.diversity_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_burstiness</span>
+
+<span class="p">(</span>
+    <span class="n">calc_burstiness</span><span class="p">(</span><span class="s2">"да нет да нет да нет да нет да нет"</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+    <span class="n">calc_burstiness</span><span class="p">(</span><span class="s2">"да да да да да нет нет нет нет нет"</span><span class="o">.</span><span class="n">split</span><span class="p">()),</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(-1.0, 0.18350341907227388)
+</code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="metric-card">
 <h3 id="windowed">Оконный расчет<a class="headerlink" href="#windowed" title="Permanent link">&para;</a></h3>
@@ -4490,7 +4651,7 @@ H = -\sum_k p_k \log_2 p_k
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <!-- core: stats/diversity_stats.md:DiversityStats-windowed da979e4 -->
 <p><code>windowed(stat, window_len=100, step=None, confidence=0.95)</code> вычисляет метрику из <code>get_stats</code> по ее названию в окнах: <code>calc_windowed</code> с функцией метрики и параметрами объекта. Остальные аргументы, результат и ошибки - как у <code>calc_windowed</code>; неизвестное название дает <code>UnknownStatError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">ds</span><span class="o">.</span><span class="n">windowed</span><span class="p">(</span><span class="s2">"ttr"</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
@@ -4508,7 +4669,7 @@ H = -\sum_k p_k \log_2 p_k
 <p><code>get_stats()</code> возвращает справочник вычисленных метрик из <code>stats_desc</code>.</p>
 <!-- core: stats/diversity_stats.md:DiversityStats-print_stats 8d60982 -->
 <p><code>print_stats()</code> выводит таблицу вычисленных метрик с их описаниями из <code>stats_desc</code> под заголовками из <code>stats_headers</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">ds</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
@@ -4540,13 +4701,15 @@ H = -\sum_k p_k \log_2 p_k
  'brunet_w': 6.00637847898991,
  'dugast_k': 14.783895126869226,
  'baayen_p': 0.5333333333333333,
+ 'orlov_z': nan,
  'hapax_ratio': 0.7272727272727273,
  'alpha2': 0.5,
  'entropy': 3.3232314287976203,
  'evenness': 0.9606293157795304,
  'perplexity': 10.009038104159247,
  'zipf_alpha': 0.4884512334695912,
- 'heaps_beta': 0.8366147342060046}
+ 'heaps_beta': 0.8366147342060046,
+ 'burstiness': nan}
 </code></pre></div>
 </div>
 </div>

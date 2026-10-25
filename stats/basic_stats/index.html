@@ -2236,14 +2236,14 @@
 <h1 id="_1">Базовые статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: stats/basic_stats.md:BasicStats b417be1 -->
+<!-- core: stats/basic_stats.md:BasicStats c1092e0 -->
 <p>Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
 <p>Слова и предложения строки дают экстракторы. <code>Doc</code> дает словами свои токены без знаков препинания и символов вроде <code>€</code> или <code>%</code>, предложениями - свои границы или, если их нет или они частичные (<code>has_sents</code>), границы экстрактора предложений; переданный экстрактор вместо этого применяется к его тексту. Пустая строка завершает предложение строки и <code>Doc</code> без границ; <code>Doc</code> с границами - если в его пайплайне до парсера, <code>senter</code> или <code>sentencizer</code> стоит <code>start_sents_after_blank_lines</code> (библиотека регистрирует компонент под своим именем). Предложение без слов, например из одних знаков препинания, не считается.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
 <li><code>SourceError</code> - источник без слов;</li>
-<li><code>ParameterError</code> - порог, который не целое число не меньше единицы.</li>
+<li><code>ParameterError</code> - порог, который не целое число не меньше единицы, <code>normalize</code>, который не <code>bool</code>.</li>
 </ul>
 <p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> крючками русского языка: слоги слова считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки препинания - <a href="#count_punctuations"><code>count_punctuations</code></a> ruTS, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Компонент пустых строк в ruTS называется <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица <code>print_stats</code> - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
@@ -2257,21 +2257,23 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>    Статистика     | Значение
-------------------------------
-Предложения        |    1
-Слова              |    9
-Уникальные слова   |    8
-Длинные слова      |    3
-Сложные слова      |    2
-Простые слова      |    7
-Односложные слова  |    5
-Многосложные слова |    4
-Символы            |    55
-Буквы              |    45
-Пробелы            |    8
-Слоги              |    18
-Знаки препинания   |    2
+<div class="highlight"><pre><span></span><code>            Статистика            | Значение
+---------------------------------------------
+Предложения                       |    1
+Слова                             |    9
+Уникальные слова                  |    8
+Длинные слова                     |    3
+Сложные слова                     |    2
+Простые слова                     |    7
+Односложные слова                 |    5
+Многосложные слова                |    4
+Символы                           |    55
+Буквы                             |    45
+Пробелы                           |    8
+Слоги                             |    18
+Знаки препинания                  |    2
+Энтропия длин слов в буквах (бит) |   2.20
+Энтропия длин слов в слогах (бит) |   1.66
 </code></pre></div>
 </div>
 </div>
@@ -2329,7 +2331,7 @@
 <p>Объект хранит <code>normalize</code>, <code>complex_syl_factor</code> и <code>long_word_letter_factor</code> под их именами.</p>
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 <h2 id="_3">Статистики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-attributes 2687b35 -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes 0981aba -->
 <table>
 <thead>
 <tr>
@@ -2431,6 +2433,18 @@
 <td style="text-align: left;"><code>p_punctuations</code></td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>letters_entropy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Энтропия Шеннона длин слов в буквах (<code>c_letters</code>) в битах; 0, когда все слова одной длины</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syllables_entropy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Энтропия Шеннона длин слов в слогах (<code>c_syllables</code>) в битах</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>c_punctuations</code></td>
 <td style="text-align: left;"><code>dict[str, int]</code></td>
 <td style="text-align: left;">Распределение знаков препинания по типам (<a href="#count_punctuations"><code>count_punctuations</code></a>)</td>
@@ -2443,8 +2457,8 @@
 <!-- core: stats/basic_stats.md:BasicStats-count_words_by abc6821 -->
 <p><code>count_words_by_syllables(min_syllables)</code> и <code>count_words_by_letters(min_letters)</code> возвращают количество слов не меньше чем с заданным числом слогов или букв; минимум, который не целое число, дает <code>ParameterError</code>.</p>
 <p>Методы пересчитывают сложные и длинные слова с порогом, отличным от заданного при создании объекта: так класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> считает индекс SMOG (сложное слово - от 5 слогов) и LIX (длинное слово - от 7 букв).</p>
-<!-- core: stats/basic_stats.md:BasicStats-get_stats f52c936 -->
-<p><code>get_stats(flat)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, количествами из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
+<!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
+<p><code>get_stats(flat)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, статистиками из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
 <!-- core: stats/basic_stats.md:BasicStats-print_stats da79e92 -->
 <p><code>print_stats()</code> выводит таблицу с количествами из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
 <p>Нормализованных статистик <code>p_*</code> в таблице нет.</p>
@@ -2474,6 +2488,8 @@
  'n_spaces': 8,
  'n_syllables': 18,
  'n_punctuations': 2,
+ 'letters_entropy': 2.197159723424149,
+ 'syllables_entropy': 1.6577427265048887,
  'c_punctuations': {'comma': 1,
                     'period': 0,
                     'question': 0,

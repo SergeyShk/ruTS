@@ -1196,6 +1196,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forward_overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повтор в следующих предложениях и абзацах
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2331,6 +2342,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forward_overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Повтор в следующих предложениях и абзацах
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2561,6 +2583,12 @@
 Повтор знаменательных слов во всех парах предложений     |   0.50
 Доля общих знаменательных слов в соседних предложениях   |   0.11
 Доля общих знаменательных слов во всех парах предложений |   0.19
+Повтор существительных в двух следующих предложениях     |   0.67
+Повтор аргументов в двух следующих предложениях          |   0.75
+Повтор знаменательных слов в двух следующих предложениях |   0.40
+Повтор существительных в соседних абзацах                |   nan
+Повтор аргументов в соседних абзацах                     |   nan
+Повтор знаменательных слов в соседних абзацах            |   nan
 Доля местоимений                                         |   0.14
 Отношение местоимений к существительным                  |   0.50
 Доля указательных местоимений                            |   0.05
@@ -2622,7 +2650,7 @@
 </tbody>
 </table>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes ee54833 -->
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes b48ff23 -->
 <table>
 <thead>
 <tr>
@@ -2641,6 +2669,11 @@
 <td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;">Количество предложений со словами и количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_paragraphs</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество абзацев - частей текста между пустыми строками, в которых есть слова</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
@@ -2684,8 +2717,8 @@
 </div>
 </div>
 <h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: stats/cohesion_stats.md:CohesionStats-metrics c90d75e -->
-<p>Каждая метрика - атрибут объекта, который вычисляется при его создании; <code>get_stats</code> дает метрики из <code>stats_desc</code>, по умолчанию все, кроме <code>mood_repetition</code>. Функции карточек принимают предложение как набор его элементов - лемм существительных, аргументов или знаменательных слов, значений признака его глаголов - и языка не знают.</p>
+<!-- core: stats/cohesion_stats.md:CohesionStats-metrics d32f931 -->
+<p>Каждая метрика - атрибут объекта, который вычисляется при его создании, а повторы в следующих предложениях и абзацах - при первом обращении; <code>get_stats</code> дает метрики из <code>stats_desc</code>, по умолчанию все, кроме <code>mood_repetition</code>. Функции карточек принимают предложение как набор его элементов - лемм существительных, аргументов или знаменательных слов, значений признака его глаголов - и языка не знают.</p>
 <table>
 <thead>
 <tr>
@@ -2743,6 +2776,42 @@
 <td style="text-align: left;">Средняя доля общих знаменательных слов (Дайс) во всех парах</td>
 <td style="text-align: left;">0-1, <code>nan</code> для одного предложения</td>
 <td style="text-align: left;">больше общих слов по всему тексту</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>noun_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Доля существительных предложения, повторенных в одном из двух следующих</td>
+<td style="text-align: left;">0-1, <code>nan</code> для текста короче трех предложений или без существительных в сравниваемых</td>
+<td style="text-align: left;">больше существительных переходит дальше</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>argument_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Доля аргументов предложения, повторенных в одном из двух следующих</td>
+<td style="text-align: left;">0-1, <code>nan</code> для текста короче трех предложений или без аргументов в сравниваемых</td>
+<td style="text-align: left;">больше аргументов переходит дальше</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>content_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Доля знаменательных слов предложения, повторенных в одном из двух следующих</td>
+<td style="text-align: left;">0-1, <code>nan</code> для текста короче трех предложений или без знаменательных слов в сравниваемых</td>
+<td style="text-align: left;">больше знаменательных слов переходит дальше</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>noun_overlap_para</code></a></td>
+<td style="text-align: left;">Доля существительных абзаца, повторенных в следующем</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного абзаца или без существительных в сравниваемых</td>
+<td style="text-align: left;">больше существительных переходит в следующий абзац</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>argument_overlap_para</code></a></td>
+<td style="text-align: left;">Доля аргументов абзаца, повторенных в следующем</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного абзаца или без аргументов в сравниваемых</td>
+<td style="text-align: left;">больше аргументов переходит в следующий абзац</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>content_overlap_para</code></a></td>
+<td style="text-align: left;">Доля знаменательных слов абзаца, повторенных в следующем</td>
+<td style="text-align: left;">0-1, <code>nan</code> для одного абзаца или без знаменательных слов в сравниваемых</td>
+<td style="text-align: left;">больше знаменательных слов переходит в следующий абзац</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#pronouns"><code>p_pronouns</code></a></td>
@@ -2821,10 +2890,10 @@
 <div class="metric-card">
 <h3 id="overlap">Бинарный повтор<a class="headerlink" href="#overlap" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>noun_overlap_adjacent</code> · <code>noun_overlap_all</code> · <code>argument_overlap_adjacent</code> · <code>argument_overlap_all</code> · <code>content_overlap_adjacent</code> · <code>content_overlap_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<!-- core: stats/cohesion_stats.md:calc_overlap 5615a5e -->
+<!-- core: stats/cohesion_stats.md:calc_overlap 3af957e -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Бинарный повтор Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 по соседним парам, CRFNOa, CRFAOa, CRFSOa по всем): доля пар предложений хотя бы с одним общим элементом; для текста короче двух предложений - <code>nan</code>. Все пары считаются, как в <code>calc_overlaps</code>, без их перебора.</p>
+<p>Бинарный повтор Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 по соседним парам, CRFNOa, CRFAOa, CRFSOa по всем): доля пар предложений хотя бы с одним общим элементом; для текста короче двух предложений - <code>nan</code>.</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество пар с общим элементом}}{\textrm{Количество пар}}
 \]</div>
@@ -2856,10 +2925,10 @@
 <div class="metric-card">
 <h3 id="proportional_overlap">Пропорциональный повтор<a class="headerlink" href="#proportional_overlap" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>content_overlap_prop_adjacent</code> · <code>content_overlap_prop_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<!-- core: stats/cohesion_stats.md:calc_proportional_overlap f3c7775 -->
+<!-- core: stats/cohesion_stats.md:calc_proportional_overlap 03ca6d0 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_proportional_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Пропорциональный повтор Coh-Metrix (CRFCWO1, CRFCWOa): коэффициент Дайса пары предложений (<code>dice</code>), усредненный по парам; для текста короче двух предложений - <code>nan</code>. По всем парам сумма считается, как в <code>calc_overlaps</code>, без их перебора.</p>
+<p>Пропорциональный повтор Coh-Metrix (CRFCWO1, CRFCWOa): коэффициент Дайса пары предложений (<code>dice</code>), усредненный по парам; для текста короче двух предложений - <code>nan</code>.</p>
 <div class="arithmatex">\[
 \frac{1}{\textrm{Количество пар}} \sum_{(A, B)} \textrm{Dice}(A, B)
 \]</div>
@@ -2918,6 +2987,63 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="metric-card">
+<h3 id="forward_overlap">Повтор в следующих предложениях и абзацах<a class="headerlink" href="#forward_overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_overlap_2_sent</code> · <code>argument_overlap_2_sent</code> · <code>content_overlap_2_sent</code> · <code>noun_overlap_para</code> · <code>argument_overlap_para</code> · <code>content_overlap_para</code> · <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a></p>
+<!-- core: stats/cohesion_stats.md:CohesionStats-forward_overlap 34e902e -->
+<p>Соседний повтор TAACO по леммам существительных, аргументов и знаменательных слов: доля разных лемм предложения, повторенных в одном из двух следующих предложений (<code>adjacent_overlap_2_*_sent</code>), и лемм абзаца, повторенных в следующем абзаце (<code>adjacent_overlap_*_para</code>), по всем предложениям или абзацам, у которых они есть (<code>calc_forward_overlap</code>). В отличие от бинарного повтора, пара сегментов учитывается по доле их общих лемм. Абзац - часть текста между пустыми строками, в которой есть слова; его открывает слово с <code>paragraph_start</code>, в том числе внутри предложения, например когда парсер присоединяет заголовок к следующему предложению. TAACO считает абзацем каждую строку: текст, в котором каждый абзац на своей строке, а пустых строк нет, здесь - один абзац, и его <code>*_para</code> равны <code>nan</code>.</p>
+<!-- core: stats/cohesion_stats.md:calc_forward_overlap 7389f78 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_forward_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>Доля элементов сегмента, повторенных в следующих: разные элементы каждого сегмента, за которым идут еще <code>span</code> сегментов, встречающиеся в одном из этих сегментов, деленные на разные элементы таких сегментов; если сегментов не больше <code>span</code> или в них нет элементов, значение - <code>nan</code>.</p>
+<div class="arithmatex">\[
+\frac{\sum_{i=1}^{n-k} |A_i \cap (A_{i+1} \cup \dots \cup A_{i+k})|}{\sum_{i=1}^{n-k} |A_i|}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Элементы каждого сегмента</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>span</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Число <span class="arithmatex">\(k\)</span> следующих сегментов, с которыми сравнивается сегмент</td>
+</tr>
+</tbody>
+</table>
+<p>Сегменты, которые являются строкой, <code>Doc</code> или итератором, и сегмент, который не список строк, дают <code>SourceTypeError</code>, а <code>span</code>, который не целое число больше 0, - <code>ParameterError</code>.</p>
+<p>В ruTS на абзацы делятся и строка, и <code>Doc</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_forward_overlap</span>
+
+<span class="n">calc_forward_overlap</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"кот"</span><span class="p">}],</span> <span class="n">span</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">paragraphs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">paragraphs</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">noun_overlap_para</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">content_overlap_para</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.5
+(2, 1.0, 0.8)
+</code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="metric-card">
 <h3 id="pronouns">Местоимения и указательные<a class="headerlink" href="#pronouns" title="Permanent link">&para;</a></h3>
@@ -3068,7 +3194,7 @@
 </div>
 <!-- core: stats/cohesion_stats.md:cohesion-checks 47eaf98 -->
 <p>Список предложений, который является строкой, <code>Doc</code>, итератором, множеством или таблицей, дает <code>SourceTypeError</code>, как и предложение, которое не список строк (<code>check_words</code>), например список токенов spaCy. Функции повторов (<code>calc_overlap</code>, <code>calc_proportional_overlap</code>, <code>calc_overlaps</code>) принимают предложение и в виде множества; <code>count_given</code> и <code>calc_repetition</code> считают слова по порядку и множество не принимают.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlap</span><span class="p">,</span> <span class="n">calc_repetition</span><span class="p">,</span> <span class="n">count_given</span>
@@ -3089,7 +3215,7 @@
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик связности нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
@@ -3104,6 +3230,12 @@
  'content_overlap_all': 0.5,
  'content_overlap_prop_adjacent': 0.1111111111111111,
  'content_overlap_prop_all': 0.18650793650793648,
+ 'noun_overlap_2_sent': 0.6666666666666666,
+ 'argument_overlap_2_sent': 0.75,
+ 'content_overlap_2_sent': 0.4,
+ 'noun_overlap_para': nan,
+ 'argument_overlap_para': nan,
+ 'content_overlap_para': nan,
  'p_pronouns': 0.14285714285714285,
  'pronoun_noun_ratio': 0.5,
  'p_demonstratives': 0.047619047619047616,
@@ -3128,10 +3260,10 @@
 </div>
 </div>
 <h2 id="calc_overlaps">Все повторы за один расчет<a class="headerlink" href="#calc_overlaps" title="Permanent link">&para;</a></h2>
-<!-- core: stats/cohesion_stats.md:calc_overlaps cb01e7a -->
+<!-- core: stats/cohesion_stats.md:calc_overlaps b6374f1 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_overlaps</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">proportional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Значения <code>calc_overlap</code> и <code>calc_proportional_overlap</code> по соседним и по всем парам сразу - именованный кортеж <code>Overlap</code> с полями <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> и <code>prop_all</code>; без <code>proportional</code> последние два равны <code>nan</code>. Значения по всем парам вычисляются без перебора каждой пары: пары с общим элементом считаются по битовым маскам предложений, а сумма коэффициентов Дайса - по гистограммам длин предложений, в которых есть каждый элемент, и складывается <code>math.fsum</code>, чтобы не зависеть от порядка элементов.</p>
+<p>Значения <code>calc_overlap</code> и <code>calc_proportional_overlap</code> по соседним и по всем парам сразу - именованный кортеж <code>Overlap</code> с полями <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> и <code>prop_all</code>; без <code>proportional</code> последние два равны <code>nan</code>. Значения по всем парам получаются без перебора каждой пары, и ни одно из них не зависит от порядка элементов в множествах.</p>
 <table>
 <thead>
 <tr>
@@ -3157,7 +3289,7 @@
 </tbody>
 </table>
 <p>Класс <code>CohesionStats</code> считает с ее помощью повторы существительных и аргументов без пропорциональных, а повторы знаменательных слов - с ними.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlaps</span>
@@ -3181,9 +3313,9 @@
 <li><code>SourceTypeError</code> - словарь, который не отображение словосочетания в пару строк;</li>
 <li><code>ParameterError</code> - неизвестный класс или тип.</li>
 </ul>
-<p><code>RussianConnectorMatcher</code> - подкласс <code>ConnectorMatcher</code> ядра с правилами русского языка. Слова и коннекторы сравниваются в нижнем регистре без буквы ё и знаков ударения (<code>normalize_yo</code>). Однословному коннектору подходит часть речи из <code>CONNECTOR_POS</code> ядра (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) или из <code>CONNECTOR_POS_EXTRA</code> для его формы (например: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели и коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» как существительное коннектором не считается. Контекстные правила - списки <code>ruts.constants</code>: слова после коннектора (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) и перед ним (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>), с которыми он не коннектор; коннекторы, которые внутри предложения засчитываются только после отдельных слов (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) и не засчитываются в его начале (<code>CONNECTOR_NOT_AT_START</code>: вопросительное <em>отчего</em>); части речи слова после коннектора, с которыми он предлог или член предложения (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). Через знак препинания правила читают только у <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>, <em>после «Ревизора»</em>), так что вводное <em>значит,</em> остается коннектором, а знак между словами коннектора из <code>CONNECTOR_SPLIT_BY_MARKS</code> его разделяет (<em>так, как</em>). Эти части речи и списки - атрибуты сопоставителя: <code>CONNECTOR_POS</code> - <code>pos_tags</code>, остальные - под именем без <code>CONNECTOR_</code> в нижнем регистре (<code>CONNECTOR_BLOCKED_AFTER</code> - <code>blocked_after</code>); атрибуты <code>not_after_pos</code> и <code>start_only_pos</code> в ruTS пусты, так что эти правила <code>find</code> не действуют.</p>
-<!-- core: stats/cohesion_stats.md:ConnectorMatcher-find a9d4226 -->
-<p><code>find(words, sent_index, pos, breaks)</code> возвращает вхождения коннекторов в предложении в порядке слов. Слова - слова одного предложения без знаков препинания, первое из них - его начало. С частями речи однословный коннектор засчитывается только при части речи из <code>pos_tags</code> или из <code>pos_extra</code> для его формы, никогда - после части речи из <code>not_after_pos</code>, а с частью речи из <code>start_only_pos</code> - только в начале предложения; слово без части речи (<code>None</code>) проходит. Без частей речи правила, которые их читают, пропускаются. Позиции знаков препинания <code>breaks</code> отделяют коннектор от соседей: правило не читает слово через знак, так что в <em>значит, пойдем</em> слово после запятой не запрещает коннектор и не разрешает его, если коннектор не из <code>read_through_marks</code>, а знак между словами коннектора из <code>split_by_marks</code> делает его не коннектором; без позиций слова читаются как соседние.</p>
+<p><code>RussianConnectorMatcher</code> - подкласс <code>ConnectorMatcher</code> ядра с правилами русского языка. Слова и коннекторы сравниваются в нижнем регистре без буквы ё и знаков ударения (<code>normalize_yo</code>). Однословному коннектору подходит часть речи из <code>CONNECTOR_POS</code> ядра (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) или из <code>CONNECTOR_POS_EXTRA</code> для его формы (например: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели и коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» как существительное коннектором не считается. Контекстные правила - списки <code>ruts.constants</code>: слова после коннектора (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) и перед ним (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>), с которыми он не коннектор; коннекторы, которые внутри предложения засчитываются только после отдельных слов (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) и не засчитываются в его начале (<code>CONNECTOR_NOT_AT_START</code>: вопросительное <em>отчего</em>); части речи слова после коннектора, с которыми он предлог или член предложения (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). Через знак препинания правила читают только у <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>), так что вводное <em>значит,</em> остается коннектором, а знак между словами коннектора из <code>CONNECTOR_SPLIT_BY_MARKS</code> его разделяет (<em>так, как</em>). Эти части речи и списки - атрибуты сопоставителя: <code>CONNECTOR_POS</code> - <code>pos_tags</code>, остальные - под именем без <code>CONNECTOR_</code> в нижнем регистре (<code>CONNECTOR_BLOCKED_AFTER</code> - <code>blocked_after</code>); атрибуты <code>not_after_pos</code> и <code>start_only_pos</code> в ruTS пусты, так что эти правила <code>find</code> не действуют.</p>
+<!-- core: stats/cohesion_stats.md:ConnectorMatcher-find 8e0022c -->
+<p><code>find(words, sent_index, pos, breaks, blocked)</code> возвращает вхождения коннекторов в предложении в порядке слов. Слова - слова одного предложения без знаков препинания, первое из них - его начало. С частями речи однословный коннектор засчитывается только при части речи из <code>pos_tags</code> или из <code>pos_extra</code> для его формы, никогда - после части речи из <code>not_after_pos</code>, а с частью речи из <code>start_only_pos</code> - только в начале предложения; слово без части речи (<code>None</code>) проходит. Без частей речи правила, которые их читают, пропускаются. Позиции знаков препинания <code>breaks</code> отделяют коннектор от соседей: правило не читает слово через знак, так что в <em>значит, пойдем</em> слово после запятой не запрещает коннектор и не разрешает его, если коннектор не из <code>read_through_marks</code>, а знак между словами коннектора из <code>split_by_marks</code> делает его не коннектором; без позиций слова читаются как соседние. Ни один коннектор не начинается со слова из <code>blocked</code>, которое язык исключает по большему, чем слова и их части речи, например по своему разбору.</p>
 <table>
 <thead>
 <tr>
@@ -3218,11 +3350,17 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Позиции слов, перед которыми стоит знак препинания</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>blocked</code></td>
+<td style="text-align: left;"><code>set[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Позиции слов, с которых не начинается коннектор</td>
+</tr>
 </tbody>
 </table>
-<p>Слова, которые не список строк, части речи, которые не список строк и <code>None</code> (теги <code>token.pos_</code> spaCy, а не числа <code>token.pos</code>), и позиции знаков, которые не коллекция, дают <code>SourceTypeError</code>; номер предложения или позиция знака, которые не целое число, и частей речи не столько, сколько слов, - <code>ParameterError</code>.</p>
-<!-- core: stats/cohesion_stats.md:ConnectorMatcher-is_subordinator 9d44a18 -->
-<p><code>is_subordinator(connector, pos=None)</code> проверяет, привязывает ли вхождение коннектора свою клаузу или группу к собственному предложению: коннектор из <code>subordinators</code> или однословный коннектор с частью речи <code>pos</code> <code>SCONJ</code> или <code>ADP</code>. Клауза подчинительного союза и группа предлога принадлежат предложению коннектора, где бы он ни стоял, поэтому подчинительный, открывающий предложение (<em>когда он пришел, ...</em>, <em>вопреки ожиданиям, ...</em>), не связывает его с предыдущими.</p>
+<p>Слова, которые не список строк, части речи, которые не список строк и <code>None</code> (теги <code>token.pos_</code> spaCy, а не числа <code>token.pos</code>), и позиции, которые не коллекция, дают <code>SourceTypeError</code>; номер предложения или позиция, которые не целое число, позиция знака, которая не позиция слова после первого, позиция из <code>blocked</code>, которая не позиция слова, и частей речи не столько, сколько слов, - <code>ParameterError</code>.</p>
+<!-- core: stats/cohesion_stats.md:ConnectorMatcher-is_subordinator 6913020 -->
+<p><code>is_subordinator(connector, pos=None)</code> проверяет, привязывает ли вхождение коннектора свою клаузу или группу к собственному предложению: коннектор из <code>subordinators</code> или однословный коннектор с частью речи <code>pos</code> <code>SCONJ</code> или <code>ADP</code>, но не из <code>parcellation</code>. Клауза подчинительного союза и группа предлога принадлежат предложению коннектора, где бы он ни стоял, поэтому подчинительный, открывающий предложение (<em>когда он пришел, ...</em>, <em>вопреки ожиданиям, ...</em>), не связывает его с предыдущими. Коннектор, который не <code>Connector</code>, дает <code>SourceTypeError</code>.</p>
 <p>Подчинительные в ruTS сверх однословных с частью речи <code>SCONJ</code> и <code>ADP</code> - <code>CONNECTOR_SUBORDINATORS</code>: многословные союзы и предлоги (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) и однословные, которые модели spaCy или pymorphy3 размечают иначе (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). Союз из <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) в начале предложения присоединяет его к предыдущему, поэтому подчинительным не считается.</p>
 <h2 id="find_connectors">Поиск коннекторов<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">find_connectors</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sent_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -3267,7 +3405,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_connectors</span>
@@ -3346,7 +3484,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_info</span>
@@ -3419,7 +3557,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>

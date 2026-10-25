@@ -2356,12 +2356,12 @@
 
 
 <h1 id="_1">Ключевые слова<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: corpus/keyness.md:keyness bbbd1ba -->
+<!-- core: corpus/keyness.md:keyness 4394918 -->
 <p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном.</p>
 <p>Для каждого слова считаются две величины, которые <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos и Marchi</a> и <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> рекомендуют смотреть вместе: логарифм правдоподобия <span class="arithmatex">\(G^2\)</span> с p-значением (есть ли различие) и Log Ratio (насколько оно велико), а также выбранная мера <code>score</code>, по которой список сортируется. Меры значимости (<span class="arithmatex">\(G^2\)</span>, хи-квадрат, BIC) и ELL, размер эффекта <span class="arithmatex">\(G^2\)</span>, отрицательны, если слово чаще в эталоне; %DIFF, Log Ratio и отношение шансов направленные по построению.</p>
-<p>Эталоном может быть список слов, справочник частот (его объем - сумма частот) или <code>FrequencyReference</code>. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково.</p>
+<p>Эталоном может быть список слов, справочник частот (его объем - сумма частот) или <code>FrequencyReference</code>. Слова сравниваются как есть: регистр, лемматизация и стоп-слова - на стороне экстрактора слов, и оба корпуса должны быть извлечены одинаково. Корпус из нескольких текстов передается списком их списков слов. При <code>n</code> больше 1 ключевыми становятся N-граммы слов каждого текста, соединенные подчеркиванием, как N-граммы <code>WordsExtractor</code> (<em>черный_кот</em>), так что N-грамма никогда не переходит через границу текстов; частоты и объемы - это частоты и объемы N-грамм, а частоты на миллион - на миллион N-грамм. Частоты N-грамм - сумма <code>Counter</code> N-грамм каждого текста или частотный словарь N-грамм - передаются с <code>n=1</code>: справочник частот и <code>FrequencyReference</code> при <code>n</code> больше 1 не принимаются.</p>
 <p>Функция оборачивает <code>keyness</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> и принимает эталоном также <a href="../../datasets/freq2011/">частотный словарь Ляшевской и Шарова</a> <code>FreqDict</code>; <code>FrequencyReference</code> лежит рядом с ней в <code>ruts.corpus</code>. Слова извлекает <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
@@ -2390,7 +2390,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness-parameters c87c5b2 -->
+<!-- core: corpus/keyness.md:keyness-parameters a26b20f -->
 <table>
 <thead>
 <tr>
@@ -2403,15 +2403,15 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>target</code></td>
-<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, int]</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>list[list[str]]</code> / <code>dict[str, int]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Слова целевого корпуса или их частоты</td>
+<td style="text-align: left;">Слова целевого корпуса - одного текста или списка текстов - или их частоты</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference</code></td>
-<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, float]</code> / <code>FrequencyReference</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>list[list[str]]</code> / <code>dict[str, float]</code> / <code>FrequencyReference</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Слова эталонного корпуса, их частоты или эталон по частотам</td>
+<td style="text-align: left;">Слова эталонного корпуса - одного текста или списка текстов, - их частоты или эталон по частотам</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>measure</code></td>
@@ -2437,9 +2437,15 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Количество ключевых слов; <code>None</code> - все</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Длина N-грамм слов каждого текста; <code>1</code> - слова</td>
+</tr>
 </tbody>
 </table>
-<p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>. Эталон, который не список строк, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота справочника и пустой корпус - <code>SourceError</code>.</p>
+<p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>; <code>n</code> больше 1 при частотах или <code>FrequencyReference</code> дает <code>ParameterError</code>. Эталон, который не список строк, не список таких списков, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота справочника и корпус без слов или короче <code>n</code> слов - <code>SourceError</code>.</p>
 <p><code>reference</code> может быть и <code>FreqDict</code>, и еще один параметр говорит, из чего при нем целевой корпус:</p>
 <table>
 <thead>
@@ -2459,11 +2465,11 @@
 </tr>
 </tbody>
 </table>
-<p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>.</p>
-<!-- core: corpus/keyness.md:check_keyness_params 9ffcaab -->
-<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>: словарь хранит слова.</p>
+<!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
+<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет параметры <code>keyness</code> до чтения частотного словаря: дает <code>ParameterError</code>, если мера не из <code>KEYNESS_MEASURES</code>, минимальная частота не целое число или количество ключевых слов не <code>None</code> и не целое число не меньше единицы. С <code>target</code> дает также <code>SourceTypeError</code>, если целевой корпус не список строк и не справочник строк с целыми частотами, и <code>SourceError</code> для отрицательной, <code>nan</code> или бесконечной частоты.</p>
+<p>Проверяет параметры <code>keyness</code> до чтения частотного словаря: дает <code>ParameterError</code>, если мера не из <code>KEYNESS_MEASURES</code>, минимальная частота не целое число, количество ключевых слов не <code>None</code> и не целое число не меньше единицы, длина N-грамм <code>n</code> не целое число не меньше единицы или <code>positive</code> не <code>bool</code>. С <code>target</code> дает также <code>SourceTypeError</code>, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и <code>SourceError</code> для отрицательной, <code>nan</code> или бесконечной частоты.</p>
 <h2 id="_3">Эталон по частотам<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <!-- core: corpus/keyness.md:FrequencyReference 02046dc -->
 <div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -2567,7 +2573,7 @@
 </div>
 </div>
 <h2 id="_4">Результат<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:Keyword 8a09d1b -->
+<!-- core: corpus/keyness.md:Keyword 6f45611 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">Keyword</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">freq_target</span><span class="p">,</span> <span class="n">freq_reference</span><span class="p">,</span> <span class="n">ipm_target</span><span class="p">,</span> <span class="n">ipm_reference</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">log_ratio</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
 </code></pre></div>
 <p>Список именованных кортежей <code>Keyword</code> по убыванию ключевости (при равенстве - по убыванию частоты и по алфавиту, слова с неопределенной мерой в конце); <code>pd.DataFrame(keywords)</code> дает таблицу.</p>
@@ -2598,12 +2604,12 @@
 <tr>
 <td style="text-align: left;"><code>ipm_target</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Частота в целевом корпусе на миллион слов</td>
+<td style="text-align: left;">Частота в целевом корпусе на миллион слов или N-грамм</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ipm_reference</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Частота в эталонном корпусе на миллион слов</td>
+<td style="text-align: left;">Частота в эталонном корпусе на миллион слов или N-грамм</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>g2</code></td>

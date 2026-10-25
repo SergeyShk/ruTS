@@ -2563,7 +2563,7 @@ True
 <h3 id="MorphStatsComponent">Morphological statistics<a class="headerlink" href="#MorphStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><code>MorphStatsComponent</code> puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), in a pipeline without a tagger - from pymorphy3.</p>
+<p><code>MorphStatsComponent</code> puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), in a pipeline without <code>morphologizer</code> - from pymorphy3.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2781,11 +2781,11 @@ True
 <h3 id="SyntaxStatsComponent">Syntactic statistics<a class="headerlink" href="#SyntaxStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><code>SyntaxStatsComponent</code> puts the syntactic statistics into the extension; they need a parser before it.</p>
-<p>The <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models have a parser.</p>
+<p><code>SyntaxStatsComponent</code> puts the syntactic statistics into the extension; they need a parser and the parts of speech before it.</p>
+<p>The <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models have a parser and the parts of speech.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceError</code> - a document without a dependency parse, in a pipeline without a parser.</li>
+<li><code>SourceError</code> - a document without a dependency parse or parts of speech, in a pipeline without a parser or <code>morphologizer</code>.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">

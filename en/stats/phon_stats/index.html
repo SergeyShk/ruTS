@@ -2449,7 +2449,7 @@
 Индекс аллитерации                    |   1.09
 Индекс ассонанса                      |   0.83
 Доля открытых слогов                  |   0.76
-Средняя длина слога (букв)            |   2.60
+Средняя длина слога (звуков)          |   2.48
 </code></pre></div>
 </div>
 </div>
@@ -2827,8 +2827,8 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 <div class="metric-card">
 <h3 id="syllables">Syllables<a class="headerlink" href="#syllables" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>p_open_syllables</code> · <code>mean_syllable_len</code></p>
-<p>The syllables are the sounds of every syllable of a word by <code>syllable_sounds</code>; a syllable without a sound of the classes (a number) is no syllable, in <code>c_syllable_patterns</code> too. An open syllable ends in a vowel by its CV pattern (<code>cv_pattern</code>), and the length of a syllable is the number of its sounds.</p>
-<p>In ruTS the length of a syllable is the number of its letters, ь and ъ included.</p>
+<p>The syllables are the sounds of every syllable of a word by <code>syllable_sounds</code>; a syllable without a sound of the classes (a number) is no syllable, in <code>c_syllable_patterns</code> too. An open syllable ends in a vowel by its CV pattern (<code>cv_pattern</code>), and the length of a syllable is the length of that pattern: the sounds of the classes, without <code>skipped</code> and the signs out of them.</p>
+<p>In ruTS the length of a syllable is the number of its letters without ь and ъ.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_open_syllable</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks whether a syllable is open, that is ends in a vowel; ь and ъ after a vowel do not close it.</p>
@@ -2901,7 +2901,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
  'alliteration': 1.0916179337231968,
  'assonance': 0.8305084745762712,
  'p_open_syllables': 0.76,
- 'mean_syllable_len': 2.6}
+ 'mean_syllable_len': 2.48}
 </code></pre></div>
 </div>
 </div>

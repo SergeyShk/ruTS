@@ -2450,7 +2450,7 @@
 Индекс аллитерации                    |   1.09
 Индекс ассонанса                      |   0.83
 Доля открытых слогов                  |   0.76
-Средняя длина слога (букв)            |   2.60
+Средняя длина слога (звуков)          |   2.48
 </code></pre></div>
 </div>
 </div>
@@ -2837,9 +2837,9 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 <div class="metric-card">
 <h3 id="syllables">Слоги<a class="headerlink" href="#syllables" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>p_open_syllables</code> · <code>mean_syllable_len</code></p>
-<!-- core: stats/phon_stats.md:PhonStats-syllables 005a7e8 -->
-<p>Слоги - звуки каждого слога слова по <code>syllable_sounds</code>; слог без звука из классов (число) слогом не считается, в том числе в <code>c_syllable_patterns</code>. Открытый слог оканчивается на гласную по своему CV-шаблону (<code>cv_pattern</code>), а длина слога - число его звуков.</p>
-<p>В ruTS длина слога - число его букв вместе с ь и ъ.</p>
+<!-- core: stats/phon_stats.md:PhonStats-syllables eb2f919 -->
+<p>Слоги - звуки каждого слога слова по <code>syllable_sounds</code>; слог без звука из классов (число) слогом не считается, в том числе в <code>c_syllable_patterns</code>. Открытый слог оканчивается на гласную по своему CV-шаблону (<code>cv_pattern</code>), а длина слога - длина этого шаблона: звуки классов без <code>skipped</code> и символов вне классов.</p>
+<p>В ruTS длина слога - число его букв без ь и ъ.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_open_syllable</span><span class="p">(</span><span class="n">syllable</span><span class="p">)</span>
 </code></pre></div>
 <p>Проверяет, является ли слог открытым - оканчивается на гласную; ь и ъ после гласной слог не закрывают.</p>
@@ -2912,7 +2912,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
  'alliteration': 1.0916179337231968,
  'assonance': 0.8305084745762712,
  'p_open_syllables': 0.76,
- 'mean_syllable_len': 2.6}
+ 'mean_syllable_len': 2.48}
 </code></pre></div>
 </div>
 </div>

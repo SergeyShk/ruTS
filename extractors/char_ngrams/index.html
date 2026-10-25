@@ -2148,12 +2148,12 @@
 <h1 id="n-">Извлечение символьных N-грамм<a class="headerlink" href="#n-" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">CharNgramsExtractor</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">within_words</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: extractors/char_ngrams.md:CharNgramsExtractor afcd43e -->
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor 1d91165 -->
 <p>Класс для извлечения символьных N-грамм из текста - последовательностей из N символов, взятых окном по строке. Символьные N-граммы - стандартный признак стилометрии и атрибуции авторства (Stamatatos 2009), они могут заменять слова в мерах вроде дельты Барроуза.</p>
 <p>Пробельные символы схлопываются в один пробел, знаки препинания сохраняются. При <code>within_words=True</code> N-граммы не пересекают границ слов: текст режется токенизатором на слова, знаки препинания отбрасываются, слова короче N N-грамм не дают.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>ParameterError</code> - <code>n</code>, который не целое число не меньше единицы.</li>
+<li><code>ParameterError</code> - <code>n</code>, который не целое число не меньше единицы, <code>lowercase</code> или <code>within_words</code>, который не <code>bool</code>.</li>
 </ul>
 <p>Класс расширяет <code>CharNgramsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/char_ngrams/">anyTS</a> крючком русского языка: его токенизатор слов по умолчанию для <code>within_words</code>, метод <code>tokenize(text)</code>, - токенизатор по умолчанию <a href="../words/"><code>WordsExtractor</code></a>, функция <code>tokenize</code> библиотеки <a href="https://github.com/natasha/razdel">razdel</a> с отделением приклеенных к словам тире реплик (<code>ruts.utils.iter_tokens</code>). Перед извлечением из текста снимаются знаки ударения и мягкие переносы (<code>ruts.utils.strip_marks</code>). Список N-грамм подается в <a href="../../corpus/stylometry/"><code>delta</code></a> как единицы текста вместо слов.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>

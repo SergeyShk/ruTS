@@ -2242,7 +2242,7 @@
 <ul>
 <li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
 <li><code>SourceError</code> - a source without words;</li>
-<li><code>ParameterError</code> - a threshold that is not an integer of at least one.</li>
+<li><code>ParameterError</code> - a threshold that is not an integer of at least one, a <code>normalize</code> that is not a <code>bool</code>.</li>
 </ul>
 <p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core with the hooks of Russian: the syllables of a word are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the punctuation marks are counted by the <a href="#count_punctuations"><code>count_punctuations</code></a> of ruTS, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The blank line component of ruTS is called <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>. Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the <code>print_stats</code> table is in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
@@ -2256,21 +2256,23 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>    Статистика     | Значение
-------------------------------
-Предложения        |    1
-Слова              |    9
-Уникальные слова   |    8
-Длинные слова      |    3
-Сложные слова      |    2
-Простые слова      |    7
-Односложные слова  |    5
-Многосложные слова |    4
-Символы            |    55
-Буквы              |    45
-Пробелы            |    8
-Слоги              |    18
-Знаки препинания   |    2
+<div class="highlight"><pre><span></span><code>            Статистика            | Значение
+---------------------------------------------
+Предложения                       |    1
+Слова                             |    9
+Уникальные слова                  |    8
+Длинные слова                     |    3
+Сложные слова                     |    2
+Простые слова                     |    7
+Односложные слова                 |    5
+Многосложные слова                |    4
+Символы                           |    55
+Буквы                             |    45
+Пробелы                           |    8
+Слоги                             |    18
+Знаки препинания                  |    2
+Энтропия длин слов в буквах (бит) |   2.20
+Энтропия длин слов в слогах (бит) |   1.66
 </code></pre></div>
 </div>
 </div>
@@ -2428,6 +2430,18 @@
 <td style="text-align: left;"><code>p_punctuations</code></td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>letters_entropy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Shannon entropy in bits of the word lengths in letters, of <code>c_letters</code>: 0 when the words have one length</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>syllables_entropy</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;">Shannon entropy in bits of the word lengths in syllables, of <code>c_syllables</code></td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>c_punctuations</code></td>
 <td style="text-align: left;"><code>dict[str, int]</code></td>
 <td style="text-align: left;">Distribution of punctuation marks by type (<a href="#count_punctuations"><code>count_punctuations</code></a>)</td>
@@ -2439,7 +2453,7 @@
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p><code>count_words_by_syllables(min_syllables)</code> and <code>count_words_by_letters(min_letters)</code> return the number of words with at least the given number of syllables or letters; a minimum that is not an integer raises <code>ParameterError</code>.</p>
 <p>The methods recount complex and long words with a threshold other than the one set when the object was created: this is how <a href="../readability_stats/"><code>ReadabilityStats</code></a> computes the SMOG index (a complex word has 5 or more syllables) and LIX (a long word has 7 or more letters).</p>
-<p><code>get_stats(flat)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the counts of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
+<p><code>get_stats(flat)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the statistics of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
 <p><code>print_stats()</code> prints a table with the counts of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
 <p>The normalized statistics <code>p_*</code> are not in the table.</p>
 <p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
@@ -2467,6 +2481,8 @@
  'n_spaces': 8,
  'n_syllables': 18,
  'n_punctuations': 2,
+ 'letters_entropy': 2.197159723424149,
+ 'syllables_entropy': 1.6577427265048887,
  'c_punctuations': {'comma': 1,
                     'period': 0,
                     'question': 0,

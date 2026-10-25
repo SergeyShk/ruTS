@@ -1196,6 +1196,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forward_overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlap with the next sentences and paragraphs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2331,6 +2342,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forward_overlap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overlap with the next sentences and paragraphs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pronouns" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2561,6 +2583,12 @@
 Повтор знаменательных слов во всех парах предложений     |   0.50
 Доля общих знаменательных слов в соседних предложениях   |   0.11
 Доля общих знаменательных слов во всех парах предложений |   0.19
+Повтор существительных в двух следующих предложениях     |   0.67
+Повтор аргументов в двух следующих предложениях          |   0.75
+Повтор знаменательных слов в двух следующих предложениях |   0.40
+Повтор существительных в соседних абзацах                |   nan
+Повтор аргументов в соседних абзацах                     |   nan
+Повтор знаменательных слов в соседних абзацах            |   nan
 Доля местоимений                                         |   0.14
 Отношение местоимений к существительным                  |   0.50
 Доля указательных местоимений                            |   0.05
@@ -2642,6 +2670,11 @@
 <td style="text-align: left;">Numbers of the sentences with words and of the words</td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>n_paragraphs</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the paragraphs, the parts of the text between blank lines that hold words</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;">Numbers of the words by kind</td>
@@ -2683,7 +2716,7 @@
 </div>
 </div>
 <h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
-<p>Every metric is an attribute of the object, computed when it is created; <code>get_stats</code> gives those of <code>stats_desc</code>, all but <code>mood_repetition</code> by default. The functions of the cards take a sentence as the collection of its elements - lemmas of nouns, arguments or content words, values of a feature of its verbs - and see no language.</p>
+<p>Every metric is an attribute of the object, computed when it is created - the overlaps with the next sentences and paragraphs on first use; <code>get_stats</code> gives those of <code>stats_desc</code>, all but <code>mood_repetition</code> by default. The functions of the cards take a sentence as the collection of its elements - lemmas of nouns, arguments or content words, values of a feature of its verbs - and see no language.</p>
 <table>
 <thead>
 <tr>
@@ -2741,6 +2774,42 @@
 <td style="text-align: left;">Mean share of the shared content words (Dice) in all the pairs</td>
 <td style="text-align: left;">0-1, <code>nan</code> for one sentence</td>
 <td style="text-align: left;">More words shared across the text</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>noun_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Share of the nouns of a sentence repeated in one of the next two</td>
+<td style="text-align: left;">0-1, <code>nan</code> for fewer than three sentences or without nouns in the compared ones</td>
+<td style="text-align: left;">More nouns carried on</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>argument_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Share of the arguments of a sentence repeated in one of the next two</td>
+<td style="text-align: left;">0-1, <code>nan</code> for fewer than three sentences or without arguments in the compared ones</td>
+<td style="text-align: left;">More arguments carried on</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>content_overlap_2_sent</code></a></td>
+<td style="text-align: left;">Share of the content words of a sentence repeated in one of the next two</td>
+<td style="text-align: left;">0-1, <code>nan</code> for fewer than three sentences or without content words in the compared ones</td>
+<td style="text-align: left;">More content words carried on</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>noun_overlap_para</code></a></td>
+<td style="text-align: left;">Share of the nouns of a paragraph repeated in the next one</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one paragraph or without nouns in the compared ones</td>
+<td style="text-align: left;">More nouns carried to the next paragraph</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>argument_overlap_para</code></a></td>
+<td style="text-align: left;">Share of the arguments of a paragraph repeated in the next one</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one paragraph or without arguments in the compared ones</td>
+<td style="text-align: left;">More arguments carried to the next paragraph</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#forward_overlap"><code>content_overlap_para</code></a></td>
+<td style="text-align: left;">Share of the content words of a paragraph repeated in the next one</td>
+<td style="text-align: left;">0-1, <code>nan</code> for one paragraph or without content words in the compared ones</td>
+<td style="text-align: left;">More content words carried to the next paragraph</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#pronouns"><code>p_pronouns</code></a></td>
@@ -2821,7 +2890,7 @@
 <p class="metric-meta"><code>noun_overlap_adjacent</code> · <code>noun_overlap_all</code> · <code>argument_overlap_adjacent</code> · <code>argument_overlap_all</code> · <code>content_overlap_adjacent</code> · <code>content_overlap_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>The binary overlap of Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 over the adjacent pairs, CRFNOa, CRFAOa, CRFSOa over all of them): the share of the pairs of sentences that share at least one element; <code>nan</code> for a text shorter than two sentences. All the pairs are counted as in <code>calc_overlaps</code>, without going through them.</p>
+<p>The binary overlap of Coh-Metrix (CRFNO1, CRFAO1, CRFSO1 over the adjacent pairs, CRFNOa, CRFAOa, CRFSOa over all of them): the share of the pairs of sentences that share at least one element; <code>nan</code> for a text shorter than two sentences.</p>
 <div class="arithmatex">\[
 \frac{\textrm{Number of pairs sharing an element}}{\textrm{Number of pairs}}
 \]</div>
@@ -2855,7 +2924,7 @@
 <p class="metric-meta"><code>content_overlap_prop_adjacent</code> · <code>content_overlap_prop_all</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_proportional_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">adjacent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>The proportional overlap of Coh-Metrix (CRFCWO1, CRFCWOa): the Dice coefficient of a pair of sentences (<code>dice</code>) averaged over the pairs; <code>nan</code> for a text shorter than two sentences. Over all the pairs the sum is computed as in <code>calc_overlaps</code>, without going through them.</p>
+<p>The proportional overlap of Coh-Metrix (CRFCWO1, CRFCWOa): the Dice coefficient of a pair of sentences (<code>dice</code>) averaged over the pairs; <code>nan</code> for a text shorter than two sentences.</p>
 <div class="arithmatex">\[
 \frac{1}{\textrm{Number of pairs}} \sum_{(A, B)} \textrm{Dice}(A, B)
 \]</div>
@@ -2913,6 +2982,61 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="metric-card">
+<h3 id="forward_overlap">Overlap with the next sentences and paragraphs<a class="headerlink" href="#forward_overlap" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>noun_overlap_2_sent</code> · <code>argument_overlap_2_sent</code> · <code>content_overlap_2_sent</code> · <code>noun_overlap_para</code> · <code>argument_overlap_para</code> · <code>content_overlap_para</code> · <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a></p>
+<p>The adjacent overlap of TAACO, by the lemmas of the nouns, of the arguments and of the content words: the share of the distinct lemmas of a sentence repeated in one of the next two sentences (<code>adjacent_overlap_2_*_sent</code>), and of a paragraph repeated in the next paragraph (<code>adjacent_overlap_*_para</code>), over all the sentences or paragraphs that have them (<code>calc_forward_overlap</code>). Unlike the binary overlap, a pair of segments counts by the share of the lemmas they share. A paragraph is a part of the text between blank lines that holds words; a word that carries <code>paragraph_start</code> opens one, inside a sentence too, as when a parser joins a heading to the next sentence. TAACO takes every line for a paragraph: a text with a paragraph on every line and no blank lines is one paragraph here, and its <code>*_para</code> are <code>nan</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_forward_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>The share of the elements of a segment repeated in the next ones: the distinct elements of every segment with <code>span</code> segments after it that one of these segments holds, over the distinct elements of those segments; <code>nan</code> for no more segments than <code>span</code> or for segments without elements.</p>
+<div class="arithmatex">\[
+\frac{\sum_{i=1}^{n-k} |A_i \cap (A_{i+1} \cup \dots \cup A_{i+k})|}{\sum_{i=1}^{n-k} |A_i|}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>sets</code></td>
+<td style="text-align: left;"><code>list[set[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Elements of every segment</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>span</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Number <span class="arithmatex">\(k\)</span> of the next segments a segment is compared with</td>
+</tr>
+</tbody>
+</table>
+<p>Segments that are a string, a <code>Doc</code>, an iterator or a segment that is not a list of strings raise <code>SourceTypeError</code>, a span that is not an integer above 0 <code>ParameterError</code>.</p>
+<p>In ruTS both a string and a <code>Doc</code> are split into paragraphs.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_forward_overlap</span>
+
+<span class="n">calc_forward_overlap</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"кот"</span><span class="p">}],</span> <span class="n">span</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">paragraphs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">paragraphs</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">noun_overlap_para</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">content_overlap_para</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>0.5
+(2, 1.0, 0.8)
+</code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="metric-card">
 <h3 id="pronouns">Pronouns and demonstratives<a class="headerlink" href="#pronouns" title="Permanent link">&para;</a></h3>
@@ -3057,7 +3181,7 @@
 <p>The primary connectors (<code>primary</code>) are conjunctions, adverbs and particles (потому что, однако, затем), the secondary ones (<code>secondary</code>) lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами). The rules by which a word of the dictionary counts as a connector are those of the <a href="#ConnectorMatcher">matcher</a>.</p>
 </div>
 <p>A list of sentences that is a string, a <code>Doc</code>, an iterator, a set or a table raises <code>SourceTypeError</code>, and so does a sentence that is not a list of strings (<code>check_words</code>), such as a list of spaCy tokens. The overlaps (<code>calc_overlap</code>, <code>calc_proportional_overlap</code>, <code>calc_overlaps</code>) take a sentence as a set too; <code>count_given</code> and <code>calc_repetition</code> count the words in order and refuse a set.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlap</span><span class="p">,</span> <span class="n">calc_repetition</span><span class="p">,</span> <span class="n">count_given</span>
@@ -3078,7 +3202,7 @@
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the cohesion statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">cs</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
@@ -3093,6 +3217,12 @@
  'content_overlap_all': 0.5,
  'content_overlap_prop_adjacent': 0.1111111111111111,
  'content_overlap_prop_all': 0.18650793650793648,
+ 'noun_overlap_2_sent': 0.6666666666666666,
+ 'argument_overlap_2_sent': 0.75,
+ 'content_overlap_2_sent': 0.4,
+ 'noun_overlap_para': nan,
+ 'argument_overlap_para': nan,
+ 'content_overlap_para': nan,
  'p_pronouns': 0.14285714285714285,
  'pronoun_noun_ratio': 0.5,
  'p_demonstratives': 0.047619047619047616,
@@ -3119,7 +3249,7 @@
 <h2 id="calc_overlaps">Overlaps at once<a class="headerlink" href="#calc_overlaps" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_overlaps</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">proportional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>The values of <code>calc_overlap</code> and <code>calc_proportional_overlap</code> over the adjacent and over all the pairs at once, as an <code>Overlap</code> named tuple with the fields <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> and <code>prop_all</code>; without <code>proportional</code> the last two are <code>nan</code>. The values over all the pairs are computed without going through every pair: the sharing pairs are counted over bit masks of the sentences, and the sum of the Dice coefficients over the histograms of the lengths of the sentences holding each element, added by <code>math.fsum</code> so that it does not depend on the order of the elements.</p>
+<p>The values of <code>calc_overlap</code> and <code>calc_proportional_overlap</code> over the adjacent and over all the pairs at once, as an <code>Overlap</code> named tuple with the fields <code>adjacent</code>, <code>all</code>, <code>prop_adjacent</code> and <code>prop_all</code>; without <code>proportional</code> the last two are <code>nan</code>. The values over all the pairs come without going through every pair, and none of them depends on the order of the elements in the sets.</p>
 <table>
 <thead>
 <tr>
@@ -3145,7 +3275,7 @@
 </tbody>
 </table>
 <p><code>CohesionStats</code> computes with it the overlaps of the nouns and of the arguments without the proportional ones, and those of the content words with them.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_overlaps</span>
@@ -3168,8 +3298,8 @@
 <li><code>SourceTypeError</code> - a dictionary that is not a mapping of a phrase to a pair of strings;</li>
 <li><code>ParameterError</code> - an unknown class or kind.</li>
 </ul>
-<p><code>RussianConnectorMatcher</code> is a subclass of the core <code>ConnectorMatcher</code> with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (<code>normalize_yo</code>). A one-word connector takes a part of speech of the core <code>CONNECTOR_POS</code> (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) or of <code>CONNECTOR_POS_EXTRA</code> for its form (for example: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели and коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» as a noun is no connector. The context rules are lists of <code>ruts.constants</code>: words after a connector (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) and before it (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>) that make it no connector; connectors that count inside a sentence only after particular words (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) and do not count at its start (<code>CONNECTOR_NOT_AT_START</code>: the interrogative <em>отчего</em>); parts of speech of the word after a connector that make it a preposition or a member of the clause (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). The rules read through a punctuation mark only for <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>, <em>после «Ревизора»</em>), so the parenthetical <em>значит,</em> stays a connector, and a mark between the words of a connector of <code>CONNECTOR_SPLIT_BY_MARKS</code> splits it (<em>так, как</em>). These parts of speech and lists are attributes of the matcher: <code>CONNECTOR_POS</code> is <code>pos_tags</code>, the others are named without <code>CONNECTOR_</code> in lower case (<code>CONNECTOR_BLOCKED_AFTER</code> is <code>blocked_after</code>); the attributes <code>not_after_pos</code> and <code>start_only_pos</code> are empty in ruTS, so these rules of <code>find</code> do not apply.</p>
-<p><code>find(words, sent_index, pos, breaks)</code> returns the occurrences of the connectors in a sentence in the order of its words. The words are those of one sentence without punctuation, the first one its start. With the parts of speech, a one-word connector counts only with one of <code>pos_tags</code> or of <code>pos_extra</code> for its form, never after one of <code>not_after_pos</code>, and with one of <code>start_only_pos</code> only at the start of the sentence; a word without a part of speech (<code>None</code>) passes. Without the parts of speech the rules that read them are skipped. The positions of the punctuation marks <code>breaks</code> cut a connector off its neighbours: a rule does not read a word across a mark, so in <em>so, the end</em> the word after the comma neither blocks nor lets the connector count, unless the connector is one of <code>read_through_marks</code>, and a mark between the words of a connector of <code>split_by_marks</code> makes it none; without them the words are read as adjacent.</p>
+<p><code>RussianConnectorMatcher</code> is a subclass of the core <code>ConnectorMatcher</code> with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (<code>normalize_yo</code>). A one-word connector takes a part of speech of the core <code>CONNECTOR_POS</code> (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADV</code>, <code>ADP</code>, <code>INTJ</code>, <code>X</code>) or of <code>CONNECTOR_POS_EXTRA</code> for its form (for example: словом - <code>NOUN</code>, главное - <code>ADJ</code>, <code>NOUN</code>, допустим - <code>VERB</code>, точнее - <code>ADJ</code>, т.е. - <code>PUNCT</code>, значит - <code>VERB</code>, ежели and коли - <code>NOUN</code>, <code>PROPN</code>, <code>VERB</code>): «раз» as a noun is no connector. The context rules are lists of <code>ruts.constants</code>: words after a connector (<code>CONNECTOR_BLOCKED_AFTER</code>: <em>пока что</em>, <em>хоть бы</em>) and before it (<code>CONNECTOR_BLOCKED_BEFORE</code>: <em>ещё раз</em>, <em>и так далее</em>) that make it no connector; connectors that count inside a sentence only after particular words (<code>CONNECTOR_ONLY_AFTER</code>: <em>и отсюда</em>) and do not count at its start (<code>CONNECTOR_NOT_AT_START</code>: the interrogative <em>отчего</em>); parts of speech of the word after a connector that make it a preposition or a member of the clause (<code>CONNECTOR_BLOCKED_AFTER_POS</code>: <em>после обеда</em>, <em>едва заметный</em>). The rules read through a punctuation mark only for <code>CONNECTOR_READ_THROUGH_MARKS</code> (<em>не знал, отчего</em>), so the parenthetical <em>значит,</em> stays a connector, and a mark between the words of a connector of <code>CONNECTOR_SPLIT_BY_MARKS</code> splits it (<em>так, как</em>). These parts of speech and lists are attributes of the matcher: <code>CONNECTOR_POS</code> is <code>pos_tags</code>, the others are named without <code>CONNECTOR_</code> in lower case (<code>CONNECTOR_BLOCKED_AFTER</code> is <code>blocked_after</code>); the attributes <code>not_after_pos</code> and <code>start_only_pos</code> are empty in ruTS, so these rules of <code>find</code> do not apply.</p>
+<p><code>find(words, sent_index, pos, breaks, blocked)</code> returns the occurrences of the connectors in a sentence in the order of its words. The words are those of one sentence without punctuation, the first one its start. With the parts of speech, a one-word connector counts only with one of <code>pos_tags</code> or of <code>pos_extra</code> for its form, never after one of <code>not_after_pos</code>, and with one of <code>start_only_pos</code> only at the start of the sentence; a word without a part of speech (<code>None</code>) passes. Without the parts of speech the rules that read them are skipped. The positions of the punctuation marks <code>breaks</code> cut a connector off its neighbours: a rule does not read a word across a mark, so in <em>so, the end</em> the word after the comma neither blocks nor lets the connector count, unless the connector is one of <code>read_through_marks</code>, and a mark between the words of a connector of <code>split_by_marks</code> makes it none; without them the words are read as adjacent. No connector starts at a word of <code>blocked</code>, which a language rules out by more than the words and their parts of speech, such as its parse.</p>
 <table>
 <thead>
 <tr>
@@ -3204,10 +3334,16 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Positions of the words a punctuation mark stands before</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>blocked</code></td>
+<td style="text-align: left;"><code>set[int]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Positions of the words no connector starts at</td>
+</tr>
 </tbody>
 </table>
-<p>Words that are not a list of strings and parts of speech that are not a list of strings and <code>None</code> (the tags <code>token.pos_</code> of spaCy, not the numbers <code>token.pos</code>) and positions of the marks that are not a collection raise <code>SourceTypeError</code>, a number of the sentence or a position of a mark that is not an integer and parts of speech not as many as the words <code>ParameterError</code>.</p>
-<p><code>is_subordinator(connector, pos=None)</code> checks whether an occurrence of a connector ties its clause or phrase to its own sentence: a connector of <code>subordinators</code>, or a one-word connector whose part of speech <code>pos</code> is <code>SCONJ</code> or <code>ADP</code>. The clause of a subordinating conjunction and the phrase of a preposition belong to the sentence of the connector wherever it stands, so a subordinator opening a sentence (<em>when he came, ...</em>, <em>despite the rain, ...</em>) does not link it to the ones before.</p>
+<p>Words that are not a list of strings and parts of speech that are not a list of strings and <code>None</code> (the tags <code>token.pos_</code> of spaCy, not the numbers <code>token.pos</code>) and positions that are not a collection raise <code>SourceTypeError</code>, a number of the sentence or a position that is not an integer, a position of a mark that is not that of a word after the first, a blocked position that is not that of a word and parts of speech not as many as the words <code>ParameterError</code>.</p>
+<p><code>is_subordinator(connector, pos=None)</code> checks whether an occurrence of a connector ties its clause or phrase to its own sentence: a connector of <code>subordinators</code>, or a one-word connector whose part of speech <code>pos</code> is <code>SCONJ</code> or <code>ADP</code>, but none of <code>parcellation</code>. The clause of a subordinating conjunction and the phrase of a preposition belong to the sentence of the connector wherever it stands, so a subordinator opening a sentence (<em>when he came, ...</em>, <em>despite the rain, ...</em>) does not link it to the ones before. A connector that is not a <code>Connector</code> raises <code>SourceTypeError</code>.</p>
 <p>The subordinators of ruTS besides the one-word ones tagged <code>SCONJ</code> and <code>ADP</code> are <code>CONNECTOR_SUBORDINATORS</code>: the multi-word conjunctions and prepositions (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) and the one-word ones the spaCy models or pymorphy3 tag otherwise (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). A conjunction of <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) opening a sentence attaches it to the one before, so it is no subordinator.</p>
 <h2 id="find_connectors">Connector search<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">find_connectors</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sent_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -3252,7 +3388,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_connectors</span>
@@ -3331,7 +3467,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_info</span>
@@ -3403,7 +3539,7 @@
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>

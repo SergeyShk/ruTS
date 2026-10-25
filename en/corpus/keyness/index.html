@@ -2356,11 +2356,11 @@
 
 
 <h1 id="keywords">Keywords<a class="headerlink" href="#keywords" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Keyword extraction (keyness) for a target corpus against a reference one: the words that occur significantly more often in the target corpus than in the reference.</p>
 <p>Every word gets two values that <a href="http://eprints.lancs.ac.uk/51449/4/Gabrielatos_Marchi_Keyness.pdf">Gabrielatos and Marchi</a> and <a href="http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/">Hardie</a> recommend reading together: the log-likelihood <span class="arithmatex">\(G^2\)</span> with its p-value (whether there is a difference) and Log Ratio (how large it is), plus the chosen measure <code>score</code>, which sorts the list. The measures of significance (<span class="arithmatex">\(G^2\)</span>, chi-square, BIC) and ELL, the effect size of <span class="arithmatex">\(G^2\)</span>, are negative when the word is more frequent in the reference; %DIFF, Log Ratio and the odds ratio are directional by construction.</p>
-<p>The reference may be a list of words, a mapping of frequencies (its size is the sum of the counts) or a <code>FrequencyReference</code>. Words are compared as they are: case, lemmatization and stop words belong to the word extractor, and both corpora have to be extracted the same way.</p>
+<p>The reference may be a list of words, a mapping of frequencies (its size is the sum of the counts) or a <code>FrequencyReference</code>. Words are compared as they are: case, lemmatization and stop words belong to the word extractor, and both corpora have to be extracted the same way. A corpus of several texts is given as a list of their lists of words. With <code>n</code> above 1 the keywords are the n-grams of the words of every text, joined by underscores as the n-grams of <code>WordsExtractor</code> (<em>black_cat</em>), so an n-gram never runs across two texts; the counts and the sizes are those of the n-grams, and the frequencies per million are per million n-grams. Frequencies of n-grams - a sum of the <code>Counter</code> of the n-grams of every text, or a frequency dictionary of n-grams - go with <code>n=1</code>: a mapping and a <code>FrequencyReference</code> are refused with <code>n</code> above 1.</p>
 <p>The function wraps <code>keyness</code> of the <a href="https://sergeyshk.github.io/anyTS/corpus/keyness/">anyTS</a> core and also takes the <a href="../../datasets/freq2011/">Lyashevskaya and Sharoff frequency dictionary</a> <code>FreqDict</code> as the reference; <code>FrequencyReference</code> is in <code>ruts.corpus</code> next to it. Words are extracted with <a href="../../extractors/words/"><code>WordsExtractor</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
@@ -2401,15 +2401,15 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>target</code></td>
-<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, int]</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>list[list[str]]</code> / <code>dict[str, int]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Words of the target corpus or their frequencies</td>
+<td style="text-align: left;">Words of the target corpus - one text or a list of texts - or their frequencies</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>reference</code></td>
-<td style="text-align: left;"><code>list[str]</code> / <code>dict[str, float]</code> / <code>FrequencyReference</code></td>
+<td style="text-align: left;"><code>list[str]</code> / <code>list[list[str]]</code> / <code>dict[str, float]</code> / <code>FrequencyReference</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Words of the reference corpus, their frequencies or a reference by frequencies</td>
+<td style="text-align: left;">Words of the reference corpus - one text or a list of texts - their frequencies or a reference by frequencies</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>measure</code></td>
@@ -2435,9 +2435,15 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Number of keywords; <code>None</code> - all of them</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>n</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Length of the n-grams of the words of every text; <code>1</code> - the words</td>
+</tr>
 </tbody>
 </table>
-<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>. A reference that is not a list of strings, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and an empty corpus raise <code>SourceError</code>.</p>
+<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>; an <code>n</code> above 1 with frequencies or a <code>FrequencyReference</code> raises <code>ParameterError</code>. A reference that is not a list of strings, a list of such lists, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and a corpus without words, or shorter than <code>n</code> words, raise <code>SourceError</code>.</p>
 <p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
 <table>
 <thead>
@@ -2457,10 +2463,10 @@
 </tr>
 </tbody>
 </table>
-<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>: the dictionary holds words.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer and the number of keywords is <code>None</code> or an integer of at least one. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings or a mapping of strings to whole frequencies, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
+<p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer, the number of keywords is <code>None</code> or an integer of at least one, the length of the n-grams <code>n</code> is an integer of at least one and <code>positive</code> is a <code>bool</code>. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings, a list of such lists or a mapping of strings to whole frequencies, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
 <h2 id="reference-by-frequencies">Reference by frequencies<a class="headerlink" href="#reference-by-frequencies" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -2593,12 +2599,12 @@
 <tr>
 <td style="text-align: left;"><code>ipm_target</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Frequency in the target corpus per million words</td>
+<td style="text-align: left;">Frequency in the target corpus per million words, or n-grams</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ipm_reference</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Frequency in the reference corpus per million words</td>
+<td style="text-align: left;">Frequency in the reference corpus per million words, or n-grams</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>g2</code></td>

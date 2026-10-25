@@ -2567,7 +2567,7 @@ True
 <h3 id="MorphStatsComponent">Морфологические статистики<a class="headerlink" href="#MorphStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), в пайплайне без теггера - из pymorphy3.</p>
+<p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), в пайплайне без <code>morphologizer</code> - из pymorphy3.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2789,12 +2789,12 @@ True
 <h3 id="SyntaxStatsComponent">Синтаксические статистики<a class="headerlink" href="#SyntaxStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:SyntaxStatsComponent 95e9f18 -->
-<p><code>SyntaxStatsComponent</code> кладет в расширение синтаксические статистики; перед ним нужен парсер.</p>
-<p>Парсер есть в моделях <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>.</p>
+<!-- core: components.md:SyntaxStatsComponent f99599b -->
+<p><code>SyntaxStatsComponent</code> кладет в расширение синтаксические статистики; перед ним нужны парсер и части речи.</p>
+<p>Парсер и части речи есть в моделях <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceError</code> - документ без разбора зависимостей, в пайплайне без парсера.</li>
+<li><code>SourceError</code> - документ без разбора зависимостей или частей речи, в пайплайне без парсера или <code>morphologizer</code>.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
