@@ -2,7 +2,10 @@ from math import isnan
 
 import numpy as np
 import pytest
+import spacy
 
+from ruts import SyntaxStats
+from ruts.constants import SYNTAX_STATS_DESC
 from ruts.corpus import (
     compare_corpora,
     corpus_features,
@@ -111,7 +114,7 @@ def test_split_windows_closing_marks(source, expected):
 def test_text_features():
     features = text_features(text)
     prefixes = {key.split("_", 1)[0] for key in features}
-    assert prefixes == {"basic", "readability", "diversity", "morph", "sents", "punct"}
+    assert prefixes == {"basic", "readability", "diversity", "morph", "sents", "punct", "cohesion"}
     assert features["sents_mean"] == 6.0
     for duplicate in ("basic_words_per_sent", "basic_p_unique_words"):
         assert duplicate not in features
@@ -124,7 +127,10 @@ def test_text_features():
     assert text_features("Кот не спит, пёс не лает.")["morph_polarity_Neg"] == pytest.approx(2 / 6)
     assert text_features("Кот, пёс, дом.")["morph_polarity_Neg"] == 0.0
     assert sum(1 for key in features if key.startswith("morph_")) == 48
-    assert len(features) == 116
+    assert len(features) == 146
+    # Связность - без повторов между абзацами: окно режет абзацы текста
+    assert sum(1 for key in features if key.startswith("cohesion_")) == 30
+    assert not any(key.endswith("_para") for key in features)
     assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"
@@ -135,6 +141,37 @@ def test_text_features():
     assert all(isinstance(value, float) for value in features.values())
     with pytest.raises(ValueError):
         text_features("...")
+
+
+def test_text_features_syntax():
+    """С пайплайном spaCy - синтаксические признаки его разбора, без него их нет"""
+    nlp = pytest.importorskip("ru_core_news_sm").load()
+    features = text_features(text, nlp=nlp)
+    syntax = {key: value for key, value in features.items() if key.startswith("syntax_")}
+    assert len(syntax) == len(SYNTAX_STATS_DESC)
+    assert syntax["syntax_clauses_per_sent"] == SyntaxStats(nlp(text)).clauses_per_sent
+    assert {key: value for key, value in features.items() if key not in syntax} == pytest.approx(
+        text_features(text), nan_ok=True
+    )
+    with pytest.raises(TypeError, match=r"^Пайплайн должен быть объектом Language spaCy"):
+        text_features(text, nlp="ru_core_news_sm")
+    with pytest.raises(ValueError):
+        text_features(text, nlp=spacy.blank("ru"))
+    short = spacy.load("ru_core_news_sm")
+    short.max_length = 10
+    with pytest.raises(
+        ValueError, match=r"^Текст из \d+ символов длиннее предела пайплайна \(10\)"
+    ):
+        text_features(text, nlp=short)
+
+
+@pytest.mark.parametrize("separator", ["\n\n", "\n"])
+def test_text_features_syntax_sentences(separator):
+    """Предложения разбора - те же, что у остальных групп, и через пустую строку, и через
+    перевод строки, который парсер склеивает"""
+    nlp = pytest.importorskip("ru_core_news_sm").load()
+    dialogue = separator.join(["— Ты пришел?", "— Пришел.", "— Ну и хорошо."])
+    assert text_features(dialogue, nlp=nlp)["syntax_clauses_per_sent"] == 1.0
 
 
 def test_text_features_blank_lines():

@@ -246,7 +246,7 @@ Checks whether an infinitive under `xcomp` heads a clause of its own («хоче
 is_infinitive_periphrasis(token)
 ```
 
-Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти») or the hortative «давай», «давайте» of `HORTATIVE_WORDS` without a negation («давайте играть», but not «не давайте детям играть»).
+Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти»), the short form of a modal adjective of `MODAL_SHORT_ADJECTIVES` («готов уйти», «рад помочь») or the hortative «давай», «давайте» of `HORTATIVE_WORDS` without a negation («давайте играть», but not «не давайте детям играть»).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

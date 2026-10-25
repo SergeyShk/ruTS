@@ -52,7 +52,7 @@ wheels = [
 
 [[package]]
 name = "anyts"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "graphviz" },
@@ -65,9 +65,9 @@ dependencies = [
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "spacy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3c/15/b6cf8f391e9f2d3c336642ceee141d72c16403da076909a1424c6b71043f/anyts-0.4.0.tar.gz", hash = "sha256:0cd7b636f1078aee415405ea248374087f6ddd2c38c08886348a2415c168bf92", size = 184117, upload-time = "2026-10-25T15:42:15.167Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/6e/627a12ea260714f0ffeae19ec6d075d22ed0539684e261a4cb0c0418bafc/anyts-0.4.1.tar.gz", hash = "sha256:5b2a073aaa6f44b20e81c78300d80a5c3c0ef9aaf359bbe8b549f929e0fe805f", size = 185335, upload-time = "2026-10-25T21:29:30.848Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/fb/2199a98e2c34e4b76b6f295ac2dda647b38c88bcbcd7257150fc887d1aaf/anyts-0.4.0-py3-none-any.whl", hash = "sha256:b1000233616c0dfe6be227a8c34fbe431020f5e307ee4758b3284bb60d5b34d6", size = 205952, upload-time = "2026-10-25T15:42:14.098Z" },
+    { url = "https://files.pythonhosted.org/packages/df/fd/3a5d195aae7447fe6cc19f6037df3380a2e6bfd0820ce70ecb9a34d0f246/anyts-0.4.1-py3-none-any.whl", hash = "sha256:a1b83e7d55c56efeef56e7e8fbae4af45878d77f6cab87e1ed04c23051577b13", size = 207285, upload-time = "2026-10-25T21:29:29.604Z" },
 ]
 
 [[package]]
@@ -3698,7 +3698,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.19.0.dev4"
+version = "0.19.0.dev5"
 source = { editable = "." }
 dependencies = [
     { name = "anyts" },
@@ -3757,7 +3757,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "anyts", specifier = ">=0.4,<0.5" },
+    { name = "anyts", specifier = ">=0.4.1,<0.5" },
     { name = "graphviz", specifier = ">=0.20.3" },
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=1.26" },
@@ -4454,7 +4454,7 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "21.14.11"
+version = "21.14.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
@@ -4463,9 +4463,9 @@ dependencies = [
     { name = "platformdirs" },
     { name = "python-discovery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/be/4d1d59d309db76b5808fcfd78bd5996f4e7241366691c38fc331a3136398/virtualenv-21.14.11.tar.gz", hash = "sha256:593052d8477ea8c55a842387ce111bd08c72618f0c1133c302cafe335e570a57", size = 5503091, upload-time = "2026-10-18T07:06:34.716Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/70/aa/bff50daee0488e16d611258a9b6c5a1d0c9e128f8ca424e9f4e1c0444ef2/virtualenv-21.14.13.tar.gz", hash = "sha256:de5307ba4b9a0001d9c8ea02832d38f63ca432880f416c1bface61c4323fd905", size = 5570301, upload-time = "2026-10-22T20:10:16.952Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ce/6b/d85da8982b41190eafcb9df91dff9d83fc6989e98af4b5be4c8f85510c95/virtualenv-21.14.11-py3-none-any.whl", hash = "sha256:b319f8590a84e5de5f8f2c803ecd2237e9bc0ffa7c1e875e3169c107cecb7454", size = 5495268, upload-time = "2026-10-18T07:06:32.719Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/a9/c10d8a44a29fb94a18b43fdf11f38caca53ae7c9406f11a72b1cb8f624f1/virtualenv-21.14.13-py3-none-any.whl", hash = "sha256:5fbb04138a4861580b78ba9110d529a26bc48fcc93c8ec36bc0202eeed96a788", size = 5557094, upload-time = "2026-10-22T20:10:15.096Z" },
 ]
 
 [[package]]

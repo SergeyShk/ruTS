@@ -58,7 +58,7 @@ MorphStats(source, words_extractor=None)
 
 ## Атрибуты
 
-<!-- core: stats/morph_stats.md:MorphStats-attributes d3e609d -->
+<!-- core: stats/morph_stats.md:MorphStats-attributes 0edcb8a -->
 | Атрибут | Тип | Описание |
 | :------ | :-- | :------- |
 | `words` | `tuple[str]` | Слова текста |

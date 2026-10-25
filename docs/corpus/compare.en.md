@@ -8,7 +8,7 @@ Compares two corpora of Russian texts by every feature of a text at once: which 
 
 The texts are cut in a row into windows of exactly `window` words by [`split_windows`](#split_windows), so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by [`text_features`](#text_features) or a function of one's own, and the tables of the two corpora are compared by [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core.
 
-Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1423 windows of 1000 words, under a minute.
+Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1423 windows of 1000 words, about a minute.
 
 === "Code"
 
@@ -38,23 +38,23 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 === "Result"
 
     ```
-                                   median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    punct_ellipsis                       14.000           2.000   5.975   23.025    1.869        0.707  0.853     0.0
-    punct_exclamation                    14.000           4.000   7.000   14.000    1.670        0.658  0.829     0.0
-    morph_verb_form_Fin                   0.766           0.700   0.036    0.099    1.132        0.574  0.787     0.0
-    punct_yo_share                        0.007           0.000   0.002    0.010    1.026        0.533  0.766     0.0
-    morph_verb_form_Part                  0.043           0.077  -0.051   -0.018   -0.795       -0.492  0.254     0.0
-    punct_other                           0.000           2.000  -4.000    0.000   -0.351       -0.489  0.256     0.0
-    readability_dale_chall_index          5.280           6.566  -2.205   -0.757   -0.866       -0.488  0.256     0.0
-    readability_gunning_fog_index         6.088           7.730  -2.592   -0.817   -0.864       -0.481  0.260     0.0
-    readability_smog_index                5.876           7.174  -2.385   -0.877   -0.840       -0.480  0.260     0.0
-    morph_verb_form_Conv                  0.055           0.082  -0.040   -0.017   -0.800       -0.464  0.268     0.0
+                                            median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+    cohesion_content_overlap_2_sent                0.067           0.110  -0.046   -0.035   -1.035       -0.832  0.084     0.0
+    cohesion_noun_overlap_2_sent                   0.080           0.141  -0.068   -0.049   -1.044       -0.750  0.125     0.0
+    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -0.522       -0.742  0.129     0.0
+    punct_ellipsis                                14.000           2.000   5.975   23.025    1.869        0.707  0.853     0.0
+    cohesion_content_overlap_adjacent              0.198           0.352  -0.196   -0.127   -1.228       -0.697  0.151     0.0
+    cohesion_content_overlap_all                   0.094           0.188  -0.127   -0.071   -1.051       -0.678  0.161     0.0
+    punct_exclamation                             14.000           4.000   7.000   14.000    1.670        0.658  0.829     0.0
+    cohesion_noun_overlap_adjacent                 0.110           0.220  -0.142   -0.084   -1.025       -0.651  0.174     0.0
+    cohesion_noun_overlap_all                      0.045           0.097  -0.072   -0.035   -0.820       -0.642  0.179     0.0
+    cohesion_content_overlap_prop_adjacent         0.038           0.060  -0.026   -0.018   -0.820       -0.642  0.179     0.0
     {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Chekhov has several times more ellipses and exclamations per 1000 words, shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs; Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.91, of Tolstoy 0.76), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.30 and 0.33). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 90 of the 116 features have a corrected p-value below 0.01, but only 9 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 67 of those 90 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 111 of the 146 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 82 of those 111 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 ## Parameters
 
@@ -77,10 +77,10 @@ Raises:
 ## Features { #text_features }
 
 ``` {.python .signature}
-text_features(text)
+text_features(text, nlp=None)
 ```
 
-Returns 116 features of a text prefixed by source; an undefined feature is `nan`.
+Returns 146 features of a text prefixed by source, 189 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
@@ -90,19 +90,22 @@ Returns 116 features of a text prefixed by source; an undefined feature is `nan`
 | `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
+| `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
 
-A 1000-word window takes about 0.02 s. Features over the spaCy parse (`SyntaxStats`, `CohesionStats`) are not in the default set - the function works on strings; they can be added with your own feature function via `features`, see the example below.
+A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
 
 The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `text` | `str` | - | Text string |
+| `nlp` | `Language` | `None` | spaCy pipeline with a parser and parts of speech for the `syntax_` features; `None` - without them |
 
 Raises:
 
-- `SourceTypeError` - a text that is not a string;
-- `SourceError` - a text without words.
+- `SourceTypeError` - a text that is not a string, an `nlp` that is not a spaCy `Language` object;
+- `SourceError` - a text without words, a text longer than the `max_length` of the pipeline, a pipeline without a parser or parts of speech.
 
 ``` {.python .signature}
 corpus_features(texts, window=1000, features=text_features, min_words=None)
@@ -123,25 +126,23 @@ Raises:
 - `SourceError` - a corpus without a window of `min_words` words or more;
 - `ParameterError` - a `window` or `min_words` that is not an integer of at least one, `min_words` above `window`.
 
-Your own features, for example syntactic ones by spaCy, are passed as a function; with the parse the same comparison takes about eight minutes:
+Features of your own go to `features` as a function of a text, `text_features` with a pipeline among them; with the parse the same comparison takes about five minutes:
 
 === "Code"
 
     ``` python
+    from functools import partial
+
     import spacy
-    from ruts import SyntaxStats
     from ruts.corpus import compare_corpora, text_features
 
     nlp = spacy.load("ru_core_news_sm")
-
-
-    def features(text):
-        stats = SyntaxStats(nlp(text)).get_stats()
-        return {**text_features(text), **{f"syntax_{key}": value for key, value in stats.items()}}
-
-
     result = compare_corpora(
-        chekhov, tolstoy, window=1000, features=features, labels=("Чехов", "Толстой")
+        chekhov,
+        tolstoy,
+        window=1000,
+        features=partial(text_features, nlp=nlp),
+        labels=("Чехов", "Толстой"),
     )
     result.filter(like="syntax_", axis=0)[columns].head(5).round(3)
     ```
@@ -150,11 +151,11 @@ Your own features, for example syntactic ones by spaCy, are passed as a function
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.106           0.212  -0.142   -0.073   -0.970       -0.574  0.213     0.0
-    syntax_participle_clauses_per_sent         0.054           0.135  -0.108   -0.052   -0.864       -0.566  0.217     0.0
-    syntax_verb_phrases_per_t_unit             1.804           2.112  -0.495   -0.221   -0.835       -0.513  0.244     0.0
-    syntax_mean_clause_len                     5.155           5.893  -1.162   -0.461   -0.833       -0.503  0.248     0.0
-    syntax_modifiers_per_noun                  0.479           0.593  -0.181   -0.057   -0.968       -0.500  0.250     0.0
+    syntax_converb_clauses_per_sent            0.091           0.197  -0.134   -0.081   -1.035       -0.611  0.195     0.0
+    syntax_participle_clauses_per_sent         0.046           0.121  -0.100   -0.051   -0.855       -0.581  0.210     0.0
+    syntax_mean_clause_len                     5.025           5.841  -1.239   -0.485   -0.879       -0.520  0.240     0.0
+    syntax_tree_depth                          3.063           3.653  -0.911   -0.357   -0.968       -0.512  0.244     0.0
+    syntax_verb_phrases_per_t_unit             1.639           1.938  -0.462   -0.204   -0.850       -0.511  0.245     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

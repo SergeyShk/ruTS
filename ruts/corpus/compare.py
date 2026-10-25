@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from collections.abc import Callable, Mapping, Sequence
 from math import nan
+from typing import TYPE_CHECKING
 
 import anyts.corpus.compare
 import pandas as pd
@@ -13,9 +16,10 @@ from anyts.corpus.compare import (
     holm_correction as holm_correction,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
-from anyts.utils import check_words, count_words_by_spans
+from anyts.utils import check_words, count_words_by_spans, is_language, set_sent_starts
 
 from ..basic_stats import BasicStats, punctuation_profile
+from ..cohesion_stats import CohesionStats
 from ..constants import (
     CLOSING_MARKS,
     CORE_MESSAGES,
@@ -27,9 +31,15 @@ from ..diversity_stats import DiversityStats
 from ..exceptions import SourceError, SourceTypeError
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
+from ..syntax_stats import SyntaxStats
 from ..utils import iter_text_sents, iter_text_words
 
+if TYPE_CHECKING:
+    from spacy.language import Language
+
 Features = Callable[[str], Mapping[str, float]]
+# Компоненты моделей ru_core_news, разметка которых синтаксическим признакам не нужна
+_UNUSED_COMPONENTS = ("ner", "lemmatizer")
 
 # Монотонно повторяют другие признаки (ранговое сравнение дает те же U, p и |δ|) или постоянны
 REDUNDANT_FEATURES = frozenset(
@@ -110,7 +120,7 @@ def _check_windows(window: int | None, min_words: int | None) -> None:
     split_windows("", window, min_words)
 
 
-def text_features(text: str) -> dict[str, float]:
+def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
     """
     Вычисление признаков текста для сравнения корпусов
 
@@ -125,22 +135,39 @@ def text_features(text: str) -> dict[str, float]:
         (отрицание, краткая форма) - доли всех слов, остальные - доли слов с этим
         признаком, а признак, которого нет в окне, - nan; sents_ -
         средняя длина предложения, ее разброс и автокорреляция соседних длин;
-        punct_ - частоты знаков на 1000 слов и доля буквы ё. Признаки, повторяющие
-        другие, отброшены (REDUNDANT_FEATURES)
+        punct_ - частоты знаков на 1000 слов и доля буквы ё; cohesion_ - статистики
+        связности (CohesionStats по pymorphy3), кроме повторов между абзацами: окно режет
+        абзацы текста; с пайплайном nlp - еще syntax_, синтаксические статистики
+        (SyntaxStats) его разбора по тем же предложениям, что у других групп
+        (set_sent_starts), без распознавания сущностей и лемматизатора. Признаки,
+        повторяющие другие, отброшены (REDUNDANT_FEATURES)
         Доли пробелов, букв и знаков считаются по символам как есть, поэтому
         верстку издания (отступы, двойные пробелы) стоит выровнять заранее
 
     Аргументы:
         text (str): Строка текста
+        nlp (Language): Пайплайн spaCy с парсером и частями речи для синтаксических
+            признаков; None - без них
 
     Вывод:
         dict[str, float]: Признаки; неопределенные значения - nan
 
     Исключения:
-        SourceError: Если в тексте нет слов
+        SourceTypeError: Если текст не строка или пайплайн не объект Language spaCy
+        SourceError: Если в тексте нет слов, текст длиннее max_length пайплайна
+            или разбор пайплайна без зависимостей или частей речи
     """
     if not isinstance(text, str):
         raise SourceTypeError(f"Ожидается строка текста, а не {type(text).__name__}")
+    if nlp is not None and not is_language(nlp):
+        raise SourceTypeError(
+            f"Пайплайн должен быть объектом Language spaCy, а не {type(nlp).__name__}"
+        )
+    if nlp is not None and len(text) > nlp.max_length:
+        raise SourceError(
+            f"Текст из {len(text)} символов длиннее предела пайплайна ({nlp.max_length}): "
+            "разбейте его на окна или увеличьте max_length своего пайплайна"
+        )
     positions = list(iter_text_words(text))
     spans = [(start, stop) for start, stop, sent in iter_text_sents(text) if sent.strip()]
     words = FixedWordsExtractor(tuple(word for _, _, word in positions))
@@ -183,6 +210,17 @@ def text_features(text: str) -> dict[str, float]:
         (f"punct_{key}", float(value))
         for key, value in punctuation_profile(text, basic.n_words).items()
     )
+    features.update(
+        (f"cohesion_{key}", float(value))
+        for key, value in CohesionStats(text).get_stats().items()
+        if not key.endswith("_para")
+    )
+    if nlp is not None:
+        doc = set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
+        features.update(
+            (f"syntax_{key}", float(value))
+            for key, value in SyntaxStats(nlp(doc, disable=_UNUSED_COMPONENTS)).get_stats().items()
+        )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
 
 
