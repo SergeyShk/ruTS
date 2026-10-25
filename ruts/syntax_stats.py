@@ -41,6 +41,7 @@ from .constants import (
     HORTATIVE_WORDS,
     INFINITIVE_PERIPHRASES,
     LIGHT_VERBS,
+    MODAL_SHORT_ADJECTIVES,
     NEGATION_PARTICLES,
     SPLIT_PREDICATE_NOUNS,
     SYNTAX_STATS_DESC,
@@ -399,7 +400,8 @@ def is_infinitive_periphrasis(token: Token) -> bool:
 
     Описание:
         Глагол или слово - модальное или фазовое из INFINITIVE_PERIPHRASES (может уйти,
-        должен прийти, начал читать, взялся читать, нужно уйти, можно войти) или
+        должен прийти, начал читать, взялся читать, нужно уйти, можно войти), краткая
+        форма прилагательного из MODAL_SHORT_ADJECTIVES (готов уйти, рад помочь) или
         побудительная форма из HORTATIVE_WORDS без отрицания (давайте играть, но
         не давайте детям играть)
 
@@ -410,7 +412,12 @@ def is_infinitive_periphrasis(token: Token) -> bool:
         bool: Результат проверки
     """
     head = token.head
-    if get_lemma(head) in INFINITIVE_PERIPHRASES:
+    lemma = get_lemma(head)
+    if lemma in INFINITIVE_PERIPHRASES:
+        return True
+    if lemma in MODAL_SHORT_ADJECTIVES and (
+        has_feature(head, "StyleVariant", "Short") or has_feature(head, "Variant", "Short")
+    ):
         return True
     return head.text.lower() in HORTATIVE_WORDS and not any(
         is_negation(child) for child in head.children

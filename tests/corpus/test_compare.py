@@ -165,10 +165,12 @@ def test_text_features_syntax():
         text_features(text, nlp=short)
 
 
-def test_text_features_syntax_blank_lines():
-    """Пустая строка завершает предложение разбора, как в остальных группах признаков"""
+@pytest.mark.parametrize("separator", ["\n\n", "\n"])
+def test_text_features_syntax_sentences(separator):
+    """Предложения разбора - те же, что у остальных групп, и через пустую строку, и через
+    перевод строки, который парсер склеивает"""
     nlp = pytest.importorskip("ru_core_news_sm").load()
-    dialogue = "— Ты пришел?\n\n— Пришел.\n\n— Ну и хорошо."
+    dialogue = separator.join(["— Ты пришел?", "— Пришел.", "— Ну и хорошо."])
     assert text_features(dialogue, nlp=nlp)["syntax_clauses_per_sent"] == 1.0
 
 

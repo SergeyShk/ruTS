@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 import anyts.corpus.compare
 import pandas as pd
-from anyts.components import start_sents_after_blank_lines
 from anyts.corpus.compare import (
     COMPARISON_COLUMNS as COMPARISON_COLUMNS,
     bootstrap_median_diff as bootstrap_median_diff,
@@ -17,7 +16,7 @@ from anyts.corpus.compare import (
     holm_correction as holm_correction,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
-from anyts.utils import check_words, count_words_by_spans, is_language
+from anyts.utils import check_words, count_words_by_spans, is_language, set_sent_starts
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..cohesion_stats import CohesionStats
@@ -139,9 +138,9 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         punct_ - частоты знаков на 1000 слов и доля буквы ё; cohesion_ - статистики
         связности (CohesionStats по pymorphy3), кроме повторов между абзацами: окно режет
         абзацы текста; с пайплайном nlp - еще syntax_, синтаксические статистики
-        (SyntaxStats) его разбора: пустая строка завершает предложение, как в других
-        группах (start_sents_after_blank_lines), распознавание сущностей и лемматизатор
-        не запускаются. Признаки, повторяющие другие, отброшены (REDUNDANT_FEATURES)
+        (SyntaxStats) его разбора по тем же предложениям, что у других групп
+        (set_sent_starts), без распознавания сущностей и лемматизатора. Признаки,
+        повторяющие другие, отброшены (REDUNDANT_FEATURES)
         Доли пробелов, букв и знаков считаются по символам как есть, поэтому
         верстку издания (отступы, двойные пробелы) стоит выровнять заранее
 
@@ -217,7 +216,7 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         if not key.endswith("_para")
     )
     if nlp is not None:
-        doc = start_sents_after_blank_lines(nlp.make_doc(text))
+        doc = set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
         features.update(
             (f"syntax_{key}", float(value))
             for key, value in SyntaxStats(nlp(doc, disable=_UNUSED_COMPONENTS)).get_stats().items()

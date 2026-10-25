@@ -208,16 +208,17 @@ class MorphStats(anyts.morph_stats.MorphStats):
             features = _words_to_ud(words, source)
         else:
             raise source_type_error(self.messages, source)
-        return [
-            MorphWord(
-                word,
-                found["pos"],
-                {
+        # Признаки одной словоформы - общий словарь кэша _word_to_ud: ядро читает его один раз
+        names: dict[int, dict[str, str]] = {}
+        for found in features:
+            if id(found) not in names:
+                names[id(found)] = {
                     name: value
                     for stat, name in MORPHOLOGY_FEATURES.items()
                     if (value := found[stat])
-                },
-            )
+                }
+        return [
+            MorphWord(word, found["pos"], names[id(found)])
             for word, found in zip(words, features, strict=True)
         ]
 
