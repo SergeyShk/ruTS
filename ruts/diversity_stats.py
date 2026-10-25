@@ -19,6 +19,7 @@ from anyts.diversity_stats import (
     calc_alpha2 as calc_alpha2,
     calc_baayen_p as calc_baayen_p,
     calc_brunet_w as calc_brunet_w,
+    calc_burstiness as calc_burstiness,
     calc_cttr as calc_cttr,
     calc_dttr as calc_dttr,
     calc_dugast_k as calc_dugast_k,
@@ -41,6 +42,7 @@ from anyts.diversity_stats import (
     calc_mtld as calc_mtld,
     calc_mtldw as calc_mtldw,
     calc_mttr as calc_mttr,
+    calc_orlov_z as calc_orlov_z,
     calc_perplexity as calc_perplexity,
     calc_rttr as calc_rttr,
     calc_sichel_s as calc_sichel_s,
@@ -54,7 +56,7 @@ from anyts.diversity_stats import (
     fit_zipf_mandelbrot as fit_zipf_mandelbrot,
     vocabulary_growth as vocabulary_growth,
 )
-from anyts.utils import is_doc, iter_doc_words
+from anyts.utils import is_doc, iter_doc_words, source_type_error
 
 from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
 from .exceptions import SourceTypeError
@@ -260,7 +262,7 @@ class DiversityStats(anyts.DiversityStats):
             text = source if isinstance(source, str) else source.text
             words = (words_extractor or WordsExtractor()).extract(text)
         else:
-            raise SourceTypeError(self.messages["source_type"])
+            raise source_type_error(self.messages, source)
         super().__init__(
             [word.lower() for word in words],
             window_len,

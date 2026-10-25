@@ -294,7 +294,7 @@ def test_get_stats(cs):
     stats = cs.get_stats()
     assert list(stats) == list(COHESION_STATS_DESC)
     for key in COHESION_STATS_DESC:
-        assert stats[key] == getattr(cs, key)
+        assert stats[key] == pytest.approx(getattr(cs, key), nan_ok=True)
 
 
 def test_print_stats(cs, capsys):
@@ -654,3 +654,36 @@ def test_sents_extractor_class_of_a_subclass():
         LineCohesion(blank, words_extractor=WordsExtractor()).n_sents,
     }
     assert counts == {2}
+
+
+def test_forward_overlap(cs):
+    """Доля лемм предложения, повторенных в одном из двух следующих, по всем таким предложениям"""
+    # Существительные: {кот, окно} -> {птица, кот}: 1 из 2; {птица} -> {птица, кот, окно}: 1 из 1
+    assert cs.noun_overlap_2_sent == pytest.approx(2 / 3)
+    assert cs.argument_overlap_2_sent == pytest.approx(3 / 4)
+    assert cs.n_paragraphs == 1
+    assert isnan(cs.noun_overlap_para)
+
+
+paragraphs = "Кот сидел на окне.\n\nКот смотрел на птиц. Птицы улетели.\n\nПтицы вернулись к коту."
+
+
+def test_paragraphs(nlp):
+    """Абзацы после пустой строки - у строки, Doc и Doc с экстрактором слов"""
+    sources = [
+        CohesionStats(paragraphs),
+        CohesionStats(nlp(paragraphs)),
+        CohesionStats(spacy.blank("ru")(paragraphs)),
+        CohesionStats(nlp(paragraphs), words_extractor=WordsExtractor()),
+    ]
+    for stats in sources:
+        assert stats.n_paragraphs == 3
+        # {кот, окно} -> {кот, птица}: 1 из 2; {кот, птица} -> {птица, кот}: 2 из 2
+        assert stats.noun_overlap_para == pytest.approx(3 / 4)
+
+
+def test_paragraph_inside_sentence(nlp):
+    """Пустая строка внутри предложения Doc тоже открывает абзац"""
+    doc = nlp("Глава первая\n\nКот сидел на окне.")
+    assert len(list(doc.sents)) == 1
+    assert CohesionStats(doc).n_paragraphs == 2

@@ -52,7 +52,7 @@ wheels = [
 
 [[package]]
 name = "anyts"
-version = "0.3.6"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "graphviz" },
@@ -60,13 +60,14 @@ dependencies = [
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "pandas" },
+    { name = "preshed" },
     { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "spacy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9d/ab/0080d6a333988dcc2e61c423d122bf52a3ee33a38efd3d64e9c5e3cf8b65/anyts-0.3.6.tar.gz", hash = "sha256:3ac72eedf1a351c07baf727f34e3efbfd9722771d6c381e1e30dd6477f80f7a9", size = 153053, upload-time = "2026-10-19T23:33:10.646Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3c/15/b6cf8f391e9f2d3c336642ceee141d72c16403da076909a1424c6b71043f/anyts-0.4.0.tar.gz", hash = "sha256:0cd7b636f1078aee415405ea248374087f6ddd2c38c08886348a2415c168bf92", size = 184117, upload-time = "2026-10-25T15:42:15.167Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/58/4fc77d58e0cc93d383eed7d7e27048adf1dbba6ae9022655e5accb1996c5/anyts-0.3.6-py3-none-any.whl", hash = "sha256:f720cafca4da9aae965159c508ee727eb3ad4439099a49875d6a153243df4968", size = 173983, upload-time = "2026-10-19T23:33:09.131Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/fb/2199a98e2c34e4b76b6f295ac2dda647b38c88bcbcd7257150fc887d1aaf/anyts-0.4.0-py3-none-any.whl", hash = "sha256:b1000233616c0dfe6be227a8c34fbe431020f5e307ee4758b3284bb60d5b34d6", size = 205952, upload-time = "2026-10-25T15:42:14.098Z" },
 ]
 
 [[package]]
@@ -3697,7 +3698,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.18.0"
+version = "0.19.0.dev1"
 source = { editable = "." }
 dependencies = [
     { name = "anyts" },
@@ -3756,7 +3757,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "anyts", specifier = ">=0.3.6,<0.4" },
+    { name = "anyts", specifier = ">=0.4,<0.5" },
     { name = "graphviz", specifier = ">=0.20.3" },
     { name = "matplotlib", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=1.26" },

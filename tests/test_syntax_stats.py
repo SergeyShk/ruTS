@@ -746,3 +746,27 @@ def test_pickle(nlp):
     for clone in (pickle.loads(pickle.dumps(stats)), copy.deepcopy(stats)):
         assert repr(clone.get_stats()) == repr(stats.get_stats())
         assert [token.text for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Вчера вечером кот спал.", {"words_before_root": 3.0}),
+        ("Кот спит. Спит собака.", {"p_preverbal_subjects": 0.5}),
+        (
+            "Книга лежит на столе в комнате у окна.",
+            {"prep_chains_per_sent": 1.0, "max_prep_chain_len": 2},
+        ),
+        (
+            "Я знаю, что он придёт. Мы уйдём.",
+            {"t_units_per_sent": 1.0, "clauses_per_t_unit": 1.5, "p_complex_t_units": 0.5},
+        ),
+        # Русское сочетание одной предикации - одна клауза и в T-единице
+        ("Он может уйти.", {"clauses_per_t_unit": 1.0}),
+        ("Он хочет уйти.", {"clauses_per_t_unit": 2.0}),
+    ],
+)
+def test_model_new_core_stats(nlp, text, expected):
+    """Метрики ядра 0.4 на русских предложениях с русскими крючками клауз"""
+    stats = SyntaxStats(nlp(text)).get_stats()
+    assert {key: stats[key] for key in expected} == pytest.approx(expected)

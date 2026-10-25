@@ -51,6 +51,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
          'n_spaces': 8,
          'n_syllables': 18,
          'n_punctuations': 2,
+         'letters_entropy': 2.197159723424149,
+         'syllables_entropy': 1.6577427265048887,
          'c_punctuations': {'comma': 1,
                             'period': 0,
                             'question': 0,

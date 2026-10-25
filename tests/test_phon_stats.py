@@ -161,7 +161,9 @@ def test_syllable_stats(ps):
     assert "C" not in with_clitics.c_syllable_patterns
     assert ps.c_syllable_patterns == {"CCCV": 1, "CCV": 5, "CCVC": 1, "CV": 11, "CVC": 5, "V": 2}
     assert ps.p_open_syllables == pytest.approx(19 / 25)
-    assert ps.mean_syllable_len == pytest.approx(65 / 25)
+    # звуки слога - по его схеме CV, а не буквы
+    sounds = sum(len(pattern) * n for pattern, n in ps.c_syllable_patterns.items())
+    assert ps.mean_syllable_len == pytest.approx(sounds / 25) == pytest.approx(2.48)
     assert PhonStats("мама мыла раму").p_open_syllables == 1.0
 
 

@@ -1,6 +1,8 @@
 import os
+from collections.abc import Mapping
 from math import inf, nextafter
 from pathlib import Path
+from types import MappingProxyType
 from typing import TypedDict
 
 from anyts.constants import MESSAGES
@@ -63,6 +65,8 @@ BASIC_STATS_DESC = {
     "n_spaces": "Пробелы",
     "n_syllables": "Слоги",
     "n_punctuations": "Знаки препинания",
+    "letters_entropy": "Энтропия длин слов в буквах (бит)",
+    "syllables_entropy": "Энтропия длин слов в слогах (бит)",
 }
 READABILITY_STATS_DESC = {
     "flesch_kincaid_grade": "Тест Флеша-Кинкайда",
@@ -418,7 +422,8 @@ OPENCORPORA_VERB_FORMS = {
 PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
 # Русские сообщения классов статистик ядра anyTS по ключам MESSAGES
 _RU_CORE_MESSAGES: dict[str, str] = {
-    "source_type": "Некорректный источник данных",
+    "source_type": "Источник данных не может быть типа {type}",
+    "source_span": "Источник данных не может быть Span: передайте span.as_doc()",
     "no_words": "В источнике данных отсутствуют слова",
     "no_sentences": "В источнике данных отсутствуют предложения",
     "sents_extractor_type": "Экстрактор предложений должен быть SentsExtractor",
@@ -487,9 +492,16 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "band_bound": "Граница полосы должна быть целым числом от 1 до {size}, а не {band}",
     "phon_window_len": "Размер окна должен быть не меньше 2",
     "phon_classes": "Звуки классов {first} и {second} у {cls} пересекаются: {sounds}",
-    "no_parse": "В источнике данных отсутствует разбор зависимостей",
-    "no_lemmas": "В источнике данных отсутствуют леммы",
-    "no_pos": "В источнике данных отсутствуют части речи",
+    "no_parse": (
+        "В источнике данных отсутствует разбор зависимостей: разберите текст моделью с парсером"
+    ),
+    "no_lemmas": (
+        "В источнике данных отсутствуют леммы: разберите текст пайплайном с лемматизатором"
+    ),
+    "no_pos": (
+        "В источнике данных отсутствуют части речи: разберите текст моделью, "
+        "а не пустым пайплайном"
+    ),
     "temporal_features": (
         "Временные признаки {cls} должны быть одним или несколькими разными признаками "
         "из {features}, а не {value}"
@@ -497,7 +509,24 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "tokenizer": "Токенизатор задан некорректно",
     "tokenizer_iterable": "Токенизатор должен возвращать итерируемый объект",
     "tokenizer_strings": "Токенизатор должен возвращать строки, а не {type}",
-    "hook_result": "Крючок {hook} класса {cls} должен возвращать {expected}, а не {type}",
+    "hook_doc": "Крючок {hook} класса {cls} должен возвращать Doc, а не {type}",
+    "hook_lexical_words": (
+        "Крючок {hook} класса {cls} должен возвращать объекты LexicalWord, а не {type}"
+    ),
+    "hook_cohesion_words": (
+        "Крючок {hook} класса {cls} должен возвращать предложения из объектов CohesionWord, "
+        "а не {type}"
+    ),
+    "hook_syllables": (
+        "Крючок {hook} класса {cls} должен возвращать последовательность строк, а не {type}"
+    ),
+    "hook_sounds": "Крючок {hook} класса {cls} должен возвращать строку или строки, а не {type}",
+    "hook_highlights": (
+        "Крючок {hook} класса {cls} должен возвращать объекты Highlight, а не {type}"
+    ),
+    "hook_morph_words": (
+        "Крючок {hook} класса {cls} должен возвращать объекты MorphWord, а не {type}"
+    ),
     "hook_spans": (
         "Крючок {hook} класса {cls} должен давать тройки из возрастающих целых границ "
         "внутри текста и строки, а не {span}"
@@ -507,9 +536,32 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "connector_class": "Неизвестный класс или тип коннектора: {cls}, {kind}",
     "connector_pos_type": "Часть речи должна быть строкой или None, а не {type}",
     "connector_pos": "Частей речи должно быть столько же, сколько слов",
+    "connector_breaks": (
+        "Позиция знака должна быть от 1 до {last} - позиции слов после первого, а не {position}"
+    ),
+    "connector_breaks_short": "У предложения короче двух слов нет позиций знаков: {position}",
+    "connector_blocked": (
+        "Позиция слова, с которого не начинается коннектор, должна быть от 0 до {last}, "
+        "а не {position}"
+    ),
+    "connector_blocked_empty": "У предложения без слов нет позиций слов: {position}",
+    "connector_type": "Ожидается Connector, а не {type}",
+    "morph_features": (
+        "feature_names класса {cls} должен сопоставлять именам новых статистик - "
+        "идентификаторам, кроме pos, tags, words и имен класса, - имена их признаков, "
+        "а не {value}"
+    ),
+    "morph_markers": "get_markers класса {cls} не дает значений маркеров {markers}",
+    "morph_stats_desc": (
+        "stats_desc класса {cls} должен называть pos и статистики feature_names, а не {stats}"
+    ),
+    "morph_values_desc": (
+        "values_desc класса {cls} должен сопоставлять статистикам описания их значений, "
+        "все строками, а не {value}"
+    ),
 }
 # Поверх MESSAGES: новый ключ патча ядра выйдет по-английски, а не сломает импорт
-CORE_MESSAGES: dict[str, str] = {**MESSAGES, **_RU_CORE_MESSAGES}
+CORE_MESSAGES: Mapping[str, str] = MappingProxyType({**MESSAGES, **_RU_CORE_MESSAGES})
 # Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
 TENSED_PREDICATIVES = frozenset({"нет", "нету"})
 # Частицы с отрицанием (Polarity=Neg), как в русском UD; «нет» - только ответное
@@ -593,6 +645,7 @@ DIVERSITY_STATS_DESC = {
     "brunet_w": "Мера Брюне (Brunet's W)",
     "dugast_k": "Мера Дюга (Dugast's k)",
     "baayen_p": "Мера Баайена (Baayen's P)",
+    "orlov_z": "Мера Орлова (Orlov's Z, слов)",
     "hapax_ratio": "Доля гапаксов",
     "alpha2": "Показатель α₂",
     "entropy": "Энтропия Шеннона (бит)",
@@ -600,6 +653,7 @@ DIVERSITY_STATS_DESC = {
     "perplexity": "Перплексия",
     "zipf_alpha": "Наклон закона Ципфа (α)",
     "heaps_beta": "Показатель закона Хипса (β)",
+    "burstiness": "Взрывность частых лексем",
 }
 STYLE_STATS_DESC = {
     "classic_nausea": "Классическая тошнота",
@@ -955,7 +1009,7 @@ PHON_STATS_DESC = {
     "alliteration": "Индекс аллитерации",
     "assonance": "Индекс ассонанса",
     "p_open_syllables": "Доля открытых слогов",
-    "mean_syllable_len": "Средняя длина слога (букв)",
+    "mean_syllable_len": "Средняя длина слога (звуков)",
 }
 PHON_WINDOW_LEN = 3
 VERSE_STATS_DESC = {
@@ -1098,6 +1152,7 @@ SYNTAX_STATS_DESC = {
     "leaves_per_sent": "Листьев на предложение",
     "subtrees_per_sent": "Поддеревьев на предложение",
     "nodes_per_leaf": "Среднее число узлов на лист в предложении",
+    "words_before_root": "Среднее число слов до вершины предложения",
     "verb_valency": "Валентность финитных глаголов",
     "coordination_chains_per_sent": "Сочинительных цепочек на предложение",
     "mean_coordination_chain_len": "Средняя длина сочинительной цепочки",
@@ -1106,7 +1161,16 @@ SYNTAX_STATS_DESC = {
     "subordinate_clauses_per_sent": "Придаточных клауз на предложение",
     "p_complex_sents": "Доля предложений с придаточными",
     "infinitive_clauses_per_sent": "Инфинитивных клауз при глаголе на предложение",
+    "t_units_per_sent": "T-единиц на предложение",
+    "mean_t_unit_len": "Средняя длина T-единицы (слов)",
+    "clauses_per_t_unit": "Клауз на T-единицу",
+    "p_complex_t_units": "Доля T-единиц с придаточными",
+    "verb_phrases_per_t_unit": "Глагольных групп на T-единицу",
+    "coordinate_phrases_per_clause": "Сочинённых групп на клаузу",
+    "complex_nominals_per_clause": "Сложных именных групп на клаузу",
     "modifiers_per_noun": "Модификаторов на именную группу",
+    "prep_chains_per_sent": "Предложных цепочек на предложение",
+    "max_prep_chain_len": "Максимальная длина предложной цепочки",
     "genitive_chains_per_sent": "Цепочек родительных падежей на предложение",
     "max_genitive_chain_len": "Максимальная длина цепочки родительных падежей",
     "participle_clauses_per_sent": "Причастных оборотов на предложение",
@@ -1118,6 +1182,10 @@ SYNTAX_STATS_DESC = {
     "infinitives_per_sent": "Инфинитивов на предложение",
     "negations_per_sent": "Отрицаний на предложение",
     "split_predicates_per_sent": "Расщеплённых сказуемых на предложение",
+    "p_preverbal_subjects": "Доля именных подлежащих перед вершиной",
+    "p_preverbal_objects": "Доля именных дополнений перед вершиной",
+    "pos_edit_distance": "Редакционное расстояние частей речи соседних предложений",
+    "syntax_similarity": "Синтаксическая схожесть соседних предложений",
     "noun_verb_ratio": "Отношение существительных к глаголам",
 }
 NEGATION_PARTICLES = frozenset({"не", "ни"})
@@ -1147,6 +1215,12 @@ COHESION_STATS_DESC = {
     "content_overlap_all": "Повтор знаменательных слов во всех парах предложений",
     "content_overlap_prop_adjacent": "Доля общих знаменательных слов в соседних предложениях",
     "content_overlap_prop_all": "Доля общих знаменательных слов во всех парах предложений",
+    "noun_overlap_2_sent": "Повтор существительных в двух следующих предложениях",
+    "argument_overlap_2_sent": "Повтор аргументов в двух следующих предложениях",
+    "content_overlap_2_sent": "Повтор знаменательных слов в двух следующих предложениях",
+    "noun_overlap_para": "Повтор существительных в соседних абзацах",
+    "argument_overlap_para": "Повтор аргументов в соседних абзацах",
+    "content_overlap_para": "Повтор знаменательных слов в соседних абзацах",
     "p_pronouns": "Доля местоимений",
     "pronoun_noun_ratio": "Отношение местоимений к существительным",
     "p_demonstratives": "Доля указательных местоимений",
@@ -1480,8 +1554,8 @@ CONNECTOR_NOT_AT_START = frozenset({"отчего"})
 # Подчинительные союзы, которые в начале предложения присоединяют его к предыдущему (парцелляция)
 CONNECTOR_PARCELLATION = frozenset({"ибо"})
 # Коннекторы, правила которых читают слова через знак препинания: «отчего» после глагола
-# всегда отделено запятой (не знал, отчего), предлог - кавычкой от названия (после «Ревизора»)
-CONNECTOR_READ_THROUGH_MARKS = frozenset({"отчего", "после", "накануне"})
+# всегда отделено запятой (не знал, отчего)
+CONNECTOR_READ_THROUGH_MARKS = frozenset({"отчего"})
 # Коннекторы, которые знак препинания между их словами разделяет: «так, как» - сравнение,
 # «так, что» - степень, а не причина и следствие
 CONNECTOR_SPLIT_BY_MARKS = frozenset({"так как", "так что"})

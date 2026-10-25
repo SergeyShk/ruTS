@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, ClassVar
 import anyts
 import pymorphy3
 from anyts.stats import Stats
-from anyts.utils import is_doc, iter_doc_units, safe_divide
+from anyts.utils import is_doc, iter_doc_units, safe_divide, source_type_error
 
 from .constants import (
     ANSWER_PARTICLE_NEXT,
@@ -174,7 +174,7 @@ class MorphStats(Stats):
             self.words = words_extractor.extract(source)
             features = _words_to_ud(self.words, source)
         else:
-            raise SourceTypeError(self.messages["source_type"])
+            raise source_type_error(self.messages, source)
         if not self.words:
             raise SourceError(self.messages["no_words"])
 

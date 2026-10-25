@@ -73,7 +73,7 @@ class PhonStats(anyts.phon_stats.PhonStats):
         'alliteration': 1.0916179337231968,
         'assonance': 0.8305084745762712,
         'p_open_syllables': 0.76,
-        'mean_syllable_len': 2.6}
+        'mean_syllable_len': 2.48}
         >>> ps.syllables[:4]
         (('ног',), ('нет',), ('а',), ('хо', 'жу'))
 
@@ -108,7 +108,7 @@ class PhonStats(anyts.phon_stats.PhonStats):
         alliteration (float): Индекс аллитерации
         assonance (float): Индекс ассонанса
         p_open_syllables (float): Доля открытых слогов
-        mean_syllable_len (float): Средняя длина слога в буквах
+        mean_syllable_len (float): Средняя длина слога в звуках по его схеме CV
 
     Методы:
         get_stats: Получение вычисленных фоностатистик текста
