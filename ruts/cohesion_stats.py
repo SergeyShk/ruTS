@@ -345,7 +345,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             find_marks(*_searchable(sent, words))
             for sent, words in zip(texts, sent_words, strict=True)
         ]
-        return _cohesion_words(sent_words, text, marks, _paragraph_starts(text, texts, sent_words))
+        starts = _paragraph_starts(text, texts, sent_words, extractor)
+        return _cohesion_words(sent_words, text, marks, starts)
 
 
 def _cohesion_word(
@@ -380,32 +381,36 @@ def _searchable(sent: str, words: Sequence[str]) -> tuple[str, list[str]]:
 
 
 def _paragraph_starts(
-    text: str, texts: Sequence[str], sent_words: Sequence[Sequence[str]]
+    text: str,
+    texts: Sequence[str],
+    sent_words: Sequence[Sequence[str]],
+    extractor: anyts.WordsExtractor,
 ) -> frozenset[int]:
     """Сквозные номера слов, перед которыми пустая строка: между предложениями - в промежутке
-    между ними (find_paragraph_starts по текстам предложений) или в начале и конце предложения
-    вне его слов, внутри предложения - между словами; абзац, который начинается предложением
-    без слов, открывает первое слово следующего"""
+    между ними (find_paragraph_starts по текстам предложений), внутри текста предложения -
+    по числу слов экстрактора в его частях между пустыми строками; абзац, который начинается
+    частью без слов, открывает первое слово следующей"""
     after_blank = find_paragraph_starts(strip_marks(text), [strip_marks(sent) for sent in texts])
     starts: set[int] = set()
     position = 0
     pending = False
     for index, (sent, words) in enumerate(zip(texts, sent_words, strict=True)):
         pending = pending or index in after_blank
-        if not words:
-            pending = pending or BLANK_LINE.search(sent) is not None
-            continue
-        searched, found = _searchable(sent, words)
-        # Не найденное слово (лемма экстрактора) - край предложения по пробелам
-        first = searched.find(found[0])
-        head = first if first != -1 else len(searched) - len(searched.lstrip())
-        last = searched.rfind(found[-1])
-        tail = last + len(found[-1]) if last != -1 else len(searched.rstrip())
-        if position and (pending or BLANK_LINE.search(searched, 0, head)):
-            starts.add(position)
-        starts.update(position + i for i in find_paragraph_starts(searched, found))
-        pending = BLANK_LINE.search(searched, tail) is not None
-        position += len(words)
+        parts = BLANK_LINE.split(sent)
+        counts = (
+            [len(words)] if len(parts) == 1 else [len(extractor.extract(part)) for part in parts]
+        )
+        worded = [i for i, count in enumerate(counts) if count]
+        # N-граммы через пустую строку: внутренние границы неизвестны, края - по частям без слов
+        if sum(counts) != len(words) and worded:
+            counts = [0] * worded[0] + [len(words)] + [0] * (len(counts) - 1 - worded[-1])
+        for i, count in enumerate(counts):
+            pending = pending or i > 0
+            if count:
+                if pending and position:
+                    starts.add(position)
+                pending = False
+                position += count
     return frozenset(starts)
 
 

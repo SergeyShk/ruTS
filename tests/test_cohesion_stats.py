@@ -4,6 +4,7 @@ from math import isnan
 import pytest
 import spacy
 from anyts.utils import iter_doc_units
+from spacy.tokens import Doc
 
 from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
 from ruts.cohesion_stats import (
@@ -701,6 +702,23 @@ def test_paragraphs_without_words(nlp, text, n_paragraphs):
     """Абзац, который начинается строкой без слов, открывает первое слово после нее"""
     assert CohesionStats(text).n_paragraphs == n_paragraphs
     assert CohesionStats(nlp(text)).n_paragraphs == n_paragraphs
+
+
+def test_paragraph_inside_sentence_with_lemmas():
+    """Пустая строка внутри предложения Doc: начало абзаца - по числу слов частей, а не поиском
+    слова в тексте (лемма «церковь» нашлась бы внутри «Церковью»)"""
+    words = ["Церковью", "гордились", ".", "\n\n", "Все", "пришли", "к", "церкви", "."]
+    words += ["Пес", "спал", "."]
+    spaces = [True, False, False, False, True, True, True, False, True, True, False, False]
+    starts = [True] + [False] * 8 + [True, False, False]
+    doc = Doc(spacy.blank("ru").vocab, words=words, spaces=spaces, sent_starts=starts)
+    for extractor in (None, WordsExtractor(), WordsExtractor(use_lexemes=True)):
+        stats = CohesionStats(doc, words_extractor=extractor)
+        opened = [
+            word.word for sent in stats.analyze(doc) for word in sent if word.paragraph_start
+        ]
+        assert stats.n_paragraphs == 2
+        assert [normalize_yo(word) for word in opened] == ["все"]
 
 
 def test_paragraph_inside_sentence(nlp):
