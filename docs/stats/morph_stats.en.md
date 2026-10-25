@@ -4,14 +4,11 @@
 MorphStats(source, words_extractor=None)
 ```
 
-The morphological statistics of a text: the part of speech and the grammatical features of every word in [Universal Dependencies](https://universaldependencies.org/u/feat/) terms and their distributions. The data source is a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library; the statistics are computed when the object is created.
+--8<-- "stats/morph_stats.md:MorphStats"
 
-The class is built on the `Stats` statistics interface of the [anyTS](https://sergeyshk.github.io/anyTS/stats/stats/) core. The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens, and the parts of a hyphenated word that spaCy splits are joined.
+In ruTS the data source is a text or a `Doc` with or without part-of-speech annotation, and the statistics are computed when the object is created. A source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError`, and only a source without words raises `SourceError`.
 
-Raises:
-
-- `SourceTypeError` - a source that is neither a string nor a `Doc`, an extractor of another type;
-- `SourceError` - a source without words.
+The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) core with the Russian analysis of the words and the [markers of the verb forms](#markers). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens, and the parts of a hyphenated word that spaCy splits are joined. The `print_stats` and `print_markers` tables and the error messages are in Russian (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -55,15 +52,13 @@ Raises:
 
 ## Attributes
 
-| Attribute | Type | Description |
-| :-------- | :--- | :---------- |
-| `words` | `tuple[str]` | Words |
-| `lemmas` | `tuple[str]` | Lemmas of the words: pymorphy3 by the part of speech of the word |
-| `tags` | `tuple[str]` | Grammatical features of the words as strings in CoNLL-U format (`Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing`, `_` without features) |
+--8<-- "stats/morph_stats.md:MorphStats-attributes"
+
+ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words that pymorphy3 gives by the part of speech of the word.
 
 ## Statistics
 
-Every statistic is an attribute of the object, a tuple of the values of a feature by word (`None` for a word without the feature), and `get_stats` gives the distributions of their values. For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used: the [OpenCorpora](http://opencorpora.org/dict.php?act=gram) grammemes are mapped to UD by the `OPENCORPORA_TO_UD_POS` and `OPENCORPORA_TO_UD_GRAMMEMES` tables of `ruts.constants`, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used: the [OpenCorpora](http://opencorpora.org/dict.php?act=gram) grammemes are mapped to UD by the `OPENCORPORA_TO_UD_POS` and `OPENCORPORA_TO_UD_GRAMMEMES` tables of `ruts.constants`, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |
@@ -84,7 +79,7 @@ Every statistic is an attribute of the object, a tuple of the values of a featur
 | `verb_form` | Verb form | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Voice | `Act`, `Pass`, `Mid` |
 
-The Russian names of the values for `print_stats` are `MORPHOLOGY_STATS_DESC` of `ruts.constants`. The values for a string and for an annotated `Doc` may differ: spaCy assigns `Voice=Act` to finite forms and `Voice=Mid` to reflexive verbs, distinguishes `AUX` and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.
+The values for a string and for an annotated `Doc` may differ: spaCy assigns `Voice=Act` to finite forms and `Voice=Mid` to reflexive verbs, distinguishes `AUX` and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.
 
 <div class="metric-card" markdown>
 
@@ -221,9 +216,11 @@ The conditional mood is detected by the particle бы (б), so the words extract
 
 ## Methods
 
-`get_stats(*args, filter_none=False, flat=False)` returns the distributions of the values of the statistics as a dictionary of counts for each. The statistics are chosen by their names separated by commas, all of them without names; `filter_none=True` drops the words without the feature (`None`), and `flat=True` gives keys like `pos_NOUN` instead of nested dictionaries, also without the words lacking the feature. A name that is not a statistic raises `UnknownStatError` - here and in `print_stats` and `explain_text`.
+--8<-- "stats/morph_stats.md:MorphStats-get_stats"
 
-`print_stats(*args, filter_none=False)` prints the distributions of the chosen statistics as tables, the frequent values first, and `explain_text(*args, filter_none=False)` returns the words of the text in order with the values of the chosen statistics.
+--8<-- "stats/morph_stats.md:MorphStats-explain_text"
+
+--8<-- "stats/morph_stats.md:MorphStats-print_stats"
 
 === "Code"
 
@@ -279,7 +276,9 @@ The conditional mood is detected by the particle бы (б), so the words extract
     0         6          2          2        1
     ```
 
-`get_markers()` returns the [shares of the verb forms](#markers) as a dictionary, and `print_markers()` prints them as a table.
+--8<-- "stats/morph_stats.md:MorphStats-markers"
+
+In ruTS the markers are the [shares of the verb forms](#markers).
 
 === "Code"
 
@@ -292,17 +291,21 @@ The conditional mood is detected by the particle бы (б), so the words extract
 === "Result"
 
     ```
-                          Маркер                      |  Значение
-    ---------------------------------------------------------------
-    Изъявительное наклонение среди личных форм        |    0.00
-    Повелительное наклонение среди личных форм        |    0.00
-    Сослагательное наклонение среди личных форм       |    1.00
-    Инфинитив среди форм глагола                      |    0.00
-    Причастие среди форм глагола                      |    0.33
-    Деепричастие среди форм глагола                   |    0.00
-    Совершенный вид среди форм глагола с видом        |    0.67
-    Страдательные причастия среди форм глагола        |    0.33
-    Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
+                        Маркер                     | Значение
+    ----------------------------------------------------------
+    Изъявительное наклонение среди личных форм     |   0.00
+    Повелительное наклонение среди личных форм     |   0.00
+    Сослагательное наклонение среди личных форм    |   1.00
+    Инфинитив среди форм глагола                   |   0.00
+    Причастие среди форм глагола                   |   0.33
+    Деепричастие среди форм глагола                |   0.00
+    Совершенный вид среди форм глагола с видом     |   0.67
+    Страдательные причастия среди форм глагола     |   0.33
+    Возвратные формы (-ся, -сь) среди форм глагола |   0.00
     ```
 
 The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the morphological statistics have no scales, so it gives `None` for the statistics of `get_stats`.
+
+--8<-- "stats/morph_stats.md:MorphWord"
+
+In ruTS `MorphWord` is imported from `ruts.morph_stats` too.

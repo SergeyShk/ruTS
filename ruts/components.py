@@ -78,7 +78,7 @@ class BasicStatsComponent(_Component, anyts.components.BasicStatsComponent):
 
 
 @Language.factory("ruts_morph")
-class MorphStatsComponent(_Component):
+class MorphStatsComponent(_Component, anyts.components.MorphStatsComponent):
     """
     Класс для компонента морфологических статистик текста
 

@@ -10,7 +10,6 @@ from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
 from ruts.morph_stats import (
     answer_particles,
     find_answer_particles,
-    format_features,
     parse_verb,
     tag_to_ud,
     tag_to_ud_pos,
@@ -481,13 +480,6 @@ def test_token_to_ud(nlp):
     assert token_to_ud(spacy.blank("ru")("слово")[0]) == dict.fromkeys(MORPHOLOGY_STATS_DESC)
 
 
-def test_format_features():
-    assert format_features(dict.fromkeys(MORPHOLOGY_STATS_DESC)) == "_"
-    features = dict.fromkeys(MORPHOLOGY_STATS_DESC)
-    features.update({"pos": "NOUN", "number": "Sing", "case": "Nom", "animacy": "Inan"})
-    assert format_features(features) == "Animacy=Inan|Case=Nom|Number=Sing"
-
-
 def test_get_stats(ms):
     stats = ms.get_stats()
     assert isinstance(stats, dict)
@@ -636,3 +628,16 @@ def test_stats_interface(ms):
     assert ms.describe("case") is None
     with pytest.raises(KeyError):
         ms.describe("foo")
+
+
+def test_multiple_values_of_a_feature():
+    """Признак из нескольких значений разметки сохраняется целиком, как в ядре"""
+    doc = Doc(
+        spacy.blank("ru").vocab,
+        words=["мама", "мыла"],
+        pos=["NOUN", "VERB"],
+        morphs=["Case=Acc,Nom|Number=Sing", "Tense=Past|VerbForm=Fin"],
+    )
+    ms = MorphStats(doc)
+    assert ms.case == ("Acc,Nom", None)
+    assert ms.tags[0] == "Case=Acc,Nom|Number=Sing"

@@ -82,7 +82,9 @@ BasicStatsComponent(nlp, name)
 MorphStatsComponent(nlp, name)
 ```
 
-`MorphStatsComponent` puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (`token.pos_`, `token.morph`), in a pipeline without `morphologizer` - from pymorphy3.
+--8<-- "components.md:MorphStatsComponent"
+
+In ruTS the parts of speech and the features are taken from the model annotation (`token.pos_`, `token.morph`), and in a pipeline without `morphologizer` from pymorphy3.
 
 === "Code"
 
