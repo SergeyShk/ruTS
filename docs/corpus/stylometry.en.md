@@ -58,6 +58,32 @@ The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/
     ?  0.364  1.66  1.16
     ```
 
+## Rolling Delta { #rolling_delta }
+
+--8<-- "corpus/stylometry.md:rolling_delta"
+
+=== "Code"
+
+    ``` python
+    from ruts.corpus import rolling_delta
+
+    rolling_delta(corpus, corpus["А"] + corpus["Б"], window=6, step=3, n_mfw=10).round(3)
+    ```
+
+=== "Result"
+
+    ```
+            А      Б      В
+    3   0.197  1.132  0.801
+    6   0.296  1.132  0.702
+    9   0.292  1.138  0.801
+    12  0.197  1.132  0.801
+    15  0.988  1.230  1.048
+    18  0.804  0.330  1.015
+    21  1.298  0.165  1.509
+    24  1.298  0.165  1.509
+    ```
+
 ## Zeta { #zeta }
 
 --8<-- "corpus/stylometry.md:zeta"
@@ -76,6 +102,34 @@ The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/
     ```
     [ZetaScore(word='кот', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0), ZetaScore(word='окне', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0)]
     ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, zeta=-0.6666666666666666, log_zeta=-2.0)
+    ```
+
+--8<-- "corpus/stylometry.md:zeta_segments"
+
+=== "Code"
+
+    ``` python
+    from ruts.corpus import zeta_segments
+
+    scores = zeta(corpus["А"], corpus["Б"], segment_size=5)
+    preferred = [score.word for score in scores if score.zeta > 0]
+    avoided = [score.word for score in scores if score.zeta < 0]
+    zeta_segments(corpus, preferred, avoided, segment_size=5).round(3)
+    ```
+
+=== "Result"
+
+    ```
+      corpus  preferred  avoided
+    0      А      0.444    0.000
+    1      А      0.556    0.000
+    2      А      0.444    0.000
+    3      Б      0.111    0.429
+    4      Б      0.000    0.571
+    5      Б      0.111    0.429
+    6      В      0.111    0.143
+    7      В      0.222    0.000
+    8      В      0.111    0.143
     ```
 
 ## Kilgarriff's chi-square { #kilgarriff_chi2 }
