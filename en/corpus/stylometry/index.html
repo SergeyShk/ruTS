@@ -1432,6 +1432,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rolling_delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rolling Delta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#zeta" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2176,6 +2187,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rolling_delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rolling Delta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#zeta" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2472,6 +2494,94 @@
 </div>
 </div>
 </div>
+<h2 id="rolling_delta">Rolling Delta<a class="headerlink" href="#rolling_delta" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">rolling_delta</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Delta along a text, after <code>rolling.delta</code> of stylo: the reference texts and the text under test are cut into windows of <code>window</code> units every <code>step</code> units, the rest shorter than a window dropped. The most frequent units, the culling and the statistics of the z-scores come from the windows of the reference texts, or of a separate set <code>statistics</code>, and every window of the text is compared by the variant of Delta with the centroid of the windows of every reference text. The result is the distances from the windows (rows, by the position of their middle in units) to the references (columns); where the nearest reference changes along the text, so does the style - another author of a part of a text written together, a borrowed passage. Unlike stylo, which sums the differences of the raw frequencies, the distances are those of <code>delta_profiles</code> over z-scores.</p>
+<p>Scaled by their own windows, the centroids of the references balance each other, and Cosine Delta loses its sense: the cosine distances of a window to the references average 1 (weighted by their windows and the lengths of their centroids), with two references they add up to 2 and the lines are mirrored, so a passage of a third author looks halfway between them. With few references, Cosine Delta needs <code>statistics</code> of more texts - other authors, other works; Burrows's and Eder's Delta are not bound so. With <code>statistics</code> a single reference is enough.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>reference</code></td>
+<td style="text-align: left;"><code>dict[str, list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Units of the reference texts by the names of the texts</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Units of the text under test</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>5000</code></td>
+<td style="text-align: left;">Size of a window in units</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>step</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Distance between the starts of the windows in units</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_mfw</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Number of the most frequent units; <code>None</code> - all of them</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>variant</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'burrows'</code></td>
+<td style="text-align: left;">Variant of Delta of <code>anyts.constants.DELTA_VARIANTS</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>culling</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.0</code></td>
+<td style="text-align: left;">Smallest share of the windows a unit occurs in</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>statistics</code></td>
+<td style="text-align: left;"><code>dict[str, list[str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Texts whose windows give the units and the statistics of the scaling; <code>None</code> - the reference texts</td>
+</tr>
+</tbody>
+</table>
+<p>A corpus that is not a mapping of lists of strings and units of the text that are not a list of strings raise <code>SourceTypeError</code>. No reference texts, fewer than two without <code>statistics</code>, a text without units or shorter than a window, fewer than three windows of the statistics and no unit left after culling raise <code>SourceError</code>. An unknown variant, a <code>window</code>, a <code>step</code> or an <code>n_mfw</code> that is not an integer of at least one, a <code>step</code> greater than the window and a <code>culling</code> that is not a number within [0, 1] raise <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">rolling_delta</span>
+
+<span class="n">rolling_delta</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"А"</span><span class="p">]</span> <span class="o">+</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"Б"</span><span class="p">],</span> <span class="n">window</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>        А      Б      В
+3   0.197  1.132  0.801
+6   0.296  1.132  0.702
+9   0.292  1.138  0.801
+12  0.197  1.132  0.801
+15  0.988  1.230  1.048
+18  0.804  0.330  1.015
+21  1.298  0.165  1.509
+24  1.298  0.165  1.509
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">zeta</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -2513,7 +2623,7 @@
 </tbody>
 </table>
 <p>The result is a list of <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> named tuples by descending Zeta, by descending logarithmic Zeta and alphabetically when equal. A corpus that is neither a list of strings nor a list of such lists raises <code>SourceTypeError</code>, and a corpus without words <code>SourceError</code>; a <code>segment_size</code> or a <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta</span>
@@ -2525,6 +2635,72 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>[ZetaScore(word='кот', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0), ZetaScore(word='окне', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0)]
 ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, zeta=-0.6666666666666666, log_zeta=-2.0)
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="signature highlight"><pre><span></span><code><span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpora</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+</code></pre></div>
+<p>The shares of the markers of Zeta in the segments of corpora, as <code>oppose</code> of stylo places the segments: every text is split into segments as in <code>zeta</code>, and a segment gets the shares of the words of the lists <code>preferred</code> and <code>avoided</code> found in it. With the markers of a target corpus against a comparison corpus, the segments of the target lie high on the left of the plane of the two shares and those of the comparison low on the right; the segments of a disputed text show which group it is near (<code>zeta_scatter_plot</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>corpora</code></td>
+<td style="text-align: left;"><code>dict[str, list[str] / list[list[str]]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words of the corpora by name - one text or a list of texts each</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>preferred</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words the target corpus prefers - the start of the list of <code>zeta</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>avoided</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Words the target corpus avoids - the end of the list</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>segment_size</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>2000</code></td>
+<td style="text-align: left;">Size of a segment in words</td>
+</tr>
+</tbody>
+</table>
+<p>The result is a <code>DataFrame</code> of the segments in the order of the corpora and of their texts, with the columns <code>corpus</code> (the name of the corpus), <code>preferred</code> and <code>avoided</code> (the shares of the lists). Corpora that are not a mapping and a corpus or a list of markers that is not a list of strings raise <code>SourceTypeError</code>; no corpora, an empty list of markers and a corpus without words <code>SourceError</code>, and a <code>segment_size</code> that is not an integer of at least one <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta_segments</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">(</span><span class="n">corpus</span><span class="p">[</span><span class="s2">"А"</span><span class="p">],</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"Б"</span><span class="p">],</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">preferred</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="o">.</span><span class="n">word</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">zeta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">avoided</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="o">.</span><span class="n">word</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">zeta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>  corpus  preferred  avoided
+0      А      0.444    0.000
+1      А      0.556    0.000
+2      А      0.444    0.000
+3      Б      0.111    0.429
+4      Б      0.000    0.571
+5      Б      0.111    0.429
+6      В      0.111    0.143
+7      В      0.222    0.000
+8      В      0.111    0.143
 </code></pre></div>
 </div>
 </div>
@@ -2564,7 +2740,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </tbody>
 </table>
 <p>Words that are not a list of strings raise <code>SourceTypeError</code>, a corpus without words <code>SourceError</code>, and an <code>n_mfw</code> that is not an integer of at least one <code>ParameterError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">kilgarriff_chi2</span>
@@ -2629,7 +2805,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </tbody>
 </table>
 <p>Words that are not a list of strings raise <code>SourceTypeError</code>, and a text without words <code>SourceError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">mendenhall_curve</span><span class="p">,</span> <span class="n">mendenhall_distance</span>
@@ -2672,7 +2848,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <li><code>SourceTypeError</code> - a source that is neither a list of strings nor a <code>Doc</code>;</li>
 <li><code>SourceError</code> - a source without words.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_words_profile</span>

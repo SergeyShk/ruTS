@@ -1432,6 +1432,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rolling_delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Скользящая дельта
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#zeta" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2176,6 +2187,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rolling_delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Скользящая дельта
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#zeta" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2477,6 +2499,95 @@
 </div>
 </div>
 </div>
+<h2 id="rolling_delta">Скользящая дельта<a class="headerlink" href="#rolling_delta" title="Permanent link">&para;</a></h2>
+<!-- core: corpus/stylometry.md:rolling_delta c80e9bf -->
+<div class="signature highlight"><pre><span></span><code><span class="n">rolling_delta</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Дельта вдоль текста, как <code>rolling.delta</code> в stylo: эталонные тексты и проверяемый текст режутся на окна по <code>window</code> единиц через каждые <code>step</code> единиц, остаток короче окна отбрасывается. Самые частые единицы, отсев и статистики z-оценок берутся из окон эталонных текстов или отдельного набора <code>statistics</code>, и каждое окно текста сравнивается вариантом дельты с центроидом окон каждого эталонного текста. Результат - расстояния от окон (строки, по позиции их середины в единицах) до эталонов (столбцы); где вдоль текста меняется ближайший эталон, там меняется и стиль - другой автор части текста, написанного в соавторстве, заимствованный фрагмент. В отличие от stylo, где складываются разности исходных частот, расстояния считаются по z-оценкам, как в <code>delta_profiles</code>.</p>
+<p>При нормировке по собственным окнам центроиды эталонов уравновешивают друг друга, и косинусная дельта теряет смысл: косинусные расстояния окна до эталонов в среднем (с весами по числу их окон и длинам их центроидов) равны 1, при двух эталонах их сумма равна 2 и линии зеркальны, так что фрагмент третьего автора выглядит лежащим посередине между ними. При немногих эталонах косинусной дельте нужны статистики <code>statistics</code> по большему числу текстов - других авторов, других произведений; дельта Барроуза и дельта Эдера так не ограничены. С <code>statistics</code> достаточно одного эталона.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>reference</code></td>
+<td style="text-align: left;"><code>dict[str, list[str]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Единицы эталонных текстов по именам текстов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>text</code></td>
+<td style="text-align: left;"><code>list[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Единицы проверяемого текста</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>5000</code></td>
+<td style="text-align: left;">Размер окна в единицах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>step</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>1000</code></td>
+<td style="text-align: left;">Расстояние между началами окон в единицах</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_mfw</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Число самых частых единиц; <code>None</code> - все</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>variant</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>'burrows'</code></td>
+<td style="text-align: left;">Вариант дельты из <code>anyts.constants.DELTA_VARIANTS</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>culling</code></td>
+<td style="text-align: left;"><code>float</code></td>
+<td style="text-align: left;"><code>0.0</code></td>
+<td style="text-align: left;">Наименьшая доля окон, в которых встречается единица</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>statistics</code></td>
+<td style="text-align: left;"><code>dict[str, list[str]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Тексты, окна которых дают единицы и статистики нормировки; <code>None</code> - эталонные тексты</td>
+</tr>
+</tbody>
+</table>
+<p>Корпус, который не словарь списков строк, и единицы текста, которые не список строк, дают <code>SourceTypeError</code>. Отсутствие эталонных текстов, меньше двух эталонных текстов без <code>statistics</code>, текст без единиц или короче окна, меньше трех окон для статистик и отсев, после которого не остается ни одной единицы, дают <code>SourceError</code>. Неизвестный вариант, <code>window</code>, <code>step</code> или <code>n_mfw</code>, который не целое число не меньше единицы, <code>step</code> больше окна и <code>culling</code>, который не число в пределах [0, 1], дают <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">rolling_delta</span>
+
+<span class="n">rolling_delta</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"А"</span><span class="p">]</span> <span class="o">+</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"Б"</span><span class="p">],</span> <span class="n">window</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>        А      Б      В
+3   0.197  1.132  0.801
+6   0.296  1.132  0.702
+9   0.292  1.138  0.801
+12  0.197  1.132  0.801
+15  0.988  1.230  1.048
+18  0.804  0.330  1.015
+21  1.298  0.165  1.509
+24  1.298  0.165  1.509
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
 <!-- core: corpus/stylometry.md:zeta 1b7460b -->
 <div class="signature highlight"><pre><span></span><code><span class="n">zeta</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -2519,7 +2630,7 @@
 </tbody>
 </table>
 <p>Результат - список именованных кортежей <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> по убыванию Zeta, при равенстве - по убыванию логарифмической Zeta и по алфавиту. Корпус, который не список строк и не список таких списков, дает <code>SourceTypeError</code>, а корпус без слов - <code>SourceError</code>; <code>segment_size</code> или <code>top_n</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta</span>
@@ -2531,6 +2642,73 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>[ZetaScore(word='кот', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0), ZetaScore(word='окне', dp_target=0.6666666666666666, dp_comparison=0.0, zeta=0.6666666666666666, log_zeta=2.0)]
 ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, zeta=-0.6666666666666666, log_zeta=-2.0)
+</code></pre></div>
+</div>
+</div>
+</div>
+<!-- core: corpus/stylometry.md:zeta_segments 89aea5c -->
+<div class="signature highlight"><pre><span></span><code><span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpora</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+</code></pre></div>
+<p>Доли маркеров Zeta в сегментах корпусов - так сегменты располагает <code>oppose</code> в stylo: каждый текст делится на сегменты, как в <code>zeta</code>, и для сегмента считается, какая доля слов списков <code>preferred</code> и <code>avoided</code> в нем встречается. С маркерами целевого корпуса против корпуса сравнения сегменты целевого корпуса лежат на плоскости двух долей слева вверху, а сегменты корпуса сравнения - справа внизу; сегменты спорного текста показывают, к какой группе он ближе (<code>zeta_scatter_plot</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>corpora</code></td>
+<td style="text-align: left;"><code>dict[str, list[str] / list[list[str]]]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова корпусов по именам - у каждого один текст или список текстов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>preferred</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова, которые предпочитает целевой корпус, - начало списка <code>zeta</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>avoided</code></td>
+<td style="text-align: left;"><code>Collection[str]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Слова, которых избегает целевой корпус, - конец списка</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>segment_size</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;"><code>2000</code></td>
+<td style="text-align: left;">Размер сегмента в словах</td>
+</tr>
+</tbody>
+</table>
+<p>Результат - <code>DataFrame</code> сегментов в порядке корпусов и их текстов со столбцами <code>corpus</code> (имя корпуса), <code>preferred</code> и <code>avoided</code> (доли списков). Корпуса, которые не словарь, и корпус или список маркеров, который не список строк, дают <code>SourceTypeError</code>; отсутствие корпусов, пустой список маркеров и корпус без слов - <code>SourceError</code>, а <code>segment_size</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">zeta_segments</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="n">zeta</span><span class="p">(</span><span class="n">corpus</span><span class="p">[</span><span class="s2">"А"</span><span class="p">],</span> <span class="n">corpus</span><span class="p">[</span><span class="s2">"Б"</span><span class="p">],</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">preferred</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="o">.</span><span class="n">word</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">zeta</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">avoided</span> <span class="o">=</span> <span class="p">[</span><span class="n">score</span><span class="o">.</span><span class="n">word</span> <span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">scores</span> <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">zeta</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>  corpus  preferred  avoided
+0      А      0.444    0.000
+1      А      0.556    0.000
+2      А      0.444    0.000
+3      Б      0.111    0.429
+4      Б      0.000    0.571
+5      Б      0.111    0.429
+6      В      0.111    0.143
+7      В      0.222    0.000
+8      В      0.111    0.143
 </code></pre></div>
 </div>
 </div>
@@ -2571,7 +2749,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </tbody>
 </table>
 <p>Слова, которые не список строк, дают <code>SourceTypeError</code>, корпус без слов - <code>SourceError</code>, а <code>n_mfw</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">kilgarriff_chi2</span>
@@ -2638,7 +2816,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </tbody>
 </table>
 <p>Слова, которые не список строк, дают <code>SourceTypeError</code>, а текст без слов - <code>SourceError</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">mendenhall_curve</span><span class="p">,</span> <span class="n">mendenhall_distance</span>
@@ -2681,7 +2859,7 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <li><code>SourceTypeError</code> - источник, который не список строк и не <code>Doc</code>;</li>
 <li><code>SourceError</code> - источник без слов.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_words_profile</span>

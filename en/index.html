@@ -2276,7 +2276,7 @@
 <li>
 <p><span class="twemoji lg middle"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg></span> <strong>Corpus measures</strong></p>
 <hr />
-<p><a href="corpus/keyness/">Keywords</a> relative to a reference corpus or a frequency dictionary, <a href="corpus/collocations/">collocations</a>, <a href="corpus/dispersion/">word dispersion</a> across text parts, <a href="corpus/kwic/">KWIC concordance</a>, <a href="corpus/stylometry/">stylometry</a> measures (Burrows's Delta with its variants, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile) and the <a href="corpus/compare/">comparison of corpora</a> across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)</p>
+<p><a href="corpus/keyness/">Keywords</a> relative to a reference corpus or a frequency dictionary, <a href="corpus/collocations/">collocations</a>, <a href="corpus/dispersion/">word dispersion</a> across text parts, <a href="corpus/kwic/">KWIC concordance</a>, <a href="corpus/stylometry/">stylometry</a> measures (Burrows's Delta with its variants and rolling Delta along a text, Zeta and the shares of its markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile) and the <a href="corpus/compare/">comparison of corpora</a> across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)</p>
 <p><a href="corpus/keyness/"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.75.75 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0"/></svg></span> Corpus measures</a></p>
 </li>
 <li>
@@ -2434,7 +2434,7 @@
 <li>fingerprinting.py - Literature Fingerprinting</li>
 <li>highlight.py - text highlighting</li>
 <li>sentences.py - sentence lengths</li>
-<li>stylometry.py - dendrogram, principal components, scaling, Mendenhall curves</li>
+<li>stylometry.py - dendrogram, principal components, scaling, distances within and between authors, rolling Delta, Zeta markers, Mendenhall curves</li>
 <li>vocabulary.py - Heaps's law and frequency spectrum</li>
 <li>word_tree.py - Word Tree</li>
 <li>zipf.py - Zipf's law</li>
