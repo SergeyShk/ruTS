@@ -214,6 +214,7 @@ def readability(dataset):
             "lix": [],
             "rix": [],
             "matskovsky_index": [],
+            "tuldava": [],
         }
     )
     for record in dataset:

@@ -307,6 +307,7 @@ def test_component_syntax_requires_pos():
 FACTORIES = (
     "ruts_basic",
     "ruts_readability",
+    "ruts_unadapted_readability",
     "ruts_diversity",
     "ruts_morph",
     "ruts_syntax",
@@ -320,6 +321,7 @@ FACTORIES = (
 BLANK_FACTORIES = (
     "ruts_basic",
     "ruts_readability",
+    "ruts_unadapted_readability",
     "ruts_diversity",
     "ruts_morph",
     "ruts_cohesion",

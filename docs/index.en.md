@@ -40,7 +40,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Flesch-Kincaid test, SMOG index, LIX readability index and other metrics with coefficients for Russian
+    Flesch-Kincaid test, SMOG index, LIX readability index and other metrics with coefficients for Russian, and formulas of other languages with their original coefficients
 
     [:octicons-arrow-right-24: Readability metrics](stats/readability_stats.md)
 
@@ -257,6 +257,7 @@ A walkthrough of one short story with every tool of the library is in the notebo
         *   style_stats.py - SEO style metrics
         *   syllables.py - syllables and stress
         *   syntax_stats.py - syntactic statistics
+        *   unadapted_readability_stats.py - readability formulas of other languages
         *   utils.py - helper tools
         *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
         *   **corpus** - corpus measures:

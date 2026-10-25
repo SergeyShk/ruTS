@@ -34,6 +34,7 @@ The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github
     Индекс удобочитаемости RIX              |   2.00
     Формула Соловьёва, Иванова, Солнышкиной |   1.52
     Формула Мацковского                     |   9.35
+    Формула Тулдавы                         |   1.96
     Индекс Дейла-Чейла                      |   4.10
     Индекс Ганнинга                         |   6.00
     Сводный класс                           |   1.50
@@ -94,7 +95,7 @@ On school texts (labels 1-11) the test with the `fiction` preset is about four g
 
 ## Metrics
 
-A formula is computed by the function of its card on the counts of `bs`; the default coefficients of the functions are adapted for Russian. The core formulas take their coefficients from `coefficients`, where the preset sets those of the Flesch-Kincaid test, the Flesch index and the Coleman-Liau, SMOG and ARI indices, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall are computed with the coefficients of their functions, and `coefficients` does not affect them. A formula of counts gives `nan` when the number of words or of sentences it divides by is zero.
+A formula is computed by the function of its card on the counts of `bs`; the default coefficients of the functions are adapted for Russian. The core formulas take their coefficients from `coefficients`, where the preset sets those of the Flesch-Kincaid test, the Flesch index and the Coleman-Liau, SMOG and ARI indices, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall are computed with the coefficients of their functions, and `coefficients` does not affect them. A formula of counts gives `nan` when the number of words or of sentences it divides by is zero. The formulas of other languages, with their original coefficients and without a calibration for Russian, are computed by the [`UnadaptedReadabilityStats`](unadapted_readability_stats.md) class.
 
 | Metric | Measures | Range | Higher means |
 | :----- | :------- | :---- | :----------- |
@@ -107,6 +108,7 @@ A formula is computed by the function of its card on the counts of `bs`; the def
 | [`rix`](#rix) | Long words per sentence | 0 and above | A harder text |
 | [`sis_grade`](#sis_grade) | Grade by the sentence length and the letters per word | School grade, below 0 for the simplest texts | A harder text |
 | [`matskovsky_index`](#matskovsky_index) | Sentence length and the share of complex words | 0 and above | A harder text |
+| [`tuldava`](#tuldava) | Syllables per word and the logarithm of the sentence length | 0 and above | A harder text |
 | [`dale_chall_index`](#dale_chall_index) | Grade by the share of complex words and the sentence length | Years of schooling | A harder text |
 | [`gunning_fog_index`](#gunning_fog_index) | Grade by the sentence length and the share of complex words | Years of schooling | A harder text |
 | [`consensus_grade`](#consensus_grade) | Median of the grade formulas and the reading ease as a grade | Years of schooling, below 0 for the simplest texts | A harder text |
@@ -436,6 +438,49 @@ $$
 
 <div class="metric-card" markdown>
 
+### Tuldava formula { #tuldava }
+
+`tuldava` · Tuldava, 1975
+{ .metric-meta }
+
+``` {.python .signature}
+calc_tuldava(n_syllables, n_words, n_sents)
+```
+
+The text difficulty formula of Tuldava ("Ob izmerenii trudnosti tekstov" - "On measuring the difficulty of texts", Uchenye zapiski Tartuskogo universiteta, issue 345, 1975, pp. 102-120) as given by [Ivanov, Solnyshkina and Solovyev (2018)](https://dialogue-conf.org/media/4302/ivanovvv.pdf): the mean number of syllables per word times the decimal logarithm of the mean sentence length in words; there are no coefficients to fit. The formula has no scale and no conversion to a grade: it does not enter the consensus grade, and `describe` gives `None`. koRpus computes it with the natural logarithm.
+
+$$
+\frac{\textrm{Number of syllables}}{\textrm{Number of words}} \cdot \lg \frac{\textrm{Number of words}}{\textrm{Number of sentences}}
+$$
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `n_syllables` | `int` | - | Number of syllables |
+| `n_words` | `int` | - | Number of words |
+| `n_sents` | `int` | - | Number of sentences |
+
+=== "Code"
+
+    ``` python
+    from ruts import ReadabilityStats
+    from ruts.readability_stats import calc_tuldava
+
+    calc_tuldava(n_syllables=200, n_words=100, n_sents=10)
+    rs = ReadabilityStats("Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул.")
+    rs.tuldava, rs.describe("tuldava")
+    ```
+
+=== "Result"
+
+    ```
+    2.0
+    (1.3131677299615359, None)
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Dale-Chall index { #dale_chall_index }
 
 `dale_chall_index` · [Dale and Chall, 1948](https://en.wikipedia.org/wiki/Dale–Chall_readability_formula)
@@ -628,6 +673,7 @@ In ruTS the norms come from the `ruts.constants.READING_SPEED_NORMS` table, and 
      'rix': 2.0,
      'sis_grade': 1.5166666666666675,
      'matskovsky_index': 9.351,
+     'tuldava': 1.9601520984261356,
      'dale_chall_index': 4.095000000000001,
      'gunning_fog_index': 6.0,
      'consensus_grade': 1.5,

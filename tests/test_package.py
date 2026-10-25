@@ -149,6 +149,7 @@ CORE_MODULES = {
     "ruts.corpus.kwic": "anyts.corpus.kwic",
     "ruts.basic_stats": "anyts.basic_stats",
     "ruts.readability_stats": "anyts.readability_stats",
+    "ruts.unadapted_readability_stats": "anyts.unadapted_readability_stats",
     "ruts.components": "anyts.components",
     "ruts.phon_stats": "anyts.phon_stats",
     "ruts.datasets.dataset": "anyts.datasets",
@@ -249,6 +250,11 @@ RUSSIAN = {
         "flesch_reading_easy_to_grade",
         "grade_to_age",
     },
+    "ruts.unadapted_readability_stats": {
+        "BasicStats",
+        "UNADAPTED_READABILITY_STATS_DESC",
+        "UnadaptedReadabilityStats",
+    },
     "ruts.components": {
         "BasicStats",
         "BasicStatsComponent",
@@ -267,6 +273,8 @@ RUSSIAN = {
         "StyleStatsComponent",
         "SyntaxStats",
         "SyntaxStatsComponent",
+        "UnadaptedReadabilityStats",
+        "UnadaptedReadabilityStatsComponent",
         "is_number",
     },
     "ruts.phon_stats": {
@@ -339,6 +347,7 @@ TEXT_STATS = (
     "CohesionStats",
     "LexicalStats",
     "VerseStats",
+    "UnadaptedReadabilityStats",
 )
 
 

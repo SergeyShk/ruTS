@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping
-from math import floor, isfinite, isinf, isnan, nan
+from math import floor, isfinite, isinf, isnan, log10, nan
 from numbers import Real
 from typing import TYPE_CHECKING
 
@@ -74,6 +74,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         'rix': 2.0,
         'sis_grade': 1.5166666666666675,
         'matskovsky_index': 9.351,
+        'tuldava': 1.96015209842613...,
         'dale_chall_index': 4.095000000000001,
         'gunning_fog_index': 6.0,
         'consensus_grade': 1.5,
@@ -105,6 +106,7 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         rix (float): Индекс удобочитаемости RIX
         sis_grade (float): Формула Соловьёва, Иванова, Солнышкиной (2023)
         matskovsky_index (float): Формула Мацковского
+        tuldava (float): Формула Тулдавы
         dale_chall_index (float): Индекс Дейла-Чейла в адаптации plainrussian
         gunning_fog_index (float): Индекс Ганнинга в адаптации plainrussian
         consensus_grade (float): Сводный класс по всем формулам класса и индексу Флеша
@@ -162,6 +164,10 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         return calc_matskovsky_index(
             self.bs.count_words_by_syllables(4), self.bs.n_words, self.bs.n_sents
         )
+
+    @property
+    def tuldava(self) -> float:
+        return calc_tuldava(self.bs.n_syllables, self.bs.n_words, self.bs.n_sents)
 
     @property
     def dale_chall_index(self) -> float:
@@ -549,6 +555,37 @@ def calc_matskovsky_index(
     return (
         safe_divide(a * n_words, n_sents, nan) + safe_divide(b * 100 * n_complex, n_words, nan) + c
     )
+
+
+def calc_tuldava(n_syllables: int, n_words: int, n_sents: int) -> float:
+    """
+    Вычисление формулы Тулдавы
+
+    Описание:
+        Формула трудности текста Тулдавы (1975): среднее число слогов в слове, умноженное
+        на десятичный логарифм средней длины предложения в словах; шкалы и перевода
+        в класс у нее нет, в сводный класс она не входит
+        Чем выше показатель, тем сложнее текст для чтения
+
+    Ссылки:
+        https://dialogue-conf.org/media/4302/ivanovvv.pdf
+
+    Аргументы:
+        n_syllables (int): Количество слогов
+        n_words (int): Количество слов
+        n_sents (int): Количество предложений
+
+    Вывод:
+        float: Значение формулы, nan без слов или предложений
+
+    Пример использования:
+        >>> from ruts.readability_stats import calc_tuldava
+        >>> calc_tuldava(n_syllables=200, n_words=100, n_sents=10)
+        2.0
+    """
+    if not n_words or not n_sents:
+        return nan
+    return n_syllables / n_words * log10(n_words / n_sents)
 
 
 def calc_dale_chall_index(

@@ -38,6 +38,7 @@ from ruts.readability_stats import (
     calc_sis_grade,
     calc_sis_grade_freq,
     calc_smog_index,
+    calc_tuldava,
     describe_level_norm,
     flesch_reading_easy_to_grade,
     grade_to_age,
@@ -542,3 +543,14 @@ def test_level_features_of_doc():
     doc = nlp(text)
     assert BasicStats(doc).n_sents != BasicStats(text).n_sents
     assert level_features(doc) == level_features(text)
+
+
+def test_tuldava(rs):
+    """Слогов на слово, умноженное на десятичный логарифм слов на предложение"""
+    assert calc_tuldava(200, 100, 10) == pytest.approx(2.0)
+    assert isnan(calc_tuldava(5, 0, 1))
+    assert isnan(calc_tuldava(5, 3, 0))
+    bs = rs.bs
+    assert rs.tuldava == calc_tuldava(bs.n_syllables, bs.n_words, bs.n_sents)
+    assert rs.describe("tuldava") is None
+    assert "tuldava" not in rs.grade_stats

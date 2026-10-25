@@ -78,10 +78,28 @@ READABILITY_STATS_DESC = {
     "rix": "Индекс удобочитаемости RIX",
     "sis_grade": "Формула Соловьёва, Иванова, Солнышкиной",
     "matskovsky_index": "Формула Мацковского",
+    "tuldava": "Формула Тулдавы",
     "dale_chall_index": "Индекс Дейла-Чейла",
     "gunning_fog_index": "Индекс Ганнинга",
     "consensus_grade": "Сводный класс",
     "reading_time": "Время чтения (мин.)",
+}
+# Формулы других языков с исходными коэффициентами, без калибровки под русский
+UNADAPTED_READABILITY_STATS_DESC = {
+    "forcast": "Класс FORCAST",
+    "linsear_write": "Класс Linsear Write",
+    "powers_sumner_kearl": "Класс Пауэрса-Самнера-Керла",
+    "eflaw": "Индекс EFLAW Макалпайна",
+    "wiener_sachtextformel_1": "Венская формула 1 (Wiener Sachtextformel)",
+    "wiener_sachtextformel_2": "Венская формула 2 (Wiener Sachtextformel)",
+    "wiener_sachtextformel_3": "Венская формула 3 (Wiener Sachtextformel)",
+    "wiener_sachtextformel_4": "Венская формула 4 (Wiener Sachtextformel)",
+    "dickes_steiwer": "Индекс Дикеса-Штайвера",
+    "gulpease": "Индекс Gulpease",
+    "fucks": "Индекс Фукса",
+    "strain_index": "Индекс Strain",
+    "elf": "Формула легкости на слух (ELF)",
+    "wheeler_smith": "Индекс Уилера-Смита",
 }
 READABILITY_GRADE_STATS = (
     "flesch_kincaid_grade",

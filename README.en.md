@@ -37,7 +37,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
 * **[Object extraction](https://sergeyshk.github.io/ruTS/en/extractors/words/)** - configurable word, sentence and character n-gram tokenizers
 * **[Basic statistics](https://sergeyshk.github.io/ruTS/en/stats/basic_stats/)** - counts of words, sentences, syllables, punctuation marks and their distributions
-* **[Readability metrics](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian
+* **[Readability metrics](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/)** - Flesch-Kincaid, SMOG, LIX and others, with coefficients for Russian, and formulas of other languages with their original coefficients
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/en/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/en/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/en/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, lexical officialese markers
@@ -216,8 +216,10 @@ The library allows counting the following readability metrics:
 *   RIX readability measure
 *   Solovyev-Ivanov-Solnyshkina formula
 *   Matskovsky formula
+*   Tuldava formula
 *   Dale-Chall Index
 *   Gunning Fog Index
+*   [Formulas of other languages](https://sergeyshk.github.io/ruTS/en/stats/unadapted_readability_stats/) (`UnadaptedReadabilityStats`): FORCAST, Linsear Write, Wiener Sachtextformel, Gulpease and others with their original coefficients, without a calibration for Russian - to compare texts with each other and with other tools, not for a grade of the Russian school
 
 An interpretation layer works on top of the formulas: a consensus grade as the median of the grade formulas, mapping of the grade to the reader's age by the plainrussian table, the scales of the Flesch index, LIX and RIX, reading time and the [stage norms](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#level_norms) - the usual sentence and word length, share of words of five or more syllables and MTLD of texts for grades 1-3, 4-6 and 10-11.
 
@@ -243,7 +245,8 @@ Coefficients of the formulas adapted for Russian are selected by the `preset` ar
  'reading_time': 0.08333333333333333,
  'rix': 2.0,
  'sis_grade': 1.5166666666666675,
- 'smog_index': 0.05}
+ 'smog_index': 0.05,
+ 'tuldava': 1.9601520984261356}
 
 >>> rs.print_stats()
                 Метрика                 | Значение
@@ -257,6 +260,7 @@ Coefficients of the formulas adapted for Russian are selected by the `preset` ar
 Индекс удобочитаемости RIX              |   2.00
 Формула Соловьёва, Иванова, Солнышкиной |   1.52
 Формула Мацковского                     |   9.35
+Формула Тулдавы                         |   1.96
 Индекс Дейла-Чейла                      |   4.10
 Индекс Ганнинга                         |   6.00
 Сводный класс                           |   1.50
@@ -675,7 +679,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: 115 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 116 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor
@@ -835,6 +839,7 @@ The library allows creating the following classes of spaCy components:
 *   `ReadabilityStats`
 *   `StyleStats`
 *   `SyntaxStats`
+*   `UnadaptedReadabilityStats`
 *   `VerseStats`
 
 ```python
@@ -909,6 +914,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
     *   readability_stats.py - readability metrics
     *   style_stats.py - SEO style metrics
     *   syntax_stats.py - syntactic statistics
+    *   unadapted_readability_stats.py - readability formulas of other languages
     *   utils.py - helper tools
     *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
     *   **corpus** - corpus measures:
