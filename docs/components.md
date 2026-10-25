@@ -42,7 +42,7 @@ StatsComponent(nlp, name)
 
 ## Имена { #names }
 
-Фабрики носят префикс библиотеки: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, а также компонент границ предложений [`ruts_blank_lines`](#blank_lines). Они объявлены точками входа `spacy_factories`, поэтому пайплайн, сохраненный с этими компонентами (`nlp.to_disk(path)`), загружается через `spacy.load(path)` без `import ruts`. `import ruts` сам компоненты не грузит, пока spaCy не загружен, - их находят точки входа; из исходников без установки пакета перед `add_pipe` нужен `import ruts.components`.
+Фабрики носят префикс библиотеки: `ruts_basic`, `ruts_readability`, `ruts_unadapted_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, а также компонент границ предложений [`ruts_blank_lines`](#blank_lines). Они объявлены точками входа `spacy_factories`, поэтому пайплайн, сохраненный с этими компонентами (`nlp.to_disk(path)`), загружается через `spacy.load(path)` без `import ruts`. `import ruts` сам компоненты не грузит, пока spaCy не загружен, - их находят точки входа; из исходников без установки пакета перед `add_pipe` нужен `import ruts.components`.
 
 <!-- core: components.md:StatsComponent-names 33ebb87 -->
 Имя компонента в пайплайне - это имя расширения: `nlp.add_pipe(factory, name="basic")` кладет статистики в `doc._.basic`. Без `name` компонент и расширение получают имя фабрики. Расширение следует за компонентом, когда пайплайн переименовывает его (`nlp.rename_pipe`). Имя, занятое расширением другого пакета, дает `ParameterError` вместо замены: при `add_pipe` или на первом документе после `rename_pipe`, который переименовывает компонент раньше, чем тот узнает свое имя. Компонент, взятый из другого пайплайна (`add_pipe(name, source=other)`), - один и тот же объект в обоих, поэтому под новым именем он пишет и в то расширение в другом пайплайне; отдельный компонент дает фабрика, `add_pipe(factory, name=...)`. Один и тот же компонент можно добавить дважды под разными именами, с разными параметрами. Документ без слов - пустая строка, пробелы, одни знаки препинания - проходит компонент нетронутым, а его расширение остается `None`.
@@ -64,6 +64,7 @@ StatsComponent(nlp, name)
 | [`BasicStatsComponent`](#BasicStatsComponent) | `ruts_basic` | `BasicStats` | - |
 | [`MorphStatsComponent`](#MorphStatsComponent) | `ruts_morph` | `MorphStats` | - |
 | [`ReadabilityStatsComponent`](#ReadabilityStatsComponent) | `ruts_readability` | `ReadabilityStats` | `preset`, `basic` |
+| [`UnadaptedReadabilityStatsComponent`](#UnadaptedReadabilityStatsComponent) | `ruts_unadapted_readability` | `UnadaptedReadabilityStats` | `basic` |
 | [`DiversityStatsComponent`](#DiversityStatsComponent) | `ruts_diversity` | `DiversityStats` | `window_len`, `mtld_threshold`, `mtld_min_len`, `hdd_sample_size`, `log_base` |
 | [`StyleStatsComponent`](#StyleStatsComponent) | `ruts_style` | `StyleStats` | `stopwords`, `top_n`, `nausea_stopwords`, `cliches` |
 | [`PhonStatsComponent`](#PhonStatsComponent) | `ruts_phon` | `PhonStats` | `window_len` |
@@ -145,6 +146,43 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
     ```
     -0.1506153846153886
     6.41769230769231
+    ```
+
+### Формулы других языков { #UnadaptedReadabilityStatsComponent }
+
+``` {.python .signature}
+UnadaptedReadabilityStatsComponent(nlp, name, basic=None)
+```
+
+<!-- core: components.md:UnadaptedReadabilityStatsComponent 7a47657 -->
+`UnadaptedReadabilityStatsComponent` кладет в расширение формулы удобочитаемости других языков, посчитанные по документу или, с `basic`, по основным статистикам, которые положил в него другой компонент. Библиотека задает `basic_factory`, как для `ReadabilityStatsComponent`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `basic` | `str` | `None` | Расширение компонента основных статистик, которые берутся вместо повторного подсчета |
+
+Исключения:
+
+- `ParameterError` - `stats_class`, который не конкретный класс, расширение, имя которого не строка;
+- `SourceTypeError` - класс без `basic_stats_class` и без `basic`;
+- `SourceError` - документ, в расширении `basic` которого нет основных статистик класса.
+
+Формулы - [`UnadaptedReadabilityStats`](stats/unadapted_readability_stats.md) с исходными коэффициентами, без калибровки под русский язык. Как и у `ReadabilityStatsComponent`, в ruTS ошибок `stats_class` и `SourceTypeError` не бывает, а сообщение `SourceError` называет компонент `ruts_basic`, который нужно добавить перед ним.
+
+=== "Код"
+
+    ``` python
+    nlp.add_pipe("ruts_unadapted_readability", name="unadapted", config={"basic": "basic"})
+    doc = nlp("Кот сидел на окне и смотрел на птиц, которые летали над крышами домов.")
+    doc._.unadapted.gulpease, doc._.unadapted.forcast
+    doc._.unadapted.bs is doc._.basic
+    ```
+
+=== "Результат"
+
+    ```
+    (69.0, 13.076923076923077)
+    True
     ```
 
 ### Метрики лексического разнообразия { #DiversityStatsComponent }

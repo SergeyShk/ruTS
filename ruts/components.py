@@ -35,6 +35,7 @@ from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
+from .unadapted_readability_stats import UnadaptedReadabilityStats
 from .utils import BYTE_ORDER_MARK, add_dash_rules, strip_marks
 from .verse_stats import VerseStats
 
@@ -144,6 +145,43 @@ class ReadabilityStatsComponent(_Component, anyts.components.ReadabilityStatsCom
     """
 
     stats_class = ReadabilityStats
+    basic_factory = "ruts_basic"
+
+
+@Language.factory("ruts_unadapted_readability")
+class UnadaptedReadabilityStatsComponent(
+    _Component, anyts.components.UnadaptedReadabilityStatsComponent
+):
+    """
+    Класс для компонента формул удобочитаемости других языков
+
+    Описание:
+        Формулы UnadaptedReadabilityStats - с исходными коэффициентами, без калибровки
+        под русский язык
+
+    Добавление компонента в пайплайн:
+        >>> import ruts
+        >>> import spacy
+        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp.add_pipe("ruts_unadapted_readability", name="unadapted", last=True)
+        <ruts.components.UnadaptedReadabilityStatsComponent object at 0x...>
+
+    Доступ к извлеченным метрикам:
+        >>> doc = nlp("мама мыла раму")
+        >>> doc._.unadapted.gulpease
+        149.0
+
+    Аргументы:
+        name (str): Наименование компонента в пайплайне
+        basic (str): Расширение компонента основных статистик, которые берутся
+            вместо повторного подсчета
+
+    Исключения:
+        ParameterError: Если имя расширения не строка
+        SourceError: Если в указанном расширении нет основных статистик
+    """
+
+    stats_class = UnadaptedReadabilityStats
     basic_factory = "ruts_basic"
 
 

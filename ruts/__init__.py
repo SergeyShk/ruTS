@@ -32,6 +32,7 @@ from .phon_stats import PhonStats
 from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
+from .unadapted_readability_stats import UnadaptedReadabilityStats
 from .verse_stats import VerseStats
 
 if TYPE_CHECKING:
@@ -45,6 +46,7 @@ if TYPE_CHECKING:
         ReadabilityStatsComponent as ReadabilityStatsComponent,
         StyleStatsComponent as StyleStatsComponent,
         SyntaxStatsComponent as SyntaxStatsComponent,
+        UnadaptedReadabilityStatsComponent as UnadaptedReadabilityStatsComponent,
         VerseStatsComponent as VerseStatsComponent,
     )
 
@@ -80,6 +82,7 @@ __all__ = [
     "SourceTypeError",
     "StyleStats",
     "SyntaxStats",
+    "UnadaptedReadabilityStats",
     "UnknownStatError",
     "VerseStats",
     "WordsExtractor",
@@ -105,6 +108,7 @@ make_lazy(
             "ReadabilityStatsComponent",
             "StyleStatsComponent",
             "SyntaxStatsComponent",
+            "UnadaptedReadabilityStatsComponent",
             "VerseStatsComponent",
         ),
         "components",

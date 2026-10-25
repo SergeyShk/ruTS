@@ -126,6 +126,7 @@ The dataset is used in the library tests to check the readability formulas: the 
 | RIX readability index | 0.77 | - |
 | Solovyev, Ivanov and Solnyshkina formula | 0.77 | 4.7 |
 | Matskovsky formula | 0.76 | - |
+| Tuldava formula | 0.78 | - |
 | Dale-Chall index | 0.82 | 3.8 |
 | Gunning fog index | 0.80 | 3.9 |
 | Consensus grade | 0.81 | 3.6 |

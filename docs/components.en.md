@@ -41,7 +41,7 @@ spaCy sets both at `nlp.add_pipe(factory, name=...)`; the other parameters of a 
 
 ## Names { #names }
 
-The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`. `import ruts` does not load the components while spaCy is not loaded - the entry points find them; from the sources without an installed package, `import ruts.components` comes before `add_pipe`.
+The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_unadapted_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`. `import ruts` does not load the components while spaCy is not loaded - the entry points find them; from the sources without an installed package, `import ruts.components` comes before `add_pipe`.
 
 --8<-- "components.md:StatsComponent-names"
 
@@ -60,6 +60,7 @@ ruTS removes stress marks from the words of a `Doc`, but the parts of speech, fe
 | [`BasicStatsComponent`](#BasicStatsComponent) | `ruts_basic` | `BasicStats` | - |
 | [`MorphStatsComponent`](#MorphStatsComponent) | `ruts_morph` | `MorphStats` | - |
 | [`ReadabilityStatsComponent`](#ReadabilityStatsComponent) | `ruts_readability` | `ReadabilityStats` | `preset`, `basic` |
+| [`UnadaptedReadabilityStatsComponent`](#UnadaptedReadabilityStatsComponent) | `ruts_unadapted_readability` | `UnadaptedReadabilityStats` | `basic` |
 | [`DiversityStatsComponent`](#DiversityStatsComponent) | `ruts_diversity` | `DiversityStats` | `window_len`, `mtld_threshold`, `mtld_min_len`, `hdd_sample_size`, `log_base` |
 | [`StyleStatsComponent`](#StyleStatsComponent) | `ruts_style` | `StyleStats` | `stopwords`, `top_n`, `nausea_stopwords`, `cliches` |
 | [`PhonStatsComponent`](#PhonStatsComponent) | `ruts_phon` | `PhonStats` | `window_len` |
@@ -125,6 +126,32 @@ The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `f
     ```
     -0.1506153846153886
     6.41769230769231
+    ```
+
+### Formulas of other languages { #UnadaptedReadabilityStatsComponent }
+
+``` {.python .signature}
+UnadaptedReadabilityStatsComponent(nlp, name, basic=None)
+```
+
+--8<-- "components.md:UnadaptedReadabilityStatsComponent"
+
+The formulas are those of [`UnadaptedReadabilityStats`](stats/unadapted_readability_stats.md), with their original coefficients and without a calibration for Russian. As for `ReadabilityStatsComponent`, the errors of `stats_class` and `SourceTypeError` do not occur in ruTS, and the message of `SourceError` names the component `ruts_basic` to add before it.
+
+=== "Code"
+
+    ``` python
+    nlp.add_pipe("ruts_unadapted_readability", name="unadapted", config={"basic": "basic"})
+    doc = nlp("Кот сидел на окне и смотрел на птиц, которые летали над крышами домов.")
+    doc._.unadapted.gulpease, doc._.unadapted.forcast
+    doc._.unadapted.bs is doc._.basic
+    ```
+
+=== "Result"
+
+    ```
+    (69.0, 13.076923076923077)
+    True
     ```
 
 ### Lexical diversity metrics { #DiversityStatsComponent }

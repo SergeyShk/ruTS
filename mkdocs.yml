@@ -22,6 +22,7 @@ nav:
     - Подсчет статистик:
         - Базовые статистики: stats/basic_stats.md
         - Метрики удобочитаемости: stats/readability_stats.md
+        - Формулы других языков: stats/unadapted_readability_stats.md
         - Метрики лексического разнообразия: stats/diversity_stats.md
         - Морфологические статистики: stats/morph_stats.md
         - SEO-метрики стиля: stats/style_stats.md
@@ -122,6 +123,7 @@ plugins:
             Подсчет статистик: Statistics
             Базовые статистики: Basic statistics
             Метрики удобочитаемости: Readability metrics
+            Формулы других языков: Formulas of other languages
             Метрики лексического разнообразия: Lexical diversity metrics
             Морфологические статистики: Morphological statistics
             SEO-метрики стиля: SEO style metrics
