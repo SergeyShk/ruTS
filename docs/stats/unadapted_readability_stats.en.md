@@ -10,6 +10,8 @@ The class extends the `UnadaptedReadabilityStats` of the [anyTS](https://sergeys
 
 The formulas are not calibrated for Russian. Their values serve to compare Russian texts with each other and with the results of these formulas in other tools, but they give no grade of the Russian school: on the first-grade texts of the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the median FORCAST is 15.4, the Powers-Sumner-Kearl grade 8.2 and the Wiener Sachtextformel 1 9.6. These formulas therefore have no reading scales, `describe` gives `None` for them, and they do not enter the [consensus grade](readability_stats.md#consensus_grade). The formulas with coefficients for Russian are in [`ReadabilityStats`](readability_stats.md).
 
+A word without vowels (the prepositions *в*, *с*, *к*) is a word without syllables, and FORCAST and Linsear Write of the core count it neither as a monosyllable nor as an easy word, so on a Russian text FORCAST is higher and Linsear Write lower than in the tools that count such words as short.
+
 === "Code"
 
     ``` python

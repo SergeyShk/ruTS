@@ -17,6 +17,7 @@ from ruts import (
     StyleStats,
     StyleStatsComponent,
     SyntaxStats,
+    UnadaptedReadabilityStats,
     VerseStats,
 )
 from ruts.constants import (
@@ -365,20 +366,28 @@ def test_verse_component_of_a_document_without_letters(tmp_path, doc_text):
     assert nlp(doc_text)._.verse is None
 
 
-def test_readability_reuses_the_basic_statistics():
+READABILITY_FACTORIES = [
+    ("ruts_readability", ReadabilityStats),
+    ("ruts_unadapted_readability", UnadaptedReadabilityStats),
+]
+
+
+@pytest.mark.parametrize(("factory", "stats_class"), READABILITY_FACTORIES)
+def test_readability_reuses_the_basic_statistics(factory, stats_class):
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
     nlp.add_pipe("ruts_basic", name="basic")
-    nlp.add_pipe("ruts_readability", name="readability", config={"basic": "basic"})
+    nlp.add_pipe(factory, name="readability", config={"basic": "basic"})
     doc = nlp(text)
     assert doc._.readability.bs is doc._.basic
-    assert doc._.readability.get_stats() == ReadabilityStats(doc).get_stats()
+    assert doc._.readability.get_stats() == stats_class(doc).get_stats()
 
 
-def test_readability_reuse_of_a_missing_component():
+@pytest.mark.parametrize("factory", [factory for factory, _ in READABILITY_FACTORIES])
+def test_readability_reuse_of_a_missing_component(factory):
     nlp = spacy.blank("ru")
     nlp.add_pipe("sentencizer")
-    nlp.add_pipe("ruts_readability", name="readability", config={"basic": "missing_basic"})
+    nlp.add_pipe(factory, name="readability", config={"basic": "missing_basic"})
     with pytest.raises(SourceError, match="нет BasicStats: добавьте компонент ruts_basic"):
         nlp(text)
 
