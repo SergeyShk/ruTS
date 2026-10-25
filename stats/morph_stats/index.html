@@ -2292,13 +2292,15 @@
 <h1 id="_1">Морфологические статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Морфологические статистики текста: часть речи и грамматические признаки каждого слова в терминах <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> и их распределения. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>; статистики вычисляются при создании объекта.</p>
-<p>Класс построен на интерфейсе статистик <code>Stats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a>. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются.</p>
+<!-- core: stats/morph_stats.md:MorphStats 002c663 -->
+<p>Морфологические статистики текста: часть речи и признаки <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> каждого слова, посчитанные по значениям или данные по словам. По умолчанию источник данных - объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> с частями речи, которые читаются по <code>token.pos_</code> и <code>token.morph</code>; строку или <code>Doc</code> без них языковая библиотека читает по-своему.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
-<li><code>SourceError</code> - источник без слов.</li>
+<li><code>SourceTypeError</code> - источник, который не <code>Doc</code>, <code>analyze</code>, который дает не объекты <code>MorphWord</code>;</li>
+<li><code>SourceError</code> - источник без частей речи или без слов.</li>
 </ul>
+<p>В ruTS источник данных - текст или <code>Doc</code> с разметкой частей речи или без нее, а статистики вычисляются при создании объекта. <code>SourceTypeError</code> дают источник, который не строка и не <code>Doc</code>, и экстрактор другого типа, а <code>SourceError</code> - только источник без слов.</p>
+<p>Класс расширяет <code>MorphStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> русским разбором слов и <a href="#markers">маркерами форм глагола</a>. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются. Таблицы <code>print_stats</code> и <code>print_markers</code> и сообщения об ошибках - по-русски (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2358,6 +2360,7 @@
 </tbody>
 </table>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<!-- core: stats/morph_stats.md:MorphStats-attributes d3e609d -->
 <table>
 <thead>
 <tr>
@@ -2370,22 +2373,28 @@
 <tr>
 <td style="text-align: left;"><code>words</code></td>
 <td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Слова</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>lemmas</code></td>
-<td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Леммы слов: pymorphy3 по части речи слова</td>
+<td style="text-align: left;">Слова текста</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>tags</code></td>
 <td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Грамматические признаки слов строками в формате CoNLL-U (<code>Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing</code>, <code>_</code> без признаков)</td>
+<td style="text-align: left;">Признаки каждого слова в формате CoNLL-U (<code>Case=Nom|Number=Plur</code>), <code>_</code> у слова без них</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>tuple[str / None]</code></td>
+<td style="text-align: left;">Часть речи каждого слова</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>animacy</code>, <code>aspect</code>, ..., <code>voice</code></td>
+<td style="text-align: left;"><code>tuple[str / None]</code></td>
+<td style="text-align: left;">Значение статистики у каждого слова, <code>None</code> у слова без признака</td>
 </tr>
 </tbody>
 </table>
+<p>В ruTS есть и атрибут <code>lemmas</code> (<code>tuple[str]</code>) - леммы слов, которые pymorphy3 дает по части речи слова.</p>
 <h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Каждая статистика - атрибут объекта, кортеж значений признака по словам (<code>None</code> у слова без признака), а <code>get_stats</code> дает распределения их значений. Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>: граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>, а признак, которому pymorphy3 дает два значения сразу (одушевленность слов на -кки), не определен.</p>
+<p>Статистики - часть речи <code>pos</code> и признаки из таблицы ниже (<code>MORPHOLOGY_FEATURES</code> из <code>ruts.constants</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a>: граммемы <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> переводятся в UD по таблицам <code>OPENCORPORA_TO_UD_POS</code> и <code>OPENCORPORA_TO_UD_GRAMMEMES</code> из <code>ruts.constants</code>, а признак, которому pymorphy3 дает два значения сразу (одушевленность слов на -кки), не определен.</p>
 <table>
 <thead>
 <tr>
@@ -2477,7 +2486,7 @@
 </tr>
 </tbody>
 </table>
-<p>Русские названия значений для <code>print_stats</code> - <code>MORPHOLOGY_STATS_DESC</code> из <code>ruts.constants</code>. Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> личным формам и <code>Voice=Mid</code> возвратным глаголам, выделяет <code>AUX</code> и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.</p>
+<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy проставляет <code>Voice=Act</code> личным формам и <code>Voice=Mid</code> возвратным глаголам, выделяет <code>AUX</code> и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.</p>
 <div class="metric-card">
 <h3 id="pos">Часть речи<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
@@ -2666,8 +2675,12 @@
 </div>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p><code>get_stats(*args, filter_none=False, flat=False)</code> возвращает распределения значений статистик справочником количеств по каждой. Статистики выбираются именами через запятую, без имен берутся все; <code>filter_none=True</code> отбрасывает слова без признака (<code>None</code>), а <code>flat=True</code> дает ключи вида <code>pos_NOUN</code> вместо вложенных справочников, тоже без слов без признака. Имя, которого нет среди статистик, дает <code>UnknownStatError</code> - здесь и в <code>print_stats</code> и <code>explain_text</code>.</p>
-<p><code>print_stats(*args, filter_none=False)</code> выводит распределения выбранных статистик таблицами, начиная с частых значений, а <code>explain_text(*args, filter_none=False)</code> возвращает слова текста по порядку со значениями выбранных статистик.</p>
+<!-- core: stats/morph_stats.md:MorphStats-get_stats 31a94da -->
+<p><code>get_stats(*stats, filter_none=False, flat=False)</code> дает количество слов по значениям каждой выбранной статистики, по умолчанию всех, в порядке первых появлений; <code>None</code> считает слова без признака, а <code>filter_none</code> их отбрасывает. С <code>flat</code> ключи - <code>статистика_значение</code>, например <code>pos_NOUN</code>, без слов без признака, как в <code>to_dataframe</code>. Неизвестная статистика дает <code>UnknownStatError</code>.</p>
+<!-- core: stats/morph_stats.md:MorphStats-explain_text 037565e -->
+<p><code>explain_text(*stats, filter_none=False)</code> дает каждое слово со значениями выбранных статистик; <code>filter_none</code> отбрасывает те, которых у слова нет. Неизвестная статистика дает <code>UnknownStatError</code>.</p>
+<!-- core: stats/morph_stats.md:MorphStats-print_stats a935578 -->
+<p><code>print_stats(*stats, filter_none=False)</code> выводит таблицу для каждой выбранной статистики: описания ее значений, начиная с самого частого, с количеством слов. Значение из нескольких соединяет описания своих частей косой чертой. Неизвестная статистика дает <code>UnknownStatError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2722,7 +2735,9 @@
 </div>
 </div>
 </div>
-<p><code>get_markers()</code> возвращает <a href="#markers">доли форм глагола</a> справочником, а <code>print_markers()</code> выводит их таблицей.</p>
+<!-- core: stats/morph_stats.md:MorphStats-markers a7e33d7 -->
+<p><code>get_markers()</code> дает маркеры языка, вычисленные по признакам, - доли грамматических форм, каждая от своей базы, - по именам <code>markers_desc</code>, а <code>print_markers()</code> выводит их с описаниями. Маркеры вычисляет библиотека; по умолчанию их нет.</p>
+<p>В ruTS маркеры - <a href="#markers">доли форм глагола</a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2732,22 +2747,25 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>                      Маркер                      |  Значение
----------------------------------------------------------------
-Изъявительное наклонение среди личных форм        |    0.00
-Повелительное наклонение среди личных форм        |    0.00
-Сослагательное наклонение среди личных форм       |    1.00
-Инфинитив среди форм глагола                      |    0.00
-Причастие среди форм глагола                      |    0.33
-Деепричастие среди форм глагола                   |    0.00
-Совершенный вид среди форм глагола с видом        |    0.67
-Страдательные причастия среди форм глагола        |    0.33
-Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
+<div class="highlight"><pre><span></span><code>                    Маркер                     | Значение
+----------------------------------------------------------
+Изъявительное наклонение среди личных форм     |   0.00
+Повелительное наклонение среди личных форм     |   0.00
+Сослагательное наклонение среди личных форм    |   1.00
+Инфинитив среди форм глагола                   |   0.00
+Причастие среди форм глагола                   |   0.33
+Деепричастие среди форм глагола                |   0.00
+Совершенный вид среди форм глагола с видом     |   0.67
+Страдательные причастия среди форм глагола     |   0.33
+Возвратные формы (-ся, -сь) среди форм глагола |   0.00
 </code></pre></div>
 </div>
 </div>
 </div>
 <p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у морфологических статистик нет, поэтому он для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<!-- core: stats/morph_stats.md:MorphWord 7a841ee -->
+<p><code>MorphWord</code> - слово <code>analyze</code>: его текст <code>word</code>, часть речи <code>pos</code> (<code>None</code>, если она неизвестна) и признаки <code>features</code> - значения признаков Universal Dependencies по их названиям (<code>{"Case": "Nom"}</code>), значение из нескольких - через запятую.</p>
+<p>В ruTS <code>MorphWord</code> импортируется и из <code>ruts.morph_stats</code>.</p>
 
 
 

@@ -2563,7 +2563,8 @@ True
 <h3 id="MorphStatsComponent">Morphological statistics<a class="headerlink" href="#MorphStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><code>MorphStatsComponent</code> puts the morphological statistics into the extension. Parts of speech and features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), in a pipeline without <code>morphologizer</code> - from pymorphy3.</p>
+<p><code>MorphStatsComponent</code> puts the morphological statistics into the extension; by default they need the parts of speech before it.</p>
+<p>In ruTS the parts of speech and the features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), and in a pipeline without <code>morphologizer</code> from pymorphy3.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

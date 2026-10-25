@@ -2292,13 +2292,14 @@
 <h1 id="morphological-statistics">Morphological statistics<a class="headerlink" href="#morphological-statistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The morphological statistics of a text: the part of speech and the grammatical features of every word in <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> terms and their distributions. The data source is a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library; the statistics are computed when the object is created.</p>
-<p>The class is built on the <code>Stats</code> statistics interface of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">anyTS</a> core. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined.</p>
+<p>The morphological statistics of a text: the part of speech and the features of <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> of every word, counted by value or given word by word. By default the data source is a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> with the parts of speech, read by <code>token.pos_</code> and <code>token.morph</code>; a language library reads a string or a <code>Doc</code> without them in its own way.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
-<li><code>SourceError</code> - a source without words.</li>
+<li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>, an <code>analyze</code> that does not give <code>MorphWord</code> objects;</li>
+<li><code>SourceError</code> - a source without parts of speech or without words.</li>
 </ul>
+<p>In ruTS the data source is a text or a <code>Doc</code> with or without part-of-speech annotation, and the statistics are computed when the object is created. A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, and only a source without words raises <code>SourceError</code>.</p>
+<p>The class extends the <code>MorphStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> core with the Russian analysis of the words and the <a href="#markers">markers of the verb forms</a>. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined. The <code>print_stats</code> and <code>print_markers</code> tables and the error messages are in Russian (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2370,22 +2371,28 @@
 <tr>
 <td style="text-align: left;"><code>words</code></td>
 <td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Words</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>lemmas</code></td>
-<td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Lemmas of the words: pymorphy3 by the part of speech of the word</td>
+<td style="text-align: left;">Words of the text</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>tags</code></td>
 <td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Grammatical features of the words as strings in CoNLL-U format (<code>Animacy=Inan|Case=Nom|Gender=Masc|Number=Sing</code>, <code>_</code> without features)</td>
+<td style="text-align: left;">Features of every word in the CoNLL-U format (<code>Case=Nom\|Number=Plur</code>), <code>_</code> for a word without them</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>pos</code></td>
+<td style="text-align: left;"><code>tuple[str / None]</code></td>
+<td style="text-align: left;">Part of speech of every word</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>animacy</code>, <code>aspect</code>, ..., <code>voice</code></td>
+<td style="text-align: left;"><code>tuple[str / None]</code></td>
+<td style="text-align: left;">Value of a statistic for every word, <code>None</code> for a word without the feature</td>
 </tr>
 </tbody>
 </table>
+<p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words that pymorphy3 gives by the part of speech of the word.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
-<p>Every statistic is an attribute of the object, a tuple of the values of a feature by word (<code>None</code> for a word without the feature), and <code>get_stats</code> gives the distributions of their values. For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used: the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
+<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used: the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
 <table>
 <thead>
 <tr>
@@ -2477,7 +2484,7 @@
 </tr>
 </tbody>
 </table>
-<p>The Russian names of the values for <code>print_stats</code> are <code>MORPHOLOGY_STATS_DESC</code> of <code>ruts.constants</code>. The values for a string and for an annotated <code>Doc</code> may differ: spaCy assigns <code>Voice=Act</code> to finite forms and <code>Voice=Mid</code> to reflexive verbs, distinguishes <code>AUX</code> and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.</p>
+<p>The values for a string and for an annotated <code>Doc</code> may differ: spaCy assigns <code>Voice=Act</code> to finite forms and <code>Voice=Mid</code> to reflexive verbs, distinguishes <code>AUX</code> and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.</p>
 <div class="metric-card">
 <h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
@@ -2666,8 +2673,9 @@
 </div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p><code>get_stats(*args, filter_none=False, flat=False)</code> returns the distributions of the values of the statistics as a dictionary of counts for each. The statistics are chosen by their names separated by commas, all of them without names; <code>filter_none=True</code> drops the words without the feature (<code>None</code>), and <code>flat=True</code> gives keys like <code>pos_NOUN</code> instead of nested dictionaries, also without the words lacking the feature. A name that is not a statistic raises <code>UnknownStatError</code> - here and in <code>print_stats</code> and <code>explain_text</code>.</p>
-<p><code>print_stats(*args, filter_none=False)</code> prints the distributions of the chosen statistics as tables, the frequent values first, and <code>explain_text(*args, filter_none=False)</code> returns the words of the text in order with the values of the chosen statistics.</p>
+<p><code>get_stats(*stats, filter_none=False, flat=False)</code> gives the number of the words by value of every statistic selected, all of them by default, in the order of the first occurrences; <code>None</code> counts the words without the feature, and <code>filter_none</code> leaves them out. With <code>flat</code> the keys are <code>statistic_value</code>, such as <code>pos_NOUN</code>, without the words that lack the feature, as in <code>to_dataframe</code>. An unknown statistic raises <code>UnknownStatError</code>.</p>
+<p><code>explain_text(*stats, filter_none=False)</code> gives every word with the values of the statistics selected; <code>filter_none</code> leaves out those a word lacks. An unknown statistic raises <code>UnknownStatError</code>.</p>
+<p><code>print_stats(*stats, filter_none=False)</code> prints a table for every statistic selected: the descriptions of its values from the most frequent, with the number of the words. A value of several joins the descriptions of its parts with a slash. An unknown statistic raises <code>UnknownStatError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2721,7 +2729,8 @@
 </div>
 </div>
 </div>
-<p><code>get_markers()</code> returns the <a href="#markers">shares of the verb forms</a> as a dictionary, and <code>print_markers()</code> prints them as a table.</p>
+<p><code>get_markers()</code> gives the markers of a language computed from the features - shares of grammatical forms, each of its own base - by the names of <code>markers_desc</code>, and <code>print_markers()</code> prints them with their descriptions. A library computes them; there are none by default.</p>
+<p>In ruTS the markers are the <a href="#markers">shares of the verb forms</a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2731,22 +2740,24 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>                      Маркер                      |  Значение
----------------------------------------------------------------
-Изъявительное наклонение среди личных форм        |    0.00
-Повелительное наклонение среди личных форм        |    0.00
-Сослагательное наклонение среди личных форм       |    1.00
-Инфинитив среди форм глагола                      |    0.00
-Причастие среди форм глагола                      |    0.33
-Деепричастие среди форм глагола                   |    0.00
-Совершенный вид среди форм глагола с видом        |    0.67
-Страдательные причастия среди форм глагола        |    0.33
-Возвратные формы (-ся, -сь) среди форм глагола    |    0.00
+<div class="highlight"><pre><span></span><code>                    Маркер                     | Значение
+----------------------------------------------------------
+Изъявительное наклонение среди личных форм     |   0.00
+Повелительное наклонение среди личных форм     |   0.00
+Сослагательное наклонение среди личных форм    |   1.00
+Инфинитив среди форм глагола                   |   0.00
+Причастие среди форм глагола                   |   0.33
+Деепричастие среди форм глагола                |   0.00
+Совершенный вид среди форм глагола с видом     |   0.67
+Страдательные причастия среди форм глагола     |   0.33
+Возвратные формы (-ся, -сь) среди форм глагола |   0.00
 </code></pre></div>
 </div>
 </div>
 </div>
 <p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the morphological statistics have no scales, so it gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<p><code>MorphWord</code> is a word of <code>analyze</code>: its text <code>word</code>, its part of speech <code>pos</code> (<code>None</code> when unknown) and its features <code>features</code> - the values of the features of Universal Dependencies by their names (<code>{"Case": "Nom"}</code>), a value of several joined by commas.</p>
+<p>In ruTS <code>MorphWord</code> is imported from <code>ruts.morph_stats</code> too.</p>
 
 
 

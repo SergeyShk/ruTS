@@ -2567,7 +2567,9 @@ True
 <h3 id="MorphStatsComponent">Морфологические статистики<a class="headerlink" href="#MorphStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
-<p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), в пайплайне без <code>morphologizer</code> - из pymorphy3.</p>
+<!-- core: components.md:MorphStatsComponent 5d99bc4 -->
+<p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.</p>
+<p>В ruTS части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), а в пайплайне без <code>morphologizer</code> - из pymorphy3.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
