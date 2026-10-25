@@ -2487,8 +2487,8 @@
 <p>Методы пересчитывают сложные и длинные слова с порогом, отличным от заданного при создании объекта: так класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> считает индекс SMOG (сложное слово - от 5 слогов) и LIX (длинное слово - от 7 букв).</p>
 <!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
 <p><code>get_stats(flat)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, статистиками из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
-<!-- core: stats/basic_stats.md:BasicStats-print_stats da79e92 -->
-<p><code>print_stats()</code> выводит таблицу с количествами из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
+<!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
+<p><code>print_stats()</code> выводит таблицу со статистиками из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
 <p>Нормализованных статистик <code>p_*</code> в таблице нет.</p>
 <!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
 <p><code>to_dataframe()</code> возвращает плоские статистики, <code>get_stats(flat=True)</code>, таблицей <code>DataFrame</code> библиотеки <a href="https://pandas.pydata.org/">pandas</a> из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных <code>pandas.concat</code>, количество, которого у текста нет, - <code>NaN</code>. Нулями можно заполнять только такие столбцы: в остальных <code>NaN</code> - неопределенное значение.</p>
