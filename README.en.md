@@ -679,7 +679,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams and rolling Delta along a text, Zeta with logarithmic Zeta and shares of Zeta markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: 116 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 146 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile, cohesion; syntax too with a spaCy pipeline) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor
