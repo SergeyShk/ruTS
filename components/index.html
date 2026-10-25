@@ -933,6 +933,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../stats/unadapted_readability_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Формулы других языков
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../stats/diversity_stats/" class="md-nav__link">
         
   
@@ -2105,6 +2133,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#UnadaptedReadabilityStatsComponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формулы других языков
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#DiversityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2307,6 +2346,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#UnadaptedReadabilityStatsComponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формулы других языков
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#DiversityStatsComponent" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2475,7 +2525,7 @@ True
 </table>
 <p>Оба параметра задает spaCy при <code>nlp.add_pipe(factory, name=...)</code>, остальные параметры компонента передаются словарем <code>config</code> того же вызова.</p>
 <h2 id="names">Имена<a class="headerlink" href="#names" title="Permanent link">&para;</a></h2>
-<p>Фабрики носят префикс библиотеки: <code>ruts_basic</code>, <code>ruts_readability</code>, <code>ruts_diversity</code>, <code>ruts_morph</code>, <code>ruts_syntax</code>, <code>ruts_cohesion</code>, <code>ruts_lexical</code>, <code>ruts_style</code>, <code>ruts_phon</code>, <code>ruts_verse</code>, а также компонент границ предложений <a href="#blank_lines"><code>ruts_blank_lines</code></a>. Они объявлены точками входа <code>spacy_factories</code>, поэтому пайплайн, сохраненный с этими компонентами (<code>nlp.to_disk(path)</code>), загружается через <code>spacy.load(path)</code> без <code>import ruts</code>. <code>import ruts</code> сам компоненты не грузит, пока spaCy не загружен, - их находят точки входа; из исходников без установки пакета перед <code>add_pipe</code> нужен <code>import ruts.components</code>.</p>
+<p>Фабрики носят префикс библиотеки: <code>ruts_basic</code>, <code>ruts_readability</code>, <code>ruts_unadapted_readability</code>, <code>ruts_diversity</code>, <code>ruts_morph</code>, <code>ruts_syntax</code>, <code>ruts_cohesion</code>, <code>ruts_lexical</code>, <code>ruts_style</code>, <code>ruts_phon</code>, <code>ruts_verse</code>, а также компонент границ предложений <a href="#blank_lines"><code>ruts_blank_lines</code></a>. Они объявлены точками входа <code>spacy_factories</code>, поэтому пайплайн, сохраненный с этими компонентами (<code>nlp.to_disk(path)</code>), загружается через <code>spacy.load(path)</code> без <code>import ruts</code>. <code>import ruts</code> сам компоненты не грузит, пока spaCy не загружен, - их находят точки входа; из исходников без установки пакета перед <code>add_pipe</code> нужен <code>import ruts.components</code>.</p>
 <!-- core: components.md:StatsComponent-names 33ebb87 -->
 <p>Имя компонента в пайплайне - это имя расширения: <code>nlp.add_pipe(factory, name="basic")</code> кладет статистики в <code>doc._.basic</code>. Без <code>name</code> компонент и расширение получают имя фабрики. Расширение следует за компонентом, когда пайплайн переименовывает его (<code>nlp.rename_pipe</code>). Имя, занятое расширением другого пакета, дает <code>ParameterError</code> вместо замены: при <code>add_pipe</code> или на первом документе после <code>rename_pipe</code>, который переименовывает компонент раньше, чем тот узнает свое имя. Компонент, взятый из другого пайплайна (<code>add_pipe(name, source=other)</code>), - один и тот же объект в обоих, поэтому под новым именем он пишет и в то расширение в другом пайплайне; отдельный компонент дает фабрика, <code>add_pipe(factory, name=...)</code>. Один и тот же компонент можно добавить дважды под разными именами, с разными параметрами. Документ без слов - пустая строка, пробелы, одни знаки препинания - проходит компонент нетронутым, а его расширение остается <code>None</code>.</p>
 <p>У <code>ruts_lexical</code> нетронутым проходит и документ из одних чисел, у <code>ruts_verse</code> - документ без букв.</p>
@@ -2514,6 +2564,12 @@ True
 <td style="text-align: left;"><code>ruts_readability</code></td>
 <td style="text-align: left;"><code>ReadabilityStats</code></td>
 <td style="text-align: left;"><code>preset</code>, <code>basic</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#UnadaptedReadabilityStatsComponent"><code>UnadaptedReadabilityStatsComponent</code></a></td>
+<td style="text-align: left;"><code>ruts_unadapted_readability</code></td>
+<td style="text-align: left;"><code>UnadaptedReadabilityStats</code></td>
+<td style="text-align: left;"><code>basic</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#DiversityStatsComponent"><code>DiversityStatsComponent</code></a></td>
@@ -2638,6 +2694,52 @@ True
 </div>
 </div>
 </div>
+<h3 id="UnadaptedReadabilityStatsComponent">Формулы других языков<a class="headerlink" href="#UnadaptedReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
+<div class="signature highlight"><pre><span></span><code><span class="n">UnadaptedReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<!-- core: components.md:UnadaptedReadabilityStatsComponent 7a47657 -->
+<p><code>UnadaptedReadabilityStatsComponent</code> кладет в расширение формулы удобочитаемости других языков, посчитанные по документу или, с <code>basic</code>, по основным статистикам, которые положил в него другой компонент. Библиотека задает <code>basic_factory</code>, как для <code>ReadabilityStatsComponent</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>basic</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета</td>
+</tr>
+</tbody>
+</table>
+<p>Исключения:</p>
+<ul>
+<li><code>ParameterError</code> - <code>stats_class</code>, который не конкретный класс, расширение, имя которого не строка;</li>
+<li><code>SourceTypeError</code> - класс без <code>basic_stats_class</code> и без <code>basic</code>;</li>
+<li><code>SourceError</code> - документ, в расширении <code>basic</code> которого нет основных статистик класса.</li>
+</ul>
+<p>Формулы - <a href="../stats/unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a> с исходными коэффициентами, без калибровки под русский язык. Как и у <code>ReadabilityStatsComponent</code>, в ruTS ошибок <code>stats_class</code> и <code>SourceTypeError</code> не бывает, а сообщение <code>SourceError</code> называет компонент <code>ruts_basic</code>, который нужно добавить перед ним.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_unadapted_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"unadapted"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"basic"</span><span class="p">:</span> <span class="s2">"basic"</span><span class="p">})</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц, которые летали над крышами домов."</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">unadapted</span><span class="o">.</span><span class="n">gulpease</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">unadapted</span><span class="o">.</span><span class="n">forcast</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">unadapted</span><span class="o">.</span><span class="n">bs</span> <span class="ow">is</span> <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>(69.0, 13.076923076923077)
+True
+</code></pre></div>
+</div>
+</div>
+</div>
 <h3 id="DiversityStatsComponent">Метрики лексического разнообразия<a class="headerlink" href="#DiversityStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">DiversityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">mtld_threshold</span><span class="o">=</span><span class="mf">0.72</span><span class="p">,</span> <span class="n">mtld_min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">hdd_sample_size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">log_base</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
@@ -2689,7 +2791,7 @@ True
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">}</span>
@@ -2750,7 +2852,7 @@ True
 <li><code>ParameterError</code> - <code>top_n</code>, который не целое число не меньше единицы.</li>
 </ul>
 <p>Без списков слова «воды» и стоп-слова тошноты определяются по разметке pymorphy3, а штампы берутся из <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> - константа <code>anyts.constants</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2775,7 +2877,7 @@ True
 <ul>
 <li><code>ParameterError</code> - <code>window_len</code>, который не целое число не меньше 2.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2798,7 +2900,7 @@ True
 <ul>
 <li><code>SourceError</code> - документ без разбора зависимостей или частей речи, в пайплайне без парсера или <code>morphologizer</code>.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">)</span>
@@ -2815,7 +2917,7 @@ True
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p><code>CohesionStatsComponent</code> кладет в расширение статистики связности. Парсер ему не нужен, а <code>Doc</code> без границ предложений делится на предложения русским <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">)</span>
@@ -2855,7 +2957,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - метрики частотного словаря и <code>get_stats()</code>, когда <code>FreqDict</code> не загружен.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Код</label><label for="__tabbed_10_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">)</span>
@@ -2894,7 +2996,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - словарь ударений не загружен; ошибку дает первый документ с буквами.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Код</label><label for="__tabbed_10_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Код</label><label for="__tabbed_11_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">)</span>
@@ -2936,7 +3038,7 @@ True
 </tbody>
 </table>
 <p>В ruTS компонент зарегистрирован как <code>ruts_blank_lines</code>. Без него модель <code>ru_core_news_sm</code> склеивает абзац без конечного знака со следующим предложением, и статистики <code>Doc</code> расходятся со статистиками той же строки.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Код</label><label for="__tabbed_11_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Код</label><label for="__tabbed_12_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>

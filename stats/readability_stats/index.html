@@ -16,7 +16,7 @@
         <link rel="prev" href="../basic_stats/">
       
       
-        <link rel="next" href="../diversity_stats/">
+        <link rel="next" href="../unadapted_readability_stats/">
       
       
         
@@ -1116,6 +1116,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#tuldava" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Тулдавы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dale_chall_index" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1268,6 +1279,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unadapted_readability_stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Формулы других языков
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2519,6 +2558,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#tuldava" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Формула Тулдавы
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dale_chall_index" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2723,6 +2773,7 @@
 Индекс удобочитаемости RIX              |   2.00
 Формула Соловьёва, Иванова, Солнышкиной |   1.52
 Формула Мацковского                     |   9.35
+Формула Тулдавы                         |   1.96
 Индекс Дейла-Чейла                      |   4.10
 Индекс Ганнинга                         |   6.00
 Сводный класс                           |   1.50
@@ -2880,7 +2931,7 @@
 </table>
 <p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.9 против −0.9 у <code>plainrussian</code> и −0.2 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
 <h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Формулу считает функция из ее карточки по количествам <code>bs</code>; коэффициенты по умолчанию функций адаптированы для русского языка. Формулы ядра берут коэффициенты из <code>coefficients</code>, где пресет задает коэффициенты теста Флеша-Кинкайда, индекса Флеша и индексов Колман-Лиау, SMOG и ARI; формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла считаются с коэффициентами своих функций, и <code>coefficients</code> на них не действует. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю.</p>
+<p>Формулу считает функция из ее карточки по количествам <code>bs</code>; коэффициенты по умолчанию функций адаптированы для русского языка. Формулы ядра берут коэффициенты из <code>coefficients</code>, где пресет задает коэффициенты теста Флеша-Кинкайда, индекса Флеша и индексов Колман-Лиау, SMOG и ARI; формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла считаются с коэффициентами своих функций, и <code>coefficients</code> на них не действует. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю. Формулы других языков с исходными коэффициентами, без калибровки под русский язык, считает класс <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -2942,6 +2993,12 @@
 <tr>
 <td style="text-align: left;"><a href="#matskovsky_index"><code>matskovsky_index</code></a></td>
 <td style="text-align: left;">Длина предложения и доля сложных слов</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">сложнее текст</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#tuldava"><code>tuldava</code></a></td>
+<td style="text-align: left;">Слоги на слово и логарифм длины предложения</td>
 <td style="text-align: left;">от 0</td>
 <td style="text-align: left;">сложнее текст</td>
 </tr>
@@ -3877,6 +3934,64 @@ a \cdot \frac{\textrm{Количество слов}}{\textrm{Количеств
 </table>
 </div>
 <div class="metric-card">
+<h3 id="tuldava">Формула Тулдавы<a class="headerlink" href="#tuldava" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>tuldava</code> · Тулдава, 1975</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_tuldava</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
+</code></pre></div>
+<p>Формула трудности текста Тулдавы («Об измерении трудности текстов», Ученые записки Тартуского университета, вып. 345, 1975, с. 102-120) в изложении <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванова, Солнышкиной и Соловьёва (2018)</a>: среднее число слогов в слове, умноженное на десятичный логарифм средней длины предложения в словах; подбираемых коэффициентов нет. Шкалы и перевода в класс у формулы нет: в сводный класс она не входит, а <code>describe</code> возвращает <code>None</code>. В koRpus формула считается с натуральным логарифмом.</p>
+<div class="arithmatex">\[
+\frac{\textrm{Количество слогов}}{\textrm{Количество слов}} \cdot \lg \frac{\textrm{Количество слов}}{\textrm{Количество предложений}}
+\]</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>n_syllables</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слогов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_words</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_sents</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Количество предложений</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.readability_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_tuldava</span>
+
+<span class="n">calc_tuldava</span><span class="p">(</span><span class="n">n_syllables</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_words</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_sents</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">rs</span> <span class="o">=</span> <span class="n">ReadabilityStats</span><span class="p">(</span><span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул."</span><span class="p">)</span>
+<span class="n">rs</span><span class="o">.</span><span class="n">tuldava</span><span class="p">,</span> <span class="n">rs</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">"tuldava"</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>2.0
+(1.3131677299615359, None)
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
 <h3 id="dale_chall_index">Индекс Дейла-Чейла<a class="headerlink" href="#dale_chall_index" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>dale_chall_index</code> · <a href="https://en.wikipedia.org/wiki/Dale–Chall_readability_formula">Dale and Chall, 1948</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_dale_chall_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.552</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.273</span><span class="p">)</span>
@@ -4195,7 +4310,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <p><code>get_stats()</code> возвращает справочник метрик удобочитаемости из <code>stats_desc</code>.</p>
 <!-- core: stats/readability_stats.md:ReadabilityStats-print_stats ac340b3 -->
 <p><code>print_stats()</code> выводит таблицу метрик удобочитаемости с их описаниями из <code>stats_desc</code> под заголовками из <code>stats_headers</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReadabilityStats</span>
@@ -4223,6 +4338,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
  'rix': 2.0,
  'sis_grade': 1.5166666666666675,
  'matskovsky_index': 9.351,
+ 'tuldava': 1.9601520984261356,
  'dale_chall_index': 4.095000000000001,
  'gunning_fog_index': 6.0,
  'consensus_grade': 1.5,
@@ -4347,7 +4463,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </table>
 <p>Значение, которое не конечное число, и шкала, которая пуста, не является списком пар из конечной нижней границы и полосы или с границами не по убыванию, дают <code>ParameterError</code>.</p>
 <p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> и <code>RIX_LEVELS</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">READING_EASE_LEVELS</span>
@@ -4481,7 +4597,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">SovChLit</span>
