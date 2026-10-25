@@ -598,6 +598,28 @@ def test_get_markers_doc(nlp):
     assert MorphStats(nlp(source)).get_markers() == pytest.approx(MorphStats(source).get_markers())
 
 
+def test_get_markers_of_several_values(nlp):
+    """Признак из нескольких значений Doc входит в долю каждого значения"""
+    doc = nlp("Я вижу дом и стол.")
+    doc[1].set_morph("Aspect=Imp|Mood=Ind,Imp|Number=Sing|Person=First|Tense=Pres|VerbForm=Fin")
+    markers = MorphStats(doc).get_markers()
+    assert (markers["p_indicative"], markers["p_imperative"], markers["p_conditional"]) == (
+        1.0,
+        1.0,
+        0.0,
+    )
+
+
+def test_doc_without_morphologizer():
+    """Без морфологического анализатора части речи есть только у пробелов: признаки -
+    по pymorphy3, как у Doc без разметки"""
+    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    doc = nlp("Мама мыла раму.\n\nПапа читал книгу.")
+    assert doc.has_annotation("POS")
+    assert MorphStats(doc).pos == MorphStats(spacy.blank("ru")(doc.text)).pos
+    assert MorphStats(doc).pos[0] == "NOUN"
+
+
 def test_get_markers_empty_base():
     markers = MorphStats("Кот и пёс").get_markers()
     assert all(isnan(value) for value in markers.values())

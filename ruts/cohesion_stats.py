@@ -23,10 +23,12 @@ from anyts.cohesion_stats import (
 from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
 from anyts.utils import (
     BLANK_LINE,
+    LINE_BREAK,
     find_marks,
     find_paragraph_starts,
     find_unit_marks,
     find_unit_paragraph_starts,
+    has_pos,
     has_sents,
     is_doc,
     source_type_error,
@@ -199,6 +201,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             если задан, применяется и к тексту Doc
         connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
             по коннектору; если не задан, используется словарь из resources
+        blank_lines (bool): Абзацы только после пустых строк - для текста, строки
+            которого переносятся внутри абзаца; по умолчанию абзац - строка
 
     Атрибуты:
         words (tuple[tuple[str, ...], ...]): Кортеж слов каждого предложения
@@ -212,7 +216,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
         n_connectors (int): Количество коннекторов
         n_inter_connectors (int): Количество межпредложенческих коннекторов
-        n_paragraphs (int): Количество абзацев - частей текста между пустыми строками
+        n_paragraphs (int): Количество абзацев - строк текста со знаменательными словами
+            (частей между пустыми строками с blank_lines); строка без них, например номер
+            главы, присоединяется к следующей
         connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
         c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
@@ -260,7 +266,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
             другого типа или словарь коннекторов задан неверно
         SourceError: Если в источнике данных отсутствуют слова
-        ParameterError: Если в словаре коннекторов неизвестный класс или тип
+        ParameterError: Если в словаре коннекторов неизвестный класс или тип или
+            blank_lines не bool
     """
 
     sents_extractor_class = SentsExtractor
@@ -276,11 +283,12 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         sents_extractor: anyts.SentsExtractor | None = None,
         words_extractor: anyts.WordsExtractor | None = None,
         connectors: Mapping[str, tuple[str, str]] | None = None,
+        blank_lines: bool = False,
     ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError(self.messages["words_extractor_type"])
         self.words_extractor = words_extractor
-        super().__init__(source, sents_extractor, connectors)  # type: ignore[arg-type]
+        super().__init__(source, sents_extractor, connectors, blank_lines)  # type: ignore[arg-type]
 
     @classmethod
     def load_connectors(cls) -> dict[str, tuple[str, str]]:
@@ -298,14 +306,16 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             предложения - границы Doc или экстрактор предложений, слова - экстрактор
             слов, признаки - по pymorphy3. Знаки препинания между словами - по
             токенам Doc (find_unit_marks) или по тексту предложения (find_marks),
-            начала абзацев после пустой строки - по токенам Doc
-            (find_unit_paragraph_starts) или по тексту (find_paragraph_starts)
+            начала абзацев после перевода строки (пустой строки с blank_lines) - по
+            токенам Doc (find_unit_paragraph_starts) или по тексту (find_paragraph_starts)
         """
         if is_doc(source) and self.words_extractor is None:
             units = self.doc_units(source)
             marks = [find_unit_marks(sent) for sent in units]
-            starts = find_unit_paragraph_starts([unit for sent in units for unit in sent])
-            if source.has_annotation("POS"):
+            starts = find_unit_paragraph_starts(
+                [unit for sent in units for unit in sent], self.blank_lines
+            )
+            if has_pos(source):
                 positions = _positions(units)
                 return [
                     [
@@ -345,7 +355,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             find_marks(*_searchable(sent, words))
             for sent, words in zip(texts, sent_words, strict=True)
         ]
-        starts = _paragraph_starts(text, texts, sent_words, extractor)
+        starts = _paragraph_starts(text, texts, sent_words, extractor, self.blank_lines)
         return _cohesion_words(sent_words, text, marks, starts)
 
 
@@ -385,18 +395,22 @@ def _paragraph_starts(
     texts: Sequence[str],
     sent_words: Sequence[Sequence[str]],
     extractor: anyts.WordsExtractor,
+    blank_lines: bool,
 ) -> frozenset[int]:
-    """Сквозные номера слов, перед которыми пустая строка: между предложениями - в промежутке
+    """Сквозные номера слов, с которых начинается абзац: между предложениями - в промежутке
     между ними (find_paragraph_starts по текстам предложений), внутри текста предложения -
-    по числу слов экстрактора в его частях между пустыми строками; абзац, который начинается
-    частью без слов, открывает первое слово следующей"""
-    after_blank = find_paragraph_starts(strip_marks(text), [strip_marks(sent) for sent in texts])
+    по числу слов экстрактора в его частях между переводами строк (пустыми строками
+    с blank_lines); абзац, который начинается частью без слов, открывает первое слово следующей"""
+    pattern = BLANK_LINE if blank_lines else LINE_BREAK
+    after_break = find_paragraph_starts(
+        strip_marks(text), [strip_marks(sent) for sent in texts], blank_lines
+    )
     starts: set[int] = set()
     position = 0
     pending = False
     for index, (sent, words) in enumerate(zip(texts, sent_words, strict=True)):
-        pending = pending or index in after_blank
-        parts = BLANK_LINE.split(sent)
+        pending = pending or index in after_break
+        parts = pattern.split(sent)
         counts = (
             [len(words)] if len(parts) == 1 else [len(extractor.extract(part)) for part in parts]
         )

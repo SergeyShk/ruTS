@@ -80,18 +80,18 @@ Raises:
 text_features(text, nlp=None)
 ```
 
-Returns 146 features of a text prefixed by source, 189 with the pipeline `nlp`; an undefined feature is `nan`.
+Returns 145 features of a text prefixed by source, 188 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
-| `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
+| `diversity_` | lexical diversity measures, but for Orlov's Z, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
 | `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
-| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups. The leaves, the subtrees, the longest dependency and the depth of the tree nearly repeat the length of a sentence `sents_mean` | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
 

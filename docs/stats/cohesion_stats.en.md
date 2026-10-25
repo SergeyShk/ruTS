@@ -1,7 +1,7 @@
 # Cohesion statistics
 
 ``` {.python .signature}
-CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=None)
+CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=None, blank_lines=False)
 ```
 
 The cohesion statistics of a text in the manner of [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) and [TAACO](https://doi.org/10.3758/s13428-015-0651-7): the overlap of the sentences, the givenness, the temporal cohesion and the connectors of a dictionary. The sentences are compared by lemmas. The data source is a text or a `Doc` object of [spaCy](https://github.com/explosion/spaCy).
@@ -83,6 +83,7 @@ The words are classified by the [pymorphy3](https://github.com/no-plagiarism/pym
 | `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool; given, it splits a `Doc` by its text too, whatever its boundaries |
 | `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; given, it is applied to the text of a `Doc` too |
 | `connectors` | `dict[str, tuple[str, str]]` | `None` | Class and kind by connector; the dictionary of `load_connectors` by default |
+| `blank_lines` | `bool` | `False` | Start the paragraphs after the blank lines alone, for a text whose lines are wrapped inside its paragraphs; a paragraph is a line by default |
 
 ## Attributes
 
@@ -155,9 +156,10 @@ In ruTS both a string and a `Doc` are split into paragraphs.
     from ruts.cohesion_stats import calc_forward_overlap
 
     calc_forward_overlap([{"кот", "окно"}, {"птица"}, {"кот"}], span=2)
-    text = "Кот сидел на окне. Он смотрел на птиц.\n\nПтицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
+    text = "Кот сидел на окне. Он смотрел на птиц.\nПтицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
     paragraphs = CohesionStats(text)
     paragraphs.n_paragraphs, paragraphs.noun_overlap_para, paragraphs.content_overlap_para
+    CohesionStats(text, blank_lines=True).n_paragraphs
     ```
 
 === "Result"
@@ -165,6 +167,7 @@ In ruTS both a string and a `Doc` are split into paragraphs.
     ```
     0.5
     (2, 1.0, 0.8)
+    1
     ```
 
 </div>

@@ -67,7 +67,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 ## Статистики
 
-<!-- core: stats/basic_stats.md:BasicStats-attributes 0981aba -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes d457364 -->
 | Статистика | Тип | Описание | Нормализованная |
 | :--------- | :-- | :------- | :-------------- |
 | `c_letters` | `dict[int, int]` | Распределение слов по количеству букв | - |
@@ -85,8 +85,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 | `n_spaces` | `int` | Количество пробелов Unicode (категория Zs), например неразрывных, и табуляций | `p_spaces` |
 | `n_syllables` | `int` | Количество слогов | - |
 | `n_punctuations` | `int` | Количество знаков препинания | `p_punctuations` |
-| `letters_entropy` | `float` | Энтропия Шеннона длин слов в буквах (`c_letters`) в битах; 0, когда все слова одной длины | - |
-| `syllables_entropy` | `float` | Энтропия Шеннона длин слов в слогах (`c_syllables`) в битах | - |
+| `letters_entropy` | `float` | Энтропия Шеннона длин слов в буквах (`c_letters`) в битах; 0, когда все слова одной длины; оценка по долям на коротком тексте занижена, на десятках слов - на десятые доли бита | - |
+| `syllables_entropy` | `float` | Энтропия Шеннона длин слов в слогах (`c_syllables`) в битах, с тем же смещением | - |
 | `c_punctuations` | `dict[str, int]` | Распределение знаков препинания по типам ([`count_punctuations`](#count_punctuations)) | - |
 
 С `normalize=True` у объекта есть и нормализованные статистики типа `float`: количества слов, деленные на число слов, количества символов - на число символов.

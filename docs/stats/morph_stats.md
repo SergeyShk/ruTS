@@ -228,8 +228,8 @@ MorphStats(source, words_extractor=None)
 
 ## Методы
 
-<!-- core: stats/morph_stats.md:MorphStats-get_stats 31a94da -->
-`get_stats(*stats, filter_none=False, flat=False)` дает количество слов по значениям каждой выбранной статистики, по умолчанию всех, в порядке первых появлений; `None` считает слова без признака, а `filter_none` их отбрасывает. С `flat` ключи - `статистика_значение`, например `pos_NOUN`, без слов без признака, как в `to_dataframe`. Неизвестная статистика дает `UnknownStatError`.
+<!-- core: stats/morph_stats.md:MorphStats-get_stats 748058e -->
+`get_stats(*stats, filter_none=False, flat=False)` дает количество слов по значениям каждой выбранной статистики, по умолчанию всех, в порядке первых появлений; `None` считает слова без признака, а `filter_none` их отбрасывает. С `flat` ключи - `статистика_значение`, например `pos_NOUN`, без слов без признака, как в `to_dataframe`. Неизвестная статистика дает `UnknownStatError`, а `filter_none` или `flat`, которые не `bool`, - `ParameterError`.
 
 <!-- core: stats/morph_stats.md:MorphStats-explain_text 037565e -->
 `explain_text(*stats, filter_none=False)` дает каждое слово со значениями выбранных статистик; `filter_none` отбрасывает те, которых у слова нет. Неизвестная статистика дает `UnknownStatError`.

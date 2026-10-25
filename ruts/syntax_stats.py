@@ -44,6 +44,7 @@ from .constants import (
     MODAL_SHORT_ADJECTIVES,
     NEGATION_PARTICLES,
     SPLIT_PREDICATE_NOUNS,
+    SUBORDINATING_MARKS,
     SYNTAX_STATS_DESC,
 )
 from .utils import is_verbal_noun, lemmatize, normalize_yo, strip_marks
@@ -75,23 +76,23 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         >>> import spacy
         >>> from ruts import SyntaxStats
         >>> nlp = spacy.load('ru_core_news_sm')
-        >>> text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
+        >>> text = "Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."
         >>> ss = SyntaxStats(nlp(text))
         >>> ss.get_stats()
-        {'mean_dependency_distance': 1.9333333333333333,
+        {'mean_dependency_distance': 2.066666666666667,
         'std_dependency_distance': 1.6110727964792764,
         'max_dependency_distance': 5.0,
-        'p_adjacent_dependencies': 0.6,
-        'tree_depth': 4.0,
+        'p_adjacent_dependencies': 0.5333333333333333,
+        'tree_depth': 3.5,
         'leaves_per_sent': 4.5,
         'subtrees_per_sent': 4.0,
         'nodes_per_leaf': 1.9,
-        'words_before_root': 4.0,
-        'verb_valency': 2.0,
+        'words_before_root': 5.0,
+        'verb_valency': 1.6666666666666667,
         'coordination_chains_per_sent': 0.5,
         'mean_coordination_chain_len': 2.0,
-        'clauses_per_sent': 1.5,
-        'mean_clause_len': 5.666666666666667,
+        'clauses_per_sent': 2.0,
+        'mean_clause_len': 4.25,
         'subordinate_clauses_per_sent': 0.5,
         'p_complex_sents': 0.5,
         'infinitive_clauses_per_sent': 0.0,
@@ -102,7 +103,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'verb_phrases_per_t_unit': 2.5,
         'coordinate_phrases_per_clause': 0.3333333333333333,
         'complex_nominals_per_clause': 1.0,
-        'modifiers_per_noun': 0.4,
+        'modifiers_per_noun': 0.5,
         'prep_chains_per_sent': 0.0,
         'max_prep_chain_len': 0,
         'genitive_chains_per_sent': 0.0,
@@ -111,16 +112,16 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'mean_participle_clause_len': 5.0,
         'converb_clauses_per_sent': 0.5,
         'mean_converb_clause_len': 2.0,
-        'p_passive': 0.4,
+        'p_passive': 0.3333333333333333,
         'p_agentless_passive': 0.5,
         'infinitives_per_sent': 0.0,
         'negations_per_sent': 0.5,
         'split_predicates_per_sent': 0.0,
         'p_preverbal_subjects': 1.0,
-        'p_preverbal_objects': nan,
+        'p_preverbal_objects': 0.0,
         'pos_edit_distance': 0.7777777777777778,
         'syntax_similarity': 0.0625,
-        'noun_verb_ratio': 1.0}
+        'noun_verb_ratio': 0.6666666666666666}
         >>> ss.c_children
         {0: 9, 1: 2, 2: 5, 3: 1}
 
@@ -137,9 +138,11 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         n_clauses (int): Количество клауз
         n_subordinate_clauses (int): Количество придаточных клауз
         n_complex_sents (int): Количество предложений с придаточными
-        n_infinitive_clauses (int): Количество инфинитивных клауз при глаголе
+        n_infinitive_clauses (int): Количество инфинитивных клауз
         n_t_units (int): Количество T-единиц
         n_complex_t_units (int): Количество T-единиц с придаточными
+        n_l2sca_clauses (int): Количество клауз L2SCA - без однородных сказуемых с общим
+            подлежащим и инфинитивных клауз
         n_verb_phrases (int): Количество глагольных групп
         n_coordinate_phrases (int): Количество сочиненных групп
         n_complex_nominals (int): Количество сложных именных групп
@@ -177,7 +180,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         mean_clause_len (float): Средняя длина клаузы в словах
         subordinate_clauses_per_sent (float): Придаточных клауз на предложение
         p_complex_sents (float): Доля предложений хотя бы с одной придаточной клаузой
-        infinitive_clauses_per_sent (float): Инфинитивных клауз при глаголе на предложение
+        infinitive_clauses_per_sent (float): Инфинитивных клауз на предложение
         t_units_per_sent (float): T-единиц на предложение
         mean_t_unit_len (float): Средняя длина T-единицы в словах
         clauses_per_t_unit (float): Клауз на T-единицу
@@ -218,6 +221,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
     """
 
     join_hyphens = True
+    subordinating_marks = SUBORDINATING_MARKS
     stats_desc = SYNTAX_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
@@ -429,11 +433,12 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной придаточной клаузы
 
     Описание:
-        is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head:
-        вершина клаузы со связью ccomp, advcl, acl, csubj и их подтипами, а также
-        однородное сказуемое придаточной клаузы; инфинитивные клаузы при глаголе
-        (хочет уйти) - не придаточные, они считаются отдельно
-        (is_infinitive_clause_head)
+        is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head
+        и союзами SUBORDINATING_MARKS: вершина клаузы с личной формой со связью ccomp,
+        advcl, acl, csubj и их подтипами, а также однородное сказуемое придаточной
+        клаузы и клауза conj или parataxis с подчинительным союзом (ушел, ибо устал);
+        инфинитивные клаузы (хочет уйти, пришел, чтобы помочь) - не придаточные,
+        они считаются отдельно (is_infinitive_clause_head)
 
     Аргументы:
         token (Token): Токен
@@ -441,7 +446,9 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return anyts.syntax_stats.is_subordinate_clause_head(token, is_clause_head)
+    return anyts.syntax_stats.is_subordinate_clause_head(
+        token, is_clause_head, subordinating_marks=SUBORDINATING_MARKS
+    )
 
 
 def is_infinitive_clause_head(token: Token) -> bool:
@@ -449,9 +456,10 @@ def is_infinitive_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной инфинитивной клаузы при глаголе
 
     Описание:
-        is_infinitive_clause_head ядра с русским правилом клаузы is_clause_head:
-        инфинитив со связью xcomp, который образует свою клаузу (хочет уйти,
-        попросил его уйти), а также однородный ему инфинитив
+        is_infinitive_clause_head ядра с русским правилом клаузы is_clause_head
+        и союзами SUBORDINATING_MARKS: инфинитив со связью xcomp, ccomp, advcl, acl
+        или csubj, который образует свою клаузу (хочет уйти, попросил его уйти,
+        пришел, чтобы помочь, трудно сказать), а также однородный ему инфинитив
 
     Аргументы:
         token (Token): Токен
@@ -459,7 +467,9 @@ def is_infinitive_clause_head(token: Token) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return anyts.syntax_stats.is_infinitive_clause_head(token, is_clause_head)
+    return anyts.syntax_stats.is_infinitive_clause_head(
+        token, is_clause_head, subordinating_marks=SUBORDINATING_MARKS
+    )
 
 
 def is_genitive_modifier(token: Token) -> bool:

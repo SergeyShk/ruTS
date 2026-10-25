@@ -764,6 +764,15 @@ def test_pickle(nlp):
         assert [token.text for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
 
 
+def test_doc_without_morphologizer():
+    """Без морфологического анализатора части речи есть только у пробелов - это не разметка"""
+    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    doc = nlp("Мама мыла раму, а папа читал книгу.\n\nДети играли во дворе.")
+    assert doc.has_annotation("POS")
+    with pytest.raises(ValueError, match=r"не отключая ее теггер или морфологический анализатор"):
+        SyntaxStats(doc)
+
+
 @pytest.mark.parametrize(
     ("text", "expected"),
     [
@@ -777,9 +786,47 @@ def test_pickle(nlp):
             "Я знаю, что он придёт. Мы уйдём.",
             {"t_units_per_sent": 1.0, "clauses_per_t_unit": 1.5, "p_complex_t_units": 0.5},
         ),
-        # Русское сочетание одной предикации - одна клауза и в T-единице
-        ("Он может уйти.", {"clauses_per_t_unit": 1.0}),
-        ("Он хочет уйти.", {"clauses_per_t_unit": 2.0}),
+        # Русское сочетание одной предикации - одна клауза; инфинитивная клауза - не клауза L2SCA
+        ("Он может уйти.", {"clauses_per_sent": 1.0, "clauses_per_t_unit": 1.0}),
+        ("Он хочет уйти.", {"clauses_per_sent": 2.0, "clauses_per_t_unit": 1.0}),
+        ("Невозможно описать.", {"clauses_per_sent": 1.0}),
+        # Причастие-определение - не глагольная группа, однородное сказуемое - не клауза L2SCA
+        ("Читающий мальчик сидел у окна.", {"verb_phrases_per_t_unit": 1.0}),
+        (
+            "Он взял ведро и пошел за водой.",
+            {"clauses_per_t_unit": 1.0, "coordinate_phrases_per_clause": 1.0},
+        ),
+        # Инфинитив с «чтобы» и при предикативе - инфинитивная клауза, а не придаточная
+        (
+            "Он пришел, чтобы помочь.",
+            {"subordinate_clauses_per_sent": 0.0, "infinitive_clauses_per_sent": 1.0},
+        ),
+        ("Трудно сказать.", {"p_complex_sents": 0.0, "infinitive_clauses_per_sent": 1.0}),
+        # Инфинитив при однородном инфинитиве перифразы сохраняет свою клаузу
+        (
+            "Мы все готовы придти к вам и помочь вам жить.",
+            {"clauses_per_sent": 2.0, "infinitive_clauses_per_sent": 1.0},
+        ),
+        # Клауза conj с «ибо» - придаточная; «то» после «если» - соотносительное слово
+        (
+            "Он ушел, ибо устал.",
+            {
+                "t_units_per_sent": 1.0,
+                "subordinate_clauses_per_sent": 1.0,
+                "p_complex_t_units": 1.0,
+            },
+        ),
+        (
+            "Он ушёл, ибо устал.",
+            {
+                "t_units_per_sent": 1.0,
+                "subordinate_clauses_per_sent": 1.0,
+                "p_complex_t_units": 1.0,
+            },
+        ),
+        ("Если пойдет дождь, то мы останемся.", {"subordinate_clauses_per_sent": 1.0}),
+        # Предложная цепочка от именного сказуемого без связки
+        ("Он в доме у мэра.", {"max_prep_chain_len": 2}),
     ],
 )
 def test_model_new_core_stats(nlp, text, expected):

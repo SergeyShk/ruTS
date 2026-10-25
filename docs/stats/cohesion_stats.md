@@ -1,7 +1,7 @@
 # Статистики связности
 
 ``` {.python .signature}
-CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=None)
+CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=None, blank_lines=False)
 ```
 
 Статистики связности текста по образцу [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664) и [TAACO](https://doi.org/10.3758/s13428-015-0651-7): повторы слов в предложениях, данность, темпоральная связность и коннекторы словаря. Предложения сравниваются по леммам. Источник данных - текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy).
@@ -83,15 +83,17 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 | `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений; заданный, делит и `Doc` по его тексту независимо от границ |
 | `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; заданный, применяется и к тексту `Doc` |
 | `connectors` | `dict[str, tuple[str, str]]` | `None` | Класс и тип по коннектору; по умолчанию словарь `load_connectors` |
+| `blank_lines` | `bool` | `False` | Абзацы только после пустых строк - для текста, строки которого переносятся внутри абзаца; по умолчанию абзац - строка |
 
 ## Атрибуты
 
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes b48ff23 -->
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 9407ea8 -->
 | Атрибут | Тип | Описание |
 | :------ | :-- | :------- |
 | `words`, `lemmas` | `tuple[tuple[str]]` | Слова и леммы каждого предложения, в котором есть слова |
 | `n_sents`, `n_words` | `int` | Количество предложений со словами и количество слов |
-| `n_paragraphs` | `int` | Количество абзацев - частей текста между пустыми строками, в которых есть слова |
+| `blank_lines` | `bool` | Начинаются ли абзацы только после пустых строк |
+| `n_paragraphs` | `int` | Количество абзацев - строк текста со знаменательными словами (частей между пустыми строками с `blank_lines`) |
 | `n_nouns`, `n_pronouns`, `n_demonstratives`, `n_content_words` | `int` | Количество слов по видам |
 | `n_given` | `int` | Количество знаменательных слов, лемма которых встречалась раньше |
 | `n_connectors`, `connector_spans`, `c_connectors` | `int`, `tuple[Connector]`, `dict[str, int]` | Количество коннекторов, их вхождения и количество вхождений по коннекторам |
@@ -224,8 +226,8 @@ $$
 `noun_overlap_2_sent` · `argument_overlap_2_sent` · `content_overlap_2_sent` · `noun_overlap_para` · `argument_overlap_para` · `content_overlap_para` · [TAACO](https://doi.org/10.3758/s13428-015-0651-7)
 { .metric-meta }
 
-<!-- core: stats/cohesion_stats.md:CohesionStats-forward_overlap 34e902e -->
-Соседний повтор TAACO по леммам существительных, аргументов и знаменательных слов: доля разных лемм предложения, повторенных в одном из двух следующих предложений (`adjacent_overlap_2_*_sent`), и лемм абзаца, повторенных в следующем абзаце (`adjacent_overlap_*_para`), по всем предложениям или абзацам, у которых они есть (`calc_forward_overlap`). В отличие от бинарного повтора, пара сегментов учитывается по доле их общих лемм. Абзац - часть текста между пустыми строками, в которой есть слова; его открывает слово с `paragraph_start`, в том числе внутри предложения, например когда парсер присоединяет заголовок к следующему предложению. TAACO считает абзацем каждую строку: текст, в котором каждый абзац на своей строке, а пустых строк нет, здесь - один абзац, и его `*_para` равны `nan`.
+<!-- core: stats/cohesion_stats.md:CohesionStats-forward_overlap 7779dcb -->
+Соседний повтор TAACO по леммам существительных, аргументов и знаменательных слов: доля разных лемм предложения, повторенных в одном из двух следующих предложений (`adjacent_overlap_2_*_sent`), и лемм абзаца, повторенных в следующем абзаце (`adjacent_overlap_*_para`), по всем предложениям или абзацам, у которых они есть (`calc_forward_overlap`). В отличие от бинарного повтора, пара сегментов учитывается по доле их общих лемм. Абзац - строка текста, как в TAACO, или часть между пустыми строками с `blank_lines` - для текста, строки которого переносятся внутри абзаца; его открывает слово с `paragraph_start`, в том числе внутри предложения, например когда парсер присоединяет заголовок к следующему предложению. Абзац без знаменательных слов, например номер главы, присоединяется к следующему, а последний такой - к предыдущему.
 
 <!-- core: stats/cohesion_stats.md:calc_forward_overlap 7389f78 -->
 ``` {.python .signature}
@@ -253,9 +255,10 @@ $$
     from ruts.cohesion_stats import calc_forward_overlap
 
     calc_forward_overlap([{"кот", "окно"}, {"птица"}, {"кот"}], span=2)
-    text = "Кот сидел на окне. Он смотрел на птиц.\n\nПтицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
+    text = "Кот сидел на окне. Он смотрел на птиц.\nПтицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
     paragraphs = CohesionStats(text)
     paragraphs.n_paragraphs, paragraphs.noun_overlap_para, paragraphs.content_overlap_para
+    CohesionStats(text, blank_lines=True).n_paragraphs
     ```
 
 === "Результат"
@@ -263,6 +266,7 @@ $$
     ```
     0.5
     (2, 1.0, 0.8)
+    1
     ```
 
 </div>

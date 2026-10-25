@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import anyts.visualizers.highlight
 from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
-from anyts.utils import check_words, iter_doc_units
+from anyts.utils import check_words, has_pos, iter_doc_units
 from anyts.visualizers.highlight import (
     Highlight as Highlight,
     Sent as Sent,
@@ -282,7 +282,7 @@ def get_doc_words(doc: Doc) -> list[Word]:
     Вывод:
         list[Word]: Слова с позициями
     """
-    tagged = doc.has_annotation("POS")
+    tagged = has_pos(doc)
     words = []
     for unit in iter_doc_units(doc, join_hyphens=True):
         raw = "".join(token.text for token in unit)
