@@ -202,3 +202,20 @@ def test_unreachable_resource():
     for lemmatize in (True, False):
         found = _find_unreachable_entries(freq_dict, lemmatize)
         assert set(found) == _unreachable_entries(lemmatize)
+
+
+def test_keyness_ngrams():
+    """N-граммы - по словам каждого текста, не через границу текстов"""
+    texts = [["кот", "сидел", "на", "окне"], ["кот", "сидел", "у", "двери"]]
+    keywords = keyness(texts, [["пес", "лежал", "на", "полу"]], n=2)
+    assert {keyword.word: keyword.freq_target for keyword in keywords}["кот_сидел"] == 2
+    assert "окне_кот" not in {keyword.word for keyword in keywords}
+
+
+def test_keyness_freq_dict_ngrams(freq_dict, monkeypatch):
+    """Частотный словарь хранит слова: N-граммы с ним - ошибка до чтения словаря"""
+    monkeypatch.setattr(FreqDict, "entries", property(lambda self: pytest.fail("прочитан")))
+    with pytest.raises(ValueError, match=r"^Частотный словарь хранит слова"):
+        keyness(target, freq_dict, n=2)
+    with pytest.raises(ValueError):
+        keyness(target, freq_dict, n=0)

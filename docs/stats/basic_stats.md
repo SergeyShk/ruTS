@@ -4,7 +4,7 @@
 BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, complex_syl_factor=4, long_word_letter_factor=6)
 ```
 
-<!-- core: stats/basic_stats.md:BasicStats b417be1 -->
+<!-- core: stats/basic_stats.md:BasicStats c1092e0 -->
 Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Буквы считаются по `str.isalpha`, поэтому цифры, дефисы и знаки внутри слова буквами не являются.
 
 Слова и предложения строки дают экстракторы. `Doc` дает словами свои токены без знаков препинания и символов вроде `€` или `%`, предложениями - свои границы или, если их нет или они частичные (`has_sents`), границы экстрактора предложений; переданный экстрактор вместо этого применяется к его тексту. Пустая строка завершает предложение строки и `Doc` без границ; `Doc` с границами - если в его пайплайне до парсера, `senter` или `sentencizer` стоит `start_sents_after_blank_lines` (библиотека регистрирует компонент под своим именем). Предложение без слов, например из одних знаков препинания, не считается.
@@ -13,7 +13,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 - `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа;
 - `SourceError` - источник без слов;
-- `ParameterError` - порог, который не целое число не меньше единицы.
+- `ParameterError` - порог, который не целое число не меньше единицы, `normalize`, который не `bool`.
 
 Класс расширяет `BasicStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) крючками русского языка: слоги слова считает [`count_syllables`](../syllables.md#count_syllables), экстракторы по умолчанию - русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), знаки препинания - [`count_punctuations`](#count_punctuations) ruTS, а части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Компонент пустых строк в ruTS называется [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (`ruts.utils.strip_marks`): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица `print_stats` - по-русски.
 
@@ -30,21 +30,23 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 === "Результат"
 
     ```
-        Статистика     | Значение
-    ------------------------------
-    Предложения        |    1
-    Слова              |    9
-    Уникальные слова   |    8
-    Длинные слова      |    3
-    Сложные слова      |    2
-    Простые слова      |    7
-    Односложные слова  |    5
-    Многосложные слова |    4
-    Символы            |    55
-    Буквы              |    45
-    Пробелы            |    8
-    Слоги              |    18
-    Знаки препинания   |    2
+                Статистика            | Значение
+    ---------------------------------------------
+    Предложения                       |    1
+    Слова                             |    9
+    Уникальные слова                  |    8
+    Длинные слова                     |    3
+    Сложные слова                     |    2
+    Простые слова                     |    7
+    Односложные слова                 |    5
+    Многосложные слова                |    4
+    Символы                           |    55
+    Буквы                             |    45
+    Пробелы                           |    8
+    Слоги                             |    18
+    Знаки препинания                  |    2
+    Энтропия длин слов в буквах (бит) |   2.20
+    Энтропия длин слов в слогах (бит) |   1.66
     ```
 
 ## Параметры
@@ -65,7 +67,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 ## Статистики
 
-<!-- core: stats/basic_stats.md:BasicStats-attributes 2687b35 -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes 0981aba -->
 | Статистика | Тип | Описание | Нормализованная |
 | :--------- | :-- | :------- | :-------------- |
 | `c_letters` | `dict[int, int]` | Распределение слов по количеству букв | - |
@@ -83,6 +85,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 | `n_spaces` | `int` | Количество пробелов Unicode (категория Zs), например неразрывных, и табуляций | `p_spaces` |
 | `n_syllables` | `int` | Количество слогов | - |
 | `n_punctuations` | `int` | Количество знаков препинания | `p_punctuations` |
+| `letters_entropy` | `float` | Энтропия Шеннона длин слов в буквах (`c_letters`) в битах; 0, когда все слова одной длины | - |
+| `syllables_entropy` | `float` | Энтропия Шеннона длин слов в слогах (`c_syllables`) в битах | - |
 | `c_punctuations` | `dict[str, int]` | Распределение знаков препинания по типам ([`count_punctuations`](#count_punctuations)) | - |
 
 С `normalize=True` у объекта есть и нормализованные статистики типа `float`: количества слов, деленные на число слов, количества символов - на число символов.
@@ -94,8 +98,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 Методы пересчитывают сложные и длинные слова с порогом, отличным от заданного при создании объекта: так класс [`ReadabilityStats`](readability_stats.md) считает индекс SMOG (сложное слово - от 5 слогов) и LIX (длинное слово - от 7 букв).
 
-<!-- core: stats/basic_stats.md:BasicStats-get_stats f52c936 -->
-`get_stats(flat)` возвращает справочник с распределениями `c_letters` и `c_syllables`, количествами из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
+<!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
+`get_stats(flat)` возвращает справочник с распределениями `c_letters` и `c_syllables`, статистиками из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
 
 <!-- core: stats/basic_stats.md:BasicStats-print_stats da79e92 -->
 `print_stats()` выводит таблицу с количествами из `stats_desc`, их описаниями и заголовками из `stats_headers`.
@@ -131,6 +135,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
      'n_spaces': 8,
      'n_syllables': 18,
      'n_punctuations': 2,
+     'letters_entropy': 2.197159723424149,
+     'syllables_entropy': 1.6577427265048887,
      'c_punctuations': {'comma': 1,
                         'period': 0,
                         'question': 0,

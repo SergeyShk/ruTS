@@ -124,7 +124,7 @@ def test_text_features():
     assert text_features("Кот не спит, пёс не лает.")["morph_polarity_Neg"] == pytest.approx(2 / 6)
     assert text_features("Кот, пёс, дом.")["morph_polarity_Neg"] == 0.0
     assert sum(1 for key in features if key.startswith("morph_")) == 48
-    assert len(features) == 113
+    assert len(features) == 115
     assert not REDUNDANT_FEATURES & set(features)
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
         "morph_case_Gen"

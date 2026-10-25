@@ -87,7 +87,7 @@ BasicStatsComponent(nlp, name)
 MorphStatsComponent(nlp, name)
 ```
 
-`MorphStatsComponent` кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), в пайплайне без теггера - из pymorphy3.
+`MorphStatsComponent` кладет в расширение морфологические статистики. Части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), в пайплайне без `morphologizer` - из pymorphy3.
 
 === "Код"
 
@@ -250,14 +250,14 @@ PhonStatsComponent(nlp, name, window_len=3)
 SyntaxStatsComponent(nlp, name)
 ```
 
-<!-- core: components.md:SyntaxStatsComponent 95e9f18 -->
-`SyntaxStatsComponent` кладет в расширение синтаксические статистики; перед ним нужен парсер.
+<!-- core: components.md:SyntaxStatsComponent f99599b -->
+`SyntaxStatsComponent` кладет в расширение синтаксические статистики; перед ним нужны парсер и части речи.
 
-Парсер есть в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`.
+Парсер и части речи есть в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`.
 
 Исключения:
 
-- `SourceError` - документ без разбора зависимостей, в пайплайне без парсера.
+- `SourceError` - документ без разбора зависимостей или частей речи, в пайплайне без парсера или `morphologizer`.
 
 === "Код"
 

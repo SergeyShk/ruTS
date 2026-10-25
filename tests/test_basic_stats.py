@@ -1,4 +1,4 @@
-from math import isnan
+from math import isnan, log2
 
 import pytest
 from anyts.constants import PUNCTUATION_TYPES
@@ -296,4 +296,12 @@ def test_get_stats(bs):
 def test_print_stats(capsys, bs):
     bs.print_stats()
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 14
+    assert captured.out.count("|") == len(BASIC_STATS_DESC) + 1
+
+
+def test_word_length_entropy():
+    """Энтропия длин слов в буквах и в русских слогах"""
+    bs = BasicStats("Кот спит на окне.")
+    # Буквы: 3, 4, 2, 4; слоги: 1, 1, 1, 2
+    assert bs.letters_entropy == pytest.approx(1.5)
+    assert bs.syllables_entropy == pytest.approx(-(0.75 * log2(0.75) + 0.25 * log2(0.25)))

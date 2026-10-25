@@ -80,7 +80,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Statistics of the spaCy dependency tree: dependency distances, tree depth, coordination chains, clauses, participial clauses, passive voice, genitive chains
+    Statistics of the spaCy dependency tree: dependency distances, tree depth, coordination chains, clauses, L2SCA indices, participial clauses, passive voice, prepositional and genitive chains, word order, similarity of adjacent sentences
 
     [:octicons-arrow-right-24: Syntactic statistics](stats/syntax_stats.md)
 
@@ -88,7 +88,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Noun, argument and content word overlap between sentences, givenness, temporal cohesion, connectives by class, inter- and intrasentential
+    Noun, argument and content word overlap between sentences and paragraphs, givenness, temporal cohesion, connectives by class, inter- and intrasentential
 
     [:octicons-arrow-right-24: Cohesion statistics](stats/cohesion_stats.md)
 

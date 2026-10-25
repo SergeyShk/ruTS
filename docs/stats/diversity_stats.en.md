@@ -54,6 +54,7 @@ The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.i
     Мера Брюне (Brunet's W)                                                |   6.01
     Мера Дюга (Dugast's k)                                                 |  14.78
     Мера Баайена (Baayen's P)                                              |   0.53
+    Мера Орлова (Orlov's Z, слов)                                          |   nan
     Доля гапаксов                                                          |   0.73
     Показатель α₂                                                          |   0.50
     Энтропия Шеннона (бит)                                                 |   3.32
@@ -61,6 +62,7 @@ The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.i
     Перплексия                                                             |  10.01
     Наклон закона Ципфа (α)                                                |   0.49
     Показатель закона Хипса (β)                                            |   0.84
+    Взрывность частых лексем                                               |   nan
     ```
 
 ## Parameters
@@ -385,6 +387,32 @@ A Russian example: боливар ("a hat of a certain style") is a hapax of Pus
 
 <div class="metric-card" markdown>
 
+### Orlov's Z { #orlov_z }
+
+`orlov_z` · [Tweedie and Baayen 1998](https://doi.org/10.1023/A:1001749303137)
+{ .metric-meta }
+
+--8<-- "stats/diversity_stats.md:calc_orlov_z"
+
+=== "Code"
+
+    ``` python
+    from ruts.diversity_stats import calc_orlov_z
+
+    words = "снесла курочка яичко не простое а золотое дед бил бил не разбил баба била била не разбила".split()
+    round(calc_orlov_z(words), 2)
+    ```
+
+=== "Result"
+
+    ```
+    279.56
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Hapax ratio { #hapax_ratio }
 
 `hapax_ratio`
@@ -498,6 +526,34 @@ The [Heaps' law](../visualizers/vocabulary.md) plot is built from `fit_heaps`.
 
 <div class="metric-card" markdown>
 
+### Burstiness { #burstiness }
+
+`burstiness` · [Kim and Jo 2016](https://doi.org/10.1103/PhysRevE.94.032311)
+{ .metric-meta }
+
+--8<-- "stats/diversity_stats.md:calc_burstiness"
+
+=== "Code"
+
+    ``` python
+    from ruts.diversity_stats import calc_burstiness
+
+    (
+        calc_burstiness("да нет да нет да нет да нет да нет".split()),
+        calc_burstiness("да да да да да нет нет нет нет нет".split()),
+    )
+    ```
+
+=== "Result"
+
+    ```
+    (-1.0, 0.18350341907227388)
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Windowed computation { #windowed }
 
 `windowed(stat)`
@@ -571,13 +627,15 @@ In ruTS `messages` defaults to `CORE_MESSAGES`.
      'brunet_w': 6.00637847898991,
      'dugast_k': 14.783895126869226,
      'baayen_p': 0.5333333333333333,
+     'orlov_z': nan,
      'hapax_ratio': 0.7272727272727273,
      'alpha2': 0.5,
      'entropy': 3.3232314287976203,
      'evenness': 0.9606293157795304,
      'perplexity': 10.009038104159247,
      'zipf_alpha': 0.4884512334695912,
-     'heaps_beta': 0.8366147342060046}
+     'heaps_beta': 0.8366147342060046,
+     'burstiness': nan}
     ```
 
 The other methods - `to_dataframe` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical diversity metrics have no scales, so `describe` gives `None` for the metrics of `get_stats`.

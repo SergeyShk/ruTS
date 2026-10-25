@@ -20,6 +20,7 @@ from anyts.corpus.keyness import (
 
 from ..constants import RESOURCES_DIR
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
+from ..exceptions import ParameterError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
 from ..utils import normalize_yo, parse_all, parse_word, strip_marks
 
@@ -30,12 +31,17 @@ UNREACHABLE_FILES = {
 
 
 def keyness(
-    target: Sequence[str] | Mapping[str, int],
-    reference: Sequence[str] | Mapping[str, float] | FreqDict | FrequencyReference,
+    target: Sequence[str] | Sequence[Sequence[str]] | Mapping[str, int],
+    reference: Sequence[str]
+    | Sequence[Sequence[str]]
+    | Mapping[str, float]
+    | FreqDict
+    | FrequencyReference,
     measure: str = "log_likelihood",
     min_freq: int = 1,
     positive: bool = True,
     top_n: int | None = None,
+    n: int = 1,
     lemmatize: bool = True,
 ) -> list[Keyword]:
     """
@@ -47,6 +53,8 @@ def keyness(
         (размер эффекта), как рекомендуют Gabrielatos и Hardie, а также выбранная
         мера score, по которой список сортируется. Меры значимости (G², хи-квадрат,
         BIC, ELL) получают знак: отрицательный, если слово чаще в эталоне
+        Корпус из нескольких текстов передается списком их списков слов; с n больше 1
+        ключевыми становятся N-граммы слов каждого текста (не через границу текстов)
         Эталоном может быть частотный словарь FreqDict: целевые словоформы (с
         lemmatize=False - леммы) приводятся к леммам словаря, как в LexicalStats,
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная
@@ -68,13 +76,16 @@ def keyness(
         http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/
 
     Аргументы:
-        target (list[str]|dict[str, int]): Слова целевого корпуса или их частоты
-        reference (list[str]|dict[str, float]|FreqDict|FrequencyReference): Слова
-            эталонного корпуса, их частоты, частотный словарь или эталон по частотам
+        target (list[str]|list[list[str]]|dict[str, int]): Слова целевого корпуса -
+            одного текста или списка текстов - или их частоты
+        reference (list[str]|list[list[str]]|dict[str, float]|FreqDict|FrequencyReference):
+            Слова эталонного корпуса - одного текста или списка текстов, их частоты,
+            частотный словарь или эталон по частотам
         measure (str): Мера из anyts.constants.KEYNESS_MEASURES для score и сортировки
         min_freq (int): Минимальная частота ключевого слова в своем корпусе
         positive (bool): Положительные ключевые слова (True) или отрицательные (False)
         top_n (int): Количество ключевых слов; None - все
+        n (int): Длина N-грамм слов каждого текста; 1 - слова
         lemmatize (bool): Цель из словоформ, False - из лемм (только с FreqDict)
 
     Вывод:
@@ -82,14 +93,19 @@ def keyness(
             по убыванию частоты и по алфавиту; слова с неопределенной мерой в конце
 
     Исключения:
-        ParameterError: Если мера неизвестна или top_n меньше единицы
+        ParameterError: Если мера неизвестна, top_n или n меньше единицы или n больше 1
+            при эталоне по частотам или частотном словаре
         SourceTypeError: Если слова не список строк
         SourceError: Если один из корпусов пуст
         DatasetNotFoundError: Если частотный словарь не загружен
     """
     if not isinstance(reference, FreqDict):
-        return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n)
-    check_keyness_params(measure, min_freq, top_n, target)
+        return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n, n)
+    check_keyness_params(measure, min_freq, top_n, target, n, positive)
+    if n > 1:
+        raise ParameterError(
+            f"Частотный словарь хранит слова: N-граммам нужны слова обоих корпусов, а не n={n}"
+        )
     key = _dictionary_key(reference.entries, lemmatize)
     frequency = _frequency_reference(reference, key)
     if positive:

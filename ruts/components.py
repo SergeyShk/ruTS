@@ -247,14 +247,15 @@ class PhonStatsComponent(_Component, anyts.components.PhonStatsComponent):
     stats_class = PhonStats
 
 
-@Language.factory("ruts_syntax", requires=["token.dep", "token.head"])
+@Language.factory("ruts_syntax", requires=["token.dep", "token.head", "token.pos"])
 class SyntaxStatsComponent(_Component, anyts.components.SyntaxStatsComponent):
     """
     Класс для компонента синтаксических статистик текста
 
     Описание:
-        Компонент работает по дереву зависимостей, поэтому в пайплайне должен
-        быть парсер (модели ru_core_news_sm, ru_core_news_md, ru_core_news_lg)
+        Компонент работает по дереву зависимостей и частям речи, поэтому в пайплайне
+        должны быть парсер и morphologizer (модели ru_core_news_sm, ru_core_news_md,
+        ru_core_news_lg)
 
     Добавление компонента в пайплайн:
         >>> import ruts

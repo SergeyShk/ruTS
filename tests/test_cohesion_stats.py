@@ -4,6 +4,7 @@ from math import isnan
 import pytest
 import spacy
 from anyts.utils import iter_doc_units
+from spacy.tokens import Doc
 
 from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
 from ruts.cohesion_stats import (
@@ -294,7 +295,7 @@ def test_get_stats(cs):
     stats = cs.get_stats()
     assert list(stats) == list(COHESION_STATS_DESC)
     for key in COHESION_STATS_DESC:
-        assert stats[key] == getattr(cs, key)
+        assert stats[key] == pytest.approx(getattr(cs, key), nan_ok=True)
 
 
 def test_print_stats(cs, capsys):
@@ -654,3 +655,74 @@ def test_sents_extractor_class_of_a_subclass():
         LineCohesion(blank, words_extractor=WordsExtractor()).n_sents,
     }
     assert counts == {2}
+
+
+def test_forward_overlap(cs):
+    """Доля лемм предложения, повторенных в одном из двух следующих, по всем таким предложениям"""
+    # Существительные: {кот, окно} -> {птица, кот}: 1 из 2; {птица} -> {птица, кот, окно}: 1 из 1
+    assert cs.noun_overlap_2_sent == pytest.approx(2 / 3)
+    assert cs.argument_overlap_2_sent == pytest.approx(3 / 4)
+    assert cs.n_paragraphs == 1
+    assert isnan(cs.noun_overlap_para)
+
+
+paragraphs = "Кот сидел на окне.\n\nКот смотрел на птиц. Птицы улетели.\n\nПтицы вернулись к коту."
+
+
+def test_paragraphs(nlp):
+    """Абзацы после пустой строки - у строки, Doc и Doc с экстрактором слов"""
+    doc = nlp(paragraphs)
+    sources = [
+        CohesionStats(paragraphs),
+        CohesionStats(doc),
+        CohesionStats(spacy.blank("ru")(paragraphs)),
+        CohesionStats(doc, words_extractor=WordsExtractor()),
+    ]
+    # Экстрактор, который меняет слова, не теряет абзацы: у Doc пустая строка - хвост предложения
+    for extractor in (WordsExtractor(lowercase=True), WordsExtractor(use_lexemes=True)):
+        sources += [
+            CohesionStats(paragraphs, words_extractor=extractor),
+            CohesionStats(doc, words_extractor=extractor),
+        ]
+    for stats in sources:
+        assert stats.n_paragraphs == 3
+        # {кот, окно} -> {кот, птица}: 1 из 2; {кот, птица} -> {птица, кот}: 2 из 2
+        assert stats.noun_overlap_para == pytest.approx(3 / 4)
+
+
+@pytest.mark.parametrize(
+    ("text", "n_paragraphs"),
+    [
+        ("***\n\nКот спал.\n\nКот ушел.", 2),
+        ("Кот спал.\n\n***\nКот ушел. Пес лаял.\n\nПес спал.", 3),
+        ("Кот спал.\r\n\r\nКот ушел.", 2),
+    ],
+)
+def test_paragraphs_without_words(nlp, text, n_paragraphs):
+    """Абзац, который начинается строкой без слов, открывает первое слово после нее"""
+    assert CohesionStats(text).n_paragraphs == n_paragraphs
+    assert CohesionStats(nlp(text)).n_paragraphs == n_paragraphs
+
+
+def test_paragraph_inside_sentence_with_lemmas():
+    """Пустая строка внутри предложения Doc: начало абзаца - по числу слов частей, а не поиском
+    слова в тексте (лемма «церковь» нашлась бы внутри «Церковью»)"""
+    words = ["Церковью", "гордились", ".", "\n\n", "Все", "пришли", "к", "церкви", "."]
+    words += ["Пес", "спал", "."]
+    spaces = [True, False, False, False, True, True, True, False, True, True, False, False]
+    starts = [True] + [False] * 8 + [True, False, False]
+    doc = Doc(spacy.blank("ru").vocab, words=words, spaces=spaces, sent_starts=starts)
+    for extractor in (None, WordsExtractor(), WordsExtractor(use_lexemes=True)):
+        stats = CohesionStats(doc, words_extractor=extractor)
+        opened = [
+            word.word for sent in stats.analyze(doc) for word in sent if word.paragraph_start
+        ]
+        assert stats.n_paragraphs == 2
+        assert [normalize_yo(word) for word in opened] == ["все"]
+
+
+def test_paragraph_inside_sentence(nlp):
+    """Пустая строка внутри предложения Doc тоже открывает абзац"""
+    doc = nlp("Глава первая\n\nКот сидел на окне.")
+    assert len(list(doc.sents)) == 1
+    assert CohesionStats(doc).n_paragraphs == 2

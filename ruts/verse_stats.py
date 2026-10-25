@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 from anyts.extractors import BLANK_LINE
 from anyts.stats import Stats
-from anyts.utils import is_doc, safe_divide
+from anyts.utils import is_doc, safe_divide, source_type_error
 
 from .constants import (
     CORE_MESSAGES,
@@ -28,7 +28,7 @@ from .constants import (
     VERSE_WEAK_WORDS,
 )
 from .datasets.stress_dict import StressDict
-from .exceptions import SourceError, SourceTypeError
+from .exceptions import SourceError
 from .syllables import (
     VOWELS,
     _check_stress_dict,
@@ -216,7 +216,7 @@ class VerseStats(Stats):
         elif isinstance(source, str):
             text = source
         else:
-            raise SourceTypeError(self.messages["source_type"])
+            raise source_type_error(self.messages, source)
         _check_stress_dict(stress_dict)
         self.stress_dict = stress_dict if stress_dict is not None else StressDict()
         if not re.search(r"[^\W\d_]", text):

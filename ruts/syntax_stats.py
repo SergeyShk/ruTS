@@ -11,17 +11,21 @@ from anyts.syntax_stats import (
     base_dep as base_dep,
     calc_coordination_chains as calc_coordination_chains,
     calc_dependency_distances as calc_dependency_distances,
+    calc_edit_distance as calc_edit_distance,
     calc_modifier_chains as calc_modifier_chains,
+    calc_multiset_similarity as calc_multiset_similarity,
     calc_tree_depth as calc_tree_depth,
     calc_valency as calc_valency,
     count_children as count_children,
     count_noun_modifiers as count_noun_modifiers,
+    dependency_triples as dependency_triples,
     get_children as get_children,
     get_words as get_words,
     has_agent as has_agent,
     is_agentless as is_agentless,
     is_passive as is_passive,
     is_predicate as is_predicate,
+    is_prep_complement as is_prep_complement,
     is_root as is_root,
     subtree_len as subtree_len,
 )
@@ -58,7 +62,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         обороты, отрицания и расщепленные сказуемые - по правилам русского языка,
         дефисные слова склеиваются; свои статистики ruTS - цепочки родительных падежей
         и деепричастные обороты. Источник данных - объект Doc библиотеки spaCy
-        с разбором зависимостей Universal Dependencies (модели ru_core_news_sm,
+        с разбором зависимостей и частями речи Universal Dependencies (модели ru_core_news_sm,
         ru_core_news_md, ru_core_news_lg). Определения признаков следуют работе
         Иванова, Солнышкиной и Соловьёва (2018)
 
@@ -81,6 +85,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'leaves_per_sent': 4.5,
         'subtrees_per_sent': 4.0,
         'nodes_per_leaf': 1.9,
+        'words_before_root': 4.0,
         'verb_valency': 2.0,
         'coordination_chains_per_sent': 0.5,
         'mean_coordination_chain_len': 2.0,
@@ -89,7 +94,16 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'subordinate_clauses_per_sent': 0.5,
         'p_complex_sents': 0.5,
         'infinitive_clauses_per_sent': 0.0,
+        't_units_per_sent': 1.0,
+        'mean_t_unit_len': 8.5,
+        'clauses_per_t_unit': 1.5,
+        'p_complex_t_units': 0.5,
+        'verb_phrases_per_t_unit': 2.5,
+        'coordinate_phrases_per_clause': 0.3333333333333333,
+        'complex_nominals_per_clause': 1.0,
         'modifiers_per_noun': 0.4,
+        'prep_chains_per_sent': 0.0,
+        'max_prep_chain_len': 0,
         'genitive_chains_per_sent': 0.0,
         'max_genitive_chain_len': 0,
         'participle_clauses_per_sent': 0.5,
@@ -101,12 +115,16 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'infinitives_per_sent': 0.0,
         'negations_per_sent': 0.5,
         'split_predicates_per_sent': 0.0,
+        'p_preverbal_subjects': 1.0,
+        'p_preverbal_objects': nan,
+        'pos_edit_distance': 0.7777777777777778,
+        'syntax_similarity': 0.0625,
         'noun_verb_ratio': 1.0}
         >>> ss.c_children
         {0: 9, 1: 2, 2: 5, 3: 1}
 
     Аргументы:
-        source (Doc): Источник данных (объект Doc с разбором зависимостей)
+        source (Doc): Источник данных (объект Doc с разбором зависимостей и частями речи)
 
     Атрибуты:
         sents (tuple[tuple[Token, ...], ...]): Слова предложений
@@ -119,7 +137,13 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         n_subordinate_clauses (int): Количество придаточных клауз
         n_complex_sents (int): Количество предложений с придаточными
         n_infinitive_clauses (int): Количество инфинитивных клауз при глаголе
+        n_t_units (int): Количество T-единиц
+        n_complex_t_units (int): Количество T-единиц с придаточными
+        n_verb_phrases (int): Количество глагольных групп
+        n_coordinate_phrases (int): Количество сочиненных групп
+        n_complex_nominals (int): Количество сложных именных групп
         n_nouns (int): Количество существительных
+        n_prep_chains (int): Количество предложных цепочек
         n_genitive_chains (int): Количество цепочек родительных падежей
         n_participle_clauses (int): Количество причастных оборотов
         n_converb_clauses (int): Количество деепричастных оборотов
@@ -129,6 +153,10 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         n_infinitives (int): Количество инфинитивов
         n_negations (int): Количество отрицательных частиц
         n_split_predicates (int): Количество расщепленных сказуемых
+        n_nominal_subjects (int): Количество именных подлежащих
+        n_preverbal_subjects (int): Количество именных подлежащих перед вершиной
+        n_nominal_objects (int): Количество именных прямых дополнений
+        n_preverbal_objects (int): Количество именных прямых дополнений перед вершиной
         split_predicates (tuple[str]): Кортеж расщепленных сказуемых (глагол и существительное)
         c_children (dict[int, int]): Распределение слов по числу зависимых слов
         c_deps (dict[str, int]): Распределение слов по синтаксическим отношениям
@@ -140,6 +168,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         leaves_per_sent (float): Листьев на предложение
         subtrees_per_sent (float): Поддеревьев на предложение
         nodes_per_leaf (float): Среднее по предложениям отношение числа слов к числу листьев
+        words_before_root (float): Среднее число слов до вершины предложения
         verb_valency (float): Среднее число зависимых у финитного глагола
         coordination_chains_per_sent (float): Сочинительных цепочек на предложение
         mean_coordination_chain_len (float): Средняя длина сочинительной цепочки
@@ -148,7 +177,16 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         subordinate_clauses_per_sent (float): Придаточных клауз на предложение
         p_complex_sents (float): Доля предложений хотя бы с одной придаточной клаузой
         infinitive_clauses_per_sent (float): Инфинитивных клауз при глаголе на предложение
+        t_units_per_sent (float): T-единиц на предложение
+        mean_t_unit_len (float): Средняя длина T-единицы в словах
+        clauses_per_t_unit (float): Клауз на T-единицу
+        p_complex_t_units (float): Доля T-единиц с придаточными
+        verb_phrases_per_t_unit (float): Глагольных групп на T-единицу
+        coordinate_phrases_per_clause (float): Сочиненных групп на клаузу
+        complex_nominals_per_clause (float): Сложных именных групп на клаузу
         modifiers_per_noun (float): Среднее число модификаторов у существительного
+        prep_chains_per_sent (float): Предложных цепочек на предложение
+        max_prep_chain_len (int): Длина самой длинной предложной цепочки, 0 без цепочек
         genitive_chains_per_sent (float): Цепочек родительных падежей на предложение
         max_genitive_chain_len (int): Максимальная длина цепочки родительных падежей
         participle_clauses_per_sent (float): Причастных оборотов на предложение
@@ -160,6 +198,10 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         infinitives_per_sent (float): Инфинитивов на предложение
         negations_per_sent (float): Отрицательных частиц на предложение
         split_predicates_per_sent (float): Расщепленных сказуемых на предложение
+        p_preverbal_subjects (float): Доля именных подлежащих перед вершиной
+        p_preverbal_objects (float): Доля именных прямых дополнений перед вершиной
+        pos_edit_distance (float): Среднее редакционное расстояние частей речи соседних предложений, деленное на длину большего
+        syntax_similarity (float): Средняя схожесть троек зависимостей соседних предложений
         noun_verb_ratio (float): Отношение числа существительных к числу глагольных форм
 
     Методы:
@@ -170,7 +212,8 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
 
     Исключения:
         SourceTypeError: Если источник данных не объект Doc
-        SourceError: Если в источнике данных отсутствует разбор зависимостей или слова
+        SourceError: Если в источнике данных отсутствуют разбор зависимостей, части речи
+            или слова
     """
 
     join_hyphens = True

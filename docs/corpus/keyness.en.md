@@ -1,7 +1,7 @@
 # Keywords
 
 ``` {.python .signature}
-keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, lemmatize=True)
+keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True)
 ```
 
 --8<-- "corpus/keyness.md:keyness"
@@ -44,7 +44,7 @@ The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/co
 | :-------- | :--- | :------ | :---------- |
 | `lemmatize` | `bool` | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
-A frequency dictionary that is not downloaded raises `DatasetNotFoundError`.
+A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`: the dictionary holds words.
 
 --8<-- "corpus/keyness.md:check_keyness_params"
 

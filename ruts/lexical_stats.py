@@ -11,7 +11,7 @@ import anyts.utils
 import pymorphy3
 from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
 from anyts.lexical_stats import LexicalWord
-from anyts.utils import is_doc, iter_doc_units
+from anyts.utils import is_doc, iter_doc_units, source_type_error
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
 from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, PROPER_NOUN_GRAMMEMES, RESOURCES_DIR
@@ -159,7 +159,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
             ]
             infos = [word_info(word) for word in words]
         else:
-            raise SourceTypeError(self.messages["source_type"])
+            raise source_type_error(self.messages, source)
         return [
             LexicalWord(word, info.lemma, info.content)
             for word, info in zip(words, infos, strict=True)

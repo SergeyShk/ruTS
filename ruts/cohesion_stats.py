@@ -11,6 +11,7 @@ from anyts.cohesion_stats import (
     Connector as Connector,
     ConnectorMatcher,
     Overlap as Overlap,
+    calc_forward_overlap as calc_forward_overlap,
     calc_overlap as calc_overlap,
     calc_overlaps as calc_overlaps,
     calc_proportional_overlap as calc_proportional_overlap,
@@ -21,10 +22,14 @@ from anyts.cohesion_stats import (
 )
 from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
 from anyts.utils import (
+    BLANK_LINE,
     find_marks,
+    find_paragraph_starts,
     find_unit_marks,
+    find_unit_paragraph_starts,
     has_sents,
     is_doc,
+    source_type_error,
     split_doc_units as split_doc_units,
 )
 
@@ -100,8 +105,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
         значит, ежели, коли); контекстные правила - списки CONNECTOR_BLOCKED_AFTER,
         CONNECTOR_BLOCKED_BEFORE, CONNECTOR_ONLY_AFTER, CONNECTOR_NOT_AT_START
         и CONNECTOR_BLOCKED_AFTER_POS (после обеда, пока что, ещё раз, не правда ли),
-        через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего;
-        после «Ревизора»),
+        через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего),
         а знак внутри коннектора CONNECTOR_SPLIT_BY_MARKS его разделяет (так, как);
         многословные подчинительные союзы и предлоги и однословные союзы, которые
         модели или pymorphy3 размечают не SCONJ, - CONNECTOR_SUBORDINATORS (так как,
@@ -118,17 +122,12 @@ class RussianConnectorMatcher(ConnectorMatcher):
     read_through_marks = CONNECTOR_READ_THROUGH_MARKS
     split_by_marks = CONNECTOR_SPLIT_BY_MARKS
     subordinators = CONNECTOR_SUBORDINATORS
+    parcellation = CONNECTOR_PARCELLATION
     messages = CORE_MESSAGES
 
     def normalize(self, text: str) -> str:
         """Нижний регистр без буквы ё и знаков ударения (normalize_yo)"""
         return normalize_yo(text)
-
-    def is_subordinator(self, connector: Connector, pos: str | None = None) -> bool:
-        """Подчинительный союз или предлог (is_subordinator ядра), кроме CONNECTOR_PARCELLATION"""
-        return connector.text not in CONNECTOR_PARCELLATION and super().is_subordinator(
-            connector, pos
-        )
 
 
 class CohesionStats(anyts.cohesion_stats.CohesionStats):
@@ -162,6 +161,12 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'content_overlap_all': 0.5,
         'content_overlap_prop_adjacent': 0.1111111111111111,
         'content_overlap_prop_all': 0.18650793650793648,
+        'noun_overlap_2_sent': 0.6666666666666666,
+        'argument_overlap_2_sent': 0.75,
+        'content_overlap_2_sent': 0.4,
+        'noun_overlap_para': nan,
+        'argument_overlap_para': nan,
+        'content_overlap_para': nan,
         'p_pronouns': 0.14285714285714285,
         'pronoun_noun_ratio': 0.5,
         'p_demonstratives': 0.047619047619047616,
@@ -207,6 +212,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         n_given (int): Количество знаменательных слов, лемма которых встречалась ранее
         n_connectors (int): Количество коннекторов
         n_inter_connectors (int): Количество межпредложенческих коннекторов
+        n_paragraphs (int): Количество абзацев - частей текста между пустыми строками
         connector_spans (tuple[Connector]): Кортеж вхождений коннекторов
         c_connectors (dict[str, int]): Распределение вхождений по коннекторам
         noun_overlap_adjacent (float): Доля пар соседних предложений с общим существительным
@@ -217,6 +223,12 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         content_overlap_all (float): Доля всех пар предложений с общим знаменательным словом
         content_overlap_prop_adjacent (float): Средняя доля общих знаменательных слов в соседних предложениях
         content_overlap_prop_all (float): Средняя доля общих знаменательных слов во всех парах предложений
+        noun_overlap_2_sent (float): Доля существительных предложения, повторенных в одном из двух следующих
+        argument_overlap_2_sent (float): Доля аргументов предложения, повторенных в одном из двух следующих
+        content_overlap_2_sent (float): Доля знаменательных слов предложения, повторенных в одном из двух следующих
+        noun_overlap_para (float): Доля существительных абзаца, повторенных в следующем
+        argument_overlap_para (float): Доля аргументов абзаца, повторенных в следующем
+        content_overlap_para (float): Доля знаменательных слов абзаца, повторенных в следующем
         p_pronouns (float): Доля местоимений среди слов
         pronoun_noun_ratio (float): Отношение числа местоимений к числу существительных
         p_demonstratives (float): Доля указательных местоимений среди слов
@@ -285,23 +297,35 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             (words_info, connector_pos). Для строки и Doc с экстрактором слов
             предложения - границы Doc или экстрактор предложений, слова - экстрактор
             слов, признаки - по pymorphy3. Знаки препинания между словами - по
-            токенам Doc (find_unit_marks) или по тексту предложения (find_marks)
+            токенам Doc (find_unit_marks) или по тексту предложения (find_marks),
+            начала абзацев после пустой строки - по токенам Doc
+            (find_unit_paragraph_starts) или по тексту (find_paragraph_starts)
         """
         if is_doc(source) and self.words_extractor is None:
             units = self.doc_units(source)
             marks = [find_unit_marks(sent) for sent in units]
+            starts = find_unit_paragraph_starts([unit for sent in units for unit in sent])
             if source.has_annotation("POS"):
+                positions = _positions(units)
                 return [
                     [
                         _cohesion_word(
-                            unit_text(unit), unit_info(unit), unit_pos(unit), i in sent_marks
+                            unit_text(unit),
+                            unit_info(unit),
+                            unit_pos(unit),
+                            i in sent_marks,
+                            position in starts,
                         )
-                        for i, unit in enumerate(sent)
+                        for i, (unit, position) in enumerate(
+                            zip(sent, sent_positions, strict=True)
+                        )
                     ]
-                    for sent, sent_marks in zip(units, marks, strict=True)
+                    for sent, sent_marks, sent_positions in zip(
+                        units, marks, positions, strict=True
+                    )
                 ]
             sents = [[unit_text(unit) for unit in sent] for sent in units]
-            return _cohesion_words(sents, source.text, marks)
+            return _cohesion_words(sents, source.text, marks, starts)
         texts: Iterable[str]
         if isinstance(source, str):
             text = source
@@ -313,20 +337,24 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             else:
                 texts = (self.sents_extractor or self.sents_extractor_class()).extract(text)
         else:
-            raise SourceTypeError(self.messages["source_type"])
+            raise source_type_error(self.messages, source)
         extractor = self.words_extractor or WordsExtractor()
         texts = tuple(texts)
         sent_words = [tuple(extractor.extract(sent)) for sent in texts]
-        # Слова экстрактора - без знаков ударения, а знак комбинирующий не отличить от препинания
         marks = [
-            find_marks(strip_marks(sent), [strip_marks(word) for word in words])
+            find_marks(*_searchable(sent, words))
             for sent, words in zip(texts, sent_words, strict=True)
         ]
-        return _cohesion_words(sent_words, text, marks)
+        starts = _paragraph_starts(text, texts, sent_words, extractor)
+        return _cohesion_words(sent_words, text, marks, starts)
 
 
 def _cohesion_word(
-    word: str, info: WordInfo, pos: str | None, break_before: bool = False
+    word: str,
+    info: WordInfo,
+    pos: str | None,
+    break_before: bool = False,
+    paragraph_start: bool = False,
 ) -> CohesionWord:
     """Слово с признаками для каркаса ядра, наклонение не учитывается"""
     return CohesionWord(
@@ -342,20 +370,79 @@ def _cohesion_word(
         None,
         info.aspect,
         break_before,
+        paragraph_start=paragraph_start,
     )
 
 
+def _searchable(sent: str, words: Sequence[str]) -> tuple[str, list[str]]:
+    """Текст и слова для поиска слов в тексте: экстрактор снимает знаки ударения (комбинирующий
+    знак не отличить от препинания) и может привести слова к нижнему регистру"""
+    return strip_marks(sent).lower(), [strip_marks(word).lower() for word in words]
+
+
+def _paragraph_starts(
+    text: str,
+    texts: Sequence[str],
+    sent_words: Sequence[Sequence[str]],
+    extractor: anyts.WordsExtractor,
+) -> frozenset[int]:
+    """Сквозные номера слов, перед которыми пустая строка: между предложениями - в промежутке
+    между ними (find_paragraph_starts по текстам предложений), внутри текста предложения -
+    по числу слов экстрактора в его частях между пустыми строками; абзац, который начинается
+    частью без слов, открывает первое слово следующей"""
+    after_blank = find_paragraph_starts(strip_marks(text), [strip_marks(sent) for sent in texts])
+    starts: set[int] = set()
+    position = 0
+    pending = False
+    for index, (sent, words) in enumerate(zip(texts, sent_words, strict=True)):
+        pending = pending or index in after_blank
+        parts = BLANK_LINE.split(sent)
+        counts = (
+            [len(words)] if len(parts) == 1 else [len(extractor.extract(part)) for part in parts]
+        )
+        worded = [i for i, count in enumerate(counts) if count]
+        # N-граммы через пустую строку: внутренние границы неизвестны, края - по частям без слов
+        if sum(counts) != len(words) and worded:
+            counts = [0] * worded[0] + [len(words)] + [0] * (len(counts) - 1 - worded[-1])
+        for i, count in enumerate(counts):
+            pending = pending or i > 0
+            if count:
+                if pending and position:
+                    starts.add(position)
+                pending = False
+                position += count
+    return frozenset(starts)
+
+
+def _positions(sents: Sequence[Sequence[object]]) -> list[range]:
+    """Номера слов каждого предложения в сквозной нумерации слов источника"""
+    positions = []
+    start = 0
+    for sent in sents:
+        positions.append(range(start, start + len(sent)))
+        start += len(sent)
+    return positions
+
+
 def _cohesion_words(
-    sents: Sequence[Sequence[str]], text: str, marks: Sequence[Collection[int]]
+    sents: Sequence[Sequence[str]],
+    text: str,
+    marks: Sequence[Collection[int]],
+    starts: Collection[int] = frozenset(),
 ) -> list[list[CohesionWord]]:
-    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos) и знаками"""
+    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos), знаками
+    и началами абзацев по сквозным номерам слов"""
     infos = words_info(sents, text)
     return [
         [
-            _cohesion_word(word, info, connector_pos(word), i in sent_marks)
-            for i, (word, info) in enumerate(zip(sent, sent_infos, strict=True))
+            _cohesion_word(word, info, connector_pos(word), i in sent_marks, position in starts)
+            for i, (word, info, position) in enumerate(
+                zip(sent, sent_infos, sent_positions, strict=True)
+            )
         ]
-        for sent, sent_infos, sent_marks in zip(sents, infos, marks, strict=True)
+        for sent, sent_infos, sent_marks, sent_positions in zip(
+            sents, infos, marks, _positions(sents), strict=True
+        )
     ]
 
 

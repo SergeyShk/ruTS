@@ -43,7 +43,7 @@ The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/any
     Индекс аллитерации                    |   1.09
     Индекс ассонанса                      |   0.83
     Доля открытых слогов                  |   0.76
-    Средняя длина слога (букв)            |   2.60
+    Средняя длина слога (звуков)          |   2.48
     ```
 
 ## Parameters
@@ -220,7 +220,7 @@ The alliteration and assonance indices of a list of words: the repetition index 
 
 --8<-- "stats/phon_stats.md:PhonStats-syllables"
 
-In ruTS the length of a syllable is the number of its letters, ь and ъ included.
+In ruTS the length of a syllable is the number of its letters without ь and ъ.
 
 ``` {.python .signature}
 is_open_syllable(syllable)
@@ -289,5 +289,5 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'alliteration': 1.0916179337231968,
      'assonance': 0.8305084745762712,
      'p_open_syllables': 0.76,
-     'mean_syllable_len': 2.6}
+     'mean_syllable_len': 2.48}
     ```

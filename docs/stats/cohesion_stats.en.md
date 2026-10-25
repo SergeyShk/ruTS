@@ -48,6 +48,12 @@ The words are classified by the [pymorphy3](https://github.com/no-plagiarism/pym
     Повтор знаменательных слов во всех парах предложений     |   0.50
     Доля общих знаменательных слов в соседних предложениях   |   0.11
     Доля общих знаменательных слов во всех парах предложений |   0.19
+    Повтор существительных в двух следующих предложениях     |   0.67
+    Повтор аргументов в двух следующих предложениях          |   0.75
+    Повтор знаменательных слов в двух следующих предложениях |   0.40
+    Повтор существительных в соседних абзацах                |   nan
+    Повтор аргументов в соседних абзацах                     |   nan
+    Повтор знаменательных слов в соседних абзацах            |   nan
     Доля местоимений                                         |   0.14
     Отношение местоимений к существительным                  |   0.50
     Доля указательных местоимений                            |   0.05
@@ -127,6 +133,39 @@ The extractors given are kept in the attributes `sents_extractor` and `words_ext
 --8<-- "stats/cohesion_stats.md:calc_proportional_overlap"
 
 --8<-- "stats/cohesion_stats.md:dice"
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Overlap with the next sentences and paragraphs { #forward_overlap }
+
+`noun_overlap_2_sent` · `argument_overlap_2_sent` · `content_overlap_2_sent` · `noun_overlap_para` · `argument_overlap_para` · `content_overlap_para` · [TAACO](https://doi.org/10.3758/s13428-015-0651-7)
+{ .metric-meta }
+
+--8<-- "stats/cohesion_stats.md:CohesionStats-forward_overlap"
+
+--8<-- "stats/cohesion_stats.md:calc_forward_overlap"
+
+In ruTS both a string and a `Doc` are split into paragraphs.
+
+=== "Code"
+
+    ``` python
+    from ruts.cohesion_stats import calc_forward_overlap
+
+    calc_forward_overlap([{"кот", "окно"}, {"птица"}, {"кот"}], span=2)
+    text = "Кот сидел на окне. Он смотрел на птиц.\n\nПтицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."
+    paragraphs = CohesionStats(text)
+    paragraphs.n_paragraphs, paragraphs.noun_overlap_para, paragraphs.content_overlap_para
+    ```
+
+=== "Result"
+
+    ```
+    0.5
+    (2, 1.0, 0.8)
+    ```
 
 </div>
 
@@ -240,6 +279,12 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'content_overlap_all': 0.5,
      'content_overlap_prop_adjacent': 0.1111111111111111,
      'content_overlap_prop_all': 0.18650793650793648,
+     'noun_overlap_2_sent': 0.6666666666666666,
+     'argument_overlap_2_sent': 0.75,
+     'content_overlap_2_sent': 0.4,
+     'noun_overlap_para': nan,
+     'argument_overlap_para': nan,
+     'content_overlap_para': nan,
      'p_pronouns': 0.14285714285714285,
      'pronoun_noun_ratio': 0.5,
      'p_demonstratives': 0.047619047619047616,
@@ -289,7 +334,7 @@ RussianConnectorMatcher(connectors)
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher"
 
-`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (`normalize_yo`). A one-word connector takes a part of speech of the core `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (for example: словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`, значит - `VERB`, ежели and коли - `NOUN`, `PROPN`, `VERB`): «раз» as a noun is no connector. The context rules are lists of `ruts.constants`: words after a connector (`CONNECTOR_BLOCKED_AFTER`: *пока что*, *хоть бы*) and before it (`CONNECTOR_BLOCKED_BEFORE`: *ещё раз*, *и так далее*) that make it no connector; connectors that count inside a sentence only after particular words (`CONNECTOR_ONLY_AFTER`: *и отсюда*) and do not count at its start (`CONNECTOR_NOT_AT_START`: the interrogative *отчего*); parts of speech of the word after a connector that make it a preposition or a member of the clause (`CONNECTOR_BLOCKED_AFTER_POS`: *после обеда*, *едва заметный*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*, *после «Ревизора»*), so the parenthetical *значит,* stays a connector, and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*). These parts of speech and lists are attributes of the matcher: `CONNECTOR_POS` is `pos_tags`, the others are named without `CONNECTOR_` in lower case (`CONNECTOR_BLOCKED_AFTER` is `blocked_after`); the attributes `not_after_pos` and `start_only_pos` are empty in ruTS, so these rules of `find` do not apply.
+`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (`normalize_yo`). A one-word connector takes a part of speech of the core `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (for example: словом - `NOUN`, главное - `ADJ`, `NOUN`, допустим - `VERB`, точнее - `ADJ`, т.е. - `PUNCT`, значит - `VERB`, ежели and коли - `NOUN`, `PROPN`, `VERB`): «раз» as a noun is no connector. The context rules are lists of `ruts.constants`: words after a connector (`CONNECTOR_BLOCKED_AFTER`: *пока что*, *хоть бы*) and before it (`CONNECTOR_BLOCKED_BEFORE`: *ещё раз*, *и так далее*) that make it no connector; connectors that count inside a sentence only after particular words (`CONNECTOR_ONLY_AFTER`: *и отсюда*) and do not count at its start (`CONNECTOR_NOT_AT_START`: the interrogative *отчего*); parts of speech of the word after a connector that make it a preposition or a member of the clause (`CONNECTOR_BLOCKED_AFTER_POS`: *после обеда*, *едва заметный*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*), so the parenthetical *значит,* stays a connector, and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*). These parts of speech and lists are attributes of the matcher: `CONNECTOR_POS` is `pos_tags`, the others are named without `CONNECTOR_` in lower case (`CONNECTOR_BLOCKED_AFTER` is `blocked_after`); the attributes `not_after_pos` and `start_only_pos` are empty in ruTS, so these rules of `find` do not apply.
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher-find"
 
