@@ -29,8 +29,10 @@ if TYPE_CHECKING:
         kilgarriff_chi2,
         mendenhall_curve,
         mendenhall_distance,
+        rolling_delta,
         z_scores,
         zeta,
+        zeta_segments,
     )
 
 # Модуль каждого имени, импорт при первом обращении: конкорданс не грузит pandas и SciPy
@@ -63,11 +65,13 @@ _MODULES = {
     "mendenhall_curve": "stylometry",
     "mendenhall_distance": "stylometry",
     "print_kwic": "kwic",
+    "rolling_delta": "stylometry",
     "sentence_rhythm": "compare",
     "split_windows": "compare",
     "text_features": "compare",
     "z_scores": "stylometry",
     "zeta": "stylometry",
+    "zeta_segments": "stylometry",
 }
 
 
@@ -100,11 +104,13 @@ __all__ = [
     "mendenhall_curve",
     "mendenhall_distance",
     "print_kwic",
+    "rolling_delta",
     "sentence_rhythm",
     "split_windows",
     "text_features",
     "z_scores",
     "zeta",
+    "zeta_segments",
 ]
 
 make_lazy(__name__, _MODULES)

@@ -112,7 +112,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    [Keywords](corpus/keyness.md) relative to a reference corpus or a frequency dictionary, [collocations](corpus/collocations.md), [word dispersion](corpus/dispersion.md) across text parts, [KWIC concordance](corpus/kwic.md), [stylometry](corpus/stylometry.md) measures (Burrows's Delta with its variants, Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile) and the [comparison of corpora](corpus/compare.md) across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)
+    [Keywords](corpus/keyness.md) relative to a reference corpus or a frequency dictionary, [collocations](corpus/collocations.md), [word dispersion](corpus/dispersion.md) across text parts, [KWIC concordance](corpus/kwic.md), [stylometry](corpus/stylometry.md) measures (Burrows's Delta with its variants and rolling Delta along a text, Zeta and the shares of its markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile) and the [comparison of corpora](corpus/compare.md) across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)
 
     [:octicons-arrow-right-24: Corpus measures](corpus/keyness.md)
 

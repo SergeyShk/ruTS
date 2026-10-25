@@ -5,8 +5,16 @@ import pytest
 from matplotlib.axes import Axes
 
 from ruts import WordsExtractor
-from ruts.corpus import delta, mendenhall_curve
-from ruts.visualizers import dendrogram_plot, mds_plot, mendenhall_plot, pca_plot
+from ruts.corpus import delta, mendenhall_curve, rolling_delta, zeta, zeta_segments
+from ruts.visualizers import (
+    delta_histogram_plot,
+    dendrogram_plot,
+    mds_plot,
+    mendenhall_plot,
+    pca_plot,
+    rolling_delta_plot,
+    zeta_scatter_plot,
+)
 
 matplotlib.use("Agg")
 
@@ -99,3 +107,45 @@ def test_mendenhall_plot():
     with pytest.raises(ValueError):
         mendenhall_plot({"А": []})
     assert len(plt.get_fignums()) == 0
+
+
+def test_rolling_delta_plot():
+    reference = {"Кот": corpus["А"], "Собака": corpus["Б"]}
+    ax = rolling_delta_plot(rolling_delta(reference, corpus["В"], window=6, step=3, n_mfw=10))
+    assert isinstance(ax, Axes)
+    assert (ax.get_title(), ax.get_xlabel(), ax.get_ylabel()) == (
+        "Скользящая дельта",
+        "Середина окна",
+        "Расстояние",
+    )
+    assert [line.get_label() for line in ax.get_lines()] == ["Кот", "Собака"]
+    plt.close("all")
+
+
+def test_zeta_scatter_plot():
+    scores = zeta(corpus["А"], corpus["Б"], segment_size=4)
+    preferred = [score.word for score in scores if score.zeta > 0]
+    avoided = [score.word for score in scores if score.zeta < 0]
+    ax = zeta_scatter_plot(zeta_segments(corpus, preferred, avoided, segment_size=4))
+    assert isinstance(ax, Axes)
+    assert (ax.get_title(), ax.get_xlabel(), ax.get_ylabel()) == (
+        "Маркеры Zeta в сегментах",
+        "Доля избегаемых слов",
+        "Доля предпочитаемых слов",
+    )
+    plt.close("all")
+
+
+def test_delta_histogram_plot():
+    texts = {**corpus, "Г": corpus["А"][::-1], "Д": corpus["Б"][::-1]}
+    authors = {"А": "кот", "В": "кот", "Г": "кот", "Б": "собака", "Д": "собака"}
+    ax = delta_histogram_plot(delta(texts, n_mfw=10), authors, bins=5)
+    assert isinstance(ax, Axes)
+    assert (ax.get_title(), ax.get_xlabel(), ax.get_ylabel()) == (
+        "Расстояния внутри и между авторами",
+        "Расстояние",
+        "Плотность",
+    )
+    legend = [text.get_text() for text in ax.get_legend().get_texts()]
+    assert [label.strip("\u200b ") for label in legend] == ["Один автор", "Разные авторы"]
+    plt.close("all")

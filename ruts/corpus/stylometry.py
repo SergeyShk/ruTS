@@ -12,8 +12,10 @@ from anyts.corpus.stylometry import (
     kilgarriff_chi2 as kilgarriff_chi2,
     mendenhall_curve as mendenhall_curve,
     mendenhall_distance as mendenhall_distance,
+    rolling_delta as rolling_delta,
     z_scores as z_scores,
     zeta as zeta,
+    zeta_segments as zeta_segments,
 )
 from anyts.utils import check_words, is_doc, is_punctuation, iter_doc_units
 

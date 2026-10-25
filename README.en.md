@@ -678,7 +678,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Collocations within a window by logDice, MI, MI³, t-score, Dice, G², NPMI, minimum sensitivity; collocates of a single word, on its left or right
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
-*   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams, Zeta with logarithmic Zeta, Kilgarriff's chi-square, Mendenhall curve, function word profile
+*   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams and rolling Delta along a text, Zeta with logarithmic Zeta and shares of Zeta markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile
 *   Corpus comparison `compare_corpora`: 116 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
@@ -773,7 +773,7 @@ The library allows visualizing text with the help of the following graphs:
 *   [Word Tree](https://sergeyshk.github.io/ruTS/en/visualizers/word_tree/)
 *   [Text highlighting](https://sergeyshk.github.io/ruTS/en/visualizers/highlight/) by 15 layers in five groups: readability (long sentences, complex and rare words), syntax (passive voice, participial clauses, genitive chains, split predicates), officialese (verbal nouns, compound prepositions, clichés), style (stop words, parentheticals, connectives), phonics (alliteration)
 *   [Corpus plots](https://sergeyshk.github.io/ruTS/en/visualizers/corpus/): lexical dispersion, keyness chart, collocation network
-*   [Stylometry plots](https://sergeyshk.github.io/ruTS/en/visualizers/stylometry/): dendrogram, principal components and multidimensional scaling by Delta, Mendenhall curves
+*   [Stylometry plots](https://sergeyshk.github.io/ruTS/en/visualizers/stylometry/): dendrogram, principal components and multidimensional scaling by Delta, histograms of distances within and between authors, rolling Delta, segments by Zeta markers, Mendenhall curves
 *   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/en/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/en/visualizers/sentences/) with a moving average
 
 Matplotlib plots accept `ax` and return `Axes`, so they can be laid out on one figure. Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
@@ -939,7 +939,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
         *   fingerprinting.py - Literature Fingerprinting
         *   highlight.py - text highlighting
         *   sentences.py - sentence lengths
-        *   stylometry.py - dendrogram, principal components, scaling, Mendenhall curves
+        *   stylometry.py - dendrogram, principal components, scaling, distances within and between authors, rolling Delta, Zeta markers, Mendenhall curves
         *   vocabulary.py - Heaps's law and frequency spectrum
         *   word_tree.py - Word Tree
         *   zipf.py - Zipf's law

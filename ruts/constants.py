@@ -1649,6 +1649,23 @@ VISUALIZER_LABELS = {
         "xlabel": "Измерение 1",
         "ylabel": "Измерение 2",
     },
+    "delta_histogram_plot": {
+        "title": "Расстояния внутри и между авторами",
+        "xlabel": "Расстояние",
+        "ylabel": "Плотность",
+        "within": "Один автор",
+        "between": "Разные авторы",
+    },
+    "rolling_delta_plot": {
+        "title": "Скользящая дельта",
+        "xlabel": "Середина окна",
+        "ylabel": "Расстояние",
+    },
+    "zeta_scatter_plot": {
+        "title": "Маркеры Zeta в сегментах",
+        "xlabel": "Доля избегаемых слов",
+        "ylabel": "Доля предпочитаемых слов",
+    },
     "mendenhall_plot": {
         "title": "Кривые Менденхолла",
         "xlabel": "Длина слова, символов",
