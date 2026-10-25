@@ -95,3 +95,5 @@ rolling_delta_plot(
 )
 zeta_scatter_plot(zeta_segments(corpora, preferred, avoided, segment_size=1000), ax=axes[2])
 ```
+
+![ruts](../img/stylometry_authors.png){: .center }

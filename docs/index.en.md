@@ -282,7 +282,7 @@ A walkthrough of one short story with every tool of the library is in the notebo
             *   fingerprinting.py - Literature Fingerprinting
             *   highlight.py - text highlighting
             *   sentences.py - sentence lengths
-            *   stylometry.py - dendrogram, principal components, scaling, Mendenhall curves
+            *   stylometry.py - dendrogram, principal components, scaling, distances within and between authors, rolling Delta, Zeta markers, Mendenhall curves
             *   vocabulary.py - Heaps's law and frequency spectrum
             *   word_tree.py - Word Tree
             *   zipf.py - Zipf's law
