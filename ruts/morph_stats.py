@@ -12,7 +12,7 @@ import anyts
 import anyts.morph_stats
 import pymorphy3
 from anyts.morph_stats import MorphWord as MorphWord
-from anyts.utils import is_doc, iter_doc_units, safe_divide, source_type_error
+from anyts.utils import has_pos, is_doc, iter_doc_units, safe_divide, source_type_error
 
 from .constants import (
     ANSWER_PARTICLE_NEXT,
@@ -196,11 +196,19 @@ class MorphStats(anyts.morph_stats.MorphStats):
                 strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
                 for unit in units
             ]
-            if source.has_annotation("POS"):
-                features = [
-                    token_to_ud(unit[0]) if len(unit) == 1 else _word_to_ud(word)
-                    for unit, word in zip(units, words, strict=True)
-                ]
+            if has_pos(source):
+                # Токены одной словоформы с одной разметкой получают один словарь, как в _word_to_ud
+                known: dict[tuple[int, str, str, int], dict[str, str | None]] = {}
+                features = []
+                for unit, word in zip(units, words, strict=True):
+                    if len(unit) > 1:
+                        features.append(_word_to_ud(word))
+                        continue
+                    token = unit[0]
+                    key = (token.pos, str(token.morph), token.text, token.lemma)
+                    if (cached := known.get(key)) is None:
+                        cached = known[key] = token_to_ud(token)
+                    features.append(cached)
             else:
                 features = _words_to_ud(words, source.text)
         elif isinstance(source, str):
@@ -236,7 +244,8 @@ class MorphStats(anyts.morph_stats.MorphStats):
         Описание:
             Доли форм глагола (VERB и AUX), каждая от своей базы: наклонения - от личных
             форм, совершенный вид - от форм с видом, остальные - от всех форм глагола;
-            доля с пустой базой - nan. Сослагательное наклонение определяется по частице
+            доля с пустой базой - nan; признак из нескольких значений (Mood=Ind,Imp)
+            входит в долю каждого. Сослагательное наклонение определяется по частице
             бы, поэтому экстрактор слов не должен отбрасывать частицы
 
         Вывод:
@@ -253,23 +262,23 @@ class MorphStats(anyts.morph_stats.MorphStats):
             for index, pos in enumerate(self.pos)
             if pos in VERBAL_POS and self.verb_form[index]
         ]
-        forms = Counter(self.verb_form[index] for index in verbs)
-        moods = Counter(self.mood[index] for index in verbs if self.verb_form[index] == "Fin")
-        aspects = Counter(self.aspect[index] for index in verbs if self.aspect[index])
+        forms = Counter(value for index in verbs for value in _values(self.verb_form[index]))
+        finite = [index for index in verbs if "Fin" in _values(self.verb_form[index])]
+        moods = Counter(value for index in finite for value in _values(self.mood[index]))
+        aspects = Counter(value for index in verbs for value in _values(self.aspect[index]))
         n_forms = len(verbs)
-        n_finite = forms["Fin"]
+        n_finite = len(finite)
         n_particles = sum(
             word.lower() in CONDITIONAL_PARTICLES and word != "Б" for word in self.words
         )
         n_past = sum(
-            self.verb_form[index] == "Fin"
-            and self.mood[index] == "Ind"
-            and self.tense[index] == "Past"
-            for index in verbs
+            "Ind" in _values(self.mood[index]) and "Past" in _values(self.tense[index])
+            for index in finite
         )
         n_conditional = min(n_particles, n_past)
         n_passive = sum(
-            self.verb_form[index] == "Part" and self.voice[index] == "Pass" for index in verbs
+            "Part" in _values(self.verb_form[index]) and "Pass" in _values(self.voice[index])
+            for index in verbs
         )
         n_reflexive = sum(self.words[index].lower().endswith(REFLEXIVE_ENDINGS) for index in verbs)
         return {
@@ -279,10 +288,17 @@ class MorphStats(anyts.morph_stats.MorphStats):
             "p_infinitive": safe_divide(forms["Inf"], n_forms, nan),
             "p_participle": safe_divide(forms["Part"], n_forms, nan),
             "p_converb": safe_divide(forms["Conv"], n_forms, nan),
-            "p_perfective": safe_divide(aspects["Perf"], sum(aspects.values()), nan),
+            "p_perfective": safe_divide(
+                aspects["Perf"], sum(1 for index in verbs if self.aspect[index]), nan
+            ),
             "p_passive": safe_divide(n_passive, n_forms, nan),
             "p_reflexive": safe_divide(n_reflexive, n_forms, nan),
         }
+
+
+def _values(value: str | None) -> list[str]:
+    """Значения признака из нескольких значений через запятую, без признака - ни одного"""
+    return value.split(",") if value else []
 
 
 def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:

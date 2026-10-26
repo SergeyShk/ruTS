@@ -225,3 +225,12 @@ def test_marks_in_parse_and_folding():
 def test_text_must_be_a_string(func, value):
     with pytest.raises(SourceTypeError, match=r"^Ожидается строка текста, а не "):
         func(value)
+
+
+def test_set_sent_starts_reexport():
+    """Предложения Doc по началам сегментатора - функция ядра из ruts.utils"""
+    import anyts.utils
+
+    from ruts.utils import set_sent_starts
+
+    assert set_sent_starts is anyts.utils.set_sent_starts

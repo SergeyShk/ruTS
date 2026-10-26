@@ -129,7 +129,7 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         простых, одно- и многосложных слов, букв, пробелов и знаков препинания,
         буквы и слоги на слово (BasicStats); readability_ - формулы удобочитаемости
         и сводный класс (ReadabilityStats); diversity_ - меры лексического
-        разнообразия (DiversityStats); morph_ - доли частей речи и значений
+        разнообразия (DiversityStats), кроме Orlov's Z: на окне она неустойчива; morph_ - доли частей речи и значений
         морфологических признаков, например morph_pos_NOUN, morph_case_Gen
         (MorphStats по pymorphy3): части речи и признаки с одним значением
         (отрицание, краткая форма) - доли всех слов, остальные - доли слов с этим
@@ -191,7 +191,8 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         features[f"readability_{key}"] = float(score)
     lowered = FixedWordsExtractor(tuple(word.lower() for word in words.words))
     for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
-        features[f"diversity_{key}"] = float(score)
+        if key != "orlov_z":
+            features[f"diversity_{key}"] = float(score)
     morph = MorphStats(text, words_extractor=words)
     n_words = len(morph.words)
     stats = morph.get_stats(filter_none=True)
@@ -212,7 +213,7 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
     )
     features.update(
         (f"cohesion_{key}", float(value))
-        for key, value in CohesionStats(text).get_stats().items()
+        for key, value in CohesionStats(text, sents).get_stats().items()
         if not key.endswith("_para")
     )
     if nlp is not None:

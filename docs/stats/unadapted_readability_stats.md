@@ -267,12 +267,12 @@ $$
 `dickes_steiwer` · Dickes and Steiwer, 1977
 { .metric-meta }
 
-<!-- core: stats/unadapted_readability_stats.md:calc_dickes_steiwer 0fea097 -->
+<!-- core: stats/unadapted_readability_stats.md:calc_dickes_steiwer e11c627 -->
 ``` {.python .signature}
 calc_dickes_steiwer(n_letters, n_words, n_sents, n_types)
 ```
 
-Краткая формула для немецкого языка (Dickes и Steiwer, 1977) в том виде, в каком ее приводят Bamberger и Vanecek (1984), по буквам на слово, словам на предложение и отношению числа разных слов к числу слов (TTR), без слогов; чем больше, тем легче текст. `nan` без слов или предложений.
+Краткая формула для немецкого языка (Dickes и Steiwer, 1977) в том виде, в каком ее приводят Bamberger и Vanecek (1984), по буквам на слово, словам на предложение и отношению числа разных слов к числу слов (TTR), без слогов; чем больше, тем легче текст. `nan` без слов или предложений. TTR падает с длиной текста, поэтому значения сравнивают тексты одной длины.
 
 $$
 \textrm{DS} = 235.95993 - 73.021 \ln\left(\frac{\textrm{Количество букв}}{\textrm{Количество слов}} + 1\right) - 12.56438 \ln\left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + 1\right) - 50.03293 \cdot \textrm{TTR}
@@ -351,12 +351,12 @@ $$
 `strain_index` · Nathaniel, 2009
 { .metric-meta }
 
-<!-- core: stats/unadapted_readability_stats.md:calc_strain_index d371c89 -->
+<!-- core: stats/unadapted_readability_stats.md:calc_strain_index 8373447 -->
 ``` {.python .signature}
 calc_strain_index(n_syllables, n_sents)
 ```
 
-Индекс (Nathaniel, 2009): число слогов в трех предложениях, деленное на 10, здесь - в среднем по всему тексту; `nan` без предложений.
+Индекс (Nathaniel, 2009): число слогов в трех предложениях, деленное на 10, здесь - в среднем по всему тексту, поэтому он равен индексу Фукса, умноженному на 0.3; `nan` без предложений.
 
 $$
 \textrm{Strain} = \frac{3 \times \textrm{Количество слогов}}{10 \times \textrm{Количество предложений}}

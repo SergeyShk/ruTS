@@ -17,7 +17,7 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
     from ruts import SyntaxStats
 
     nlp = spacy.load("ru_core_news_sm")
-    text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
+    text = "Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."
     ss = SyntaxStats(nlp(text))
     ss.print_stats()
     ```
@@ -27,23 +27,23 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
     ```
                            Статистика                        | Значение
     --------------------------------------------------------------------
-    Средняя длина зависимости                                |   1.93
+    Средняя длина зависимости                                |   2.07
     Стандартное отклонение длины зависимости                 |   1.61
     Средний максимум длины зависимости в предложении         |   5.00
-    Доля смежных связей                                      |   0.60
-    Средняя глубина дерева зависимостей предложения          |   4.00
+    Доля смежных связей                                      |   0.53
+    Средняя глубина дерева зависимостей предложения          |   3.50
     Листьев на предложение                                   |   4.50
     Поддеревьев на предложение                               |   4.00
     Среднее число узлов на лист в предложении                |   1.90
-    Среднее число слов до вершины предложения                |   4.00
-    Валентность финитных глаголов                            |   2.00
+    Среднее число слов до вершины предложения                |   5.00
+    Валентность финитных глаголов                            |   1.67
     Сочинительных цепочек на предложение                     |   0.50
     Средняя длина сочинительной цепочки                      |   2.00
-    Клауз на предложение                                     |   1.50
-    Средняя длина клаузы (слов)                              |   5.67
+    Клауз на предложение                                     |   2.00
+    Средняя длина клаузы (слов)                              |   4.25
     Придаточных клауз на предложение                         |   0.50
     Доля предложений с придаточными                          |   0.50
-    Инфинитивных клауз при глаголе на предложение            |   0.00
+    Инфинитивных клауз на предложение                        |   0.00
     T-единиц на предложение                                  |   1.00
     Средняя длина T-единицы (слов)                           |   8.50
     Клауз на T-единицу                                       |   1.50
@@ -51,7 +51,7 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
     Глагольных групп на T-единицу                            |   2.50
     Сочинённых групп на клаузу                               |   0.33
     Сложных именных групп на клаузу                          |   1.00
-    Модификаторов на именную группу                          |   0.40
+    Модификаторов на именную группу                          |   0.50
     Предложных цепочек на предложение                        |   0.00
     Максимальная длина предложной цепочки                    |    0
     Цепочек родительных падежей на предложение               |   0.00
@@ -60,16 +60,16 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
     Средняя длина причастного оборота (слов)                 |   5.00
     Деепричастных оборотов на предложение                    |   0.50
     Средняя длина деепричастного оборота (слов)              |   2.00
-    Доля пассивных форм среди глаголов                       |   0.40
+    Доля пассивных форм среди глаголов                       |   0.33
     Доля безагентного пассива                                |   0.50
     Инфинитивов на предложение                               |   0.00
     Отрицаний на предложение                                 |   0.50
     Расщеплённых сказуемых на предложение                    |   0.00
     Доля именных подлежащих перед вершиной                   |   1.00
-    Доля именных дополнений перед вершиной                   |   nan
+    Доля именных дополнений перед вершиной                   |   0.00
     Редакционное расстояние частей речи соседних предложений |   0.78
     Синтаксическая схожесть соседних предложений             |   0.06
-    Отношение существительных к глаголам                     |   1.00
+    Отношение существительных к глаголам                     |   0.67
     ```
 
 ## Parameters
@@ -96,7 +96,7 @@ The attributes of the constructions of ruTS are `n_genitive_chains` and `n_conve
 === "Result"
 
     ```
-    (3, 5, 5)
+    (4, 4, 6)
     {0: 9, 1: 2, 2: 5, 3: 1}
     {'ROOT': 2,
      'acl': 1,
@@ -108,10 +108,10 @@ The attributes of the constructions of ruTS are `n_genitive_chains` and `n_conve
      'cc': 1,
      'ccomp': 1,
      'conj': 1,
-     'iobj': 1,
      'mark': 1,
      'nsubj': 1,
      'nsubj:pass': 1,
+     'obj': 1,
      'obl': 1,
      'obl:agent': 1}
     (Дом, построенный, рабочими, в, прошлом, году, был, продан)
@@ -246,7 +246,7 @@ Checks whether an infinitive under `xcomp` heads a clause of its own («хоче
 is_infinitive_periphrasis(token)
 ```
 
-Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти»), the short form of a modal adjective of `MODAL_SHORT_ADJECTIVES` («готов уйти», «рад помочь») or the hortative «давай», «давайте» of `HORTATIVE_WORDS` without a negation («давайте играть», but not «не давайте детям играть»).
+Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of `INFINITIVE_PERIPHRASES` («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «невозможно описать», «пора идти»), the short form of a modal adjective of `MODAL_SHORT_ADJECTIVES` («готов уйти», «рад помочь») or the hortative «давай», «давайте» of `HORTATIVE_WORDS` without a negation («давайте играть», but not «не давайте детям играть»).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -265,7 +265,17 @@ Checks whether an infinitive makes one predicate with its head: a modal or phasa
 is_subordinate_clause_head(token)
 ```
 
-Checks whether a word heads a subordinate clause: a clause head (`is_clause_head`) with `ccomp`, `advcl`, `acl`, `csubj` and their subtypes, or a coordinated predicate of a subordinate clause.
+Checks whether a word heads a subordinate clause: a clause head (`is_clause_head`) whose predicate is no infinitive under `ccomp`, `advcl`, `acl`, `csubj` and their subtypes, a coordinated predicate of a subordinate clause, or a clause under `conj` or `parataxis` with a subordinating conjunction (`is_subordinating_mark`: «ушел, ибо устал») with its conjuncts that have a subject of their own: the models attach such a clause to the main one as a conjunct, and the predicates of the main clause sharing its subject to it, which are no subordinate clauses. An infinitive heads an infinitive clause, not a subordinate one.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `token` | `Token` | - | Token |
+
+``` {.python .signature}
+is_subordinating_mark(token)
+```
+
+Checks whether a conjunction (relation `mark`) of a conjunct or a parataxis is a subordinating one: a conjunction of `SUBORDINATING_MARKS` with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction after «не то» and «всё равно» («не то что», «не то чтоб»), a conjunction of a predicate with a correlative «то» after it that is not of a nested «если..., то» («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется» and at the start of a replica that ends with a question or an exclamation («А что вы сделаете?», «Любопытно стало: что это сделалось?»).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -286,7 +296,7 @@ The features of the paper: `PODCHIN_RATE` (r = 0.64), the subordinate clauses pe
 is_infinitive_clause_head(token)
 ```
 
-Checks whether a word heads an infinitive clause under a verb: an infinitive under `xcomp` that heads a clause of its own (`is_infinitive_clause`: «хочет уйти», «попросил его уйти»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.
+Checks whether a word heads an infinitive clause: an infinitive under `xcomp` that heads a clause of its own (`is_infinitive_clause`: «хочет уйти», «попросил его уйти»), an infinitive clause head under `ccomp`, `advcl`, `acl` or `csubj` («пришел, чтобы помочь», «трудно сказать»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

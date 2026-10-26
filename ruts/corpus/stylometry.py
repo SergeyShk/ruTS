@@ -17,7 +17,7 @@ from anyts.corpus.stylometry import (
     zeta as zeta,
     zeta_segments as zeta_segments,
 )
-from anyts.utils import check_words, is_doc, is_punctuation, iter_doc_units
+from anyts.utils import check_words, has_pos, is_doc, is_punctuation, iter_doc_units
 
 from ..constants import FUNCTION_UD_POS
 from ..exceptions import SourceError
@@ -52,7 +52,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
     """
     if is_doc(source):
         units = list(iter_doc_units(source, join_hyphens=True))
-        tagged = source.has_annotation("POS")
+        tagged = has_pos(source)
         tags = [
             unit[0].pos_ if tagged and len(unit) == 1 else _word_pos("".join(t.text for t in unit))
             for unit in units

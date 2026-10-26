@@ -54,7 +54,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
 Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.91, of Tolstoy 0.76), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.30 and 0.33). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 111 of the 146 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 82 of those 111 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 110 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 110 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 ## Parameters
 
@@ -80,18 +80,18 @@ Raises:
 text_features(text, nlp=None)
 ```
 
-Returns 146 features of a text prefixed by source, 189 with the pipeline `nlp`; an undefined feature is `nan`.
+Returns 145 features of a text prefixed by source, 188 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
-| `diversity_` | lexical diversity measures | [`DiversityStats`](../stats/diversity_stats.md) |
+| `diversity_` | lexical diversity measures, but for Orlov's Z, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
 | `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
 | `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
-| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups. The leaves, the subtrees, the longest dependency and the depth of the tree nearly repeat the length of a sentence `sents_mean` | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
 
@@ -153,9 +153,9 @@ Features of your own go to `features` as a function of a text, `text_features` w
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
     syntax_converb_clauses_per_sent            0.091           0.197  -0.134   -0.081   -1.035       -0.611  0.195     0.0
     syntax_participle_clauses_per_sent         0.046           0.121  -0.100   -0.051   -0.855       -0.581  0.210     0.0
-    syntax_mean_clause_len                     5.025           5.841  -1.239   -0.485   -0.879       -0.520  0.240     0.0
+    syntax_mean_clause_len                     5.025           5.841  -1.242   -0.486   -0.878       -0.519  0.241     0.0
+    syntax_clauses_per_t_unit                  1.264           1.400  -0.212   -0.091   -0.792       -0.513  0.243     0.0
     syntax_tree_depth                          3.063           3.653  -0.911   -0.357   -0.968       -0.512  0.244     0.0
-    syntax_verb_phrases_per_t_unit             1.639           1.938  -0.462   -0.204   -0.850       -0.511  0.245     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

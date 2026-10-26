@@ -32,7 +32,7 @@ from ruts.constants import (
     CONNECTOR_SUBORDINATORS,
     CONNECTOR_TYPES,
 )
-from ruts.exceptions import SourceError
+from ruts.exceptions import ParameterError, SourceError
 from ruts.utils import lemmatize, normalize_yo
 
 text = (
@@ -418,6 +418,8 @@ def test_connectors_hyphens_and_dots(nlp):
         ("После него остался сын.", [], 0),
         ("После «Ревизора» он уехал.", [], 0),
         ("Он ушёл после.", ["после"], 0),
+        # Правило части речи не читает через скобку и многоточие: в корпусах таких нет
+        ("Он пришёл после (обеда) домой.", ["после"], 0),
         ("Ради бога, простите.", [], 0),
     ],
 )
@@ -688,6 +690,35 @@ def test_paragraphs(nlp):
         assert stats.n_paragraphs == 3
         # {кот, окно} -> {кот, птица}: 1 из 2; {кот, птица} -> {птица, кот}: 2 из 2
         assert stats.noun_overlap_para == pytest.approx(3 / 4)
+
+
+lines = "Кот сидел на окне.\nКот смотрел на птиц. Птицы улетели.\nПтицы вернулись к коту."
+
+
+def test_paragraphs_are_lines(nlp):
+    """Абзац - строка, как в TAACO, а с blank_lines - часть между пустыми строками"""
+    doc = nlp(lines)
+    sources = [lines, lines.replace("\n", "\r\n"), doc, spacy.blank("ru")(lines)]
+    for source in sources:
+        stats = CohesionStats(source)
+        assert stats.n_paragraphs == 3 and not stats.blank_lines
+        assert stats.noun_overlap_para == pytest.approx(3 / 4)
+        assert CohesionStats(source, blank_lines=True).n_paragraphs == 1
+    assert CohesionStats(doc, words_extractor=WordsExtractor()).n_paragraphs == 3
+    assert CohesionStats(paragraphs, blank_lines=True).n_paragraphs == 3
+    with pytest.raises(ParameterError, match=r"^The blank_lines must be a bool"):
+        CohesionStats(lines, blank_lines="да")
+
+
+def test_paragraph_without_content_words(nlp):
+    """Строка без знаменательных слов - номер главы - присоединяется к следующему абзацу,
+    последняя - к предыдущему"""
+    text = "1\nКот сидел на окне.\nXII\nКот смотрел на птиц.\n2"
+    for source in (text, nlp(text)):
+        stats = CohesionStats(source)
+        assert stats.n_paragraphs == 2
+        # {кот, окно} -> {кот, птица}: 1 из 2
+        assert stats.noun_overlap_para == pytest.approx(1 / 2)
 
 
 @pytest.mark.parametrize(

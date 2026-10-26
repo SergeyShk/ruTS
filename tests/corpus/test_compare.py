@@ -127,7 +127,9 @@ def test_text_features():
     assert text_features("Кот не спит, пёс не лает.")["morph_polarity_Neg"] == pytest.approx(2 / 6)
     assert text_features("Кот, пёс, дом.")["morph_polarity_Neg"] == 0.0
     assert sum(1 for key in features if key.startswith("morph_")) == 48
-    assert len(features) == 146
+    assert len(features) == 145
+    # Orlov's Z на окне неустойчива
+    assert "diversity_orlov_z" not in features and "diversity_burstiness" in features
     # Связность - без повторов между абзацами: окно режет абзацы текста
     assert sum(1 for key in features if key.startswith("cohesion_")) == 30
     assert not any(key.endswith("_para") for key in features)

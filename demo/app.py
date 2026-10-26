@@ -4,7 +4,7 @@ from collections.abc import Callable
 from functools import lru_cache
 from importlib.metadata import version
 from io import BytesIO
-from math import floor, isnan
+from math import floor, isinf, isnan
 
 import gradio as gr
 import matplotlib
@@ -191,7 +191,9 @@ def format_value(value: float | int | str | None) -> str:
     if value is None:
         return "-"
     if isinstance(value, float):
-        return "-" if isnan(value) else f"{value:.2f}"
+        if isnan(value):
+            return "-"
+        return ("∞" if value > 0 else "-∞") if isinf(value) else f"{value:.2f}"
     return str(value)
 
 
