@@ -37,12 +37,18 @@ from anyts.utils import (
 )
 
 from .constants import (
+    COMPOUND_AS_PREV_WORDS,
     CORE_MESSAGES,
+    CORRELATIVE_WORDS,
     HORTATIVE_WORDS,
     INFINITIVE_PERIPHRASES,
     LIGHT_VERBS,
     MODAL_SHORT_ADJECTIVES,
     NEGATION_PARTICLES,
+    PRONOUN_MARK_NEXT_WORDS,
+    PRONOUN_MARK_PREV_PHRASES,
+    PRONOUN_MARKS,
+    REPLICA_OPENING_WORDS,
     SPLIT_PREDICATE_NOUNS,
     SUBORDINATING_MARKS,
     SYNTAX_STATS_DESC,
@@ -248,6 +254,10 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         """Инфинитив одной предикации с модальным или фазовым глаголом (is_infinitive_periphrasis)"""
         return is_infinitive_periphrasis(token)
 
+    def is_subordinating_mark(self, token: Token) -> bool:
+        """Подчинительный союз при однородном или вставной конструкции (is_subordinating_mark)"""
+        return is_subordinating_mark(token)
+
     def is_participle_clause(self, token: Token) -> bool:
         """Вершина причастного оборота - полного причастия (is_participle_clause)"""
         return is_participle_clause(token)
@@ -433,12 +443,13 @@ def is_subordinate_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной придаточной клаузы
 
     Описание:
-        is_subordinate_clause_head ядра с русским правилом клаузы is_clause_head
-        и союзами SUBORDINATING_MARKS: вершина клаузы с личной формой со связью ccomp,
-        advcl, acl, csubj и их подтипами, а также однородное сказуемое придаточной
-        клаузы и клауза conj или parataxis с подчинительным союзом (ушел, ибо устал);
-        инфинитивные клаузы (хочет уйти, пришел, чтобы помочь) - не придаточные,
-        они считаются отдельно (is_infinitive_clause_head)
+        is_subordinate_clause_head ядра с русскими правилами клаузы is_clause_head
+        и союза is_subordinating_mark: вершина клаузы, сказуемое которой не инфинитив,
+        со связью ccomp, advcl, acl, csubj и их подтипами, а также однородное сказуемое
+        придаточной клаузы и клауза conj или parataxis с подчинительным союзом (ушел,
+        ибо устал) с однородными ей со своим подлежащим, но не с общим; инфинитивные
+        клаузы (хочет уйти, пришел, чтобы помочь) - не придаточные, они считаются
+        отдельно (is_infinitive_clause_head)
 
     Аргументы:
         token (Token): Токен
@@ -447,8 +458,52 @@ def is_subordinate_clause_head(token: Token) -> bool:
         bool: Результат проверки
     """
     return anyts.syntax_stats.is_subordinate_clause_head(
-        token, is_clause_head, subordinating_marks=SUBORDINATING_MARKS
+        token, is_clause_head, is_subordinating_mark=is_subordinating_mark
     )
+
+
+def is_subordinating_mark(token: Token) -> bool:
+    """
+    Проверка, является ли союз (связь mark) подчинительным
+
+    Описание:
+        Союз из SUBORDINATING_MARKS со словами своего составного союза (потому что,
+        так как) или «как» после COMPOUND_AS_PREV_WORDS (после того как); не союз
+        главной клаузы, у сказуемого которой после него есть соотносительное слово
+        из CORRELATIVE_WORDS (когда пришел, то...), и не местоимение или частица
+        из PRONOUN_MARKS: перед PRONOUN_MARK_NEXT_WORDS (что ж, что называется), после
+        PRONOUN_MARK_PREV_PHRASES (не то что) и в начале вопроса или восклицания
+        («А что вы сделаете?»)
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    doc = token.doc
+    before = [word.lower_ for word in doc[max(token.i - 2, 0) : token.i] if is_word(word)]
+    if anyts.syntax_stats.is_subordinating_mark(token, {"как"}):
+        return bool(before) and before[-1] in COMPOUND_AS_PREV_WORDS
+    if not anyts.syntax_stats.is_subordinating_mark(token, SUBORDINATING_MARKS):
+        return False
+    if any(
+        child.i > token.i and child.lower_ in CORRELATIVE_WORDS for child in token.head.children
+    ):
+        return False
+    if token.lower_ not in PRONOUN_MARKS:
+        return True
+    following = doc[token.i + 1] if token.i + 1 < len(doc) else None
+    if following is not None and following.lower_ in PRONOUN_MARK_NEXT_WORDS:
+        return False
+    if " ".join(before) in PRONOUN_MARK_PREV_PHRASES:
+        return False
+    sent = token.sent
+    opens = all(
+        not is_word(word) or word.lower_ in REPLICA_OPENING_WORDS
+        for word in doc[sent.start : token.i]
+    )
+    return not (opens and any(char in "?!" for char in sent.text.rstrip()[-3:]))
 
 
 def is_infinitive_clause_head(token: Token) -> bool:
@@ -456,8 +511,8 @@ def is_infinitive_clause_head(token: Token) -> bool:
     Проверка, является ли токен вершиной инфинитивной клаузы при глаголе
 
     Описание:
-        is_infinitive_clause_head ядра с русским правилом клаузы is_clause_head
-        и союзами SUBORDINATING_MARKS: инфинитив со связью xcomp, ccomp, advcl, acl
+        is_infinitive_clause_head ядра с русскими правилами клаузы is_clause_head
+        и союза is_subordinating_mark: инфинитив со связью xcomp, ccomp, advcl, acl
         или csubj, который образует свою клаузу (хочет уйти, попросил его уйти,
         пришел, чтобы помочь, трудно сказать), а также однородный ему инфинитив
 
@@ -468,7 +523,7 @@ def is_infinitive_clause_head(token: Token) -> bool:
         bool: Результат проверки
     """
     return anyts.syntax_stats.is_infinitive_clause_head(
-        token, is_clause_head, subordinating_marks=SUBORDINATING_MARKS
+        token, is_clause_head, is_subordinating_mark=is_subordinating_mark
     )
 
 

@@ -32,6 +32,7 @@ from ruts.syntax_stats import (
     is_reflexive,
     is_split_predicate_noun,
     is_subordinate_clause_head,
+    is_subordinating_mark,
     subtree_len,
 )
 
@@ -764,6 +765,53 @@ def test_pickle(nlp):
         assert [token.text for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
 
 
+@pytest.mark.parametrize(
+    ("text", "word", "expected"),
+    [
+        ("Он ушел, ибо устал.", "ибо", True),
+        ("Он ушел, после того как все легли.", "как", True),
+        ("Он бежал быстро, как бегают зайцы.", "как", False),
+        ("Петля не петля, а вышла, что называется, штука хорошая.", "что", False),
+        ("Ну и что ж ты бы мог сделать?", "что", False),
+        ("— А что вы теперь с нашими письмами сделаете?", "что", False),
+        ("Он сказал, что придет.", "что", True),
+        ("Когда у тебя заболел живот, то я к тебе зашёл.", "то", False),
+    ],
+)
+def test_is_subordinating_mark(nlp, text, word, expected):
+    """Подчинительный союз - по списку и контексту: составной «после того как», не «то»
+    главной клаузы и не местоимение «что»"""
+    doc = nlp(text)
+    marks = [token for token in doc if token.dep_ == "mark" and token.lower_ == word]
+    assert marks and is_subordinating_mark(marks[0]) is expected
+    stats = SyntaxStats(doc)
+    assert stats.is_subordinating_mark(marks[0]) is expected
+    # Модульные проверки клауз - с тем же правилом союза
+    marked = [
+        token
+        for token in doc
+        if token.dep_ in ("conj", "parataxis") and marks[0] in token.children
+    ]
+    for head in marked:
+        assert is_subordinate_clause_head(head) == stats.is_subordinate_clause_head(head)
+
+
+def test_conjuncts_of_a_marked_clause(nlp):
+    """Однородные помеченной клаузы с общим подлежащим - сказуемые главной, которые модель
+    повесила на придаточное, а не придаточные"""
+    doc = nlp(
+        "Поздно одумалась королевна, что сказала слово нехорошее, заплакала горькими слезами, "
+        "воротилась домой и стала жить одна-одинехонька."
+    )
+    stats = SyntaxStats(doc)
+    heads = {token.text: token for token in doc}
+    assert stats.is_subordinate_clause_head(heads["сказала"])
+    assert not any(
+        stats.is_subordinate_clause_head(heads[word]) for word in ("заплакала", "воротилась")
+    )
+    assert stats.n_t_units == 1
+
+
 def test_doc_without_morphologizer():
     """Без морфологического анализатора части речи есть только у пробелов - это не разметка"""
     nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
@@ -825,6 +873,17 @@ def test_doc_without_morphologizer():
             },
         ),
         ("Если пойдет дождь, то мы останемся.", {"subordinate_clauses_per_sent": 1.0}),
+        # Союз с «то» после него у того же сказуемого - главная клауза, местоимение - не союз
+        (
+            "Пел он громко, и так как мать молчала, то Васька решил, что ей понравилось пение.",
+            {"t_units_per_sent": 2.0, "subordinate_clauses_per_sent": 1.0},
+        ),
+        (
+            "Когда у тебя заболел живот, то я к тебе зашёл, а когда у меня горло, то ты не зашёл.",
+            {"t_units_per_sent": 2.0},
+        ),
+        ("Петля не петля, а вышла, что называется, штука хорошая.", {"p_complex_t_units": 0.0}),
+        ("Он молчит, тогда как все кричат.", {"subordinate_clauses_per_sent": 1.0}),
         # Предложная цепочка от именного сказуемого без связки
         ("Он в доме у мэра.", {"max_prep_chain_len": 2}),
     ],

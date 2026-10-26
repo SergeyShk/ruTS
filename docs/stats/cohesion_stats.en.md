@@ -10,7 +10,7 @@ Raises:
 
 - `SourceTypeError` - a source that is neither a string nor a `Doc`, an extractor of another type, connectors that are not a dictionary of phrases and pairs of strings;
 - `SourceError` - a source without words;
-- `ParameterError` - an unknown class or kind of a connector.
+- `ParameterError` - an unknown class or kind of a connector, a `blank_lines` that is not a `bool`.
 
 The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, and the lemma from the pymorphy3 analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, a `Doc` without annotation and a `Doc` with a word extractor given, from the first pymorphy3 analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
@@ -148,7 +148,7 @@ The extractors given are kept in the attributes `sents_extractor` and `words_ext
 
 --8<-- "stats/cohesion_stats.md:calc_forward_overlap"
 
-In ruTS both a string and a `Doc` are split into paragraphs.
+In ruTS both a string and a `Doc` are split into paragraphs. In a poem without blank lines a paragraph is a line of verse; `blank_lines=True` gives the stanzas, as in [`VerseStats`](verse_stats.md), where blank lines set them off.
 
 === "Code"
 

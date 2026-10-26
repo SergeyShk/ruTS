@@ -10,7 +10,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 
 - `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа, коннекторы, которые не словарь словосочетаний и пар строк;
 - `SourceError` - источник без слов;
-- `ParameterError` - неизвестный класс или тип коннектора.
+- `ParameterError` - неизвестный класс или тип коннектора, `blank_lines`, который не `bool`.
 
 Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора pymorphy3 с частью речи токена ([`unit_info`](#word_info)); для строки, `Doc` без разметки и `Doc` с заданным экстрактором слов - из первого разбора pymorphy3 ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
@@ -247,7 +247,7 @@ $$
 
 Сегменты, которые являются строкой, `Doc` или итератором, и сегмент, который не список строк, дают `SourceTypeError`, а `span`, который не целое число больше 0, - `ParameterError`.
 
-В ruTS на абзацы делятся и строка, и `Doc`.
+В ruTS на абзацы делятся и строка, и `Doc`. В стихах без пустых строк абзац - стих, а строфы, как у [`VerseStats`](verse_stats.md), дает `blank_lines=True` там, где они разделены пустыми строками.
 
 === "Код"
 

@@ -181,6 +181,7 @@ RUSSIAN = {
         "is_infinitive_clause",
         "is_infinitive_clause_head",
         "is_subordinate_clause_head",
+        "is_subordinating_mark",
     },
     "ruts.style_stats": {
         "STYLE_STATS_DESC",
@@ -608,3 +609,24 @@ def test_doc_of_spacy_loaded_after():
         " len(ruts.StyleStats(doc).words))"
     )
     assert _run(code) == "False 2 5 5"
+
+
+def test_pipeline_without_morphologizer():
+    """Без морфологического анализатора части речи есть только у пробелов: классы читают Doc,
+    как Doc без разметки, - по pymorphy3"""
+    import spacy
+
+    from ruts import CohesionStats, LexicalStats
+    from ruts.corpus import function_words_profile
+    from ruts.visualizers.highlight import get_doc_words
+
+    text = "Мама мыла раму, а папа читал книгу.\n\nДети играли во дворе. Они устали."
+    tagged = spacy.load("ru_core_news_sm", exclude=["morphologizer"])(text)
+    blank = spacy.blank("ru")
+    blank.add_pipe("sentencizer")
+    untagged = blank(text)
+    assert tagged.has_annotation("POS")
+    assert CohesionStats(tagged).get_stats() == CohesionStats(untagged).get_stats()
+    assert LexicalStats(tagged).get_stats() == LexicalStats(untagged).get_stats()
+    assert function_words_profile(tagged) == function_words_profile(untagged)
+    assert all(word.pos is None for word in get_doc_words(tagged))

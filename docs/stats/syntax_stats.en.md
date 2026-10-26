@@ -265,7 +265,17 @@ Checks whether an infinitive makes one predicate with its head: a modal or phasa
 is_subordinate_clause_head(token)
 ```
 
-Checks whether a word heads a subordinate clause: a clause head (`is_clause_head`) with a finite predicate under `ccomp`, `advcl`, `acl`, `csubj` and their subtypes, a coordinated predicate of a subordinate clause, or a clause under `conj` or `parataxis` with a subordinating conjunction of `SUBORDINATING_MARKS` («ушел, ибо устал»), which the models attach to the main clause as a conjunct. An infinitive heads an infinitive clause, not a subordinate one.
+Checks whether a word heads a subordinate clause: a clause head (`is_clause_head`) whose predicate is no infinitive under `ccomp`, `advcl`, `acl`, `csubj` and their subtypes, a coordinated predicate of a subordinate clause, or a clause under `conj` or `parataxis` with a subordinating conjunction (`is_subordinating_mark`: «ушел, ибо устал») with its conjuncts that have a subject of their own: the models attach such a clause to the main one as a conjunct, and the predicates of the main clause sharing its subject to it, which are no subordinate clauses. An infinitive heads an infinitive clause, not a subordinate one.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `token` | `Token` | - | Token |
+
+``` {.python .signature}
+is_subordinating_mark(token)
+```
+
+Checks whether a conjunction (relation `mark`) of a conjunct or a parataxis is a subordinating one: a conjunction of `SUBORDINATING_MARKS` with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction of a predicate with a correlative «то» after it («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется», «не то что», «всё равно что» and at the start of a question or an exclamation («А что вы сделаете?»).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

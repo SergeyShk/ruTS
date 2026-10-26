@@ -713,7 +713,7 @@ def test_paragraphs_are_lines(nlp):
 def test_paragraph_without_content_words(nlp):
     """Строка без знаменательных слов - номер главы - присоединяется к следующему абзацу,
     последняя - к предыдущему"""
-    text = "1\nКот сидел на окне.\nКот смотрел на птиц.\n2"
+    text = "1\nКот сидел на окне.\nXII\nКот смотрел на птиц.\n2"
     for source in (text, nlp(text)):
         stats = CohesionStats(source)
         assert stats.n_paragraphs == 2

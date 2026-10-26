@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Collection, Iterable, Mapping, Sequence
 from functools import cache, lru_cache
 from typing import TYPE_CHECKING, NamedTuple
@@ -67,6 +68,9 @@ from .utils import (
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
+
+# Римское число - номер главы, который модели размечают прилагательным или существительным
+ROMAN_NUMERAL = re.compile(r"(?=[MDCLXVI])M{0,3}(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})")
 
 CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
@@ -643,7 +647,8 @@ def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordI
     Получение признаков слова по части речи и признакам Universal Dependencies
 
     Описание:
-        Как в token_info: лемма - из разбора pymorphy3 с частью речи (lemmatize)
+        Как в token_info: лемма - из разбора pymorphy3 с частью речи (lemmatize);
+        римское число (ROMAN_NUMERAL) - числительное, как у pymorphy3
 
     Аргументы:
         word (str): Слово
@@ -654,6 +659,8 @@ def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordI
     Вывод:
         WordInfo: Признаки слова
     """
+    if ROMAN_NUMERAL.fullmatch(word):
+        pos = "NUM"
     lemma = lemmatize(word, pos)
     demonstrative = lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
