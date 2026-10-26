@@ -611,14 +611,19 @@ def test_doc_of_spacy_loaded_after():
     assert _run(code) == "False 2 5 5"
 
 
-def test_pipeline_without_morphologizer():
+def test_pipeline_without_morphologizer(tmp_path):
     """Без морфологического анализатора части речи есть только у пробелов: классы читают Doc,
     как Doc без разметки, - по pymorphy3"""
     import spacy
 
     from ruts import CohesionStats, LexicalStats
     from ruts.corpus import function_words_profile
+    from ruts.datasets import FreqDict
     from ruts.visualizers.highlight import get_doc_words
+    from tests.datasets.test_freq2011 import write_dict
+
+    write_dict(tmp_path)
+    freq_dict = FreqDict(data_dir=tmp_path)
 
     text = "Мама мыла раму, а папа читал книгу.\n\nДети играли во дворе. Они устали."
     tagged = spacy.load("ru_core_news_sm", exclude=["morphologizer"])(text)
@@ -627,6 +632,9 @@ def test_pipeline_without_morphologizer():
     untagged = blank(text)
     assert tagged.has_annotation("POS")
     assert CohesionStats(tagged).get_stats() == CohesionStats(untagged).get_stats()
-    assert LexicalStats(tagged).get_stats() == LexicalStats(untagged).get_stats()
+    assert (
+        LexicalStats(tagged, freq_dict=freq_dict).get_stats()
+        == LexicalStats(untagged, freq_dict=freq_dict).get_stats()
+    )
     assert function_words_profile(tagged) == function_words_profile(untagged)
     assert all(word.pos is None for word in get_doc_words(tagged))
