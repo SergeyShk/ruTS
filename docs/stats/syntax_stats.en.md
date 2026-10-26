@@ -275,7 +275,7 @@ Checks whether a word heads a subordinate clause: a clause head (`is_clause_head
 is_subordinating_mark(token)
 ```
 
-Checks whether a conjunction (relation `mark`) of a conjunct or a parataxis is a subordinating one: a conjunction of `SUBORDINATING_MARKS` with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction of a predicate with a correlative «то» after it («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется», «не то что», «всё равно что» and at the start of a question or an exclamation («А что вы сделаете?»).
+Checks whether a conjunction (relation `mark`) of a conjunct or a parataxis is a subordinating one: a conjunction of `SUBORDINATING_MARKS` with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction after «не то» and «всё равно» («не то что», «не то чтоб»), a conjunction of a predicate with a correlative «то» after it that is not of a nested «если..., то» («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется» and at the start of a replica that ends with a question or an exclamation («А что вы сделаете?», «Любопытно стало: что это сделалось?»).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

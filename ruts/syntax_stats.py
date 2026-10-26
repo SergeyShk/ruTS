@@ -45,9 +45,10 @@ from .constants import (
     LIGHT_VERBS,
     MODAL_SHORT_ADJECTIVES,
     NEGATION_PARTICLES,
+    NON_SUBORDINATING_PREV_PHRASES,
     PRONOUN_MARK_NEXT_WORDS,
-    PRONOUN_MARK_PREV_PHRASES,
     PRONOUN_MARKS,
+    REPLICA_BOUNDARIES,
     REPLICA_OPENING_WORDS,
     SPLIT_PREDICATE_NOUNS,
     SUBORDINATING_MARKS,
@@ -469,11 +470,12 @@ def is_subordinating_mark(token: Token) -> bool:
     Описание:
         Союз из SUBORDINATING_MARKS со словами своего составного союза (потому что,
         так как) или «как» после COMPOUND_AS_PREV_WORDS (после того как); не союз
-        главной клаузы, у сказуемого которой после него есть соотносительное слово
-        из CORRELATIVE_WORDS (когда пришел, то...), и не местоимение или частица
-        из PRONOUN_MARKS: перед PRONOUN_MARK_NEXT_WORDS (что ж, что называется), после
-        PRONOUN_MARK_PREV_PHRASES (не то что) и в начале вопроса или восклицания
-        («А что вы сделаете?»)
+        после NON_SUBORDINATING_PREV_PHRASES (не то что, не то чтоб), не союз главной
+        клаузы, у сказуемого которой после него есть соотносительное слово
+        из CORRELATIVE_WORDS (когда пришел, то...), если между ними нет своего
+        придаточного с союзом, и не местоимение или частица из PRONOUN_MARKS: перед
+        PRONOUN_MARK_NEXT_WORDS (что ж, что называется) и в начале реплики, которая
+        кончается вопросом или восклицанием («А что вы сделаете?»)
 
     Аргументы:
         token (Token): Токен
@@ -487,23 +489,57 @@ def is_subordinating_mark(token: Token) -> bool:
         return bool(before) and before[-1] in COMPOUND_AS_PREV_WORDS
     if not anyts.syntax_stats.is_subordinating_mark(token, SUBORDINATING_MARKS):
         return False
-    if any(
-        child.i > token.i and child.lower_ in CORRELATIVE_WORDS for child in token.head.children
-    ):
+    if " ".join(before) in NON_SUBORDINATING_PREV_PHRASES:
+        return False
+    head = token.head
+    if any(_is_correlative(child, token) for child in head.children):
         return False
     if token.lower_ not in PRONOUN_MARKS:
         return True
     following = doc[token.i + 1] if token.i + 1 < len(doc) else None
     if following is not None and following.lower_ in PRONOUN_MARK_NEXT_WORDS:
         return False
-    if " ".join(before) in PRONOUN_MARK_PREV_PHRASES:
+    return not (_opens_replica(token) and _ends_with_question(head))
+
+
+def _is_correlative(word: Token, mark: Token) -> bool:
+    """Соотносительное слово сказуемого после союза, не принадлежащее придаточному между ними
+    со своим союзом (что если б..., то было бы)"""
+    if word.i < mark.i or word.lower_ not in CORRELATIVE_WORDS:
         return False
-    sent = token.sent
-    opens = all(
-        not is_word(word) or word.lower_ in REPLICA_OPENING_WORDS
-        for word in doc[sent.start : token.i]
+    if base_dep(word) not in ("mark", "advmod"):
+        return False
+    return not any(
+        base_dep(other) == "advcl"
+        and mark.i < other.i < word.i
+        and any(base_dep(child) == "mark" for child in other.children)
+        for other in mark.head.children
     )
-    return not (opens and any(char in "?!" for char in sent.text.rstrip()[-3:]))
+
+
+def _opens_replica(token: Token) -> bool:
+    """Открывает ли слово реплику: перед ним после начала предложения, тире, двоеточия
+    или перевода строки - только знаки и начинающие реплику слова (а, и, ну)"""
+    doc = token.doc
+    start = token.sent.start
+    for word in doc[start : token.i]:
+        if word.text in REPLICA_BOUNDARIES or "\n" in word.text:
+            start = word.i + 1
+    return all(
+        not is_word(word) or word.lower_ in REPLICA_OPENING_WORDS for word in doc[start : token.i]
+    )
+
+
+def _ends_with_question(head: Token) -> bool:
+    """Кончается ли клауза вопросительным или восклицательным знаком"""
+    doc = head.doc
+    end = head.right_edge.i
+    marks = [doc[end]]
+    for word in doc[end + 1 :]:
+        if is_word(word):
+            break
+        marks.append(word)
+    return any(char in "?!" for word in marks for char in word.text)
 
 
 def is_infinitive_clause_head(token: Token) -> bool:
