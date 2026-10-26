@@ -2538,14 +2538,14 @@
 
 
 <h1 id="cohesion-statistics">Cohesion statistics<a class="headerlink" href="#cohesion-statistics" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <p>The cohesion statistics of a text in the manner of <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> and <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: the overlap of the sentences, the givenness, the temporal cohesion and the connectors of a dictionary. The sentences are compared by lemmas. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type, connectors that are not a dictionary of phrases and pairs of strings;</li>
 <li><code>SourceError</code> - a source without words;</li>
-<li><code>ParameterError</code> - an unknown class or kind of a connector.</li>
+<li><code>ParameterError</code> - an unknown class or kind of a connector, a <code>blank_lines</code> that is not a <code>bool</code>.</li>
 </ul>
 <p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the pymorphy3 analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first pymorphy3 analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <p>The words are classified by the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> tags or by the Universal Dependencies annotation of a <code>Doc</code>:</p>
@@ -2675,6 +2675,12 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Class and kind by connector; the dictionary of <code>load_connectors</code> by default</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>blank_lines</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Start the paragraphs after the blank lines alone, for a text whose lines are wrapped inside its paragraphs; a paragraph is a line by default</td>
+</tr>
 </tbody>
 </table>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
@@ -2698,9 +2704,14 @@
 <td style="text-align: left;">Numbers of the sentences with words and of the words</td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>blank_lines</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;">Whether the paragraphs start after the blank lines alone</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>n_paragraphs</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Number of the paragraphs, the parts of the text between blank lines that hold words</td>
+<td style="text-align: left;">Number of the paragraphs, the lines of the text with content words (the parts between blank lines with <code>blank_lines</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
@@ -3014,7 +3025,7 @@
 <div class="metric-card">
 <h3 id="forward_overlap">Overlap with the next sentences and paragraphs<a class="headerlink" href="#forward_overlap" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>noun_overlap_2_sent</code> · <code>argument_overlap_2_sent</code> · <code>content_overlap_2_sent</code> · <code>noun_overlap_para</code> · <code>argument_overlap_para</code> · <code>content_overlap_para</code> · <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a></p>
-<p>The adjacent overlap of TAACO, by the lemmas of the nouns, of the arguments and of the content words: the share of the distinct lemmas of a sentence repeated in one of the next two sentences (<code>adjacent_overlap_2_*_sent</code>), and of a paragraph repeated in the next paragraph (<code>adjacent_overlap_*_para</code>), over all the sentences or paragraphs that have them (<code>calc_forward_overlap</code>). Unlike the binary overlap, a pair of segments counts by the share of the lemmas they share. A paragraph is a part of the text between blank lines that holds words; a word that carries <code>paragraph_start</code> opens one, inside a sentence too, as when a parser joins a heading to the next sentence. TAACO takes every line for a paragraph: a text with a paragraph on every line and no blank lines is one paragraph here, and its <code>*_para</code> are <code>nan</code>.</p>
+<p>The adjacent overlap of TAACO, by the lemmas of the nouns, of the arguments and of the content words: the share of the distinct lemmas of a sentence repeated in one of the next two sentences (<code>adjacent_overlap_2_*_sent</code>), and of a paragraph repeated in the next paragraph (<code>adjacent_overlap_*_para</code>), over all the sentences or paragraphs that have them (<code>calc_forward_overlap</code>). Unlike the binary overlap, a pair of segments counts by the share of the lemmas they share. A paragraph is a line of the text, as in TAACO, or a part between blank lines with <code>blank_lines</code>, for a text whose lines are wrapped inside its paragraphs; a word that carries <code>paragraph_start</code> opens one, inside a sentence too, as when a parser joins a heading to the next sentence. A paragraph without content words, such as the number of a chapter, joins the next one, the last such the one before it.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_forward_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
 <p>The share of the elements of a segment repeated in the next ones: the distinct elements of every segment with <code>span</code> segments after it that one of these segments holds, over the distinct elements of those segments; <code>nan</code> for no more segments than <code>span</code> or for segments without elements.</p>
@@ -3046,21 +3057,23 @@
 </tbody>
 </table>
 <p>Segments that are a string, a <code>Doc</code>, an iterator or a segment that is not a list of strings raise <code>SourceTypeError</code>, a span that is not an integer above 0 <code>ParameterError</code>.</p>
-<p>In ruTS both a string and a <code>Doc</code> are split into paragraphs.</p>
+<p>In ruTS both a string and a <code>Doc</code> are split into paragraphs. In a poem without blank lines a paragraph is a line of verse; <code>blank_lines=True</code> gives the stanzas, as in <a href="../verse_stats/"><code>VerseStats</code></a>, where blank lines set them off.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_forward_overlap</span>
 
 <span class="n">calc_forward_overlap</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"кот"</span><span class="p">}],</span> <span class="n">span</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
 <span class="n">paragraphs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">paragraphs</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">noun_overlap_para</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">content_overlap_para</span>
+<span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">n_paragraphs</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>0.5
 (2, 1.0, 0.8)
+1
 </code></pre></div>
 </div>
 </div>

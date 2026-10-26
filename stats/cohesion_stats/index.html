@@ -2538,14 +2538,14 @@
 
 
 <h1 id="_1">Статистики связности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <p>Статистики связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы слов в предложениях, данность, темпоральная связность и коннекторы словаря. Предложения сравниваются по леммам. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа, коннекторы, которые не словарь словосочетаний и пар строк;</li>
 <li><code>SourceError</code> - источник без слов;</li>
-<li><code>ParameterError</code> - неизвестный класс или тип коннектора.</li>
+<li><code>ParameterError</code> - неизвестный класс или тип коннектора, <code>blank_lines</code>, который не <code>bool</code>.</li>
 </ul>
 <p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора pymorphy3 с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов - из первого разбора pymorphy3 (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <p>Слова классифицируются по разметке <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> или по разметке Universal Dependencies объекта <code>Doc</code>:</p>
@@ -2675,10 +2675,16 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Класс и тип по коннектору; по умолчанию словарь <code>load_connectors</code></td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>blank_lines</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Абзацы только после пустых строк - для текста, строки которого переносятся внутри абзаца; по умолчанию абзац - строка</td>
+</tr>
 </tbody>
 </table>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/cohesion_stats.md:CohesionStats-attributes b48ff23 -->
+<!-- core: stats/cohesion_stats.md:CohesionStats-attributes 9407ea8 -->
 <table>
 <thead>
 <tr>
@@ -2699,9 +2705,14 @@
 <td style="text-align: left;">Количество предложений со словами и количество слов</td>
 </tr>
 <tr>
+<td style="text-align: left;"><code>blank_lines</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;">Начинаются ли абзацы только после пустых строк</td>
+</tr>
+<tr>
 <td style="text-align: left;"><code>n_paragraphs</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Количество абзацев - частей текста между пустыми строками, в которых есть слова</td>
+<td style="text-align: left;">Количество абзацев - строк текста со знаменательными словами (частей между пустыми строками с <code>blank_lines</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_nouns</code>, <code>n_pronouns</code>, <code>n_demonstratives</code>, <code>n_content_words</code></td>
@@ -3019,8 +3030,8 @@
 <div class="metric-card">
 <h3 id="forward_overlap">Повтор в следующих предложениях и абзацах<a class="headerlink" href="#forward_overlap" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>noun_overlap_2_sent</code> · <code>argument_overlap_2_sent</code> · <code>content_overlap_2_sent</code> · <code>noun_overlap_para</code> · <code>argument_overlap_para</code> · <code>content_overlap_para</code> · <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a></p>
-<!-- core: stats/cohesion_stats.md:CohesionStats-forward_overlap 34e902e -->
-<p>Соседний повтор TAACO по леммам существительных, аргументов и знаменательных слов: доля разных лемм предложения, повторенных в одном из двух следующих предложений (<code>adjacent_overlap_2_*_sent</code>), и лемм абзаца, повторенных в следующем абзаце (<code>adjacent_overlap_*_para</code>), по всем предложениям или абзацам, у которых они есть (<code>calc_forward_overlap</code>). В отличие от бинарного повтора, пара сегментов учитывается по доле их общих лемм. Абзац - часть текста между пустыми строками, в которой есть слова; его открывает слово с <code>paragraph_start</code>, в том числе внутри предложения, например когда парсер присоединяет заголовок к следующему предложению. TAACO считает абзацем каждую строку: текст, в котором каждый абзац на своей строке, а пустых строк нет, здесь - один абзац, и его <code>*_para</code> равны <code>nan</code>.</p>
+<!-- core: stats/cohesion_stats.md:CohesionStats-forward_overlap 7779dcb -->
+<p>Соседний повтор TAACO по леммам существительных, аргументов и знаменательных слов: доля разных лемм предложения, повторенных в одном из двух следующих предложений (<code>adjacent_overlap_2_*_sent</code>), и лемм абзаца, повторенных в следующем абзаце (<code>adjacent_overlap_*_para</code>), по всем предложениям или абзацам, у которых они есть (<code>calc_forward_overlap</code>). В отличие от бинарного повтора, пара сегментов учитывается по доле их общих лемм. Абзац - строка текста, как в TAACO, или часть между пустыми строками с <code>blank_lines</code> - для текста, строки которого переносятся внутри абзаца; его открывает слово с <code>paragraph_start</code>, в том числе внутри предложения, например когда парсер присоединяет заголовок к следующему предложению. Абзац без знаменательных слов, например номер главы, присоединяется к следующему, а последний такой - к предыдущему.</p>
 <!-- core: stats/cohesion_stats.md:calc_forward_overlap 7389f78 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_forward_overlap</span><span class="p">(</span><span class="n">sets</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
@@ -3053,21 +3064,23 @@
 </tbody>
 </table>
 <p>Сегменты, которые являются строкой, <code>Doc</code> или итератором, и сегмент, который не список строк, дают <code>SourceTypeError</code>, а <code>span</code>, который не целое число больше 0, - <code>ParameterError</code>.</p>
-<p>В ruTS на абзацы делятся и строка, и <code>Doc</code>.</p>
+<p>В ruTS на абзацы делятся и строка, и <code>Doc</code>. В стихах без пустых строк абзац - стих, а строфы, как у <a href="../verse_stats/"><code>VerseStats</code></a>, дает <code>blank_lines=True</code> там, где они разделены пустыми строками.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_forward_overlap</span>
 
 <span class="n">calc_forward_overlap</span><span class="p">([{</span><span class="s2">"кот"</span><span class="p">,</span> <span class="s2">"окно"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"птица"</span><span class="p">},</span> <span class="p">{</span><span class="s2">"кот"</span><span class="p">}],</span> <span class="n">span</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот сидел на окне. Он смотрел на птиц.</span><span class="se">\n</span><span class="s2">Птицы улетели, и кот уснул. Завтра он снова будет сидеть на этом окне."</span>
 <span class="n">paragraphs</span> <span class="o">=</span> <span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 <span class="n">paragraphs</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">noun_overlap_para</span><span class="p">,</span> <span class="n">paragraphs</span><span class="o">.</span><span class="n">content_overlap_para</span>
+<span class="n">CohesionStats</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">n_paragraphs</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>0.5
 (2, 1.0, 0.8)
+1
 </code></pre></div>
 </div>
 </div>

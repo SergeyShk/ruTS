@@ -2359,7 +2359,7 @@
 <p>Объект хранит <code>normalize</code>, <code>complex_syl_factor</code> и <code>long_word_letter_factor</code> под их именами.</p>
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 <h2 id="_3">Статистики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-attributes 0981aba -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes d457364 -->
 <table>
 <thead>
 <tr>
@@ -2463,13 +2463,13 @@
 <tr>
 <td style="text-align: left;"><code>letters_entropy</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Энтропия Шеннона длин слов в буквах (<code>c_letters</code>) в битах; 0, когда все слова одной длины</td>
+<td style="text-align: left;">Энтропия Шеннона длин слов в буквах (<code>c_letters</code>) в битах; 0, когда все слова одной длины; оценка по долям на коротком тексте занижена, на десятках слов - на десятые доли бита</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>syllables_entropy</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Энтропия Шеннона длин слов в слогах (<code>c_syllables</code>) в битах</td>
+<td style="text-align: left;">Энтропия Шеннона длин слов в слогах (<code>c_syllables</code>) в битах, с тем же смещением</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>

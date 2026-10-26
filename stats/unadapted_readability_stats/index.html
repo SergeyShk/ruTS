@@ -2904,10 +2904,10 @@ r = \frac{\textrm{Количество легких слов} + 3 \times \textrm
 <div class="metric-card">
 <h3 id="dickes_steiwer">Индекс Дикеса-Штайвера<a class="headerlink" href="#dickes_steiwer" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>dickes_steiwer</code> · Dickes and Steiwer, 1977</p>
-<!-- core: stats/unadapted_readability_stats.md:calc_dickes_steiwer 0fea097 -->
+<!-- core: stats/unadapted_readability_stats.md:calc_dickes_steiwer e11c627 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_dickes_steiwer</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">n_types</span><span class="p">)</span>
 </code></pre></div>
-<p>Краткая формула для немецкого языка (Dickes и Steiwer, 1977) в том виде, в каком ее приводят Bamberger и Vanecek (1984), по буквам на слово, словам на предложение и отношению числа разных слов к числу слов (TTR), без слогов; чем больше, тем легче текст. <code>nan</code> без слов или предложений.</p>
+<p>Краткая формула для немецкого языка (Dickes и Steiwer, 1977) в том виде, в каком ее приводят Bamberger и Vanecek (1984), по буквам на слово, словам на предложение и отношению числа разных слов к числу слов (TTR), без слогов; чем больше, тем легче текст. <code>nan</code> без слов или предложений. TTR падает с длиной текста, поэтому значения сравнивают тексты одной длины.</p>
 <div class="arithmatex">\[
 \textrm{DS} = 235.95993 - 73.021 \ln\left(\frac{\textrm{Количество букв}}{\textrm{Количество слов}} + 1\right) - 12.56438 \ln\left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + 1\right) - 50.03293 \cdot \textrm{TTR}
 \]</div>
@@ -3030,10 +3030,10 @@ r = \frac{\textrm{Количество легких слов} + 3 \times \textrm
 <div class="metric-card">
 <h3 id="strain_index">Индекс Strain<a class="headerlink" href="#strain_index" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>strain_index</code> · Nathaniel, 2009</p>
-<!-- core: stats/unadapted_readability_stats.md:calc_strain_index d371c89 -->
+<!-- core: stats/unadapted_readability_stats.md:calc_strain_index 8373447 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_strain_index</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
 </code></pre></div>
-<p>Индекс (Nathaniel, 2009): число слогов в трех предложениях, деленное на 10, здесь - в среднем по всему тексту; <code>nan</code> без предложений.</p>
+<p>Индекс (Nathaniel, 2009): число слогов в трех предложениях, деленное на 10, здесь - в среднем по всему тексту, поэтому он равен индексу Фукса, умноженному на 0.3; <code>nan</code> без предложений.</p>
 <div class="arithmatex">\[
 \textrm{Strain} = \frac{3 \times \textrm{Количество слогов}}{10 \times \textrm{Количество предложений}}
 \]</div>

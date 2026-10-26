@@ -2703,8 +2703,8 @@
 </div>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<!-- core: stats/morph_stats.md:MorphStats-get_stats 31a94da -->
-<p><code>get_stats(*stats, filter_none=False, flat=False)</code> дает количество слов по значениям каждой выбранной статистики, по умолчанию всех, в порядке первых появлений; <code>None</code> считает слова без признака, а <code>filter_none</code> их отбрасывает. С <code>flat</code> ключи - <code>статистика_значение</code>, например <code>pos_NOUN</code>, без слов без признака, как в <code>to_dataframe</code>. Неизвестная статистика дает <code>UnknownStatError</code>.</p>
+<!-- core: stats/morph_stats.md:MorphStats-get_stats 748058e -->
+<p><code>get_stats(*stats, filter_none=False, flat=False)</code> дает количество слов по значениям каждой выбранной статистики, по умолчанию всех, в порядке первых появлений; <code>None</code> считает слова без признака, а <code>filter_none</code> их отбрасывает. С <code>flat</code> ключи - <code>статистика_значение</code>, например <code>pos_NOUN</code>, без слов без признака, как в <code>to_dataframe</code>. Неизвестная статистика дает <code>UnknownStatError</code>, а <code>filter_none</code> или <code>flat</code>, которые не <code>bool</code>, - <code>ParameterError</code>.</p>
 <!-- core: stats/morph_stats.md:MorphStats-explain_text 037565e -->
 <p><code>explain_text(*stats, filter_none=False)</code> дает каждое слово со значениями выбранных статистик; <code>filter_none</code> отбрасывает те, которых у слова нет. Неизвестная статистика дает <code>UnknownStatError</code>.</p>
 <!-- core: stats/morph_stats.md:MorphStats-print_stats a935578 -->

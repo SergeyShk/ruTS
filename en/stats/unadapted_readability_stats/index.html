@@ -2897,7 +2897,7 @@ r = \frac{\textrm{Easy words} + 3 \times \textrm{Hard words}}{\textrm{Sentences}
 <p class="metric-meta"><code>dickes_steiwer</code> · Dickes and Steiwer, 1977</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_dickes_steiwer</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">n_types</span><span class="p">)</span>
 </code></pre></div>
-<p>The short formula of Dickes and Steiwer (1977) for German, as Bamberger and Vanecek (1984) give it, over the letters per word, the words per sentence and the type-token ratio, without syllables; higher is easier. <code>nan</code> without words or sentences.</p>
+<p>The short formula of Dickes and Steiwer (1977) for German, as Bamberger and Vanecek (1984) give it, over the letters per word, the words per sentence and the type-token ratio, without syllables; higher is easier. <code>nan</code> without words or sentences. The ratio falls with the length of a text, so the values compare texts of one length.</p>
 <div class="arithmatex">\[
 \textrm{DS} = 235.95993 - 73.021 \ln\left(\frac{\textrm{Letters}}{\textrm{Words}} + 1\right) - 12.56438 \ln\left(\frac{\textrm{Words}}{\textrm{Sentences}} + 1\right) - 50.03293 \cdot \textrm{TTR}
 \]</div>
@@ -3020,7 +3020,7 @@ r = \frac{\textrm{Easy words} + 3 \times \textrm{Hard words}}{\textrm{Sentences}
 <p class="metric-meta"><code>strain_index</code> · Nathaniel, 2009</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_strain_index</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
 </code></pre></div>
-<p>The index of Nathaniel (2009): the syllables of three sentences over 10, here those of three sentences on average over the whole text; <code>nan</code> without sentences.</p>
+<p>The index of Nathaniel (2009): the syllables of three sentences over 10, here those of three sentences on average over the whole text, which makes it 0.3 times the index of Fucks; <code>nan</code> without sentences.</p>
 <div class="arithmatex">\[
 \textrm{Strain} = \frac{3 \times \textrm{Syllables}}{10 \times \textrm{Sentences}}
 \]</div>

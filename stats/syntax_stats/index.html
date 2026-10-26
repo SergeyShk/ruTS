@@ -2952,7 +2952,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."</span>
 <span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
@@ -2960,23 +2960,23 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>                       Статистика                        | Значение
 --------------------------------------------------------------------
-Средняя длина зависимости                                |   1.93
+Средняя длина зависимости                                |   2.07
 Стандартное отклонение длины зависимости                 |   1.61
 Средний максимум длины зависимости в предложении         |   5.00
-Доля смежных связей                                      |   0.60
-Средняя глубина дерева зависимостей предложения          |   4.00
+Доля смежных связей                                      |   0.53
+Средняя глубина дерева зависимостей предложения          |   3.50
 Листьев на предложение                                   |   4.50
 Поддеревьев на предложение                               |   4.00
 Среднее число узлов на лист в предложении                |   1.90
-Среднее число слов до вершины предложения                |   4.00
-Валентность финитных глаголов                            |   2.00
+Среднее число слов до вершины предложения                |   5.00
+Валентность финитных глаголов                            |   1.67
 Сочинительных цепочек на предложение                     |   0.50
 Средняя длина сочинительной цепочки                      |   2.00
-Клауз на предложение                                     |   1.50
-Средняя длина клаузы (слов)                              |   5.67
+Клауз на предложение                                     |   2.00
+Средняя длина клаузы (слов)                              |   4.25
 Придаточных клауз на предложение                         |   0.50
 Доля предложений с придаточными                          |   0.50
-Инфинитивных клауз при глаголе на предложение            |   0.00
+Инфинитивных клауз на предложение                        |   0.00
 T-единиц на предложение                                  |   1.00
 Средняя длина T-единицы (слов)                           |   8.50
 Клауз на T-единицу                                       |   1.50
@@ -2984,7 +2984,7 @@ T-единиц на предложение                                  |   
 Глагольных групп на T-единицу                            |   2.50
 Сочинённых групп на клаузу                               |   0.33
 Сложных именных групп на клаузу                          |   1.00
-Модификаторов на именную группу                          |   0.40
+Модификаторов на именную группу                          |   0.50
 Предложных цепочек на предложение                        |   0.00
 Максимальная длина предложной цепочки                    |    0
 Цепочек родительных падежей на предложение               |   0.00
@@ -2993,16 +2993,16 @@ T-единиц на предложение                                  |   
 Средняя длина причастного оборота (слов)                 |   5.00
 Деепричастных оборотов на предложение                    |   0.50
 Средняя длина деепричастного оборота (слов)              |   2.00
-Доля пассивных форм среди глаголов                       |   0.40
+Доля пассивных форм среди глаголов                       |   0.33
 Доля безагентного пассива                                |   0.50
 Инфинитивов на предложение                               |   0.00
 Отрицаний на предложение                                 |   0.50
 Расщеплённых сказуемых на предложение                    |   0.00
 Доля именных подлежащих перед вершиной                   |   1.00
-Доля именных дополнений перед вершиной                   |   nan
+Доля именных дополнений перед вершиной                   |   0.00
 Редакционное расстояние частей речи соседних предложений |   0.78
 Синтаксическая схожесть соседних предложений             |   0.06
-Отношение существительных к глаголам                     |   1.00
+Отношение существительных к глаголам                     |   0.67
 </code></pre></div>
 </div>
 </div>
@@ -3027,7 +3027,7 @@ T-единиц на предложение                                  |   
 </tbody>
 </table>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 9a60cb2 -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 53be7dd -->
 <table>
 <thead>
 <tr>
@@ -3065,12 +3065,17 @@ T-единиц на предложение                                  |   
 <tr>
 <td style="text-align: left;"><code>n_infinitive_clauses</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Количество инфинитивных клауз при глаголе</td>
+<td style="text-align: left;">Количество инфинитивных клауз</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_t_units</code>, <code>n_complex_t_units</code></td>
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;">Количество T-единиц и T-единиц с придаточной клаузой</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_l2sca_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Количество клауз L2SCA - без сказуемых с общим подлежащим и инфинитивных клауз</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_verb_phrases</code>, <code>n_coordinate_phrases</code>, <code>n_complex_nominals</code></td>
@@ -3140,7 +3145,7 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>(3, 5, 5)
+<div class="highlight"><pre><span></span><code>(4, 4, 6)
 {0: 9, 1: 2, 2: 5, 3: 1}
 {'ROOT': 2,
  'acl': 1,
@@ -3152,10 +3157,10 @@ T-единиц на предложение                                  |   
  'cc': 1,
  'ccomp': 1,
  'conj': 1,
- 'iobj': 1,
  'mark': 1,
  'nsubj': 1,
  'nsubj:pass': 1,
+ 'obj': 1,
  'obl': 1,
  'obl:agent': 1}
 (Дом, построенный, рабочими, в, прошлом, году, был, продан)
@@ -3164,7 +3169,7 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 <h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: stats/syntax_stats.md:SyntaxStats-metrics 78d360d -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-metrics 16994fb -->
 <p>Каждая метрика - атрибут объекта, который вычисляется при его создании (единицы L2SCA, предложные цепочки и схожесть предложений - при первом обращении), а <code>get_stats</code> дает их все. Показатели предложения (наибольшая длина зависимости, глубина, число слов на лист) усредняются по предложениям, конструкции даются на предложение.</p>
 <table>
 <thead>
@@ -3274,9 +3279,9 @@ T-единиц на предложение                                  |   
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#infinitive_clauses"><code>infinitive_clauses_per_sent</code></a></td>
-<td style="text-align: left;">Инфинитивных клауз при глаголе на предложение (<em>хочет уйти</em>), которые не придаточные</td>
+<td style="text-align: left;">Инфинитивных клауз на предложение (<em>хочет уйти</em>, <em>пришел, чтобы помочь</em>), которые не придаточные</td>
 <td style="text-align: left;">от 0</td>
-<td style="text-align: left;">больше инфинитивных дополнений</td>
+<td style="text-align: left;">больше инфинитивных клауз</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#l2sca"><code>t_units_per_sent</code></a></td>
@@ -3625,7 +3630,7 @@ T-единиц на предложение                                  |   
 <p>Проверяет, возглавляет ли инфинитив со связью <code>xcomp</code> свою клаузу («хочет уйти», «попросил его уйти»): не возглавляет, если образует одну предикацию со своей вершиной (<code>is_infinitive_periphrasis</code>) или стоит в обороте («решивший уйти», «желая уйти»).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти»), краткой формой модального прилагательного из <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») или побудительным «давай», «давайте» из <code>HORTATIVE_WORDS</code> без отрицания («давайте играть», но не «не давайте детям играть»).</p>
+<p>Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «невозможно описать», «пора идти»), краткой формой модального прилагательного из <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») или побудительным «давай», «давайте» из <code>HORTATIVE_WORDS</code> без отрицания («давайте играть», но не «не давайте детям играть»).</p>
 <table>
 <thead>
 <tr>
@@ -3650,7 +3655,28 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (<code>is_clause_head</code>) со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> и их подтипами, а также однородное сказуемое придаточной клаузы.</p>
+<p>Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (<code>is_clause_head</code>), сказуемое которой не инфинитив, со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> и их подтипами, однородное сказуемое придаточной клаузы, а также клауза <code>conj</code> или <code>parataxis</code> с подчинительным союзом (<code>is_subordinating_mark</code>: «ушел, ибо устал») и однородные ей со своим подлежащим: модели вешают такое придаточное на главное как однородное, а на него - сказуемые главного с общим подлежащим, которые придаточными не считаются. Инфинитив возглавляет инфинитивную клаузу, а не придаточную.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_subordinating_mark</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, подчинительный ли союз (связь <code>mark</code>) при однородном или вставной конструкции: союз из <code>SUBORDINATING_MARKS</code> со словами составного союза («потому что», «так как») или «как» в «после того как», «перед тем как», «с тех пор как», «в то время как». Не подчинительные - союз после «не то» и «всё равно» («не то что», «не то чтоб»), союз при сказуемом, у которого после него есть соотносительное «то» не из вложенного «если..., то» («когда пришел, то...»: модель потеряла придаточное), и «что», «чем» в роли местоимения или частицы: «что ж», «что ль», «что за», «что называется» и в начале реплики, которая кончается вопросом или восклицанием («А что вы сделаете?», «Любопытно стало: что это сделалось?»).</p>
 <table>
 <thead>
 <tr>
@@ -3676,7 +3702,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово инфинитивную клаузу при глаголе: инфинитив со связью <code>xcomp</code>, который образует свою клаузу (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), а также однородный ему инфинитив. Такая клауза считается отдельно от придаточных, так как грамматики многих языков считают ее частью простого предложения.</p>
+<p>Проверяет, возглавляет ли слово инфинитивную клаузу: инфинитив со связью <code>xcomp</code>, который образует свою клаузу (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), инфинитив-вершина клаузы со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code> или <code>csubj</code> («пришел, чтобы помочь», «трудно сказать»), а также однородный ему инфинитив. Такая клауза считается отдельно от придаточных, так как грамматики многих языков считают ее частью простого предложения.</p>
 <table>
 <thead>
 <tr>
@@ -3720,20 +3746,20 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="l2sca">Единицы L2SCA<a class="headerlink" href="#l2sca" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>t_units_per_sent</code> · <code>mean_t_unit_len</code> · <code>clauses_per_t_unit</code> · <code>p_complex_t_units</code> · <code>verb_phrases_per_t_unit</code> · <code>coordinate_phrases_per_clause</code> · <code>complex_nominals_per_clause</code> · <a href="https://doi.org/10.1075/ijcl.15.4.02lu">Lu 2010</a></p>
-<!-- core: stats/syntax_stats.md:SyntaxStats-l2sca b816772 -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-l2sca 9f73ddb -->
 <p>Индексы L2 Syntactic Complexity Analyzer (L2SCA), которых нет среди других метрик, по разметке Universal Dependencies. MLC и C/S - это <code>mean_clause_len</code> и <code>clauses_per_sent</code>; MLS и DC/C получаются из счетчиков: <code>n_words / n_sents</code> и <code>n_subordinate_clauses / n_clauses</code>.</p>
 <ul>
-<li>T-единица - главная клауза с зависящими от нее клаузами: вершина предложения и каждая вершина клаузы, присоединенная к ней через <code>conj</code> или <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), поэтому в <em>я пришел, а он ушел</em> их две; однородный член придаточной клаузы T-единицей не является. Однородный член без собственного подлежащего (<em>я пришел и ушел</em>) - сказуемое, которое делит T-единицу с клаузой, с которой оно сочинено, как в L2SCA, если только его лицо, число или род - его вспомогательного глагола или связки, а без них собственные - не отличаются от лица, числа или рода этой клаузы: в языке, опускающем подлежащее, окончание называет другое подлежащее (<em>llegamos al puerto y nos esperabas</em>). Экзистенциальное <em>there</em> (<code>expl</code> ClearNLP) - подлежащее. T-единица сложная, если в ней есть придаточная клауза (<code>is_subordinate_clause_head</code>), для которой она - ближайшая T-единица сверху.</li>
-<li>Глагольная группа - сказуемое (<code>is_predicate</code>), которое не является вспомогательным глаголом или связкой: глагол, вспомогательный глагол в роли сказуемого (<em>there <strong>is</strong> trouble</em>), слово с подлежащим или со связкой; инфинитив, который образует одно сказуемое со своей вершиной (<code>is_infinitive_periphrasis</code>), и однородный ему инфинитив входят в глагольную группу вершины.</li>
+<li>T-единица - главная клауза с зависящими от нее клаузами: вершина предложения и каждая вершина клаузы, присоединенная к ней через <code>conj</code> или <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), поэтому в <em>я пришел, а он ушел</em> их две; однородный член придаточной клаузы T-единицей не является. Однородный член без собственного подлежащего (<em>я пришел и ушел</em>) - сказуемое, которое делит T-единицу с клаузой, с которой оно сочинено, как в L2SCA, если только его лицо, число или род - его вспомогательного глагола или связки, а без них собственные - не отличаются от лица, числа или рода этой клаузы: в языке, опускающем подлежащее, окончание называет другое подлежащее (<em>llegamos al puerto y nos esperabas</em>). Экзистенциальное <em>there</em> (<code>expl</code> ClearNLP) - подлежащее. Однородный член или вставная конструкция с подчинительным союзом (<code>is_subordinating_mark</code>) возглавляет придаточную или инфинитивную клаузу, которая T-единицей не является, как и клауза под ней. Личный однородный член со своим подлежащим при инфинитивной клаузе - сказуемое, которое модель повесила на инфинитив, - присоединяется к клаузе первого слова над инфинитивами, которое само не инфинитив (<em>he came to help and she stayed</em>: две T-единицы). T-единица сложная, если в ней есть придаточная клауза (<code>is_subordinate_clause_head</code>), для которой она - ближайшая T-единица сверху.</li>
+<li>Глагольная группа - сказуемое (<code>is_predicate</code>), которое не является вспомогательным глаголом или связкой: глагол, вспомогательный глагол в роли сказуемого (<em>there <strong>is</strong> trouble</em>), слово с подлежащим или со связкой; инфинитив, который образует одно сказуемое со своей вершиной (<code>is_infinitive_periphrasis</code>), и однородный ему инфинитив входят в глагольную группу вершины. Причастие или другая неличная форма со связью <code>amod</code> или <code>acl</code> либо однородная ей, без вспомогательного глагола, связки и собственного подлежащего, - определение своего существительного (<em>дом, построенный рабочими</em>), как в L2SCA, а не глагольная группа.</li>
 <li>Сочиненная группа - сочинение с однородным членом, который не является вершиной клаузы (<em>мужчина и женщина</em>, <em>был большим и красивым</em>) или является сказуемым без собственного подлежащего (<em>пришел и ушел</em>); она считается один раз, по первому однородному члену, а сочинение клауз с собственными подлежащими считается клаузами.</li>
-<li>Клаузы - клаузы <code>is_clause_head</code>, как в других метриках: сказуемое с общим подлежащим и инфинитивная клауза считаются клаузами, а L2SCA считает финитные клаузы с подлежащим, поэтому C/T, C/S и CN/C выше, а MLC ниже, чем в L2SCA.</li>
+<li>Клаузы C/T, CP/C и CN/C - клаузы L2SCA (<code>n_l2sca_clauses</code>): клаузы <code>is_clause_head</code> без сказуемых с общим подлежащим (<em>пришел и ушел</em>) и без инфинитивных клауз, поскольку L2SCA считает финитные клаузы с подлежащим. C/S и MLC считаются по клаузам других метрик, поэтому C/S выше, а MLC ниже, чем в L2SCA.</li>
 <li>Сложная именная группа - существительное с модификатором из <code>anyts.constants.COMPLEX_NOMINAL_DEPS</code> (прилагательным, дополнением, определительной придаточной клаузой или причастным оборотом, приложением, притяжательным словом) или именная клауза - вершина клаузы из <code>anyts.constants.NOMINAL_CLAUSE_DEPS</code> или однородный ей член.</li>
 </ul>
 <div class="arithmatex">\[
 \textrm{MLT} = \frac{\textrm{Слова}}{\textrm{T-единицы}}, \quad
-\textrm{C/T} = \frac{\textrm{Клаузы}}{\textrm{T-единицы}}, \quad
+\textrm{C/T} = \frac{\textrm{Клаузы L2SCA}}{\textrm{T-единицы}}, \quad
 \textrm{CT/T} = \frac{\textrm{Сложные T-единицы}}{\textrm{T-единицы}}, \quad
-\textrm{CN/C} = \frac{\textrm{Сложные именные группы}}{\textrm{Клаузы}}
+\textrm{CN/C} = \frac{\textrm{Сложные именные группы}}{\textrm{Клаузы L2SCA}}
 \]</div>
 </div>
 <div class="metric-card">
@@ -4002,8 +4028,8 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="similarity">Схожесть соседних предложений<a class="headerlink" href="#similarity" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos_edit_distance</code> · <code>syntax_similarity</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 1203633 -->
-<p>Насколько схожи структуры двух соседних предложений, в среднем по <span class="arithmatex">\(S - 1\)</span> парам. <code>pos_edit_distance</code> - редакционное расстояние частей речи <span class="arithmatex">\(P_s\)</span> слов предложений (SYNMEDpos Coh-Metrix), деленное на длину <span class="arithmatex">\(n\)</span> более длинного предложения пары, <code>calc_edit_distance</code>. <code>syntax_similarity</code> - схожесть мультимножеств троек зависимостей <span class="arithmatex">\(T\)</span> двух предложений (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих.</p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 1dc6e39 -->
+<p>Насколько схожи структуры двух соседних предложений, в среднем по <span class="arithmatex">\(S - 1\)</span> парам. <code>pos_edit_distance</code> - редакционное расстояние частей речи <span class="arithmatex">\(P_s\)</span> слов предложений (SYNMEDpos Coh-Metrix), деленное на длину <span class="arithmatex">\(n\)</span> более длинного предложения пары, <code>calc_edit_distance</code>. <code>syntax_similarity</code> - схожесть мультимножеств троек зависимостей <span class="arithmatex">\(T\)</span> двух предложений (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих. Ни та, ни другая мера не видит порядка слов, а схожесть троек растет с длиной предложений.</p>
 <div class="arithmatex">\[
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{\textrm{lev}(P_s, P_{s+1})}{\max(n_s, n_{s+1})}, \quad
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{|T_s \cap T_{s+1}|}{|T_s \cup T_{s+1}|}
@@ -4308,10 +4334,10 @@ T-единиц на предложение                                  |   
 </table>
 <p>Проверка, которую нельзя вызвать, дает <code>SourceTypeError</code>.</p>
 <h2 id="is_prep_complement">Дополнения с предлогом<a class="headerlink" href="#is_prep_complement" title="Permanent link">&para;</a></h2>
-<!-- core: stats/syntax_stats.md:is_prep_complement e341296 -->
+<!-- core: stats/syntax_stats.md:is_prep_complement 6a6701b -->
 <div class="signature highlight"><pre><span></span><code><span class="n">is_prep_complement</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, является ли слово дополнением с предлогом: слово со связью <code>nmod</code> или <code>obl</code> либо их подтипом (<code>anyts.constants.PREP_COMPLEMENT_DEPS</code>) или сказуемое со связкой вне определительной придаточной клаузы (<code>acl</code>), у которого есть зависимое со связью <code>case</code> - предлог (<code>ADP</code>) или первое слово составного предлога (<code>fixed</code>: <em>в течение</em>). Существительное в падеже без предлога и притяжательный показатель дополнениями с предлогом не являются.</p>
+<p>Проверяет, является ли слово дополнением с предлогом: слово со связью <code>nmod</code> или <code>obl</code> либо их подтипом (<code>anyts.constants.PREP_COMPLEMENT_DEPS</code>) или сказуемое со связкой или собственным подлежащим вне определительной придаточной клаузы (<code>acl</code>), например именное сказуемое языка без связки в настоящем времени, у которого есть зависимое со связью <code>case</code> - предлог (<code>ADP</code>) или первое слово составного предлога (<code>fixed</code>: <em>в течение</em>). Существительное в падеже без предлога и притяжательный показатель дополнениями с предлогом не являются.</p>
 <table>
 <thead>
 <tr>

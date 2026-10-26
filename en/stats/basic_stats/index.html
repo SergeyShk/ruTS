@@ -2460,13 +2460,13 @@
 <tr>
 <td style="text-align: left;"><code>letters_entropy</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Shannon entropy in bits of the word lengths in letters, of <code>c_letters</code>: 0 when the words have one length</td>
+<td style="text-align: left;">Shannon entropy in bits of the word lengths in letters, of <code>c_letters</code>: 0 when the words have one length; the estimate by the shares runs lower on a short text, by tenths of a bit on tens of words</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>syllables_entropy</code></td>
 <td style="text-align: left;"><code>float</code></td>
-<td style="text-align: left;">Shannon entropy in bits of the word lengths in syllables, of <code>c_syllables</code></td>
+<td style="text-align: left;">Shannon entropy in bits of the word lengths in syllables, of <code>c_syllables</code>, with the same bias</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>

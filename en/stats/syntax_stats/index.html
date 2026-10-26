@@ -2951,7 +2951,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."</span>
 <span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
 </code></pre></div>
@@ -2959,23 +2959,23 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>                       Статистика                        | Значение
 --------------------------------------------------------------------
-Средняя длина зависимости                                |   1.93
+Средняя длина зависимости                                |   2.07
 Стандартное отклонение длины зависимости                 |   1.61
 Средний максимум длины зависимости в предложении         |   5.00
-Доля смежных связей                                      |   0.60
-Средняя глубина дерева зависимостей предложения          |   4.00
+Доля смежных связей                                      |   0.53
+Средняя глубина дерева зависимостей предложения          |   3.50
 Листьев на предложение                                   |   4.50
 Поддеревьев на предложение                               |   4.00
 Среднее число узлов на лист в предложении                |   1.90
-Среднее число слов до вершины предложения                |   4.00
-Валентность финитных глаголов                            |   2.00
+Среднее число слов до вершины предложения                |   5.00
+Валентность финитных глаголов                            |   1.67
 Сочинительных цепочек на предложение                     |   0.50
 Средняя длина сочинительной цепочки                      |   2.00
-Клауз на предложение                                     |   1.50
-Средняя длина клаузы (слов)                              |   5.67
+Клауз на предложение                                     |   2.00
+Средняя длина клаузы (слов)                              |   4.25
 Придаточных клауз на предложение                         |   0.50
 Доля предложений с придаточными                          |   0.50
-Инфинитивных клауз при глаголе на предложение            |   0.00
+Инфинитивных клауз на предложение                        |   0.00
 T-единиц на предложение                                  |   1.00
 Средняя длина T-единицы (слов)                           |   8.50
 Клауз на T-единицу                                       |   1.50
@@ -2983,7 +2983,7 @@ T-единиц на предложение                                  |   
 Глагольных групп на T-единицу                            |   2.50
 Сочинённых групп на клаузу                               |   0.33
 Сложных именных групп на клаузу                          |   1.00
-Модификаторов на именную группу                          |   0.40
+Модификаторов на именную группу                          |   0.50
 Предложных цепочек на предложение                        |   0.00
 Максимальная длина предложной цепочки                    |    0
 Цепочек родительных падежей на предложение               |   0.00
@@ -2992,16 +2992,16 @@ T-единиц на предложение                                  |   
 Средняя длина причастного оборота (слов)                 |   5.00
 Деепричастных оборотов на предложение                    |   0.50
 Средняя длина деепричастного оборота (слов)              |   2.00
-Доля пассивных форм среди глаголов                       |   0.40
+Доля пассивных форм среди глаголов                       |   0.33
 Доля безагентного пассива                                |   0.50
 Инфинитивов на предложение                               |   0.00
 Отрицаний на предложение                                 |   0.50
 Расщеплённых сказуемых на предложение                    |   0.00
 Доля именных подлежащих перед вершиной                   |   1.00
-Доля именных дополнений перед вершиной                   |   nan
+Доля именных дополнений перед вершиной                   |   0.00
 Редакционное расстояние частей речи соседних предложений |   0.78
 Синтаксическая схожесть соседних предложений             |   0.06
-Отношение существительных к глаголам                     |   1.00
+Отношение существительных к глаголам                     |   0.67
 </code></pre></div>
 </div>
 </div>
@@ -3063,12 +3063,17 @@ T-единиц на предложение                                  |   
 <tr>
 <td style="text-align: left;"><code>n_infinitive_clauses</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Number of the infinitive clauses under a verb</td>
+<td style="text-align: left;">Number of the infinitive clauses</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_t_units</code>, <code>n_complex_t_units</code></td>
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;">Numbers of the T-units and of those with a subordinate clause</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>n_l2sca_clauses</code></td>
+<td style="text-align: left;"><code>int</code></td>
+<td style="text-align: left;">Number of the clauses of L2SCA, without the predicates sharing a subject and the infinitive clauses</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_verb_phrases</code>, <code>n_coordinate_phrases</code>, <code>n_complex_nominals</code></td>
@@ -3138,7 +3143,7 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>(3, 5, 5)
+<div class="highlight"><pre><span></span><code>(4, 4, 6)
 {0: 9, 1: 2, 2: 5, 3: 1}
 {'ROOT': 2,
  'acl': 1,
@@ -3150,10 +3155,10 @@ T-единиц на предложение                                  |   
  'cc': 1,
  'ccomp': 1,
  'conj': 1,
- 'iobj': 1,
  'mark': 1,
  'nsubj': 1,
  'nsubj:pass': 1,
+ 'obj': 1,
  'obl': 1,
  'obl:agent': 1}
 (Дом, построенный, рабочими, в, прошлом, году, был, продан)
@@ -3271,9 +3276,9 @@ T-единиц на предложение                                  |   
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#infinitive_clauses"><code>infinitive_clauses_per_sent</code></a></td>
-<td style="text-align: left;">Infinitive clauses under a verb per sentence (<em>wants to leave</em>), which are not subordinate</td>
+<td style="text-align: left;">Infinitive clauses per sentence (<em>wants to leave</em>, <em>came to help</em>), which are not subordinate</td>
 <td style="text-align: left;">0 and above</td>
-<td style="text-align: left;">More infinitive complements</td>
+<td style="text-align: left;">More infinitive clauses</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#l2sca"><code>t_units_per_sent</code></a></td>
@@ -3616,7 +3621,7 @@ T-единиц на предложение                                  |   
 <p>Checks whether an infinitive under <code>xcomp</code> heads a clause of its own («хочет уйти», «попросил его уйти»): it does not when it makes one predicate with its head (<code>is_infinitive_periphrasis</code>) or stands in a participial or adverbial participle clause («решивший уйти», «желая уйти»).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «пора идти»), the short form of a modal adjective of <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») or the hortative «давай», «давайте» of <code>HORTATIVE_WORDS</code> without a negation («давайте играть», but not «не давайте детям играть»).</p>
+<p>Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «невозможно описать», «пора идти»), the short form of a modal adjective of <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») or the hortative «давай», «давайте» of <code>HORTATIVE_WORDS</code> without a negation («давайте играть», but not «не давайте детям играть»).</p>
 <table>
 <thead>
 <tr>
@@ -3641,7 +3646,28 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads a subordinate clause: a clause head (<code>is_clause_head</code>) with <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> and their subtypes, or a coordinated predicate of a subordinate clause.</p>
+<p>Checks whether a word heads a subordinate clause: a clause head (<code>is_clause_head</code>) whose predicate is no infinitive under <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> and their subtypes, a coordinated predicate of a subordinate clause, or a clause under <code>conj</code> or <code>parataxis</code> with a subordinating conjunction (<code>is_subordinating_mark</code>: «ушел, ибо устал») with its conjuncts that have a subject of their own: the models attach such a clause to the main one as a conjunct, and the predicates of the main clause sharing its subject to it, which are no subordinate clauses. An infinitive heads an infinitive clause, not a subordinate one.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token</td>
+</tr>
+</tbody>
+</table>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_subordinating_mark</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a conjunction (relation <code>mark</code>) of a conjunct or a parataxis is a subordinating one: a conjunction of <code>SUBORDINATING_MARKS</code> with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction after «не то» and «всё равно» («не то что», «не то чтоб»), a conjunction of a predicate with a correlative «то» after it that is not of a nested «если..., то» («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется» and at the start of a replica that ends with a question or an exclamation («А что вы сделаете?», «Любопытно стало: что это сделалось?»).</p>
 <table>
 <thead>
 <tr>
@@ -3667,7 +3693,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads an infinitive clause under a verb: an infinitive under <code>xcomp</code> that heads a clause of its own (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.</p>
+<p>Checks whether a word heads an infinitive clause: an infinitive under <code>xcomp</code> that heads a clause of its own (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), an infinitive clause head under <code>ccomp</code>, <code>advcl</code>, <code>acl</code> or <code>csubj</code> («пришел, чтобы помочь», «трудно сказать»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.</p>
 <table>
 <thead>
 <tr>
@@ -3713,17 +3739,17 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>t_units_per_sent</code> · <code>mean_t_unit_len</code> · <code>clauses_per_t_unit</code> · <code>p_complex_t_units</code> · <code>verb_phrases_per_t_unit</code> · <code>coordinate_phrases_per_clause</code> · <code>complex_nominals_per_clause</code> · <a href="https://doi.org/10.1075/ijcl.15.4.02lu">Lu 2010</a></p>
 <p>The indices of the L2 Syntactic Complexity Analyzer (L2SCA) that the other metrics do not give, on Universal Dependencies. MLC and C/S are <code>mean_clause_len</code> and <code>clauses_per_sent</code>; MLS and DC/C come from the counts, <code>n_words / n_sents</code> and <code>n_subordinate_clauses / n_clauses</code>.</p>
 <ul>
-<li>A T-unit is a main clause with the clauses that depend on it: the head of a sentence and every clause head joined to it through <code>conj</code> or <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), so <em>I came, and he left</em> holds two; a conjunct of a subordinate clause is none. A conjunct without a subject of its own (<em>I came and left</em>) is a predicate sharing the T-unit of the clause it is coordinated to, as in L2SCA, unless its person, number or gender - those of its auxiliary or copula, its own without one - differ from those of that clause: in a language that drops its subjects the ending names another one (<em>llegamos al puerto y nos esperabas</em>). An existential <em>there</em> (<code>expl</code> of ClearNLP) is a subject. A T-unit is complex with a subordinate clause (<code>is_subordinate_clause_head</code>) whose nearest T-unit above is it.</li>
-<li>A verb phrase is a predicate (<code>is_predicate</code>) that is no auxiliary or copula: a verb, an auxiliary used as a predicate (<em>there <strong>is</strong> trouble</em>), a word with a subject or a copula; an infinitive that makes one predicate with its head (<code>is_infinitive_periphrasis</code>), and its infinitive conjunct, is part of the verb phrase of the head.</li>
+<li>A T-unit is a main clause with the clauses that depend on it: the head of a sentence and every clause head joined to it through <code>conj</code> or <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), so <em>I came, and he left</em> holds two; a conjunct of a subordinate clause is none. A conjunct without a subject of its own (<em>I came and left</em>) is a predicate sharing the T-unit of the clause it is coordinated to, as in L2SCA, unless its person, number or gender - those of its auxiliary or copula, its own without one - differ from those of that clause: in a language that drops its subjects the ending names another one (<em>llegamos al puerto y nos esperabas</em>). An existential <em>there</em> (<code>expl</code> of ClearNLP) is a subject. A conjunct or a parataxis with a subordinating mark (<code>is_subordinating_mark</code>) heads a subordinate or an infinitive clause, which is no T-unit, nor is a clause under it. A finite conjunct with a subject of its own of an infinitive clause, a predicate a model attaches to the infinitive, joins the clause of the first word above the infinitives that is none (<em>he came to help and she stayed</em>: two T-units). A T-unit is complex with a subordinate clause (<code>is_subordinate_clause_head</code>) whose nearest T-unit above is it.</li>
+<li>A verb phrase is a predicate (<code>is_predicate</code>) that is no auxiliary or copula: a verb, an auxiliary used as a predicate (<em>there <strong>is</strong> trouble</em>), a word with a subject or a copula; an infinitive that makes one predicate with its head (<code>is_infinitive_periphrasis</code>), and its infinitive conjunct, is part of the verb phrase of the head. A participle or another non-finite form under <code>amod</code> or <code>acl</code>, or coordinated to one, without an auxiliary, a copula or a subject of its own is an attribute of its noun (<em>the house built by workers</em>), as in L2SCA, not a verb phrase.</li>
 <li>A coordinate phrase is a coordination with a conjunct that is no clause head (<em>the man and the woman</em>, <em>is big and nice</em>) or a predicate without a subject of its own (<em>came and left</em>), counted once by its first conjunct; a coordination of clauses with their own subjects counts as clauses.</li>
-<li>The clauses are those of <code>is_clause_head</code>, as in the other metrics: a predicate sharing a subject and an infinitive clause count as clauses, while L2SCA counts finite clauses with a subject, so C/T, C/S and CN/C run higher and MLC lower than in L2SCA.</li>
+<li>The clauses of C/T, CP/C and CN/C are those of L2SCA (<code>n_l2sca_clauses</code>): the clauses of <code>is_clause_head</code> without the predicates sharing a subject (<em>came and left</em>) and the infinitive clauses, as L2SCA counts finite clauses with a subject. C/S and MLC keep the clauses of the other metrics, so C/S runs higher and MLC lower than in L2SCA.</li>
 <li>A complex nominal is a noun with a modifier of <code>anyts.constants.COMPLEX_NOMINAL_DEPS</code> (an adjective, a complement, a relative or participial clause, an apposition, a possessive), or a nominal clause, a clause head of <code>anyts.constants.NOMINAL_CLAUSE_DEPS</code> or a conjunct of one.</li>
 </ul>
 <div class="arithmatex">\[
 \textrm{MLT} = \frac{\textrm{Words}}{\textrm{T-units}}, \quad
-\textrm{C/T} = \frac{\textrm{Clauses}}{\textrm{T-units}}, \quad
+\textrm{C/T} = \frac{\textrm{Clauses of L2SCA}}{\textrm{T-units}}, \quad
 \textrm{CT/T} = \frac{\textrm{Complex T-units}}{\textrm{T-units}}, \quad
-\textrm{CN/C} = \frac{\textrm{Complex nominals}}{\textrm{Clauses}}
+\textrm{CN/C} = \frac{\textrm{Complex nominals}}{\textrm{Clauses of L2SCA}}
 \]</div>
 </div>
 <div class="metric-card">
@@ -3984,7 +4010,7 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="similarity">Similarity of adjacent sentences<a class="headerlink" href="#similarity" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos_edit_distance</code> · <code>syntax_similarity</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<p>How alike the structures of two adjacent sentences are, averaged over the <span class="arithmatex">\(S - 1\)</span> pairs. <code>pos_edit_distance</code> is the edit distance of the parts of speech <span class="arithmatex">\(P_s\)</span> of the words of the sentences (SYNMEDpos of Coh-Metrix) over the length <span class="arithmatex">\(n\)</span> of the longer sentence of the pair, <code>calc_edit_distance</code>. <code>syntax_similarity</code> is the similarity of the multisets of the dependency triples <span class="arithmatex">\(T\)</span> of the two sentences (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>), in the manner of SYNSTRUT of Coh-Metrix, which compares the nodes of phrase-structure trees.</p>
+<p>How alike the structures of two adjacent sentences are, averaged over the <span class="arithmatex">\(S - 1\)</span> pairs. <code>pos_edit_distance</code> is the edit distance of the parts of speech <span class="arithmatex">\(P_s\)</span> of the words of the sentences (SYNMEDpos of Coh-Metrix) over the length <span class="arithmatex">\(n\)</span> of the longer sentence of the pair, <code>calc_edit_distance</code>. <code>syntax_similarity</code> is the similarity of the multisets of the dependency triples <span class="arithmatex">\(T\)</span> of the two sentences (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>), in the manner of SYNSTRUT of Coh-Metrix, which compares the nodes of phrase-structure trees. Neither sees the order of the words, and the similarity of the triples grows with the length of the sentences.</p>
 <div class="arithmatex">\[
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{\textrm{lev}(P_s, P_{s+1})}{\max(n_s, n_{s+1})}, \quad
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{|T_s \cap T_{s+1}|}{|T_s \cup T_{s+1}|}
@@ -4279,7 +4305,7 @@ T-единиц на предложение                                  |   
 <h2 id="is_prep_complement">Complements with a preposition<a class="headerlink" href="#is_prep_complement" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_prep_complement</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word is a complement with a preposition: a word with the relation <code>nmod</code> or <code>obl</code> or a subtype of them (<code>anyts.constants.PREP_COMPLEMENT_DEPS</code>), or a predicate with a copula out of a relative clause (<code>acl</code>), that has a dependent of the relation <code>case</code> that is an adposition (<code>ADP</code>) or begins one of several words (<code>fixed</code>: <em>in front of</em>). A noun in a case without a preposition and a possessive marker are none.</p>
+<p>Checks whether a word is a complement with a preposition: a word with the relation <code>nmod</code> or <code>obl</code> or a subtype of them (<code>anyts.constants.PREP_COMPLEMENT_DEPS</code>), or a predicate with a copula or a subject of its own out of a relative clause (<code>acl</code>), such as a nominal predicate of a language that drops the copula of the present tense, that has a dependent of the relation <code>case</code> that is an adposition (<code>ADP</code>) or begins one of several words (<code>fixed</code>: <em>in front of</em>). A noun in a case without a preposition and a possessive marker are none.</p>
 <table>
 <thead>
 <tr>
