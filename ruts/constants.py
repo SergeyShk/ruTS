@@ -368,76 +368,6 @@ MORPHOLOGY_FEATURES = {
     "verb_form": "VerbForm",
     "voice": "Voice",
 }
-OPENCORPORA_TO_UD_POS = {
-    "NOUN": "NOUN",
-    "ADJF": "ADJ",
-    "ADJS": "ADJ",
-    "COMP": "ADJ",
-    "VERB": "VERB",
-    "INFN": "VERB",
-    "PRTF": "VERB",
-    "PRTS": "VERB",
-    "GRND": "VERB",
-    "NUMR": "NUM",
-    "ADVB": "ADV",
-    "NPRO": "PRON",
-    "PRED": "ADV",
-    "PREP": "ADP",
-    "CONJ": "CCONJ",
-    "PRCL": "PART",
-    "INTJ": "INTJ",
-    "NUMB": "NUM",
-    "ROMN": "NUM",
-    "LATN": "X",
-    "UNKN": "X",
-    "PNCT": "PUNCT",
-}
-OPENCORPORA_TO_UD_GRAMMEMES = {
-    "anim": "Anim",
-    "inan": "Inan",
-    "perf": "Perf",
-    "impf": "Imp",
-    "nomn": "Nom",
-    "gent": "Gen",
-    "datv": "Dat",
-    "accs": "Acc",
-    "ablt": "Ins",
-    "loct": "Loc",
-    "voct": "Voc",
-    "gen1": "Gen",
-    "gen2": "Par",
-    "acc2": "Acc",
-    "loc1": "Loc",
-    "loc2": "Loc",
-    "masc": "Masc",
-    "femn": "Fem",
-    "neut": "Neut",
-    "ms-f": "Com",
-    "incl": "In",
-    "excl": "Ex",
-    "indc": "Ind",
-    "impr": "Imp",
-    "sing": "Sing",
-    "plur": "Plur",
-    "1per": "1",
-    "2per": "2",
-    "3per": "3",
-    "pres": "Pres",
-    "past": "Past",
-    "futr": "Fut",
-    "tran": "Tran",
-    "intr": "Intr",
-    "actv": "Act",
-    "pssv": "Pass",
-}
-OPENCORPORA_VERB_FORMS = {
-    "VERB": "Fin",
-    "INFN": "Inf",
-    "PRTF": "Part",
-    "PRTS": "Part",
-    "GRND": "Conv",
-}
-PROPER_NOUN_GRAMMEMES = frozenset({"Name", "Surn", "Patr", "Geox", "Orgn", "Trad"})
 # Русские сообщения классов статистик ядра anyTS по ключам MESSAGES
 _RU_CORE_MESSAGES: dict[str, str] = {
     "source_type": "Источник данных не может быть типа {type}",
@@ -580,63 +510,11 @@ _RU_CORE_MESSAGES: dict[str, str] = {
 }
 # Поверх MESSAGES: новый ключ патча ядра выйдет по-английски, а не сломает импорт
 CORE_MESSAGES: Mapping[str, str] = MappingProxyType({**MESSAGES, **_RU_CORE_MESSAGES})
-# Предикативы со временем: бытийные «нет» и «нету» в русском UD - глаголы настоящего времени
-TENSED_PREDICATIVES = frozenset({"нет", "нету"})
-# Частицы с отрицанием (Polarity=Neg), как в русском UD; «нет» - только ответное
-NEGATIVE_PARTICLES = frozenset({"не", "ни", "нет"})
 # Соседи ответного «нет» (Нет, не пойду): знаки и слова перед ним, слова после
 ANSWER_PARTICLE_PREV_MARKS = frozenset('.!?…,:;—–-«„"(')
 ANSWER_PARTICLE_PREV = frozenset({"или", "если", "а", "да", "ну", "ах", "ох", "ой", "эх", "о"})
 ANSWER_PARTICLE_NEXT = frozenset({"уж", "же"})
-# Наречия-компаративы: в русском UD Degree=Cmp, у pymorphy3 - наречия без COMP
-COMPARATIVE_ADVERBS = frozenset({"более", "менее", "выше", "ниже"})
-SUBORDINATING_CONJUNCTIONS = frozenset(
-    {
-        "будто",
-        "дабы",
-        "едва",
-        "ежели",
-        "если",
-        "ибо",
-        "как",
-        "когда",
-        "коли",
-        "нежели",
-        "пока",
-        "покуда",
-        "поскольку",
-        "потому",
-        "прежде",
-        "пускай",
-        "пусть",
-        "раз",
-        "словно",
-        "точно",
-        "хотя",
-        "хоть",
-        "чем",
-        "что",
-        "чтоб",
-        "чтобы",
-    }
-)
 UD_PERSONS = {"First": "1", "Second": "2", "Third": "3"}
-UD_TO_OPENCORPORA_POS = {
-    "NOUN": frozenset({"NOUN"}),
-    "PROPN": frozenset({"NOUN"}),
-    "ADJ": frozenset({"ADJF", "ADJS", "COMP"}),
-    "ADV": frozenset({"ADVB", "PRED", "COMP"}),
-    "VERB": frozenset({"VERB", "INFN", "PRTF", "PRTS", "GRND"}),
-    "AUX": frozenset({"VERB", "INFN"}),
-    "PRON": frozenset({"NPRO", "ADJF"}),
-    "DET": frozenset({"ADJF"}),
-    "NUM": frozenset({"NUMR", "ADJF"}),
-    "ADP": frozenset({"PREP"}),
-    "CCONJ": frozenset({"CONJ"}),
-    "SCONJ": frozenset({"CONJ"}),
-    "PART": frozenset({"PRCL"}),
-    "INTJ": frozenset({"INTJ"}),
-}
 DIVERSITY_STATS_DESC = {
     "ttr": "Type-Token Ratio (TTR)",
     "rttr": "Root Type-Token Ratio (RTTR)",
@@ -1122,6 +1000,7 @@ INFINITIVE_PERIPHRASES = frozenset(
     {
         "мочь",
         "смочь",
+        "должен",
         "должный",
         "начать",
         "начинать",
@@ -1214,13 +1093,14 @@ REPLICA_OPENING_WORDS = frozenset({"а", "и", "но", "да", "ну"})
 REPLICA_BOUNDARIES = frozenset({"—", "–", "-", ":"})
 # Модальные краткие прилагательные, с которыми инфинитив - составное глагольное сказуемое
 # (Русская грамматика 1980): готов уйти, рад помочь; полная форма - нет (оказался способным понять).
-# Леммы pymorphy3 форм рода и числа: намерена - намерен, обязана - обязать, вынуждена - вынудить
+# Леммы форм рода и числа как прилагательного и как глагола: намерена - намерен или намерить
 MODAL_SHORT_ADJECTIVES = frozenset(
     {
         "готовый",
         "рад",
         "намеренный",
         "намерен",
+        "намерить",
         "обязанный",
         "обязать",
         "способный",
@@ -1564,7 +1444,7 @@ CONNECTOR_ONLY_AFTER = {
 }
 # Подчинительные союзы и предлоги сверх однословных с SCONJ и ADP: открывая предложение,
 # начинают его придаточное или предложную группу; «ежели», «коли», «кабы», «пока», «раз», «хоть»,
-# «едва» модели или pymorphy3 размечают не SCONJ; «потому что», «так что», «тогда как»
+# «едва» модели или ruMorph размечают не SCONJ; «потому что», «так что», «тогда как»
 # в начале предложения - парцелляция, связь с предыдущим
 CONNECTOR_SUBORDINATORS = frozenset(
     {
@@ -1655,16 +1535,14 @@ CONNECTOR_BLOCKED_AFTER_POS = {
     "значит": frozenset({"VERB"}),
     "раз": frozenset({"NUM", "ADJ", "DET"}),
 }
-CONTENT_POS = frozenset(
-    {"NOUN", "ADJF", "ADJS", "COMP", "VERB", "INFN", "PRTF", "PRTS", "GRND", "ADVB"}
-)
 DEMONSTRATIVE_LEMMAS = frozenset(
     {"этот", "это", "тот", "такой", "таковой", "столько", "сей", "оный"}
 )
-STOPWORD_POS = frozenset({"CONJ", "PRCL", "PREP", "NPRO", "INTJ", "PRED"})
-STOPWORD_GRAMMEMES = frozenset({"Apro", "Prnt", "Dmns", "Ques"})
-# «Вода» Text.ru; предлоги, в отличие от STOPWORD_POS, Text.ru водой не считает
-WATER_POS = frozenset({"CONJ", "PRCL", "NPRO", "INTJ"})
+STOPWORD_POS = frozenset({"ADP", "CCONJ", "SCONJ", "PART", "PRON", "DET", "INTJ"})
+# Местоименные наречия стоп-слов: указательные, вопросительные и относительные (там, где, почему)
+PRONOMINAL_TYPES = frozenset({"Dem", "Int", "Rel"})
+# «Вода» Text.ru: без предлогов и местоименных прилагательных, которые есть в STOPWORD_POS
+WATER_POS = frozenset({"CCONJ", "SCONJ", "PART", "PRON", "INTJ"})
 # Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS
 VISUALIZER_LABELS = {
     "zipf": {
@@ -1780,7 +1658,7 @@ HIGHLIGHT_DEFAULT_LAYERS = (
     "split_predicates",
     "cliches",
 )
-# Разметка Doc, которая нужна слою; леммы ruTS берет из pymorphy3, а не из spaCy
+# Разметка Doc, которая нужна слою; леммы ruTS берет из ruMorph, а не из spaCy
 HIGHLIGHT_LAYER_ANNOTATIONS = {
     "passive": ("DEP",),
     "participle_clauses": ("DEP",),

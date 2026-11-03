@@ -494,7 +494,7 @@ is_reflexive(token)
 is_split_predicate_noun(token, verb=None)
 ```
 
-The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (`is_light_verb`) with a lemma of `LIGHT_VERBS` (for example: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (`is_split_predicate_noun`), a noun with a verbal lemma (`ruts.utils.is_verbal_noun`) or a lemma of `SPLIT_PREDICATE_NOUNS` (for example: роль, работа, помощь, мера) with a verb `verb` of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference `obj`, `nsubj:pass`, `nsubj` (only for a reflexive or passive verb, `is_reflexive`), `iobj`, `nmod`, `obl`; prepositional adjuncts and the passive agent (`obl:agent`, instrumental `obl`) are not counted. The verb lemma is taken from the pymorphy3 analysis twice: with the part of speech of the token ([`get_lemma`](#helpers)) and as a verb (`ruts.utils.lemmatize`).
+The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (`is_light_verb`) with a lemma of `LIGHT_VERBS` (for example: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (`is_split_predicate_noun`), a noun with a verbal lemma (`ruts.utils.is_verbal_noun`) or a lemma of `SPLIT_PREDICATE_NOUNS` (for example: роль, работа, помощь, мера) with a verb `verb` of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference `obj`, `nsubj:pass`, `nsubj` (only for a reflexive or passive verb, `is_reflexive`), `iobj`, `nmod`, `obl`; prepositional adjuncts and the passive agent (`obl:agent`, instrumental `obl`) are not counted. The verb lemma is taken from the ruMorph analysis twice: with the part of speech of the token ([`get_lemma`](#helpers)) and as a verb (`ruts.utils.lemmatize`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -690,7 +690,7 @@ is_converb(token)
 get_lemma(token)
 ```
 
-The lemma of a token in lower case by the pymorphy3 analysis with the part of speech of the token (`ruts.utils.lemmatize`), not `token.lemma_`.
+The lemma of a token in lower case by the ruMorph analysis with the part of speech of the token (`ruts.utils.lemmatize`), not `token.lemma_`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

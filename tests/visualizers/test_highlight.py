@@ -618,9 +618,9 @@ def fragments(source, layer, **kwargs):
 
 
 def test_rare_words():
+    # «привлекается» - страдательная форма «привлекать» (лемма SynTagRus), а не «привлекаться»
     assert fragments(officialese_text, "rare_words") == [
         ("фелинолог", "редкое слово: вне топ-10000"),
-        ("привлекается", "редкое слово: вне топ-10000"),
     ]
     assert fragments("USA 2020 и т.е. кот", "rare_words") == []
     assert find_rare_words(get_text_words("Фелинолог")) == [

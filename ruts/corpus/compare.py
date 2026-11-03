@@ -52,12 +52,10 @@ REDUNDANT_FEATURES = frozenset(
         "diversity_dttr",
         "diversity_perplexity",
         "diversity_michea_m",
-        "morph_pos_AUX",
         "morph_pos_PUNCT",
         "morph_pos_SYM",
-        "morph_mood_Cnd",
+        "morph_gender_Com",
         "morph_mood_Ind",
-        "morph_voice_Mid",
         "morph_voice_Act",
         "morph_number_Sing",
         "morph_aspect_Imp",
@@ -131,12 +129,12 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         и сводный класс (ReadabilityStats); diversity_ - меры лексического
         разнообразия (DiversityStats), кроме Orlov's Z: на окне она неустойчива; morph_ - доли частей речи и значений
         морфологических признаков, например morph_pos_NOUN, morph_case_Gen
-        (MorphStats по pymorphy3): части речи и признаки с одним значением
+        (MorphStats по ruMorph): части речи и признаки с одним значением
         (отрицание, краткая форма) - доли всех слов, остальные - доли слов с этим
         признаком, а признак, которого нет в окне, - nan; sents_ -
         средняя длина предложения, ее разброс и автокорреляция соседних длин;
         punct_ - частоты знаков на 1000 слов и доля буквы ё; cohesion_ - статистики
-        связности (CohesionStats по pymorphy3), кроме повторов между абзацами: окно режет
+        связности (CohesionStats по ruMorph), кроме повторов между абзацами: окно режет
         абзацы текста; с пайплайном nlp - еще syntax_, синтаксические статистики
         (SyntaxStats) его разбора по тем же предложениям, что у других групп
         (set_sent_starts), без распознавания сущностей и лемматизатора. Признаки,

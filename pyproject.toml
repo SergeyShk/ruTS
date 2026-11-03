@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.20.0.dev2"
+version = "0.20.0.dev3"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -49,8 +49,7 @@ dependencies = [
     "matplotlib>=3.8",
     "numpy>=1.26",
     "pandas>=2.1",
-    "pymorphy3>=2.0.4",
-    "pymorphy3-dicts-ru>=2.4.417150.4580142",
+    "rumorph>=0.5,<0.6",
     "scipy>=1.11",
     "spacy>=3.8.15",
 ]
@@ -96,11 +95,9 @@ explicit = true
 [tool.uv.sources]
 ru-core-news-sm = { url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" }
 
-[project.optional-dependencies]
-fast = ["pymorphy3[fast]>=2.0.4"]
-
 [dependency-groups]
-test = ["pytest>=8.3", "pytest-cov>=6.0", "ru-core-news-sm"]
+# pymorphy3 - для лемматизатора ru_core_news_sm в тестах и ноутбуках, не для ruTS
+test = ["pymorphy3>=2.0.4", "pytest>=8.3", "pytest-cov>=6.0", "ru-core-news-sm"]
 lint = ["mypy>=1.14", "pre-commit>=4.0", "ruff>=0.9"]
 docs = [
     "mkdocs>=1.6",
@@ -113,7 +110,7 @@ dev = [
     { include-group = "lint" },
     { include-group = "docs" },
 ]
-examples = ["jupyterlab>=4.3", "nbmake>=1.5", "nbstripout>=0.8"]
+examples = ["jupyterlab>=4.3", "nbmake>=1.5", "nbstripout>=0.8", "pymorphy3>=2.0.4"]
 
 [tool.ruff]
 target-version = "py311"

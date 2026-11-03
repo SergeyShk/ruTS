@@ -119,7 +119,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список слов «воды»; если не задан, они определяются
-            по части речи с помощью pymorphy3
+            по части речи с помощью ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
@@ -249,7 +249,7 @@ def highlight(
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список слов «воды»; если не задан, они определяются
-            по части речи с помощью pymorphy3
+            по части речи с помощью ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
@@ -370,7 +370,7 @@ def find_stopwords(
 
     Аргументы:
         words (list[Word]): Слова с позициями
-        stopwords (list[str]): Список слов «воды»; если не задан, используется разметка pymorphy3
+        stopwords (list[str]): Список слов «воды»; если не задан, используется разметка ruMorph
 
     Вывод:
         list[Highlight]: Фрагменты слоя stopwords
@@ -390,7 +390,7 @@ def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
     Поиск редких слов
 
     Описание:
-        Слова, лемма которых (первый разбор pymorphy3) отсутствует во вшитом списке
+        Слова, лемма которых (первый разбор ruMorph) отсутствует во вшитом списке
         10 000 самых частых лемм (get_rank), как в доле p_beyond_top10000 класса
         LexicalStats; учитываются только слова из русских букв длиной от двух букв,
         числа, латиница, сокращения (т.е.) и стоп-слова (во-первых) не подсвечиваются
@@ -406,7 +406,7 @@ def find_rare_words(words: Iterable[Word]) -> list[Highlight]:
         lambda word: bool(
             RUSSIAN_WORD.fullmatch(word.text)
             and not is_stopword(word.text.lower())
-            and get_rank(parse_word(word.text).normal_form) is None
+            and get_rank(parse_word(word.text).lemma) is None
         ),
         "rare_words",
         "редкое слово: вне топ-10000",
@@ -527,7 +527,7 @@ def find_connector_highlights(
     Описание:
         Коннекторы ищутся внутри каждого предложения сопоставителем CohesionStats,
         без границ предложений - по всему тексту; однословные коннекторы проверяются
-        по части речи слова из разметки Doc, а без нее - по pymorphy3 (connector_pos);
+        по части речи слова из разметки Doc, а без нее - по ruMorph (connector_pos);
         правила о словах до и после коннектора не действуют через знак препинания
         между словами текста; в подсказке класс и тип коннектора
 
@@ -558,7 +558,7 @@ def get_stem(word: str) -> str:
     Получение основы словоформы
 
     Описание:
-        Основа - общая начальная часть словоформы и ее леммы по pymorphy3:
+        Основа - общая начальная часть словоформы и ее леммы по ruMorph:
         крупных → крупн, руках → рук, шуршат → шурша, камыши → камыш
         Для супплетивных форм (шла → идти, люди → человек) общая часть короче
         двух букв, и основой считается вся словоформа
@@ -569,7 +569,7 @@ def get_stem(word: str) -> str:
     Вывод:
         str: Основа словоформы
     """
-    lemma = parse_word(word).normal_form
+    lemma = parse_word(word).lemma
     length = 0
     for letter, lemma_letter in zip(word, lemma, strict=False):
         if letter != lemma_letter:

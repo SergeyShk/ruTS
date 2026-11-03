@@ -73,8 +73,6 @@ python -m spacy download ru_core_news_sm
 
 The `md` and `lg` models are not worth it: in our measurements on the gold Universal Dependencies annotation they are less than one point more accurate than `sm`, and the text-level statistics of the three models coincide.
 
-For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pymorphy3 (CPython only) - morphological analysis of word forms gets about 5x faster.
-
 ## Quick start
 
 ```python
@@ -380,7 +378,7 @@ The library allows extracting the following morphological features:
 *   verb form
 *   voice
 
-Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) parse with OpenCorpora grammemes mapped to UD.
+Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis.
 
 ```python
 >>> from pprint import pprint
@@ -390,30 +388,30 @@ Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/
 >>> ms = MorphStats(text)
 
 >>> ms.pos
-('VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB')
+('VERB', 'VERB', 'PRON', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'PRON', 'SCONJ', 'VERB')
 
 >>> pprint(ms.get_stats())
-{'animacy': {None: 11},
+{'animacy': {None: 9, 'Inan': 2},
  'aspect': {None: 5, 'Imp': 1, 'Perf': 5},
- 'case': {None: 11},
+ 'case': {None: 9, 'Acc': 2},
  'degree': {None: 10, 'Pos': 1},
- 'gender': {None: 11},
+ 'gender': {None: 9, 'Neut': 2},
  'involvement': {None: 10, 'Ex': 1},
  'mood': {None: 7, 'Imp': 1, 'Ind': 3},
- 'number': {None: 7, 'Plur': 3, 'Sing': 1},
- 'person': {None: 9, '2': 1, '3': 1},
+ 'number': {None: 5, 'Plur': 3, 'Sing': 3},
+ 'person': {None: 8, '2': 2, '3': 1},
  'polarity': {None: 11},
- 'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
+ 'pos': {'ADV': 1, 'PRON': 2, 'SCONJ': 2, 'VERB': 6},
  'style_variant': {None: 11},
  'tense': {None: 8, 'Fut': 1, 'Past': 1, 'Pres': 1},
  'transitivity': {None: 5, 'Intr': 2, 'Tran': 4},
  'verb_form': {None: 5, 'Fin': 4, 'Inf': 2},
- 'voice': {None: 11}}
+ 'voice': {None: 5, 'Act': 4, 'Mid': 2}}
 
 >>> ms.print_stats('pos', 'tense')
 ---------------Часть речи---------------
 Глагол                        |    6
-Сочинительный союз            |    2
+Местоимение-существительное   |    2
 Подчинительный союз           |    2
 Наречие                       |    1
 
@@ -445,7 +443,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
 *   Reading of the metrics by the service norms
 
-The exact formulas of the services are not published, so the commonly accepted definitions are implemented; the water words for water content and the stop words for academic nausea are detected by part of speech with pymorphy3 or passed as lists.
+The exact formulas of the services are not published, so the commonly accepted definitions are implemented; the water words for water content and the stop words for academic nausea are detected by part of speech with ruMorph or passed as lists.
 
 ```python
 >>> from pprint import pprint
@@ -568,7 +566,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_sta
 
 <br>
 
-The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a string), no dependency parse is needed:
+The library counts over lemmas (spaCy for an annotated `Doc`, ruMorph for a string), no dependency parse is needed:
 
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix), with the next two sentences and between paragraphs (as in TAACO)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
@@ -586,7 +584,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a st
 >>> cs.argument_overlap_all, cs.content_overlap_prop_adjacent
 (0.6666666666666666, 0.1111111111111111)
 >>> cs.p_pronouns, cs.p_given, cs.temporal_cohesion
-(0.14285714285714285, 0.2857142857142857, 0.5)
+(0.14285714285714285, 0.3076923076923077, 0.5)
 
 >>> cs = CohesionStats("Кот ждал птиц, потому что был голоден. Однако птицы улетели, и всё же кот не ушёл.")
 >>> cs.connectors_causal, cs.connectors_adversative, cs.connectors_concessive
@@ -679,7 +677,7 @@ Corpus linguistics tools over word lists - functions of the `ruts.corpus` subpac
 *   Dispersion of words across text parts: Gries's DP, Juilland's D, Carroll's D2, Rosengren's S, Kullback-Leibler divergence
 *   KWIC concordance by word form or lemma; Zipf-Mandelbrot fit - `fit_zipf_mandelbrot` in `ruts.diversity_stats`
 *   Stylometry: Burrows's Delta with variants (quadratic, Eder's, cosine) over words or character n-grams and rolling Delta along a text, Zeta with logarithmic Zeta and shares of Zeta markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile
-*   Corpus comparison `compare_corpora`: 145 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile, cohesion; syntax too with a spaCy pipeline) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
+*   Corpus comparison `compare_corpora`: 147 text features (basic, readability, diversity, morphology, sentence rhythm, punctuation profile, cohesion; syntax too with a spaCy pipeline) over equal-length windows; for each, the Mann-Whitney test with Holm correction, Cohen's d, Cliff's delta, AUC and a bootstrap interval of the median difference
 
 ```python
 >>> from ruts import WordsExtractor

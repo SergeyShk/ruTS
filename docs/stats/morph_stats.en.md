@@ -25,7 +25,7 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
     ```
     ---------------Часть речи---------------
     Глагол                        |    6
-    Сочинительный союз            |    2
+    Местоимение-существительное   |    2
     Подчинительный союз           |    2
     Наречие                       |    1
 
@@ -36,10 +36,10 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
 
     -----------------Число------------------
     Множественное                 |    3
-    Единственное                  |    1
+    Единственное                  |    3
 
     ------------------Лицо------------------
-    2                             |    1
+    2                             |    2
     3                             |    1
     ```
 
@@ -54,11 +54,11 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/morph_stats.md:MorphStats-attributes"
 
-ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words that pymorphy3 gives by the part of speech of the word.
+ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words that ruMorph gives by the part of speech of the word.
 
 ## Statistics
 
-The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) analysis is used: the [OpenCorpora](http://opencorpora.org/dict.php?act=gram) grammemes are mapped to UD by the `OPENCORPORA_TO_UD_POS` and `OPENCORPORA_TO_UD_GRAMMEMES` tables of `ruts.constants`, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer is used - UD parts of speech and features by the conventions of the SynTagRus corpus.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |
@@ -79,7 +79,7 @@ The statistics are the part of speech `pos` and the features of the table below 
 | `verb_form` | Verb form | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Voice | `Act`, `Pass`, `Mid` |
 
-The values for a string and for an annotated `Doc` may differ: spaCy assigns `Voice=Act` to finite forms and `Voice=Mid` to reflexive verbs, distinguishes `AUX` and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.
+The values for a string and for an annotated `Doc` may differ: spaCy resolves homonymy by context, while a string takes the first ruMorph analysis without the neighbouring words; some conventions differ too - spaCy models give the existential нет the present tense, ruMorph does not.
 
 <div class="metric-card" markdown>
 
@@ -88,23 +88,7 @@ The values for a string and for an annotated `Doc` may differ: spaCy assigns `Vo
 `pos` · [UD](https://universaldependencies.org/u/pos/)
 { .metric-meta }
 
-For a string the OpenCorpora parts of speech are mapped to UD as follows:
-
-| OpenCorpora | UD | Note |
-| :---------- | :- | :--- |
-| `NOUN` | `NOUN`, `PROPN` | first names, surnames, patronymics, toponyms and organizations by pymorphy3 tags - `PROPN`, but only for capitalized word forms: pymorphy3 ignores case and tags ordinary words as names (лев, роза, мороз) |
-| `ADJF`, `ADJS`, `COMP` | `ADJ`, `DET`, `PRON`, `NUM` | pronominal adjectives (этот, мой, весь) - `DET`, «который» - `PRON`, «один» - `NUM`; a comparative without context counts as an adjective |
-| `VERB`, `INFN`, `PRTF`, `PRTS`, `GRND` | `VERB` | the form goes into `verb_form`: `Fin`, `Inf`, `Part`, `Conv`; the auxiliary `AUX` is distinguished only by spaCy |
-| `NUMR`, `NUMB`, `ROMN` | `NUM` | |
-| `ADVB`, `PRED` | `ADV` | predicatives (надо, нельзя) - adverbs without tense, as in the Russian UD corpora; the existential нет and нету, which UD treats as verbs, have the present tense |
-| `NPRO` | `PRON` | |
-| `PREP` | `ADP` | |
-| `CONJ` | `CCONJ`, `SCONJ` | subordinating conjunctions by the `SUBORDINATING_CONJUNCTIONS` list (что, чтобы, если, когда, хотя, потому) |
-| `PRCL` | `PART` | |
-| `INTJ` | `INTJ` | |
-| `LATN`, `UNKN` | `X` | |
-
-есть is taken for a form of быть, not of есть meaning to eat.
+For a string the parts of speech are those of the first ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN` by case (Лев, but лев). Without context the first analysis of a homonym is the most frequent one: стали is a verb, её is the possessive `DET`.
 
 </div>
 
@@ -115,7 +99,7 @@ For a string the OpenCorpora parts of speech are mapped to UD as follows:
 `degree` · `polarity` · `style_variant`
 { .metric-meta }
 
-For a string these features are derived by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: `Cmp` for the comparative and for более, менее, выше, ниже, `Sup` for the superlative (красивейший), `Pos` for the others. The particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a `Doc` of a model.
+For a string these features are those of the ruMorph analysis by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: `Cmp` for the comparative, `Sup` for the superlative (красивейший), `Pos` for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature `Variant=Short`.
 
 === "Code"
 
@@ -149,7 +133,7 @@ For a string these features are derived by the rules of Russian UD. Adjectives (
 `transitivity` · `involvement` · [OpenCorpora](http://opencorpora.org/dict.php?act=gram)
 { .metric-meta }
 
-OpenCorpora features absent from Russian UD: transitivity (`Tran`, `Intr`) and clusivity (`In` - the speaker is included in the action, `Ex` - not included). They are computed via pymorphy3 for verbs (for a `Doc` - from the analysis with the spaCy lemma) and appear in the `tags` feature string as `Subcat` and `Clusivity`.
+OpenCorpora features absent from Russian UD: transitivity (`Tran`, `Intr`) and clusivity (`In` - the speaker is included in the action, `Ex` - not included). They are taken from the labels of the ruMorph analysis of verbs (for a `Doc` - of the analysis with the spaCy lemma) and appear in the `tags` feature string as `Subcat` and `Clusivity`.
 
 === "Code"
 
@@ -164,7 +148,7 @@ OpenCorpora features absent from Russian UD: transitivity (`Tran`, `Intr`) and c
 === "Result"
 
     ```
-    'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+    'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid'
     (('Intr', 'Tran', None, None, 'Tran'), ('Ex', None, None, None, None))
     ```
 
@@ -237,26 +221,26 @@ The conditional mood is detected by the particle бы (б), so the words extract
 === "Result"
 
     ```
-    {'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+    {'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
      'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
-     'number': {'Plur': 3, 'Sing': 1},
-     'person': {'2': 1, '3': 1}}
+     'number': {'Plur': 3, 'Sing': 3},
+     'person': {'2': 2, '3': 1}}
     {'pos_VERB': 6,
-     'pos_CCONJ': 2,
+     'pos_PRON': 2,
      'pos_SCONJ': 2,
      'pos_ADV': 1,
      'tense_Pres': 1,
      'tense_Fut': 1,
      'tense_Past': 1}
-    (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur'}),
+    (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
      ('получить', {'pos': 'VERB'}),
-     ('то', {'pos': 'CCONJ'}),
+     ('то', {'pos': 'PRON', 'number': 'Sing'}),
      ('что', {'pos': 'SCONJ'}),
      ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
      ('иначе', {'pos': 'ADV'}),
      ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
      ('полюбить', {'pos': 'VERB'}),
-     ('то', {'pos': 'CCONJ'}),
+     ('то', {'pos': 'PRON', 'number': 'Sing'}),
      ('что', {'pos': 'SCONJ'}),
      ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
     ```
@@ -272,8 +256,8 @@ The conditional mood is detected by the particle бы (б), so the words extract
 === "Result"
 
     ```
-       pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
-    0         6          2          2        1
+       pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
+    0         6         2          2        1
     ```
 
 --8<-- "stats/morph_stats.md:MorphStats-markers"

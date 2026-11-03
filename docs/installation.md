@@ -8,7 +8,7 @@
 
 *   `python` - 3.11 и выше
 *   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.4.6 и выше в пределах 0.4, независимое от языка ядро, на котором построен ruTS
-*   `pymorphy3` с русскими словарями `pymorphy3-dicts-ru`
+*   [`rumorph`](https://github.com/SergeyShk/ruMorph) - 0.5 и выше в пределах 0.5, морфологический анализатор
 *   [`anyseg`](https://github.com/SergeyShk/anySeg) - 0.2 и выше в пределах 0.2, сегментатор на токены и предложения
 *   `scipy`
 *   `spaCy` - 3.8.15 и выше
@@ -29,15 +29,6 @@ pip install ruts
 
 !!! warning "Graphviz"
     Пакет `graphviz` из зависимостей - только обертка: для отрисовки [дерева слов](visualizers/word_tree.md) и [сети коллокаций](visualizers/corpus.md#collocation_network) нужны исполняемые файлы [Graphviz](https://graphviz.org/download/) (`brew install graphviz`, `apt install graphviz`, `conda install graphviz`), иначе `render()` и показ графа в Jupyter завершатся ошибкой `ExecutableNotFound`. Остальному функционалу они не нужны.
-
-!!! tip "Быстрый морфологический разбор"
-    Для корпусов ставьте библиотеку с extra `fast`:
-
-    ``` bash
-    pip install "ruts[fast]"
-    ```
-
-    Оно добавляет C-расширение [DAWG2](https://github.com/pymorphy2-fork/DAWG) для pymorphy3 (только CPython, колеса есть для Linux, macOS и Windows): разбор словоформ ускоряется примерно в 5 раз (175 против 34 тысяч словоформ в секунду), `MorphStats` на тексте в 70 тысяч слов - на треть, потому что разбор кэшируется по словоформе и остальное время уходит на подсчет. Без extra библиотека работает так же, только медленнее.
 
 `import ruts` не загружает spaCy, matplotlib и pandas: spaCy подключается вместе с объектом `Doc` или компонентом, а графики и корпусные функции - при первом обращении к ним. Статистики по строке работают и без них.
 

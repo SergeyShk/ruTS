@@ -126,8 +126,10 @@ def test_text_features():
     # Признак с одним значением - доля всех слов, а не 1.0 среди размеченных
     assert text_features("Кот не спит, пёс не лает.")["morph_polarity_Neg"] == pytest.approx(2 / 6)
     assert text_features("Кот, пёс, дом.")["morph_polarity_Neg"] == 0.0
-    assert sum(1 for key in features if key.startswith("morph_")) == 48
-    assert len(features) == 145
+    # morph_pos_AUX, morph_mood_Cnd, morph_voice_Mid - значимые доли ruMorph, общего рода у него нет
+    assert sum(1 for key in features if key.startswith("morph_")) == 50
+    assert "morph_gender_Com" not in features and "morph_voice_Mid" in features
+    assert len(features) == 147
     # Orlov's Z на окне неустойчива
     assert "diversity_orlov_z" not in features and "diversity_burstiness" in features
     # Связность - без повторов между абзацами: окно режет абзацы текста

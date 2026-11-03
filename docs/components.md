@@ -91,7 +91,7 @@ MorphStatsComponent(nlp, name)
 <!-- core: components.md:MorphStatsComponent 5d99bc4 -->
 `MorphStatsComponent` кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.
 
-В ruTS части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), а в пайплайне без `morphologizer` - из pymorphy3.
+В ruTS части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), а в пайплайне без `morphologizer` - из ruMorph.
 
 === "Код"
 
@@ -241,7 +241,7 @@ StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, 
 - `SourceTypeError` - стоп-слова, стоп-слова тошноты или штампы, которые не список строк;
 - `ParameterError` - `top_n`, который не целое число не меньше единицы.
 
-Без списков слова «воды» и стоп-слова тошноты определяются по разметке pymorphy3, а штампы берутся из `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` - константа `anyts.constants`.
+Без списков слова «воды» и стоп-слова тошноты определяются по разметке ruMorph, а штампы берутся из `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` - константа `anyts.constants`.
 
 === "Код"
 
@@ -319,7 +319,7 @@ SyntaxStatsComponent(nlp, name)
 CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` кладет в расширение статистики связности. Парсер ему не нужен, а `Doc` без границ предложений делится на предложения русским [`SentsExtractor`](extractors/sentences.md); при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3. С `blank_lines` абзацы начинаются только после пустых строк, как в `CohesionStats`.
+`CohesionStatsComponent` кладет в расширение статистики связности. Парсер ему не нужен, а `Doc` без границ предложений делится на предложения русским [`SentsExtractor`](extractors/sentences.md); при наличии разметки части речи берутся из нее, леммы - из ruMorph по части речи токена, без разметки - из первого разбора ruMorph. С `blank_lines` абзацы начинаются только после пустых строк, как в `CohesionStats`.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |

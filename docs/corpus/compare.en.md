@@ -8,7 +8,7 @@ Compares two corpora of Russian texts by every feature of a text at once: which 
 
 The texts are cut in a row into windows of exactly `window` words by [`split_windows`](#split_windows), so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by [`text_features`](#text_features) or a function of one's own, and the tables of the two corpora are compared by [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core.
 
-Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1423 windows of 1000 words, about a minute.
+Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1422 windows of 1000 words, about a minute.
 
 === "Code"
 
@@ -38,23 +38,23 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 === "Result"
 
     ```
-                                            median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent                0.066           0.109  -0.047   -0.035   -1.058       -0.841  0.079     0.0
-    cohesion_noun_overlap_2_sent                   0.080           0.139  -0.067   -0.049   -1.061       -0.757  0.121     0.0
-    cohesion_content_overlap_prop_all              0.015           0.026  -0.014   -0.009   -0.527       -0.751  0.125     0.0
-    cohesion_content_overlap_adjacent              0.190           0.343  -0.193   -0.127   -1.246       -0.711  0.145     0.0
-    punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-    cohesion_content_overlap_all                   0.090           0.183  -0.125   -0.071   -1.076       -0.698  0.151     0.0
-    cohesion_noun_overlap_adjacent                 0.106           0.215  -0.137   -0.085   -1.036       -0.662  0.169     0.0
-    cohesion_noun_overlap_all                      0.044           0.093  -0.070   -0.034   -0.837       -0.658  0.171     0.0
-    punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-    cohesion_content_overlap_prop_adjacent         0.037           0.059  -0.025   -0.018   -0.836       -0.645  0.177     0.0
+                                       median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+    cohesion_content_overlap_2_sent           0.062           0.100  -0.042   -0.030   -0.966       -0.813  0.093     0.0
+    cohesion_noun_overlap_2_sent              0.080           0.141  -0.069   -0.049   -1.071       -0.759  0.120     0.0
+    cohesion_content_overlap_all              0.071           0.145  -0.097   -0.053   -1.019       -0.717  0.142     0.0
+    cohesion_content_overlap_adjacent         0.169           0.309  -0.171   -0.118   -1.217       -0.714  0.143     0.0
+    cohesion_content_overlap_prop_all         0.013           0.021  -0.011   -0.007   -0.438       -0.708  0.146     0.0
+    punct_ellipsis                           15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
+    cohesion_noun_overlap_adjacent            0.104           0.217  -0.138   -0.088   -1.054       -0.671  0.164     0.0
+    cohesion_noun_overlap_all                 0.042           0.095  -0.072   -0.035   -0.851       -0.663  0.168     0.0
+    punct_exclamation                        14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
+    cohesion_argument_overlap_2_sent          0.155           0.214  -0.082   -0.039   -1.015       -0.623  0.188     0.0
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.90, of Tolstoy 0.76), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.26 and 0.33). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.86, of Tolstoy 0.66), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.07 and 0.23). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 110 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 110 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 114 of the 147 features have a corrected p-value below 0.01, but only 20 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 84 of those 114 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8. For the ellipses it spans 6 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 ## Parameters
 
@@ -80,17 +80,17 @@ Raises:
 text_features(text, nlp=None)
 ```
 
-Returns 145 features of a text prefixed by source, 188 with the pipeline `nlp`; an undefined feature is `nan`.
+Returns 147 features of a text prefixed by source, 190 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
 | `diversity_` | lexical diversity measures, but for Orlov's Z, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by pymorphy3 |
+| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by ruMorph |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
-| `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by pymorphy3 |
+| `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by ruMorph |
 | `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups. The leaves, the subtrees, the longest dependency and the depth of the tree nearly repeat the length of a sentence `sents_mean` | [`SyntaxStats`](../stats/syntax_stats.md) |
 
 A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.

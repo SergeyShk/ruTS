@@ -3,7 +3,7 @@ from functools import cache, lru_cache
 from itertools import islice
 
 import anyts.corpus
-import pymorphy3
+import rumorph
 from anyts.corpus.keyness import (
     FrequencyReference as FrequencyReference,
     Keyword as Keyword,
@@ -61,10 +61,10 @@ def keyness(
         на объем корпуса словаря (92 млн); слово вне словаря получает его
         наименьшую частоту (min_ipm) и бывает только положительным ключевым словом;
         статья, которой нет в цели, бывает отрицательным ключевым словом, только если
-        к ней приводится хотя бы одна форма ее лексем pymorphy3 (с lemmatize=False -
+        к ней приводится хотя бы одна форма ее лексем ruMorph (с lemmatize=False -
         лемма формы по первому разбору, как у WordsExtractor(use_lexemes=True)):
-        словоформы «его», «во», «со» pymorphy3 приводит к «он», «в», «с», и статьи
-        словаря «его», «во», «со» без этого выходили бы у любого текста
+        словоформы «во», «со» ruMorph приводит к «в», «с», и статьи словаря «во»,
+        «со» без этого выходили бы у любого текста
         Нулевая частота в одном из корпусов при расчете %DIFF, Log Ratio и отношения
         шансов заменяется на 0.5 (Hardie 2014)
         Положительные ключевые слова чаще в целевом корпусе, отрицательные -
@@ -121,7 +121,7 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
 
     @cache
     def key(word: str) -> str:
-        lemma = parse_word(word).normal_form if lemmatize else word
+        lemma = parse_word(word).lemma if lemmatize else word
         return dictionary_lemma(word, lemma, entries)
 
     return key
@@ -151,12 +151,12 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     Поиск статей частотного словаря, к которым не приводится ни одна форма их лексем
 
     Описание:
-        Разбирает все статьи и формы их лексем pymorphy3 (с lemmatize=False -
+        Разбирает все статьи и формы их лексем ruMorph (с lemmatize=False -
         леммы форм по первому разбору), поэтому медленный: результат хранится
         в ресурсах UNREACHABLE_FILES. Сравнительная степень и краткие формы
         прилагательных на -щий не считаются (обязаннее, действующ - в тексте
-        таких форм не бывает); слов, которые pymorphy3 только предсказывает
-        (Михайлыч, дитё), поиск не видит
+        таких форм не бывает); у слов, которых нет в словаре ruMorph (Михайлыч),
+        формы угаданы
 
     Аргументы:
         freq_dict (FreqDict): Частотный словарь
@@ -168,11 +168,11 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     key = _dictionary_key(freq_dict.entries, lemmatize)
 
     def target(form: str) -> str:
-        return form if lemmatize else parse_word(form).normal_form
+        return form if lemmatize else parse_word(form).lemma
 
-    def counted(form: pymorphy3.analyzer.Parse, entry: str) -> bool:
-        return "COMP" not in form.tag.grammemes and not (
-            form.tag.POS == "ADJS" and entry.endswith("щий")
+    def counted(form: rumorph.Analysis, entry: str) -> bool:
+        return form.feats.get("Degree") != "Cmp" and not (
+            form.feats.get("Variant") == "Short" and entry.endswith("щий")
         )
 
     def reachable(entry: str) -> bool:
@@ -180,8 +180,8 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
             return True
         forms = {
             form.word
-            for parse in parse_all(entry)
-            for form in parse.lexeme
+            for analysis in parse_all(entry)
+            for form in analysis.forms()
             if counted(form, entry)
         }
         return any(

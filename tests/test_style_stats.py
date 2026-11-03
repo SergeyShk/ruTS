@@ -102,6 +102,9 @@ def test_init_lexemes():
         ("быстро", False),
         ("читать", False),
         ("100", False),
+        ("бы", True),
+        ("иногда", False),
+        ("более", False),
     ],
 )
 def test_is_stopword(word, expected):
@@ -160,8 +163,8 @@ def test_water(ss):
     assert calc_water(riddle, stopwords=["нет", "а"]) == pytest.approx(100 * 4 / 15)
     assert calc_water(riddle, stopwords=["НЕТ"]) == pytest.approx(100 * 2 / 15)
     assert calc_water(riddle, stopwords=[]) == 0.0
-    # или x2, его, не, и, их, а, также
-    assert ss.water == pytest.approx(100 * 8 / 61)
+    # или x2, его, не, только, и, их, а, также
+    assert ss.water == pytest.approx(100 * 9 / 61)
     assert StyleStats(text, stopwords=["и", "или"]).water == pytest.approx(100 * 3 / 61)
 
 
@@ -452,7 +455,7 @@ def test_markers_forms():
 
 def test_markers_verbal_nouns_share():
     ss = StyleStats(text)
-    nouns = sum(1 for word in ss.forms if parse_word(word).tag.POS == "NOUN")
+    nouns = sum(1 for word in ss.forms if parse_word(word).pos in ("NOUN", "PROPN"))
     assert ss.verbal_nouns == pytest.approx(100 * len(ss.markers()["verbal_nouns"]) / nouns)
 
 

@@ -3,12 +3,13 @@ from __future__ import annotations
 import functools
 import inspect
 import re
+import unicodedata
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import anyts.utils
-import pymorphy3
+import rumorph
 from anyseg import Segmenter
 from anyts.utils import (
     add_tokenizer_rules,
@@ -20,10 +21,10 @@ from anyts.utils import (
 
 from .constants import (
     CORE_MESSAGES,
+    PRONOMINAL_TYPES,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
     TOKENIZER_SUFFIXES,
-    UD_TO_OPENCORPORA_POS,
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
@@ -35,9 +36,6 @@ if TYPE_CHECKING:
 
 F = TypeVar("F", bound=Callable[..., Any])
 BYTE_ORDER_MARK = "\ufeff"
-SPELLINGS = {"её": "ее", "нем": "нём"}
-# Разборы, которые идут первыми: «есть» - «быть», «ниже» - наречие (у pymorphy3 - предлог)
-PREFERRED_POS = {"есть": "VERB", "ниже": "ADVB"}
 CYRILLIC = "а-яёА-ЯЁ"
 LATIN_STRESSED = "áéóýàèòÁÉÓÝÀÈÒ"
 # Буквы вместо записей с отдельными знаками, ѐ и ѝ и ударных гласных латиницей
@@ -62,19 +60,21 @@ MARKS = re.compile(
 )
 MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 SEGMENTER = Segmenter("ru")
+# Разбор строки без видимых символов: знак препинания, а не слово
+NO_WORD = "_"
 # anySeg принимает только текст, который кодируется в UTF-8
 SURROGATES = re.compile("[\ud800-\udfff]")
 
 
 @lru_cache(maxsize=1)
-def get_morph_analyzer() -> pymorphy3.MorphAnalyzer:
+def get_morph_analyzer() -> rumorph.Analyzer:
     """
-    Получение морфологического анализатора pymorphy3
+    Получение морфологического анализатора ruMorph
 
     Вывод:
-        MorphAnalyzer: Морфологический анализатор
+        Analyzer: Морфологический анализатор
     """
-    return pymorphy3.MorphAnalyzer()
+    return rumorph.Analyzer()
 
 
 def strip_marks(text: str) -> str:
@@ -86,7 +86,7 @@ def strip_marks(text: str) -> str:
         ѐ и ѝ становятся е и и, ударная гласная латиницей внутри русского слова
         (чтó, Домá) - кириллической, й и ё из двух символов (NFD) собираются
         в одну букву, мягкий перенос U+00AD снимается везде: в написание слова
-        все это не входит, а pymorphy3 и словари слов с ними не узнают. Знаки
+        все это не входит, а словари слов с ними не узнают. Знаки
         над латиницей (Café) остаются
 
     Аргументы:
@@ -220,47 +220,41 @@ def _replace_mark(match: re.Match[str]) -> str:
 
 
 @lru_cache(maxsize=131072)
-def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
+def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
     """
-    Морфологические разборы словоформы pymorphy3 с кэшированием
+    Морфологические разборы словоформы ruMorph с кэшированием
 
     Описание:
-        Разборы по убыванию вероятности; знаки ударения и мягкие переносы
-        снимаются (strip_marks), сокращение разбирается без точки (т., руб.),
-        как его знает pymorphy3. Словоформа «её» разбирается как «ее»:
-        pymorphy3 дает у нее только притяжательное местоимение, без личного
-        «она», и текст с буквой ё разбирался бы иначе, чем без нее; «нем» - как «нём»,
-        а не краткое «немой»
-        Первыми идут разборы PREFERRED_POS: «есть» - «быть», а не «кушать», «ниже» -
-        наречие; у слова с заглавной буквы, первый разбор которого - догадка
-        о кратком прилагательном (Мартова), - существительное
+        Разборы по убыванию вероятности, без учета соседних слов; части речи
+        и признаки - Universal Dependencies, пометы OpenCorpora без признака UD
+        (вводное слово Prnt, переходность tran и intr) - в labels. Знаки ударения,
+        мягкие переносы и ё ruMorph учитывает сам, точку - у известных ему сокращений
+        (т., руб., г.), а незнакомое сокращение с точкой (тов., коп.) - X с точкой
+        в лемме;
+        слово с управляющими, служебными или пробельными символами (DEL, ZWSP),
+        которого ruMorph не разбирает, разбирается без них, а строка без видимых
+        символов - как знак препинания (NO_WORD), так что разбор есть всегда
 
     Аргументы:
         word (str): Словоформа
 
     Вывод:
-        tuple[Parse]: Разборы словоформы
+        tuple[Analysis]: Разборы словоформы
 
     Пример использования:
         >>> from ruts.utils import parse_all
-        >>> [parse.normal_form for parse in parse_all("её")][:2]
-        ['она', 'её']
+        >>> [(analysis.lemma, analysis.pos) for analysis in parse_all("стали")][:2]
+        [('стать', 'VERB'), ('сталь', 'NOUN')]
     """
-    word = strip_marks(word)
-    if len(word) > 1 and word.endswith("."):
-        word = word[:-1]
-    parses = get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word))
-    pos = PREFERRED_POS.get(word.lower())
-    # Краткое прилагательное с заглавной буквы не из словаря - обычно фамилия или имя
-    guessed = bool(parses) and parses[0].tag.POS == "ADJS" and not parses[0].is_known
-    if pos is None and guessed and word[:1].isupper():
-        pos = "NOUN"
-    if pos is not None:
-        parses.sort(key=lambda parse: pos != parse.tag.POS)
-    return tuple(parses)
+    analyzer = get_morph_analyzer()
+    analyses = analyzer.analyze(word)
+    if not analyses:
+        visible = "".join(char for char in word if unicodedata.category(char)[0] not in "CZ")
+        analyses = (visible and analyzer.analyze(visible)) or analyzer.analyze(NO_WORD)
+    return tuple(analyses)
 
 
-def parse_word(word: str) -> pymorphy3.analyzer.Parse:
+def parse_word(word: str) -> rumorph.Analysis:
     """
     Морфологический разбор словоформы
 
@@ -273,21 +267,54 @@ def parse_word(word: str) -> pymorphy3.analyzer.Parse:
         word (str): Словоформа
 
     Вывод:
-        Parse: Разбор словоформы
+        Analysis: Разбор словоформы
     """
     return parse_all(word)[0]
+
+
+def is_predicative(analysis: rumorph.Analysis) -> bool:
+    """
+    Проверка, является ли разбор предикативом (надо, можно, нет) или частицей «бы»
+
+    Описание:
+        В UD это глагол или вспомогательный глагол без формы VerbForm
+
+    Аргументы:
+        analysis (Analysis): Разбор ruMorph
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return analysis.pos in ("VERB", "AUX") and "VerbForm" not in analysis.feats
+
+
+def is_pronominal(analysis: rumorph.Analysis) -> bool:
+    """
+    Проверка, является ли разбор указательным, вопросительным или относительным словом
+
+    Описание:
+        Признак PronType со значением из PRONOMINAL_TYPES (там, тогда, где, почему);
+        определительные (всегда, иногда, более - PronType=Tot) и отрицательные
+        (никогда) наречия к ним не относятся
+
+    Аргументы:
+        analysis (Analysis): Разбор ruMorph
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return not PRONOMINAL_TYPES.isdisjoint(analysis.feats.get("PronType", "").split(","))
 
 
 @lru_cache(maxsize=131072)
 def lemmatize(word: str, pos: str = "") -> str:
     """
-    Лемматизация словоформы pymorphy3 с учетом части речи Universal Dependencies
+    Лемматизация словоформы ruMorph с учетом части речи Universal Dependencies
 
     Описание:
-        Среди разборов словоформы выбирается первый, часть речи которого соответствует
-        заданной части речи UD по таблице UD_TO_OPENCORPORA_POS, как делает
-        лемматизатор spaCy для русского языка: «стали» с NOUN - сталь, с VERB - стать
-        Без части речи или без подходящего разбора берется первый разбор
+        Среди разборов словоформы выбирается первый с заданной частью речи:
+        «стали» с NOUN - сталь, с VERB - стать. Без части речи или без подходящего
+        разбора берется первый разбор
 
     Аргументы:
         word (str): Словоформа
@@ -296,10 +323,8 @@ def lemmatize(word: str, pos: str = "") -> str:
     Вывод:
         str: Лемма
     """
-    parses = parse_all(word)
-    allowed = UD_TO_OPENCORPORA_POS.get(pos, frozenset())
-    parse = next((parse for parse in parses if parse.tag.POS in allowed), parses[0])
-    return str(parse.normal_form)
+    analyses = parse_all(word)
+    return next((analysis for analysis in analyses if analysis.pos == pos), analyses[0]).lemma
 
 
 def is_verbal_noun(lemma: str) -> bool:

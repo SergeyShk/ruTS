@@ -12,18 +12,18 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 - `SourceError` - источник без слов;
 - `ParameterError` - неизвестный класс или тип коннектора, `blank_lines`, который не `bool`.
 
-Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора pymorphy3 с частью речи токена ([`unit_info`](#word_info)); для строки, `Doc` без разметки и `Doc` с заданным экстрактором слов - из первого разбора pymorphy3 ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора ruMorph с частью речи токена ([`unit_info`](#word_info)); для строки, `Doc` без разметки и `Doc` с заданным экстрактором слов - из первого разбора ruMorph ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
-Слова классифицируются по разметке [pymorphy3](https://github.com/no-plagiarism/pymorphy3) или по разметке Universal Dependencies объекта `Doc`:
+Слова классифицируются по частям речи и признакам Universal Dependencies - разбора [ruMorph](https://github.com/SergeyShk/ruMorph) для строки или разметки объекта `Doc`:
 
-| Понятие | pymorphy3 | Universal Dependencies (`Doc`) |
-| :------ | :-------- | :----------------------------- |
-| Существительные | `NOUN` | `NOUN`, `PROPN` |
-| Местоимения | `NPRO`, `Apro`, леммы из `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` |
-| Аргументы | `NOUN`, `NPRO` | `NOUN`, `PROPN`, `PRON` |
-| Знаменательные слова | `CONTENT_POS` без `STOPWORD_GRAMMEMES` и указательных | `CONTENT_UD_POS` без указательных |
+| Понятие | Строка (ruMorph) | `Doc` |
+| :------ | :--------------- | :---- |
+| Существительные | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
+| Местоимения | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` |
+| Аргументы | `NOUN`, `PROPN`, `PRON` | `NOUN`, `PROPN`, `PRON` |
+| Знаменательные слова | `CONTENT_UD_POS` без указательных, местоименных (`PronType` Dem, Int, Rel: там, где, почему) и вводных (помета `Prnt`) слов, предикативов и чисел цифрами | `CONTENT_UD_POS` без указательных |
 | Указательные | леммы из `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | те же леммы |
-| Время и вид | граммемы `past`, `pres`, `futr` и `perf`, `impf` глагольных форм, время бытийных «нет» и «нету» | признаки `Tense` и `Aspect` |
+| Время и вид | признаки `Tense` и `Aspect` | признаки `Tense` и `Aspect` |
 
 === "Код"
 
@@ -47,7 +47,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
     Повтор знаменательных слов в соседних предложениях       |   0.33
     Повтор знаменательных слов во всех парах предложений     |   0.50
     Доля общих знаменательных слов в соседних предложениях   |   0.11
-    Доля общих знаменательных слов во всех парах предложений |   0.19
+    Доля общих знаменательных слов во всех парах предложений |   0.20
     Повтор существительных в двух следующих предложениях     |   0.67
     Повтор аргументов в двух следующих предложениях          |   0.75
     Повтор знаменательных слов в двух следующих предложениях |   0.40
@@ -57,7 +57,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
     Доля местоимений                                         |   0.14
     Отношение местоимений к существительным                  |   0.50
     Доля указательных местоимений                            |   0.05
-    Доля знаменательных слов, встречавшихся ранее            |   0.29
+    Доля знаменательных слов, встречавшихся ранее            |   0.31
     Повтор времени в соседних предложениях                   |   0.67
     Повтор вида в соседних предложениях                      |   0.33
     Темпоральная связность                                   |   0.50
@@ -114,7 +114,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 
     ```
     ('он', 'смотреть', 'на', 'птица')
-    (6, 3, 14, 4)
+    (6, 3, 13, 4)
     (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
     {'и': 1}
     ```
@@ -422,7 +422,7 @@ load_connectors()
      'content_overlap_adjacent': 0.3333333333333333,
      'content_overlap_all': 0.5,
      'content_overlap_prop_adjacent': 0.1111111111111111,
-     'content_overlap_prop_all': 0.18650793650793648,
+     'content_overlap_prop_all': 0.19841269841269837,
      'noun_overlap_2_sent': 0.6666666666666666,
      'argument_overlap_2_sent': 0.75,
      'content_overlap_2_sent': 0.4,
@@ -432,7 +432,7 @@ load_connectors()
      'p_pronouns': 0.14285714285714285,
      'pronoun_noun_ratio': 0.5,
      'p_demonstratives': 0.047619047619047616,
-     'p_given': 0.2857142857142857,
+     'p_given': 0.3076923076923077,
      'tense_repetition': 0.6666666666666666,
      'aspect_repetition': 0.3333333333333333,
      'temporal_cohesion': 0.5,
@@ -512,7 +512,7 @@ RussianConnectorMatcher(connectors)
 <!-- core: stats/cohesion_stats.md:ConnectorMatcher-is_subordinator 6913020 -->
 `is_subordinator(connector, pos=None)` проверяет, привязывает ли вхождение коннектора свою клаузу или группу к собственному предложению: коннектор из `subordinators` или однословный коннектор с частью речи `pos` `SCONJ` или `ADP`, но не из `parcellation`. Клауза подчинительного союза и группа предлога принадлежат предложению коннектора, где бы он ни стоял, поэтому подчинительный, открывающий предложение (*когда он пришел, ...*, *вопреки ожиданиям, ...*), не связывает его с предыдущими. Коннектор, который не `Connector`, дает `SourceTypeError`.
 
-Подчинительные в ruTS сверх однословных с частью речи `SCONJ` и `ADP` - `CONNECTOR_SUBORDINATORS`: многословные союзы и предлоги (*так как*, *после того как*, *несмотря на*) и однословные, которые модели spaCy или pymorphy3 размечают иначе (*ежели*, *коли*, *пока*, *раз*, *хоть*, *едва*). Союз из `CONNECTOR_PARCELLATION` (*ибо*) в начале предложения присоединяет его к предыдущему, поэтому подчинительным не считается.
+Подчинительные в ruTS сверх однословных с частью речи `SCONJ` и `ADP` - `CONNECTOR_SUBORDINATORS`: многословные союзы и предлоги (*так как*, *после того как*, *несмотря на*) и однословные, которые модели spaCy или ruMorph размечают иначе (*ежели*, *коли*, *пока*, *раз*, *хоть*, *едва*). Союз из `CONNECTOR_PARCELLATION` (*ибо*) в начале предложения присоединяет его к предыдущему, поэтому подчинительным не считается.
 
 ## Поиск коннекторов { #find_connectors }
 
@@ -530,7 +530,7 @@ find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None, blo
 connector_pos(word)
 ```
 
-Часть речи UD слова по pymorphy3 для проверки коннектора: первый разбор с частью речи, подходящей коннектору (`CONNECTOR_POS` или `CONNECTOR_POS_EXTRA` для этого слова), иначе первый разбор. Так `CohesionStats` получает части речи для строки и `Doc` без разметки.
+Часть речи UD слова по ruMorph для проверки коннектора: первый разбор с частью речи, подходящей коннектору (`CONNECTOR_POS` или `CONNECTOR_POS_EXTRA` для этого слова), иначе первый разбор. Так `CohesionStats` получает части речи для строки и `Doc` без разметки.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -577,7 +577,7 @@ ud_info(word, pos, tense, aspect)
 unit_info(unit)
 ```
 
-Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора pymorphy3; `words_info` - так же для слов предложений текста, где ответное «нет» (Нет, не видел) - частица без времени. `token_info` берет их из разметки spaCy (`token.pos_`, `Tense`, `Aspect`), `ud_info` - из заданных части речи, времени и вида UD; лемма берется из разбора pymorphy3 с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору pymorphy3 склеенного текста, переведенному в UD (`word_to_ud`).
+Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph; `words_info` - так же для слов предложений текста, где ответное «нет» (Нет, не видел) - частица. `token_info` берет их из разметки spaCy (`token.pos_`, `Tense`, `Aspect`), `ud_info` - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (`word_to_ud`).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -599,7 +599,7 @@ unit_info(unit)
 === "Результат"
 
     ```
-    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='past', aspect='impf')
+    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
     ```
 
 ## Слова Doc { #split_doc_units }
@@ -660,7 +660,7 @@ unit_pos(unit)
 is_pronoun(word)
 ```
 
-Проверяет, является ли слово местоимением по разметке pymorphy3: `NPRO` (он, себя, кто) или `Apro` (этот, который, мой, весь).
+Проверяет, является ли слово местоимением по разметке ruMorph: `PRON` (он, себя, кто) или `DET` (этот, который, мой, весь).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -672,7 +672,7 @@ is_pronoun(word)
 is_content_word(word)
 ```
 
-Проверяет, является ли слово знаменательным по разметке pymorphy3: часть речи из `CONTENT_POS` (существительные, прилагательные, глаголы во всех формах, наречия) без граммем `STOPWORD_GRAMMEMES` (местоименные и вводные слова).
+Проверяет, является ли слово знаменательным по разметке ruMorph: часть речи из `CONTENT_UD_POS` (существительные, имена собственные, прилагательные, глаголы во всех формах, наречия), кроме местоименных (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`), вводных (помета `Prnt`) слов, предикативов (надо, можно) и чисел цифрами.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |

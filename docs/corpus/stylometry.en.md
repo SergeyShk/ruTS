@@ -178,7 +178,7 @@ The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/
 function_words_profile(source)
 ```
 
-The shares of adpositions, coordinating and subordinating conjunctions, particles, pronouns, determiners and interjections (`ruts.constants.FUNCTION_UD_POS`: `ADP`, `CCONJ`, `SCONJ`, `PART`, `PRON`, `DET`, `INTJ`) among the words of the text - by the first pymorphy3 analysis for a list of words and by the annotation for a `Doc` with parts of speech; punctuation is not counted. Function words do not depend on the topic, so their profile is a classic authorship feature (the Marusenko school).
+The shares of adpositions, coordinating and subordinating conjunctions, particles, pronouns, determiners and interjections (`ruts.constants.FUNCTION_UD_POS`: `ADP`, `CCONJ`, `SCONJ`, `PART`, `PRON`, `DET`, `INTJ`) among the words of the text - by the first ruMorph analysis for a list of words and by the annotation for a `Doc` with parts of speech; punctuation is not counted. Function words do not depend on the topic, so their profile is a classic authorship feature (the Marusenko school).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

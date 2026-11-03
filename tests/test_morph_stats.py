@@ -8,15 +8,14 @@ from spacy.tokens import Doc
 from ruts import MorphStats
 from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
 from ruts.morph_stats import (
+    analysis_to_ud,
     answer_particles,
     find_answer_particles,
     parse_verb,
-    tag_to_ud,
-    tag_to_ud_pos,
     token_to_ud,
     word_to_ud,
 )
-from ruts.utils import get_morph_analyzer, parse_word
+from ruts.utils import parse_word
 
 text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
 
@@ -30,10 +29,6 @@ def ms():
 def nlp():
     pytest.importorskip("ru_core_news_sm")
     return spacy.load("ru_core_news_sm")
-
-
-def make_tag(tag: str):
-    return get_morph_analyzer().TagClass(tag)
 
 
 def test_init_value_error():
@@ -51,20 +46,32 @@ def test_pos(ms):
     assert ms.pos == (
         "VERB",
         "VERB",
-        "CCONJ",
+        "PRON",
         "SCONJ",
         "VERB",
         "ADV",
         "VERB",
         "VERB",
-        "CCONJ",
+        "PRON",
         "SCONJ",
         "VERB",
     )
 
 
 def test_animacy(ms):
-    assert ms.animacy == (None,) * 11
+    assert ms.animacy == (
+        None,
+        None,
+        "Inan",
+        None,
+        None,
+        None,
+        None,
+        None,
+        "Inan",
+        None,
+        None,
+    )
 
 
 def test_aspect(ms):
@@ -84,15 +91,51 @@ def test_aspect(ms):
 
 
 def test_case(ms):
-    assert ms.case == (None,) * 11
+    assert ms.case == (
+        None,
+        None,
+        "Acc",
+        None,
+        None,
+        None,
+        None,
+        None,
+        "Acc",
+        None,
+        None,
+    )
 
 
 def test_gender(ms):
-    assert ms.gender == (None,) * 11
+    assert ms.gender == (
+        None,
+        None,
+        "Neut",
+        None,
+        None,
+        None,
+        None,
+        None,
+        "Neut",
+        None,
+        None,
+    )
 
 
 def test_involvement(ms):
-    assert ms.involvement == ("Ex",) + (None,) * 10
+    assert ms.involvement == (
+        "Ex",
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    )
 
 
 def test_mood(ms):
@@ -115,20 +158,32 @@ def test_number(ms):
     assert ms.number == (
         "Plur",
         None,
-        None,
+        "Sing",
         None,
         "Plur",
         None,
         "Sing",
         None,
-        None,
+        "Sing",
         None,
         "Plur",
     )
 
 
 def test_person(ms):
-    assert ms.person == (None, None, None, None, "2", None, "3", None, None, None, None)
+    assert ms.person == (
+        "2",
+        None,
+        None,
+        None,
+        "2",
+        None,
+        "3",
+        None,
+        None,
+        None,
+        None,
+    )
 
 
 def test_tense(ms):
@@ -180,16 +235,30 @@ def test_verb_form(ms):
 
 
 def test_voice(ms):
-    assert ms.voice == (None,) * 11
+    assert ms.voice == (
+        "Mid",
+        "Act",
+        None,
+        None,
+        "Act",
+        None,
+        "Mid",
+        "Act",
+        None,
+        None,
+        "Act",
+    )
 
 
 def test_tags(ms):
-    assert ms.tags[0] == "Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin"
-    assert ms.tags[1] == "Aspect=Perf|Subcat=Tran|VerbForm=Inf"
-    assert ms.tags[2] == "_"
-    assert (
-        ms.tags[4]
-        == "Aspect=Imp|Mood=Ind|Number=Plur|Person=2|Subcat=Tran|Tense=Pres|VerbForm=Fin"
+    assert ms.tags[0] == (
+        "Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid"
+    )
+    assert ms.tags[1] == "Aspect=Perf|Subcat=Tran|VerbForm=Inf|Voice=Act"
+    assert ms.tags[2] == "Animacy=Inan|Case=Acc|Gender=Neut|Number=Sing"
+    assert ms.tags[3] == "_"
+    assert ms.tags[4] == (
+        "Aspect=Imp|Mood=Ind|Number=Plur|Person=2|Subcat=Tran|Tense=Pres|VerbForm=Fin|Voice=Act"
     )
 
 
@@ -269,22 +338,22 @@ def test_init_doc_verbs(nlp):
         ("лучше", "ADJ"),
         ("первый", "ADJ"),
         ("быстро", "ADV"),
-        ("надо", "ADV"),
+        ("надо", "VERB"),
         ("читал", "VERB"),
         ("читать", "VERB"),
         ("читающий", "VERB"),
         ("прочитан", "VERB"),
         ("прочитав", "VERB"),
         ("он", "PRON"),
-        ("который", "PRON"),
+        ("который", "DET"),
         ("этот", "DET"),
         ("мой", "DET"),
         ("весь", "DET"),
         ("три", "NUM"),
         ("один", "NUM"),
         ("одна", "NUM"),
-        ("2020", "NUM"),
-        ("III", "NUM"),
+        ("2020", "ADJ"),
+        ("III", "ADJ"),
         ("в", "ADP"),
         ("и", "CCONJ"),
         ("что", "SCONJ"),
@@ -299,19 +368,13 @@ def test_word_to_ud_pos(word, expected):
 
 
 @pytest.mark.parametrize(
-    ("tag", "expected"),
+    ("word", "expected"),
     [
         (
-            "NOUN,inan,masc sing,loc2",
-            {"pos": "NOUN", "animacy": "Inan", "gender": "Masc", "number": "Sing", "case": "Loc"},
-        ),
-        ("NOUN,inan,masc sing,gen2", {"case": "Par"}),
-        ("NOUN,anim,ms-f sing,nomn", {"gender": "Com", "case": "Nom"}),
-        (
-            "VERB,impf,intr plur,impr,incl",
+            "пойдемте",
             {
                 "pos": "VERB",
-                "aspect": "Imp",
+                "aspect": "Perf",
                 "transitivity": "Intr",
                 "number": "Plur",
                 "mood": "Imp",
@@ -319,45 +382,42 @@ def test_word_to_ud_pos(word, expected):
                 "verb_form": "Fin",
             },
         ),
-        ("PRTF,impf,tran,pres,actv masc,sing,nomn", {"verb_form": "Part", "voice": "Act"}),
+        ("читающий", {"verb_form": "Part", "voice": "Act", "transitivity": "Tran"}),
         (
-            "PRTS,perf,past,pssv masc,sing",
+            "прочитан",
             {"verb_form": "Part", "voice": "Pass", "tense": "Past", "style_variant": "Short"},
         ),
-        ("ADJS,Qual masc,sing", {"pos": "ADJ", "degree": "Pos", "style_variant": "Short"}),
-        ("ADJF,Supr,Qual masc,sing,nomn", {"degree": "Sup", "style_variant": None}),
-        ("COMP,Qual", {"pos": "ADJ", "degree": "Cmp"}),
-        ("ADVB", {"degree": "Pos"}),
-        ("ADJF,Apro masc,sing,nomn", {"pos": "DET", "degree": None}),
-        ("PRCL", {"pos": "PART", "polarity": None}),
-        ("GRND,perf,tran past", {"verb_form": "Conv", "aspect": "Perf", "tense": "Past"}),
-        ("PRED,pres", {"pos": "ADV", "tense": None, "degree": "Pos"}),
-        ("INFN,impf,tran", {"verb_form": "Inf", "mood": None, "tense": None}),
-        ("VERB,impf,tran sing,3per,pres,indc", {"person": "3", "tense": "Pres", "mood": "Ind"}),
-        ("LATN", {"pos": "X", "verb_form": None}),
-        ("PNCT", {"pos": "PUNCT"}),
-        ("UNKN", {"pos": "X"}),
+        ("краток", {"pos": "ADJ", "degree": "Pos", "style_variant": "Short"}),
+        ("важнейший", {"degree": "Sup", "style_variant": None}),
+        ("лучше", {"pos": "ADJ", "degree": "Cmp"}),
+        ("быстро", {"degree": "Pos"}),
+        ("этот", {"pos": "DET", "degree": None}),
+        ("не", {"pos": "PART", "polarity": "Neg"}),
+        ("прочитав", {"verb_form": "Conv", "aspect": "Perf", "tense": "Past"}),
+        ("надо", {"pos": "VERB", "tense": None, "degree": None, "verb_form": None}),
+        ("читать", {"verb_form": "Inf", "mood": None, "tense": None}),
+        ("читает", {"person": "3", "tense": "Pres", "mood": "Ind"}),
     ],
 )
-def test_tag_to_ud(tag, expected):
-    features = tag_to_ud(make_tag(tag), "")
+def test_analysis_to_ud(word, expected):
+    features = analysis_to_ud(parse_word(word))
     assert set(features) == set(MORPHOLOGY_STATS_DESC)
     for key, value in expected.items():
-        assert features[key] == value
+        assert features[key] == value, key
 
 
 @pytest.mark.parametrize(
-    ("text", "tense"),
+    ("text", "tense", "doc_tense"),
     [
-        ("Надо идти. Нельзя молчать. Было надо спать.", {"Past": 1}),
-        ("Меня нет дома. Хлеба нету.", {"Pres": 2}),
+        ("Надо идти. Нельзя молчать. Было надо спать.", {"Past": 1}, {"Past": 1}),
+        ("Меня нет дома. Хлеба нету.", {}, {"Pres": 2}),
     ],
 )
-def test_predicatives_tense(nlp, text, tense):
-    """Предикативы (надо, нельзя) - без времени, бытийные «нет» и «нету» - в настоящем, как у Doc"""
+def test_predicatives_tense(nlp, text, tense, doc_tense):
+    """Предикативы (надо, нельзя) и бытийные «нет», «нету» у ruMorph - без времени;
+    у ru_core_news_sm бытийные - в настоящем"""
     assert MorphStats(text).get_stats("tense", filter_none=True) == {"tense": tense}
-    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": tense}
-    assert tag_to_ud(make_tag("PRED,pres"), "нет")["tense"] == "Pres"
+    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": doc_tense}
 
 
 def test_degree_polarity_short_forms(nlp):
@@ -371,9 +431,6 @@ def test_degree_polarity_short_forms(nlp):
     stats = ("degree", "polarity", "style_variant")
     assert MorphStats(text).get_stats(*stats, filter_none=True) == expected
     assert MorphStats(nlp(text)).get_stats(*stats, filter_none=True) == expected
-    assert tag_to_ud(make_tag("PRCL"), "не")["polarity"] == "Neg"
-    assert tag_to_ud(make_tag("PRED,pres"), "нет")["degree"] is None
-    assert tag_to_ud(make_tag("ADVB"), "более")["degree"] == "Cmp"
     analytic = "Этот вопрос более важен, а тот менее интересен."
     expected = {"degree": {"Cmp": 2, "Pos": 2}}
     assert MorphStats(analytic).get_stats("degree", filter_none=True) == expected
@@ -397,11 +454,14 @@ def test_existential_verb(nlp):
 
 
 def test_answer_particle(nlp):
-    """Ответное «нет» - частица с отрицанием без времени, бытийное - в настоящем, как у Doc"""
+    """Ответное «нет» - частица; бытийное у ruMorph - глагол с отрицанием без времени,
+    у ru_core_news_sm - в настоящем без отрицания"""
     text = "Нет, я не пойду. Денег нет."
-    expected = {"tense": {"Fut": 1, "Pres": 1}, "polarity": {"Neg": 2}}
-    for source in (text, nlp(text), spacy.blank("ru")(text)):
+    expected = {"tense": {"Fut": 1}, "polarity": {"Neg": 3}}
+    for source in (text, spacy.blank("ru")(text)):
         assert MorphStats(source).get_stats("tense", "polarity", filter_none=True) == expected
+    expected = {"tense": {"Fut": 1, "Pres": 1}, "polarity": {"Neg": 2}}
+    assert MorphStats(nlp(text)).get_stats("tense", "polarity", filter_none=True) == expected
     assert MorphStats(text).pos[0] == "PART"
     # Слово с неразрывным дефисом не сбивает счет «нет» в словах и в тексте
     hyphenated = "Нет, я не пойду. Нет\u2011нет да и заглянет."
@@ -446,25 +506,11 @@ def test_short_form_of_ud_annotation():
     assert ms.tags[1] == "StyleVariant=Short"
 
 
-def test_tag_to_ud_pos_lemma():
-    tag = make_tag("ADJF,Subx,Apro,Anph masc,sing,nomn")
-    assert tag_to_ud_pos(tag, "который") == "PRON"
-    assert tag_to_ud_pos(tag, "этот") == "DET"
-    assert tag_to_ud_pos(make_tag("ADJF,Apro,Anum masc,sing,nomn"), "один") == "NUM"
-    tag = make_tag("NOUN,anim,masc,Name sing,nomn")
-    assert tag_to_ud_pos(tag, "лев", "Лев") == "PROPN"
-    assert tag_to_ud_pos(tag, "лев", "лев") == "NOUN"
-    assert tag_to_ud_pos(tag, "лев") == "NOUN"
-    tag = make_tag("CONJ")
-    assert tag_to_ud_pos(tag, "что") == "SCONJ"
-    assert tag_to_ud_pos(tag, "и") == "CCONJ"
-
-
 def test_parse_verb():
-    assert parse_verb("стали", "стать").normal_form == "стать"
-    assert parse_verb("стали", "сталь").normal_form == "стать"
-    assert parse_verb("стали").tag.POS == "VERB"
-    assert parse_verb("читающий", "читать").tag.POS == "PRTF"
+    assert parse_verb("стали", "стать").lemma == "стать"
+    assert parse_verb("стали", "сталь").lemma == "стать"
+    assert parse_verb("стали").pos == "VERB"
+    assert parse_verb("читающий", "читать").feats["VerbForm"] == "Part"
     assert parse_verb("стол") is None
 
 
@@ -496,7 +542,7 @@ def test_get_stats_args(ms):
 def test_get_stats_filter_none(ms):
     stats = ms.get_stats(filter_none=True)
     assert all(None not in v for v in stats.values())
-    assert stats["pos"] == {"VERB": 6, "CCONJ": 2, "SCONJ": 2, "ADV": 1}
+    assert stats["pos"] == {"VERB": 6, "PRON": 2, "SCONJ": 2, "ADV": 1}
     assert stats["verb_form"] == {"Fin": 4, "Inf": 2}
 
 
@@ -525,6 +571,7 @@ def test_explain_text_filter_none(ms):
             "tense": "Pres",
             "transitivity": "Tran",
             "verb_form": "Fin",
+            "voice": "Act",
         },
     )
 
@@ -532,7 +579,7 @@ def test_explain_text_filter_none(ms):
 def test_print_stats(capsys, ms):
     ms.print_stats()
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 36
+    assert captured.out.count("|") == 41
     assert "Подчинительный союз" in captured.out
     assert "Личная форма" in captured.out
 
@@ -612,7 +659,7 @@ def test_get_markers_of_several_values(nlp):
 
 def test_doc_without_morphologizer():
     """Без морфологического анализатора части речи есть только у пробелов: признаки -
-    по pymorphy3, как у Doc без разметки"""
+    по ruMorph, как у Doc без разметки"""
     nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
     doc = nlp("Мама мыла раму.\n\nПапа читал книгу.")
     assert doc.has_annotation("POS")
@@ -630,14 +677,6 @@ def test_print_markers(capsys):
     output = capsys.readouterr().out
     for desc in MORPHOLOGY_MARKERS_DESC.values():
         assert desc in output
-
-
-def test_ambiguous_grammeme():
-    """У слов на -кки pymorphy3 дает и anim, и inan: одушевленность не определена в любом процессе"""
-    grammemes = parse_word("бачокки").tag.grammemes
-    assert {"anim", "inan"} <= grammemes
-    assert word_to_ud("бачокки")["animacy"] is None
-    assert word_to_ud("бачокки")["case"] is not None
 
 
 def test_stats_interface(ms):
