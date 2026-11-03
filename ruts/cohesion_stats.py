@@ -493,6 +493,7 @@ def find_connectors(
     sent_index: int = 0,
     pos: Sequence[str | None] | None = None,
     breaks: Collection[int] | None = None,
+    blocked: Collection[int] | None = None,
 ) -> list[Connector]:
     """
     Поиск коннекторов в предложении
@@ -504,7 +505,8 @@ def find_connectors(
         внутри коннектора (во-первых, т.е.) могут быть отделены токенизатором. Если
         переданы части речи UD, однословный коннектор засчитывается только при части
         речи из CONNECTOR_POS или из CONNECTOR_POS_EXTRA для этого слова. Правила
-        о словах до и после коннектора не действуют через знак препинания (breaks)
+        о словах до и после коннектора не действуют через знак препинания (breaks);
+        со слова из blocked коннектор не начинается
 
     Аргументы:
         words (list[str]): Слова предложения
@@ -513,23 +515,25 @@ def find_connectors(
         sent_index (int): Номер предложения для записи во вхождения
         pos (list[str]): Части речи UD слов предложения; без них части речи не проверяются
         breaks (list[int]): Номера слов, перед которыми стоит знак препинания (find_marks)
+        blocked (set[int]): Номера слов, с которых не начинается коннектор; без них
+            коннектор может начаться с любого слова
 
     Вывод:
         list[Connector]: Вхождения коннекторов в порядке слов
 
     Исключения:
-        SourceTypeError: Если слова не список строк, словарь коннекторов, части речи
-            или номера слов со знаком заданы неверно
+        SourceTypeError: Если слова не список строк, словарь коннекторов, части речи,
+            номера слов со знаком или запрещенных слов заданы неверно
         ParameterError: Если в словаре встречается неизвестный класс или тип, номер
-            предложения не целое число, частей речи не столько, сколько слов, или номер
-            слова со знаком не целое число
+            предложения не целое число, частей речи не столько, сколько слов, номер
+            слова со знаком или запрещенного слова не целое число или вне предложения
     """
     matcher = (
         CohesionStats.connector_matcher()
         if connectors is None
         else RussianConnectorMatcher(connectors)
     )
-    return matcher.find(words, sent_index, pos, breaks)
+    return matcher.find(words, sent_index, pos, breaks, blocked)
 
 
 def _is_connector_pos(word: str, pos: str | None) -> bool:

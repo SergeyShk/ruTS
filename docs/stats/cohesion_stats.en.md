@@ -348,7 +348,7 @@ The subordinators of ruTS besides the one-word ones tagged `SCONJ` and `ADP` are
 ## Connector search { #find_connectors }
 
 ``` {.python .signature}
-find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None)
+find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None, blocked=None)
 ```
 
 Searches a sentence for connectors with the `find` method of `RussianConnectorMatcher` over the dictionary `connectors`, that of `load_connectors` by default; the other parameters and the errors are those of the matcher and of `find`.

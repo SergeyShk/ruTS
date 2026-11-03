@@ -712,8 +712,8 @@ $$
 `pos_edit_distance` · `syntax_similarity` · [Coh-Metrix](https://doi.org/10.1017/CBO9780511894664)
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 1dc6e39 -->
-Насколько схожи структуры двух соседних предложений, в среднем по $S - 1$ парам. `pos_edit_distance` - редакционное расстояние частей речи $P_s$ слов предложений (SYNMEDpos Coh-Metrix), деленное на длину $n$ более длинного предложения пары, `calc_edit_distance`. `syntax_similarity` - схожесть мультимножеств троек зависимостей $T$ двух предложений (`dependency_triples`, `calc_multiset_similarity`) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих. Ни та, ни другая мера не видит порядка слов, а схожесть троек растет с длиной предложений.
+<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 401aba3 -->
+Насколько схожи структуры двух соседних предложений, в среднем по $S - 1$ парам. `pos_edit_distance` - редакционное расстояние частей речи $P_s$ слов предложений (SYNMEDpos Coh-Metrix), деленное на длину $n$ более длинного предложения пары, `calc_edit_distance`. `syntax_similarity` - схожесть мультимножеств троек зависимостей $T$ двух предложений (`dependency_triples`, `calc_multiset_similarity`) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих. Редакционное расстояние читает только порядок частей речи: предложение с дополнением в начале и предложение с подлежащим в начале схожи, если этот порядок у них один (расстояние 0). Тройки порядка слов не читают вовсе: любой порядок слов одного дерева дает схожесть 1. Порядок подлежащего и дополнения читают [`p_preverbal_subjects` и `p_preverbal_objects`](#word_order). Схожесть троек растет с длиной предложений.
 
 $$
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{\textrm{lev}(P_s, P_{s+1})}{\max(n_s, n_{s+1})}, \quad

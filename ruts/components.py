@@ -325,14 +325,25 @@ class CohesionStatsComponent(_Component, anyts.components.CohesionStatsComponent
         >>> nlp = spacy.load('ru_core_news_sm')
         >>> nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
         <ruts.components.CohesionStatsComponent object at 0x...>
+        >>> nlp.add_pipe(
+        ...     "ruts_cohesion", name="paragraphs", config={"blank_lines": True}, last=True
+        ... )
+        <ruts.components.CohesionStatsComponent object at 0x...>
 
     Доступ к извлеченным статистикам:
-        >>> doc = nlp("Кот сидел на окне. Он смотрел на птиц.")
+        >>> doc = nlp("Кот сидел на окне. Он смотрел на птиц.\\nПтицы улетели.")
         >>> doc._.cohesion.argument_overlap_adjacent
-        0.0
+        0.5
+        >>> doc._.cohesion.n_paragraphs, doc._.paragraphs.n_paragraphs
+        (2, 1)
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
+        blank_lines (bool): Абзацы только после пустых строк - для текста, строки
+            которого переносятся внутри абзаца; по умолчанию абзац - строка
+
+    Исключения:
+        ParameterError: Если blank_lines не bool
     """
 
     stats_class = CohesionStats
