@@ -286,6 +286,14 @@ def test_is_pronoun(word, expected):
         ("почему", False),
         ("три", False),
         ("2020", False),
+        ("2020-й", False),
+        ("XII", False),
+        ("первый", True),
+        ("надо", False),
+        # Определительные и отрицательные наречия (PronType=Tot, Neg) - знаменательные
+        ("иногда", True),
+        ("более", True),
+        ("никогда", True),
     ],
 )
 def test_is_content_word(word, expected):
@@ -507,7 +515,7 @@ def test_connector_context_rules(nlp):
     for source in (text, nlp(text)):
         spans = CohesionStats(source).connector_spans
         assert [(connector.sent, connector.text) for connector in spans] == expected
-    # Разметка «того», «его», «только» у pymorphy3 и spaCy расходится, итог - нет
+    # Разметка «того», «его», «только» у ruMorph и spaCy расходится, итог - нет
     text = (
         "После того я уехал. После его смерти дом опустел. Накануне её отъезда шёл дождь. "
         "Едва только он вошёл, все встали. Он говорил едва слышно. Мне было всё равно."

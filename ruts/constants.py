@@ -1539,6 +1539,8 @@ DEMONSTRATIVE_LEMMAS = frozenset(
     {"этот", "это", "тот", "такой", "таковой", "столько", "сей", "оный"}
 )
 STOPWORD_POS = frozenset({"ADP", "CCONJ", "SCONJ", "PART", "PRON", "DET", "INTJ"})
+# Местоименные наречия стоп-слов: указательные, вопросительные и относительные (там, где, почему)
+PRONOMINAL_TYPES = frozenset({"Dem", "Int", "Rel"})
 # «Вода» Text.ru: без предлогов и местоименных прилагательных, которые есть в STOPWORD_POS
 WATER_POS = frozenset({"CCONJ", "SCONJ", "PART", "PRON", "INTJ"})
 # Подписи графиков: ключи VISUALIZER_LABELS ядра anyTS

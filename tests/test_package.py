@@ -613,7 +613,7 @@ def test_doc_of_spacy_loaded_after():
 
 def test_pipeline_without_morphologizer(tmp_path):
     """Без морфологического анализатора части речи есть только у пробелов: классы читают Doc,
-    как Doc без разметки, - по pymorphy3"""
+    как Doc без разметки, - по ruMorph"""
     import spacy
 
     from ruts import CohesionStats, LexicalStats

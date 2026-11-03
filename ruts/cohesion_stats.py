@@ -58,6 +58,7 @@ from .morph_stats import answer_particles, word_to_ud
 from .utils import (
     BYTE_ORDER_MARK,
     is_predicative,
+    is_pronominal,
     lemmatize,
     normalize_yo,
     parse_all,
@@ -547,9 +548,8 @@ def connector_pos(word: str) -> str | None:
     Описание:
         Из разборов ruMorph берется первый с частью речи, подходящей коннектору
         (CONNECTOR_POS или CONNECTOR_POS_EXTRA для этого слова), иначе часть речи
-        первого разбора: у «раз» и «отчего» первый разбор - существительное
-        и прилагательное, подходящие - только следующие (наречие и союз). Результаты
-        кэшируются по словоформе
+        первого разбора: у «раз» первый разбор - существительное, подходящий -
+        следующий (подчинительный союз). Результаты кэшируются по словоформе
 
     Аргументы:
         word (str): Слово
@@ -753,10 +753,10 @@ def is_content_word(word: str) -> bool:
 
     Описание:
         Существительные, имена собственные, прилагательные, глаголы во всех формах
-        и наречия (CONTENT_UD_POS) по разметке ruMorph, кроме местоименных (такой, там,
-        тогда, признак PronType), вводных (конечно, например, помета Prnt) слов,
-        предикативов (надо, можно; is_predicative) и чисел цифрами (2020-й, XII -
-        порядковые прилагательные)
+        и наречия (CONTENT_UD_POS) по разметке ruMorph, кроме местоименных (там, тогда,
+        где; is_pronominal), вводных (конечно, например, помета Prnt) слов,
+        предикативов (надо, можно; is_predicative) и чисел цифрами (2020, 2020-й, XII -
+        порядковые прилагательные, признак NumForm)
 
     Аргументы:
         word (str): Слово
@@ -767,8 +767,8 @@ def is_content_word(word: str) -> bool:
     analysis = parse_word(word)
     return (
         analysis.pos in CONTENT_UD_POS
-        and "PronType" not in analysis.feats
+        and not is_pronominal(analysis)
         and "Prnt" not in analysis.labels
         and not is_predicative(analysis)
-        and analysis.feats.get("NumForm") not in ("Digit", "Roman")
+        and "NumForm" not in analysis.feats
     )

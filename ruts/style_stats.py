@@ -28,6 +28,7 @@ from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import (
     is_predicative,
+    is_pronominal,
     is_verbal_noun,
     normalize_yo,
     parse_all,
@@ -181,8 +182,8 @@ def is_stopword(word: str) -> bool:
         Стоп-словами считаются союзы, частицы, предлоги, местоимения, определительные
         местоимения (этот, такой, который, весь), междометия, предикативы (нет, надо,
         можно) и «бы» - глаголы без формы VerbForm, вводные слова (конечно, например,
-        помета Prnt), указательные (там, тогда) и вопросительные (где, почему) наречия
-        с признаком PronType по разметке ruMorph
+        помета Prnt), указательные (там, тогда), вопросительные и относительные (где,
+        почему) наречия (is_pronominal) по разметке ruMorph
 
     Аргументы:
         word (str): Слово
@@ -196,7 +197,7 @@ def is_stopword(word: str) -> bool:
     return (
         analysis.pos in STOPWORD_POS
         or is_predicative(analysis)
-        or "PronType" in analysis.feats
+        or is_pronominal(analysis)
         or "Prnt" in analysis.labels
     )
 

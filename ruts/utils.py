@@ -21,6 +21,7 @@ from anyts.utils import (
 
 from .constants import (
     CORE_MESSAGES,
+    PRONOMINAL_TYPES,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
     TOKENIZER_SUFFIXES,
@@ -227,7 +228,9 @@ def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
         Разборы по убыванию вероятности, без учета соседних слов; части речи
         и признаки - Universal Dependencies, пометы OpenCorpora без признака UD
         (вводное слово Prnt, переходность tran и intr) - в labels. Знаки ударения,
-        мягкие переносы, ё и точку сокращения (т., руб.) ruMorph учитывает сам;
+        мягкие переносы и ё ruMorph учитывает сам, точку - у известных ему сокращений
+        (т., руб., г.), а незнакомое сокращение с точкой (тов., коп.) - X с точкой
+        в лемме;
         слово с управляющими, служебными или пробельными символами (DEL, ZWSP),
         которого ruMorph не разбирает, разбирается без них, а строка без видимых
         символов - как знак препинания (NO_WORD), так что разбор есть всегда
@@ -283,6 +286,24 @@ def is_predicative(analysis: rumorph.Analysis) -> bool:
         bool: Результат проверки
     """
     return analysis.pos in ("VERB", "AUX") and "VerbForm" not in analysis.feats
+
+
+def is_pronominal(analysis: rumorph.Analysis) -> bool:
+    """
+    Проверка, является ли разбор указательным, вопросительным или относительным словом
+
+    Описание:
+        Признак PronType со значением из PRONOMINAL_TYPES (там, тогда, где, почему);
+        определительные (всегда, иногда, более - PronType=Tot) и отрицательные
+        (никогда) наречия к ним не относятся
+
+    Аргументы:
+        analysis (Analysis): Разбор ruMorph
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return not PRONOMINAL_TYPES.isdisjoint(analysis.feats.get("PronType", "").split(","))
 
 
 @lru_cache(maxsize=131072)

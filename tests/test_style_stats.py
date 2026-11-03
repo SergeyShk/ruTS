@@ -102,6 +102,9 @@ def test_init_lexemes():
         ("быстро", False),
         ("читать", False),
         ("100", False),
+        ("бы", True),
+        ("иногда", False),
+        ("более", False),
     ],
 )
 def test_is_stopword(word, expected):

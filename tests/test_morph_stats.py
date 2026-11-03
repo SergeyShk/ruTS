@@ -659,7 +659,7 @@ def test_get_markers_of_several_values(nlp):
 
 def test_doc_without_morphologizer():
     """Без морфологического анализатора части речи есть только у пробелов: признаки -
-    по pymorphy3, как у Doc без разметки"""
+    по ruMorph, как у Doc без разметки"""
     nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
     doc = nlp("Мама мыла раму.\n\nПапа читал книгу.")
     assert doc.has_annotation("POS")

@@ -388,30 +388,30 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> ms = MorphStats(text)
 
 >>> ms.pos
-('VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'CCONJ', 'SCONJ', 'VERB')
+('VERB', 'VERB', 'PRON', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'PRON', 'SCONJ', 'VERB')
 
 >>> pprint(ms.get_stats())
-{'animacy': {None: 11},
+{'animacy': {None: 9, 'Inan': 2},
  'aspect': {None: 5, 'Imp': 1, 'Perf': 5},
- 'case': {None: 11},
+ 'case': {None: 9, 'Acc': 2},
  'degree': {None: 10, 'Pos': 1},
- 'gender': {None: 11},
+ 'gender': {None: 9, 'Neut': 2},
  'involvement': {None: 10, 'Ex': 1},
  'mood': {None: 7, 'Imp': 1, 'Ind': 3},
- 'number': {None: 7, 'Plur': 3, 'Sing': 1},
- 'person': {None: 9, '2': 1, '3': 1},
+ 'number': {None: 5, 'Plur': 3, 'Sing': 3},
+ 'person': {None: 8, '2': 2, '3': 1},
  'polarity': {None: 11},
- 'pos': {'ADV': 1, 'CCONJ': 2, 'SCONJ': 2, 'VERB': 6},
+ 'pos': {'ADV': 1, 'PRON': 2, 'SCONJ': 2, 'VERB': 6},
  'style_variant': {None: 11},
  'tense': {None: 8, 'Fut': 1, 'Past': 1, 'Pres': 1},
  'transitivity': {None: 5, 'Intr': 2, 'Tran': 4},
  'verb_form': {None: 5, 'Fin': 4, 'Inf': 2},
- 'voice': {None: 11}}
+ 'voice': {None: 5, 'Act': 4, 'Mid': 2}}
 
 >>> ms.print_stats('pos', 'tense')
 ---------------Часть речи---------------
 Глагол                        |    6
-Сочинительный союз            |    2
+Местоимение-существительное   |    2
 Подчинительный союз           |    2
 Наречие                       |    1
 
@@ -584,7 +584,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 >>> cs.argument_overlap_all, cs.content_overlap_prop_adjacent
 (0.6666666666666666, 0.1111111111111111)
 >>> cs.p_pronouns, cs.p_given, cs.temporal_cohesion
-(0.14285714285714285, 0.2857142857142857, 0.5)
+(0.14285714285714285, 0.3076923076923077, 0.5)
 
 >>> cs = CohesionStats("Кот ждал птиц, потому что был голоден. Однако птицы улетели, и всё же кот не ушёл.")
 >>> cs.connectors_causal, cs.connectors_adversative, cs.connectors_concessive

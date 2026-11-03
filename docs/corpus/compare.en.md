@@ -39,11 +39,11 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                        median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent           0.062           0.100  -0.042   -0.029   -0.966       -0.812  0.094     0.0
+    cohesion_content_overlap_2_sent           0.062           0.100  -0.042   -0.030   -0.966       -0.813  0.093     0.0
     cohesion_noun_overlap_2_sent              0.080           0.141  -0.069   -0.049   -1.071       -0.759  0.120     0.0
-    cohesion_content_overlap_all              0.071           0.144  -0.097   -0.053   -1.020       -0.718  0.141     0.0
-    cohesion_content_overlap_adjacent         0.169           0.309  -0.171   -0.118   -1.216       -0.713  0.143     0.0
-    cohesion_content_overlap_prop_all         0.013           0.022  -0.011   -0.007   -0.440       -0.708  0.146     0.0
+    cohesion_content_overlap_all              0.071           0.145  -0.097   -0.053   -1.019       -0.717  0.142     0.0
+    cohesion_content_overlap_adjacent         0.169           0.309  -0.171   -0.118   -1.217       -0.714  0.143     0.0
+    cohesion_content_overlap_prop_all         0.013           0.021  -0.011   -0.007   -0.438       -0.708  0.146     0.0
     punct_ellipsis                           15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
     cohesion_noun_overlap_adjacent            0.104           0.217  -0.138   -0.088   -1.054       -0.671  0.164     0.0
     cohesion_noun_overlap_all                 0.042           0.095  -0.072   -0.035   -0.851       -0.663  0.168     0.0
@@ -52,7 +52,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.86, of Tolstoy 0.65), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.07 and 0.23). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.86, of Tolstoy 0.66), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.07 and 0.23). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
 The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 110 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 110 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
