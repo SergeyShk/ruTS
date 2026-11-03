@@ -2873,7 +2873,7 @@
 </div>
 </div>
 </div>
-<p>Пресеты одинаково согласуются с меткой класса, но дают разную шкалу, а порядок текстов у них совпадает не полностью. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> корреляция Спирмена теста Флеша-Кинкайда с меткой класса у всех трех пресетов 0.79, а медианы теста по группам меток различаются:</p>
+<p>Пресеты одинаково согласуются с меткой класса, но дают разную шкалу, а порядок текстов у них совпадает не полностью. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> корреляция Спирмена теста Флеша-Кинкайда с меткой класса у <code>plainrussian</code> 0.80, у <code>fiction</code> и <code>academic</code> 0.79, а медианы теста по группам меток различаются:</p>
 <table>
 <thead>
 <tr>
@@ -2888,30 +2888,30 @@
 <tr>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">11</td>
-<td style="text-align: left;">2.9</td>
-<td style="text-align: left;">7.5</td>
-<td style="text-align: left;">4.0</td>
+<td style="text-align: left;">2.6</td>
+<td style="text-align: left;">6.9</td>
+<td style="text-align: left;">3.6</td>
 </tr>
 <tr>
 <td style="text-align: left;">3-4</td>
 <td style="text-align: left;">10</td>
-<td style="text-align: left;">4.2</td>
-<td style="text-align: left;">8.7</td>
-<td style="text-align: left;">4.9</td>
+<td style="text-align: left;">4.1</td>
+<td style="text-align: left;">8.6</td>
+<td style="text-align: left;">4.8</td>
 </tr>
 <tr>
 <td style="text-align: left;">5-9</td>
 <td style="text-align: left;">12</td>
 <td style="text-align: left;">4.4</td>
-<td style="text-align: left;">8.7</td>
-<td style="text-align: left;">4.9</td>
+<td style="text-align: left;">8.6</td>
+<td style="text-align: left;">4.8</td>
 </tr>
 <tr>
 <td style="text-align: left;">10-11</td>
 <td style="text-align: left;">18</td>
-<td style="text-align: left;">6.7</td>
-<td style="text-align: left;">11.7</td>
-<td style="text-align: left;">7.0</td>
+<td style="text-align: left;">6.9</td>
+<td style="text-align: left;">11.9</td>
+<td style="text-align: left;">7.2</td>
 </tr>
 <tr>
 <td style="text-align: left;">12-17</td>
@@ -2923,13 +2923,13 @@
 <tr>
 <td style="text-align: left;">1 (<a href="../../datasets/sovchlit/"><code>SovChLit</code></a>)</td>
 <td style="text-align: left;">179</td>
-<td style="text-align: left;">1.5</td>
-<td style="text-align: left;">6.1</td>
-<td style="text-align: left;">3.1</td>
+<td style="text-align: left;">1.3</td>
+<td style="text-align: left;">6.0</td>
+<td style="text-align: left;">3.0</td>
 </tr>
 </tbody>
 </table>
-<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.9 против −0.9 у <code>plainrussian</code> и −0.2 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
+<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.7 против −1.0 у <code>plainrussian</code> и −0.1 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
 <h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Формулу считает функция из ее карточки по количествам <code>bs</code>; коэффициенты по умолчанию функций адаптированы для русского языка. Формулы ядра берут коэффициенты из <code>coefficients</code>, где пресет задает коэффициенты теста Флеша-Кинкайда, индекса Флеша и индексов Колман-Лиау, SMOG и ARI; формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла считаются с коэффициентами своих функций, и <code>coefficients</code> на них не действует. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю. Формулы других языков с исходными коэффициентами, без калибровки под русский язык, считает класс <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>.</p>
 <table>
@@ -4496,26 +4496,26 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <tr>
 <td style="text-align: left;">1-3-й класс</td>
 <td style="text-align: left;">73</td>
-<td style="text-align: left;">8.1-10.7</td>
-<td style="text-align: left;">4.56-5.03</td>
-<td style="text-align: left;">0.0-0.022</td>
+<td style="text-align: left;">7.6-10.3</td>
+<td style="text-align: left;">4.54-5.01</td>
+<td style="text-align: left;">0.0-0.021</td>
 <td style="text-align: left;">104-178</td>
 </tr>
 <tr>
 <td style="text-align: left;">4-6-й класс</td>
 <td style="text-align: left;">12</td>
-<td style="text-align: left;">10.2-14.6</td>
-<td style="text-align: left;">5.16-5.33</td>
+<td style="text-align: left;">10.1-14.6</td>
+<td style="text-align: left;">5.15-5.33</td>
 <td style="text-align: left;">0.039-0.052</td>
-<td style="text-align: left;">220-373</td>
+<td style="text-align: left;">220-369</td>
 </tr>
 <tr>
 <td style="text-align: left;">10-11-й класс</td>
 <td style="text-align: left;">18</td>
-<td style="text-align: left;">15.6-17.9</td>
+<td style="text-align: left;">15.0-18.4</td>
 <td style="text-align: left;">5.11-5.57</td>
 <td style="text-align: left;">0.035-0.065</td>
-<td style="text-align: left;">277-513</td>
+<td style="text-align: left;">276-513</td>
 </tr>
 </tbody>
 </table>
@@ -4610,7 +4610,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>((8.1, 10.7), None)
+<div class="highlight"><pre><span></span><code>((7.6, 10.3), None)
 {'words_per_sent': 'выше нормы ступени',
  'letters_per_word': 'выше нормы ступени',
  'p_smog_complex_words': 'выше нормы ступени',

@@ -2181,7 +2181,7 @@
 <ul>
 <li><code>ParameterError</code> - a length bound that is not an integer, a negative bound, a minimum above the maximum.</li>
 </ul>
-<p>The class extends the <code>SentsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/sentences/">anyTS</a> core with the hook of Russian: its default tokenizer, the method <code>sentenize(text)</code>, is the <code>sentenize</code> function of the <a href="https://github.com/natasha/razdel">razdel</a> library.</p>
+<p>The class extends the <code>SentsExtractor</code> of the <a href="https://sergeyshk.github.io/anyTS/extractors/sentences/">anyTS</a> core with the hook of Russian: its default tokenizer, the method <code>sentenize(text)</code>, gives the sentences of the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter (<code>ruts.utils.iter_text_sents</code>): a line without a final mark (a heading, a list item) and a sentence after a period without a space are sentences of their own.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2267,7 +2267,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>('Что нового', 'Быстрый импорт\nМеньше ошибок', 'Спасибо за внимание!')
+<div class="highlight"><pre><span></span><code>('Что нового', 'Быстрый импорт', 'Меньше ошибок', 'Спасибо за внимание!')
 ('Не имей 100 рублей', 'а имей 100 друзей')
 </code></pre></div>
 </div>
