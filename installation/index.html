@@ -2202,7 +2202,7 @@
 <ul>
 <li><code>python</code> - 3.11 и выше</li>
 <li><a href="https://sergeyshk.github.io/anyTS/"><code>anyts</code></a> - 0.4.6 и выше в пределах 0.4, независимое от языка ядро, на котором построен ruTS</li>
-<li><code>pymorphy3</code> с русскими словарями <code>pymorphy3-dicts-ru</code></li>
+<li><a href="https://github.com/SergeyShk/ruMorph"><code>rumorph</code></a> - 0.5 и выше в пределах 0.5, морфологический анализатор</li>
 <li><a href="https://github.com/SergeyShk/anySeg"><code>anyseg</code></a> - 0.2 и выше в пределах 0.2, сегментатор на токены и предложения</li>
 <li><code>scipy</code></li>
 <li><code>spaCy</code> - 3.8.15 и выше</li>
@@ -2219,13 +2219,6 @@
 <div class="admonition warning">
 <p class="admonition-title">Graphviz</p>
 <p>Пакет <code>graphviz</code> из зависимостей - только обертка: для отрисовки <a href="../visualizers/word_tree/">дерева слов</a> и <a href="../visualizers/corpus/#collocation_network">сети коллокаций</a> нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a> (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), иначе <code>render()</code> и показ графа в Jupyter завершатся ошибкой <code>ExecutableNotFound</code>. Остальному функционалу они не нужны.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Быстрый морфологический разбор</p>
-<p>Для корпусов ставьте библиотеку с extra <code>fast</code>:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"ruts[fast]"</span>
-</code></pre></div>
-<p>Оно добавляет C-расширение <a href="https://github.com/pymorphy2-fork/DAWG">DAWG2</a> для pymorphy3 (только CPython, колеса есть для Linux, macOS и Windows): разбор словоформ ускоряется примерно в 5 раз (175 против 34 тысяч словоформ в секунду), <code>MorphStats</code> на тексте в 70 тысяч слов - на треть, потому что разбор кэшируется по словоформе и остальное время уходит на подсчет. Без extra библиотека работает так же, только медленнее.</p>
 </div>
 <p><code>import ruts</code> не загружает spaCy, matplotlib и pandas: spaCy подключается вместе с объектом <code>Doc</code> или компонентом, а графики и корпусные функции - при первом обращении к ним. Статистики по строке работают и без них.</p>
 <div class="admonition tip">

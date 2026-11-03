@@ -2620,7 +2620,7 @@ True
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p><code>MorphStatsComponent</code> puts the morphological statistics into the extension; by default they need the parts of speech before it.</p>
-<p>In ruTS the parts of speech and the features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), and in a pipeline without <code>morphologizer</code> from pymorphy3.</p>
+<p>In ruTS the parts of speech and the features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), and in a pipeline without <code>morphologizer</code> from ruMorph.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2842,7 +2842,7 @@ True
 <li><code>SourceTypeError</code> - stopwords, nausea stopwords or cliches that are not a list of strings;</li>
 <li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
 </ul>
-<p>Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> is a constant of <code>anyts.constants</code>.</p>
+<p>Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> is a constant of <code>anyts.constants</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2905,7 +2905,7 @@ True
 <h3 id="CohesionStatsComponent">Cohesion statistics<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis. With <code>blank_lines</code> the paragraphs start after the blank lines alone, as in <code>CohesionStats</code>.</p>
+<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the first ruMorph analysis. With <code>blank_lines</code> the paragraphs start after the blank lines alone, as in <code>CohesionStats</code>.</p>
 <table>
 <thead>
 <tr>

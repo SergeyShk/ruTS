@@ -2547,35 +2547,35 @@
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - an unknown class or kind of a connector, a <code>blank_lines</code> that is not a <code>bool</code>.</li>
 </ul>
-<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the pymorphy3 analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first pymorphy3 analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
-<p>The words are classified by the <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> tags or by the Universal Dependencies annotation of a <code>Doc</code>:</p>
+<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the ruMorph analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first ruMorph analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The words are classified by the Universal Dependencies parts of speech and features - of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis for a string or of the annotation of a <code>Doc</code>:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Notion</th>
-<th style="text-align: left;">pymorphy3</th>
-<th style="text-align: left;">Universal Dependencies (<code>Doc</code>)</th>
+<th style="text-align: left;">String (ruMorph)</th>
+<th style="text-align: left;"><code>Doc</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">Nouns</td>
-<td style="text-align: left;"><code>NOUN</code></td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code></td>
 <td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Pronouns</td>
-<td style="text-align: left;"><code>NPRO</code>, <code>Apro</code>, lemmas of <code>DEMONSTRATIVE_LEMMAS</code></td>
+<td style="text-align: left;"><code>PRON</code>, <code>DET</code>, lemmas of <code>DEMONSTRATIVE_LEMMAS</code></td>
 <td style="text-align: left;"><code>PRON</code>, <code>DET</code>, lemmas of <code>DEMONSTRATIVE_LEMMAS</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Arguments</td>
-<td style="text-align: left;"><code>NOUN</code>, <code>NPRO</code></td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>PRON</code></td>
 <td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>PRON</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Content words</td>
-<td style="text-align: left;"><code>CONTENT_POS</code> without <code>STOPWORD_GRAMMEMES</code> and demonstratives</td>
+<td style="text-align: left;"><code>CONTENT_UD_POS</code> without demonstratives, pronominal (<code>PronType</code> Dem, Int, Rel: там, где, почему) and parenthetical (the <code>Prnt</code> label) words, predicatives and numbers in digits</td>
 <td style="text-align: left;"><code>CONTENT_UD_POS</code> without demonstratives</td>
 </tr>
 <tr>
@@ -2585,7 +2585,7 @@
 </tr>
 <tr>
 <td style="text-align: left;">Tense and aspect</td>
-<td style="text-align: left;">grammemes <code>past</code>, <code>pres</code>, <code>futr</code> and <code>perf</code>, <code>impf</code> of verb forms, the tense of the existential нет and нету</td>
+<td style="text-align: left;">features <code>Tense</code> and <code>Aspect</code></td>
 <td style="text-align: left;">features <code>Tense</code> and <code>Aspect</code></td>
 </tr>
 </tbody>
@@ -2610,7 +2610,7 @@
 Повтор знаменательных слов в соседних предложениях       |   0.33
 Повтор знаменательных слов во всех парах предложений     |   0.50
 Доля общих знаменательных слов в соседних предложениях   |   0.11
-Доля общих знаменательных слов во всех парах предложений |   0.19
+Доля общих знаменательных слов во всех парах предложений |   0.20
 Повтор существительных в двух следующих предложениях     |   0.67
 Повтор аргументов в двух следующих предложениях          |   0.75
 Повтор знаменательных слов в двух следующих предложениях |   0.40
@@ -2620,7 +2620,7 @@
 Доля местоимений                                         |   0.14
 Отношение местоимений к существительным                  |   0.50
 Доля указательных местоимений                            |   0.05
-Доля знаменательных слов, встречавшихся ранее            |   0.29
+Доля знаменательных слов, встречавшихся ранее            |   0.31
 Повтор времени в соседних предложениях                   |   0.67
 Повтор вида в соседних предложениях                      |   0.33
 Темпоральная связность                                   |   0.50
@@ -2747,7 +2747,7 @@
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>('он', 'смотреть', 'на', 'птица')
-(6, 3, 14, 4)
+(6, 3, 13, 4)
 (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
 {'и': 1}
 </code></pre></div>
@@ -3257,7 +3257,7 @@
  'content_overlap_adjacent': 0.3333333333333333,
  'content_overlap_all': 0.5,
  'content_overlap_prop_adjacent': 0.1111111111111111,
- 'content_overlap_prop_all': 0.18650793650793648,
+ 'content_overlap_prop_all': 0.19841269841269837,
  'noun_overlap_2_sent': 0.6666666666666666,
  'argument_overlap_2_sent': 0.75,
  'content_overlap_2_sent': 0.4,
@@ -3267,7 +3267,7 @@
  'p_pronouns': 0.14285714285714285,
  'pronoun_noun_ratio': 0.5,
  'p_demonstratives': 0.047619047619047616,
- 'p_given': 0.2857142857142857,
+ 'p_given': 0.3076923076923077,
  'tense_repetition': 0.6666666666666666,
  'aspect_repetition': 0.3333333333333333,
  'temporal_cohesion': 0.5,
@@ -3385,7 +3385,7 @@
 </table>
 <p>Words that are not a list of strings and parts of speech that are not a list of strings and <code>None</code> (the tags <code>token.pos_</code> of spaCy, not the numbers <code>token.pos</code>) and positions that are not a collection raise <code>SourceTypeError</code>, a number of the sentence or a position that is not an integer, a position of a mark that is not that of a word after the first, a blocked position that is not that of a word and parts of speech not as many as the words <code>ParameterError</code>.</p>
 <p><code>is_subordinator(connector, pos=None)</code> checks whether an occurrence of a connector ties its clause or phrase to its own sentence: a connector of <code>subordinators</code>, or a one-word connector whose part of speech <code>pos</code> is <code>SCONJ</code> or <code>ADP</code>, but none of <code>parcellation</code>. The clause of a subordinating conjunction and the phrase of a preposition belong to the sentence of the connector wherever it stands, so a subordinator opening a sentence (<em>when he came, ...</em>, <em>despite the rain, ...</em>) does not link it to the ones before. A connector that is not a <code>Connector</code> raises <code>SourceTypeError</code>.</p>
-<p>The subordinators of ruTS besides the one-word ones tagged <code>SCONJ</code> and <code>ADP</code> are <code>CONNECTOR_SUBORDINATORS</code>: the multi-word conjunctions and prepositions (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) and the one-word ones the spaCy models or pymorphy3 tag otherwise (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). A conjunction of <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) opening a sentence attaches it to the one before, so it is no subordinator.</p>
+<p>The subordinators of ruTS besides the one-word ones tagged <code>SCONJ</code> and <code>ADP</code> are <code>CONNECTOR_SUBORDINATORS</code>: the multi-word conjunctions and prepositions (<em>так как</em>, <em>после того как</em>, <em>несмотря на</em>) and the one-word ones the spaCy models or ruMorph tag otherwise (<em>ежели</em>, <em>коли</em>, <em>пока</em>, <em>раз</em>, <em>хоть</em>, <em>едва</em>). A conjunction of <code>CONNECTOR_PARCELLATION</code> (<em>ибо</em>) opening a sentence attaches it to the one before, so it is no subordinator.</p>
 <h2 id="find_connectors">Connector search<a class="headerlink" href="#find_connectors" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">find_connectors</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sent_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">breaks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blocked</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -3410,7 +3410,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">connector_pos</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The UD part of speech of a word by pymorphy3 for the check of a connector: the first analysis with a part of speech that suits a connector (<code>CONNECTOR_POS</code> or <code>CONNECTOR_POS_EXTRA</code> for the word), otherwise the first analysis. This is how <code>CohesionStats</code> gets the parts of speech of a string and of a <code>Doc</code> without annotation.</p>
+<p>The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (<code>CONNECTOR_POS</code> or <code>CONNECTOR_POS_EXTRA</code> for the word), otherwise the first analysis. This is how <code>CohesionStats</code> gets the parts of speech of a string and of a <code>Doc</code> without annotation.</p>
 <table>
 <thead>
 <tr>
@@ -3459,7 +3459,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
-<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first pymorphy3 analysis; <code>words_info</code> does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle without tense. <code>token_info</code> takes them from the spaCy annotation (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> from a given part of speech, tense and aspect of UD; the lemma comes from the pymorphy3 analysis with that part of speech (<code>ruts.utils.lemmatize</code>), not from <code>token.lemma_</code>. <code>unit_info</code> gives the features of a word from its tokens: a single token by <code>token_info</code>, a hyphenated word of several tokens (жили-были, назовите-ка) by the pymorphy3 analysis of the joined text mapped to UD (<code>word_to_ud</code>).</p>
+<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first ruMorph analysis; <code>words_info</code> does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle. <code>token_info</code> takes them from the spaCy annotation (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (<code>ruts.utils.lemmatize</code>), not from <code>token.lemma_</code>. <code>unit_info</code> gives the features of a word from its tokens: a single token by <code>token_info</code>, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (<code>word_to_ud</code>).</p>
 <table>
 <thead>
 <tr>
@@ -3517,7 +3517,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='past', aspect='impf')
+<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
 </code></pre></div>
 </div>
 </div>
@@ -3604,7 +3604,7 @@
 <h2 id="is_pronoun">Pronoun<a class="headerlink" href="#is_pronoun" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_pronoun</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word is a pronoun by the pymorphy3 tags: <code>NPRO</code> (он, себя, кто) or <code>Apro</code> (этот, который, мой, весь).</p>
+<p>Checks whether a word is a pronoun by the ruMorph analysis: <code>PRON</code> (он, себя, кто) or <code>DET</code> (этот, который, мой, весь).</p>
 <table>
 <thead>
 <tr>
@@ -3626,7 +3626,7 @@
 <h2 id="is_content_word">Content word<a class="headerlink" href="#is_content_word" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_content_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word is a content word by the pymorphy3 tags: a part of speech of <code>CONTENT_POS</code> (nouns, adjectives, verbs in all forms, adverbs) without the grammemes of <code>STOPWORD_GRAMMEMES</code> (pronominal and parenthetical words).</p>
+<p>Checks whether a word is a content word by the ruMorph analysis: a part of speech of <code>CONTENT_UD_POS</code> (nouns, proper nouns, adjectives, verbs in all forms, adverbs), except pronominal (<code>PronType</code> Dem, Int, Rel: там, где, почему; <code>ruts.utils.is_pronominal</code>) and parenthetical (the <code>Prnt</code> label) words, predicatives (надо, можно) and numbers in digits.</p>
 <table>
 <thead>
 <tr>

@@ -2565,7 +2565,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>key</code></td>
-<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by pymorphy3 (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by ruMorph (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
@@ -2573,7 +2573,7 @@
 </tr>
 </tbody>
 </table>
-<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «его», «ее», «их» (possessive pronouns) and «во», «со», while pymorphy3 reduces these word forms to «он», «она», «они», «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,100 for word forms and 1,500 for lemmas - are listed in the resources of the package; words that pymorphy3 only predicts («Михайлыч», «дитё») are not seen by the rule.</p>
+<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «во», «со», while <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> reduces these word forms to «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,150 for word forms and 1,450 for lemmas - are listed in the resources of the package; the forms of the words outside the ruMorph dictionary («Михайлыч») are guessed.</p>
 <p>With <code>lemmatize=False</code> the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">

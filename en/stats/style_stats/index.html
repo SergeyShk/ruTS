@@ -2755,7 +2755,7 @@
 <p>A <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_stopword</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Whether a word is insignificant for the academic nausea by its part of speech in pymorphy3: conjunctions, particles, prepositions, pronominal nouns, interjections and predicatives (<code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code>), and the words with the grammemes <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> - pronominal adjectives, parenthetical words, demonstrative and interrogative adverbs. The sets are <code>ruts.constants.STOPWORD_POS</code> and <code>ruts.constants.STOPWORD_GRAMMEMES</code>.</p>
+<p>Whether a word is insignificant for the academic nausea by the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis: conjunctions, particles, prepositions, pronouns, determiners and interjections (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>; the set <code>ruts.constants.STOPWORD_POS</code>), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (<code>PronType</code> Dem, Int, Rel: там, тогда, где, почему; <code>ruts.utils.is_pronominal</code>) and parenthetical words (the <code>Prnt</code> label).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2825,7 +2825,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_water_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Whether a word is "water" by its part of speech in pymorphy3, for the water content and the <code>stopwords</code> layer of the highlighting: conjunctions, particles, pronominal nouns and interjections (<code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code>; the set <code>ruts.constants.WATER_POS</code>). pymorphy3 tags the parenthetical words конечно and например as conjunctions, so they are water too. Prepositions, pronominal adjectives and predicatives, unlike in <code>is_stopword</code>, are not water.</p>
+<p>Whether a word is "water" by the ruMorph analysis, for the water content and the <code>stopwords</code> layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>; the set <code>ruts.constants.WATER_POS</code>), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in <code>is_stopword</code>, are not water.</p>
 </div>
 <div class="metric-card">
 <h3 id="spam">Spam score<a class="headerlink" href="#spam" title="Permanent link">&para;</a></h3>
@@ -2935,7 +2935,7 @@
 <p class="metric-meta"><code>verbal_nouns</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_verbal_nouns</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The share of the verbal nouns among the nouns (by the first pymorphy3 analysis), in percent; <code>nan</code> for a text without nouns. A noun is verbal when its lemma ends with a suffix of <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - the function <code>ruts.utils.is_verbal_noun</code>. The heuristic also catches non-verbal words with the same suffixes (здание). <code>find_verbal_nouns(text)</code> returns the bounds of the words found as slices of the list.</p>
+<p>The share of the verbal nouns among the nouns (by the first ruMorph analysis), in percent; <code>nan</code> for a text without nouns. A noun is verbal when its lemma ends with a suffix of <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - the function <code>ruts.utils.is_verbal_noun</code>. The heuristic also catches non-verbal words with the same suffixes (здание). <code>find_verbal_nouns(text)</code> returns the bounds of the words found as slices of the list.</p>
 <table>
 <thead>
 <tr>
@@ -2991,7 +2991,7 @@
 <p class="metric-meta"><code>parentheticals</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_parentheticals</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The number of parenthetical words per 100 words: the phrases of <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the pymorphy3 grammeme <code>Prnt</code> (конечно, например, впрочем; the function <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> returns the bounds of the words and phrases found as slices of the list.</p>
+<p>The number of parenthetical words per 100 words: the phrases of <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the ruMorph label <code>Prnt</code> (конечно, например, впрочем; the function <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> returns the bounds of the words and phrases found as slices of the list.</p>
 <table>
 <thead>
 <tr>

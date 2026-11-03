@@ -2760,7 +2760,7 @@
 <p><code>top_n</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_stopword</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Незначимо ли слово для академической тошноты по части речи pymorphy3: союзы, частицы, предлоги, местоимения-существительные, междометия и предикативы (<code>CONJ</code>, <code>PRCL</code>, <code>PREP</code>, <code>NPRO</code>, <code>INTJ</code>, <code>PRED</code>) и слова с граммемами <code>Apro</code>, <code>Prnt</code>, <code>Dmns</code>, <code>Ques</code> - местоименные прилагательные, вводные слова, указательные и вопросительные наречия. Наборы - <code>ruts.constants.STOPWORD_POS</code> и <code>ruts.constants.STOPWORD_GRAMMEMES</code>.</p>
+<p>Незначимо ли слово для академической тошноты по разбору <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a>: союзы, частицы, предлоги, местоимения, определительные местоимения и междометия (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>; набор <code>ruts.constants.STOPWORD_POS</code>), предикативы (надо, можно, нет) и «бы», указательные, вопросительные и относительные наречия (<code>PronType</code> Dem, Int, Rel: там, тогда, где, почему; <code>ruts.utils.is_pronominal</code>) и вводные слова (помета <code>Prnt</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2830,7 +2830,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_water_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Является ли слово «водой» по части речи pymorphy3 - для водности и слоя <code>stopwords</code> подсветки: союзы, частицы, местоимения-существительные и междометия (<code>CONJ</code>, <code>PRCL</code>, <code>NPRO</code>, <code>INTJ</code>; набор <code>ruts.constants.WATER_POS</code>). Вводные слова «конечно» и «например» pymorphy3 относит к союзам, поэтому они тоже «вода». Предлоги, местоименные прилагательные и предикативы, в отличие от <code>is_stopword</code>, водой не считаются.</p>
+<p>Является ли слово «водой» по разбору ruMorph - для водности и слоя <code>stopwords</code> подсветки: союзы, частицы (и «бы»), местоимения-существительные и междометия (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>; набор <code>ruts.constants.WATER_POS</code>), «его», «её», «их» и вводные слова (конечно, например). Предлоги, определительные местоимения и предикативы, в отличие от <code>is_stopword</code>, водой не считаются.</p>
 </div>
 <div class="metric-card">
 <h3 id="spam">Заспамленность<a class="headerlink" href="#spam" title="Permanent link">&para;</a></h3>
@@ -2941,7 +2941,7 @@
 <p class="metric-meta"><code>verbal_nouns</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_verbal_nouns</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Доля отглагольных существительных среди существительных (по первому разбору pymorphy3) в процентах; <code>nan</code> для текста без существительных. Существительное отглагольное, если его лемма оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - функция <code>ruts.utils.is_verbal_noun</code>. Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). <code>find_verbal_nouns(text)</code> возвращает границы найденных слов как срезы списка.</p>
+<p>Доля отглагольных существительных среди существительных (по первому разбору ruMorph) в процентах; <code>nan</code> для текста без существительных. Существительное отглагольное, если его лемма оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - функция <code>ruts.utils.is_verbal_noun</code>. Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). <code>find_verbal_nouns(text)</code> возвращает границы найденных слов как срезы списка.</p>
 <table>
 <thead>
 <tr>
@@ -2997,7 +2997,7 @@
 <p class="metric-meta"><code>parentheticals</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_parentheticals</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Число вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) и вне их одиночные слова с граммемой <code>Prnt</code> pymorphy3 (конечно, например, впрочем; функция <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
+<p>Число вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) и вне их одиночные слова с пометой <code>Prnt</code> ruMorph (конечно, например, впрочем; функция <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
 <table>
 <thead>
 <tr>

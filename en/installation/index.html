@@ -2202,7 +2202,7 @@
 <ul>
 <li><code>python</code> - 3.11 or newer</li>
 <li><a href="https://sergeyshk.github.io/anyTS/"><code>anyts</code></a> - 0.4.6 or newer within 0.4, the language-independent core ruTS is built on</li>
-<li><code>pymorphy3</code> with the Russian dictionaries <code>pymorphy3-dicts-ru</code></li>
+<li><a href="https://github.com/SergeyShk/ruMorph"><code>rumorph</code></a> - 0.5 or newer within 0.5, the morphological analyzer</li>
 <li><a href="https://github.com/SergeyShk/anySeg"><code>anyseg</code></a> - 0.2 or newer within 0.2, the segmenter into tokens and sentences</li>
 <li><code>scipy</code></li>
 <li><code>spaCy</code> - 3.8.15 or newer</li>
@@ -2219,13 +2219,6 @@
 <div class="admonition warning">
 <p class="admonition-title">Graphviz</p>
 <p>The <code>graphviz</code> package among the dependencies is only a wrapper: rendering the <a href="../visualizers/word_tree/">word tree</a> and the <a href="../visualizers/corpus/#collocation_network">collocation network</a> requires the <a href="https://graphviz.org/download/">Graphviz</a> executables (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), otherwise <code>render()</code> and displaying the graph in Jupyter fail with <code>ExecutableNotFound</code>. Nothing else needs them.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Fast morphological analysis</p>
-<p>For corpora, install the library with the <code>fast</code> extra:</p>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"ruts[fast]"</span>
-</code></pre></div>
-<p>It adds the <a href="https://github.com/pymorphy2-fork/DAWG">DAWG2</a> C extension for pymorphy3 (CPython only, wheels are available for Linux, macOS and Windows): word form analysis gets about 5x faster (175 vs 34 thousand word forms per second), <code>MorphStats</code> on a 70-thousand-word text about a third faster, because analyses are cached per word form and the rest of the time goes into counting. Without the extra the library works the same, just slower.</p>
 </div>
 <p><code>import ruts</code> loads neither spaCy nor matplotlib nor pandas: spaCy comes with a <code>Doc</code> object or a component, and the plots and the corpus functions on first use. The statistics of a string work without them.</p>
 <div class="admonition tip">

@@ -2341,7 +2341,7 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>---------------Часть речи---------------
 Глагол                        |    6
-Сочинительный союз            |    2
+Местоимение-существительное   |    2
 Подчинительный союз           |    2
 Наречие                       |    1
 
@@ -2352,10 +2352,10 @@
 
 -----------------Число------------------
 Множественное                 |    3
-Единственное                  |    1
+Единственное                  |    3
 
 ------------------Лицо------------------
-2                             |    1
+2                             |    2
 3                             |    1
 </code></pre></div>
 </div>
@@ -2418,9 +2418,9 @@
 </tr>
 </tbody>
 </table>
-<p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words that pymorphy3 gives by the part of speech of the word.</p>
+<p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words that ruMorph gives by the part of speech of the word.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
-<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first <a href="https://github.com/no-plagiarism/pymorphy3">pymorphy3</a> analysis is used: the <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a> grammemes are mapped to UD by the <code>OPENCORPORA_TO_UD_POS</code> and <code>OPENCORPORA_TO_UD_GRAMMEMES</code> tables of <code>ruts.constants</code>, and a feature that pymorphy3 gives two values at once (the animacy of words in -кки) is undefined.</p>
+<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer is used - UD parts of speech and features by the conventions of the SynTagRus corpus.</p>
 <table>
 <thead>
 <tr>
@@ -2512,83 +2512,16 @@
 </tr>
 </tbody>
 </table>
-<p>The values for a string and for an annotated <code>Doc</code> may differ: spaCy assigns <code>Voice=Act</code> to finite forms and <code>Voice=Mid</code> to reflexive verbs, distinguishes <code>AUX</code> and resolves homonymy by context; pymorphy3 determines voice only for participles and takes the first analysis.</p>
+<p>The values for a string and for an annotated <code>Doc</code> may differ: spaCy resolves homonymy by context, while a string takes the first ruMorph analysis without the neighbouring words; some conventions differ too - spaCy models give the existential нет the present tense, ruMorph does not.</p>
 <div class="metric-card">
 <h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
-<p>For a string the OpenCorpora parts of speech are mapped to UD as follows:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">OpenCorpora</th>
-<th style="text-align: left;">UD</th>
-<th style="text-align: left;">Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>NOUN</code></td>
-<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code></td>
-<td style="text-align: left;">first names, surnames, patronymics, toponyms and organizations by pymorphy3 tags - <code>PROPN</code>, but only for capitalized word forms: pymorphy3 ignores case and tags ordinary words as names (лев, роза, мороз)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>ADJF</code>, <code>ADJS</code>, <code>COMP</code></td>
-<td style="text-align: left;"><code>ADJ</code>, <code>DET</code>, <code>PRON</code>, <code>NUM</code></td>
-<td style="text-align: left;">pronominal adjectives (этот, мой, весь) - <code>DET</code>, «который» - <code>PRON</code>, «один» - <code>NUM</code>; a comparative without context counts as an adjective</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>VERB</code>, <code>INFN</code>, <code>PRTF</code>, <code>PRTS</code>, <code>GRND</code></td>
-<td style="text-align: left;"><code>VERB</code></td>
-<td style="text-align: left;">the form goes into <code>verb_form</code>: <code>Fin</code>, <code>Inf</code>, <code>Part</code>, <code>Conv</code>; the auxiliary <code>AUX</code> is distinguished only by spaCy</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>NUMR</code>, <code>NUMB</code>, <code>ROMN</code></td>
-<td style="text-align: left;"><code>NUM</code></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>ADVB</code>, <code>PRED</code></td>
-<td style="text-align: left;"><code>ADV</code></td>
-<td style="text-align: left;">predicatives (надо, нельзя) - adverbs without tense, as in the Russian UD corpora; the existential нет and нету, which UD treats as verbs, have the present tense</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>NPRO</code></td>
-<td style="text-align: left;"><code>PRON</code></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>PREP</code></td>
-<td style="text-align: left;"><code>ADP</code></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>CONJ</code></td>
-<td style="text-align: left;"><code>CCONJ</code>, <code>SCONJ</code></td>
-<td style="text-align: left;">subordinating conjunctions by the <code>SUBORDINATING_CONJUNCTIONS</code> list (что, чтобы, если, когда, хотя, потому)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>PRCL</code></td>
-<td style="text-align: left;"><code>PART</code></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>INTJ</code></td>
-<td style="text-align: left;"><code>INTJ</code></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>LATN</code>, <code>UNKN</code></td>
-<td style="text-align: left;"><code>X</code></td>
-<td style="text-align: left;"></td>
-</tr>
-</tbody>
-</table>
-<p>есть is taken for a form of быть, not of есть meaning to eat.</p>
+<p>For a string the parts of speech are those of the first ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - <code>VERB</code> without a verb form, который - <code>DET</code>, the parenthetical конечно, например - <code>ADV</code>, the auxiliary быть - <code>AUX</code>, proper nouns - <code>PROPN</code> by case (Лев, but лев). Without context the first analysis of a homonym is the most frequent one: стали is a verb, её is the possessive <code>DET</code>.</p>
 </div>
 <div class="metric-card">
 <h3 id="derived">Degree, negation and short form<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>degree</code> · <code>polarity</code> · <code>style_variant</code></p>
-<p>For a string these features are derived by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: <code>Cmp</code> for the comparative and for более, менее, выше, ниже, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others. The particles не, ни and the answer нет (Нет, не пойду, but not Денег нет) carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, but not the forms in -о like неверно, нужно, so a string has fewer short forms than a <code>Doc</code> of a model.</p>
+<p>For a string these features are those of the ruMorph analysis by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: <code>Cmp</code> for the comparative, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature <code>Variant=Short</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2616,7 +2549,7 @@
 <div class="metric-card">
 <h3 id="opencorpora">Transitivity and clusivity<a class="headerlink" href="#opencorpora" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>transitivity</code> · <code>involvement</code> · <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a></p>
-<p>OpenCorpora features absent from Russian UD: transitivity (<code>Tran</code>, <code>Intr</code>) and clusivity (<code>In</code> - the speaker is included in the action, <code>Ex</code> - not included). They are computed via pymorphy3 for verbs (for a <code>Doc</code> - from the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
+<p>OpenCorpora features absent from Russian UD: transitivity (<code>Tran</code>, <code>Intr</code>) and clusivity (<code>In</code> - the speaker is included in the action, <code>Ex</code> - not included). They are taken from the labels of the ruMorph analysis of verbs (for a <code>Doc</code> - of the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2628,7 +2561,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+<div class="highlight"><pre><span></span><code>'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid'
 (('Intr', 'Tran', None, None, 'Tran'), ('Ex', None, None, None, None))
 </code></pre></div>
 </div>
@@ -2717,26 +2650,26 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
  'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
- 'number': {'Plur': 3, 'Sing': 1},
- 'person': {'2': 1, '3': 1}}
+ 'number': {'Plur': 3, 'Sing': 3},
+ 'person': {'2': 2, '3': 1}}
 {'pos_VERB': 6,
- 'pos_CCONJ': 2,
+ 'pos_PRON': 2,
  'pos_SCONJ': 2,
  'pos_ADV': 1,
  'tense_Pres': 1,
  'tense_Fut': 1,
  'tense_Past': 1}
-(('Постарайтесь', {'pos': 'VERB', 'number': 'Plur'}),
+(('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
  ('получить', {'pos': 'VERB'}),
- ('то', {'pos': 'CCONJ'}),
+ ('то', {'pos': 'PRON', 'number': 'Sing'}),
  ('что', {'pos': 'SCONJ'}),
  ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
  ('иначе', {'pos': 'ADV'}),
  ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
  ('полюбить', {'pos': 'VERB'}),
- ('то', {'pos': 'CCONJ'}),
+ ('то', {'pos': 'PRON', 'number': 'Sing'}),
  ('что', {'pos': 'SCONJ'}),
  ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
 </code></pre></div>
@@ -2751,8 +2684,8 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>   pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
-0         6          2          2        1
+<div class="highlight"><pre><span></span><code>   pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
+0         6         2          2        1
 </code></pre></div>
 </div>
 </div>

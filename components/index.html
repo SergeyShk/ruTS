@@ -2625,7 +2625,7 @@ True
 </code></pre></div>
 <!-- core: components.md:MorphStatsComponent 5d99bc4 -->
 <p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.</p>
-<p>В ruTS части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), а в пайплайне без <code>morphologizer</code> - из pymorphy3.</p>
+<p>В ruTS части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), а в пайплайне без <code>morphologizer</code> - из ruMorph.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2851,7 +2851,7 @@ True
 <li><code>SourceTypeError</code> - стоп-слова, стоп-слова тошноты или штампы, которые не список строк;</li>
 <li><code>ParameterError</code> - <code>top_n</code>, который не целое число не меньше единицы.</li>
 </ul>
-<p>Без списков слова «воды» и стоп-слова тошноты определяются по разметке pymorphy3, а штампы берутся из <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> - константа <code>anyts.constants</code>.</p>
+<p>Без списков слова «воды» и стоп-слова тошноты определяются по разметке ruMorph, а штампы берутся из <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> - константа <code>anyts.constants</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2916,7 +2916,7 @@ True
 <h3 id="CohesionStatsComponent">Статистики связности<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p><code>CohesionStatsComponent</code> кладет в расширение статистики связности. Парсер ему не нужен, а <code>Doc</code> без границ предложений делится на предложения русским <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3. С <code>blank_lines</code> абзацы начинаются только после пустых строк, как в <code>CohesionStats</code>.</p>
+<p><code>CohesionStatsComponent</code> кладет в расширение статистики связности. Парсер ему не нужен, а <code>Doc</code> без границ предложений делится на предложения русским <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; при наличии разметки части речи берутся из нее, леммы - из ruMorph по части речи токена, без разметки - из первого разбора ruMorph. С <code>blank_lines</code> абзацы начинаются только после пустых строк, как в <code>CohesionStats</code>.</p>
 <table>
 <thead>
 <tr>
