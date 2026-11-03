@@ -278,14 +278,19 @@ Raises:
 
     ``` python
     nlp.add_pipe("ruts_cohesion", name="cohesion")
-    doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул.")
-    doc._.cohesion.noun_overlap_adjacent
+    nlp.add_pipe("ruts_cohesion", name="paragraphs", config={"blank_lines": True})
+    doc = nlp("Кот сидел на окне. Он смотрел на птиц. Птицы улетели,\nи кот уснул.")
+    (
+        doc._.cohesion.noun_overlap_adjacent,
+        doc._.cohesion.n_paragraphs,
+        doc._.paragraphs.n_paragraphs,
+    )
     ```
 
 === "Result"
 
     ```
-    0.5
+    (0.5, 2, 1)
     ```
 
 ### Lexical sophistication statistics { #LexicalStatsComponent }
