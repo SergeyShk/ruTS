@@ -1,7 +1,6 @@
 import pytest
 import spacy
 from anyts.visualizers.highlight import get_text_sents as count_sent_words, iter_doc_sents
-from razdel import sentenize
 from spacy.tokens import Doc
 
 from ruts import StyleStats, SyntaxStats
@@ -11,7 +10,7 @@ from ruts.constants import (
     HIGHLIGHT_LAYER_GROUPS,
     HIGHLIGHT_LAYERS_DESC,
 )
-from ruts.utils import iter_text_words
+from ruts.utils import iter_text_sents, iter_text_words
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
     Sent,
@@ -72,9 +71,7 @@ def get_text_words(source):
 
 
 def get_text_sents(source, words):
-    return count_sent_words(
-        ((sent.start, sent.stop, sent.text) for sent in sentenize(source)), words
-    )
+    return count_sent_words(iter_text_sents(source), words)
 
 
 def build_doc(tokens):
@@ -162,7 +159,7 @@ def test_layers_default_doc(doc):
 
 
 def test_layers_default_blank_doc():
-    # Doc без границ предложений делится на предложения razdel
+    # Doc без границ предложений делится на предложения anySeg
     blank = spacy.blank("ru")(long_text)
     assert highlight(blank).layers == ("long_sents", "complex_words", "cliches")
     assert (
@@ -243,11 +240,11 @@ def test_highlights_sorted(ht):
 
 
 def test_get_text_words():
-    words = get_text_words("Жили-были старик, со старухой.")
-    assert [word.text for word in words] == ["Жили-были", "старик", "со", "старухой"]
+    words = get_text_words("Кое-как жили старик, со старухой.")
+    assert [word.text for word in words] == ["Кое-как", "жили", "старик", "со", "старухой"]
     assert words[0].start == 0
-    assert words[0].end == 9
-    assert words[-1].end == 29
+    assert words[0].end == 7
+    assert words[-1].end == 32
 
 
 def test_get_text_sents():
@@ -684,7 +681,7 @@ def test_connectors():
         ("Во-первых", "коннектор «во-первых»: аддитивные, первичные"),
         ("в целях", "коннектор «в целях»: причинные, вторичные"),
         ("Однако", "коннектор «однако»: противительные, первичные"),
-        ("т.е", "коннектор «т.е.»: переформулирующие, первичные"),
+        ("т.е.", "коннектор «т.е.»: переформулирующие, первичные"),
     ]
     source = "Он ушёл, потому. Что делать"
     words = get_text_words(source)

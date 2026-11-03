@@ -6,7 +6,7 @@ CharNgramsExtractor(n=2, lowercase=False, within_words=False, tokenizer=None)
 
 --8<-- "extractors/char_ngrams.md:CharNgramsExtractor"
 
-The class extends the `CharNgramsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) core with the hook of Russian: its default word tokenizer for `within_words`, the method `tokenize(text)`, is the default tokenizer of [`WordsExtractor`](words.md), the `tokenize` function of the [razdel](https://github.com/natasha/razdel) library with the dialogue dashes glued to words split off (`ruts.utils.iter_tokens`). Stress marks and soft hyphens are removed from the text before extraction (`ruts.utils.strip_marks`). The list of N-grams is passed to [`delta`](../corpus/stylometry.md) as text units instead of words.
+The class extends the `CharNgramsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) core with the hook of Russian: its default word tokenizer for `within_words`, the method `tokenize(text)`, is the default tokenizer of [`WordsExtractor`](words.md), the tokens of the [anySeg](https://github.com/SergeyShk/anySeg) segmenter by the conventions of UD (`ruts.utils.iter_tokens`). Stress marks and soft hyphens are removed from the text before extraction (`ruts.utils.strip_marks`). The list of N-grams is passed to [`delta`](../corpus/stylometry.md) as text units instead of words.
 
 === "Code"
 

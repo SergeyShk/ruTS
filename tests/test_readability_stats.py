@@ -502,14 +502,14 @@ def test_level_norms_data():
             level_norms(grade)
     norms = level_norms(2)
     norms["words_per_sent"] = (1, 2)
-    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS[1]["words_per_sent"] == (8.1, 10.7)
+    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS[1]["words_per_sent"] == (7.6, 10.3)
 
 
 def test_describe_level_norm():
     below, within, above = LEVEL_NORM_BANDS
     assert describe_level_norm("words_per_sent", 6.0, 2) == below
-    assert describe_level_norm("words_per_sent", 8.1, 2) == within
-    assert describe_level_norm("words_per_sent", 10.7, 2) == within
+    assert describe_level_norm("words_per_sent", 7.6, 2) == within
+    assert describe_level_norm("words_per_sent", 10.3, 2) == within
     assert describe_level_norm("words_per_sent", 11, 2) == above
     assert describe_level_norm("mtld", float("inf"), 10) == above
     assert describe_level_norm("mtld", float("nan"), 10) is None

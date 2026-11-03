@@ -822,7 +822,7 @@ def level_norms(grade: float) -> dict[str, tuple[float, float]] | None:
     Пример использования:
         >>> from ruts.readability_stats import level_norms
         >>> level_norms(2)["words_per_sent"], level_norms(8)
-        ((8.1, 10.7), None)
+        ((7.6, 10.3), None)
     """
     number: object = grade
     if isinstance(number, bool) or not isinstance(number, Real) or not isfinite(grade):

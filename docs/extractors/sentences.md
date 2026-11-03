@@ -11,7 +11,7 @@ SentsExtractor(tokenizer=None, min_len=0, max_len=0)
 
 - `ParameterError` - граница длины, которая не целое число, отрицательная граница, минимум больше максимума.
 
-Класс расширяет `SentsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/sentences/) крючком русского языка: его токенизатор по умолчанию, метод `sentenize(text)`, - функция `sentenize` библиотеки [razdel](https://github.com/natasha/razdel).
+Класс расширяет `SentsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/sentences/) крючком русского языка: его токенизатор по умолчанию, метод `sentenize(text)`, - предложения сегментатора [anySeg](https://github.com/SergeyShk/anySeg) (`ruts.utils.iter_text_sents`): строка без конечного знака (заголовок, пункт списка) и предложение после точки без пробела - отдельные предложения.
 
 === "Код"
 
@@ -67,6 +67,6 @@ SentsExtractor(tokenizer=None, min_len=0, max_len=0)
 === "Результат"
 
     ```
-    ('Что нового', 'Быстрый импорт\nМеньше ошибок', 'Спасибо за внимание!')
+    ('Что нового', 'Быстрый импорт', 'Меньше ошибок', 'Спасибо за внимание!')
     ('Не имей 100 рублей', 'а имей 100 друзей')
     ```

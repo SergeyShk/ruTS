@@ -106,7 +106,7 @@ An unknown grade level, a `subject` that is not a string, a length bound that is
 === "Result"
 
     ```
-    «Об утверждении Административного реглам 28.0
+    «Об утверждении Административного реглам 37.0
     Доклад Рабочей группы Государственного с 21.5
     Закон о ФКС 34.5
     ```
@@ -117,20 +117,20 @@ The dataset is used in the library tests to check the readability formulas: the 
 
 | Formula | Spearman's ρ | Mean absolute error, grades |
 | :------ | :----------- | :-------------------------- |
-| Flesch-Kincaid test | 0.79 | 4.0 |
-| Flesch reading ease | −0.79 | - |
-| Coleman-Liau index | 0.77 | 3.0 |
-| SMOG index | 0.82 | 4.0 |
-| Automated readability index | 0.80 | 3.9 |
+| Flesch-Kincaid test | 0.80 | 4.1 |
+| Flesch reading ease | −0.80 | - |
+| Coleman-Liau index | 0.78 | 3.0 |
+| SMOG index | 0.82 | 4.1 |
+| Automated readability index | 0.80 | 4.0 |
 | LIX readability index | 0.81 | - |
-| RIX readability index | 0.77 | - |
-| Solovyev, Ivanov and Solnyshkina formula | 0.77 | 4.7 |
-| Matskovsky formula | 0.76 | - |
-| Tuldava formula | 0.78 | - |
+| RIX readability index | 0.78 | - |
+| Solovyev, Ivanov and Solnyshkina formula | 0.78 | 5.0 |
+| Matskovsky formula | 0.77 | - |
+| Tuldava formula | 0.79 | - |
 | Dale-Chall index | 0.82 | 3.8 |
-| Gunning fog index | 0.80 | 3.9 |
-| Consensus grade | 0.81 | 3.6 |
+| Gunning fog index | 0.81 | 4.1 |
+| Consensus grade | 0.81 | 3.7 |
 
 A breakdown over all groups of statistics - coefficient presets, lexis, syntax, morphology, cohesion and a check on the `SovChLit` reader - is in the notebook [02_text_complexity_by_grade.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb).
 
-The mean consensus grade grows with the label: 3.0 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.4 for 10-11 and 22.1 for documents labeled 12-17. The large error on documents is expected: the grade formulas are calibrated on school texts, and label 17 is nominal.
+The mean consensus grade grows with the label: 2.9 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.3 for 10-11 and 22.6 for documents labeled 12-17. The large error on documents is expected: the grade formulas are calibrated on school texts, and label 17 is nominal.

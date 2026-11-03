@@ -54,13 +54,14 @@ class TestSentsExtractor:
         )
 
     def test_extract_blank_lines(self):
-        """Заголовок и абзац без точки - отдельные предложения, как у esTS"""
+        """Заголовок, абзац и пункт списка без точки - отдельные предложения"""
         text = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\n- первый пункт\n- второй пункт"
         assert SentsExtractor().extract(text) == (
             "Что нового",
             "Быстрый импорт.",
             "Меньше ошибок",
-            "- первый пункт\n- второй пункт",
+            "- первый пункт",
+            "- второй пункт",
         )
 
     @pytest.mark.parametrize(
@@ -141,7 +142,9 @@ class TestWordsExtractor:
             ("10-ГО", True),
             ("слово", False),
             ("какого-либо", False),
-            ("3-мя-то", False),
+            ("1 250 000", True),
+            ("1\u00a0000", True),
+            ("12:30", True),
         ],
     )
     def test_extract_filter_nums_tokens(self, token, is_number):
@@ -149,11 +152,19 @@ class TestWordsExtractor:
         expected = ("слово", "слово") if is_number else ("слово", token, "слово")
         assert we.extract(f"слово {token} слово") == expected
 
+    def test_extract_filter_nums_particle(self):
+        """Частица через дефис - отдельный токен, число перед ней отбрасывается"""
+        assert WordsExtractor(filter_nums=True).extract("слово 3-мя-то слово") == (
+            "слово",
+            "то",
+            "слово",
+        )
+
     def test_extract_dialogue_dashes(self):
         we = WordsExtractor(lowercase=True)
         text = "-Нет -сказал он—и замолчал. Смеяться—говорил Г—в- не над чем."
         assert we.extract(text) == (
-            "нет", "сказал", "он", "и", "замолчал", "смеяться", "говорил", "г—в", "не", "над", "чем",
+            "нет", "сказал", "он", "и", "замолчал", "смеяться", "говорил", "г", "в", "не", "над", "чем",
         )  # fmt: skip
 
     def test_extract_filter_multichar_punct(self):
