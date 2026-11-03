@@ -8,7 +8,7 @@ compare_corpora(a, b, window=1000, features=None, labels=('A', 'B'), n_bootstrap
 
 Тексты режутся подряд на окна ровно по `window` слов функцией [`split_windows`](#split_windows), так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если `min_words` не разрешает окна короче. Признаки каждого окна считает [`text_features`](#text_features) или своя функция, а таблицы двух корпусов сравнивает [`compare_features`](#compare_features) ядра [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/).
 
-Чехов против Толстого по прозе из набора [`RussianLiterature`](../datasets/russianliterature.md): 77 и 42 произведения, 249 и 1423 окна по 1000 слов, около минуты.
+Чехов против Толстого по прозе из набора [`RussianLiterature`](../datasets/russianliterature.md): 77 и 42 произведения, 249 и 1422 окна по 1000 слов, около минуты.
 
 === "Код"
 
