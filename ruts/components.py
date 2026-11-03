@@ -85,7 +85,7 @@ class MorphStatsComponent(_Component, anyts.components.MorphStatsComponent):
 
     Описание:
         Части речи и признаки берутся из разметки модели (token.pos_, token.morph)
-        в терминах Universal Dependencies, в пайплайне без теггера - из pymorphy3
+        в терминах Universal Dependencies, в пайплайне без теггера - из ruMorph
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -242,10 +242,10 @@ class StyleStatsComponent(_Component, anyts.components.StyleStatsComponent):
     Аргументы:
         name (str): Наименование компонента в пайплайне
         stopwords (list[str]): Список слов «воды» для водности; если не задан,
-            используется разметка pymorphy3
+            используется разметка ruMorph
         top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
         nausea_stopwords (list[str]): Список стоп-слов для академической тошноты; если
-            не задан, используется разметка pymorphy3
+            не задан, используется разметка ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
 
     Исключения:

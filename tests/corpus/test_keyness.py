@@ -104,7 +104,7 @@ def test_keyness_freq_dict_forms(freq_dict):
 
 
 def test_keyness_freq_dict_lemmatize(homonym_dict):
-    assert [keyword.word for keyword in keyness(["горе"], homonym_dict)] == ["гора"]
+    assert [keyword.word for keyword in keyness(["горой"], homonym_dict)] == ["гора"]
     lemmas = keyness(["горе"], homonym_dict, lemmatize=False)
     assert [keyword.word for keyword in lemmas] == ["горе"]
     assert keyness(target, reference, lemmatize=False) == keyness(target, reference)
@@ -130,7 +130,7 @@ def test_keyness_errors():
 
 @pytest.fixture(scope="module")
 def pronoun_dict(tmp_path_factory):
-    """Статьи, к которым лемматизатор слова не приводит: «его», «ее», «во»"""
+    """Статьи частотного словаря: к «во» лемматизатор слова не приводит («в»)"""
     path = tmp_path_factory.mktemp("dicts")
     rows = [
         ("в", "pr", 30000.0),
@@ -151,9 +151,18 @@ def pronoun_dict(tmp_path_factory):
 
 @pytest.mark.parametrize("lemmatize", [True, False])
 def test_keyness_freq_dict_unreachable(pronoun_dict, lemmatize):
-    """Статья остается, если к ней приводится другая форма: «род» - «родиться», но «рода» - «род»"""
+    """Статья остается, если к ней приводится другая форма: «род» - «родиться», но «рода» - «род»;
+    «его», «ее» - леммы притяжательных, «во» - форма «в» и отбрасывается"""
     negative = keyness(["кот"] * 50, pronoun_dict, positive=False, lemmatize=lemmatize)
-    assert {keyword.word for keyword in negative} == {"в", "он", "она", "род", "родиться"}
+    assert {keyword.word for keyword in negative} == {
+        "в",
+        "его",
+        "ее",
+        "он",
+        "она",
+        "род",
+        "родиться",
+    }
 
 
 def test_keyness_freq_dict_top_n(pronoun_dict):
@@ -163,23 +172,23 @@ def test_keyness_freq_dict_top_n(pronoun_dict):
 
 
 def test_keyness_freq_dict_yo(pronoun_dict):
-    """«Её» и «ее» - одна статья «она», как в тексте без ё"""
+    """«Её» и «ее» - одна статья, как в тексте без ё; без контекста это притяжательное «ее»"""
     assert keyness(["Её", "кот"], pronoun_dict) == keyness(["ее", "кот"], pronoun_dict)
-    assert {keyword.word for keyword in keyness(["её"], pronoun_dict)} == {"она"}
+    assert {keyword.word for keyword in keyness(["её"], pronoun_dict)} == {"ее"}
 
 
 def test_keyness_freq_dict_found_entry(pronoun_dict):
-    """Статья, которая есть в цели, остается, даже если формы pymorphy3 к ней не приводят"""
+    """Статья, которая есть в цели, остается, даже если формы словаря к ней не приводят"""
     negative = keyness(["его"] + ["кот"] * 2000, pronoun_dict, positive=False, lemmatize=False)
     assert {keyword.word: keyword.freq_target for keyword in negative}["его"] == 1
 
 
 def test_find_unreachable_entries(pronoun_dict):
-    """Поиск недостижимых статей: «его», «ее», «во» - формы других лемм"""
+    """Поиск недостижимых статей: «во» - форма «в», а «его» и «ее» - леммы притяжательных"""
     from ruts.corpus.keyness import _find_unreachable_entries
 
-    assert _find_unreachable_entries(pronoun_dict, lemmatize=True) == ["во", "его", "ее"]
-    assert "его" in _find_unreachable_entries(pronoun_dict, lemmatize=False)
+    assert _find_unreachable_entries(pronoun_dict, lemmatize=True) == ["во"]
+    assert _find_unreachable_entries(pronoun_dict, lemmatize=False) == ["во"]
 
 
 def test_keyness_freq_dict_no_parsing(pronoun_dict, monkeypatch):
@@ -188,7 +197,7 @@ def test_keyness_freq_dict_no_parsing(pronoun_dict, monkeypatch):
         importlib.import_module("ruts.corpus.keyness"), "_find_unreachable_entries", None
     )
     negative = keyness(["кот"] * 50, pronoun_dict, positive=False)
-    assert "его" not in {keyword.word for keyword in negative}
+    assert "во" not in {keyword.word for keyword in negative}
 
 
 @pytest.mark.network

@@ -54,7 +54,7 @@ from .constants import (
     SUBORDINATING_MARKS,
     SYNTAX_STATS_DESC,
 )
-from .utils import is_verbal_noun, lemmatize, normalize_yo, strip_marks
+from .utils import is_verbal_noun, lemmatize, normalize_yo, parse_all, strip_marks
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
@@ -427,10 +427,10 @@ def is_infinitive_periphrasis(token: Token) -> bool:
         bool: Результат проверки
     """
     head = token.head
-    lemma = get_lemma(head)
-    if lemma in INFINITIVE_PERIPHRASES:
+    lemmas = _pos_lemmas(head)
+    if not lemmas.isdisjoint(INFINITIVE_PERIPHRASES):
         return True
-    if lemma in MODAL_SHORT_ADJECTIVES and (
+    if not lemmas.isdisjoint(MODAL_SHORT_ADJECTIVES) and (
         has_feature(head, "StyleVariant", "Short") or has_feature(head, "Variant", "Short")
     ):
         return True
@@ -640,9 +640,9 @@ def get_lemma(token: Token) -> str:
     Получение леммы токена в нижнем регистре
 
     Описание:
-        Разбор pymorphy3 с частью речи токена (lemmatize), а не token.lemma_:
+        Разбор ruMorph с частью речи токена (lemmatize), а не token.lemma_:
         лемматизатор моделей ru_core_news возвращает словоформу для AUX
-        и при расхождении признаков теггера и pymorphy3 (были, них, стихли)
+        и при расхождении признаков теггера и словаря (были, них, стихли)
 
     Аргументы:
         token (Token): Токен
@@ -651,6 +651,12 @@ def get_lemma(token: Token) -> str:
         str: Лемма
     """
     return lemmatize(token.text, token.pos_)
+
+
+def _pos_lemmas(token: Token) -> set[str]:
+    """Леммы разборов ruMorph с частью речи токена: у омонимов (стоит - стоять, стоить) - все"""
+    lemmas = {analysis.lemma for analysis in parse_all(token.text) if analysis.pos == token.pos_}
+    return lemmas or {get_lemma(token)}
 
 
 def is_light_verb(token: Token) -> bool:
@@ -663,7 +669,7 @@ def is_light_verb(token: Token) -> bool:
         сказуемом несет только грамматическое значение; возвратный пассив (например,
         проводиться, приниматься, вестись) входит в список отдельными леммами, так как
         у части возвратных форм другое значение (получиться, оказаться). Лемма берется
-        из разбора pymorphy3 дважды: с частью речи токена (get_lemma) и как глагола
+        из разбора ruMorph дважды: с частью речи токена (get_lemma) и как глагола
         (lemmatize)
 
     Аргументы:
@@ -676,7 +682,7 @@ def is_light_verb(token: Token) -> bool:
 
 
 def _verb_lemmas(token: Token) -> set[str]:
-    """Леммы глагола по pymorphy3: с частью речи токена и как глагола"""
+    """Леммы глагола по ruMorph: с частью речи токена и как глагола"""
     return {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
 
 

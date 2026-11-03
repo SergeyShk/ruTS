@@ -60,7 +60,7 @@ class WordsExtractor(anyts.WordsExtractor):
 
     Описание:
         Токенизатор по умолчанию - сегментатор anySeg (ruts.utils.iter_tokens),
-        леммы - первый разбор pymorphy3. Фильтры применяются по порядку: знаки
+        леммы - первый разбор ruMorph. Фильтры применяются по порядку: знаки
         препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова;
         стоп-слова сравниваются без учета регистра
         Числами считаются также диапазоны, дроби, порядковые числительные и числа
@@ -102,8 +102,8 @@ class WordsExtractor(anyts.WordsExtractor):
         return super().extract(strip_marks(text) if isinstance(text, str) else text)
 
     def lemmatize(self, word: str) -> str:
-        """Лемма слова по первому разбору pymorphy3"""
-        return str(parse_word(word).normal_form)
+        """Лемма слова по первому разбору ruMorph"""
+        return parse_word(word).lemma
 
 
 class CharNgramsExtractor(anyts.CharNgramsExtractor):

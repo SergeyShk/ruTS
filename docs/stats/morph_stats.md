@@ -31,7 +31,7 @@ MorphStats(source, words_extractor=None)
     ```
     ---------------Часть речи---------------
     Глагол                        |    6
-    Сочинительный союз            |    2
+    Местоимение-существительное   |    2
     Подчинительный союз           |    2
     Наречие                       |    1
 
@@ -42,10 +42,10 @@ MorphStats(source, words_extractor=None)
 
     -----------------Число------------------
     Множественное                 |    3
-    Единственное                  |    1
+    Единственное                  |    3
 
     ------------------Лицо------------------
-    2                             |    1
+    2                             |    2
     3                             |    1
     ```
 
@@ -66,11 +66,11 @@ MorphStats(source, words_extractor=None)
 | `pos` | `tuple[str / None]` | Часть речи каждого слова |
 | `animacy`, `aspect`, ..., `voice` | `tuple[str / None]` | Значение статистики у каждого слова, `None` у слова без признака |
 
-В ruTS есть и атрибут `lemmas` (`tuple[str]`) - леммы слов, которые pymorphy3 дает по части речи слова.
+В ruTS есть и атрибут `lemmas` (`tuple[str]`) - леммы слов, которые ruMorph дает по части речи слова.
 
 ## Статистики
 
-Статистики - часть речи `pos` и признаки из таблицы ниже (`MORPHOLOGY_FEATURES` из `ruts.constants`). Для объекта `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`, то есть с учетом контекста (стали - глагол или существительное). Для строки, `Doc` без разметки и `Doc` с заданным экстрактором слов используется первый разбор [pymorphy3](https://github.com/no-plagiarism/pymorphy3): граммемы [OpenCorpora](http://opencorpora.org/dict.php?act=gram) переводятся в UD по таблицам `OPENCORPORA_TO_UD_POS` и `OPENCORPORA_TO_UD_GRAMMEMES` из `ruts.constants`, а признак, которому pymorphy3 дает два значения сразу (одушевленность слов на -кки), не определен.
+Статистики - часть речи `pos` и признаки из таблицы ниже (`MORPHOLOGY_FEATURES` из `ruts.constants`). Для объекта `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`, то есть с учетом контекста (стали - глагол или существительное). Для строки, `Doc` без разметки и `Doc` с заданным экстрактором слов используется первый разбор морфологического анализатора [ruMorph](https://github.com/SergeyShk/ruMorph) - части речи и признаки UD по соглашениям корпуса SynTagRus.
 
 | Статистика | Признак | Значения |
 | :--------- | :------ | :------- |
@@ -91,7 +91,7 @@ MorphStats(source, words_extractor=None)
 | `verb_form` | Форма глагола | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Залог | `Act`, `Pass`, `Mid` |
 
-Значения для строки и для `Doc` с разметкой могут отличаться: spaCy проставляет `Voice=Act` личным формам и `Voice=Mid` возвратным глаголам, выделяет `AUX` и снимает омонимию по контексту; pymorphy3 определяет залог только у причастий и берет первый разбор.
+Значения для строки и для `Doc` с разметкой могут отличаться: spaCy снимает омонимию по контексту, а для строки берется первый разбор ruMorph без учета соседних слов; часть соглашений у них разная - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.
 
 <div class="metric-card" markdown>
 
@@ -100,23 +100,7 @@ MorphStats(source, words_extractor=None)
 `pos` · [UD](https://universaldependencies.org/u/pos/)
 { .metric-meta }
 
-Для строки части речи OpenCorpora переводятся в UD так:
-
-| OpenCorpora | UD | Примечание |
-| :---------- | :- | :--------- |
-| `NOUN` | `NOUN`, `PROPN` | имена, фамилии, отчества, топонимы и организации по пометам pymorphy3 - `PROPN`, но только у словоформ с заглавной буквы: pymorphy3 не учитывает регистр и дает помету имени обычным словам (лев, роза, мороз) |
-| `ADJF`, `ADJS`, `COMP` | `ADJ`, `DET`, `PRON`, `NUM` | местоименные прилагательные (этот, мой, весь) - `DET`, «который» - `PRON`, «один» - `NUM`; компаратив без контекста считается прилагательным |
-| `VERB`, `INFN`, `PRTF`, `PRTS`, `GRND` | `VERB` | форма записывается в `verb_form`: `Fin`, `Inf`, `Part`, `Conv`; вспомогательный `AUX` выделяет только spaCy |
-| `NUMR`, `NUMB`, `ROMN` | `NUM` | |
-| `ADVB`, `PRED` | `ADV` | предикативы (надо, нельзя) - наречия без времени, как в русских корпусах UD; у бытийных «нет» и «нету», которые UD считает глаголами, - настоящее время |
-| `NPRO` | `PRON` | |
-| `PREP` | `ADP` | |
-| `CONJ` | `CCONJ`, `SCONJ` | подчинительные союзы по списку `SUBORDINATING_CONJUNCTIONS` (что, чтобы, если, когда, хотя, потому) |
-| `PRCL` | `PART` | |
-| `INTJ` | `INTJ` | |
-| `LATN`, `UNKN` | `X` | |
-
-«Есть» считается формой «быть», а не «кушать».
+Для строки части речи - первого разбора ruMorph по соглашениям SynTagRus: предикативы («надо», «можно», бытийное «нет») - `VERB` без формы глагола, «который» - `DET`, вводные «конечно», «например» - `ADV`, вспомогательное «быть» - `AUX`, имена собственные - `PROPN` с учетом регистра («Лев», но «лев»). Без контекста первый разбор омонима - самый частый: «стали» - глагол, «её» - притяжательное `DET`.
 
 </div>
 
@@ -127,7 +111,7 @@ MorphStats(source, words_extractor=None)
 `degree` · `polarity` · `style_variant`
 { .metric-meta }
 
-Для строки эти признаки выводятся по правилам русского UD. Степень есть у прилагательных (кроме местоименных) и наречий: `Cmp` у сравнительной степени и у «более», «менее», «выше», «ниже», `Sup` у превосходной («красивейший»), `Pos` у остальных. Отрицание - у частиц «не», «ни» и ответного «нет» («Нет, не пойду», но не «Денег нет»). Краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), но не у форм на -о вроде «неверно», «нужно», поэтому у строки она встречается реже, чем у `Doc` модели.
+Для строки эти признаки - разбора ruMorph по правилам русского UD. Степень есть у прилагательных (кроме местоименных) и наречий: `Cmp` у сравнительной степени, `Sup` у превосходной («красивейший»), `Pos` у остальных. Отрицание - у «не», «ни» и «нет». Краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), признак `Variant=Short`.
 
 === "Код"
 
@@ -161,7 +145,7 @@ MorphStats(source, words_extractor=None)
 `transitivity` · `involvement` · [OpenCorpora](http://opencorpora.org/dict.php?act=gram)
 { .metric-meta }
 
-Признаки OpenCorpora, которых в русском UD нет: переходность (`Tran`, `Intr`) и совместность (`In` - говорящий включен в действие, `Ex` - не включен). Они считаются через pymorphy3 для глаголов (для `Doc` - по разбору с леммой spaCy) и в строке признаков `tags` записываются как `Subcat` и `Clusivity`.
+Признаки OpenCorpora, которых в русском UD нет: переходность (`Tran`, `Intr`) и совместность (`In` - говорящий включен в действие, `Ex` - не включен). Они берутся из помет разбора ruMorph для глаголов (для `Doc` - разбора с леммой spaCy) и в строке признаков `tags` записываются как `Subcat` и `Clusivity`.
 
 === "Код"
 
@@ -176,7 +160,7 @@ MorphStats(source, words_extractor=None)
 === "Результат"
 
     ```
-    'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+    'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid'
     (('Intr', 'Tran', None, None, 'Tran'), ('Ex', None, None, None, None))
     ```
 
@@ -252,26 +236,26 @@ MorphStats(source, words_extractor=None)
 === "Результат"
 
     ```
-    {'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
+    {'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
      'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
-     'number': {'Plur': 3, 'Sing': 1},
-     'person': {'2': 1, '3': 1}}
+     'number': {'Plur': 3, 'Sing': 3},
+     'person': {'2': 2, '3': 1}}
     {'pos_VERB': 6,
-     'pos_CCONJ': 2,
+     'pos_PRON': 2,
      'pos_SCONJ': 2,
      'pos_ADV': 1,
      'tense_Pres': 1,
      'tense_Fut': 1,
      'tense_Past': 1}
-    (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur'}),
+    (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
      ('получить', {'pos': 'VERB'}),
-     ('то', {'pos': 'CCONJ'}),
+     ('то', {'pos': 'PRON', 'number': 'Sing'}),
      ('что', {'pos': 'SCONJ'}),
      ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
      ('иначе', {'pos': 'ADV'}),
      ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
      ('полюбить', {'pos': 'VERB'}),
-     ('то', {'pos': 'CCONJ'}),
+     ('то', {'pos': 'PRON', 'number': 'Sing'}),
      ('что', {'pos': 'SCONJ'}),
      ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
     ```
@@ -288,8 +272,8 @@ MorphStats(source, words_extractor=None)
 === "Результат"
 
     ```
-       pos_VERB  pos_CCONJ  pos_SCONJ  pos_ADV
-    0         6          2          2        1
+       pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
+    0         6         2          2        1
     ```
 
 <!-- core: stats/morph_stats.md:MorphStats-markers a7e33d7 -->

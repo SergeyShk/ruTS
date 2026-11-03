@@ -57,10 +57,7 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --no-default-groups --group test ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' && '--extra fast' || '' }}
-      - name: Check DAWG extension
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        run: uv run --no-sync python -c "from pymorphy3.dawg import EXTENSION_AVAILABLE; assert EXTENSION_AVAILABLE"
+        run: uv sync --locked --no-default-groups --group test
       - name: Fetch the pages of anyTS
         run: uv run --no-sync python scripts/core_docs.py
       - name: Run tests

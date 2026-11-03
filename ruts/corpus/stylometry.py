@@ -21,7 +21,6 @@ from anyts.utils import check_words, has_pos, is_doc, is_punctuation, iter_doc_u
 
 from ..constants import FUNCTION_UD_POS
 from ..exceptions import SourceError
-from ..morph_stats import tag_to_ud_pos
 from ..utils import parse_word
 
 if TYPE_CHECKING:
@@ -35,7 +34,7 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
     Описание:
         Доли предлогов, сочинительных и подчинительных союзов, частиц, местоимений,
         детерминативов и междометий (FUNCTION_UD_POS) среди слов текста; по первому
-        разбору pymorphy3 для списка слов и по разметке для Doc с частями речи,
+        разбору ruMorph для списка слов и по разметке для Doc с частями речи,
         знаки препинания в обоих случаях не считаются словами.
         Служебные слова не зависят от темы текста, поэтому их профиль -
         классический признак авторства
@@ -68,5 +67,4 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
 
 
 def _word_pos(word: str) -> str | None:
-    parse = parse_word(word)
-    return tag_to_ud_pos(parse.tag, parse.normal_form, word)
+    return parse_word(word).pos

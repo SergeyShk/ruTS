@@ -53,11 +53,11 @@ def nlp():
 
 
 def test_answer_particle_tense(nlp):
-    """Ответное «нет» - частица без времени, бытийное - в настоящем, как у Doc"""
+    """Ответное «нет» - частица без времени, бытийное у ruMorph - тоже без времени"""
     answers = "Нет, я его видел. Нет, она придёт завтра."
     assert CohesionStats(answers).tense_repetition == 0.0
     assert CohesionStats(nlp(answers)).tense_repetition == 0.0
-    assert CohesionStats("Денег нет. Хлеба нет.").tense_repetition == 1.0
+    assert isnan(CohesionStats("Денег нет. Хлеба нет.").tense_repetition)
 
 
 def test_init_value_error():
@@ -104,15 +104,15 @@ def test_word_info():
     assert word_info("кота") == WordInfo("кот", True, False, False, True, True, None, None)
     assert word_info("он") == WordInfo("он", False, True, False, True, False, None, None)
     assert word_info("этот") == WordInfo("этот", False, True, True, False, False, None, None)
-    assert word_info("это") == WordInfo("это", False, True, True, False, False, None, None)
+    assert word_info("это") == WordInfo("это", False, True, True, True, False, None, None)
     assert word_info("столько") == WordInfo("столько", False, True, True, False, False, None, None)
     assert word_info("читал") == WordInfo(
-        "читать", False, False, False, False, True, "past", "impf"
+        "читать", False, False, False, False, True, "Past", "Imp"
     )
     assert word_info("на") == WordInfo("на", False, False, False, False, False, None, None)
     assert word_info("надо") == WordInfo("надо", False, False, False, False, False, None, None)
-    assert word_info("прочитав").tense == "past"
-    assert word_info("нет").tense == "pres"
+    assert word_info("прочитав").tense == "Past"
+    assert word_info("нет").tense is None
 
 
 def test_token_info(nlp):
@@ -142,7 +142,7 @@ def test_lemmatize():
     assert lemmatize("стали") == "стать"
     assert lemmatize("стали", "ADP") == "стать"
     assert lemmatize("Москву", "PROPN") == "москва"
-    assert lemmatize("лучше", "ADV") == "хороший"
+    assert lemmatize("лучше", "ADV") == "хорошо"
 
 
 def test_demonstratives():
@@ -170,7 +170,8 @@ def test_counts(cs):
     assert cs.n_nouns == 6
     assert cs.n_pronouns == 3
     assert cs.n_demonstratives == 1
-    assert cs.n_content_words == 14
+    # «будет» в «будет сидеть» - вспомогательный глагол, не знаменательное слово
+    assert cs.n_content_words == 13
     assert cs.n_given == 4
 
 
@@ -182,14 +183,14 @@ def test_overlap(cs):
     assert cs.content_overlap_adjacent == pytest.approx(1 / 3)
     assert cs.content_overlap_all == pytest.approx(3 / 6)
     assert cs.content_overlap_prop_adjacent == pytest.approx((0 + 1 / 3 + 0) / 3)
-    assert cs.content_overlap_prop_all == pytest.approx((2 / 7 + 1 / 2 + 1 / 3) / 6)
+    assert cs.content_overlap_prop_all == pytest.approx(25 / 21 / 6)
 
 
 def test_givenness(cs):
     assert cs.p_pronouns == pytest.approx(3 / 21)
     assert cs.pronoun_noun_ratio == pytest.approx(3 / 6)
     assert cs.p_demonstratives == pytest.approx(1 / 21)
-    assert cs.p_given == pytest.approx(4 / 14)
+    assert cs.p_given == pytest.approx(4 / 13)
 
 
 def test_temporal(cs):
@@ -230,11 +231,11 @@ def test_no_nouns_no_verbs():
 
 
 def test_temporal_ignores_predicatives():
-    """У «надо» нет времени, поэтому повтор времени не определен, как у Doc; у «нет» - есть"""
+    """У «надо» и бытийного «нет» у ruMorph нет времени, поэтому повтор времени не определен"""
     cs = CohesionStats("Надо идти. Надо спать.")
     assert isnan(cs.tense_repetition)
     assert cs.aspect_repetition == 1.0
-    assert CohesionStats("Тебя нет. Денег нет.").tense_repetition == 1.0
+    assert isnan(CohesionStats("Тебя нет. Денег нет.").tense_repetition)
 
 
 def test_temporal_skips_sentences_without_verbs():
@@ -452,8 +453,8 @@ def test_connectors_pos(nlp):
         "значит",
         "словом",
     ]
-    assert connector_pos("раз") == "ADV"
-    assert connector_pos("Отчего") == "CCONJ"
+    assert connector_pos("раз") == "SCONJ"
+    assert connector_pos("Отчего") == "ADV"
     assert connector_pos("кот") == "NOUN"
     assert connector_pos("т.е.") == "X"
     for connector in load_connectors():
@@ -564,10 +565,11 @@ def test_hyphenated_verb_doc(nlp):
     assert cs.words[0] == ("Жили-были", "дед", "и", "баба")
     assert cs.lemmas[0][0] == lemmatize("Жили-были", "VERB")
     assert cs.tense_repetition == 1.0
-    assert cs.aspect_repetition == 0.5
+    # Вид «жили-были» ruMorph не угадывает: повтор вида - только у «назовите-ка»
+    assert cs.aspect_repetition == 0.0
     units = list(iter_doc_units(doc, join_hyphens=True))
     assert unit_info(units[0]) == WordInfo(
-        lemmatize("Жили-были", "VERB"), False, False, False, False, True, "Past", "Imp"
+        lemmatize("Жили-были", "VERB"), False, False, False, False, True, "Past", None
     )
     assert unit_info(units[1]) == token_info(doc[3])
     assert (unit_info(units[7]).tense, unit_info(units[7]).aspect) == (None, "Perf")

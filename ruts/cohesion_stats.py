@@ -48,17 +48,16 @@ from .constants import (
     CONNECTOR_READ_THROUGH_MARKS,
     CONNECTOR_SPLIT_BY_MARKS,
     CONNECTOR_SUBORDINATORS,
-    CONTENT_POS,
     CORE_MESSAGES,
     DEMONSTRATIVE_LEMMAS,
     RESOURCES_DIR,
-    STOPWORD_GRAMMEMES,
 )
 from .exceptions import SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import _has_tense, answer_particles, tag_to_ud_pos, word_to_ud
+from .morph_stats import answer_particles, word_to_ud
 from .utils import (
     BYTE_ORDER_MARK,
+    is_predicative,
     lemmatize,
     normalize_yo,
     parse_all,
@@ -114,7 +113,7 @@ class RussianConnectorMatcher(ConnectorMatcher):
         через знак препинания - только у CONNECTOR_READ_THROUGH_MARKS (не знал, отчего),
         а знак внутри коннектора CONNECTOR_SPLIT_BY_MARKS его разделяет (так, как);
         многословные подчинительные союзы и предлоги и однословные союзы, которые
-        модели или pymorphy3 размечают не SCONJ, - CONNECTOR_SUBORDINATORS (так как,
+        модели или ruMorph размечают не SCONJ, - CONNECTOR_SUBORDINATORS (так как,
         после того как, несмотря на, ежели); союзы CONNECTOR_PARCELLATION (ибо)
         в начале предложения связывают его с предыдущим
     """
@@ -143,9 +142,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
     Описание:
         Расширяет CohesionStats ядра anyTS крючками русского языка: леммы, части речи,
         время и вид - для Doc с разметкой частей речи по token.pos_ и token.morph
-        с леммой разбора pymorphy3 с частью речи токена (lemmatize), для строки,
+        с леммой разбора ruMorph с частью речи токена (lemmatize), для строки,
         Doc без разметки и Doc с заданным экстрактором слов - по первому разбору
-        pymorphy3; дефисные слова склеиваются; словарь коннекторов - resources/connectors.tsv
+        ruMorph; дефисные слова склеиваются; словарь коннекторов - resources/connectors.tsv
         с классами по Криони, Никину и Филипповой (2008), сопоставитель -
         RussianConnectorMatcher. Источником данных может быть строка, в отличие
         от ядра
@@ -166,7 +165,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'content_overlap_adjacent': 0.3333333333333333,
         'content_overlap_all': 0.5,
         'content_overlap_prop_adjacent': 0.1111111111111111,
-        'content_overlap_prop_all': 0.18650793650793648,
+        'content_overlap_prop_all': 0.19841269841269837,
         'noun_overlap_2_sent': 0.6666666666666666,
         'argument_overlap_2_sent': 0.75,
         'content_overlap_2_sent': 0.4,
@@ -176,7 +175,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'p_pronouns': 0.14285714285714285,
         'pronoun_noun_ratio': 0.5,
         'p_demonstratives': 0.047619047619047616,
-        'p_given': 0.2857142857142857,
+        'p_given': 0.3076923076923077,
         'tense_repetition': 0.6666666666666666,
         'aspect_repetition': 0.3333333333333333,
         'temporal_cohesion': 0.5,
@@ -301,14 +300,14 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
 
     def analyze(self, source: str | Doc) -> list[list[CohesionWord]]:
         """
-        Слова предложений с признаками по разметке Doc или по pymorphy3
+        Слова предложений с признаками по разметке Doc или по ruMorph
 
         Описание:
             Без экстрактора слов слова Doc берутся из токенов (doc_units), признаки -
-            по разметке частей речи (unit_info, unit_pos), а без разметки - по pymorphy3
+            по разметке частей речи (unit_info, unit_pos), а без разметки - по ruMorph
             (words_info, connector_pos). Для строки и Doc с экстрактором слов
             предложения - границы Doc или экстрактор предложений, слова - экстрактор
-            слов, признаки - по pymorphy3. Знаки препинания между словами - по
+            слов, признаки - по ruMorph. Знаки препинания между словами - по
             токенам Doc (find_unit_marks) или по тексту предложения (find_marks),
             начала абзацев после перевода строки (пустой строки с blank_lines) - по
             токенам Doc (find_unit_paragraph_starts) или по тексту (find_paragraph_starts)
@@ -448,7 +447,7 @@ def _cohesion_words(
     marks: Sequence[Collection[int]],
     starts: Collection[int] = frozenset(),
 ) -> list[list[CohesionWord]]:
-    """Слова предложений с признаками по pymorphy3 (words_info, connector_pos), знаками
+    """Слова предложений с признаками по ruMorph (words_info, connector_pos), знаками
     и началами абзацев по сквозным номерам слов"""
     infos = words_info(sents, text)
     return [
@@ -543,10 +542,10 @@ def _is_connector_pos(word: str, pos: str | None) -> bool:
 @lru_cache(maxsize=131072)
 def connector_pos(word: str) -> str | None:
     """
-    Часть речи UD слова по pymorphy3 для проверки коннектора
+    Часть речи UD слова по ruMorph для проверки коннектора
 
     Описание:
-        Из разборов pymorphy3 берется первый с частью речи, подходящей коннектору
+        Из разборов ruMorph берется первый с частью речи, подходящей коннектору
         (CONNECTOR_POS или CONNECTOR_POS_EXTRA для этого слова), иначе часть речи
         первого разбора: у «раз» и «отчего» первый разбор - существительное
         и прилагательное, подходящие - только следующие (наречие и союз). Результаты
@@ -559,20 +558,19 @@ def connector_pos(word: str) -> str | None:
         str|None: Часть речи UD
     """
     normalized = normalize_yo(word)
-    poses = [tag_to_ud_pos(parse.tag, parse.normal_form, word) for parse in parse_all(word)]
+    poses = [analysis.pos for analysis in parse_all(word)]
     return next((pos for pos in poses if _is_connector_pos(normalized, pos)), poses[0])
 
 
 def word_info(word: str) -> WordInfo:
     """
-    Получение признаков слова по первому разбору pymorphy3
+    Получение признаков слова по первому разбору ruMorph
 
     Описание:
-        Существительное - NOUN, местоимение - NPRO, Apro или лемма из DEMONSTRATIVE_LEMMAS,
-        аргумент - NOUN или NPRO, знаменательное слово - по is_content_word, кроме
-        указательных (столько - наречие для pymorphy3), время и вид - граммемы
-        глагольной формы; из предикативов время есть только у бытийных «нет» и «нету»,
-        как в русском UD
+        Существительное - NOUN или PROPN, местоимение - PRON, DET или лемма
+        из DEMONSTRATIVE_LEMMAS, аргумент - NOUN, PROPN или PRON, знаменательное
+        слово - по is_content_word, кроме указательных, время и вид - признаки
+        Tense и Aspect разбора
 
     Аргументы:
         word (str): Слово
@@ -580,28 +578,27 @@ def word_info(word: str) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    parse = parse_word(word)
-    tag = parse.tag
-    demonstrative = parse.normal_form in DEMONSTRATIVE_LEMMAS
+    analysis = parse_word(word)
+    demonstrative = analysis.lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
-        lemma=parse.normal_form,
-        noun=tag.POS == "NOUN",
-        pronoun=demonstrative or is_pronoun(word),
+        lemma=analysis.lemma,
+        noun=analysis.pos in ("NOUN", "PROPN"),
+        pronoun=demonstrative or analysis.pos in ("PRON", "DET"),
         demonstrative=demonstrative,
-        argument=tag.POS in ("NOUN", "NPRO"),
+        argument=analysis.pos in ("NOUN", "PROPN", "PRON"),
         content=not demonstrative and is_content_word(word),
-        tense=tag.tense if _has_tense(tag, parse.normal_form) else None,
-        aspect=tag.aspect,
+        tense=analysis.feats.get("Tense"),
+        aspect=analysis.feats.get("Aspect"),
     )
 
 
 def words_info(sents: Sequence[Sequence[str]], text: str) -> list[list[WordInfo]]:
     """
-    Получение признаков слов текста по первому разбору pymorphy3
+    Получение признаков слов текста по первому разбору ruMorph
 
     Описание:
-        Как word_info, но ответное «нет» (find_answer_particles) - частица без времени,
-        а не бытийный предикатив
+        Как word_info, но ответное «нет» (find_answer_particles) - частица, а не
+        бытийное «нет»
 
     Аргументы:
         sents (list[list[str]]): Слова предложений текста
@@ -629,9 +626,9 @@ def token_info(token: Token) -> WordInfo:
         из DEMONSTRATIVE_LEMMAS, аргумент - NOUN, PROPN или PRON, знаменательное слово -
         NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS), кроме указательных, время и вид -
         признаки Tense и Aspect
-        Лемма берется из разбора pymorphy3 с частью речи токена (lemmatize), а не
+        Лемма берется из разбора ruMorph с частью речи токена (lemmatize), а не
         из token.lemma_: лемматизатор моделей ru_core_news возвращает словоформу
-        для AUX и при расхождении признаков теггера и pymorphy3 (были, них, стихли)
+        для AUX и при расхождении признаков теггера и словаря (были, них, стихли)
 
     Аргументы:
         token (Token): Токен
@@ -651,8 +648,8 @@ def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordI
     Получение признаков слова по части речи и признакам Universal Dependencies
 
     Описание:
-        Как в token_info: лемма - из разбора pymorphy3 с частью речи (lemmatize);
-        римское число (ROMAN_NUMERAL) - числительное, как у pymorphy3
+        Как в token_info: лемма - из разбора ruMorph с частью речи (lemmatize);
+        римское число (ROMAN_NUMERAL) - числительное
 
     Аргументы:
         word (str): Слово
@@ -698,7 +695,7 @@ def unit_pos(unit: Sequence[Token]) -> str | None:
 
     Описание:
         Обычное слово - по разметке токена, дефисное слово из нескольких токенов -
-        по разбору pymorphy3 склеенного текста (connector_pos)
+        по разбору ruMorph склеенного текста (connector_pos)
 
     Аргументы:
         unit (list[Token]): Токены слова
@@ -717,8 +714,8 @@ def unit_info(unit: Sequence[Token]) -> WordInfo:
 
     Описание:
         Обычное слово - по разметке токена (token_info), дефисное слово из нескольких
-        токенов - по разбору pymorphy3 склеенного текста, переведенному в UD
-        (word_to_ud), чтобы время и вид сравнивались с разметкой остальных слов
+        токенов - по разбору ruMorph склеенного текста (word_to_ud), чтобы время
+        и вид сравнивались с разметкой остальных слов
 
     Аргументы:
         unit (list[Token]): Токены слова
@@ -738,8 +735,8 @@ def is_pronoun(word: str) -> bool:
     Проверка, является ли слово местоимением
 
     Описание:
-        Местоимения-существительные (NPRO: он, себя, кто, это) и местоименные
-        прилагательные (Apro: этот, который, мой, весь, каждый) по разметке pymorphy3
+        Местоимения-существительные (PRON: он, себя, кто, это) и определительные
+        местоимения (DET: этот, который, мой, весь, каждый) по разметке ruMorph
 
     Аргументы:
         word (str): Слово
@@ -747,8 +744,7 @@ def is_pronoun(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    tag = parse_word(word).tag
-    return tag.POS == "NPRO" or "Apro" in tag.grammemes
+    return parse_word(word).pos in ("PRON", "DET")
 
 
 def is_content_word(word: str) -> bool:
@@ -756,9 +752,11 @@ def is_content_word(word: str) -> bool:
     Проверка, является ли слово знаменательным
 
     Описание:
-        Существительные, прилагательные, глаголы во всех формах (включая инфинитивы,
-        причастия и деепричастия) и наречия по разметке pymorphy3, кроме местоименных
-        (этот, такой, там, тогда) и вводных (конечно, например) слов
+        Существительные, имена собственные, прилагательные, глаголы во всех формах
+        и наречия (CONTENT_UD_POS) по разметке ruMorph, кроме местоименных (такой, там,
+        тогда, признак PronType), вводных (конечно, например, помета Prnt) слов,
+        предикативов (надо, можно; is_predicative) и чисел цифрами (2020-й, XII -
+        порядковые прилагательные)
 
     Аргументы:
         word (str): Слово
@@ -766,5 +764,11 @@ def is_content_word(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    tag = parse_word(word).tag
-    return tag.POS in CONTENT_POS and not STOPWORD_GRAMMEMES & tag.grammemes
+    analysis = parse_word(word)
+    return (
+        analysis.pos in CONTENT_UD_POS
+        and "PronType" not in analysis.feats
+        and "Prnt" not in analysis.labels
+        and not is_predicative(analysis)
+        and analysis.feats.get("NumForm") not in ("Digit", "Roman")
+    )

@@ -85,7 +85,7 @@ MorphStatsComponent(nlp, name)
 
 --8<-- "components.md:MorphStatsComponent"
 
-In ruTS the parts of speech and the features are taken from the model annotation (`token.pos_`, `token.morph`), and in a pipeline without `morphologizer` from pymorphy3.
+In ruTS the parts of speech and the features are taken from the model annotation (`token.pos_`, `token.morph`), and in a pipeline without `morphologizer` from ruMorph.
 
 === "Code"
 
@@ -192,7 +192,7 @@ StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, 
 
 --8<-- "components.md:StyleStatsComponent"
 
-Without the lists the water words and the stopwords of the nausea are determined by the pymorphy3 tags, and the cliches come from `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` is a constant of `anyts.constants`.
+Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` is a constant of `anyts.constants`.
 
 === "Code"
 
@@ -264,7 +264,7 @@ Raises:
 CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the first ruMorph analysis. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

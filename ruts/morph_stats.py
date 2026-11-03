@@ -4,13 +4,12 @@ import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
 from functools import cached_property, lru_cache
-from inspect import getattr_static
 from math import nan
 from typing import TYPE_CHECKING, ClassVar
 
 import anyts
 import anyts.morph_stats
-import pymorphy3
+import rumorph
 from anyts.morph_stats import MorphWord as MorphWord
 from anyts.utils import has_pos, is_doc, iter_doc_units, safe_divide, source_type_error
 
@@ -18,19 +17,11 @@ from .constants import (
     ANSWER_PARTICLE_NEXT,
     ANSWER_PARTICLE_PREV,
     ANSWER_PARTICLE_PREV_MARKS,
-    COMPARATIVE_ADVERBS,
     CONDITIONAL_PARTICLES,
     CORE_MESSAGES,
     MORPHOLOGY_FEATURES,
     MORPHOLOGY_MARKERS_DESC,
     MORPHOLOGY_STATS_DESC,
-    NEGATIVE_PARTICLES,
-    OPENCORPORA_TO_UD_GRAMMEMES,
-    OPENCORPORA_TO_UD_POS,
-    OPENCORPORA_VERB_FORMS,
-    PROPER_NOUN_GRAMMEMES,
-    SUBORDINATING_CONJUNCTIONS,
-    TENSED_PREDICATIVES,
     UD_PERSONS,
 )
 from .exceptions import SourceTypeError
@@ -40,20 +31,16 @@ from .utils import BYTE_ORDER_MARK, lemmatize, parse_all, parse_word, strip_mark
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
 
-VERB_POS = frozenset(OPENCORPORA_VERB_FORMS)
 # «нет» вне дефисных слов (нет-нет, нет‑с) с дефисами, которые склеивает токенизатор
 ANSWER_NET = re.compile(r"(?<!\w)(?<!\w[-‐‑‒])нет(?![\w\-‐‑‒])", re.IGNORECASE)
 # Окно поиска соседнего знака или слова
 ANSWER_CONTEXT = 40
 VERBAL_POS = frozenset({"VERB", "AUX"})
-SHORT_FORM_POS = frozenset({"ADJS", "PRTS"})
 REFLEXIVE_ENDINGS = ("ся", "сь")
-# Признаки, которых нет среди граммем pymorphy3: выводятся из части речи и леммы в tag_to_ud
-DERIVED_FEATURES = frozenset({"degree", "polarity", "style_variant", "verb_form"})
-TAG_GRAMMEMES = {
-    stat: getattr_static(pymorphy3.tagset.OpencorporaTag, stat).grammeme_set
-    for stat in MORPHOLOGY_FEATURES
-    if stat not in DERIVED_FEATURES
+# Признаки OpenCorpora, которых нет в русском UD: у ruMorph это пометы разбора
+LABEL_FEATURES = {
+    "transitivity": {"tran": "Tran", "intr": "Intr"},
+    "involvement": {"incl": "In", "excl": "Ex"},
 }
 
 
@@ -70,40 +57,38 @@ class MorphStats(anyts.morph_stats.MorphStats):
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, то есть с учетом контекста (стали - глагол или существительное);
         для строки, Doc без разметки и Doc с заданным экстрактором слов используется
-        первый разбор pymorphy3, граммемы OpenCorpora переводятся в UD по таблицам
-        в constants
+        первый разбор ruMorph
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
-        которых в русском UD нет; они считаются через pymorphy3 для глаголов
+        которых в русском UD нет; они берутся из помет разбора ruMorph для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
 
     Ссылки:
         https://universaldependencies.org/u/feat/
-        https://github.com/no-plagiarism/pymorphy3
-        http://opencorpora.org/dict.php?act=gram
+        https://github.com/SergeyShk/ruMorph
 
     Пример использования:
         >>> from ruts import MorphStats
         >>> text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
         >>> ms = MorphStats(text)
         >>> ms.get_stats()
-        {'pos': {'VERB': 6, 'CCONJ': 2, 'SCONJ': 2, 'ADV': 1},
-        'animacy': {None: 11},
+        {'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
+        'animacy': {None: 9, 'Inan': 2},
         'aspect': {'Perf': 5, None: 5, 'Imp': 1},
-        'case': {None: 11},
+        'case': {None: 9, 'Acc': 2},
         'degree': {None: 10, 'Pos': 1},
-        'gender': {None: 11},
+        'gender': {None: 9, 'Neut': 2},
         'involvement': {'Ex': 1, None: 10},
         'mood': {'Imp': 1, None: 7, 'Ind': 3},
-        'number': {'Plur': 3, None: 7, 'Sing': 1},
-        'person': {None: 9, '2': 1, '3': 1},
+        'number': {'Plur': 3, None: 5, 'Sing': 3},
+        'person': {'2': 2, None: 8, '3': 1},
         'polarity': {None: 11},
         'style_variant': {None: 11},
         'tense': {None: 8, 'Pres': 1, 'Fut': 1, 'Past': 1},
         'transitivity': {'Intr': 2, 'Tran': 4, None: 5},
         'verb_form': {'Fin': 4, 'Inf': 2, None: 5},
-        'voice': {None: 11}}
+        'voice': {'Mid': 2, 'Act': 4, None: 5}}
         >>> ms.tags[0]
-        'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Subcat=Intr|VerbForm=Fin'
+        'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid'
 
     Аргументы:
         source (str|Doc): Источник данных (строка или объект Doc)
@@ -112,7 +97,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
-        lemmas (tuple[str]): Кортеж лемм слов: pymorphy3 с учетом части речи слова
+        lemmas (tuple[str]): Кортеж лемм слов: ruMorph с учетом части речи слова
         tags (tuple[str]): Кортеж строк грамматических признаков в формате CoNLL-U
         pos (tuple[str]): Кортеж значений части речи
         animacy (tuple[str]): Кортеж значений одушевленности
@@ -175,7 +160,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
         Описание:
             Для Doc с разметкой частей речи - token.pos_ и token.morph (token_to_ud),
             дефисные слова склеиваются; для строки, Doc без разметки и Doc с заданным
-            экстрактором слов (он применяется к тексту Doc) - первый разбор pymorphy3
+            экстрактором слов (он применяется к тексту Doc) - первый разбор ruMorph
 
         Аргументы:
             source (str|Doc): Источник данных
@@ -232,7 +217,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
 
     @cached_property
     def lemmas(self) -> tuple[str, ...]:
-        """Леммы слов: pymorphy3 с учетом части речи слова"""
+        """Леммы слов: ruMorph с учетом части речи слова"""
         return tuple(
             lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
         )
@@ -301,138 +286,34 @@ def _values(value: str | None) -> list[str]:
     return value.split(",") if value else []
 
 
-def tag_to_ud_pos(tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = "") -> str | None:
+def analysis_to_ud(analysis: rumorph.Analysis) -> dict[str, str | None]:
     """
-    Перевод части речи OpenCorpora в часть речи Universal Dependencies
+    Перевод разбора ruMorph в признаки по ключам MORPHOLOGY_STATS_DESC
 
     Описание:
-        Формы глагола (VERB, INFN, PRTF, PRTS, GRND) сводятся к VERB, прилагательные
-        и компаративы - к ADJ; существительные с пометами имени, фамилии, отчества,
-        топонима или организации - PROPN, но только для словоформ с заглавной буквы:
-        pymorphy3 не учитывает регистр, и первый разбор обычных слов (лев, роза, мороз,
-        улей) тоже несет помету имени; местоименные прилагательные (Apro) - DET,
-        кроме относительного «который» - PRON и числительного «один» (Apro и Anum) -
-        NUM; союзы из SUBORDINATING_CONJUNCTIONS - SCONJ, остальные - CCONJ;
-        предикативы (надо, нельзя) - ADV; числа и римские цифры - NUM, латиница
-        и неизвестные слова - X
-        Без контекста часть речи омонимов и роль союзов (что, как) определяются
-        приблизительно
+        Часть речи и признаки UD - как у разбора; краткая форма - Variant=Short;
+        переходность и совместность - пометы tran, intr и incl, excl (LABEL_FEATURES)
 
     Аргументы:
-        tag (OpencorporaTag): Тэг OpenCorpora
-        lemma (str): Лемма слова
-        word (str): Словоформа; без нее имена собственные не выделяются
-
-    Вывод:
-        str|None: Часть речи UD, None если pymorphy3 не определил часть речи
-    """
-    grammemes = tag.grammemes
-    if tag.POS == "NOUN" and PROPER_NOUN_GRAMMEMES & grammemes and word[:1].isupper():
-        return "PROPN"
-    if tag.POS == "ADJF" and "Apro" in grammemes:
-        if "Anum" in grammemes:
-            return "NUM"
-        return "PRON" if lemma == "который" else "DET"
-    if tag.POS == "CONJ" and lemma in SUBORDINATING_CONJUNCTIONS:
-        return "SCONJ"
-    for grammeme in (tag.POS, *grammemes):
-        if grammeme in OPENCORPORA_TO_UD_POS:
-            return OPENCORPORA_TO_UD_POS[grammeme]
-    return None
-
-
-def tag_to_ud(
-    tag: pymorphy3.tagset.OpencorporaTag, lemma: str, word: str = ""
-) -> dict[str, str | None]:
-    """
-    Перевод тэга OpenCorpora в признаки Universal Dependencies
-
-    Описание:
-        Граммемы переводятся по таблице OPENCORPORA_TO_UD_GRAMMEMES: падежи gen1, gen2,
-        acc2, loc1, loc2 - в Gen, Par, Acc, Loc, Loc; лицо 1per, 2per, 3per - в 1, 2, 3;
-        общий род ms-f (сирота, задира), который pymorphy3 не относит к роду, - в Com;
-        форма глагола verb_form выводится из части речи OpenCorpora: VERB - Fin,
-        INFN - Inf, PRTF и PRTS - Part, GRND - Conv; степень degree, отрицание
-        polarity и краткая форма style_variant - по правилам русского UD
-        (_derived_features)
-        Время - у глагольных форм и бытийных «нет», «нету» (TENSED_PREDICATIVES), как
-        в русском UD: остальным предикативам (надо, нельзя) pymorphy3 дает настоящее
-        время, а в UD это наречия без времени
-        Переходность и совместность переводятся в Tran, Intr и In, Ex
-
-    Аргументы:
-        tag (OpencorporaTag): Тэг OpenCorpora
-        lemma (str): Лемма слова
-        word (str): Словоформа; без нее имена собственные не выделяются
+        analysis (Analysis): Разбор ruMorph
 
     Вывод:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
-    features: dict[str, str | None] = {"pos": tag_to_ud_pos(tag, lemma, word)}
-    derived = _derived_features(tag, lemma)
-    for stat in MORPHOLOGY_FEATURES:
-        if stat in DERIVED_FEATURES:
-            features[stat] = derived[stat]
-        elif stat == "tense" and not _has_tense(tag, lemma):
-            features[stat] = None
-        else:
-            found = TAG_GRAMMEMES[stat] & tag.grammemes
-            # У слов на -кки pymorphy3 дает и anim, и inan: такой признак не определен
-            features[stat] = (
-                OPENCORPORA_TO_UD_GRAMMEMES.get(next(iter(found))) if len(found) == 1 else None
-            )
-    if "ms-f" in tag.grammemes:
-        features["gender"] = OPENCORPORA_TO_UD_GRAMMEMES["ms-f"]
+    feats = analysis.feats
+    features: dict[str, str | None] = {"pos": analysis.pos or None}
+    for stat, feature in MORPHOLOGY_FEATURES.items():
+        features[stat] = feats.get(feature)
+    features["style_variant"] = "Short" if feats.get("Variant") == "Short" else None
+    labels = analysis.labels
+    for stat, values in LABEL_FEATURES.items():
+        features[stat] = next((value for label, value in values.items() if label in labels), None)
     return features
-
-
-def _derived_features(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> dict[str, str | None]:
-    """
-    Признаки UD, которых нет среди граммем pymorphy3
-
-    Описание:
-        Форма глагола - по части речи (OPENCORPORA_VERB_FORMS); степень сравнения,
-        как в русском UD, есть у прилагательных и наречий: COMP и «более», «менее»,
-        «выше», «ниже» (COMPARATIVE_ADVERBS) - Cmp, превосходная степень (Supr) - Sup, остальные
-        прилагательные (кроме местоименных), наречия
-        и предикативы (кроме бытийных «нет», «нету») - Pos; отрицание Neg - у частиц
-        NEGATIVE_PARTICLES; краткая форма Short - у кратких прилагательных и причастий
-
-    Аргументы:
-        tag (OpencorporaTag): Тэг OpenCorpora
-        lemma (str): Лемма слова
-
-    Вывод:
-        dict[str, str|None]: Значения признаков DERIVED_FEATURES
-    """
-    pos = tag.POS or ""
-    degree = None
-    if pos == "COMP" or (pos == "ADVB" and lemma in COMPARATIVE_ADVERBS):
-        degree = "Cmp"
-    elif "Supr" in tag.grammemes:
-        degree = "Sup"
-    elif (
-        (pos in ("ADJF", "ADJS") and "Apro" not in tag.grammemes)
-        or pos == "ADVB"
-        or (pos == "PRED" and lemma not in TENSED_PREDICATIVES)
-    ):
-        degree = "Pos"
-    return {
-        "degree": degree,
-        "polarity": "Neg" if pos == "PRCL" and lemma in NEGATIVE_PARTICLES else None,
-        "style_variant": "Short" if pos in SHORT_FORM_POS else None,
-        "verb_form": OPENCORPORA_VERB_FORMS.get(pos),
-    }
-
-
-def _has_tense(tag: pymorphy3.tagset.OpencorporaTag, lemma: str) -> bool:
-    """Есть ли время у разбора: у глагольных форм и предикативов TENSED_PREDICATIVES"""
-    return tag.POS in VERB_POS or lemma in TENSED_PREDICATIVES
 
 
 def word_to_ud(word: str) -> dict[str, str | None]:
     """
-    Получение признаков Universal Dependencies слова по первому разбору pymorphy3
+    Получение признаков Universal Dependencies слова по первому разбору ruMorph
 
     Аргументы:
         word (str): Слово
@@ -446,24 +327,24 @@ def word_to_ud(word: str) -> dict[str, str | None]:
 @lru_cache(maxsize=131072)
 def _word_to_ud(word: str) -> dict[str, str | None]:
     """Признаки word_to_ud с кэшем по словоформе; словарь общий, менять его нельзя"""
-    parse = parse_word(word)
-    return tag_to_ud(parse.tag, parse.normal_form, word)
+    return analysis_to_ud(parse_word(word))
 
 
 @lru_cache(maxsize=1024)
 def _particle_to_ud(word: str) -> dict[str, str | None]:
     """Признаки слова по разбору частицей (ответное «нет»); словарь общий, менять его нельзя"""
-    parse = next(parse for parse in parse_all(word) if parse.tag.POS == "PRCL")
-    return tag_to_ud(parse.tag, parse.normal_form, word)
+    analyses = parse_all(word)
+    particle = next((analysis for analysis in analyses if analysis.pos == "PART"), analyses[0])
+    return analysis_to_ud(particle)
 
 
 def _words_to_ud(words: Sequence[str], text: str) -> list[dict[str, str | None]]:
     """
-    Получение признаков Universal Dependencies слов текста по первому разбору pymorphy3
+    Получение признаков Universal Dependencies слов текста по первому разбору ruMorph
 
     Описание:
-        Как word_to_ud, но ответное «нет» (find_answer_particles) - частица с отрицанием
-        без времени, а не бытийный предикатив
+        Как word_to_ud, но ответное «нет» (find_answer_particles) - частица, а не
+        бытийное «нет»
 
     Аргументы:
         words (list[str]): Слова текста
@@ -527,26 +408,26 @@ def answer_particles(words: Sequence[str], text: str) -> list[bool]:
 
 
 @lru_cache(maxsize=131072)
-def parse_verb(word: str, lemma: str = "") -> pymorphy3.analyzer.Parse | None:
+def parse_verb(word: str, lemma: str = "") -> rumorph.Analysis | None:
     """
-    Получение глагольного разбора словоформы pymorphy3
+    Получение глагольного разбора словоформы ruMorph
 
     Описание:
-        Среди всех разборов словоформы выбирается глагольный (VERB, INFN, PRTF, PRTS,
-        GRND) с заданной леммой, а при ее отсутствии - первый глагольный: для «стали»
-        с леммой «стать» это глагол, а не существительное «сталь»
+        Среди всех разборов словоформы выбирается глагольный (VERB, AUX) с заданной
+        леммой, а при ее отсутствии - первый глагольный: для «стали» с леммой «стать»
+        это глагол, а не существительное «сталь»
 
     Аргументы:
         word (str): Словоформа
         lemma (str): Лемма, которой отдается предпочтение
 
     Вывод:
-        Parse|None: Разбор словоформы, None если глагольных разборов нет
+        Analysis|None: Разбор словоформы, None если глагольных разборов нет
     """
-    parses = [parse for parse in parse_all(word) if parse.tag.POS in VERB_POS]
-    if not parses:
+    verbs = [analysis for analysis in parse_all(word) if analysis.pos in VERBAL_POS]
+    if not verbs:
         return None
-    return next((parse for parse in parses if parse.normal_form == lemma), parses[0])
+    return next((analysis for analysis in verbs if analysis.lemma == lemma), verbs[0])
 
 
 def token_to_ud(token: Token) -> dict[str, str | None]:
@@ -559,7 +440,7 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         Third моделей ru_core_news переводится в 1, 2, 3; краткая форма - StyleVariant
         моделей ru_core_news или Variant=Short разметки русского UD
         Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
-        берутся из глагольного разбора pymorphy3 с леммой spaCy
+        берутся из помет глагольного разбора ruMorph с леммой spaCy
 
     Аргументы:
         token (Token): Токен
@@ -575,8 +456,8 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
     if features["style_variant"] is None and "Short" in morph.get("Variant", "").split(","):
         features["style_variant"] = "Short"
-    parse = parse_verb(token.text, token.lemma_) if token.pos_ in ("VERB", "AUX") else None
-    tag = parse.tag if parse else None
-    features["transitivity"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.transitivity) if tag else None
-    features["involvement"] = OPENCORPORA_TO_UD_GRAMMEMES.get(tag.involvement) if tag else None
+    verb = parse_verb(token.text, token.lemma_) if token.pos_ in VERBAL_POS else None
+    labels = verb.labels if verb else frozenset()
+    for stat, values in LABEL_FEATURES.items():
+        features[stat] = next((value for label, value in values.items() if label in labels), None)
     return features

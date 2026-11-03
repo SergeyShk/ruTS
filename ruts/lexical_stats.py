@@ -8,17 +8,17 @@ from typing import TYPE_CHECKING
 import anyts
 import anyts.lexical_stats
 import anyts.utils
-import pymorphy3
+import rumorph
 from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
 from anyts.lexical_stats import LexicalWord
 from anyts.utils import has_pos, is_doc, iter_doc_units, source_type_error
 
 from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
-from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, PROPER_NOUN_GRAMMEMES, RESOURCES_DIR
+from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
 from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import normalize_yo, parse_all, parse_word
+from .utils import normalize_yo, parse_all
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc
@@ -37,7 +37,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
     Описание:
         Расширяет LexicalStats ядра anyTS русским словарем и леммами: частотный словарь
         Ляшевской и Шарова (FreqDict), частотные полосы - по вшитому списку
-        10 000 лемм Шарова, леммы pymorphy3 (для Doc с разметкой частей речи - разбор
+        10 000 лемм Шарова, леммы ruMorph (для Doc с разметкой частей речи - разбор
         с частью речи токена), дефисные слова Doc склеиваются, числа (2020, 5.5, 3-й)
         словами не считаются. Метрики по частотному словарю требуют загруженного
         FreqDict, полосы и лексическая плотность считаются без него
@@ -135,7 +135,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         super().__init__(source, freq_dict)
 
     def analyze(self, source: str | Doc) -> list[LexicalWord]:
-        """Слова без чисел с леммами pymorphy3 и признаком знаменательного слова"""
+        """Слова без чисел с леммами ruMorph и признаком знаменательного слова"""
         extractor = self._words_extractor
         infos: list[WordInfo]
         if is_doc(source) and extractor is not None:
@@ -235,10 +235,9 @@ def dictionary_lemma(word: str, lemma: str, entries: Mapping[str, Entry]) -> str
     Получение леммы слова в частотном словаре
 
     Описание:
-        Лемма приводится к нижнему регистру без ё и к соглашениям словаря,
-        лемматизированного не pymorphy3: краткая форма (должна - должен), множественное
-        число (денег - деньги), написание слова (счастье и счастие - разные статьи),
-        отчество своего рода (Ивановной - ивановна, Михайловичем - михайлович);
+        Лемма приводится к нижнему регистру без ё и к соглашениям словаря: краткая
+        форма (должна - должен), множественное число (денег - деньги), написание
+        слова (счастье и счастие - разные статьи);
         лемма вне словаря или у его нижней границы (RARE_IPM) заменяется самой частотной
         леммой другого разбора (ночью - ночь, нашли - найти), имя собственное - только
         именем собственным
@@ -285,47 +284,54 @@ def _ipm(entries: Mapping[str, Entry], lemma: str) -> float:
 @lru_cache(maxsize=131072)
 def _form_lemmas(word: str, key: str) -> tuple[str, str | None, str | None]:
     """Лемма в написании слова, краткая форма и форма множественного числа по разбору леммы"""
-    parse = parse_word(word)
-    if normalize_yo(parse.normal_form) != key:
-        parses = parse_all(word)
-        found = next((parse for parse in parses if normalize_yo(parse.normal_form) == key), None)
-        if found is None:
-            return key, None, None
-        parse = found
-    if "Patr" in parse.tag.grammemes:
-        form = parse.inflect({"nomn", "sing"})
-        return normalize_yo(form.word) if form else key, None, None
-    if parse.tag.POS == "ADJS":
-        form = parse.inflect({"masc", "sing"})
-        return key, normalize_yo(form.word) if form else None, None
-    if parse.tag.POS != "NOUN":
+    analyses = parse_all(word)
+    analysis = next((found for found in analyses if normalize_yo(found.lemma) == key), None)
+    if analysis is None:
+        return key, None, None
+    if analysis.pos == "ADJ" and analysis.feats.get("Variant") == "Short":
+        return key, _inflect(analysis, Gender="Masc", Number="Sing"), None
+    if analysis.pos != "NOUN":
         return key, None, None
     plural = None
-    if parse.tag.number == "plur":
-        form = parse.inflect({"nomn", "plur"})
-        plural = normalize_yo(form.word) if form else None
-    return _spelling(parse) or key, None, plural
+    if analysis.feats.get("Number") == "Plur":
+        plural = _inflect(analysis, Case="Nom", Number="Plur")
+    return _spelling(analysis) or key, None, plural
 
 
-def _spelling(parse: pymorphy3.analyzer.Parse) -> str | None:
-    """Нормальная форма в варианте написания слова (V-ie, V-be и другие граммемы V-)"""
-    normal = parse.normalized.tag.grammemes
-    target = {g for g in normal if not g.startswith("V-")}
-    target |= {g for g in parse.tag.grammemes if g.startswith("V-")}
-    if target == normal:
+def _inflect(analysis: rumorph.Analysis, **feats: str) -> str | None:
+    """Форма разбора с признаками в нижнем регистре без ё, None если такой формы нет"""
+    try:
+        return normalize_yo(analysis.inflect(**feats))
+    except (rumorph.FormNotFoundError, ValueError):
+        return None
+
+
+def _spelling(analysis: rumorph.Analysis) -> str | None:
+    """Лемма в варианте написания слова (пометы V-ie, V-be и другие V-)"""
+    variants = {label for label in analysis.labels if label.startswith("V-")}
+    if not variants:
+        return None
+    forms = analysis.forms()
+    normal = next((form for form in forms if form.word == analysis.lemma), None)
+    if normal is None:
         return None
     return next(
-        (normalize_yo(form.word) for form in parse.lexeme if form.tag.grammemes == target), None
+        (
+            normalize_yo(form.word)
+            for form in forms
+            if form.feats == normal.feats and variants <= form.labels
+        ),
+        None,
     )
 
 
 @lru_cache(maxsize=131072)
 def _parse_lemmas(word: str) -> tuple[tuple[str, str | None], ...]:
-    """Леммы и части речи разборов pymorphy3, у имени собственного - только имен собственных"""
-    parses = parse_all(word)
-    if PROPER_NOUN_GRAMMEMES & parses[0].tag.grammemes:
-        parses = tuple(parse for parse in parses if PROPER_NOUN_GRAMMEMES & parse.tag.grammemes)
-    return tuple((normalize_yo(parse.normal_form), parse.tag.POS) for parse in parses)
+    """Леммы и части речи разборов ruMorph, у имени собственного - только имен собственных"""
+    analyses = parse_all(word)
+    if analyses[0].pos == "PROPN":
+        analyses = tuple(analysis for analysis in analyses if analysis.pos == "PROPN")
+    return tuple((normalize_yo(analysis.lemma), analysis.pos) for analysis in analyses)
 
 
 def calc_surprisal(lemmas: Sequence[str], freq_dict: FreqDict) -> float:

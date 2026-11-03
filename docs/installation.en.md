@@ -8,7 +8,7 @@ ruTS relies on the following third-party libraries:
 
 *   `python` - 3.11 or newer
 *   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.4.6 or newer within 0.4, the language-independent core ruTS is built on
-*   `pymorphy3` with the Russian dictionaries `pymorphy3-dicts-ru`
+*   [`rumorph`](https://github.com/SergeyShk/ruMorph) - 0.5 or newer within 0.5, the morphological analyzer
 *   [`anyseg`](https://github.com/SergeyShk/anySeg) - 0.2 or newer within 0.2, the segmenter into tokens and sentences
 *   `scipy`
 *   `spaCy` - 3.8.15 or newer
@@ -29,15 +29,6 @@ This installs the release version of the library with all dependencies.
 
 !!! warning "Graphviz"
     The `graphviz` package among the dependencies is only a wrapper: rendering the [word tree](visualizers/word_tree.md) and the [collocation network](visualizers/corpus.md#collocation_network) requires the [Graphviz](https://graphviz.org/download/) executables (`brew install graphviz`, `apt install graphviz`, `conda install graphviz`), otherwise `render()` and displaying the graph in Jupyter fail with `ExecutableNotFound`. Nothing else needs them.
-
-!!! tip "Fast morphological analysis"
-    For corpora, install the library with the `fast` extra:
-
-    ``` bash
-    pip install "ruts[fast]"
-    ```
-
-    It adds the [DAWG2](https://github.com/pymorphy2-fork/DAWG) C extension for pymorphy3 (CPython only, wheels are available for Linux, macOS and Windows): word form analysis gets about 5x faster (175 vs 34 thousand word forms per second), `MorphStats` on a 70-thousand-word text about a third faster, because analyses are cached per word form and the rest of the time goes into counting. Without the extra the library works the same, just slower.
 
 `import ruts` loads neither spaCy nor matplotlib nor pandas: spaCy comes with a `Doc` object or a component, and the plots and the corpus functions on first use. The statistics of a string work without them.
 

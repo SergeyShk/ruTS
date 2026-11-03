@@ -115,7 +115,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 is_stopword(word)
 ```
 
-Whether a word is insignificant for the academic nausea by its part of speech in pymorphy3: conjunctions, particles, prepositions, pronominal nouns, interjections and predicatives (`CONJ`, `PRCL`, `PREP`, `NPRO`, `INTJ`, `PRED`), and the words with the grammemes `Apro`, `Prnt`, `Dmns`, `Ques` - pronominal adjectives, parenthetical words, demonstrative and interrogative adverbs. The sets are `ruts.constants.STOPWORD_POS` and `ruts.constants.STOPWORD_GRAMMEMES`.
+Whether a word is insignificant for the academic nausea by the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative and interrogative adverbs (the feature `PronType`: там, тогда, где, почему) and parenthetical words (the `Prnt` label).
 
 === "Code"
 
@@ -161,7 +161,7 @@ The share of the words without content, in percent: the words of `stopwords`, co
 is_water_word(word)
 ```
 
-Whether a word is "water" by its part of speech in pymorphy3, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles, pronominal nouns and interjections (`CONJ`, `PRCL`, `NPRO`, `INTJ`; the set `ruts.constants.WATER_POS`). pymorphy3 tags the parenthetical words конечно and например as conjunctions, so they are water too. Prepositions, pronominal adjectives and predicatives, unlike in `is_stopword`, are not water.
+Whether a word is "water" by the ruMorph analysis, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (`CCONJ`, `SCONJ`, `PART`, `PRON`, `INTJ`; the set `ruts.constants.WATER_POS`), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in `is_stopword`, are not water.
 
 </div>
 
@@ -224,7 +224,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 calc_verbal_nouns(text)
 ```
 
-The share of the verbal nouns among the nouns (by the first pymorphy3 analysis), in percent; `nan` for a text without nouns. A noun is verbal when its lemma ends with a suffix of `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство, строительство) - the function `ruts.utils.is_verbal_noun`. The heuristic also catches non-verbal words with the same suffixes (здание). `find_verbal_nouns(text)` returns the bounds of the words found as slices of the list.
+The share of the verbal nouns among the nouns (by the first ruMorph analysis), in percent; `nan` for a text without nouns. A noun is verbal when its lemma ends with a suffix of `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство, строительство) - the function `ruts.utils.is_verbal_noun`. The heuristic also catches non-verbal words with the same suffixes (здание). `find_verbal_nouns(text)` returns the bounds of the words found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -263,7 +263,7 @@ The occurrences of the phrases of a list per 100 words. The phrases are compared
 calc_parentheticals(text)
 ```
 
-The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the pymorphy3 grammeme `Prnt` (конечно, например, впрочем; the function `is_parenthetical(word)`). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
+The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the ruMorph label `Prnt` (конечно, например, впрочем; the function `is_parenthetical(word)`). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

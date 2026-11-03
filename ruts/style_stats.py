@@ -6,7 +6,7 @@ from math import nan
 from typing import TYPE_CHECKING
 
 import anyts.style_stats
-import pymorphy3
+import rumorph
 from anyts.constants import NAUSEA_TOP_N
 from anyts.style_stats import (
     calc_classic_nausea as calc_classic_nausea,
@@ -19,7 +19,6 @@ from .constants import (
     CORE_MESSAGES,
     OFFICIALESE_CLICHES,
     PARENTHETICALS,
-    STOPWORD_GRAMMEMES,
     STOPWORD_POS,
     STYLE_NORMS,
     STYLE_STATS_DESC,
@@ -27,7 +26,14 @@ from .constants import (
 )
 from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
-from .utils import is_verbal_noun, normalize_yo, parse_all, parse_word, strip_marks
+from .utils import (
+    is_predicative,
+    is_verbal_noun,
+    normalize_yo,
+    parse_all,
+    parse_word,
+    strip_marks,
+)
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc
@@ -52,7 +58,7 @@ class StyleStats(anyts.style_stats.StyleStats):
 
     Описание:
         Расширяет StyleStats ядра anyTS крючками русского языка: стоп-слова, «вода»,
-        вводные слова и существительные - по разметке pymorphy3, словосочетания
+        вводные слова и существительные - по разметке ruMorph, словосочетания
         сравниваются без буквы ё и находятся в любой форме глагола, нормы
         сервисов - STYLE_NORMS. Слова Doc - без знаков ударения, дефисные слова
         склеиваются
@@ -139,15 +145,15 @@ class StyleStats(anyts.style_stats.StyleStats):
         return tuple(map(strip_marks, super().doc_words(doc)))
 
     def is_stopword(self, word: str) -> bool:
-        """Стоп-слово академической тошноты по разметке pymorphy3 (is_stopword)"""
+        """Стоп-слово академической тошноты по разметке ruMorph (is_stopword)"""
         return is_stopword(word)
 
     def is_water_word(self, word: str) -> bool:
-        """«Вода» по разметке pymorphy3 (is_water_word)"""
+        """«Вода» по разметке ruMorph (is_water_word)"""
         return is_water_word(word)
 
     def is_parenthetical(self, word: str) -> bool:
-        """Вводное слово по граммеме Prnt pymorphy3 (is_parenthetical)"""
+        """Вводное слово по помете Prnt ruMorph (is_parenthetical)"""
         return is_parenthetical(word)
 
     def expand_phrases(self, text: Sequence[str], phrases: Collection[str]) -> dict[str, str]:
@@ -155,10 +161,10 @@ class StyleStats(anyts.style_stats.StyleStats):
         return expand_phrases(text, phrases)
 
     def nouns(self) -> list[tuple[str, str]]:
-        """Существительные словоформ по первому разбору pymorphy3 с леммами"""
+        """Существительные словоформ по первому разбору ruMorph с леммами"""
         return [
-            (self.forms[position], parse.normal_form)
-            for position, parse in _iter_nouns(self.forms)
+            (self.forms[position], analysis.lemma)
+            for position, analysis in _iter_nouns(self.forms)
         ]
 
     def is_verbal_noun(self, lemma: str) -> bool:
@@ -172,10 +178,11 @@ def is_stopword(word: str) -> bool:
     Проверка, является ли слово стоп-словом по части речи
 
     Описание:
-        Стоп-словами считаются союзы, частицы, предлоги, местоимения-существительные,
-        междометия, предикативы (нет, надо, можно), местоименные прилагательные
-        (этот, такой, который, весь), вводные слова (конечно, например), указательные
-        (там, тогда) и вопросительные (где, почему) наречия по разметке pymorphy3
+        Стоп-словами считаются союзы, частицы, предлоги, местоимения, определительные
+        местоимения (этот, такой, который, весь), междометия, предикативы (нет, надо,
+        можно) и «бы» - глаголы без формы VerbForm, вводные слова (конечно, например,
+        помета Prnt), указательные (там, тогда) и вопросительные (где, почему) наречия
+        с признаком PronType по разметке ruMorph
 
     Аргументы:
         word (str): Слово
@@ -185,8 +192,13 @@ def is_stopword(word: str) -> bool:
     """
     if not isinstance(word, str):
         raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
-    tag = parse_word(word).tag
-    return tag.POS in STOPWORD_POS or bool(STOPWORD_GRAMMEMES & tag.grammemes)
+    analysis = parse_word(word)
+    return (
+        analysis.pos in STOPWORD_POS
+        or is_predicative(analysis)
+        or "PronType" in analysis.feats
+        or "Prnt" in analysis.labels
+    )
 
 
 @lru_cache(maxsize=65536)
@@ -195,10 +207,11 @@ def is_water_word(word: str) -> bool:
     Проверка, является ли слово «водой» по части речи
 
     Описание:
-        «Вода» - союзы (с вводными «конечно», «например», которые pymorphy3 относит
-        к союзам), частицы, местоимения-существительные и междометия по разметке
-        pymorphy3; предлоги, местоименные прилагательные и предикативы, в отличие
-        от is_stopword, водой не считаются
+        «Вода» - союзы, частицы (и «бы»), местоимения-существительные (и «его», «её»,
+        «их» - притяжательные с разбором личного местоимения), междометия и вводные
+        слова (конечно, например, помета Prnt) по разметке ruMorph; предлоги,
+        определительные местоимения и предикативы, в отличие от is_stopword, водой
+        не считаются
 
     Аргументы:
         word (str): Слово
@@ -208,13 +221,21 @@ def is_water_word(word: str) -> bool:
     """
     if not isinstance(word, str):
         raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
-    tag = parse_word(word).tag
-    return tag.POS in WATER_POS
+    analysis = parse_word(word)
+    return (
+        analysis.pos in WATER_POS
+        or (analysis.pos == "AUX" and "VerbForm" not in analysis.feats)
+        or "Prnt" in analysis.labels
+        or (
+            analysis.feats.get("Poss") == "Yes"
+            and any(other.pos == "PRON" for other in parse_all(word))
+        )
+    )
 
 
 def is_parenthetical(word: str) -> bool:
     """
-    Проверка, является ли слово вводным по разметке pymorphy3 (граммема Prnt)
+    Проверка, является ли слово вводным по разметке ruMorph (помета Prnt)
 
     Аргументы:
         word (str): Слово
@@ -222,7 +243,7 @@ def is_parenthetical(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return "Prnt" in parse_word(word).tag.grammemes
+    return "Prnt" in parse_word(word).labels
 
 
 def calc_academic_nausea(
@@ -370,7 +391,7 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
     Вычисление доли отглагольных существительных
 
     Описание:
-        Доля существительных (по первому разбору pymorphy3), лемма которых -
+        Доля существительных (по первому разбору ruMorph), лемма которых -
         отглагольное существительное по is_verbal_noun, в процентах от всех
         существительных
 
@@ -382,7 +403,7 @@ def calc_verbal_nouns(text: Sequence[str]) -> float:
     """
     check_words(text)
     nouns = list(_iter_nouns(text))
-    verbal = sum(1 for _, parse in nouns if is_verbal_noun(parse.normal_form))
+    verbal = sum(1 for _, analysis in nouns if is_verbal_noun(analysis.lemma))
     return safe_divide(verbal, len(nouns), nan) * 100
 
 
@@ -407,16 +428,16 @@ def find_verbal_nouns(text: Sequence[str]) -> list[tuple[int, int]]:
     check_words(text)
     return [
         (position, position + 1)
-        for position, parse in _iter_nouns(text)
-        if is_verbal_noun(parse.normal_form)
+        for position, analysis in _iter_nouns(text)
+        if is_verbal_noun(analysis.lemma)
     ]
 
 
-def _iter_nouns(text: Sequence[str]) -> Iterator[tuple[int, pymorphy3.analyzer.Parse]]:
-    """Позиции и первые разборы существительных"""
-    for position, parse in enumerate(map(parse_word, text)):
-        if parse.tag.POS == "NOUN":
-            yield position, parse
+def _iter_nouns(text: Sequence[str]) -> Iterator[tuple[int, rumorph.Analysis]]:
+    """Позиции и первые разборы существительных, в том числе имен собственных"""
+    for position, analysis in enumerate(map(parse_word, text)):
+        if analysis.pos in ("NOUN", "PROPN"):
+            yield position, analysis
 
 
 def calc_phrase_density(text: Sequence[str], phrases: Collection[str]) -> float:
@@ -488,12 +509,12 @@ def _verbal_phrases(
 
 @lru_cache(maxsize=4096)
 def _verb_forms(word: str) -> frozenset[str]:
-    """Формы глагола по всем лексемам pymorphy3, где слово - инфинитив, иначе пустое множество"""
+    """Формы глагола по всем лексемам ruMorph, где слово - инфинитив, иначе пустое множество"""
     return frozenset(
         normalize_yo(form.word)
-        for parse in parse_all(word)
-        if parse.tag.POS == "INFN" and normalize_yo(parse.normal_form) == word
-        for form in parse.lexeme
+        for analysis in parse_all(word)
+        if analysis.feats.get("VerbForm") == "Inf" and normalize_yo(analysis.lemma) == word
+        for form in analysis.forms()
     )
 
 

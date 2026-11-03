@@ -20,9 +20,8 @@ from ruts.utils import (
 
 
 def test_parse_yo_pronoun():
-    """pymorphy3 не дает у «её» личного местоимения, и оно разбирается как «ее»"""
-    assert [parse.normal_form for parse in parse_all("Её")][:2] == ["она", "её"]
-    assert parse_word("её").tag.POS == "NPRO"
+    """У «её» без контекста - разборы притяжательного и личного местоимения"""
+    assert [(a.lemma, a.pos) for a in parse_all("Её")][:2] == [("её", "DET"), ("она", "PRON")]
     assert lemmatize("её", "PRON") == lemmatize("ее", "PRON") == "она"
     assert lemmatize("её", "DET") == "её"
 
@@ -30,26 +29,32 @@ def test_parse_yo_pronoun():
 @pytest.mark.parametrize(
     ("word", "lemma", "pos"),
     [
-        ("нем", "он", "NPRO"),
-        ("Нем", "он", "NPRO"),
+        ("нем", "он", "PRON"),
+        ("Нем", "он", "PRON"),
         ("есть", "быть", "VERB"),
-        ("ниже", "ниже", "ADVB"),
-        ("Мартова", "мартов", "NOUN"),
-        ("мартова", "мартовый", "ADJS"),
-        ("Кринжово", "кринжовый", "ADJS"),
+        ("ниже", "низкий", "ADJ"),
+        ("Мартова", "мартов", "PROPN"),
+        ("мартова", "мартовый", "ADJ"),
+        ("Кринжово", "кринжовый", "ADJ"),
     ],
 )
-def test_parse_preferences(word, lemma, pos):
-    """«нем» - «нём», «есть» - «быть», «ниже» - наречие; догадка о кратком прилагательном
-    с заглавной буквы уступает существительному, если такой разбор есть"""
-    parse = parse_word(word)
-    assert (parse.normal_form, parse.tag.POS) == (lemma, pos)
+def test_parse_word(word, lemma, pos):
+    """Первый разбор ruMorph: часть речи UD, регистр слова учитывается"""
+    analysis = parse_word(word)
+    assert (analysis.lemma, analysis.pos) == (lemma, pos)
+
+
+def test_parse_without_invisible_characters():
+    """Слово с управляющим или служебным символом разбирается без него, пустая строка - как знак"""
+    assert parse_word("это\x7f").lemma == parse_word("это\u200b").lemma == "это"
+    assert parse_word("").pos == parse_word(" ").pos == "PUNCT"
+    assert lemmatize("знаю\x7f", "VERB") == "знать"
 
 
 def test_parse_word_cached():
     parse_all.cache_clear()
-    assert parse_word("рублей").normal_form == "рубль"
-    assert parse_word("рублей").tag.POS == "NOUN"
+    assert parse_word("рублей").lemma == "рубль"
+    assert parse_word("рублей").pos == "NOUN"
     assert parse_all.cache_info().hits == 1
     assert parse_all.cache_info().misses == 1
 
@@ -181,10 +186,10 @@ def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
 
 
-def test_abbreviation_is_parsed_without_period():
-    """Сокращение с точкой (токен UD) разбирается, как без нее"""
-    assert parse_all("т.") == parse_all("т")
-    assert lemmatize("руб.", "NOUN") == lemmatize("руб", "NOUN")
+def test_abbreviation_with_period():
+    """Сокращение с точкой (токен UD) - та же лемма, что без нее"""
+    assert parse_word("т.").lemma == parse_word("т").lemma == "так"
+    assert lemmatize("руб.", "NOUN") == lemmatize("руб", "NOUN") == "рубль"
 
 
 def test_lone_surrogate():
@@ -218,7 +223,7 @@ def test_iter_tokens_soft_hyphen():
 
 def test_marks_in_parse_and_folding():
     """Знаки ударения не мешают разбору и сравнению слов"""
-    assert parse_word("Моро\u0301з").normal_form == "мороз"
+    assert parse_word("Моро\u0301з").lemma == "мороз"
     assert lemmatize("сказа\u0301л", "VERB") == "сказать"
     assert normalize_yo("Ёлка\u0301") == "елка"
     assert find_phrases(["в", "свя\u0301зи", "с"], ["в связи с"]) == [(0, 3)]

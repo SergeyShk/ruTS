@@ -73,8 +73,6 @@ python -m spacy download ru_core_news_sm
 
 The `md` and `lg` models are not worth it: in our measurements on the gold Universal Dependencies annotation they are less than one point more accurate than `sm`, and the text-level statistics of the three models coincide.
 
-For corpora: `pip install "ruts[fast]"` installs the `DAWG2` C extension for pymorphy3 (CPython only) - morphological analysis of word forms gets about 5x faster.
-
 ## Quick start
 
 ```python
@@ -380,7 +378,7 @@ The library allows extracting the following morphological features:
 *   verb form
 *   voice
 
-Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [pymorphy3](https://github.com/no-plagiarism/pymorphy3) parse with OpenCorpora grammemes mapped to UD.
+Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis.
 
 ```python
 >>> from pprint import pprint
@@ -445,7 +443,7 @@ The library reproduces the indicators of the [Advego](https://advego.com/text/se
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
 *   Reading of the metrics by the service norms
 
-The exact formulas of the services are not published, so the commonly accepted definitions are implemented; the water words for water content and the stop words for academic nausea are detected by part of speech with pymorphy3 or passed as lists.
+The exact formulas of the services are not published, so the commonly accepted definitions are implemented; the water words for water content and the stop words for academic nausea are detected by part of speech with ruMorph or passed as lists.
 
 ```python
 >>> from pprint import pprint
@@ -568,7 +566,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_sta
 
 <br>
 
-The library counts over lemmas (spaCy for an annotated `Doc`, pymorphy3 for a string), no dependency parse is needed:
+The library counts over lemmas (spaCy for an annotated `Doc`, ruMorph for a string), no dependency parse is needed:
 
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix), with the next two sentences and between paragraphs (as in TAACO)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen

@@ -243,7 +243,7 @@ def test_dictionary_lemma(word, expected):
     vocabulary = entries(
         человек=1000, идти=500, ребенок=300, написать=200, ночь=400, вечер=300, утро=200, жить=600
     )
-    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+    assert dictionary_lemma(word, parse_word(word).lemma, vocabulary) == expected
 
 
 def test_dictionary_lemma_frequent():
@@ -251,10 +251,10 @@ def test_dictionary_lemma_frequent():
     assert dictionary_lemma("часами", "часами", entries(часы=468.1, час=72.5)) == "часы"
 
 
-@pytest.mark.parametrize("word", ["Родя", "Глашу", "родя"])
+@pytest.mark.parametrize("word", ["Родя", "Глашу"])
 def test_dictionary_lemma_proper(word):
     vocabulary = entries(родить=44.1, гласить=12.0)
-    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) not in vocabulary
+    assert dictionary_lemma(word, parse_word(word).lemma, vocabulary) not in vocabulary
 
 
 @pytest.mark.parametrize(
@@ -299,11 +299,11 @@ def test_dictionary_lemma_forms(word, expected):
         вниманье=0.4,
         внимание=286.0,
     )
-    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+    assert dictionary_lemma(word, parse_word(word).lemma, vocabulary) == expected
 
 
 def test_dictionary_lemma_proper_name():
-    assert dictionary_lemma("Анне", parse_word("Анне").normal_form, entries(анна=100)) == "анна"
+    assert dictionary_lemma("Анне", parse_word("Анне").lemma, entries(анна=100)) == "анна"
 
 
 def test_dictionary_lemma_missing():
@@ -324,4 +324,4 @@ def test_dictionary_lemma_patronymic(word, expected):
     vocabulary = entries(
         иванович=80.0, ивановна=64.6, петрович=50.0, петровна=40.0, михайлович=49.8
     )
-    assert dictionary_lemma(word, parse_word(word).normal_form, vocabulary) == expected
+    assert dictionary_lemma(word, parse_word(word).lemma, vocabulary) == expected

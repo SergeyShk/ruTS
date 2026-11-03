@@ -32,8 +32,9 @@ def test_function_words_profile():
     assert profile["PRON"] == 0
     words = ["Он", "не", "знал", ",", "что", "-", "это", "тот"]
     profile = function_words_profile(words)
-    assert profile["PRON"] == pytest.approx(1 / 6)
-    assert profile["PART"] == pytest.approx(2 / 6)
+    # «это» - местоимение, как в UD
+    assert profile["PRON"] == pytest.approx(2 / 6)
+    assert profile["PART"] == pytest.approx(1 / 6)
     assert profile["SCONJ"] == pytest.approx(1 / 6)
     assert profile["DET"] == pytest.approx(1 / 6)
     assert function_words_profile(spacy.blank("ru")(" ".join(words))) == profile
@@ -51,5 +52,6 @@ def test_function_words_profile_tagged():
     profile = function_words_profile(doc)
     assert profile["PRON"] == pytest.approx(1 / 9)
     assert profile["SCONJ"] == pytest.approx(1 / 9)
-    assert profile["CCONJ"] == pytest.approx(2 / 9)
+    # «во-первых» из двух токенов - наречие (вводное), а не союз
+    assert profile["CCONJ"] == pytest.approx(1 / 9)
     assert profile["ADP"] == 0
