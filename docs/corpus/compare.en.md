@@ -39,16 +39,16 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                             median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent                0.066           0.108  -0.046   -0.035   -1.341       -0.837  0.081     0.0
-    cohesion_noun_overlap_2_sent                   0.080           0.139  -0.067   -0.049   -1.189       -0.754  0.123     0.0
-    cohesion_content_overlap_prop_all              0.015           0.026  -0.014   -0.009   -0.744       -0.740  0.130     0.0
-    cohesion_content_overlap_adjacent              0.190           0.342  -0.191   -0.126   -1.242       -0.709  0.145     0.0
+    cohesion_content_overlap_2_sent                0.066           0.109  -0.047   -0.035   -1.058       -0.841  0.079     0.0
+    cohesion_noun_overlap_2_sent                   0.080           0.139  -0.067   -0.049   -1.061       -0.757  0.121     0.0
+    cohesion_content_overlap_prop_all              0.015           0.026  -0.014   -0.009   -0.527       -0.751  0.125     0.0
+    cohesion_content_overlap_adjacent              0.190           0.343  -0.193   -0.127   -1.246       -0.711  0.145     0.0
     punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-    cohesion_content_overlap_all                   0.090           0.183  -0.124   -0.071   -1.096       -0.693  0.154     0.0
-    cohesion_noun_overlap_adjacent                 0.106           0.215  -0.137   -0.085   -1.041       -0.661  0.169     0.0
+    cohesion_content_overlap_all                   0.090           0.183  -0.125   -0.071   -1.076       -0.698  0.151     0.0
+    cohesion_noun_overlap_adjacent                 0.106           0.215  -0.137   -0.085   -1.036       -0.662  0.169     0.0
+    cohesion_noun_overlap_all                      0.044           0.093  -0.070   -0.034   -0.837       -0.658  0.171     0.0
     punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-    cohesion_noun_overlap_all                      0.044           0.093  -0.070   -0.034   -0.884       -0.648  0.176     0.0
-    cohesion_content_overlap_prop_adjacent         0.037           0.059  -0.025   -0.018   -0.957       -0.645  0.177     0.0
+    cohesion_content_overlap_prop_adjacent         0.037           0.059  -0.025   -0.018   -0.836       -0.645  0.177     0.0
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 

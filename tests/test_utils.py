@@ -181,6 +181,19 @@ def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
 
 
+def test_abbreviation_is_parsed_without_period():
+    """Сокращение с точкой (токен UD) разбирается, как без нее"""
+    assert parse_all("т.") == parse_all("т")
+    assert lemmatize("руб.", "NOUN") == lemmatize("руб", "NOUN")
+
+
+def test_lone_surrogate():
+    """Одиночный суррогат (из JSON) не мешает сегментации, позиции - по исходной строке"""
+    text = "Привет \ud83d мир. Ещё."
+    assert [word for *_, word in iter_tokens(text)] == ["Привет", "\ud83d", "мир", ".", "Ещё", "."]
+    assert list(iter_text_sents(text)) == [(0, 13, "Привет \ud83d мир."), (14, 18, "Ещё.")]
+
+
 @pytest.mark.parametrize(
     ("text", "expected"),
     [

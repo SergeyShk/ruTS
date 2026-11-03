@@ -33,7 +33,8 @@ def kwic(
         берется с частью речи токена (lemmatize), так «стали» находится по «сталь»
         или «стать» в зависимости от разметки. Текст и ключевое слово режутся
         на слова одинаково (anySeg), знаки препинания и символы словами не считаются,
-        знаки ударения и мягкие переносы при сравнении снимаются (strip_marks).
+        знаки ударения и мягкие переносы при сравнении снимаются (strip_marks),
+        точка сокращения не учитывается: «руб.» в тексте находится по «руб» и «руб.».
         Словосочетание не переходит через конец абзаца или предложения (границы Doc
         или anySeg), если такой границы нет в самом ключевом слове. Контекст -
         window слов слева и справа, как они записаны в тексте, со знаками препинания
@@ -72,10 +73,20 @@ def kwic(
         ignore_case or case_sensitive,
         tokenize=iter_text_words,
         lemmatize=_lemma,
-        fold=strip_marks if case_sensitive else normalize_yo,
+        fold=_fold_marks if case_sensitive else _fold,
         join_hyphens=True,
         sentenize=iter_text_sents,
     )
+
+
+def _fold_marks(word: str) -> str:
+    """Слово без знаков ударения, мягких переносов и точки сокращения, с учетом регистра"""
+    return strip_marks(word).removesuffix(".")
+
+
+def _fold(word: str) -> str:
+    """Слово без учета регистра и буквы ё, без точки сокращения"""
+    return normalize_yo(word).removesuffix(".")
 
 
 def _lemma(word: str, tokens: Sequence[Token]) -> str:

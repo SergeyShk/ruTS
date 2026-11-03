@@ -62,6 +62,8 @@ MARKS = re.compile(
 )
 MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 SEGMENTER = Segmenter("ru")
+# anySeg принимает только текст, который кодируется в UTF-8
+SURROGATES = re.compile("[\ud800-\udfff]")
 
 
 @lru_cache(maxsize=1)
@@ -224,7 +226,8 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
 
     Описание:
         Разборы по убыванию вероятности; знаки ударения и мягкие переносы
-        снимаются (strip_marks). Словоформа «её» разбирается как «ее»:
+        снимаются (strip_marks), сокращение разбирается без точки (т., руб.),
+        как его знает pymorphy3. Словоформа «её» разбирается как «ее»:
         pymorphy3 дает у нее только притяжательное местоимение, без личного
         «она», и текст с буквой ё разбирался бы иначе, чем без нее; «нем» - как «нём»,
         а не краткое «немой»
@@ -244,6 +247,8 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         ['она', 'её']
     """
     word = strip_marks(word)
+    if len(word) > 1 and word.endswith("."):
+        word = word[:-1]
     parses = get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word))
     pos = PREFERRED_POS.get(word.lower())
     # Краткое прилагательное с заглавной буквы не из словаря - обычно фамилия или имя
@@ -362,9 +367,13 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
 
     Описание:
         Токены - по соглашениям UD для русского (SEGMENTER): тире реплик и ремарок,
-        приклеенные к словам (-Нет -сказал он), - отдельные токены, а слово через дефис
-        (кто-то), число с разделителями (1 250 000, 4,5, 12:30) и сокращение с точкой
-        (т., руб.) - один токен; метка порядка байтов (BOM) токеном не считается.
+        приклеенные к словам (-Нет -сказал он), - отдельные токены; слово через дефис
+        с неизменяемой частью (кто-то, во-первых, социально-экономический) - один
+        токен, а из изменяемых частей (Ростов-на-Дону) и с частицей (Вася-то, скажи-ка)
+        делится; число с разделителями (1 250 000, 4,5, 12:30) - один токен;
+        сокращение внутри предложения - с точкой (т., руб.), а точка в конце
+        предложения - отдельный токен. Метка порядка байтов (BOM) токеном не
+        считается, одиночный суррогат (из JSON) - символ своего токена.
         В тексте токена сняты знаки ударения и мягкие переносы (strip_marks), позиции -
         по исходной строке
 
@@ -375,8 +384,8 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого токена
     """
-    for span in SEGMENTER.tokenize(text):
-        word = strip_marks(span.text)
+    for span in SEGMENTER.tokenize(_segmentable(text)):
+        word = strip_marks(text[span.start : span.end])
         if word:
             yield span.start, span.end, word
 
@@ -437,7 +446,15 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         ['Нужно:', '- паспорт', '- фото']
     """
     _check_text(text)
-    return ((sent.start, sent.end, sent.text) for sent in SEGMENTER.sentenize(text))
+    return (
+        (sent.start, sent.end, text[sent.start : sent.end])
+        for sent in SEGMENTER.sentenize(_segmentable(text))
+    )
+
+
+def _segmentable(text: str) -> str:
+    """Текст для anySeg: одиночный суррогат - U+FFFD, длина и позиции те же"""
+    return SURROGATES.sub("\ufffd", text) if SURROGATES.search(text) else text
 
 
 def strip_doc_marks(doc: Doc) -> Doc:
