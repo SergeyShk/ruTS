@@ -21,7 +21,7 @@ The words are classified by the Universal Dependencies parts of speech and featu
 | Nouns | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
 | Pronouns | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` |
 | Arguments | `NOUN`, `PROPN`, `PRON` | `NOUN`, `PROPN`, `PRON` |
-| Content words | `CONTENT_UD_POS` without demonstratives, pronominal (`PronType`) and parenthetical (the `Prnt` label) words, predicatives and numbers in digits | `CONTENT_UD_POS` without demonstratives |
+| Content words | `CONTENT_UD_POS` without demonstratives, pronominal (`PronType` Dem, Int, Rel: там, где, почему) and parenthetical (the `Prnt` label) words, predicatives and numbers in digits | `CONTENT_UD_POS` without demonstratives |
 | Demonstratives | lemmas of `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | the same lemmas |
 | Tense and aspect | features `Tense` and `Aspect` | features `Tense` and `Aspect` |
 
@@ -492,7 +492,7 @@ Checks whether a word is a pronoun by the ruMorph analysis: `PRON` (он, себ
 is_content_word(word)
 ```
 
-Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs), except pronominal (`PronType`) and parenthetical (the `Prnt` label) words, predicatives (надо, можно) and numbers in digits.
+Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs), except pronominal (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`) and parenthetical (the `Prnt` label) words, predicatives (надо, можно) and numbers in digits.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

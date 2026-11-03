@@ -115,7 +115,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 is_stopword(word)
 ```
 
-Whether a word is insignificant for the academic nausea by the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative and interrogative adverbs (the feature `PronType`: там, тогда, где, почему) and parenthetical words (the `Prnt` label).
+Whether a word is insignificant for the academic nausea by the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (`PronType` Dem, Int, Rel: там, тогда, где, почему; `ruts.utils.is_pronominal`) and parenthetical words (the `Prnt` label).
 
 === "Code"
 

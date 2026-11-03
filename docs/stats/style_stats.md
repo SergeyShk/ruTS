@@ -166,7 +166,7 @@ find_nausea_words(text, top_n=10, stopwords=None)
 is_stopword(word)
 ```
 
-Незначимо ли слово для академической тошноты по разбору [ruMorph](https://github.com/SergeyShk/ruMorph): союзы, частицы, предлоги, местоимения, определительные местоимения и междометия (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; набор `ruts.constants.STOPWORD_POS`), предикативы (надо, можно, нет) и «бы», указательные и вопросительные наречия (признак `PronType`: там, тогда, где, почему) и вводные слова (помета `Prnt`).
+Незначимо ли слово для академической тошноты по разбору [ruMorph](https://github.com/SergeyShk/ruMorph): союзы, частицы, предлоги, местоимения, определительные местоимения и междометия (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; набор `ruts.constants.STOPWORD_POS`), предикативы (надо, можно, нет) и «бы», указательные, вопросительные и относительные наречия (`PronType` Dem, Int, Rel: там, тогда, где, почему; `ruts.utils.is_pronominal`) и вводные слова (помета `Prnt`).
 
 === "Код"
 

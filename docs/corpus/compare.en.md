@@ -54,7 +54,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
 Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.86, of Tolstoy 0.66), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.07 and 0.23). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
-The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 110 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 110 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 114 of the 147 features have a corrected p-value below 0.01, but only 20 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 84 of those 114 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8. For the ellipses it spans 6 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
 ## Parameters
 
@@ -80,7 +80,7 @@ Raises:
 text_features(text, nlp=None)
 ```
 
-Returns 145 features of a text prefixed by source, 188 with the pipeline `nlp`; an undefined feature is `nan`.
+Returns 147 features of a text prefixed by source, 190 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
