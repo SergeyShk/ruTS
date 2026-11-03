@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -35,10 +35,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4028,8 +4028,8 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="similarity">Схожесть соседних предложений<a class="headerlink" href="#similarity" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos_edit_distance</code> · <code>syntax_similarity</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 1dc6e39 -->
-<p>Насколько схожи структуры двух соседних предложений, в среднем по <span class="arithmatex">\(S - 1\)</span> парам. <code>pos_edit_distance</code> - редакционное расстояние частей речи <span class="arithmatex">\(P_s\)</span> слов предложений (SYNMEDpos Coh-Metrix), деленное на длину <span class="arithmatex">\(n\)</span> более длинного предложения пары, <code>calc_edit_distance</code>. <code>syntax_similarity</code> - схожесть мультимножеств троек зависимостей <span class="arithmatex">\(T\)</span> двух предложений (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих. Ни та, ни другая мера не видит порядка слов, а схожесть троек растет с длиной предложений.</p>
+<!-- core: stats/syntax_stats.md:SyntaxStats-similarity 401aba3 -->
+<p>Насколько схожи структуры двух соседних предложений, в среднем по <span class="arithmatex">\(S - 1\)</span> парам. <code>pos_edit_distance</code> - редакционное расстояние частей речи <span class="arithmatex">\(P_s\)</span> слов предложений (SYNMEDpos Coh-Metrix), деленное на длину <span class="arithmatex">\(n\)</span> более длинного предложения пары, <code>calc_edit_distance</code>. <code>syntax_similarity</code> - схожесть мультимножеств троек зависимостей <span class="arithmatex">\(T\)</span> двух предложений (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>) по образцу SYNSTRUT Coh-Metrix, который сравнивает узлы деревьев составляющих. Редакционное расстояние читает только порядок частей речи: предложение с дополнением в начале и предложение с подлежащим в начале схожи, если этот порядок у них один (расстояние 0). Тройки порядка слов не читают вовсе: любой порядок слов одного дерева дает схожесть 1. Порядок подлежащего и дополнения читают <a href="#word_order"><code>p_preverbal_subjects</code> и <code>p_preverbal_objects</code></a>. Схожесть троек растет с длиной предложений.</p>
 <div class="arithmatex">\[
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{\textrm{lev}(P_s, P_{s+1})}{\max(n_s, n_{s+1})}, \quad
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{|T_s \cap T_{s+1}|}{|T_s \cup T_{s+1}|}
@@ -4611,10 +4611,10 @@ T-единиц на предложение                                  |   
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../js/config.js"></script>
       

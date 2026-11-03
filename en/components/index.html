@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -33,10 +33,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -2596,7 +2596,7 @@ True
 <td style="text-align: left;"><a href="#CohesionStatsComponent"><code>CohesionStatsComponent</code></a></td>
 <td style="text-align: left;"><code>ruts_cohesion</code></td>
 <td style="text-align: left;"><code>CohesionStats</code></td>
-<td style="text-align: left;">-</td>
+<td style="text-align: left;"><code>blank_lines</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#LexicalStatsComponent"><code>LexicalStatsComponent</code></a></td>
@@ -2903,19 +2903,46 @@ True
 </div>
 </div>
 <h3 id="CohesionStatsComponent">Cohesion statistics<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
-<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis.</p>
+<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis. With <code>blank_lines</code> the paragraphs start after the blank lines alone, as in <code>CohesionStats</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>blank_lines</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Start the paragraphs after the blank lines alone, for a text whose lines are wrapped inside its paragraphs; a paragraph is a line by default</td>
+</tr>
+</tbody>
+</table>
+<p>Raises:</p>
+<ul>
+<li><code>ParameterError</code> - a <code>blank_lines</code> that is not a <code>bool</code>.</li>
+</ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">)</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул."</span><span class="p">)</span>
-<span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">cohesion</span><span class="o">.</span><span class="n">noun_overlap_adjacent</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"paragraphs"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"blank_lines"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Кот сидел на окне. Он смотрел на птиц. Птицы улетели,</span><span class="se">\n</span><span class="s2">и кот уснул."</span><span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">cohesion</span><span class="o">.</span><span class="n">noun_overlap_adjacent</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">cohesion</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">paragraphs</span><span class="o">.</span><span class="n">n_paragraphs</span><span class="p">,</span>
+<span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>0.5
+<div class="highlight"><pre><span></span><code>(0.5, 2, 1)
 </code></pre></div>
 </div>
 </div>
@@ -3133,10 +3160,10 @@ True
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../js/config.js"></script>
       

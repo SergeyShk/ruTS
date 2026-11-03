@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -35,10 +35,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -4010,7 +4010,7 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="similarity">Similarity of adjacent sentences<a class="headerlink" href="#similarity" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos_edit_distance</code> · <code>syntax_similarity</code> · <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a></p>
-<p>How alike the structures of two adjacent sentences are, averaged over the <span class="arithmatex">\(S - 1\)</span> pairs. <code>pos_edit_distance</code> is the edit distance of the parts of speech <span class="arithmatex">\(P_s\)</span> of the words of the sentences (SYNMEDpos of Coh-Metrix) over the length <span class="arithmatex">\(n\)</span> of the longer sentence of the pair, <code>calc_edit_distance</code>. <code>syntax_similarity</code> is the similarity of the multisets of the dependency triples <span class="arithmatex">\(T\)</span> of the two sentences (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>), in the manner of SYNSTRUT of Coh-Metrix, which compares the nodes of phrase-structure trees. Neither sees the order of the words, and the similarity of the triples grows with the length of the sentences.</p>
+<p>How alike the structures of two adjacent sentences are, averaged over the <span class="arithmatex">\(S - 1\)</span> pairs. <code>pos_edit_distance</code> is the edit distance of the parts of speech <span class="arithmatex">\(P_s\)</span> of the words of the sentences (SYNMEDpos of Coh-Metrix) over the length <span class="arithmatex">\(n\)</span> of the longer sentence of the pair, <code>calc_edit_distance</code>. <code>syntax_similarity</code> is the similarity of the multisets of the dependency triples <span class="arithmatex">\(T\)</span> of the two sentences (<code>dependency_triples</code>, <code>calc_multiset_similarity</code>), in the manner of SYNSTRUT of Coh-Metrix, which compares the nodes of phrase-structure trees. The edit distance reads only the order of the parts of speech: a sentence with its object first and one with its subject first are alike when that order is the same (a distance of 0). The triples read no order of the words at all: any order of the words of one tree gives a similarity of 1. The order of the subject and the object is read by <a href="#word_order"><code>p_preverbal_subjects</code> and <code>p_preverbal_objects</code></a>. The similarity of the triples grows with the length of the sentences.</p>
 <div class="arithmatex">\[
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{\textrm{lev}(P_s, P_{s+1})}{\max(n_s, n_{s+1})}, \quad
 \frac{1}{S - 1} \sum_{s=1}^{S-1} \frac{|T_s \cap T_{s+1}|}{|T_s \cup T_{s+1}|}
@@ -4574,10 +4574,10 @@ T-единиц на предложение                                  |   
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
         <script src="../../../js/config.js"></script>
       
