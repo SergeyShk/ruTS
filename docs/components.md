@@ -69,7 +69,7 @@ StatsComponent(nlp, name)
 | [`StyleStatsComponent`](#StyleStatsComponent) | `ruts_style` | `StyleStats` | `stopwords`, `top_n`, `nausea_stopwords`, `cliches` |
 | [`PhonStatsComponent`](#PhonStatsComponent) | `ruts_phon` | `PhonStats` | `window_len` |
 | [`SyntaxStatsComponent`](#SyntaxStatsComponent) | `ruts_syntax` | `SyntaxStats` | - |
-| [`CohesionStatsComponent`](#CohesionStatsComponent) | `ruts_cohesion` | `CohesionStats` | - |
+| [`CohesionStatsComponent`](#CohesionStatsComponent) | `ruts_cohesion` | `CohesionStats` | `blank_lines` |
 | [`LexicalStatsComponent`](#LexicalStatsComponent) | `ruts_lexical` | `LexicalStats` | `data_dir` |
 | [`VerseStatsComponent`](#VerseStatsComponent) | `ruts_verse` | `VerseStats` | `data_dir` |
 
@@ -316,10 +316,18 @@ SyntaxStatsComponent(nlp, name)
 ### Статистики связности { #CohesionStatsComponent }
 
 ``` {.python .signature}
-CohesionStatsComponent(nlp, name)
+CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` кладет в расширение статистики связности. Парсер ему не нужен, а `Doc` без границ предложений делится на предложения русским [`SentsExtractor`](extractors/sentences.md); при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3.
+`CohesionStatsComponent` кладет в расширение статистики связности. Парсер ему не нужен, а `Doc` без границ предложений делится на предложения русским [`SentsExtractor`](extractors/sentences.md); при наличии разметки части речи берутся из нее, леммы - из pymorphy3 по части речи токена, без разметки - из первого разбора pymorphy3. С `blank_lines` абзацы начинаются только после пустых строк, как в `CohesionStats`.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `blank_lines` | `bool` | `False` | Абзацы только после пустых строк - для текста, строки которого переносятся внутри абзаца; по умолчанию абзац - строка |
+
+Исключения:
+
+- `ParameterError` - `blank_lines` не `bool`.
 
 === "Код"
 

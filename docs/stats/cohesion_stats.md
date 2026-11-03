@@ -121,8 +121,8 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 
 ## Метрики
 
-<!-- core: stats/cohesion_stats.md:CohesionStats-metrics d32f931 -->
-Каждая метрика - атрибут объекта, который вычисляется при его создании, а повторы в следующих предложениях и абзацах - при первом обращении; `get_stats` дает метрики из `stats_desc`, по умолчанию все, кроме `mood_repetition`. Функции карточек принимают предложение как набор его элементов - лемм существительных, аргументов или знаменательных слов, значений признака его глаголов - и языка не знают.
+<!-- core: stats/cohesion_stats.md:CohesionStats-metrics 0e635c1 -->
+Каждая метрика - атрибут объекта, который вычисляется при его создании; `get_stats` дает метрики из `stats_desc`, по умолчанию все, кроме `mood_repetition`. Функции карточек принимают предложение как набор его элементов - лемм существительных, аргументов или знаменательных слов, значений признака его глаголов - и языка не знают.
 
 | Метрика | Что измеряет | Диапазон | Чем больше, тем |
 | :------ | :----------- | :------- | :-------------- |
@@ -517,7 +517,7 @@ RussianConnectorMatcher(connectors)
 ## Поиск коннекторов { #find_connectors }
 
 ``` {.python .signature}
-find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None)
+find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None, blocked=None)
 ```
 
 Ищет коннекторы в предложении методом `find` сопоставителя `RussianConnectorMatcher` по словарю `connectors`, по умолчанию - по словарю `load_connectors`; остальные параметры и исключения - те же, что у сопоставителя и `find`.

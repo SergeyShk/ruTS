@@ -333,6 +333,11 @@ class CohesionStatsComponent(_Component, anyts.components.CohesionStatsComponent
 
     Аргументы:
         name (str): Наименование компонента в пайплайне
+        blank_lines (bool): Абзацы только после пустых строк - для текста, строки
+            которого переносятся внутри абзаца; по умолчанию абзац - строка
+
+    Исключения:
+        ParameterError: Если blank_lines не bool
     """
 
     stats_class = CohesionStats

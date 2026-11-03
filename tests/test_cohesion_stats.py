@@ -474,6 +474,11 @@ def test_connectors_pos(nlp):
         Connector(0, 1, 2, "т.е.", "reformulative", "primary"),
     ]
     assert find_connectors(["кот"], {"кот": ("additive", "secondary")}, pos=["NOUN"]) == []
+    assert find_connectors(["раз", "значит"], blocked={0}) == [
+        Connector(0, 1, 2, "значит", "causal", "primary"),
+    ]
+    with pytest.raises(ParameterError, match="не начинается коннектор"):
+        find_connectors(["раз"], blocked={1})
 
 
 def test_connector_context_rules(nlp):

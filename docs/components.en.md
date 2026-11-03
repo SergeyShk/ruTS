@@ -65,7 +65,7 @@ ruTS removes stress marks from the words of a `Doc`, but the parts of speech, fe
 | [`StyleStatsComponent`](#StyleStatsComponent) | `ruts_style` | `StyleStats` | `stopwords`, `top_n`, `nausea_stopwords`, `cliches` |
 | [`PhonStatsComponent`](#PhonStatsComponent) | `ruts_phon` | `PhonStats` | `window_len` |
 | [`SyntaxStatsComponent`](#SyntaxStatsComponent) | `ruts_syntax` | `SyntaxStats` | - |
-| [`CohesionStatsComponent`](#CohesionStatsComponent) | `ruts_cohesion` | `CohesionStats` | - |
+| [`CohesionStatsComponent`](#CohesionStatsComponent) | `ruts_cohesion` | `CohesionStats` | `blank_lines` |
 | [`LexicalStatsComponent`](#LexicalStatsComponent) | `ruts_lexical` | `LexicalStats` | `data_dir` |
 | [`VerseStatsComponent`](#VerseStatsComponent) | `ruts_verse` | `VerseStats` | `data_dir` |
 
@@ -261,10 +261,18 @@ Raises:
 ### Cohesion statistics { #CohesionStatsComponent }
 
 ``` {.python .signature}
-CohesionStatsComponent(nlp, name)
+CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from pymorphy3 by the token's part of speech, without annotation - from the first pymorphy3 analysis. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `blank_lines` | `bool` | `False` | Start the paragraphs after the blank lines alone, for a text whose lines are wrapped inside its paragraphs; a paragraph is a line by default |
+
+Raises:
+
+- `ParameterError` - a `blank_lines` that is not a `bool`.
 
 === "Code"
 

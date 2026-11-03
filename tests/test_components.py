@@ -146,6 +146,21 @@ def test_component_cohesion(spacy_doc):
     )
 
 
+def test_component_cohesion_blank_lines():
+    text = "Кот спит на\nокне. Кот ест.\n\nПес бежит по\nпарку. Пес лает."
+    nlp = spacy.blank("ru")
+    nlp.add_pipe("sentencizer")
+    nlp.add_pipe("ruts_cohesion", name="lines", last=True)
+    nlp.add_pipe("ruts_cohesion", name="blank", config={"blank_lines": True}, last=True)
+    doc = nlp(text)
+    assert doc._.lines.n_paragraphs == 4
+    assert doc._.blank.n_paragraphs == 2
+    expected = CohesionStats(doc, blank_lines=True).get_stats()
+    assert doc._.blank.get_stats() == pytest.approx(expected, nan_ok=True)
+    with pytest.raises(ParameterError, match="blank_lines"):
+        nlp.add_pipe("ruts_cohesion", name="wrong", config={"blank_lines": 1})
+
+
 def test_component_phon_params(spacy_doc):
     nlp = spacy.blank("ru")
     nlp.add_pipe("ruts_phon", name="phon_custom", config={"window_len": 5})

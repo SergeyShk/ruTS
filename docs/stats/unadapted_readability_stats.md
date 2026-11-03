@@ -406,7 +406,7 @@ $$
 `wheeler_smith` · Wheeler and Smith, 1954
 { .metric-meta }
 
-<!-- core: stats/unadapted_readability_stats.md:calc_wheeler_smith de9b424 -->
+<!-- core: stats/unadapted_readability_stats.md:calc_wheeler_smith 7c17af5 -->
 ``` {.python .signature}
 calc_wheeler_smith(n_polysyllable_words, n_sents)
 ```
