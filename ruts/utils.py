@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, TypeVar, cast
 
 import anyts.utils
 import pymorphy3
-from anyts.extractors import iter_part_sents
+from anyseg import Segmenter
 from anyts.utils import (
     add_tokenizer_rules,
     check_sequence,
@@ -17,11 +17,9 @@ from anyts.utils import (
     is_punctuation,
     set_sent_starts as set_sent_starts,
 )
-from razdel import sentenize, tokenize
 
 from .constants import (
     CORE_MESSAGES,
-    LETTER,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
     TOKENIZER_SUFFIXES,
@@ -36,7 +34,6 @@ if TYPE_CHECKING:
     from spacy.tokens import Doc
 
 F = TypeVar("F", bound=Callable[..., Any])
-DASHES = frozenset("-—–―")
 BYTE_ORDER_MARK = "\ufeff"
 SPELLINGS = {"её": "ее", "нем": "нём"}
 # Разборы, которые идут первыми: «есть» - «быть», «ниже» - наречие (у pymorphy3 - предлог)
@@ -64,9 +61,9 @@ MARKS = re.compile(
     f"|(?<=[{CYRILLIC}])[aeoyAEOY][\u0300\u0301]|[aeoyAEOY][\u0300\u0301](?=\u00ad?[{CYRILLIC}]))"
 )
 MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
-GLUED_DASHES = re.compile(
-    rf"^(?:-+|[—–―]+)(?={LETTER})|(?<={LETTER})(?:-+|[—–―]+)$|(?<={LETTER}{{2}})[—–―]+(?={LETTER})"
-)
+SEGMENTER = Segmenter("ru")
+# anySeg принимает только текст, который кодируется в UTF-8
+SURROGATES = re.compile("[\ud800-\udfff]")
 
 
 @lru_cache(maxsize=1)
@@ -229,7 +226,8 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
 
     Описание:
         Разборы по убыванию вероятности; знаки ударения и мягкие переносы
-        снимаются (strip_marks). Словоформа «её» разбирается как «ее»:
+        снимаются (strip_marks), сокращение разбирается без точки (т., руб.),
+        как его знает pymorphy3. Словоформа «её» разбирается как «ее»:
         pymorphy3 дает у нее только притяжательное местоимение, без личного
         «она», и текст с буквой ё разбирался бы иначе, чем без нее; «нем» - как «нём»,
         а не краткое «немой»
@@ -249,6 +247,8 @@ def parse_all(word: str) -> tuple[pymorphy3.analyzer.Parse, ...]:
         ['она', 'её']
     """
     word = strip_marks(word)
+    if len(word) > 1 and word.endswith("."):
+        word = word[:-1]
     parses = get_morph_analyzer().parse(SPELLINGS.get(word.lower(), word))
     pos = PREFERRED_POS.get(word.lower())
     # Краткое прилагательное с заглавной буквы не из словаря - обычно фамилия или имя
@@ -363,14 +363,19 @@ def find_phrases(words: Sequence[str], phrases: Collection[str]) -> list[tuple[i
 
 def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
     """
-    Токенизация строки razdel с отделением тире, приклеенных к словам
+    Токенизация строки сегментатором anySeg
 
     Описание:
-        razdel оставляет в слове приклеенные тире реплик и ремарок (-Нет -сказал он,
-        —сказал); они становятся отдельными токенами, а дефис внутри слова (кто-то),
-        минус перед числом и тире в сокращенном имени (N—ский) остаются; метка порядка
-        байтов (BOM) в начале токена отбрасывается. В тексте токена сняты знаки
-        ударения и мягкие переносы (strip_marks), позиции - по исходной строке
+        Токены - по соглашениям UD для русского (SEGMENTER): тире реплик и ремарок,
+        приклеенные к словам (-Нет -сказал он), - отдельные токены; слово через дефис
+        обычно один токен (кто-то, во-первых, социально-экономический, дом-музей),
+        но часть составных слов (Ростов-на-Дону, Жили-были) и слово с частицей
+        (Вася-то, скажи-ка) делятся; число с разделителями (1 250 000, 4,5, 12:30) -
+        один токен; сокращение внутри предложения - с точкой (т., руб.), а точка
+        в конце предложения - отдельный токен. Метка порядка байтов (BOM) токеном
+        не считается, одиночный суррогат (из JSON) - символ своего токена.
+        В тексте токена сняты знаки ударения и мягкие переносы (strip_marks), позиции -
+        по исходной строке
 
     Аргументы:
         text (str): Строка текста
@@ -379,30 +384,10 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого токена
     """
-    for start, stop, token in _iter_razdel_tokens(text):
-        word = strip_marks(token)
+    for span in SEGMENTER.tokenize(_segmentable(text)):
+        word = strip_marks(text[span.start : span.end])
         if word:
-            yield start, stop, word
-
-
-def _iter_razdel_tokens(text: str) -> Iterator[tuple[int, int, str]]:
-    """Токены razdel с отделенными тире и без BOM, как написаны в тексте"""
-    for token in tokenize(text):
-        word = token.text.lstrip(BYTE_ORDER_MARK)
-        if not word:
-            continue
-        offset = token.stop - len(word)
-        if not DASHES.intersection(word):
-            yield offset, token.stop, word
-            continue
-        start = 0
-        for match in GLUED_DASHES.finditer(word):
-            if match.start() > start:
-                yield offset + start, offset + match.start(), word[start : match.start()]
-            yield offset + match.start(), offset + match.end(), match.group()
-            start = match.end()
-        if start < len(word):
-            yield offset + start, token.stop, word[start:]
+            yield span.start, span.end, word
 
 
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
@@ -432,15 +417,14 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
 
 def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
     """
-    Предложения razdel с позициями
+    Предложения anySeg с позициями
 
     Описание:
-        Пустая строка завершает предложение, как в SentsExtractor: razdel получает
-        части текста между пустыми строками по одной (iter_part_sents ядра), а часть
-        из одних пробельных символов предложений не дает. razdel делит текст без
-        знаков ударения и мягких переносов (take_marks): иначе хвост слова после
-        знака («но́с.») он принимает за сокращение и не видит конца предложения.
-        Позиции и текст предложений - по исходной строке, со знаками
+        Предложения сегментатора SEGMENTER: пустая строка завершает предложение,
+        как в SentsExtractor, отдельным предложением идут и строка без конечного знака
+        (пункт списка, заголовок), и предложение после точки без пробела; знаки
+        ударения и мягкие переносы внутри слов границ не меняют. Позиции и текст
+        предложений - по исходной строке, со знаками
 
     Аргументы:
         text (str): Строка текста
@@ -458,22 +442,19 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
         ['Он кру́т.', 'Мы тоже.']
         >>> [sent for _, _, sent in iter_text_sents("Итоги\\n\\nВсе на месте.")]
         ['Итоги', 'Все на месте.']
+        >>> [sent for _, _, sent in iter_text_sents("Нужно:\\n- паспорт\\n- фото")]
+        ['Нужно:', '- паспорт', '- фото']
     """
     _check_text(text)
-    return iter_part_sents(_iter_part_sents, text)
+    return (
+        (sent.start, sent.end, text[sent.start : sent.end])
+        for sent in SEGMENTER.sentenize(_segmentable(text))
+    )
 
 
-def _iter_part_sents(text: str) -> Iterator[tuple[int, int, str]]:
-    """Предложения razdel в тексте без пустых строк, с позициями по строке со знаками"""
-    if MARKED.search(text):
-        clean, origin, _ = take_marks(text)
-        origin.append(len(text))
-        spans = ((origin[sent.start], origin[sent.stop]) for sent in sentenize(clean))
-    else:
-        spans = ((sent.start, sent.stop) for sent in sentenize(text))
-    for first, last in spans:
-        if first < last:
-            yield first, last, text[first:last]
+def _segmentable(text: str) -> str:
+    """Текст для anySeg: одиночный суррогат - U+FFFD, длина и позиции те же"""
+    return SURROGATES.sub("\ufffd", text) if SURROGATES.search(text) else text
 
 
 def strip_doc_marks(doc: Doc) -> Doc:

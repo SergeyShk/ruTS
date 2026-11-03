@@ -41,6 +41,14 @@ def test_kwic():
     ]
 
 
+def test_kwic_abbreviations():
+    """Сокращение находится с точкой и без нее: anySeg оставляет точку в токене внутри предложения"""
+    source = "Он платил 5 руб. за дом в 1812 г. и т. е. много."
+    for keyword in ("руб", "руб.", "г", "г.", "т. е.", "т.е."):
+        assert len(kwic(source, keyword)) == 1, keyword
+        assert len(kwic(source, keyword, ignore_case=False)) == 1, keyword
+
+
 def test_kwic_doc():
     nlp = spacy.blank("ru")
     assert kwic(nlp(text), "кот", window=2) == kwic(text, "кот", window=2)

@@ -39,20 +39,20 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                             median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent                0.067           0.110  -0.046   -0.035   -1.035       -0.832  0.084     0.0
-    cohesion_noun_overlap_2_sent                   0.080           0.141  -0.068   -0.049   -1.044       -0.750  0.125     0.0
-    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -0.522       -0.742  0.129     0.0
-    punct_ellipsis                                14.000           2.000   5.975   23.025    1.869        0.707  0.853     0.0
-    cohesion_content_overlap_adjacent              0.198           0.352  -0.196   -0.127   -1.228       -0.697  0.151     0.0
-    cohesion_content_overlap_all                   0.094           0.188  -0.127   -0.071   -1.051       -0.678  0.161     0.0
-    punct_exclamation                             14.000           4.000   7.000   14.000    1.670        0.658  0.829     0.0
-    cohesion_noun_overlap_adjacent                 0.110           0.220  -0.142   -0.084   -1.025       -0.651  0.174     0.0
-    cohesion_noun_overlap_all                      0.045           0.097  -0.072   -0.035   -0.820       -0.642  0.179     0.0
-    cohesion_content_overlap_prop_adjacent         0.038           0.060  -0.026   -0.018   -0.820       -0.642  0.179     0.0
-    {'n_Чехов': 249, 'n_Толстой': 1423, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
+    cohesion_content_overlap_2_sent                0.066           0.109  -0.047   -0.035   -1.058       -0.841  0.079     0.0
+    cohesion_noun_overlap_2_sent                   0.080           0.139  -0.067   -0.049   -1.061       -0.757  0.121     0.0
+    cohesion_content_overlap_prop_all              0.015           0.026  -0.014   -0.009   -0.527       -0.751  0.125     0.0
+    cohesion_content_overlap_adjacent              0.190           0.343  -0.193   -0.127   -1.246       -0.711  0.145     0.0
+    punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
+    cohesion_content_overlap_all                   0.090           0.183  -0.125   -0.071   -1.076       -0.698  0.151     0.0
+    cohesion_noun_overlap_adjacent                 0.106           0.215  -0.137   -0.085   -1.036       -0.662  0.169     0.0
+    cohesion_noun_overlap_all                      0.044           0.093  -0.070   -0.034   -0.837       -0.658  0.171     0.0
+    punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
+    cohesion_content_overlap_prop_adjacent         0.037           0.059  -0.025   -0.018   -0.836       -0.645  0.177     0.0
+    {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.91, of Tolstoy 0.76), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.30 and 0.33). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.90, of Tolstoy 0.76), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is hardly related to it (0.26 and 0.33). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
 
 The p-values take the 1672 windows for independent (see the [warning](#statistics) below): 110 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 110 features, and for the length of a sentence it spans −5.4 to −1.2 words, where the windows alone would give −4.0 to −2.7. For the ellipses it spans 6 to 23 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
 
@@ -151,11 +151,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.091           0.197  -0.134   -0.081   -1.035       -0.611  0.195     0.0
-    syntax_participle_clauses_per_sent         0.046           0.121  -0.100   -0.051   -0.855       -0.581  0.210     0.0
-    syntax_mean_clause_len                     5.025           5.841  -1.242   -0.486   -0.878       -0.519  0.241     0.0
-    syntax_clauses_per_t_unit                  1.264           1.400  -0.212   -0.091   -0.792       -0.513  0.243     0.0
-    syntax_tree_depth                          3.063           3.653  -0.911   -0.357   -0.968       -0.512  0.244     0.0
+    syntax_converb_clauses_per_sent            0.090           0.192  -0.131   -0.081   -1.049       -0.617  0.192     0.0
+    syntax_participle_clauses_per_sent         0.045           0.119  -0.100   -0.052   -0.862       -0.583  0.208     0.0
+    syntax_tree_depth                          3.012           3.625  -0.911   -0.414   -1.010       -0.541  0.230     0.0
+    syntax_mean_clause_len                     4.980           5.780  -1.218   -0.473   -0.895       -0.524  0.238     0.0
+    syntax_clauses_per_t_unit                  1.256           1.398  -0.213   -0.095   -0.802       -0.521  0.239     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

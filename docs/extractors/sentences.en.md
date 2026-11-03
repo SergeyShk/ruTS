@@ -6,7 +6,7 @@ SentsExtractor(tokenizer=None, min_len=0, max_len=0)
 
 --8<-- "extractors/sentences.md:SentsExtractor"
 
-The class extends the `SentsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/sentences/) core with the hook of Russian: its default tokenizer, the method `sentenize(text)`, is the `sentenize` function of the [razdel](https://github.com/natasha/razdel) library.
+The class extends the `SentsExtractor` of the [anyTS](https://sergeyshk.github.io/anyTS/extractors/sentences/) core with the hook of Russian: its default tokenizer, the method `sentenize(text)`, gives the sentences of the [anySeg](https://github.com/SergeyShk/anySeg) segmenter (`ruts.utils.iter_text_sents`): a line without a final mark (a heading, a list item) and a sentence after a period without a space are sentences of their own.
 
 === "Code"
 
@@ -45,6 +45,6 @@ The class extends the `SentsExtractor` of the [anyTS](https://sergeyshk.github.i
 === "Result"
 
     ```
-    ('Что нового', 'Быстрый импорт\nМеньше ошибок', 'Спасибо за внимание!')
+    ('Что нового', 'Быстрый импорт', 'Меньше ошибок', 'Спасибо за внимание!')
     ('Не имей 100 рублей', 'а имей 100 друзей')
     ```

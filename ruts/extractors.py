@@ -7,7 +7,8 @@ import anyts
 from .constants import CORE_MESSAGES
 from .utils import iter_text_sents, iter_tokens, parse_word, strip_marks
 
-NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/-]\d+)*(?:-[а-яё]{1,3})?")
+# Разряды числа разделяют и пробелы: обычный, неразрывный, тонкий, узкий неразрывный
+NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/ \u00a0\u2009\u202f-]\d+)*(?:-[а-яё]{1,3})?")
 
 
 class SentsExtractor(anyts.SentsExtractor):
@@ -23,7 +24,7 @@ class SentsExtractor(anyts.SentsExtractor):
         ('Не имей 100 рублей', 'а имей 100 друзей')
 
     Описание:
-        Токенизатор по умолчанию - razdel
+        Токенизатор по умолчанию - сегментатор anySeg (ruts.utils.iter_text_sents)
 
     Аргументы:
         tokenizer (pattern|callable): Токенизатор или регулярное выражение
@@ -41,7 +42,7 @@ class SentsExtractor(anyts.SentsExtractor):
     messages = CORE_MESSAGES
 
     def sentenize(self, text: str) -> Iterable[str]:
-        """Разбиение текста на предложения razdel (ruts.utils.iter_text_sents)"""
+        """Разбиение текста на предложения anySeg (ruts.utils.iter_text_sents)"""
         return (sent for _, _, sent in iter_text_sents(text))
 
 
@@ -58,12 +59,12 @@ class WordsExtractor(anyts.WordsExtractor):
         ('иметь', 'рубль', 'иметь', 'друг', 'иметь_рубль', 'рубль_иметь', 'иметь_друг')
 
     Описание:
-        Токенизатор по умолчанию - razdel с отделением приклеенных тире
-        (ruts.utils.iter_tokens), леммы - первый разбор pymorphy3. Фильтры применяются
-        по порядку: знаки препинания, числа, лемматизация, нижний регистр, стоп-слова,
-        длина слова; стоп-слова сравниваются без учета регистра
-        Числами считаются также диапазоны, дроби и порядковые числительные:
-        2020-2021, 5.5, 1,5, 3-й, 90-х
+        Токенизатор по умолчанию - сегментатор anySeg (ruts.utils.iter_tokens),
+        леммы - первый разбор pymorphy3. Фильтры применяются по порядку: знаки
+        препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова;
+        стоп-слова сравниваются без учета регистра
+        Числами считаются также диапазоны, дроби, порядковые числительные и числа
+        с пробелами между разрядами: 2020-2021, 5.5, 1,5, 3-й, 90-х, 1 250 000
 
     Аргументы:
         tokenizer (pattern|callable): Токенизатор или регулярное выражение

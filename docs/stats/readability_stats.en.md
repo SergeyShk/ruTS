@@ -80,18 +80,18 @@ Here ASL is the mean number of words per sentence, ASW the mean number of syllab
     3.0299999999999994
     ```
 
-The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for all three presets is 0.79, while the medians of the test by label group differ:
+The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for `fiction` and `academic` is 0.79, for `plainrussian` 0.80, while the medians of the test by label group differ:
 
 | Label | Texts | `plainrussian` | `fiction` | `academic` |
 | :---- | :---- | :------------- | :-------- | :--------- |
-| 1 | 11 | 2.9 | 7.5 | 4.0 |
-| 3-4 | 10 | 4.2 | 8.7 | 4.9 |
-| 5-9 | 12 | 4.4 | 8.7 | 4.9 |
-| 10-11 | 18 | 6.7 | 11.7 | 7.0 |
+| 1 | 11 | 2.6 | 6.9 | 3.6 |
+| 3-4 | 10 | 4.1 | 8.6 | 4.8 |
+| 5-9 | 12 | 4.4 | 8.6 | 4.8 |
+| 10-11 | 18 | 6.9 | 11.9 | 7.2 |
 | 12-17 | 17 | 23.7 | 24.4 | 15.9 |
-| 1 ([`SovChLit`](../datasets/sovchlit.md)) | 179 | 1.5 | 6.1 | 3.1 |
+| 1 ([`SovChLit`](../datasets/sovchlit.md)) | 179 | 1.3 | 6.0 | 3.0 |
 
-On school texts (labels 1-11) the test with the `fiction` preset is about four grades above the label (median deviation +3.9 against −0.9 for `plainrussian` and −0.2 for `academic`), and about five on the first-grade reader `SovChLit`. Its value should therefore not be read as a grade of the Russian school: for the grade of the reader use `plainrussian` (the default; its coefficients were fitted on `TextsByGrade`) or `academic`, and `fiction` to compare with works that use Oborneva's coefficients. The consensus grade depends on the preset less, since the Flesch-Kincaid test is only one of its formulas (the median on `TextsByGrade` is 7.75 for `fiction` against 6.75 for `plainrussian`).
+On school texts (labels 1-11) the test with the `fiction` preset is about four grades above the label (median deviation +3.7 against −1.0 for `plainrussian` and −0.1 for `academic`), and about five on the first-grade reader `SovChLit`. Its value should therefore not be read as a grade of the Russian school: for the grade of the reader use `plainrussian` (the default; its coefficients were fitted on `TextsByGrade`) or `academic`, and `fiction` to compare with works that use Oborneva's coefficients. The consensus grade depends on the preset less, since the Flesch-Kincaid test is only one of its formulas (the median on `TextsByGrade` is 7.75 for `fiction` against 6.75 for `plainrussian`).
 
 ## Metrics
 
@@ -740,9 +740,9 @@ The consensus grade tells which stage a text is for, but not what a text of that
 
 | Stage | Texts | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
 | :---- | :---- | :----------------- | :--------------- | :----------------------------- | :--- |
-| grades 1-3 | 73 | 8.1-10.7 | 4.56-5.03 | 0.0-0.022 | 104-178 |
-| grades 4-6 | 12 | 10.2-14.6 | 5.16-5.33 | 0.039-0.052 | 220-373 |
-| grades 10-11 | 18 | 15.6-17.9 | 5.11-5.57 | 0.035-0.065 | 277-513 |
+| grades 1-3 | 73 | 7.6-10.3 | 4.54-5.01 | 0.0-0.021 | 104-178 |
+| grades 4-6 | 12 | 10.1-14.6 | 5.15-5.33 | 0.039-0.052 | 220-369 |
+| grades 10-11 | 18 | 15.0-18.4 | 5.11-5.57 | 0.035-0.065 | 276-513 |
 
 The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. Grades 7-9 have seven texts in the datasets, and the university labels of `TextsByGrade` mark a Wikipedia article, a newspaper article and regulatory documents, not texts written for students of a given year, so these stages have no norms. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
 
@@ -797,7 +797,7 @@ The reading of a feature of a text by the norms of the stage a grade belongs to:
 === "Result"
 
     ```
-    ((8.1, 10.7), None)
+    ((7.6, 10.3), None)
     {'words_per_sent': 'выше нормы ступени',
      'letters_per_word': 'выше нормы ступени',
      'p_smog_complex_words': 'выше нормы ступени',
