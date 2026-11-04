@@ -24,9 +24,9 @@ from .constants import (
     STYLE_STATS_DESC,
     WATER_POS,
 )
-from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import (
+    _word_cache,
     is_parenthetical_analysis,
     is_predicative,
     is_pronominal,
@@ -175,7 +175,7 @@ class StyleStats(anyts.style_stats.StyleStats):
         return is_verbal_noun(lemma)
 
 
-@lru_cache(maxsize=65536)
+@_word_cache(maxsize=65536)
 def is_stopword(word: str) -> bool:
     """
     Проверка, является ли слово стоп-словом по части речи
@@ -193,8 +193,6 @@ def is_stopword(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not isinstance(word, str):
-        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
     analysis = parse_word(word)
     return (
         analysis.pos in STOPWORD_POS
@@ -204,7 +202,7 @@ def is_stopword(word: str) -> bool:
     )
 
 
-@lru_cache(maxsize=65536)
+@_word_cache(maxsize=65536)
 def is_water_word(word: str) -> bool:
     """
     Проверка, является ли слово «водой» по части речи
@@ -222,8 +220,6 @@ def is_water_word(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not isinstance(word, str):
-        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
     analysis = parse_word(word)
     return (
         analysis.pos in WATER_POS

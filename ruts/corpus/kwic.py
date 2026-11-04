@@ -18,6 +18,7 @@ from ..utils import (
     iter_text_words,
     lemmatize,
     normalize_yo,
+    parse_all,
     strip_marks,
 )
 
@@ -38,9 +39,10 @@ def kwic(
     Описание:
         Ищутся вхождения слова или словосочетания среди слов текста: по словоформе
         без учета регистра и буквы ё, с учетом регистра или по лемме ruMorph
-        («кота» находится по «кот»); для Doc с разметкой частей речи лемма слова
-        берется с частью речи токена (lemmatize), так «стали» находится по «сталь»
-        или «стать» в зависимости от разметки. Текст и ключевое слово режутся
+        («кота» находится по «кот»): у слова строки - разбора в контексте предложения,
+        у слова Doc с разметкой частей речи - с частью речи токена (lemmatize), так
+        «стали» находится по «сталь» или «стать» в зависимости от соседних слов; слово
+        ключевого слова совпадает по любой лемме своих разборов. Текст и ключевое слово режутся
         на слова одинаково (anySeg), знаки препинания и символы словами не считаются,
         знаки ударения и мягкие переносы при сравнении снимаются (strip_marks),
         точка сокращения не учитывается: «руб.» в тексте находится по «руб» и «руб.».
@@ -98,24 +100,34 @@ def _fold(word: str) -> str:
     return normalize_yo(word).removesuffix(".")
 
 
-def _lemma(word: str, tokens: Sequence[Token]) -> str:
-    """Лемма ruMorph с частью речи токена для слова Doc из одного токена"""
+def _lemma(word: str, tokens: Sequence[Token]) -> str | tuple[str, ...]:
+    """Лемма ruMorph с частью речи токена для слова Doc из одного токена; у слова
+    ключа (без токенов) контекста нет - леммы всех его разборов"""
+    if not tokens:
+        return _key_lemmas(word)
     return lemmatize(word, tokens[0].pos_ if len(tokens) == 1 else "")
 
 
-def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Token]], str]:
+def _key_lemmas(word: str) -> tuple[str, ...]:
+    """Леммы всех разборов слова ключа"""
+    return tuple(dict.fromkeys(analysis.lemma for analysis in parse_all(word)))
+
+
+def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Token]], str | tuple[str, ...]]:
     """Леммы слов строки в контексте предложений (analyze_words): ядро разбирает слова
-    текста по порядку, по разу каждое, а слово не по порядку (ключевое) - по слову"""
+    текста по порядку, по разу каждое, а затем слова ключа"""
     positions = [(start, word) for start, _, word in iter_text_words(text)]
     queue = deque(
         zip((word for _, word in positions), analyze_words(positions, text), strict=True)
     )
 
-    def lemma(word: str, tokens: Sequence[Token]) -> str:
-        if queue and unicodedata.normalize("NFC", queue[0][0]) == word:
+    def lemma(word: str, tokens: Sequence[Token]) -> str | tuple[str, ...]:
+        if not queue:
+            return _key_lemmas(word)
+        if unicodedata.normalize("NFC", queue[0][0]) == word:
             _, analysis = queue.popleft()
             if analysis is not None:
                 return analysis.lemma
-        return _lemma(word, tokens)
+        return lemmatize(word)
 
     return lemma

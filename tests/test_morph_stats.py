@@ -714,3 +714,14 @@ def test_lemmas_in_context(nlp):
     lemmas = ("стоить", "подождать", "банк", "закрыть", "физик", "спорить", "о", "политика")
     assert MorphStats(text).lemmas == MorphStats(nlp(text)).lemmas == lemmas
     assert MorphStats(text, words_extractor=WordsExtractor()).lemmas[2] == "банка"
+
+
+def test_lemmas_filtered_analyze():
+    """Подкласс, который отбрасывает слова в analyze, получает леммы по слову"""
+
+    class LongWords(MorphStats):
+        def analyze(self, source):
+            return [word for word in super().analyze(source) if len(word.word) > 2]
+
+    ms = LongWords("Я видел его брата у реки.")
+    assert ms.lemmas == ("видеть", "его", "брат", "река")

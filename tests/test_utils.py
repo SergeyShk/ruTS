@@ -5,8 +5,9 @@ import spacy
 
 import ruts.utils
 import ruts.verse_stats
-from ruts import CohesionStats, MorphStats, WordsExtractor
+from ruts import CohesionStats, MorphStats, StyleStats, WordsExtractor
 from ruts.exceptions import SourceTypeError
+from ruts.style_stats import is_water_word
 from ruts.utils import (
     add_dash_rules,
     analyze_sentence,
@@ -315,6 +316,10 @@ def test_abbreviation_dot():
     ] * 2
     assert [word for _, _, word in iter_tokens(text)][2] == "руб."
     assert (word_form("руб."), word_form("т.е."), word_form("...")) == ("руб", "т.е.", "...")
+    # Без точки - другое слово: точка остается, разбор по слову тот же, что по токену
+    assert [word_form(token) for token in ("им.", "в.", "с.", "А.")] == ["им.", "в.", "с.", "А."]
+    text = "В XIX в. театр им. Пушкина стоял на берегу. Театр им. Горького построен в XX в."
+    assert StyleStats(text).water == 0
 
 
 def test_word_helpers_type_errors():
@@ -324,6 +329,11 @@ def test_word_helpers_type_errors():
         (lemmatize, None),
         (analyze_sentence, 1),
         (analyze_sents, "Кот."),
+        (parse_all, ["кот"]),
+        (lemmatize, ["кот"]),
+        (normalize_yo, ["кот"]),
+        (is_water_word, ["кот"]),
+        (analyze_sents, [["Кот спит."]]),
     ):
         with pytest.raises(SourceTypeError):
             func(value)

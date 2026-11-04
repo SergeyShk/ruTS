@@ -802,6 +802,16 @@ def test_qa_word_classes():
     assert CohesionStats("Он пришёл. Его брат ушёл.").lemmas[1][0] == "он"
 
 
+def test_token_without_morph():
+    """Токен с частью речи без признаков - знаменательность по части речи"""
+    doc = Doc(
+        spacy.blank("ru").vocab,
+        words=["Кот", "спит", ".", "Кот", "ест", "."],
+        pos=["NOUN", "VERB", "PUNCT", "NOUN", "VERB", "PUNCT"],
+    )
+    assert [token_info(token).content for token in doc] == [True, True, False] * 2
+
+
 def test_doc_pipeline_as_string(nlp):
     """Doc рекомендуемого конвейера - те же признаки слов, что у строки"""
     text = (

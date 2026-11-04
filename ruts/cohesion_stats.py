@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Collection, Iterable, Mapping, Sequence
-from functools import cache, lru_cache
+from functools import cache
 from itertools import islice
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -63,6 +63,7 @@ from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import answer_particles, word_to_ud
 from .utils import (
     BYTE_ORDER_MARK,
+    _word_cache,
     analyze_sents,
     analyze_words,
     lemmatize,
@@ -577,7 +578,7 @@ def _is_connector_pos(word: str, pos: str | None) -> bool:
     return pos in CONNECTOR_POS or pos in CONNECTOR_POS_EXTRA.get(word, frozenset())
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def connector_pos(word: str) -> str | None:
     """
     Часть речи UD слова по ruMorph для проверки коннектора
@@ -739,7 +740,7 @@ def token_info(token: Token) -> WordInfo:
         token.pos_,
         tense[0] if tense else None,
         aspect[0] if aspect else None,
-        token.morph.to_dict(),
+        token.morph.to_dict() if token.has_morph() else None,
     )
 
 

@@ -27,6 +27,7 @@ from .constants import (
 from .exceptions import SourceTypeError
 from .utils import (
     BYTE_ORDER_MARK,
+    _word_cache,
     analyze_text,
     analyze_words,
     lemmatize,
@@ -241,7 +242,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
                     for stat, name in MORPHOLOGY_FEATURES.items()
                     if (value := found[stat])
                 }
-        self._chosen_lemmas = chosen
+        self._chosen_lemmas = (tuple(words), chosen)
         return [
             MorphWord(word, found["pos"], names[id(found)])
             for word, found in zip(words, features, strict=True)
@@ -250,7 +251,10 @@ class MorphStats(anyts.morph_stats.MorphStats):
     @cached_property
     def lemmas(self) -> tuple[str, ...]:
         """Леммы слов: выбранного разбора ruMorph (в контексте), иначе с учетом части речи"""
-        chosen = getattr(self, "_chosen_lemmas", None) or [None] * len(self.words)
+        words, chosen = getattr(self, "_chosen_lemmas", ((), []))
+        # Подкласс с другим analyze (без части слов) - леммы по слову
+        if words != self.words:
+            chosen = [None] * len(self.words)
         return tuple(
             lemma or lemmatize(word, pos or "")
             for word, pos, lemma in zip(self.words, self.pos, chosen, strict=True)
@@ -458,7 +462,7 @@ def answer_particles(words: Sequence[str], text: str) -> list[bool]:
     return flags
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def parse_verb(word: str, lemma: str = "", feats: str = "") -> rumorph.Analysis | None:
     """
     Получение глагольного разбора словоформы ruMorph

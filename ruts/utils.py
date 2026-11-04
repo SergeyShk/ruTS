@@ -116,6 +116,36 @@ def _check_text(text: object) -> None:
         raise SourceTypeError(CORE_MESSAGES["text_type"].format(type=type(text).__name__))
 
 
+def _word_cache(maxsize: int) -> Callable[[F], F]:
+    """
+    Кэш функции слова с проверкой слова до кэша
+
+    Описание:
+        lru_cache хеширует аргументы раньше проверки внутри функции, и слово-список
+        дало бы TypeError вместо SourceTypeError; cache_info и cache_clear - кэша
+
+    Аргументы:
+        maxsize (int): Размер кэша
+
+    Вывод:
+        Callable: Декоратор функции, первый аргумент которой - слово
+    """
+
+    def decorate(func: F) -> F:
+        cached = lru_cache(maxsize=maxsize)(func)
+
+        @functools.wraps(func)
+        def wrapper(word: object, *args: Any, **kwargs: Any) -> Any:
+            _check_text(word)
+            return cached(word, *args, **kwargs)
+
+        wrapper.cache_info = cached.cache_info  # type: ignore[attr-defined]
+        wrapper.cache_clear = cached.cache_clear  # type: ignore[attr-defined]
+        return cast(F, wrapper)
+
+    return decorate
+
+
 def with_stripped_marks(func: F, *names: str) -> F:
     """
     Функция ядра, которая снимает знаки ударения и мягкие переносы с аргументов
@@ -220,7 +250,7 @@ def _replace_mark(match: re.Match[str]) -> str:
     return MARKED_LETTERS.get(found) or MARKED_LETTERS[found[0]]
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
     """
     Морфологические разборы словоформы ruMorph с кэшированием
@@ -247,7 +277,6 @@ def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
         >>> [(analysis.lemma, analysis.pos) for analysis in parse_all("стали")][:2]
         [('стать', 'VERB'), ('сталь', 'NOUN')]
     """
-    _check_text(word)
     analyzer = get_morph_analyzer()
     analyses = analyzer.analyze(word)
     if not analyses:
@@ -324,7 +353,7 @@ def is_pronominal(analysis: rumorph.Analysis) -> bool:
     return not PRONOMINAL_TYPES.isdisjoint(analysis.feats.get("PronType", "").split(","))
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def lemmatize(word: str, pos: str = "") -> str:
     """
     Лемматизация словоформы ruMorph с учетом части речи Universal Dependencies
@@ -426,7 +455,10 @@ def analyze_sents(
     """
     if isinstance(sents, str) or not isinstance(sents, Iterable):
         raise SourceTypeError(f"Ожидается список предложений, а не {type(sents).__name__}")
-    return _analyze_sents(tuple(sents))
+    sents = tuple(sents)
+    for sent in sents:
+        _check_text(sent)
+    return _analyze_sents(sents)
 
 
 @lru_cache(maxsize=1)
@@ -523,7 +555,7 @@ def is_verbal_noun(lemma: str) -> bool:
     return lemma.endswith(VERBAL_NOUN_SUFFIXES) or lemma in VERBAL_NOUN_LEMMAS
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def normalize_yo(word: str) -> str:
     """
     Замена буквы ё на е в нижнем регистре
@@ -597,8 +629,10 @@ def word_form(token: str) -> str:
     Описание:
         Сокращение внутри предложения anySeg дает с точкой (руб., т.), а в конце
         предложения точка - отдельный токен, поэтому слово пришло бы в двух
-        написаниях; точка снимается у токена с буквой или цифрой и без других точек
-        (т.е. одним токеном токенизатора spaCy и знаки остаются как есть)
+        написаниях; точка снимается, если без нее первый разбор ruMorph тот же
+        (лемма и часть речи): у «им.» (имени), «в.» (века), «с.», инициала «А.»
+        она остается - без точки это другое слово. Токен без буквы или цифры
+        или с другими точками (т.е. одним токеном токенизатора spaCy) не меняется
 
     Аргументы:
         token (str): Текст токена
@@ -608,13 +642,14 @@ def word_form(token: str) -> str:
 
     Пример использования:
         >>> from ruts.utils import word_form
-        >>> word_form("руб."), word_form("А."), word_form("т.е."), word_form("...")
-        ('руб', 'А', 'т.е.', '...')
+        >>> word_form("руб."), word_form("им."), word_form("т.е."), word_form("...")
+        ('руб', 'им.', 'т.е.', '...')
     """
     body = token.removesuffix(".")
-    if body != token and "." not in body and any(char.isalnum() for char in body):
-        return body
-    return token
+    if body == token or "." in body or not any(char.isalnum() for char in body):
+        return token
+    dotted, plain = parse_word(token), parse_word(body)
+    return body if (dotted.lemma, dotted.pos) == (plain.lemma, plain.pos) else token
 
 
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
