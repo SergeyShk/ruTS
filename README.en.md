@@ -537,7 +537,7 @@ The library counts over the spaCy dependency tree (a model with a parser and par
 
 *   Dependency distances, tree depth, numbers of leaves and subtrees, verb valency
 *   Coordination chains, clauses and subordinate clauses, the L2SCA indices by T-units
-*   Noun phrase modifiers, prepositional chains and genitive chains
+*   Noun phrase modifiers, prepositional chains, genitive chains and nominal chains of both kinds of links
 *   Words before the root of a sentence, preverbal subjects and objects, syntactic similarity of adjacent sentences
 *   Participial and adverbial participial clauses, passive voice, infinitives and negations
 *   Syntactic officialese markers: split predicates ("осуществлять проверку"), noun-to-verb ratio

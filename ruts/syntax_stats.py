@@ -114,6 +114,8 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         'max_prep_chain_len': 0,
         'genitive_chains_per_sent': 0.0,
         'max_genitive_chain_len': 0,
+        'nominal_chains_per_sent': 0.0,
+        'max_nominal_chain_len': 0,
         'participle_clauses_per_sent': 0.5,
         'mean_participle_clause_len': 5.0,
         'converb_clauses_per_sent': 0.5,
@@ -155,6 +157,7 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         n_nouns (int): Количество существительных
         n_prep_chains (int): Количество предложных цепочек
         n_genitive_chains (int): Количество цепочек родительных падежей
+        n_nominal_chains (int): Количество именных цепочек
         n_participle_clauses (int): Количество причастных оборотов
         n_converb_clauses (int): Количество деепричастных оборотов
         n_verbs (int): Количество глагольных форм
@@ -199,6 +202,9 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         max_prep_chain_len (int): Длина самой длинной предложной цепочки, 0 без цепочек
         genitive_chains_per_sent (float): Цепочек родительных падежей на предложение
         max_genitive_chain_len (int): Максимальная длина цепочки родительных падежей
+        nominal_chains_per_sent (float): Именных цепочек (родительные и предложные звенья)
+            на предложение
+        max_nominal_chain_len (int): Максимальная длина именной цепочки
         participle_clauses_per_sent (float): Причастных оборотов на предложение
         mean_participle_clause_len (float): Средняя длина причастного оборота в словах
         converb_clauses_per_sent (float): Деепричастных оборотов на предложение
@@ -237,12 +243,16 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         words = [token for sent in self.sents for token in sent]
         genitive_chains = [length for sent in self.sents for length in calc_genitive_chains(sent)]
         self.n_genitive_chains = len(genitive_chains)
+        nominal_chains = [length for sent in self.sents for length in calc_nominal_chains(sent)]
+        self.n_nominal_chains = len(nominal_chains)
         converb_clauses = [
             subtree_len(token, join_hyphens=True) for token in words if is_converb_clause(token)
         ]
         self.n_converb_clauses = len(converb_clauses)
         self.genitive_chains_per_sent = self.n_genitive_chains / self.n_sents
         self.max_genitive_chain_len = max(genitive_chains, default=0)
+        self.nominal_chains_per_sent = self.n_nominal_chains / self.n_sents
+        self.max_nominal_chain_len = max(nominal_chains, default=0)
         self.converb_clauses_per_sent = self.n_converb_clauses / self.n_sents
         self.mean_converb_clause_len = fmean(converb_clauses) if converb_clauses else nan
 
@@ -598,6 +608,43 @@ def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
         list[int]: Длины цепочек в порядке слов
     """
     return calc_modifier_chains(tokens, is_genitive_modifier, join_hyphens=True)
+
+
+def is_nominal_chain_link(token: Token) -> bool:
+    """
+    Проверка, является ли токен звеном именной цепочки
+
+    Описание:
+        Беспредложное определение в родительном падеже (is_genitive_modifier)
+        или дополнение с предлогом (is_prep_complement): цен и нефть в «рост цен
+        на нефть»
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return is_genitive_modifier(token) or is_prep_complement(token, join_hyphens=True)
+
+
+def calc_nominal_chains(tokens: Iterable[Token]) -> list[int]:
+    """
+    Вычисление длин именных цепочек
+
+    Описание:
+        Цепочка calc_modifier_chains, звенья которой - определения в родительном
+        падеже и дополнения с предлогом в любом порядке (is_nominal_chain_link):
+        «рост цен на нефть» - длина 2, «о повышении эффективности работы отдела» -
+        длина 4; цепочки родительных падежей и предложные цепочки - ее частные случаи
+
+    Аргументы:
+        tokens (Doc|Span|list[Token]): Последовательность токенов
+
+    Вывод:
+        list[int]: Длины цепочек в порядке слов
+    """
+    return calc_modifier_chains(tokens, is_nominal_chain_link, join_hyphens=True)
 
 
 def is_participle_clause(token: Token) -> bool:

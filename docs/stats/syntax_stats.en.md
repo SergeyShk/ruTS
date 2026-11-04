@@ -55,6 +55,8 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
     Максимальная длина предложной цепочки                    |    0
     Цепочек родительных падежей на предложение               |   0.00
     Максимальная длина цепочки родительных падежей           |    0
+    Именных цепочек на предложение                           |   0.00
+    Максимальная длина именной цепочки                       |    0
     Причастных оборотов на предложение                       |   0.50
     Средняя длина причастного оборота (слов)                 |   5.00
     Деепричастных оборотов на предложение                    |   0.50
@@ -126,6 +128,8 @@ The metrics of the constructions of ruTS:
 | :----- | :------- | :---- | :----------- |
 | [`genitive_chains_per_sent`](#genitive_chains) | Genitive chains per sentence | 0 and above | More chains |
 | [`max_genitive_chain_len`](#genitive_chains) | Longest genitive chain of the text | 0 without chains, otherwise 2 and above | A longer chain |
+| [`nominal_chains_per_sent`](#nominal_chains) | Nominal chains (genitive and prepositional links) per sentence | 0 and above | More chains |
+| [`max_nominal_chain_len`](#nominal_chains) | Longest nominal chain of the text | 0 without chains, otherwise 2 and above | A longer chain |
 | [`converb_clauses_per_sent`](#converb_clauses) | Adverbial participle clauses per sentence | 0 and above | More adverbial participle clauses |
 | [`mean_converb_clause_len`](#converb_clauses) | Mean length of an adverbial participle clause in words | 2 and above, `nan` without adverbial participle clauses | Longer adverbial participle clauses |
 
@@ -407,6 +411,50 @@ Checks whether a word is a prepositionless genitive modifier: a word with the `n
 
 <div class="metric-card" markdown>
 
+### Nominal chains { #nominal_chains }
+
+`nominal_chains_per_sent` · `max_nominal_chain_len`
+{ .metric-meta }
+
+``` {.python .signature}
+calc_nominal_chains(tokens)
+```
+
+The lengths of the nominal chains in the order of the words: the chains of [`calc_modifier_chains`](#calc_modifier_chains) whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2, «о повышении эффективности работы отдела» of length 4. Genitive chains and prepositional chains are special cases of it, but more than half of the nominal chains are mixed and fall into neither: 68 % on TextsByGrade, and the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).
+
+``` {.python .signature}
+is_nominal_chain_link(token)
+```
+
+Checks whether a word is a link of a nominal chain: a prepositionless genitive modifier ([`is_genitive_modifier`](#genitive_chains)) or a complement with a preposition (`is_prep_complement`).
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `tokens` | `Doc` / `Span` / `list[Token]` | - | Sequence of tokens (`calc_nominal_chains`) |
+| `token` | `Token` | - | Token (`is_nominal_chain_link`) |
+
+=== "Code"
+
+    ``` python
+    from ruts import load_pipeline
+    from ruts.syntax_stats import calc_nominal_chains
+
+    nlp = load_pipeline()
+    calc_nominal_chains(
+        nlp("Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили.")
+    )
+    ```
+
+=== "Result"
+
+    ```
+    [2, 4]
+    ```
+
+</div>
+
+<div class="metric-card" markdown>
+
 ### Participial clauses { #participle_clauses }
 
 `participle_clauses_per_sent` · `mean_participle_clause_len`
@@ -597,6 +645,8 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'max_prep_chain_len': 0,
      'genitive_chains_per_sent': 0.0,
      'max_genitive_chain_len': 0,
+     'nominal_chains_per_sent': 0.0,
+     'max_nominal_chain_len': 0,
      'participle_clauses_per_sent': 0.5,
      'mean_participle_clause_len': 5.0,
      'converb_clauses_per_sent': 0.5,
