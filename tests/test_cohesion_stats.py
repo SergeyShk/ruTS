@@ -485,10 +485,12 @@ def test_connectors_pos(nlp):
         Connector(0, 0, 1, "раз", "conditional", "primary"),
         Connector(0, 1, 2, "значит", "causal", "primary"),
     ]
-    assert find_connectors(["точнее", "т.е."], pos=["ADJ", "PUNCT"]) == [
-        Connector(0, 0, 1, "точнее", "reformulative", "primary"),
-        Connector(0, 1, 2, "т.е.", "reformulative", "primary"),
+    # Своя часть речи - только у коннекторов CONNECTOR_POS_EXTRA: «словом», но не глагол «значит»
+    assert find_connectors(["словом", "допустим"], pos=["NOUN", "VERB"]) == [
+        Connector(0, 0, 1, "словом", "reformulative", "primary"),
+        Connector(0, 1, 2, "допустим", "conditional", "secondary"),
     ]
+    assert find_connectors(["значит"], pos=["VERB"]) == []
     assert find_connectors(["кот"], {"кот": ("additive", "secondary")}, pos=["NOUN"]) == []
     assert find_connectors(["раз", "значит"], blocked={0}) == [
         Connector(0, 1, 2, "значит", "causal", "primary"),
@@ -600,7 +602,8 @@ def test_doc_without_sents(model_nlp):
     assert cs.words == CohesionStats(doc).words
     assert cs.n_words == BasicStats(tagged).n_words == 11
     assert cs.lemmas == CohesionStats(doc).lemmas
-    assert [connector.text for connector in cs.connector_spans] == ["раз", "значит", "т.е."]
+    # «т.е.» у токенизатора и теггера модели - один токен PUNCT, не коннектор
+    assert [connector.text for connector in cs.connector_spans] == ["раз", "значит"]
     blank = spacy.blank("ru")(text)
     assert CohesionStats(blank).words == cs.words
     assert CohesionStats(blank).n_words == 11
