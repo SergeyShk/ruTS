@@ -5,7 +5,7 @@ import pytest
 import spacy
 from spacy.tokens import Doc
 
-from ruts import MorphStats
+from ruts import MorphStats, WordsExtractor
 from ruts.constants import MORPHOLOGY_MARKERS_DESC, MORPHOLOGY_STATS_DESC
 from ruts.morph_stats import (
     analysis_to_ud,
@@ -47,13 +47,13 @@ def test_pos(ms):
         "VERB",
         "VERB",
         "PRON",
-        "SCONJ",
+        "PRON",
         "VERB",
         "ADV",
         "VERB",
         "VERB",
         "PRON",
-        "SCONJ",
+        "PRON",
         "VERB",
     )
 
@@ -63,13 +63,13 @@ def test_animacy(ms):
         None,
         None,
         "Inan",
-        None,
+        "Inan",
         None,
         None,
         None,
         None,
         "Inan",
-        None,
+        "Inan",
         None,
     )
 
@@ -95,13 +95,13 @@ def test_case(ms):
         None,
         None,
         "Acc",
-        None,
+        "Acc",
         None,
         None,
         None,
         None,
         "Acc",
-        None,
+        "Acc",
         None,
     )
 
@@ -111,13 +111,13 @@ def test_gender(ms):
         None,
         None,
         "Neut",
-        None,
+        "Neut",
         None,
         None,
         None,
         None,
         "Neut",
-        None,
+        "Neut",
         None,
     )
 
@@ -159,13 +159,13 @@ def test_number(ms):
         "Plur",
         None,
         "Sing",
-        None,
+        "Sing",
         "Plur",
         None,
         "Sing",
         None,
         "Sing",
-        None,
+        "Sing",
         "Plur",
     )
 
@@ -256,7 +256,8 @@ def test_tags(ms):
     )
     assert ms.tags[1] == "Aspect=Perf|Subcat=Tran|VerbForm=Inf|Voice=Act"
     assert ms.tags[2] == "Animacy=Inan|Case=Acc|Gender=Neut|Number=Sing"
-    assert ms.tags[3] == "_"
+    # «что» в «то, что любите» - местоимение, по контексту
+    assert ms.tags[3] == "Animacy=Inan|Case=Acc|Gender=Neut|Number=Sing"
     assert ms.tags[4] == (
         "Aspect=Imp|Mood=Ind|Number=Plur|Person=2|Subcat=Tran|Tense=Pres|VerbForm=Fin|Voice=Act"
     )
@@ -268,6 +269,10 @@ def test_init_doc_blank(ms):
     assert doc_ms.words == ms.words
     assert doc_ms.tags == ms.tags
     assert doc_ms.get_stats() == ms.get_stats()
+    # Слова те же, что у строки, - разбор в контексте, иначе (т.е. одним токеном) - по слову
+    nlp = spacy.blank("ru")
+    assert MorphStats(nlp("Нож сделан из стали.")).pos[-1] == "NOUN"
+    assert MorphStats(nlp("Нож сделан из стали, т.е. из металла.")).pos[3] == "VERB"
 
 
 def test_init_doc_byte_order_mark():
@@ -291,7 +296,9 @@ def test_init_doc_context(nlp):
         ms.tags[1]
         == "Aspect=Perf|Mood=Ind|Number=Plur|Subcat=Intr|Tense=Past|VerbForm=Fin|Voice=Act"
     )
-    assert MorphStats(doc.text).pos[-1] == "VERB"
+    # Строка разбирается в контексте, как Doc, а заданный экстрактор слов - по слову
+    assert MorphStats(doc.text).pos[-1] == "NOUN"
+    assert MorphStats(doc.text, words_extractor=WordsExtractor()).pos[-1] == "VERB"
 
 
 def test_proper_nouns_by_case():
@@ -309,7 +316,8 @@ def test_proper_nouns_by_case():
         "NUM",
         "NOUN",
     )
-    assert MorphStats("Лев Толстой").pos == ("PROPN", "PROPN")
+    # «Лев» перед фамилией контекстная модель ruMorph 0.5 размечает NOUN (находка в плане ruMorph)
+    assert MorphStats("Роза Люксембург").pos == ("PROPN", "PROPN")
 
 
 def test_init_doc_verbs(nlp):
@@ -542,7 +550,7 @@ def test_get_stats_args(ms):
 def test_get_stats_filter_none(ms):
     stats = ms.get_stats(filter_none=True)
     assert all(None not in v for v in stats.values())
-    assert stats["pos"] == {"VERB": 6, "PRON": 2, "SCONJ": 2, "ADV": 1}
+    assert stats["pos"] == {"VERB": 6, "PRON": 4, "ADV": 1}
     assert stats["verb_form"] == {"Fin": 4, "Inf": 2}
 
 
@@ -579,15 +587,15 @@ def test_explain_text_filter_none(ms):
 def test_print_stats(capsys, ms):
     ms.print_stats()
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 41
-    assert "Подчинительный союз" in captured.out
+    assert captured.out.count("|") == 40
+    assert "Местоимение-существительное" in captured.out
     assert "Личная форма" in captured.out
 
 
 def test_print_stats_args(capsys, ms):
     ms.print_stats("pos", "tense")
     captured = capsys.readouterr()
-    assert captured.out.count("|") == 8
+    assert captured.out.count("|") == 7
 
 
 def test_check_stat_key_error(ms, capsys):

@@ -97,7 +97,10 @@ def test_init_doc_model(nlp):
     assert cs.argument_overlap_all == pytest.approx(1 / 3)
     assert cs.tense_repetition == 1
     assert cs.aspect_repetition == 1
-    assert CohesionStats(doc.text).noun_overlap_adjacent == 0
+    # Строка разбирается в контексте, как Doc; по слову «стали» - глагол
+    assert CohesionStats(doc.text).noun_overlap_adjacent == pytest.approx(1 / 2)
+    by_word = CohesionStats(doc.text, words_extractor=WordsExtractor())
+    assert by_word.noun_overlap_adjacent == 0
 
 
 def test_word_info():
@@ -397,7 +400,7 @@ def test_connectors_hyphens_and_dots(nlp):
     [
         # Правила не читают слово через знак препинания
         ("Ну, значит, придётся подождать.", ["значит"], 0),
-        ("Это, правда, было давно.", ["правда"], 0),
+        ("Он, правда, не пришёл.", ["правда"], 0),
         ("А это, главное, не важно.", ["а", "главное"], 1),
         ("Значит бояться нечего.", [], 0),
         # «Отчего» после глагола знания - через запятую

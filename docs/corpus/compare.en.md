@@ -39,16 +39,16 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                        median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent           0.062           0.100  -0.042   -0.030   -0.966       -0.813  0.093     0.0
-    cohesion_noun_overlap_2_sent              0.080           0.141  -0.069   -0.049   -1.071       -0.759  0.120     0.0
-    cohesion_content_overlap_all              0.071           0.145  -0.097   -0.053   -1.019       -0.717  0.142     0.0
-    cohesion_content_overlap_adjacent         0.169           0.309  -0.171   -0.118   -1.217       -0.714  0.143     0.0
-    cohesion_content_overlap_prop_all         0.013           0.021  -0.011   -0.007   -0.438       -0.708  0.146     0.0
+    cohesion_content_overlap_2_sent           0.061           0.099  -0.042   -0.030   -0.976       -0.815  0.092     0.0
+    cohesion_noun_overlap_2_sent              0.081           0.141  -0.069   -0.050   -1.077       -0.759  0.121     0.0
+    cohesion_content_overlap_all              0.072           0.146  -0.097   -0.055   -1.030       -0.722  0.139     0.0
+    cohesion_content_overlap_adjacent         0.171           0.310  -0.171   -0.116   -1.222       -0.715  0.142     0.0
+    cohesion_content_overlap_prop_all         0.013           0.021  -0.011   -0.007   -0.446       -0.714  0.143     0.0
     punct_ellipsis                           15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-    cohesion_noun_overlap_adjacent            0.104           0.217  -0.138   -0.088   -1.054       -0.671  0.164     0.0
-    cohesion_noun_overlap_all                 0.042           0.095  -0.072   -0.035   -0.851       -0.663  0.168     0.0
+    cohesion_noun_overlap_adjacent            0.106           0.218  -0.138   -0.087   -1.049       -0.668  0.166     0.0
+    cohesion_noun_overlap_all                 0.045           0.095  -0.071   -0.035   -0.846       -0.658  0.171     0.0
     punct_exclamation                        14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-    cohesion_argument_overlap_2_sent          0.155           0.214  -0.082   -0.039   -1.015       -0.623  0.188     0.0
+    cohesion_argument_overlap_2_sent          0.161           0.215  -0.083   -0.038   -1.013       -0.616  0.192     0.0
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 

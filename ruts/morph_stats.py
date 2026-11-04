@@ -25,8 +25,15 @@ from .constants import (
     UD_PERSONS,
 )
 from .exceptions import SourceTypeError
-from .extractors import WordsExtractor
-from .utils import BYTE_ORDER_MARK, lemmatize, parse_all, parse_word, strip_marks
+from .utils import (
+    BYTE_ORDER_MARK,
+    analyze_text,
+    analyze_words,
+    lemmatize,
+    parse_all,
+    parse_word,
+    strip_marks,
+)
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
@@ -55,9 +62,10 @@ class MorphStats(anyts.morph_stats.MorphStats):
         так же animacy, aspect, degree, gender, mood, number, person, polarity, tense,
         voice, verb_form и краткая форма style_variant
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
-        и token.morph, то есть с учетом контекста (стали - глагол или существительное);
-        для строки, Doc без разметки и Doc с заданным экстрактором слов используется
-        первый разбор ruMorph
+        и token.morph, для строки - из разбора ruMorph в контексте предложения, то есть
+        с учетом соседних слов (стали - глагол или существительное); для Doc без
+        разметки - так же, если его слова те же, что у строки, иначе и с заданным
+        экстрактором слов используется первый разбор ruMorph
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
         которых в русском UD нет; они берутся из помет разбора ruMorph для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
@@ -71,15 +79,15 @@ class MorphStats(anyts.morph_stats.MorphStats):
         >>> text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
         >>> ms = MorphStats(text)
         >>> ms.get_stats()
-        {'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
-        'animacy': {None: 9, 'Inan': 2},
+        {'pos': {'VERB': 6, 'PRON': 4, 'ADV': 1},
+        'animacy': {None: 7, 'Inan': 4},
         'aspect': {'Perf': 5, None: 5, 'Imp': 1},
-        'case': {None: 9, 'Acc': 2},
+        'case': {None: 7, 'Acc': 4},
         'degree': {None: 10, 'Pos': 1},
-        'gender': {None: 9, 'Neut': 2},
+        'gender': {None: 7, 'Neut': 4},
         'involvement': {'Ex': 1, None: 10},
         'mood': {'Imp': 1, None: 7, 'Ind': 3},
-        'number': {'Plur': 3, None: 5, 'Sing': 3},
+        'number': {'Plur': 3, None: 3, 'Sing': 5},
         'person': {'2': 2, None: 8, '3': 1},
         'polarity': {None: 11},
         'style_variant': {None: 11},
@@ -159,8 +167,10 @@ class MorphStats(anyts.morph_stats.MorphStats):
 
         Описание:
             Для Doc с разметкой частей речи - token.pos_ и token.morph (token_to_ud),
-            дефисные слова склеиваются; для строки, Doc без разметки и Doc с заданным
-            экстрактором слов (он применяется к тексту Doc) - первый разбор ruMorph
+            дефисные слова склеиваются; для строки - разбор ruMorph в контексте
+            предложения (analyze_text), для Doc без разметки - тоже, если его слова те же,
+            что у строки (analyze_words), а для строки или Doc с заданным экстрактором
+            слов (он применяется к тексту Doc) - первый разбор ruMorph
 
         Аргументы:
             source (str|Doc): Источник данных
@@ -194,11 +204,18 @@ class MorphStats(anyts.morph_stats.MorphStats):
                     if (cached := known.get(key)) is None:
                         cached = known[key] = token_to_ud(token)
                     features.append(cached)
+            elif (analyses := analyze_words(words, source.text)) is not None:
+                features = [_analysis_to_ud(analysis) for analysis in analyses]
             else:
                 features = _words_to_ud(words, source.text)
         elif isinstance(source, str):
-            words = (extractor or WordsExtractor()).extract(source)
-            features = _words_to_ud(words, source)
+            if extractor is None:
+                pairs = analyze_text(source)
+                words = [word for word, _ in pairs]
+                features = [_analysis_to_ud(analysis) for _, analysis in pairs]
+            else:
+                words = extractor.extract(source)
+                features = _words_to_ud(words, source)
         else:
             raise source_type_error(self.messages, source)
         # Признаки одной словоформы - общий словарь кэша _word_to_ud: ядро читает его один раз
@@ -327,7 +344,13 @@ def word_to_ud(word: str) -> dict[str, str | None]:
 @lru_cache(maxsize=131072)
 def _word_to_ud(word: str) -> dict[str, str | None]:
     """Признаки word_to_ud с кэшем по словоформе; словарь общий, менять его нельзя"""
-    return analysis_to_ud(parse_word(word))
+    return _analysis_to_ud(parse_word(word))
+
+
+@lru_cache(maxsize=131072)
+def _analysis_to_ud(analysis: rumorph.Analysis) -> dict[str, str | None]:
+    """Признаки analysis_to_ud с кэшем по разбору; словарь общий, менять его нельзя"""
+    return analysis_to_ud(analysis)
 
 
 @lru_cache(maxsize=1024)

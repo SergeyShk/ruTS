@@ -3,9 +3,14 @@ import unicodedata
 import pytest
 
 import ruts.verse_stats
+from ruts import CohesionStats, MorphStats, WordsExtractor
 from ruts.exceptions import SourceTypeError
 from ruts.utils import (
     add_dash_rules,
+    analyze_sentence,
+    analyze_sents,
+    analyze_text,
+    analyze_words,
     find_phrases,
     is_verbal_noun,
     iter_text_sents,
@@ -57,6 +62,46 @@ def test_parse_word_cached():
     assert parse_word("рублей").pos == "NOUN"
     assert parse_all.cache_info().hits == 1
     assert parse_all.cache_info().misses == 1
+
+
+def test_analyze_sentence():
+    """Омоним разбирается по соседним словам, знаки препинания в вывод не входят"""
+    pairs = analyze_sentence("Мы стали ждать, а нож сделан из стали.")
+    assert [word for word, _ in pairs] == [
+        "Мы",
+        "стали",
+        "ждать",
+        "а",
+        "нож",
+        "сделан",
+        "из",
+        "стали",
+    ]
+    assert [(pairs[1][1].lemma, pairs[1][1].pos), (pairs[-1][1].lemma, pairs[-1][1].pos)] == [
+        ("стать", "VERB"),
+        ("сталь", "NOUN"),
+    ]
+    # Токен без разборов модели (с ZWNJ внутри) разбирается, как в parse_all
+    word, analysis = analyze_sentence("Большой до\u200cм.")[1]
+    assert (word, analysis.lemma) == ("до\u200cм", "дом")
+
+
+def test_analyze_text():
+    text = "Мост сделан из стали.\n\nМы стали ждать, т.е. сидеть."
+    words = [word for word, _ in analyze_text(text)]
+    assert words == list(WordsExtractor().extract(text))
+    assert analyze_words(words, text) == [a for _, a in analyze_text(text)]
+    assert analyze_words(["Мост"], text) is None
+
+
+def test_analyze_sents_shared():
+    """Классы статистик одного текста разбирают его один раз"""
+    text = "Мост сделан из стали. Мы стали ждать."
+    analyze_sents.cache_clear()
+    MorphStats(text).get_stats()
+    CohesionStats(text).get_stats()
+    assert analyze_sents.cache_info().misses == 1
+    assert analyze_sents.cache_info().hits == 1
 
 
 @pytest.mark.parametrize(

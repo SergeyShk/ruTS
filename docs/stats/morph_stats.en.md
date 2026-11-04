@@ -25,8 +25,7 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
     ```
     ---------------Часть речи---------------
     Глагол                        |    6
-    Местоимение-существительное   |    2
-    Подчинительный союз           |    2
+    Местоимение-существительное   |    4
     Наречие                       |    1
 
     -----------------Время------------------
@@ -35,8 +34,8 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
     Прошедшее                     |    1
 
     -----------------Число------------------
+    Единственное                  |    5
     Множественное                 |    3
-    Единственное                  |    3
 
     ------------------Лицо------------------
     2                             |    2
@@ -58,7 +57,7 @@ ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words th
 
 ## Statistics
 
-The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string, a `Doc` without annotation and a `Doc` with a words extractor given the first analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer is used - UD parts of speech and features by the conventions of the SynTagRus corpus.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a `Doc` without annotation the same when its words are those of the string, otherwise, as with a words extractor given, the first analysis of the word without its neighbours.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |
@@ -79,7 +78,7 @@ The statistics are the part of speech `pos` and the features of the table below 
 | `verb_form` | Verb form | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Voice | `Act`, `Pass`, `Mid` |
 
-The values for a string and for an annotated `Doc` may differ: spaCy resolves homonymy by context, while a string takes the first ruMorph analysis without the neighbouring words; some conventions differ too - spaCy models give the existential нет the present tense, ruMorph does not.
+The values for a string and for an annotated `Doc` may differ: both spaCy and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.
 
 <div class="metric-card" markdown>
 
@@ -88,7 +87,7 @@ The values for a string and for an annotated `Doc` may differ: spaCy resolves ho
 `pos` · [UD](https://universaldependencies.org/u/pos/)
 { .metric-meta }
 
-For a string the parts of speech are those of the first ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN` by case (Лев, but лев). Without context the first analysis of a homonym is the most frequent one: стали is a verb, её is the possessive `DET`.
+For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN` by case (Лев, but лев). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.
 
 </div>
 
@@ -221,27 +220,21 @@ The conditional mood is detected by the particle бы (б), so the words extract
 === "Result"
 
     ```
-    {'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
+    {'pos': {'VERB': 6, 'PRON': 4, 'ADV': 1},
      'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
-     'number': {'Plur': 3, 'Sing': 3},
+     'number': {'Plur': 3, 'Sing': 5},
      'person': {'2': 2, '3': 1}}
-    {'pos_VERB': 6,
-     'pos_PRON': 2,
-     'pos_SCONJ': 2,
-     'pos_ADV': 1,
-     'tense_Pres': 1,
-     'tense_Fut': 1,
-     'tense_Past': 1}
+    {'pos_VERB': 6, 'pos_PRON': 4, 'pos_ADV': 1, 'tense_Pres': 1, 'tense_Fut': 1, 'tense_Past': 1}
     (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
      ('получить', {'pos': 'VERB'}),
      ('то', {'pos': 'PRON', 'number': 'Sing'}),
-     ('что', {'pos': 'SCONJ'}),
+     ('что', {'pos': 'PRON', 'number': 'Sing'}),
      ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
      ('иначе', {'pos': 'ADV'}),
      ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
      ('полюбить', {'pos': 'VERB'}),
      ('то', {'pos': 'PRON', 'number': 'Sing'}),
-     ('что', {'pos': 'SCONJ'}),
+     ('что', {'pos': 'PRON', 'number': 'Sing'}),
      ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
     ```
 
@@ -256,8 +249,8 @@ The conditional mood is detected by the particle бы (б), so the words extract
 === "Result"
 
     ```
-       pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
-    0         6         2          2        1
+       pos_VERB  pos_PRON  pos_ADV  animacy_Inan
+    0         6         4        1             4
     ```
 
 --8<-- "stats/morph_stats.md:MorphStats-markers"

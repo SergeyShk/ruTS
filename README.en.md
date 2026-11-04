@@ -378,7 +378,7 @@ The library allows extracting the following morphological features:
 *   verb form
 *   voice
 
-Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis.
+Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/): for a spaCy `Doc` with annotations they come from `token.pos_` and `token.morph`, context included; for a string, from the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis in context.
 
 ```python
 >>> from pprint import pprint
@@ -388,20 +388,20 @@ Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/
 >>> ms = MorphStats(text)
 
 >>> ms.pos
-('VERB', 'VERB', 'PRON', 'SCONJ', 'VERB', 'ADV', 'VERB', 'VERB', 'PRON', 'SCONJ', 'VERB')
+('VERB', 'VERB', 'PRON', 'PRON', 'VERB', 'ADV', 'VERB', 'VERB', 'PRON', 'PRON', 'VERB')
 
 >>> pprint(ms.get_stats())
-{'animacy': {None: 9, 'Inan': 2},
+{'animacy': {None: 7, 'Inan': 4},
  'aspect': {None: 5, 'Imp': 1, 'Perf': 5},
- 'case': {None: 9, 'Acc': 2},
+ 'case': {None: 7, 'Acc': 4},
  'degree': {None: 10, 'Pos': 1},
- 'gender': {None: 9, 'Neut': 2},
+ 'gender': {None: 7, 'Neut': 4},
  'involvement': {None: 10, 'Ex': 1},
  'mood': {None: 7, 'Imp': 1, 'Ind': 3},
- 'number': {None: 5, 'Plur': 3, 'Sing': 3},
+ 'number': {None: 3, 'Plur': 3, 'Sing': 5},
  'person': {None: 8, '2': 2, '3': 1},
  'polarity': {None: 11},
- 'pos': {'ADV': 1, 'PRON': 2, 'SCONJ': 2, 'VERB': 6},
+ 'pos': {'ADV': 1, 'PRON': 4, 'VERB': 6},
  'style_variant': {None: 11},
  'tense': {None: 8, 'Fut': 1, 'Past': 1, 'Pres': 1},
  'transitivity': {None: 5, 'Intr': 2, 'Tran': 4},
@@ -411,8 +411,7 @@ Values follow [Universal Dependencies](https://universaldependencies.org/u/feat/
 >>> ms.print_stats('pos', 'tense')
 ---------------Часть речи---------------
 Глагол                        |    6
-Местоимение-существительное   |    2
-Подчинительный союз           |    2
+Местоимение-существительное   |    4
 Наречие                       |    1
 
 -----------------Время------------------
