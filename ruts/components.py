@@ -287,8 +287,9 @@ class SyntaxStatsComponent(_Component, anyts.components.SyntaxStatsComponent):
 
     Описание:
         Компонент работает по дереву зависимостей и частям речи, поэтому в пайплайне
-        должны быть парсер и morphologizer (модели ru_core_news_sm, ru_core_news_md,
-        ru_core_news_lg)
+        должны быть парсер и разметка частей речи: rumorph рекомендуемого конвейера
+        (load_pipeline) или morphologizer моделей ru_core_news_sm, ru_core_news_md,
+        ru_core_news_lg
 
     Добавление компонента в пайплайн:
         >>> import ruts

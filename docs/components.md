@@ -62,7 +62,7 @@ StatsComponent(nlp, name)
 load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
 ```
 
-Конвейер spaCy, в котором `Doc` размечается так же, как строка (кроме слов с частицей через дефис - муж-то, скажи-ка, - в `Doc` это одно слово): токены и предложения дает сегментатор [anySeg](https://github.com/SergeyShk/anySeg), части речи, признаки и леммы - морфологический анализатор [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Функция загружает модель с токенизатором anySeg, без ее `morphologizer` и `lemmatizer`, и добавляет компонент `rumorph` первым, а `anyseg_sentencizer` - перед парсером. То же вручную:
+Конвейер spaCy, в котором `Doc` размечается так же, как строка (кроме слов через дефис, которые anySeg делит на части, - муж-то, скажи-ка, два-три: в `Doc` это одно слово): токены и предложения дает сегментатор [anySeg](https://github.com/SergeyShk/anySeg), части речи, признаки и леммы - морфологический анализатор [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Функция загружает модель с токенизатором anySeg, без ее `morphologizer` и `lemmatizer`, и добавляет первыми компоненты `anyseg_sentencizer` и `rumorph`: ruMorph разбирает слова в контексте предложений anySeg. Сохраненный такой конвейер загружается как есть. То же вручную:
 
 ``` python
 nlp = spacy.load(
@@ -70,8 +70,8 @@ nlp = spacy.load(
     exclude=["morphologizer", "lemmatizer"],
     config={"nlp": {"tokenizer": {"@tokenizers": "anyseg.Tokenizer.v1"}}},
 )
-nlp.add_pipe("rumorph", first=True)
-nlp.add_pipe("anyseg_sentencizer", before="parser")
+nlp.add_pipe("anyseg_sentencizer", first=True)
+nlp.add_pipe("rumorph", after="anyseg_sentencizer")
 ```
 
 На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный `spacy.load("ru_core_news_sm")` тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики `Doc` могут расходиться со статистиками строки.
@@ -79,7 +79,7 @@ nlp.add_pipe("anyseg_sentencizer", before="parser")
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `model` | `str` | `"ru_core_news_sm"` | Имя или путь модели spaCy: `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` |
-| `exclude` | `list[str]` | `()` | Еще компоненты модели, которые не загружаются, например `ner` |
+| `exclude` | `str`, `list[str]` | `()` | Еще компоненты модели, которые не загружаются, например `ner` |
 | `**kwargs` | - | - | Остальные параметры `spacy.load`; токенизатор в `config` заменяется на anySeg |
 
 === "Код"
@@ -87,14 +87,15 @@ nlp.add_pipe("anyseg_sentencizer", before="parser")
     ``` python
     from ruts import load_pipeline
 
-    load_pipeline().pipe_names
-    [(token.text, token.pos_, token.lemma_) for token in nlp("Нож из стали.")]
+    pipeline = load_pipeline()
+    pipeline.pipe_names
+    [(token.text, token.pos_, token.lemma_) for token in pipeline("Нож из стали.")]
     ```
 
 === "Результат"
 
     ```
-    ['rumorph', 'tok2vec', 'anyseg_sentencizer', 'parser', 'attribute_ruler', 'ner']
+    ['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
     [('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
     ```
 
@@ -132,7 +133,7 @@ MorphStatsComponent(nlp, name)
 <!-- core: components.md:MorphStatsComponent 5d99bc4 -->
 `MorphStatsComponent` кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.
 
-В ruTS части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), а в пайплайне без `morphologizer` - из ruMorph.
+В ruTS части речи и признаки берутся из разметки пайплайна (`token.pos_`, `token.morph`): в [рекомендуемом конвейере](#load_pipeline) их дает ruMorph, в обычной модели - ее `morphologizer`, а в пайплайне без них - разбор ruMorph по слову.
 
 === "Код"
 

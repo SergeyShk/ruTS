@@ -58,7 +58,7 @@ ruTS removes stress marks from the words of a `Doc`. They do not change the part
 load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
 ```
 
-A spaCy pipeline in which a `Doc` is annotated the same way as a string (except the words with a particle after a hyphen - муж-то, скажи-ка, - which are one word in a `Doc`): the tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. The function loads the model with the anySeg tokenizer, without its `morphologizer` and `lemmatizer`, and adds the `rumorph` component first and `anyseg_sentencizer` before the parser. The same by hand:
+A spaCy pipeline in which a `Doc` is annotated the same way as a string (except the hyphenated words that anySeg splits into parts - муж-то, скажи-ка, два-три: they are one word in a `Doc`): the tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. The function loads the model with the anySeg tokenizer, without its `morphologizer` and `lemmatizer`, and adds the `anyseg_sentencizer` and `rumorph` components first: ruMorph analyzes the words in the context of the anySeg sentences. A saved pipeline of this kind loads as it is. The same by hand:
 
 ``` python
 nlp = spacy.load(
@@ -66,8 +66,8 @@ nlp = spacy.load(
     exclude=["morphologizer", "lemmatizer"],
     config={"nlp": {"tokenizer": {"@tokenizers": "anyseg.Tokenizer.v1"}}},
 )
-nlp.add_pipe("rumorph", first=True)
-nlp.add_pipe("anyseg_sentencizer", before="parser")
+nlp.add_pipe("anyseg_sentencizer", first=True)
+nlp.add_pipe("rumorph", after="anyseg_sentencizer")
 ```
 
 On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string.
@@ -75,7 +75,7 @@ On UD SynTagRus this pipeline is more accurate than the model itself: the part o
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `model` | `str` | `"ru_core_news_sm"` | Name or path of the spaCy model: `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` |
-| `exclude` | `list[str]` | `()` | More components of the model not to load, for example `ner` |
+| `exclude` | `str`, `list[str]` | `()` | More components of the model not to load, for example `ner` |
 | `**kwargs` | - | - | Other parameters of `spacy.load`; the tokenizer in `config` is replaced with anySeg |
 
 === "Code"
@@ -83,14 +83,15 @@ On UD SynTagRus this pipeline is more accurate than the model itself: the part o
     ``` python
     from ruts import load_pipeline
 
-    load_pipeline().pipe_names
-    [(token.text, token.pos_, token.lemma_) for token in nlp("Нож из стали.")]
+    pipeline = load_pipeline()
+    pipeline.pipe_names
+    [(token.text, token.pos_, token.lemma_) for token in pipeline("Нож из стали.")]
     ```
 
 === "Result"
 
     ```
-    ['rumorph', 'tok2vec', 'anyseg_sentencizer', 'parser', 'attribute_ruler', 'ner']
+    ['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
     [('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
     ```
 
@@ -126,7 +127,7 @@ MorphStatsComponent(nlp, name)
 
 --8<-- "components.md:MorphStatsComponent"
 
-In ruTS the parts of speech and the features are taken from the model annotation (`token.pos_`, `token.morph`), and in a pipeline without `morphologizer` from ruMorph.
+In ruTS the parts of speech and the features are taken from the annotation of the pipeline (`token.pos_`, `token.morph`): ruMorph gives them in the [recommended pipeline](#load_pipeline), the `morphologizer` in a plain model, and in a pipeline without them they come from the ruMorph analysis by word.
 
 === "Code"
 

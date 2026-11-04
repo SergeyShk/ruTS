@@ -12,6 +12,7 @@ from ruts import (
     ReadabilityStats,
     StyleStats,
     SyntaxStats,
+    load_pipeline,
 )
 from ruts.constants import SYNTAX_STATS_DESC
 from tests.pipelines import load_model_nlp, load_nlp
@@ -68,3 +69,37 @@ def test_reflexive_personal_forms():
     assert SyntaxStats(load_nlp()(text)).subordinate_clauses_per_sent == 1.0
     model = SyntaxStats(load_model_nlp()(text))
     assert (model.subordinate_clauses_per_sent, model.infinitive_clauses_per_sent) == (0.0, 1.0)
+
+
+def test_rumorph_sees_anyseg_sentences():
+    """rumorph разбирает слова в контексте предложений anySeg: абзац без точки - свое предложение"""
+    text = "Что нового\n\nДверь открылась. Мы вошли."
+    doc = load_nlp()(text)
+    assert MorphStats(doc).pos == MorphStats(text).pos
+    assert (doc[0].text, doc[0].pos_) == ("Что", "PRON")
+
+
+def test_imperative_labels():
+    """Совместность и переходность глагола Doc - по разбору с его признаками, как у строки"""
+    text = "Извините меня. Садитесь, прошу вас. Посмотрите сюда."
+    stats = MorphStats(load_nlp()(text)).get_stats("involvement", "transitivity")
+    assert stats == MorphStats(text).get_stats("involvement", "transitivity")
+    assert stats["involvement"]["Ex"] == 3
+
+
+def test_load_pipeline_options(tmp_path):
+    nlp = load_pipeline(exclude="ner")
+    assert nlp.pipe_names == [
+        "anyseg_sentencizer",
+        "rumorph",
+        "tok2vec",
+        "parser",
+        "attribute_ruler",
+    ]
+    nlp.to_disk(tmp_path)
+    assert load_pipeline(tmp_path).pipe_names == nlp.pipe_names
+    assert isinstance(load_pipeline(tmp_path).tokenizer, Tokenizer)
+    parsed = load_pipeline(disable=["parser"])
+    parsed.enable_pipe("parser")
+    text = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\nСписок изменений"
+    assert BasicStats(parsed(text)).n_sents == BasicStats(text).n_sents == 4

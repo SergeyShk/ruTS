@@ -442,18 +442,22 @@ def answer_particles(words: Sequence[str], text: str) -> list[bool]:
 
 
 @lru_cache(maxsize=131072)
-def parse_verb(word: str, lemma: str = "") -> rumorph.Analysis | None:
+def parse_verb(word: str, lemma: str = "", feats: str = "") -> rumorph.Analysis | None:
     """
     Получение глагольного разбора словоформы ruMorph
 
     Описание:
         Среди всех разборов словоформы выбирается глагольный (VERB, AUX) с заданной
         леммой, а при ее отсутствии - первый глагольный: для «стали» с леммой «стать»
-        это глагол, а не существительное «сталь»
+        это глагол, а не существительное «сталь»; из разборов с этой леммой - тот,
+        у которого есть все заданные признаки (повелительное «пойдемте», а не будущее
+        время), иначе первый
 
     Аргументы:
         word (str): Словоформа
         lemma (str): Лемма, которой отдается предпочтение
+        feats (str): Признаки UD строкой CoNLL-U (Mood=Imp|Number=Plur), которым
+            отдается предпочтение
 
     Вывод:
         Analysis|None: Разбор словоформы, None если глагольных разборов нет
@@ -461,7 +465,16 @@ def parse_verb(word: str, lemma: str = "") -> rumorph.Analysis | None:
     verbs = [analysis for analysis in parse_all(word) if analysis.pos in VERBAL_POS]
     if not verbs:
         return None
-    return next((analysis for analysis in verbs if analysis.lemma == lemma), verbs[0])
+    same_lemma = [analysis for analysis in verbs if analysis.lemma == lemma] or verbs
+    wanted = [pair.split("=", 1) for pair in feats.split("|") if "=" in pair]
+    return next(
+        (
+            analysis
+            for analysis in same_lemma
+            if all(analysis.feats.get(name) == value for name, value in wanted)
+        ),
+        same_lemma[0],
+    )
 
 
 def token_to_ud(token: Token) -> dict[str, str | None]:
@@ -474,7 +487,7 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         Third моделей ru_core_news переводится в 1, 2, 3; краткая форма - StyleVariant
         моделей ru_core_news или Variant=Short разметки русского UD
         Переходность и совместность, которых в русском UD нет, для глаголов (VERB, AUX)
-        берутся из помет глагольного разбора ruMorph с леммой spaCy
+        берутся из помет глагольного разбора ruMorph с леммой и признаками токена
 
     Аргументы:
         token (Token): Токен
@@ -490,7 +503,11 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
     if features["style_variant"] is None and "Short" in morph.get("Variant", "").split(","):
         features["style_variant"] = "Short"
-    verb = parse_verb(token.text, token.lemma_) if token.pos_ in VERBAL_POS else None
+    verb = (
+        parse_verb(token.text, token.lemma_, str(token.morph))
+        if token.pos_ in VERBAL_POS
+        else None
+    )
     labels = verb.labels if verb else frozenset()
     for stat, values in LABEL_FEATURES.items():
         features[stat] = next((value for label, value in values.items() if label in labels), None)

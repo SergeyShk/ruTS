@@ -626,22 +626,23 @@ def strip_doc_marks(doc: Doc) -> Doc:
 
 
 def load_pipeline(
-    model: str = "ru_core_news_sm", exclude: Iterable[str] = (), **kwargs: Any
+    model: str = "ru_core_news_sm", exclude: str | Iterable[str] = (), **kwargs: Any
 ) -> Language:
     """
     Загрузка рекомендуемого конвейера spaCy
 
     Описание:
         Модель spaCy с токенами и предложениями anySeg и морфологией ruMorph: токенизатор
-        anyseg.Tokenizer.v1, компонент rumorph первым вместо morphologizer и lemmatizer
-        модели, anyseg_sentencizer перед парсером (без парсера - последним); парсер
-        и остальные компоненты - модели. Предложения, части речи и признаки Doc такого
-        конвейера - те же, что у строки, слова - тоже, кроме слов с частицей через дефис
-        (муж-то, скажи-ка): части их токенов anySeg склеиваются в одно слово
+        anyseg.Tokenizer.v1, компоненты anyseg_sentencizer первым и rumorph за ним вместо
+        morphologizer и lemmatizer модели; парсер и остальные компоненты - модели.
+        Сохраненный конвейер с этими компонентами загружается как есть. Предложения,
+        части речи и признаки Doc такого конвейера - те же, что у строки, слова - тоже,
+        кроме слов через дефис, которые anySeg делит на части (муж-то, скажи-ка, два-три):
+        в Doc они склеиваются в одно слово
 
     Аргументы:
         model (str): Имя или путь модели spaCy: ru_core_news_sm, ru_core_news_md, ru_core_news_lg
-        exclude (list[str]): Еще компоненты модели, которые не загружаются, например ner
+        exclude (str|list[str]): Еще компоненты модели, которые не загружаются, например ner
         **kwargs: Остальные параметры spacy.load; в config токенизатор заменяется на anySeg
 
     Вывод:
@@ -654,22 +655,23 @@ def load_pipeline(
         >>> from ruts import load_pipeline
         >>> nlp = load_pipeline()
         >>> nlp.pipe_names
-        ['rumorph', 'tok2vec', 'anyseg_sentencizer', 'parser', 'attribute_ruler', 'ner']
+        ['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
         >>> [(token.text, token.pos_, token.lemma_) for token in nlp("Нож из стали.")]
         [('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
     """
     import spacy
 
+    excluded = [exclude] if isinstance(exclude, str) else list(exclude)
     config = dict(kwargs.pop("config", {}))
     config["nlp"] = {**config.get("nlp", {}), "tokenizer": {"@tokenizers": "anyseg.Tokenizer.v1"}}
     nlp = spacy.load(
-        model, exclude=["morphologizer", "lemmatizer", *exclude], config=config, **kwargs
+        model, exclude=["morphologizer", "lemmatizer", *excluded], config=config, **kwargs
     )
-    nlp.add_pipe("rumorph", first=True)
-    if "parser" in nlp.pipe_names:
-        nlp.add_pipe("anyseg_sentencizer", before="parser")
-    else:
-        nlp.add_pipe("anyseg_sentencizer")
+    # rumorph разбирает слова в контексте предложений Doc, поэтому предложения anySeg - до него
+    if "anyseg_sentencizer" not in nlp.component_names:
+        nlp.add_pipe("anyseg_sentencizer", first=True)
+    if "rumorph" not in nlp.component_names:
+        nlp.add_pipe("rumorph", after="anyseg_sentencizer")
     return nlp
 
 
