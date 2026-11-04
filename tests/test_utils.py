@@ -7,6 +7,7 @@ import ruts.utils
 import ruts.verse_stats
 from ruts import CohesionStats, MorphStats, StyleStats, WordsExtractor
 from ruts.exceptions import SourceTypeError
+from ruts.morph_stats import word_to_ud
 from ruts.style_stats import is_water_word
 from ruts.utils import (
     add_dash_rules,
@@ -333,6 +334,7 @@ def test_word_helpers_type_errors():
         (lemmatize, ["кот"]),
         (normalize_yo, ["кот"]),
         (is_water_word, ["кот"]),
+        (word_to_ud, ["кот"]),
         (analyze_sents, [["Кот спит."]]),
     ):
         with pytest.raises(SourceTypeError):

@@ -362,7 +362,7 @@ def word_to_ud(word: str) -> dict[str, str | None]:
     return dict(_word_to_ud(word))
 
 
-@lru_cache(maxsize=131072)
+@_word_cache(maxsize=131072)
 def _word_to_ud(word: str) -> dict[str, str | None]:
     """Признаки word_to_ud с кэшем по словоформе; словарь общий, менять его нельзя"""
     return _analysis_to_ud(parse_word(word))
