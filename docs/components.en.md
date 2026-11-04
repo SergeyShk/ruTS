@@ -285,7 +285,7 @@ The [recommended pipeline](#load_pipeline) and the `ru_core_news_sm`, `ru_core_n
 
 Raises:
 
-- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or `morphologizer`.
+- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or without parts of speech (`rumorph` of the recommended pipeline or the `morphologizer` of a model).
 
 === "Code"
 

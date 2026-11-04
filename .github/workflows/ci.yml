@@ -57,7 +57,8 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --no-default-groups --group test
+        # pymorphy3 ставит модель (ее лемматизатор), ruTS он не нужен
+        run: uv sync --locked --no-default-groups --group test --no-install-package pymorphy3 --no-install-package pymorphy3-dicts-ru --no-install-package dawg2-python
       - name: Fetch the pages of anyTS
         run: uv run --no-sync python scripts/core_docs.py
       - name: Run tests
@@ -77,7 +78,7 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         # Нижние границы зависимостей: пакет, который они пропускают, не импортируется
-        run: uv sync --resolution lowest-direct --no-default-groups --group test
+        run: uv sync --resolution lowest-direct --no-default-groups --group test --no-install-package pymorphy3 --no-install-package pymorphy3-dicts-ru --no-install-package dawg2-python
       - name: Fetch the pages of anyTS
         run: uv run --no-sync python scripts/core_docs.py
       - name: Run tests
@@ -100,7 +101,8 @@ jobs:
           enable-cache: true
           python-version: "3.12"
       - name: Install dependencies
-        run: uv sync --locked --no-default-groups --group test
+        # pymorphy3 ставит модель (ее лемматизатор), ruTS он не нужен
+        run: uv sync --locked --no-default-groups --group test --no-install-package pymorphy3 --no-install-package pymorphy3-dicts-ru --no-install-package dawg2-python
       - name: Fetch the pages of anyTS
         run: uv run --no-sync python scripts/core_docs.py
       - name: Run the network tests

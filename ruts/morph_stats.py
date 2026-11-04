@@ -33,6 +33,8 @@ from .utils import (
     parse_all,
     parse_word,
     strip_marks,
+    token_analysis,
+    word_form,
 )
 
 if TYPE_CHECKING:
@@ -105,7 +107,8 @@ class MorphStats(anyts.morph_stats.MorphStats):
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
-        lemmas (tuple[str]): Кортеж лемм слов: ruMorph с учетом части речи слова
+        lemmas (tuple[str]): Кортеж лемм слов: разбора ruMorph в контексте, а без него -
+            с учетом части речи слова
         tags (tuple[str]): Кортеж строк грамматических признаков в формате CoNLL-U
         pos (tuple[str]): Кортеж значений части речи
         animacy (tuple[str]): Кортеж значений одушевленности
@@ -183,22 +186,29 @@ class MorphStats(anyts.morph_stats.MorphStats):
             SourceTypeError: Если источник данных не строка и не объект Doc
         """
         features: list[dict[str, str | None]]
+        # Леммы выбранных разборов (в контексте), None - лемма по слову в lemmas
+        chosen: list[str | None]
         extractor = self._words_extractor
         if is_doc(source) and extractor is not None:
             source = source.text
         if is_doc(source):
             units = list(iter_doc_units(source, join_hyphens=True))
-            words: Sequence[str] = [
+            # Разбор - по токену с точкой сокращения, слово - без нее, как у строки
+            forms = [
                 strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
                 for unit in units
             ]
+            words: Sequence[str] = [word_form(form) for form in forms]
             if has_pos(source):
                 # Токены одной словоформы с одной разметкой получают один словарь, как в _word_to_ud
                 known: dict[tuple[int, str, str, int], dict[str, str | None]] = {}
                 features = []
-                for unit, word in zip(units, words, strict=True):
+                chosen = []
+                for unit, form in zip(units, forms, strict=True):
+                    analysis = token_analysis(unit[0]) if len(unit) == 1 else None
+                    chosen.append(analysis.lemma if analysis is not None else None)
                     if len(unit) > 1:
-                        features.append(_word_to_ud(word))
+                        features.append(_word_to_ud(form))
                         continue
                     token = unit[0]
                     key = (token.pos, str(token.morph), token.text, token.lemma)
@@ -207,15 +217,19 @@ class MorphStats(anyts.morph_stats.MorphStats):
                     features.append(cached)
             else:
                 positions = [(unit[0].idx, word) for unit, word in zip(units, words, strict=True)]
-                features = _words_to_ud(words, source.text, analyze_words(positions, source.text))
+                in_context = analyze_words(positions, source.text)
+                features = _words_to_ud(forms, source.text, in_context)
+                chosen = [None if analysis is None else analysis.lemma for analysis in in_context]
         elif isinstance(source, str):
             if extractor is None:
                 pairs = analyze_text(source)
                 words = [word for word, _ in pairs]
                 features = [_analysis_to_ud(analysis) for _, analysis in pairs]
+                chosen = [analysis.lemma for _, analysis in pairs]
             else:
                 words = extractor.extract(source)
                 features = _words_to_ud(words, source)
+                chosen = [None] * len(words)
         else:
             raise source_type_error(self.messages, source)
         # Признаки одной словоформы - общий словарь кэша _word_to_ud: ядро читает его один раз
@@ -227,6 +241,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
                     for stat, name in MORPHOLOGY_FEATURES.items()
                     if (value := found[stat])
                 }
+        self._chosen_lemmas = chosen
         return [
             MorphWord(word, found["pos"], names[id(found)])
             for word, found in zip(words, features, strict=True)
@@ -234,9 +249,11 @@ class MorphStats(anyts.morph_stats.MorphStats):
 
     @cached_property
     def lemmas(self) -> tuple[str, ...]:
-        """Леммы слов: ruMorph с учетом части речи слова"""
+        """Леммы слов: выбранного разбора ruMorph (в контексте), иначе с учетом части речи"""
+        chosen = getattr(self, "_chosen_lemmas", None) or [None] * len(self.words)
         return tuple(
-            lemmatize(word, pos or "") for word, pos in zip(self.words, self.pos, strict=True)
+            lemma or lemmatize(word, pos or "")
+            for word, pos, lemma in zip(self.words, self.pos, chosen, strict=True)
         )
 
     def get_markers(self) -> dict[str, float]:

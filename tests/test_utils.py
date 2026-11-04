@@ -3,6 +3,7 @@ import unicodedata
 import pytest
 import spacy
 
+import ruts.utils
 import ruts.verse_stats
 from ruts import CohesionStats, MorphStats, WordsExtractor
 from ruts.exceptions import SourceTypeError
@@ -22,6 +23,7 @@ from ruts.utils import (
     parse_all,
     parse_word,
     strip_marks,
+    word_form,
 )
 
 
@@ -102,11 +104,11 @@ def test_analyze_text():
 def test_analyze_sents_shared():
     """Классы статистик одного текста разбирают его один раз"""
     text = "Мост сделан из стали. Мы стали ждать."
-    analyze_sents.cache_clear()
+    ruts.utils._analyze_sents.cache_clear()
     MorphStats(text).get_stats()
     CohesionStats(text).get_stats()
-    assert analyze_sents.cache_info().misses == 1
-    assert analyze_sents.cache_info().hits == 1
+    assert ruts.utils._analyze_sents.cache_info().misses == 1
+    assert ruts.utils._analyze_sents.cache_info().hits == 1
 
 
 @pytest.mark.parametrize(
@@ -153,8 +155,8 @@ def test_iter_text_words():
     assert list(iter_text_words("Во-первых, кот - т.е. «зверь»!")) == [
         (0, 9, "Во-первых"),
         (11, 14, "кот"),
-        (17, 19, "т."),
-        (19, 21, "е."),
+        (17, 19, "т"),
+        (19, 21, "е"),
         (23, 28, "зверь"),
     ]
     assert list(iter_text_words("")) == []
@@ -302,3 +304,27 @@ def test_set_sent_starts_reexport():
     from ruts.utils import set_sent_starts
 
     assert set_sent_starts is anyts.utils.set_sent_starts
+
+
+def test_abbreviation_dot():
+    """Сокращение с точкой внутри предложения и без нее в конце - одно слово, разбор по токену с точкой"""
+    text = "Цена 5 руб. за кг, итого 10 руб."
+    assert WordsExtractor().extract(text) == ("Цена", "5", "руб", "за", "кг", "итого", "10", "руб")
+    assert [analysis.lemma for word, analysis in analyze_text(text) if word == "руб"] == [
+        "рубль"
+    ] * 2
+    assert [word for _, _, word in iter_tokens(text)][2] == "руб."
+    assert (word_form("руб."), word_form("т.е."), word_form("...")) == ("руб", "т.е.", "...")
+
+
+def test_word_helpers_type_errors():
+    """Не строка у помощников по слову и разбора в контексте - SourceTypeError ruTS"""
+    for func, value in (
+        (parse_word, 1),
+        (lemmatize, None),
+        (analyze_sentence, 1),
+        (analyze_sents, "Кот."),
+    ):
+        with pytest.raises(SourceTypeError):
+            func(value)
+    assert analyze_sents(["Кот спит."]) == analyze_sents(("Кот спит.",))

@@ -172,7 +172,7 @@ def test_counts(cs):
     assert cs.n_pronouns == 3
     assert cs.n_demonstratives == 1
     # «будет» в «будет сидеть» - вспомогательный глагол, не знаменательное слово
-    assert cs.n_content_words == 13
+    assert cs.n_content_words == 14
     assert cs.n_given == 4
 
 
@@ -184,14 +184,14 @@ def test_overlap(cs):
     assert cs.content_overlap_adjacent == pytest.approx(1 / 3)
     assert cs.content_overlap_all == pytest.approx(3 / 6)
     assert cs.content_overlap_prop_adjacent == pytest.approx((0 + 1 / 3 + 0) / 3)
-    assert cs.content_overlap_prop_all == pytest.approx(25 / 21 / 6)
+    assert cs.content_overlap_prop_all == pytest.approx(47 / 252)
 
 
 def test_givenness(cs):
     assert cs.p_pronouns == pytest.approx(3 / 21)
     assert cs.pronoun_noun_ratio == pytest.approx(3 / 6)
     assert cs.p_demonstratives == pytest.approx(1 / 21)
-    assert cs.p_given == pytest.approx(4 / 13)
+    assert cs.p_given == pytest.approx(4 / 14)
 
 
 def test_temporal(cs):
@@ -783,3 +783,31 @@ def test_paragraph_inside_sentence(model_nlp):
     doc = model_nlp("Глава первая\n\nКот сидел на окне.")
     assert len(list(doc.sents)) == 1
     assert CohesionStats(doc).n_paragraphs == 2
+
+
+def test_qa_word_classes():
+    """Связка «быть» - знаменательное слово, «то» указательное только как местоимение,
+    притяжательное «его» - аргумент с леммой «он»"""
+    cs = CohesionStats("Он был дома. Было тепло.")
+    assert [word.content for sent in cs.analyze("Он был дома. Было тепло.") for word in sent] == [
+        False,
+        True,
+        True,
+        True,
+        True,
+    ]
+    text = "Я думал о том, что он сказал. То холодно, то жарко."
+    assert CohesionStats(text).n_demonstratives == 1
+    assert CohesionStats("Он пришёл. Его брат ушёл.").argument_overlap_adjacent == 1.0
+    assert CohesionStats("Он пришёл. Его брат ушёл.").lemmas[1][0] == "он"
+
+
+def test_doc_pipeline_as_string(nlp):
+    """Doc рекомендуемого конвейера - те же признаки слов, что у строки"""
+    text = (
+        "Там, конечно, можно было жить. Стоит подождать, банки закрыты. "
+        "Физики спорят о политике, кстати. Банки и политики молчат."
+    )
+    assert CohesionStats(nlp(text)).lemmas == CohesionStats(text).lemmas
+    doc_stats, text_stats = CohesionStats(nlp(text)).get_stats(), CohesionStats(text).get_stats()
+    assert doc_stats == pytest.approx(text_stats, nan_ok=True)

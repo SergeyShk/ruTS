@@ -21,6 +21,7 @@ from anyts.utils import (
 
 from .constants import (
     CORE_MESSAGES,
+    PARENTHETICAL_WORDS,
     PRONOMINAL_TYPES,
     TOKENIZER_INFIXES,
     TOKENIZER_PREFIXES,
@@ -32,7 +33,7 @@ from .exceptions import SourceTypeError
 
 if TYPE_CHECKING:
     from spacy.language import Language
-    from spacy.tokens import Doc
+    from spacy.tokens import Doc, Token
 
 F = TypeVar("F", bound=Callable[..., Any])
 BYTE_ORDER_MARK = "\ufeff"
@@ -246,6 +247,7 @@ def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
         >>> [(analysis.lemma, analysis.pos) for analysis in parse_all("стали")][:2]
         [('стать', 'VERB'), ('сталь', 'NOUN')]
     """
+    _check_text(word)
     analyzer = get_morph_analyzer()
     analyses = analyzer.analyze(word)
     if not analyses:
@@ -288,6 +290,22 @@ def is_predicative(analysis: rumorph.Analysis) -> bool:
     return analysis.pos in ("VERB", "AUX") and "VerbForm" not in analysis.feats
 
 
+def is_parenthetical_analysis(analysis: rumorph.Analysis) -> bool:
+    """
+    Проверка, является ли разбор вводным словом
+
+    Описание:
+        Помета Prnt ruMorph или лемма из PARENTHETICAL_WORDS (кстати, наверно, видимо)
+
+    Аргументы:
+        analysis (Analysis): Разбор ruMorph
+
+    Вывод:
+        bool: Результат проверки
+    """
+    return "Prnt" in analysis.labels or analysis.lemma in PARENTHETICAL_WORDS
+
+
 def is_pronominal(analysis: rumorph.Analysis) -> bool:
     """
     Проверка, является ли разбор указательным, вопросительным или относительным словом
@@ -327,7 +345,6 @@ def lemmatize(word: str, pos: str = "") -> str:
     return next((analysis for analysis in analyses if analysis.pos == pos), analyses[0]).lemma
 
 
-@lru_cache(maxsize=16384)
 def analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
     """
     Слова предложения с разборами ruMorph в контексте
@@ -335,8 +352,8 @@ def analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
     Описание:
         Токены - как у WordsExtractor по умолчанию: сегментатор SEGMENTER по тексту
         без знаков ударения и мягких переносов (strip_marks); разборы выбирает
-        контекстная модель ruMorph по всем токенам предложения, знаки препинания
-        в вывод не входят. Токен без разборов модели разбирается, как в parse_all.
+        контекстная модель ruMorph по всем токенам предложения (сокращение - с точкой),
+        знаки препинания в вывод не входят, слова - без точки сокращения (word_form). Токен без разборов модели разбирается, как в parse_all.
         Результаты кэшируются по тексту предложения
 
     Аргументы:
@@ -350,10 +367,17 @@ def analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
         >>> [(word, a.lemma, a.pos) for word, a in analyze_sentence("Мост сделан из стали.")]
         [('Мост', 'мост', 'NOUN'), ('сделан', 'сделать', 'VERB'), ('из', 'из', 'ADP'), ('стали', 'сталь', 'NOUN')]
     """
+    _check_text(sentence)
+    return _analyze_sentence(sentence)
+
+
+@lru_cache(maxsize=16384)
+def _analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
+    """Слова и разборы analyze_sentence с кэшем по тексту предложения"""
     forms = [token for _, _, token in iter_tokens(strip_marks(sentence))]
     analyses = get_morph_analyzer().analyze_sentence(forms)
     return tuple(
-        (form, found[0] if found else parse_word(form))
+        (word_form(form), found[0] if found else parse_word(form))
         for form, found in zip(forms, analyses, strict=True)
         if not is_punctuation(form)
     )
@@ -380,9 +404,8 @@ def analyze_text(text: str) -> list[tuple[str, rumorph.Analysis]]:
     return [pair for pairs in analyze_sents(sents) for pair in pairs]
 
 
-@lru_cache(maxsize=1)
 def analyze_sents(
-    sents: tuple[str, ...],
+    sents: Iterable[str],
 ) -> tuple[tuple[tuple[str, rumorph.Analysis], ...], ...]:
     """
     Слова предложений текста с разборами ruMorph в контексте
@@ -393,11 +416,24 @@ def analyze_sents(
         когда предложений больше, чем вмещает кэш analyze_sentence
 
     Аргументы:
-        sents (tuple[str]): Тексты предложений по порядку
+        sents (list[str]): Тексты предложений по порядку
 
     Вывод:
         tuple[tuple[tuple[str, Analysis], ...], ...]: Слова и разборы каждого предложения
+
+    Исключения:
+        SourceTypeError: Если предложения - не список строк
     """
+    if isinstance(sents, str) or not isinstance(sents, Iterable):
+        raise SourceTypeError(f"Ожидается список предложений, а не {type(sents).__name__}")
+    return _analyze_sents(tuple(sents))
+
+
+@lru_cache(maxsize=1)
+def _analyze_sents(
+    sents: tuple[str, ...],
+) -> tuple[tuple[tuple[str, rumorph.Analysis], ...], ...]:
+    """Разборы analyze_sents с кэшем по набору предложений"""
     return tuple(analyze_sentence(sent) for sent in sents)
 
 
@@ -431,6 +467,39 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
             found[first:last] = [analysis for _, analysis in pairs]
         first = last
     return found
+
+
+def token_analysis(token: Token) -> rumorph.Analysis | None:
+    """
+    Получение разбора ruMorph, которым размечен токен
+
+    Описание:
+        Разбор словоформы с леммой, частью речи и признаками токена, как у компонента
+        rumorph; у токена обычной модели такого разбора обычно нет
+
+    Аргументы:
+        token (Token): Токен
+
+    Вывод:
+        Analysis|None: Разбор или None
+    """
+    if not token.lemma_:
+        return None
+    return _matching_analysis(token.text, token.lemma_, token.pos_, str(token.morph))
+
+
+@lru_cache(maxsize=131072)
+def _matching_analysis(word: str, lemma: str, pos: str, morph: str) -> rumorph.Analysis | None:
+    """Разбор ruMorph словоформы с заданными леммой, частью речи и признаками (token_analysis)"""
+    feats = dict(pair.split("=", 1) for pair in morph.split("|") if "=" in pair)
+    return next(
+        (
+            analysis
+            for analysis in parse_all(word)
+            if (analysis.lemma, analysis.pos) == (lemma, pos) and dict(analysis.feats) == feats
+        ),
+        None,
+    )
 
 
 def is_verbal_noun(lemma: str) -> bool:
@@ -521,12 +590,40 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
             yield span.start, span.end, word
 
 
+def word_form(token: str) -> str:
+    """
+    Слово токена без точки сокращения
+
+    Описание:
+        Сокращение внутри предложения anySeg дает с точкой (руб., т.), а в конце
+        предложения точка - отдельный токен, поэтому слово пришло бы в двух
+        написаниях; точка снимается у токена с буквой или цифрой и без других точек
+        (т.е. одним токеном токенизатора spaCy и знаки остаются как есть)
+
+    Аргументы:
+        token (str): Текст токена
+
+    Вывод:
+        str: Слово
+
+    Пример использования:
+        >>> from ruts.utils import word_form
+        >>> word_form("руб."), word_form("А."), word_form("т.е."), word_form("...")
+        ('руб', 'А', 'т.е.', '...')
+    """
+    body = token.removesuffix(".")
+    if body != token and "." not in body and any(char.isalnum() for char in body):
+        return body
+    return token
+
+
 def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     """
     Извлечение слов с позициями из строки
 
     Описание:
-        Токены iter_tokens, знаки препинания отбрасываются как в WordsExtractor
+        Токены iter_tokens без точки сокращения (word_form), знаки препинания
+        отбрасываются как в WordsExtractor
 
     Аргументы:
         text (str): Строка текста
@@ -540,7 +637,7 @@ def iter_text_words(text: str) -> Iterator[tuple[int, int, str]]:
     """
     _check_text(text)
     return (
-        (start, stop, token)
+        (start, stop, word_form(token))
         for start, stop, token in iter_tokens(text)
         if not is_punctuation(token)
     )

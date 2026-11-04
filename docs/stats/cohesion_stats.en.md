@@ -12,7 +12,7 @@ Raises:
 - `SourceError` - a source without words;
 - `ParameterError` - an unknown class or kind of a connector, a `blank_lines` that is not a `bool`.
 
-The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, and the lemma from the ruMorph analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, from the ruMorph analysis in the context of the sentence ([`analysis_info`](#word_info)), for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a word extractor given, from the first ruMorph analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the features of a token of the [recommended pipeline](../components.md#load_pipeline) come from its ruMorph analysis, as for a string, and with a plain model the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, the lemma from the ruMorph analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, from the ruMorph analysis in the context of the sentence ([`analysis_info`](#word_info)), for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a word extractor given, from the first ruMorph analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 The words are classified by the Universal Dependencies parts of speech and features - of the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis for a string or of the annotation of a `Doc`:
 
@@ -20,9 +20,9 @@ The words are classified by the Universal Dependencies parts of speech and featu
 | :----- | :--------------- | :---- |
 | Nouns | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
 | Pronouns | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` |
-| Arguments | `NOUN`, `PROPN`, `PRON` | `NOUN`, `PROPN`, `PRON` |
-| Content words | `CONTENT_UD_POS` without demonstratives, pronominal (`PronType` Dem, Int, Rel: там, где, почему) and parenthetical (the `Prnt` label) words, predicatives and numbers in digits | `CONTENT_UD_POS` without demonstratives |
-| Demonstratives | lemmas of `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | the same lemmas |
+| Arguments | `NOUN`, `PROPN`, `PRON`, the possessive его, её, их with the lemma он, она, они | the same |
+| Content words | `CONTENT_UD_POS` and the copula быть (`AUX` with a verb form) without demonstratives, pronominal (`PronType` Dem, Int, Rel: там, где, почему) and parenthetical (the `Prnt` label and `PARENTHETICAL_WORDS`: кстати, наверно) words, predicatives and numbers in digits | the same by the features of the token |
+| Demonstratives | lemmas of `DEMONSTRATIVE_LEMMAS`: этот, это, тот, то (a pronoun only), такой, таковой, столько, сей, оный | the same lemmas |
 | Tense and aspect | features `Tense` and `Aspect` | features `Tense` and `Aspect` |
 
 === "Code"
@@ -47,7 +47,7 @@ The words are classified by the Universal Dependencies parts of speech and featu
     Повтор знаменательных слов в соседних предложениях       |   0.33
     Повтор знаменательных слов во всех парах предложений     |   0.50
     Доля общих знаменательных слов в соседних предложениях   |   0.11
-    Доля общих знаменательных слов во всех парах предложений |   0.20
+    Доля общих знаменательных слов во всех парах предложений |   0.19
     Повтор существительных в двух следующих предложениях     |   0.67
     Повтор аргументов в двух следующих предложениях          |   0.75
     Повтор знаменательных слов в двух следующих предложениях |   0.40
@@ -57,7 +57,7 @@ The words are classified by the Universal Dependencies parts of speech and featu
     Доля местоимений                                         |   0.14
     Отношение местоимений к существительным                  |   0.50
     Доля указательных местоимений                            |   0.05
-    Доля знаменательных слов, встречавшихся ранее            |   0.31
+    Доля знаменательных слов, встречавшихся ранее            |   0.29
     Повтор времени в соседних предложениях                   |   0.67
     Повтор вида в соседних предложениях                      |   0.33
     Темпоральная связность                                   |   0.50
@@ -104,7 +104,7 @@ The extractors given are kept in the attributes `sents_extractor` and `words_ext
 
     ```
     ('он', 'смотреть', 'на', 'птица')
-    (6, 3, 13, 4)
+    (6, 3, 14, 4)
     (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
     {'и': 1}
     ```
@@ -281,7 +281,7 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'content_overlap_adjacent': 0.3333333333333333,
      'content_overlap_all': 0.5,
      'content_overlap_prop_adjacent': 0.1111111111111111,
-     'content_overlap_prop_all': 0.19841269841269837,
+     'content_overlap_prop_all': 0.18650793650793648,
      'noun_overlap_2_sent': 0.6666666666666666,
      'argument_overlap_2_sent': 0.75,
      'content_overlap_2_sent': 0.4,
@@ -291,7 +291,7 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'p_pronouns': 0.14285714285714285,
      'pronoun_noun_ratio': 0.5,
      'p_demonstratives': 0.047619047619047616,
-     'p_given': 0.3076923076923077,
+     'p_given': 0.2857142857142857,
      'tense_repetition': 0.6666666666666666,
      'aspect_repetition': 0.3333333333333333,
      'temporal_cohesion': 0.5,
@@ -405,14 +405,14 @@ token_info(token)
 ```
 
 ``` {.python .signature}
-ud_info(word, pos, tense, aspect)
+ud_info(word, pos, tense, aspect, feats=None)
 ```
 
 ``` {.python .signature}
 unit_info(unit)
 ```
 
-The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given ruMorph analysis, for example one chosen by context (`ruts.utils.analyze_sentence`); `words_info` does the same for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first analysis, where the answer «нет» (Нет, не видел) is a particle. `token_info` takes them from the spaCy annotation (`token.pos_`, `Tense`, `Aspect`), `ud_info` from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (`word_to_ud`).
+The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given ruMorph analysis, for example one chosen by context (`ruts.utils.analyze_sentence`); `words_info` does the same for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first analysis, where the answer «нет» (Нет, не видел) is a particle. `token_info` takes them from the ruMorph analysis the token is annotated with (`ruts.utils.token_analysis`, the `rumorph` component), and without it from the spaCy annotation (`token.pos_`, `token.morph`), `ud_info` from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (`word_to_ud`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -423,6 +423,7 @@ The features of a word for the cohesion statistics, a `WordInfo` named tuple: `l
 | `analysis` | `Analysis` | - | ruMorph analysis (`analysis_info`) |
 | `token` | `Token` | - | spaCy token (`token_info`) |
 | `pos`, `tense`, `aspect` | `str` | - | Part of speech, tense and aspect of UD (`ud_info`) |
+| `feats` | `dict[str, str]` | `None` | Features of UD of the word, `None` - unknown (`ud_info`) |
 | `unit` | `list[Token]` | - | Tokens of a word (`unit_info`) |
 
 === "Code"
@@ -498,7 +499,7 @@ Checks whether a word is a pronoun by the ruMorph analysis: `PRON` (он, себ
 is_content_word(word)
 ```
 
-Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs), except pronominal (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`) and parenthetical (the `Prnt` label) words, predicatives (надо, можно) and numbers in digits.
+Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs) and the copula быть, except pronominal (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`) and parenthetical (the `Prnt` label and `PARENTHETICAL_WORDS`) words, predicatives (надо, можно) and numbers in digits.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

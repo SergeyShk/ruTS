@@ -115,7 +115,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 is_stopword(word)
 ```
 
-Whether a word is insignificant for the academic nausea by the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (`PronType` Dem, Int, Rel: там, тогда, где, почему; `ruts.utils.is_pronominal`) and parenthetical words (the `Prnt` label).
+Whether a word is insignificant for the academic nausea by the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis, without its neighbours: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (`PronType` Dem, Int, Rel: там, тогда, где, почему; `ruts.utils.is_pronominal`) and parenthetical words (the `Prnt` label and `PARENTHETICAL_WORDS`: кстати, наверно).
 
 === "Code"
 
@@ -161,7 +161,7 @@ The share of the words without content, in percent: the words of `stopwords`, co
 is_water_word(word)
 ```
 
-Whether a word is "water" by the ruMorph analysis, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (`CCONJ`, `SCONJ`, `PART`, `PRON`, `INTJ`; the set `ruts.constants.WATER_POS`), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in `is_stopword`, are not water.
+Whether a word is "water" by the first ruMorph analysis, without its neighbours, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (`CCONJ`, `SCONJ`, `PART`, `PRON`, `INTJ`; the set `ruts.constants.WATER_POS`), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in `is_stopword`, are not water.
 
 </div>
 
@@ -263,7 +263,7 @@ The occurrences of the phrases of a list per 100 words. The phrases are compared
 calc_parentheticals(text)
 ```
 
-The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the ruMorph label `Prnt` (конечно, например, впрочем; the function `is_parenthetical(word)`). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
+The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the label `Prnt` of the first ruMorph analysis, without its neighbours, and of `PARENTHETICAL_WORDS` (конечно, например, впрочем, кстати; the function `is_parenthetical(word)`). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

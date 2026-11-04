@@ -63,7 +63,8 @@ def test_kwic_doc_pos():
     doc = load_nlp()("Из стали делают ножи, а мы стали друзьями.")
     assert [line.keyword for line in kwic(doc, "сталь", by_lemma=True)] == ["стали"]
     assert [line.start for line in kwic(doc, "стать", by_lemma=True)] == [27]
-    assert len(kwic(doc.text, "стать", by_lemma=True)) == 2
+    # Строка - тоже по лемме в контексте: «из стали» - существительное
+    assert [line.start for line in kwic(doc.text, "стать", by_lemma=True)] == [27]
 
 
 def test_kwic_errors():

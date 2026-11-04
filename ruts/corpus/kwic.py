@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+import unicodedata
+from collections import deque
+from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING
 
 import anyts.corpus
@@ -10,7 +12,14 @@ from anyts.corpus.kwic import (
     print_kwic as print_kwic,
 )
 
-from ..utils import iter_text_sents, iter_text_words, lemmatize, normalize_yo, strip_marks
+from ..utils import (
+    analyze_words,
+    iter_text_sents,
+    iter_text_words,
+    lemmatize,
+    normalize_yo,
+    strip_marks,
+)
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc, Token
@@ -72,7 +81,7 @@ def kwic(
         by_lemma,
         ignore_case or case_sensitive,
         tokenize=iter_text_words,
-        lemmatize=_lemma,
+        lemmatize=_string_lemmatizer(source) if by_lemma and isinstance(source, str) else _lemma,
         fold=_fold_marks if case_sensitive else _fold,
         join_hyphens=True,
         sentenize=iter_text_sents,
@@ -92,3 +101,21 @@ def _fold(word: str) -> str:
 def _lemma(word: str, tokens: Sequence[Token]) -> str:
     """Лемма ruMorph с частью речи токена для слова Doc из одного токена"""
     return lemmatize(word, tokens[0].pos_ if len(tokens) == 1 else "")
+
+
+def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Token]], str]:
+    """Леммы слов строки в контексте предложений (analyze_words): ядро разбирает слова
+    текста по порядку, по разу каждое, а слово не по порядку (ключевое) - по слову"""
+    positions = [(start, word) for start, _, word in iter_text_words(text)]
+    queue = deque(
+        zip((word for _, word in positions), analyze_words(positions, text), strict=True)
+    )
+
+    def lemma(word: str, tokens: Sequence[Token]) -> str:
+        if queue and unicodedata.normalize("NFC", queue[0][0]) == word:
+            _, analysis = queue.popleft()
+            if analysis is not None:
+                return analysis.lemma
+        return _lemma(word, tokens)
+
+    return lemma

@@ -1,11 +1,15 @@
 import re
+from collections import deque
 from collections.abc import Iterable
+from contextvars import ContextVar
 from typing import ClassVar
 
 import anyts
+import rumorph
+from anyts.utils import is_punctuation
 
 from .constants import CORE_MESSAGES
-from .utils import iter_text_sents, iter_tokens, parse_word, strip_marks
+from .utils import analyze_text, iter_text_sents, iter_tokens, parse_word, strip_marks, word_form
 
 # Разряды числа разделяют и пробелы: обычный, неразрывный, тонкий, узкий неразрывный
 NUMBER_PATTERN = re.compile(r"\d+(?:[.,:/ \u00a0\u2009\u202f-]\d+)*(?:-[а-яё]{1,3})?")
@@ -60,7 +64,8 @@ class WordsExtractor(anyts.WordsExtractor):
 
     Описание:
         Токенизатор по умолчанию - сегментатор anySeg (ruts.utils.iter_tokens),
-        леммы - первый разбор ruMorph. Фильтры применяются по порядку: знаки
+        леммы строки с ним - разбор ruMorph в контексте предложения, с заданным
+        токенизатором - первый разбор. Фильтры применяются по порядку: знаки
         препинания, числа, лемматизация, нижний регистр, стоп-слова, длина слова;
         стоп-слова сравниваются без учета регистра
         Числами считаются также диапазоны, дроби, порядковые числительные и числа
@@ -94,16 +99,38 @@ class WordsExtractor(anyts.WordsExtractor):
     number_pattern: ClassVar[re.Pattern[str]] = NUMBER_PATTERN
 
     def tokenize(self, text: str) -> Iterable[str]:
-        """Разбиение текста на слова ruts.utils.iter_tokens"""
-        return (word for _, _, word in iter_tokens(text))
+        """Разбиение текста на слова ruts.utils.iter_tokens без точки сокращения (word_form)"""
+        return (word_form(word) for _, _, word in iter_tokens(text))
 
     def extract(self, text: str) -> tuple[str, ...]:
-        """Извлечение слов из текста без знаков ударения и мягких переносов (strip_marks)"""
-        return super().extract(strip_marks(text) if isinstance(text, str) else text)
+        """Извлечение слов из текста без знаков ударения и мягких переносов (strip_marks);
+        с токенизатором по умолчанию леммы - в контексте предложений (analyze_text)"""
+        if isinstance(text, str):
+            text = strip_marks(text)
+        if not isinstance(text, str) or not self.use_lexemes or self.tokenizer is not None:
+            return super().extract(text)
+        token = _CONTEXT.set(deque(analyze_text(text)))
+        try:
+            return super().extract(text)
+        finally:
+            _CONTEXT.reset(token)
 
     def lemmatize(self, word: str) -> str:
-        """Лемма слова по первому разбору ruMorph"""
+        """Лемма слова: разбора в контексте предложения при извлечении строки, иначе первого"""
+        context = _CONTEXT.get()
+        if context and not is_punctuation(word):
+            # Слова идут по порядку, а пропущенные фильтрами (числа) снимаются с очереди
+            while context:
+                form, analysis = context.popleft()
+                if form == word:
+                    return analysis.lemma
         return parse_word(word).lemma
+
+
+# Разборы слов строки в контексте на время extract: очередь своя у каждого потока
+_CONTEXT: ContextVar[deque[tuple[str, rumorph.Analysis]] | None] = ContextVar(
+    "ruts_lemma_context", default=None
+)
 
 
 class CharNgramsExtractor(anyts.CharNgramsExtractor):
@@ -146,8 +173,8 @@ class CharNgramsExtractor(anyts.CharNgramsExtractor):
     messages = CORE_MESSAGES
 
     def tokenize(self, text: str) -> Iterable[str]:
-        """Разбиение текста на слова ruts.utils.iter_tokens"""
-        return (word for _, _, word in iter_tokens(text))
+        """Разбиение текста на слова ruts.utils.iter_tokens без точки сокращения (word_form)"""
+        return (word_form(word) for _, _, word in iter_tokens(text))
 
     def extract(self, text: str) -> tuple[str, ...]:
         """Извлечение N-грамм из текста без знаков ударения и мягких переносов (strip_marks)"""

@@ -323,3 +323,14 @@ def test_dictionary_lemma_patronymic(word, expected):
         иванович=80.0, ивановна=64.6, петрович=50.0, петровна=40.0, михайлович=49.8
     )
     assert dictionary_lemma(word, parse_word(word).lemma, vocabulary) == expected
+
+
+def test_doc_pipeline_as_string(nlp, freq_dict):
+    """Doc рекомендуемого конвейера - те же леммы и знаменательные слова, что у строки"""
+    text = "Там, конечно, можно было жить. Где он тогда работал, так и остался."
+    doc_ls, text_ls = (
+        LexicalStats(nlp(text), freq_dict=freq_dict),
+        LexicalStats(text, freq_dict=freq_dict),
+    )
+    assert doc_ls.lemmas == text_ls.lemmas
+    assert doc_ls.lexical_density == text_ls.lexical_density == pytest.approx(4 / 12)

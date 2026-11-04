@@ -363,7 +363,7 @@ The default coefficients are those of the general formula. The coefficients the 
 calc_sis_grade_freq(n_letters, n_words, n_sents, mean_ipm, a=-14.46, b=0.58, c=2.15, d=-0.0026)
 ```
 
-The variant of the general formula with a fourth feature FREQ2 - the mean frequency of the words of the text by the Lyashevskaya and Sharoff dictionary (table 7 of the paper): the more frequent the words, the lower the grade. In the paper FREQ2 values lie within 200-1000, which corresponds to the mean frequency of content words (`LexicalStats.mean_ipm_content`); the mean over all words including conjunctions and prepositions is several times larger. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the formula with frequency gives the same correlation with the grade as the formula without it (Spearman's ρ 0.76 against 0.77), as in the paper.
+The variant of the general formula with a fourth feature FREQ2 - the mean frequency of the words of the text by the Lyashevskaya and Sharoff dictionary (table 7 of the paper): the more frequent the words, the lower the grade. In the paper FREQ2 values lie within 200-1000, which corresponds to the mean frequency of content words (`LexicalStats.mean_ipm_content`); the mean over all words including conjunctions and prepositions is several times larger. On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the formula with frequency gives the same correlation with the grade as the formula without it (Spearman's ρ 0.76 against 0.78), as in the paper.
 
 $$
 a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + d \cdot \textrm{FREQ2}

@@ -52,6 +52,10 @@ from .constants import (
     CONNECTOR_SUBORDINATORS,
     CORE_MESSAGES,
     DEMONSTRATIVE_LEMMAS,
+    DEMONSTRATIVE_PRONOUN_LEMMAS,
+    PARENTHETICAL_WORDS,
+    POSSESSIVE_REFERENTS,
+    PRONOMINAL_TYPES,
     RESOURCES_DIR,
 )
 from .exceptions import SourceTypeError
@@ -61,13 +65,13 @@ from .utils import (
     BYTE_ORDER_MARK,
     analyze_sents,
     analyze_words,
-    is_predicative,
-    is_pronominal,
     lemmatize,
     normalize_yo,
     parse_all,
     parse_word,
     strip_marks,
+    token_analysis,
+    word_form,
 )
 
 if TYPE_CHECKING:
@@ -171,7 +175,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'content_overlap_adjacent': 0.3333333333333333,
         'content_overlap_all': 0.5,
         'content_overlap_prop_adjacent': 0.1111111111111111,
-        'content_overlap_prop_all': 0.19841269841269837,
+        'content_overlap_prop_all': 0.18650793650793648,
         'noun_overlap_2_sent': 0.6666666666666666,
         'argument_overlap_2_sent': 0.75,
         'content_overlap_2_sent': 0.4,
@@ -181,7 +185,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         'p_pronouns': 0.14285714285714285,
         'pronoun_noun_ratio': 0.5,
         'p_demonstratives': 0.047619047619047616,
-        'p_given': 0.3076923076923077,
+        'p_given': 0.2857142857142857,
         'tense_repetition': 0.6666666666666666,
         'aspect_repetition': 0.3333333333333333,
         'temporal_cohesion': 0.5,
@@ -392,10 +396,11 @@ def _cohesion_word(
     break_before: bool = False,
     paragraph_start: bool = False,
 ) -> CohesionWord:
-    """Слово с признаками для каркаса ядра, наклонение не учитывается"""
+    """Слово с признаками для каркаса ядра, наклонение не учитывается; притяжательное
+    личное местоимение (его брат) - аргумент с леммой личного (он), как в отсылке к лицу"""
     return CohesionWord(
         word,
-        info.lemma,
+        POSSESSIVE_REFERENTS.get(info.lemma, info.lemma) if info.argument else info.lemma,
         pos,
         info.noun,
         info.pronoun,
@@ -627,16 +632,40 @@ def analysis_info(analysis: rumorph.Analysis) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    demonstrative = analysis.lemma in DEMONSTRATIVE_LEMMAS
+    return _word_info(
+        analysis.lemma,
+        analysis.pos,
+        analysis.feats,
+        analysis.labels,
+        analysis.feats.get("Tense"),
+        analysis.feats.get("Aspect"),
+    )
+
+
+def _word_info(
+    lemma: str,
+    pos: str,
+    feats: Mapping[str, str] | None,
+    labels: Collection[str],
+    tense: str | None,
+    aspect: str | None,
+) -> WordInfo:
+    """Признаки слова по лемме, части речи, признакам и пометам; признаки None - неизвестны"""
+    demonstrative = lemma in DEMONSTRATIVE_LEMMAS and (
+        lemma not in DEMONSTRATIVE_PRONOUN_LEMMAS or pos in ("PRON", "DET")
+    )
     return WordInfo(
-        lemma=analysis.lemma,
-        noun=analysis.pos in ("NOUN", "PROPN"),
-        pronoun=demonstrative or analysis.pos in ("PRON", "DET"),
+        lemma=lemma,
+        noun=pos in ("NOUN", "PROPN"),
+        pronoun=demonstrative or pos in ("PRON", "DET"),
         demonstrative=demonstrative,
-        argument=analysis.pos in ("NOUN", "PROPN", "PRON"),
-        content=not demonstrative and _is_content_analysis(analysis),
-        tense=analysis.feats.get("Tense"),
-        aspect=analysis.feats.get("Aspect"),
+        argument=pos in ("NOUN", "PROPN", "PRON")
+        or (pos == "DET" and lemma in POSSESSIVE_REFERENTS),
+        content=not demonstrative
+        and _is_content(pos, feats, labels)
+        and lemma not in PARENTHETICAL_WORDS,
+        tense=tense,
+        aspect=aspect,
     )
 
 
@@ -687,9 +716,12 @@ def token_info(token: Token) -> WordInfo:
         из DEMONSTRATIVE_LEMMAS, аргумент - NOUN, PROPN или PRON, знаменательное слово -
         NOUN, PROPN, ADJ, VERB, ADV (CONTENT_UD_POS), кроме указательных, время и вид -
         признаки Tense и Aspect
-        Лемма берется из разбора ruMorph с частью речи токена (lemmatize), а не
-        из token.lemma_: лемматизатор моделей ru_core_news возвращает словоформу
-        для AUX и при расхождении признаков теггера и словаря (были, них, стихли)
+        Токен, разметка которого - разбор ruMorph (компонент rumorph рекомендуемого
+        конвейера), получает признаки этого разбора (analysis_info), как слово строки;
+        иначе (обычная модель) лемма берется из разбора ruMorph с частью речи токена
+        (lemmatize), а не из token.lemma_: лемматизатор моделей ru_core_news возвращает
+        словоформу для AUX и при расхождении признаков теггера и словаря (были, них,
+        стихли)
 
     Аргументы:
         token (Token): Токен
@@ -697,26 +729,42 @@ def token_info(token: Token) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
+    analysis = token_analysis(token)
+    if analysis is not None:
+        return analysis_info(analysis)
     tense = token.morph.get("Tense", [])
     aspect = token.morph.get("Aspect", [])
     return ud_info(
-        token.text, token.pos_, tense[0] if tense else None, aspect[0] if aspect else None
+        token.text,
+        token.pos_,
+        tense[0] if tense else None,
+        aspect[0] if aspect else None,
+        token.morph.to_dict(),
     )
 
 
-def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordInfo:
+def ud_info(
+    word: str,
+    pos: str,
+    tense: str | None,
+    aspect: str | None,
+    feats: Mapping[str, str] | None = None,
+) -> WordInfo:
     """
     Получение признаков слова по части речи и признакам Universal Dependencies
 
     Описание:
         Как в token_info: лемма - из разбора ruMorph с частью речи (lemmatize);
-        римское число (ROMAN_NUMERAL) - числительное
+        римское число (ROMAN_NUMERAL) - числительное; знаменательное слово - по тем же
+        признакам, что у строки (is_content_word), помета вводного слова - из разбора
+        ruMorph с той же частью речи; без признаков feats - по части речи
 
     Аргументы:
         word (str): Слово
         pos (str): Часть речи UD
         tense (str): Время UD
         aspect (str): Вид UD
+        feats (dict[str, str]|None): Признаки UD слова; None - неизвестны
 
     Вывод:
         WordInfo: Признаки слова
@@ -724,17 +772,10 @@ def ud_info(word: str, pos: str, tense: str | None, aspect: str | None) -> WordI
     if ROMAN_NUMERAL.fullmatch(word):
         pos = "NUM"
     lemma = lemmatize(word, pos)
-    demonstrative = lemma in DEMONSTRATIVE_LEMMAS
-    return WordInfo(
-        lemma=lemma,
-        noun=pos in ("NOUN", "PROPN"),
-        pronoun=demonstrative or pos in ("PRON", "DET"),
-        demonstrative=demonstrative,
-        argument=pos in ("NOUN", "PROPN", "PRON"),
-        content=not demonstrative and pos in CONTENT_UD_POS,
-        tense=tense,
-        aspect=aspect,
+    labels = next(
+        (analysis.labels for analysis in parse_all(word) if analysis.pos == pos), frozenset()
     )
+    return _word_info(lemma, pos, feats, labels, tense, aspect)
 
 
 def unit_text(unit: Sequence[Token]) -> str:
@@ -745,9 +786,10 @@ def unit_text(unit: Sequence[Token]) -> str:
         unit (list[Token]): Токены слова
 
     Вывод:
-        str: Текст слова без BOM, знаков ударения и мягких переносов (strip_marks)
+        str: Текст слова без BOM, знаков ударения, мягких переносов (strip_marks) и точки
+            сокращения (word_form)
     """
-    return strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
+    return word_form(strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK))
 
 
 def unit_pos(unit: Sequence[Token]) -> str | None:
@@ -831,9 +873,21 @@ def is_content_word(word: str) -> bool:
 def _is_content_analysis(analysis: rumorph.Analysis) -> bool:
     """Знаменательное ли слово по разбору (is_content_word)"""
     return (
-        analysis.pos in CONTENT_UD_POS
-        and not is_pronominal(analysis)
-        and "Prnt" not in analysis.labels
-        and not is_predicative(analysis)
-        and "NumForm" not in analysis.feats
+        _is_content(analysis.pos, analysis.feats, analysis.labels)
+        and analysis.lemma not in PARENTHETICAL_WORDS
+    )
+
+
+def _is_content(pos: str, feats: Mapping[str, str] | None, labels: Collection[str]) -> bool:
+    """Знаменательное ли слово по части речи, признакам UD и пометам (is_content_word)"""
+    if feats is None:
+        return pos in CONTENT_UD_POS and "Prnt" not in labels
+    # Связка «быть» (AUX с формой глагола) - знаменательное, как глагол словаря Freq2011
+    verbal = pos in ("VERB", "AUX") and "VerbForm" in feats
+    return (
+        (pos in CONTENT_UD_POS or verbal)
+        and PRONOMINAL_TYPES.isdisjoint(feats.get("PronType", "").split(","))
+        and "Prnt" not in labels
+        and (verbal or pos not in ("VERB", "AUX"))
+        and "NumForm" not in feats
     )

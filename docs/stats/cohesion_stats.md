@@ -12,7 +12,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 - `SourceError` - источник без слов;
 - `ParameterError` - неизвестный класс или тип коннектора, `blank_lines`, который не `bool`.
 
-Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора ruMorph с частью речи токена ([`unit_info`](#word_info)); для строки - из разбора ruMorph в контексте предложения ([`analysis_info`](#word_info)), для `Doc` без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи признаки токена [рекомендуемого конвейера](../components.md#load_pipeline) берутся из его разбора ruMorph, как у строки, а у обычной модели часть речи, время и вид - из `token.pos_` и `token.morph`, лемма - из разбора ruMorph с частью речи токена ([`unit_info`](#word_info)); для строки - из разбора ruMorph в контексте предложения ([`analysis_info`](#word_info)), для `Doc` без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 Слова классифицируются по частям речи и признакам Universal Dependencies - разбора [ruMorph](https://github.com/SergeyShk/ruMorph) для строки или разметки объекта `Doc`:
 
@@ -20,9 +20,9 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 | :------ | :--------------- | :---- |
 | Существительные | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
 | Местоимения | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` |
-| Аргументы | `NOUN`, `PROPN`, `PRON` | `NOUN`, `PROPN`, `PRON` |
-| Знаменательные слова | `CONTENT_UD_POS` без указательных, местоименных (`PronType` Dem, Int, Rel: там, где, почему) и вводных (помета `Prnt`) слов, предикативов и чисел цифрами | `CONTENT_UD_POS` без указательных |
-| Указательные | леммы из `DEMONSTRATIVE_LEMMAS`: этот, это, тот, такой, таковой, столько, сей, оный | те же леммы |
+| Аргументы | `NOUN`, `PROPN`, `PRON`, притяжательные его, её, их - с леммой он, она, они | то же |
+| Знаменательные слова | `CONTENT_UD_POS` и связка «быть» (`AUX` с формой глагола) без указательных, местоименных (`PronType` Dem, Int, Rel: там, где, почему) и вводных (помета `Prnt` и `PARENTHETICAL_WORDS`: кстати, наверно) слов, предикативов и чисел цифрами | то же по признакам токена |
+| Указательные | леммы из `DEMONSTRATIVE_LEMMAS`: этот, это, тот, то (только местоимение), такой, таковой, столько, сей, оный | те же леммы |
 | Время и вид | признаки `Tense` и `Aspect` | признаки `Tense` и `Aspect` |
 
 === "Код"
@@ -47,7 +47,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
     Повтор знаменательных слов в соседних предложениях       |   0.33
     Повтор знаменательных слов во всех парах предложений     |   0.50
     Доля общих знаменательных слов в соседних предложениях   |   0.11
-    Доля общих знаменательных слов во всех парах предложений |   0.20
+    Доля общих знаменательных слов во всех парах предложений |   0.19
     Повтор существительных в двух следующих предложениях     |   0.67
     Повтор аргументов в двух следующих предложениях          |   0.75
     Повтор знаменательных слов в двух следующих предложениях |   0.40
@@ -57,7 +57,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
     Доля местоимений                                         |   0.14
     Отношение местоимений к существительным                  |   0.50
     Доля указательных местоимений                            |   0.05
-    Доля знаменательных слов, встречавшихся ранее            |   0.31
+    Доля знаменательных слов, встречавшихся ранее            |   0.29
     Повтор времени в соседних предложениях                   |   0.67
     Повтор вида в соседних предложениях                      |   0.33
     Темпоральная связность                                   |   0.50
@@ -114,7 +114,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 
     ```
     ('он', 'смотреть', 'на', 'птица')
-    (6, 3, 13, 4)
+    (6, 3, 14, 4)
     (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
     {'и': 1}
     ```
@@ -422,7 +422,7 @@ load_connectors()
      'content_overlap_adjacent': 0.3333333333333333,
      'content_overlap_all': 0.5,
      'content_overlap_prop_adjacent': 0.1111111111111111,
-     'content_overlap_prop_all': 0.19841269841269837,
+     'content_overlap_prop_all': 0.18650793650793648,
      'noun_overlap_2_sent': 0.6666666666666666,
      'argument_overlap_2_sent': 0.75,
      'content_overlap_2_sent': 0.4,
@@ -432,7 +432,7 @@ load_connectors()
      'p_pronouns': 0.14285714285714285,
      'pronoun_noun_ratio': 0.5,
      'p_demonstratives': 0.047619047619047616,
-     'p_given': 0.3076923076923077,
+     'p_given': 0.2857142857142857,
      'tense_repetition': 0.6666666666666666,
      'aspect_repetition': 0.3333333333333333,
      'temporal_cohesion': 0.5,
@@ -574,14 +574,14 @@ token_info(token)
 ```
 
 ``` {.python .signature}
-ud_info(word, pos, tense, aspect)
+ud_info(word, pos, tense, aspect, feats=None)
 ```
 
 ``` {.python .signature}
 unit_info(unit)
 ```
 
-Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph, `analysis_info` - из заданного разбора ruMorph, например выбранного по контексту (`ruts.utils.analyze_sentence`); `words_info` - так же для слов предложений текста: по разбору из `analyses`, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. `token_info` берет их из разметки spaCy (`token.pos_`, `Tense`, `Aspect`), `ud_info` - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (`word_to_ud`).
+Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph, `analysis_info` - из заданного разбора ruMorph, например выбранного по контексту (`ruts.utils.analyze_sentence`); `words_info` - так же для слов предложений текста: по разбору из `analyses`, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. `token_info` берет их из разбора ruMorph, которым размечен токен (`ruts.utils.token_analysis`, компонент `rumorph`), а без него - из разметки spaCy (`token.pos_`, `token.morph`), `ud_info` - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (`word_to_ud`).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -592,6 +592,7 @@ unit_info(unit)
 | `analysis` | `Analysis` | - | Разбор ruMorph (`analysis_info`) |
 | `token` | `Token` | - | Токен spaCy (`token_info`) |
 | `pos`, `tense`, `aspect` | `str` | - | Часть речи, время и вид UD (`ud_info`) |
+| `feats` | `dict[str, str]` | `None` | Признаки UD слова, `None` - неизвестны (`ud_info`) |
 | `unit` | `list[Token]` | - | Токены слова (`unit_info`) |
 
 === "Код"
@@ -678,7 +679,7 @@ is_pronoun(word)
 is_content_word(word)
 ```
 
-Проверяет, является ли слово знаменательным по разметке ruMorph: часть речи из `CONTENT_UD_POS` (существительные, имена собственные, прилагательные, глаголы во всех формах, наречия), кроме местоименных (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`), вводных (помета `Prnt`) слов, предикативов (надо, можно) и чисел цифрами.
+Проверяет, является ли слово знаменательным по разметке ruMorph: часть речи из `CONTENT_UD_POS` (существительные, имена собственные, прилагательные, глаголы во всех формах, наречия) и связка «быть», кроме местоименных (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`), вводных (помета `Prnt` и `PARENTHETICAL_WORDS`) слов, предикативов (надо, можно) и чисел цифрами.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
