@@ -13,12 +13,12 @@ from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
 from anyts.lexical_stats import LexicalWord
 from anyts.utils import has_pos, is_doc, iter_doc_units, source_type_error
 
-from .cohesion_stats import WordInfo, unit_info, unit_text, word_info
+from .cohesion_stats import WordInfo, analysis_info, unit_info, unit_text, word_info
 from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
-from .extractors import NUMBER_PATTERN, WordsExtractor
-from .utils import normalize_yo, parse_all
+from .extractors import NUMBER_PATTERN
+from .utils import analyze_text, analyze_words, normalize_yo, parse_all
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc
@@ -38,9 +38,11 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         Расширяет LexicalStats ядра anyTS русским словарем и леммами: частотный словарь
         Ляшевской и Шарова (FreqDict), частотные полосы - по вшитому списку
         10 000 лемм Шарова, леммы ruMorph (для Doc с разметкой частей речи - разбор
-        с частью речи токена), дефисные слова Doc склеиваются, числа (2020, 5.5, 3-й)
-        словами не считаются. Метрики по частотному словарю требуют загруженного
-        FreqDict, полосы и лексическая плотность считаются без него
+        с частью речи токена, для строки и предложений Doc без разметки с теми же
+        словами - разбор в контексте предложения), дефисные слова Doc склеиваются,
+        числа (2020, 5.5, 3-й) словами не считаются. Метрики по частотному словарю
+        требуют загруженного FreqDict, полосы и лексическая плотность считаются
+        без него
 
     Ссылки:
         https://doi.org/10.3758/s13428-017-0924-4 (Kyle, Crossley, Berger 2018, TAALES)
@@ -135,29 +137,36 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         super().__init__(source, freq_dict)
 
     def analyze(self, source: str | Doc) -> list[LexicalWord]:
-        """Слова без чисел с леммами ruMorph и признаком знаменательного слова"""
+        """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаком
+        знаменательного слова"""
         extractor = self._words_extractor
         infos: list[WordInfo]
         if is_doc(source) and extractor is not None:
             source = source.text
         if is_doc(source):
-            units = [
-                unit
-                for unit in iter_doc_units(source, join_hyphens=True)
-                if not is_number(unit_text(unit))
-            ]
+            all_units = list(iter_doc_units(source, join_hyphens=True))
+            keep = [not is_number(unit_text(unit)) for unit in all_units]
+            units = [unit for unit, kept in zip(all_units, keep, strict=True) if kept]
             words = [unit_text(unit) for unit in units]
             if has_pos(source):
                 infos = [unit_info(unit) for unit in units]
             else:
-                infos = [word_info(word) for word in words]
+                found = analyze_words(
+                    [(unit[0].idx, unit_text(unit)) for unit in all_units], source.text
+                )
+                infos = [
+                    analysis_info(analysis) if analysis is not None else word_info(unit_text(unit))
+                    for unit, analysis, kept in zip(all_units, found, keep, strict=True)
+                    if kept
+                ]
         elif isinstance(source, str):
-            words = [
-                word
-                for word in (extractor or WordsExtractor()).extract(source)
-                if not is_number(word)
-            ]
-            infos = [word_info(word) for word in words]
+            if extractor is None:
+                pairs = [pair for pair in analyze_text(source) if not is_number(pair[0])]
+                words = [word for word, _ in pairs]
+                infos = [analysis_info(analysis) for _, analysis in pairs]
+            else:
+                words = [word for word in extractor.extract(source) if not is_number(word)]
+                infos = [word_info(word) for word in words]
         else:
             raise source_type_error(self.messages, source)
         return [

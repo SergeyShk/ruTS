@@ -3,10 +3,12 @@ from __future__ import annotations
 import re
 from collections.abc import Collection, Iterable, Mapping, Sequence
 from functools import cache, lru_cache
+from itertools import islice
 from typing import TYPE_CHECKING, NamedTuple
 
 import anyts
 import anyts.cohesion_stats
+import rumorph
 from anyts.cohesion_stats import (
     CohesionWord,
     Connector as Connector,
@@ -57,6 +59,8 @@ from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import answer_particles, word_to_ud
 from .utils import (
     BYTE_ORDER_MARK,
+    analyze_sents,
+    analyze_words,
     is_predicative,
     is_pronominal,
     lemmatize,
@@ -143,12 +147,13 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
     Описание:
         Расширяет CohesionStats ядра anyTS крючками русского языка: леммы, части речи,
         время и вид - для Doc с разметкой частей речи по token.pos_ и token.morph
-        с леммой разбора ruMorph с частью речи токена (lemmatize), для строки,
-        Doc без разметки и Doc с заданным экстрактором слов - по первому разбору
-        ruMorph; дефисные слова склеиваются; словарь коннекторов - resources/connectors.tsv
-        с классами по Криони, Никину и Филипповой (2008), сопоставитель -
-        RussianConnectorMatcher. Источником данных может быть строка, в отличие
-        от ядра
+        с леммой разбора ruMorph с частью речи токена (lemmatize), для строки -
+        по разбору ruMorph в контексте предложения, для Doc без разметки - так же
+        в предложениях, слова которых те же, что у строки, а для остальных слов
+        и с заданным экстрактором слов - по первому разбору ruMorph; дефисные слова
+        склеиваются; словарь коннекторов - resources/connectors.tsv с классами
+        по Криони, Никину и Филипповой (2008), сопоставитель - RussianConnectorMatcher.
+        Источником данных может быть строка, в отличие от ядра
 
     Ссылки:
         https://doi.org/10.1017/CBO9780511894664 (McNamara и др. 2014, Coh-Metrix)
@@ -305,10 +310,13 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
 
         Описание:
             Без экстрактора слов слова Doc берутся из токенов (doc_units), признаки -
-            по разметке частей речи (unit_info, unit_pos), а без разметки - по ruMorph
-            (words_info, connector_pos). Для строки и Doc с экстрактором слов
-            предложения - границы Doc или экстрактор предложений, слова - экстрактор
-            слов, признаки - по ruMorph. Знаки препинания между словами - по
+            по разметке частей речи (unit_info, unit_pos), а без разметки - по разбору
+            ruMorph в контексте в предложениях, слова которых те же, что у строки
+            (analyze_words), и по слову в остальных (words_info, connector_pos). Для
+            строки и Doc с экстрактором слов предложения - границы Doc или экстрактор
+            предложений; слова и признаки строки без экстрактора слов - по разбору
+            ruMorph в контексте (analyze_sents), с экстрактором - по слову. Знаки
+            препинания между словами - по
             токенам Doc (find_unit_marks) или по тексту предложения (find_marks),
             начала абзацев после перевода строки (пустой строки с blank_lines) - по
             токенам Doc (find_unit_paragraph_starts) или по тексту (find_paragraph_starts)
@@ -339,7 +347,14 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
                     )
                 ]
             sents = [[unit_text(unit) for unit in sent] for sent in units]
-            return _cohesion_words(sents, source.text, marks, starts)
+            found = iter(
+                analyze_words(
+                    [(unit[0].idx, unit_text(unit)) for sent in units for unit in sent],
+                    source.text,
+                )
+            )
+            by_sent = [[next(found) for _ in sent] for sent in sents]
+            return _cohesion_words(sents, source.text, marks, starts, by_sent)
         texts: Iterable[str]
         if isinstance(source, str):
             text = source
@@ -354,13 +369,20 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             raise source_type_error(self.messages, source)
         extractor = self.words_extractor or WordsExtractor()
         texts = tuple(texts)
-        sent_words = [tuple(extractor.extract(sent)) for sent in texts]
+        # Слова строки с экстрактором по умолчанию разбираются в контексте предложения
+        analyses = None
+        if isinstance(source, str) and self.words_extractor is None:
+            sent_pairs = analyze_sents(texts)
+            sent_words = [tuple(word for word, _ in pairs) for pairs in sent_pairs]
+            analyses = [[analysis for _, analysis in pairs] for pairs in sent_pairs]
+        else:
+            sent_words = [tuple(extractor.extract(sent)) for sent in texts]
         marks = [
             find_marks(*_searchable(sent, words))
             for sent, words in zip(texts, sent_words, strict=True)
         ]
         starts = _paragraph_starts(text, texts, sent_words, extractor, self.blank_lines)
-        return _cohesion_words(sent_words, text, marks, starts)
+        return _cohesion_words(sent_words, text, marks, starts, analyses)
 
 
 def _cohesion_word(
@@ -447,19 +469,29 @@ def _cohesion_words(
     text: str,
     marks: Sequence[Collection[int]],
     starts: Collection[int] = frozenset(),
+    analyses: Sequence[Sequence[rumorph.Analysis | None]] | None = None,
 ) -> list[list[CohesionWord]]:
-    """Слова предложений с признаками по ruMorph (words_info, connector_pos), знаками
-    и началами абзацев по сквозным номерам слов"""
-    infos = words_info(sents, text)
+    """Слова предложений с признаками по ruMorph, знаками и началами абзацев по сквозным
+    номерам слов: по разборам в контексте, а слова без них - по слову (words_info,
+    connector_pos)"""
+    found = analyses or [[None] * len(sent) for sent in sents]
+    infos = words_info(sents, text, found)
+    poses = [
+        [
+            analysis.pos if analysis is not None else connector_pos(word)
+            for word, analysis in zip(sent, row, strict=True)
+        ]
+        for sent, row in zip(sents, found, strict=True)
+    ]
     return [
         [
-            _cohesion_word(word, info, connector_pos(word), i in sent_marks, position in starts)
-            for i, (word, info, position) in enumerate(
-                zip(sent, sent_infos, sent_positions, strict=True)
+            _cohesion_word(word, info, pos, i in sent_marks, position in starts)
+            for i, (word, info, pos, position) in enumerate(
+                zip(sent, sent_infos, sent_poses, sent_positions, strict=True)
             )
         ]
-        for sent, sent_infos, sent_marks, sent_positions in zip(
-            sents, infos, marks, _positions(sents), strict=True
+        for sent, sent_infos, sent_poses, sent_marks, sent_positions in zip(
+            sents, infos, poses, marks, _positions(sents), strict=True
         )
     ]
 
@@ -578,7 +610,23 @@ def word_info(word: str) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    analysis = parse_word(word)
+    return analysis_info(parse_word(word))
+
+
+def analysis_info(analysis: rumorph.Analysis) -> WordInfo:
+    """
+    Получение признаков слова по разбору ruMorph
+
+    Описание:
+        Как word_info, но по заданному разбору, например выбранному по контексту
+        (ruts.utils.analyze_sentence)
+
+    Аргументы:
+        analysis (Analysis): Разбор ruMorph
+
+    Вывод:
+        WordInfo: Признаки слова
+    """
     demonstrative = analysis.lemma in DEMONSTRATIVE_LEMMAS
     return WordInfo(
         lemma=analysis.lemma,
@@ -586,34 +634,47 @@ def word_info(word: str) -> WordInfo:
         pronoun=demonstrative or analysis.pos in ("PRON", "DET"),
         demonstrative=demonstrative,
         argument=analysis.pos in ("NOUN", "PROPN", "PRON"),
-        content=not demonstrative and is_content_word(word),
+        content=not demonstrative and _is_content_analysis(analysis),
         tense=analysis.feats.get("Tense"),
         aspect=analysis.feats.get("Aspect"),
     )
 
 
-def words_info(sents: Sequence[Sequence[str]], text: str) -> list[list[WordInfo]]:
+def words_info(
+    sents: Sequence[Sequence[str]],
+    text: str,
+    analyses: Sequence[Sequence[rumorph.Analysis | None]] | None = None,
+) -> list[list[WordInfo]]:
     """
     Получение признаков слов текста по первому разбору ruMorph
 
     Описание:
         Как word_info, но ответное «нет» (find_answer_particles) - частица, а не
-        бытийное «нет»
+        бытийное «нет»; слово с заданным разбором (в контексте, analyze_words) -
+        по нему (analysis_info)
 
     Аргументы:
         sents (list[list[str]]): Слова предложений текста
         text (str): Текст, из которого извлечены слова
+        analyses (list[list[Analysis|None]]|None): Разборы слов; None - разбор по слову
 
     Вывод:
         list[list[WordInfo]]: Признаки слов предложений
     """
     particles = iter(answer_particles([word for sent in sents for word in sent], text))
+    found = analyses or [[None] * len(sent) for sent in sents]
     return [
         [
-            ud_info(word, "PART", None, None) if next(particles) else word_info(word)
-            for word in sent
+            analysis_info(analysis)
+            if analysis is not None
+            else ud_info(word, "PART", None, None)
+            if particle
+            else word_info(word)
+            for word, analysis, particle in zip(
+                sent, row, islice(particles, len(sent)), strict=True
+            )
         ]
-        for sent in sents
+        for sent, row in zip(sents, found, strict=True)
     ]
 
 
@@ -764,7 +825,11 @@ def is_content_word(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    analysis = parse_word(word)
+    return _is_content_analysis(parse_word(word))
+
+
+def _is_content_analysis(analysis: rumorph.Analysis) -> bool:
+    """Знаменательное ли слово по разбору (is_content_word)"""
     return (
         analysis.pos in CONTENT_UD_POS
         and not is_pronominal(analysis)

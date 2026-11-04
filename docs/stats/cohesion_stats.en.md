@@ -12,7 +12,7 @@ Raises:
 - `SourceError` - a source without words;
 - `ParameterError` - an unknown class or kind of a connector, a `blank_lines` that is not a `bool`.
 
-The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, and the lemma from the ruMorph analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, a `Doc` without annotation and a `Doc` with a word extractor given, from the first ruMorph analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, and the lemma from the ruMorph analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, from the ruMorph analysis in the context of the sentence ([`analysis_info`](#word_info)), for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a word extractor given, from the first ruMorph analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 The words are classified by the Universal Dependencies parts of speech and features - of the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis for a string or of the annotation of a `Doc`:
 
@@ -361,7 +361,7 @@ Searches a sentence for connectors with the `find` method of `RussianConnectorMa
 connector_pos(word)
 ```
 
-The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis. This is how `CohesionStats` gets the parts of speech of a string and of a `Doc` without annotation.
+The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis. This is how `CohesionStats` gets the parts of speech of the words analyzed one by one: with a words extractor given and in the sentences of a `Doc` without annotation whose words are not those of the string.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -393,7 +393,11 @@ word_info(word)
 ```
 
 ``` {.python .signature}
-words_info(sents, text)
+words_info(sents, text, analyses=None)
+```
+
+``` {.python .signature}
+analysis_info(analysis)
 ```
 
 ``` {.python .signature}
@@ -408,13 +412,15 @@ ud_info(word, pos, tense, aspect)
 unit_info(unit)
 ```
 
-The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis; `words_info` does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle. `token_info` takes them from the spaCy annotation (`token.pos_`, `Tense`, `Aspect`), `ud_info` from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (`word_to_ud`).
+The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given ruMorph analysis, for example one chosen by context (`ruts.utils.analyze_sentence`); `words_info` does the same for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first analysis, where the answer «нет» (Нет, не видел) is a particle. `token_info` takes them from the spaCy annotation (`token.pos_`, `Tense`, `Aspect`), `ud_info` from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (`word_to_ud`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `word` | `str` | - | Word (`word_info`, `ud_info`) |
 | `sents` | `list[list[str]]` | - | Words of the sentences of a text (`words_info`) |
 | `text` | `str` | - | Text the words are extracted from (`words_info`) |
+| `analyses` | `list[list[Analysis \| None]]` | `None` | Analyses of the words of the sentences, `None` for the analysis by word (`words_info`) |
+| `analysis` | `Analysis` | - | ruMorph analysis (`analysis_info`) |
 | `token` | `Token` | - | spaCy token (`token_info`) |
 | `pos`, `tense`, `aspect` | `str` | - | Part of speech, tense and aspect of UD (`ud_info`) |
 | `unit` | `list[Token]` | - | Tokens of a word (`unit_info`) |

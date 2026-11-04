@@ -327,6 +327,112 @@ def lemmatize(word: str, pos: str = "") -> str:
     return next((analysis for analysis in analyses if analysis.pos == pos), analyses[0]).lemma
 
 
+@lru_cache(maxsize=16384)
+def analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
+    """
+    Слова предложения с разборами ruMorph в контексте
+
+    Описание:
+        Токены - как у WordsExtractor по умолчанию: сегментатор SEGMENTER по тексту
+        без знаков ударения и мягких переносов (strip_marks); разборы выбирает
+        контекстная модель ruMorph по всем токенам предложения, знаки препинания
+        в вывод не входят. Токен без разборов модели разбирается, как в parse_all.
+        Результаты кэшируются по тексту предложения
+
+    Аргументы:
+        sentence (str): Текст одного предложения
+
+    Вывод:
+        tuple[tuple[str, Analysis], ...]: Слово и разбор, выбранный по соседним словам
+
+    Пример использования:
+        >>> from ruts.utils import analyze_sentence
+        >>> [(word, a.lemma, a.pos) for word, a in analyze_sentence("Мост сделан из стали.")]
+        [('Мост', 'мост', 'NOUN'), ('сделан', 'сделать', 'VERB'), ('из', 'из', 'ADP'), ('стали', 'сталь', 'NOUN')]
+    """
+    forms = [token for _, _, token in iter_tokens(strip_marks(sentence))]
+    analyses = get_morph_analyzer().analyze_sentence(forms)
+    return tuple(
+        (form, found[0] if found else parse_word(form))
+        for form, found in zip(forms, analyses, strict=True)
+        if not is_punctuation(form)
+    )
+
+
+def analyze_text(text: str) -> list[tuple[str, rumorph.Analysis]]:
+    """
+    Слова текста с разборами ruMorph в контексте своих предложений
+
+    Описание:
+        Предложения - iter_text_sents, слова и разборы - analyze_sentence; слова
+        те же, что дает WordsExtractor по умолчанию
+
+    Аргументы:
+        text (str): Строка текста
+
+    Вывод:
+        list[tuple[str, Analysis]]: Слово и разбор, выбранный по соседним словам
+
+    Исключения:
+        SourceTypeError: Если текст не строка
+    """
+    sents = tuple(sent for _, _, sent in iter_text_sents(text))
+    return [pair for pairs in analyze_sents(sents) for pair in pairs]
+
+
+@lru_cache(maxsize=1)
+def analyze_sents(
+    sents: tuple[str, ...],
+) -> tuple[tuple[tuple[str, rumorph.Analysis], ...], ...]:
+    """
+    Слова предложений текста с разборами ruMorph в контексте
+
+    Описание:
+        Разборы analyze_sentence по каждому предложению. Кэш по всему набору
+        предложений: классы статистик одного текста разбирают его один раз, даже
+        когда предложений больше, чем вмещает кэш analyze_sentence
+
+    Аргументы:
+        sents (tuple[str]): Тексты предложений по порядку
+
+    Вывод:
+        tuple[tuple[tuple[str, Analysis], ...], ...]: Слова и разборы каждого предложения
+    """
+    return tuple(analyze_sentence(sent) for sent in sents)
+
+
+def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.Analysis | None]:
+    """
+    Разборы в контексте для слов текста из другого токенизатора
+
+    Описание:
+        Для слов Doc spaCy без разметки: слово относится к первому предложению
+        iter_text_sents, до конца которого начинается; слова предложения получают
+        разборы analyze_sents, если совпадают с его словами у analyze_sentence,
+        иначе None - тогда слово разбирается по одному
+
+    Аргументы:
+        words (list[tuple[int, str]]): Позиция первого символа и текст слов по порядку
+        text (str): Текст, из которого они извлечены
+
+    Вывод:
+        list[Analysis|None]: Разбор каждого слова или None
+    """
+    spans = list(iter_text_sents(text))
+    found: list[rumorph.Analysis | None] = [None] * len(words)
+    first = 0
+    for (_, stop, _), pairs in zip(
+        spans, analyze_sents(tuple(sent for _, _, sent in spans)), strict=True
+    ):
+        last = first
+        while last < len(words) and words[last][0] < stop:
+            last += 1
+        if [word for _, word in words[first:last]] == [word for word, _ in pairs]:
+            found[first:last] = [analysis for _, analysis in pairs]
+        first = last
+    return found
+
+
 def is_verbal_noun(lemma: str) -> bool:
     """
     Проверка, является ли лемма отглагольным существительным по суффиксу

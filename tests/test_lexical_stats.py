@@ -171,15 +171,19 @@ def test_init_doc_blank(ls, freq_dict):
     doc_ls = LexicalStats(doc, freq_dict=freq_dict)
     assert doc_ls.lemmas == ls.lemmas
     assert doc_ls.get_stats() == ls.get_stats()
+    # Предложение с «т.е.» одним токеном spaCy разбирается по слову, соседнее - в контексте
+    blank = spacy.blank("ru")("Нож из стали, т.е. из металла. Мост сделан из стали.")
+    lemmas = LexicalStats(blank, freq_dict=freq_dict).lemmas
+    assert (lemmas[2], lemmas[-1]) == ("стать", "сталь")
 
 
 def test_init_doc_model(nlp, freq_dict):
     ls = LexicalStats(nlp("Нож сделан из стали. Мы стали ждать."), freq_dict=freq_dict)
     assert ls.lemmas == ("нож", "сделать", "из", "сталь", "мы", "стать", "ждать")
     assert ls.n_content_words == 5
-    assert (
-        LexicalStats("Нож сделан из стали. Мы стали ждать.", freq_dict=freq_dict).lemmas[3]
-        == "стать"
+    # Строка разбирается в контексте, как Doc
+    assert LexicalStats("Нож сделан из стали. Мы стали ждать.", freq_dict=freq_dict).lemmas[3] == (
+        "сталь"
     )
 
 

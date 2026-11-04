@@ -1,11 +1,17 @@
 import unicodedata
 
 import pytest
+import spacy
 
 import ruts.verse_stats
+from ruts import CohesionStats, MorphStats, WordsExtractor
 from ruts.exceptions import SourceTypeError
 from ruts.utils import (
     add_dash_rules,
+    analyze_sentence,
+    analyze_sents,
+    analyze_text,
+    analyze_words,
     find_phrases,
     is_verbal_noun,
     iter_text_sents,
@@ -57,6 +63,50 @@ def test_parse_word_cached():
     assert parse_word("рублей").pos == "NOUN"
     assert parse_all.cache_info().hits == 1
     assert parse_all.cache_info().misses == 1
+
+
+def test_analyze_sentence():
+    """Омоним разбирается по соседним словам, знаки препинания в вывод не входят"""
+    pairs = analyze_sentence("Мы стали ждать, а нож сделан из стали.")
+    assert [word for word, _ in pairs] == [
+        "Мы",
+        "стали",
+        "ждать",
+        "а",
+        "нож",
+        "сделан",
+        "из",
+        "стали",
+    ]
+    assert [(pairs[1][1].lemma, pairs[1][1].pos), (pairs[-1][1].lemma, pairs[-1][1].pos)] == [
+        ("стать", "VERB"),
+        ("сталь", "NOUN"),
+    ]
+    # Токен без разборов модели (с ZWNJ внутри) разбирается, как в parse_all
+    word, analysis = analyze_sentence("Большой до\u200cм.")[1]
+    assert (word, analysis.lemma) == ("до\u200cм", "дом")
+
+
+def test_analyze_text():
+    text = "Мост сделан из стали.\n\nМы стали ждать, т.е. сидеть."
+    pairs = analyze_text(text)
+    assert [word for word, _ in pairs] == list(WordsExtractor().extract(text))
+    # Слова spaCy получают разборы в контексте в предложениях, где совпали со словами строки
+    doc = spacy.blank("ru")(text)
+    words = [(token.idx, token.text) for token in doc if not (token.is_punct or token.is_space)]
+    found = analyze_words(words, text)
+    assert found[:4] == [analysis for _, analysis in pairs[:4]]
+    assert found[4:] == [None] * 5
+
+
+def test_analyze_sents_shared():
+    """Классы статистик одного текста разбирают его один раз"""
+    text = "Мост сделан из стали. Мы стали ждать."
+    analyze_sents.cache_clear()
+    MorphStats(text).get_stats()
+    CohesionStats(text).get_stats()
+    assert analyze_sents.cache_info().misses == 1
+    assert analyze_sents.cache_info().hits == 1
 
 
 @pytest.mark.parametrize(
