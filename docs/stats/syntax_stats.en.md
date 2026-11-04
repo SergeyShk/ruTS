@@ -83,7 +83,7 @@ Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textb
 
 --8<-- "stats/syntax_stats.md:SyntaxStats-attributes"
 
-The attributes of the constructions of ruTS are `n_genitive_chains` and `n_converb_clauses` (`int`): the numbers of genitive chains and of adverbial participle clauses.
+The attributes of the constructions of ruTS are `n_genitive_chains`, `n_nominal_chains` and `n_converb_clauses` (`int`): the numbers of genitive chains, of nominal chains and of adverbial participle clauses.
 
 === "Code"
 
@@ -420,7 +420,7 @@ Checks whether a word is a prepositionless genitive modifier: a word with the `n
 calc_nominal_chains(tokens)
 ```
 
-The lengths of the nominal chains in the order of the words: the chains of [`calc_modifier_chains`](#calc_modifier_chains) whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2, «о повышении эффективности работы отдела» of length 4. Genitive chains and prepositional chains are special cases of it, but more than half of the nominal chains are mixed and fall into neither: 68 % on TextsByGrade, and the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).
+The lengths of the nominal chains in the order of the words: the chains of [`calc_modifier_chains`](#calc_modifier_chains) whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2, «о повышении эффективности работы отдела» of length 4. A prepositional phrase is a link itself, as in prepositional chains, so the same phrase gives a longer chain with a verb than as a subject: «сидел во втором ряду кресел» has length 2, «второй ряд кресел пустовал» no chain. Genitive chains and prepositional chains are special cases of a nominal one: on TextsByGrade more than two thirds of the nominal chains are mixed (68 %), almost half (46 %) contain neither, and the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).
 
 ``` {.python .signature}
 is_nominal_chain_link(token)
