@@ -264,7 +264,7 @@ Raises:
 CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the first ruMorph analysis. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the ruMorph analysis, as for a string. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

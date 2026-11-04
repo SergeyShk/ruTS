@@ -78,6 +78,9 @@ def test_init_doc(cs):
     assert doc_cs.words == cs.words
     assert doc_cs.lemmas == cs.lemmas
     assert doc_cs.get_stats() == cs.get_stats()
+    # Предложение с «т.е.» одним токеном spaCy разбирается по слову, соседнее - в контексте
+    lemmas = CohesionStats(nlp("Нож из стали, т.е. из металла. Мост сделан из стали.")).lemmas
+    assert (lemmas[0][2], lemmas[1][-1]) == ("стать", "сталь")
 
 
 def test_init_doc_model(nlp):
@@ -443,11 +446,17 @@ def test_connector_rules(nlp, text, found, inter):
 
 
 @pytest.mark.parametrize(
-    "text", ["Это, правда, было давно.", "Что значит ещё раз?", "Он не знал, отчего так."]
+    "text",
+    [
+        "Он, правда, не пришёл.",
+        "Ну, значит, придётся подождать.",
+        "Он заработался, отчего и заснул.",
+    ],
 )
 def test_connector_rules_with_stress_marks(text):
     """Знаки ударения и буквы из двух символов (NFD) не меняют знаки препинания между словами"""
     plain = [connector.text for connector in CohesionStats(text).connector_spans]
+    assert plain
     for marked in (text.replace("ра", "ра\u0301"), unicodedata.normalize("NFD", text)):
         assert [connector.text for connector in CohesionStats(marked).connector_spans] == plain
 

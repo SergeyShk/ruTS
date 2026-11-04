@@ -191,7 +191,7 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
     for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
         if key != "orlov_z":
             features[f"diversity_{key}"] = float(score)
-    morph = MorphStats(text, words_extractor=words)
+    morph = MorphStats(text)
     n_words = len(morph.words)
     stats = morph.get_stats(filter_none=True)
     for category, desc in MORPHOLOGY_STATS_DESC.items():

@@ -269,10 +269,9 @@ def test_init_doc_blank(ms):
     assert doc_ms.words == ms.words
     assert doc_ms.tags == ms.tags
     assert doc_ms.get_stats() == ms.get_stats()
-    # Слова те же, что у строки, - разбор в контексте, иначе (т.е. одним токеном) - по слову
-    nlp = spacy.blank("ru")
-    assert MorphStats(nlp("Нож сделан из стали.")).pos[-1] == "NOUN"
-    assert MorphStats(nlp("Нож сделан из стали, т.е. из металла.")).pos[3] == "VERB"
+    # В предложении со словами строки - разбор в контексте, с «т.е.» одним токеном - по слову
+    pos = MorphStats(spacy.blank("ru")("Нож из стали, т.е. из металла. Мост сделан из стали.")).pos
+    assert (pos[2], pos[-1]) == ("VERB", "NOUN")
 
 
 def test_init_doc_byte_order_mark():

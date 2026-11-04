@@ -380,7 +380,7 @@ def analyze_text(text: str) -> list[tuple[str, rumorph.Analysis]]:
     return [pair for pairs in analyze_sents(sents) for pair in pairs]
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=1)
 def analyze_sents(
     sents: tuple[str, ...],
 ) -> tuple[tuple[tuple[str, rumorph.Analysis], ...], ...]:
@@ -401,26 +401,36 @@ def analyze_sents(
     return tuple(analyze_sentence(sent) for sent in sents)
 
 
-def analyze_words(words: Sequence[str], text: str) -> list[rumorph.Analysis] | None:
+def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.Analysis | None]:
     """
-    Разборы слов текста в контексте, если слова те же, что у analyze_text
+    Разборы в контексте для слов текста из другого токенизатора
 
     Описание:
-        Для слов из другого токенизатора (Doc spaCy без разметки): разборы analyze_text,
-        когда его слова совпадают с заданными, иначе None - тогда слова разбираются
-        по одному
+        Для слов Doc spaCy без разметки: слово относится к первому предложению
+        iter_text_sents, до конца которого начинается; слова предложения получают
+        разборы analyze_sents, если совпадают с его словами у analyze_sentence,
+        иначе None - тогда слово разбирается по одному
 
     Аргументы:
-        words (list[str]): Слова текста по порядку
+        words (list[tuple[int, str]]): Позиция первого символа и текст слов по порядку
         text (str): Текст, из которого они извлечены
 
     Вывод:
-        list[Analysis]|None: Разбор каждого слова или None
+        list[Analysis|None]: Разбор каждого слова или None
     """
-    pairs = analyze_text(text)
-    if [word for word, _ in pairs] != list(words):
-        return None
-    return [analysis for _, analysis in pairs]
+    spans = list(iter_text_sents(text))
+    found: list[rumorph.Analysis | None] = [None] * len(words)
+    first = 0
+    for (_, stop, _), pairs in zip(
+        spans, analyze_sents(tuple(sent for _, _, sent in spans)), strict=True
+    ):
+        last = first
+        while last < len(words) and words[last][0] < stop:
+            last += 1
+        if [word for _, word in words[first:last]] == [word for word, _ in pairs]:
+            found[first:last] = [analysis for _, analysis in pairs]
+        first = last
+    return found
 
 
 def is_verbal_noun(lemma: str) -> bool:

@@ -136,8 +136,9 @@ def test_text_features():
     assert sum(1 for key in features if key.startswith("cohesion_")) == 30
     assert not any(key.endswith("_para") for key in features)
     assert not REDUNDANT_FEATURES & set(features)
+    # «На птиц» в контексте - винительный, а не родительный
     assert features["morph_case_Nom"] + features["morph_case_Loc"] + features[
-        "morph_case_Gen"
+        "morph_case_Acc"
     ] == (pytest.approx(1.0))
     assert features["sents_mean"] == 6.0
     assert features["punct_period"] == pytest.approx(4 / 24 * 1000)

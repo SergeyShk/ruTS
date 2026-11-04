@@ -1,6 +1,7 @@
 import unicodedata
 
 import pytest
+import spacy
 
 import ruts.verse_stats
 from ruts import CohesionStats, MorphStats, WordsExtractor
@@ -88,10 +89,14 @@ def test_analyze_sentence():
 
 def test_analyze_text():
     text = "Мост сделан из стали.\n\nМы стали ждать, т.е. сидеть."
-    words = [word for word, _ in analyze_text(text)]
-    assert words == list(WordsExtractor().extract(text))
-    assert analyze_words(words, text) == [a for _, a in analyze_text(text)]
-    assert analyze_words(["Мост"], text) is None
+    pairs = analyze_text(text)
+    assert [word for word, _ in pairs] == list(WordsExtractor().extract(text))
+    # Слова spaCy получают разборы в контексте в предложениях, где совпали со словами строки
+    doc = spacy.blank("ru")(text)
+    words = [(token.idx, token.text) for token in doc if not (token.is_punct or token.is_space)]
+    found = analyze_words(words, text)
+    assert found[:4] == [analysis for _, analysis in pairs[:4]]
+    assert found[4:] == [None] * 5
 
 
 def test_analyze_sents_shared():

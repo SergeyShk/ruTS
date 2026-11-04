@@ -64,8 +64,8 @@ class MorphStats(anyts.morph_stats.MorphStats):
         Для объекта Doc с разметкой частей речи значения берутся из token.pos_
         и token.morph, для строки - из разбора ruMorph в контексте предложения, то есть
         с учетом соседних слов (стали - глагол или существительное); для Doc без
-        разметки - так же, если его слова те же, что у строки, иначе и с заданным
-        экстрактором слов используется первый разбор ruMorph
+        разметки - так же в предложениях, слова которых те же, что у строки, иначе
+        и с заданным экстрактором слов используется первый разбор ruMorph
         Переходность (transitivity) и совместность (involvement) - признаки OpenCorpora,
         которых в русском UD нет; они берутся из помет разбора ruMorph для глаголов
         и в строке признаков tags записываются как Subcat и Clusivity
@@ -168,9 +168,10 @@ class MorphStats(anyts.morph_stats.MorphStats):
         Описание:
             Для Doc с разметкой частей речи - token.pos_ и token.morph (token_to_ud),
             дефисные слова склеиваются; для строки - разбор ruMorph в контексте
-            предложения (analyze_text), для Doc без разметки - тоже, если его слова те же,
-            что у строки (analyze_words), а для строки или Doc с заданным экстрактором
-            слов (он применяется к тексту Doc) - первый разбор ruMorph
+            предложения (analyze_text), для Doc без разметки - тоже в предложениях,
+            слова которых те же, что у строки (analyze_words), а для остальных слов
+            и с заданным экстрактором слов (он применяется к тексту Doc) - первый разбор
+            ruMorph
 
         Аргументы:
             source (str|Doc): Источник данных
@@ -204,10 +205,9 @@ class MorphStats(anyts.morph_stats.MorphStats):
                     if (cached := known.get(key)) is None:
                         cached = known[key] = token_to_ud(token)
                     features.append(cached)
-            elif (analyses := analyze_words(words, source.text)) is not None:
-                features = [_analysis_to_ud(analysis) for analysis in analyses]
             else:
-                features = _words_to_ud(words, source.text)
+                positions = [(unit[0].idx, word) for unit, word in zip(units, words, strict=True)]
+                features = _words_to_ud(words, source.text, analyze_words(positions, source.text))
         elif isinstance(source, str):
             if extractor is None:
                 pairs = analyze_text(source)
@@ -361,25 +361,36 @@ def _particle_to_ud(word: str) -> dict[str, str | None]:
     return analysis_to_ud(particle)
 
 
-def _words_to_ud(words: Sequence[str], text: str) -> list[dict[str, str | None]]:
+def _words_to_ud(
+    words: Sequence[str],
+    text: str,
+    analyses: Sequence[rumorph.Analysis | None] | None = None,
+) -> list[dict[str, str | None]]:
     """
     Получение признаков Universal Dependencies слов текста по первому разбору ruMorph
 
     Описание:
         Как word_to_ud, но ответное «нет» (find_answer_particles) - частица, а не
-        бытийное «нет»
+        бытийное «нет»; слово с заданным разбором (в контексте, analyze_words) -
+        по нему
 
     Аргументы:
         words (list[str]): Слова текста
         text (str): Текст, из которого извлечены слова
+        analyses (list[Analysis|None]|None): Разборы слов; None - разбор по слову
 
     Вывод:
         list[dict[str, str|None]]: Признаки слов; словари общие, менять их нельзя
     """
     particles = answer_particles(words, text)
+    found = analyses or [None] * len(words)
     return [
-        _particle_to_ud(word) if particle else _word_to_ud(word)
-        for word, particle in zip(words, particles, strict=True)
+        _analysis_to_ud(analysis)
+        if analysis is not None
+        else _particle_to_ud(word)
+        if particle
+        else _word_to_ud(word)
+        for word, particle, analysis in zip(words, particles, found, strict=True)
     ]
 
 

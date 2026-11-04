@@ -57,7 +57,7 @@ ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words th
 
 ## Statistics
 
-The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a `Doc` without annotation the same when its words are those of the string, otherwise, as with a words extractor given, the first analysis of the word without its neighbours.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a words extractor given, the first analysis of the word without its neighbours.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |
@@ -87,7 +87,7 @@ The values for a string and for an annotated `Doc` may differ: both spaCy and ru
 `pos` · [UD](https://universaldependencies.org/u/pos/)
 { .metric-meta }
 
-For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN` by case (Лев, but лев). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.
+For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN`, by word with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.
 
 </div>
 

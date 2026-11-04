@@ -38,10 +38,11 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         Расширяет LexicalStats ядра anyTS русским словарем и леммами: частотный словарь
         Ляшевской и Шарова (FreqDict), частотные полосы - по вшитому списку
         10 000 лемм Шарова, леммы ruMorph (для Doc с разметкой частей речи - разбор
-        с частью речи токена, для строки - разбор в контексте предложения), дефисные
-        слова Doc склеиваются, числа (2020, 5.5, 3-й) словами не считаются. Метрики
-        по частотному словарю требуют загруженного FreqDict, полосы и лексическая
-        плотность считаются без него
+        с частью речи токена, для строки и предложений Doc без разметки с теми же
+        словами - разбор в контексте предложения), дефисные слова Doc склеиваются,
+        числа (2020, 5.5, 3-й) словами не считаются. Метрики по частотному словарю
+        требуют загруженного FreqDict, полосы и лексическая плотность считаются
+        без него
 
     Ссылки:
         https://doi.org/10.3758/s13428-017-0924-4 (Kyle, Crossley, Berger 2018, TAALES)
@@ -149,12 +150,15 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
             words = [unit_text(unit) for unit in units]
             if has_pos(source):
                 infos = [unit_info(unit) for unit in units]
-            elif (
-                found := analyze_words([unit_text(u) for u in all_units], source.text)
-            ) is not None:
-                infos = [analysis_info(a) for a, kept in zip(found, keep, strict=True) if kept]
             else:
-                infos = [word_info(word) for word in words]
+                found = analyze_words(
+                    [(unit[0].idx, unit_text(unit)) for unit in all_units], source.text
+                )
+                infos = [
+                    analysis_info(analysis) if analysis is not None else word_info(unit_text(unit))
+                    for unit, analysis, kept in zip(all_units, found, keep, strict=True)
+                    if kept
+                ]
         elif isinstance(source, str):
             if extractor is None:
                 pairs = [pair for pair in analyze_text(source) if not is_number(pair[0])]

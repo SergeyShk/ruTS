@@ -12,7 +12,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 - `SourceError` - источник без слов;
 - `ParameterError` - неизвестный класс или тип коннектора, `blank_lines`, который не `bool`.
 
-Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора ruMorph с частью речи токена ([`unit_info`](#word_info)); для строки - из разбора ruMorph в контексте предложения, для `Doc` без разметки - так же, если его слова совпадают со словами строки, иначе, как и с заданным экстрактором слов, - из первого разбора ruMorph ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `CohesionStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) русским слоем и, в отличие от ядра, читает и строку. Строка и `Doc` без границ предложений делятся на предложения русским [`SentsExtractor`](../extractors/sentences.md); слова строки дает русский [`WordsExtractor`](../extractors/words.md) или заданный `words_extractor`. Для `Doc` с разметкой частей речи часть речи, время и вид берутся из `token.pos_` и `token.morph`, а лемма - из разбора ruMorph с частью речи токена ([`unit_info`](#word_info)); для строки - из разбора ruMorph в контексте предложения ([`analysis_info`](#word_info)), для `Doc` без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph ([`words_info`](#word_info)), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Коннекторы ищет [`RussianConnectorMatcher`](#ConnectorMatcher) по словарю [`load_connectors`](#connectors). Таблица `print_stats` и сообщения об ошибках - по-русски (`COHESION_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 Слова классифицируются по частям речи и признакам Universal Dependencies - разбора [ruMorph](https://github.com/SergeyShk/ruMorph) для строки или разметки объекта `Doc`:
 
@@ -530,7 +530,7 @@ find_connectors(words, connectors=None, sent_index=0, pos=None, breaks=None, blo
 connector_pos(word)
 ```
 
-Часть речи UD слова по ruMorph для проверки коннектора: первый разбор с частью речи, подходящей коннектору (`CONNECTOR_POS` или `CONNECTOR_POS_EXTRA` для этого слова), иначе первый разбор. Так `CohesionStats` получает части речи для строки и `Doc` без разметки.
+Часть речи UD слова по ruMorph для проверки коннектора: первый разбор с частью речи, подходящей коннектору (`CONNECTOR_POS` или `CONNECTOR_POS_EXTRA` для этого слова), иначе первый разбор. Так `CohesionStats` получает части речи слов, которые разбираются по одному: с заданным экстрактором слов и в предложениях `Doc` без разметки, слова которых не совпали со словами строки.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -562,7 +562,11 @@ word_info(word)
 ```
 
 ``` {.python .signature}
-words_info(sents, text)
+words_info(sents, text, analyses=None)
+```
+
+``` {.python .signature}
+analysis_info(analysis)
 ```
 
 ``` {.python .signature}
@@ -577,13 +581,15 @@ ud_info(word, pos, tense, aspect)
 unit_info(unit)
 ```
 
-Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph; `words_info` - так же для слов предложений текста, где ответное «нет» (Нет, не видел) - частица. `token_info` берет их из разметки spaCy (`token.pos_`, `Tense`, `Aspect`), `ud_info` - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (`word_to_ud`).
+Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph, `analysis_info` - из заданного разбора ruMorph, например выбранного по контексту (`ruts.utils.analyze_sentence`); `words_info` - так же для слов предложений текста: по разбору из `analyses`, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. `token_info` берет их из разметки spaCy (`token.pos_`, `Tense`, `Aspect`), `ud_info` - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (`ruts.utils.lemmatize`), а не из `token.lemma_`. `unit_info` дает признаки слова по его токенам: отдельного токена - по `token_info`, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (`word_to_ud`).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `word` | `str` | - | Слово (`word_info`, `ud_info`) |
 | `sents` | `list[list[str]]` | - | Слова предложений текста (`words_info`) |
 | `text` | `str` | - | Текст, из которого извлечены слова (`words_info`) |
+| `analyses` | `list[list[Analysis \| None]]` | `None` | Разборы слов предложений, `None` - разбор по слову (`words_info`) |
+| `analysis` | `Analysis` | - | Разбор ruMorph (`analysis_info`) |
 | `token` | `Token` | - | Токен spaCy (`token_info`) |
 | `pos`, `tense`, `aspect` | `str` | - | Часть речи, время и вид UD (`ud_info`) |
 | `unit` | `list[Token]` | - | Токены слова (`unit_info`) |
