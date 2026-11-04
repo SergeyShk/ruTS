@@ -1142,6 +1142,8 @@ SYNTAX_STATS_DESC = {
     "max_prep_chain_len": "Максимальная длина предложной цепочки",
     "genitive_chains_per_sent": "Цепочек родительных падежей на предложение",
     "max_genitive_chain_len": "Максимальная длина цепочки родительных падежей",
+    "nominal_chains_per_sent": "Именных цепочек на предложение",
+    "max_nominal_chain_len": "Максимальная длина именной цепочки",
     "participle_clauses_per_sent": "Причастных оборотов на предложение",
     "mean_participle_clause_len": "Средняя длина причастного оборота (слов)",
     "converb_clauses_per_sent": "Деепричастных оборотов на предложение",

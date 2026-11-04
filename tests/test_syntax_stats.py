@@ -11,6 +11,7 @@ from ruts import SyntaxStats
 from ruts.constants import SYNTAX_STATS_DESC
 from ruts.syntax_stats import (
     calc_genitive_chains,
+    calc_nominal_chains,
     calc_valency,
     count_noun_modifiers,
     find_split_predicates,
@@ -25,6 +26,7 @@ from ruts.syntax_stats import (
     is_infinitive_periphrasis,
     is_light_verb,
     is_negation,
+    is_nominal_chain_link,
     is_participle,
     is_participle_clause,
     is_passive,
@@ -358,6 +360,39 @@ def test_no_nouns():
     assert isnan(ss.modifiers_per_noun)
     assert ss.p_passive == 0
     assert isnan(ss.p_agentless_passive)
+
+
+# Рост цен на нефть замедлился; он говорил о повышении эффективности работы отдела
+NOMINAL_SENTENCES = [
+    (
+        "Рост цен на нефть замедлился .",
+        [4, 0, 3, 1, 4, 4],
+        ["nsubj", "nmod", "case", "nmod", "ROOT", "punct"],
+        ["NOUN", "NOUN", "ADP", "NOUN", "VERB", "PUNCT"],
+        ["Case=Nom", "Case=Gen", "", "Case=Acc", "VerbForm=Fin", ""],
+    ),
+    (
+        "Он говорил о повышении эффективности работы отдела .",
+        [1, 1, 3, 1, 3, 4, 5, 1],
+        ["nsubj", "ROOT", "case", "obl", "nmod", "nmod", "nmod", "punct"],
+        ["PRON", "VERB", "ADP", "NOUN", "NOUN", "NOUN", "NOUN", "PUNCT"],
+        ["Case=Nom", "VerbForm=Fin", "", "Case=Loc", "Case=Gen", "Case=Gen", "Case=Gen", ""],
+    ),
+]
+
+
+def test_nominal_chains(doc):
+    """Именная цепочка - родительные и предложные звенья вперемешку"""
+    nominal = build_doc(NOMINAL_SENTENCES)
+    first, second = nominal.sents
+    assert [token.text for token in first if is_nominal_chain_link(token)] == ["цен", "нефть"]
+    assert (calc_nominal_chains(first), calc_genitive_chains(first)) == ([2], [])
+    assert (calc_nominal_chains(second), calc_genitive_chains(second)) == ([4], [3])
+    ss = SyntaxStats(nominal)
+    assert (ss.n_nominal_chains, ss.nominal_chains_per_sent, ss.max_nominal_chain_len) == (2, 1, 4)
+    assert ss.max_prep_chain_len == 0
+    # Цепочка родительных - частный случай именной
+    assert calc_nominal_chains(doc) == calc_genitive_chains(doc) == [3]
 
 
 def test_calc_genitive_chains(doc, sents):
