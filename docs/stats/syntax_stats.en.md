@@ -6,17 +6,16 @@ SyntaxStats(source)
 
 --8<-- "stats/syntax_stats.md:SyntaxStats"
 
-The class extends the `SyntaxStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) core with the Russian layer. The relations and features are those of the [Universal Dependencies](https://universaldependencies.org/u/dep/) annotation of the `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models; the quality of the statistics is bounded by the quality of the parse: the small `ru_core_news_sm` model errs in parts of speech and relations noticeably more often than `ru_core_news_lg`. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. ruTS adds its own metrics of genitive chains and adverbial participle clauses. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The `print_stats` table and the error messages are in Russian (`SYNTAX_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `SyntaxStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) core with the Russian layer. The [Universal Dependencies](https://universaldependencies.org/u/dep/) relations come from the dependency parse of the spaCy model (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), the parts of speech and features from the annotation of the pipeline: ruMorph in the [recommended pipeline](../components.md#load_pipeline), otherwise the model; the quality of the statistics is bounded by the quality of the parse. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. ruTS adds its own metrics of genitive chains and adverbial participle clauses. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The `print_stats` table and the error messages are in Russian (`SYNTAX_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93. The cards of the metrics name the original features of the paper and their correlation coefficients with the textbook grade.
 
 === "Code"
 
     ``` python
-    import spacy
-    from ruts import SyntaxStats
+    from ruts import SyntaxStats, load_pipeline
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     text = "Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."
     ss = SyntaxStats(nlp(text))
     ss.print_stats()
@@ -144,10 +143,10 @@ The mean dependency distance grows with sentence length, and the longest one is 
 === "Code"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import calc_dependency_distances
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
     calc_dependency_distances(doc)
     ```
@@ -305,10 +304,10 @@ Checks whether a word heads an infinitive clause: an infinitive under `xcomp` th
 === "Code"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import is_clause_head, is_infinitive_clause_head, is_subordinate_clause_head
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Он хочет уйти, но может остаться, если его попросят.")
     [token.text for token in doc if is_clause_head(token)]
     [token.text for token in doc if is_subordinate_clause_head(token)]
@@ -389,10 +388,10 @@ Checks whether a word is a prepositionless genitive modifier: a word with the `n
 === "Code"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import calc_genitive_chains
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     calc_genitive_chains(
         nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
     )
@@ -505,10 +504,10 @@ The split predicates, a marker of officialese, are pairs of a verb and a noun in
 === "Code"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import find_split_predicates, is_negation
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Проверка проводится ежегодно, но решение не принято.")
     find_split_predicates(doc)
     [token.text for token in doc if is_negation(token)]
@@ -569,20 +568,20 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
 === "Result"
 
     ```
-    {'mean_dependency_distance': 1.9333333333333333,
+    {'mean_dependency_distance': 2.066666666666667,
      'std_dependency_distance': 1.6110727964792764,
      'max_dependency_distance': 5.0,
-     'p_adjacent_dependencies': 0.6,
-     'tree_depth': 4.0,
+     'p_adjacent_dependencies': 0.5333333333333333,
+     'tree_depth': 3.5,
      'leaves_per_sent': 4.5,
      'subtrees_per_sent': 4.0,
      'nodes_per_leaf': 1.9,
-     'words_before_root': 4.0,
-     'verb_valency': 2.0,
+     'words_before_root': 5.0,
+     'verb_valency': 1.6666666666666667,
      'coordination_chains_per_sent': 0.5,
      'mean_coordination_chain_len': 2.0,
-     'clauses_per_sent': 1.5,
-     'mean_clause_len': 5.666666666666667,
+     'clauses_per_sent': 2.0,
+     'mean_clause_len': 4.25,
      'subordinate_clauses_per_sent': 0.5,
      'p_complex_sents': 0.5,
      'infinitive_clauses_per_sent': 0.0,
@@ -593,7 +592,7 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'verb_phrases_per_t_unit': 2.5,
      'coordinate_phrases_per_clause': 0.3333333333333333,
      'complex_nominals_per_clause': 1.0,
-     'modifiers_per_noun': 0.4,
+     'modifiers_per_noun': 0.5,
      'prep_chains_per_sent': 0.0,
      'max_prep_chain_len': 0,
      'genitive_chains_per_sent': 0.0,
@@ -602,16 +601,16 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'mean_participle_clause_len': 5.0,
      'converb_clauses_per_sent': 0.5,
      'mean_converb_clause_len': 2.0,
-     'p_passive': 0.4,
+     'p_passive': 0.3333333333333333,
      'p_agentless_passive': 0.5,
      'infinitives_per_sent': 0.0,
      'negations_per_sent': 0.5,
      'split_predicates_per_sent': 0.0,
      'p_preverbal_subjects': 1.0,
-     'p_preverbal_objects': nan,
+     'p_preverbal_objects': 0.0,
      'pos_edit_distance': 0.7777777777777778,
      'syntax_similarity': 0.0625,
-     'noun_verb_ratio': 1.0}
+     'noun_verb_ratio': 0.6666666666666666}
     ```
 
 The functions work with spaCy tokens: the `calc_*` and `find_*` functions and `dependency_triples` take a sequence of tokens (`Doc`, `Span` or a list), the `is_*` and `count_*` functions a single token, and `calc_edit_distance` and `calc_multiset_similarity` lists of the items of sentences; the words of a sequence are the tokens of [`is_word`](#helpers). The functions of the dependency tree come from the core, those of the Russian constructions are ruTS's own. Relation subtypes (`acl:relcl`, `nsubj:pass`, `nummod:gov`) are counted by the base relation ([`base_dep`](#base_dep)) where noted.

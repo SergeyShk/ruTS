@@ -35,6 +35,7 @@ from ruts.syntax_stats import (
     is_subordinating_mark,
     subtree_len,
 )
+from tests.pipelines import load_model_nlp
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -155,12 +156,6 @@ def sents(doc):
 @pytest.fixture(scope="module")
 def ss(doc):
     return SyntaxStats(doc)
-
-
-@pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
 
 
 def test_init_value_error():
@@ -654,9 +649,9 @@ def test_model_hyphenated_words(nlp, hyphenated, plain):
         assert getattr(first, name) == getattr(second, name), name
 
 
-def test_model_parataxis(nlp):
+def test_model_parataxis(model_nlp):
     ss = SyntaxStats(
-        nlp("Во-первых, он не пришёл. Он, например, не пришёл. Он, конечно, не пришёл.")
+        model_nlp("Во-первых, он не пришёл. Он, например, не пришёл. Он, конечно, не пришёл.")
     )
     assert ss.n_clauses == 3
     assert isnan(ss.p_agentless_passive)
@@ -814,10 +809,10 @@ def test_is_subordinating_mark(nlp, text, word, expected):
         ),
     ],
 )
-def test_marks_of_particles_and_replicas(nlp, text, n_subordinate):
+def test_marks_of_particles_and_replicas(model_nlp, text, n_subordinate):
     """Союз после «не то» и местоимение в начале реплики с вопросом или восклицанием -
     не подчинительные союзы"""
-    assert SyntaxStats(nlp(text)).n_subordinate_clauses == n_subordinate
+    assert SyntaxStats(model_nlp(text)).n_subordinate_clauses == n_subordinate
 
 
 def test_conjuncts_of_a_marked_clause(nlp):
@@ -838,7 +833,7 @@ def test_conjuncts_of_a_marked_clause(nlp):
 
 def test_doc_without_morphologizer():
     """Без морфологического анализатора части речи есть только у пробелов - это не разметка"""
-    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    nlp = load_model_nlp(exclude=["morphologizer"])
     doc = nlp("Мама мыла раму, а папа читал книгу.\n\nДети играли во дворе.")
     assert doc.has_annotation("POS")
     with pytest.raises(ValueError, match=r"не отключая ее теггер или морфологический анализатор"):

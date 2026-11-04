@@ -26,6 +26,7 @@ from ruts import (
     SyntaxStats,
     VerseStats,
     WordsExtractor,
+    load_pipeline,
 )
 from ruts.constants import (
     BASIC_STATS_DESC,
@@ -165,8 +166,7 @@ DEFAULT_GROUP_LAYERS = [
     [layer for layer in group if layer in HIGHLIGHT_DEFAULT_LAYERS]
     for group in HIGHLIGHT_LAYER_GROUPS.values()
 ]
-nlp = spacy.load("ru_core_news_sm", exclude=["ner", "lemmatizer"])
-nlp.add_pipe("ruts_blank_lines", before="parser")
+nlp = load_pipeline(exclude=["ner"])
 freq_dict = FreqDict()
 if not freq_dict.filepath:
     try:
@@ -456,7 +456,8 @@ HEADER = """
 [PyPI](https://pypi.org/project/ruts/)
 """
 FOOTER = (
-    f"ruts {version('ruts')} · spaCy {spacy.__version__} · ru_core_news_sm {nlp.meta['version']}"
+    f"ruts {version('ruts')} · anySeg {version('anyseg')} · ruMorph {version('rumorph')} · "
+    f"spaCy {spacy.__version__} · ru_core_news_sm {nlp.meta['version']}"
 )
 CSS = """
 .ruts-highlight { font-size: 1.05em; }

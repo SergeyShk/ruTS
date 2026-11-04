@@ -33,6 +33,7 @@ from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
 from .unadapted_readability_stats import UnadaptedReadabilityStats
+from .utils import load_pipeline
 from .verse_stats import VerseStats
 
 if TYPE_CHECKING:
@@ -87,6 +88,7 @@ __all__ = [
     "VerseStats",
     "WordsExtractor",
     "__version__",
+    "load_pipeline",
 ]
 
 # Компоненты регистрируют фабрики spaCy и импортируют его: модуль грузится при первом обращении,

@@ -2,7 +2,6 @@ import unicodedata
 from math import isnan
 
 import pytest
-import spacy
 
 from ruts import VerseStats
 from ruts.constants import VERSE_STATS_DESC
@@ -193,11 +192,6 @@ def stress_dict(tmp_path_factory):
     lines = "\n".join("\t".join(row) for row in sorted(ROWS)) + "\n"
     path.joinpath(FILENAME).write_text(lines, encoding="utf-8")
     return StressDict(data_dir=path)
-
-
-@pytest.fixture(scope="module")
-def nlp():
-    return spacy.load("ru_core_news_sm")
 
 
 def test_iamb(stress_dict):

@@ -16,6 +16,7 @@ from ruts.morph_stats import (
     word_to_ud,
 )
 from ruts.utils import parse_word
+from tests.pipelines import load_model_nlp
 
 text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
 
@@ -23,12 +24,6 @@ text = "Постарайтесь получить то, что любите, и�
 @pytest.fixture(scope="module")
 def ms():
     return MorphStats(text)
-
-
-@pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
 
 
 def test_init_value_error():
@@ -414,17 +409,19 @@ def test_analysis_to_ud(word, expected):
 
 
 @pytest.mark.parametrize(
-    ("text", "tense", "doc_tense"),
+    ("text", "tense", "model_tense"),
     [
         ("Надо идти. Нельзя молчать. Было надо спать.", {"Past": 1}, {"Past": 1}),
         ("Меня нет дома. Хлеба нету.", {}, {"Pres": 2}),
     ],
 )
-def test_predicatives_tense(nlp, text, tense, doc_tense):
+def test_predicatives_tense(nlp, model_nlp, text, tense, model_tense):
     """Предикативы (надо, нельзя) и бытийные «нет», «нету» у ruMorph - без времени;
     у ru_core_news_sm бытийные - в настоящем"""
-    assert MorphStats(text).get_stats("tense", filter_none=True) == {"tense": tense}
-    assert MorphStats(nlp(text)).get_stats("tense", filter_none=True) == {"tense": doc_tense}
+    for source in (text, nlp(text)):
+        assert MorphStats(source).get_stats("tense", filter_none=True) == {"tense": tense}
+    stats = MorphStats(model_nlp(text)).get_stats("tense", filter_none=True)
+    assert stats == {"tense": model_tense}
 
 
 def test_degree_polarity_short_forms(nlp):
@@ -460,15 +457,15 @@ def test_existential_verb(nlp):
     assert MorphStats(nlp(text)).get_stats("tense", "verb_form", filter_none=True) == expected
 
 
-def test_answer_particle(nlp):
+def test_answer_particle(nlp, model_nlp):
     """Ответное «нет» - частица; бытийное у ruMorph - глагол с отрицанием без времени,
     у ru_core_news_sm - в настоящем без отрицания"""
     text = "Нет, я не пойду. Денег нет."
     expected = {"tense": {"Fut": 1}, "polarity": {"Neg": 3}}
-    for source in (text, spacy.blank("ru")(text)):
+    for source in (text, spacy.blank("ru")(text), nlp(text)):
         assert MorphStats(source).get_stats("tense", "polarity", filter_none=True) == expected
     expected = {"tense": {"Fut": 1, "Pres": 1}, "polarity": {"Neg": 2}}
-    assert MorphStats(nlp(text)).get_stats("tense", "polarity", filter_none=True) == expected
+    assert MorphStats(model_nlp(text)).get_stats("tense", "polarity", filter_none=True) == expected
     assert MorphStats(text).pos[0] == "PART"
     # Слово с неразрывным дефисом не сбивает счет «нет» в словах и в тексте
     hyphenated = "Нет, я не пойду. Нет\u2011нет да и заглянет."
@@ -667,7 +664,7 @@ def test_get_markers_of_several_values(nlp):
 def test_doc_without_morphologizer():
     """Без морфологического анализатора части речи есть только у пробелов: признаки -
     по ruMorph, как у Doc без разметки"""
-    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    nlp = load_model_nlp(exclude=["morphologizer"])
     doc = nlp("Мама мыла раму.\n\nПапа читал книгу.")
     assert doc.has_annotation("POS")
     assert MorphStats(doc).pos == MorphStats(spacy.blank("ru")(doc.text)).pos

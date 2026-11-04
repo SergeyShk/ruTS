@@ -93,12 +93,6 @@ def doc():
 
 
 @pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
-
-
-@pytest.fixture(scope="module")
 def ht():
     return highlight(text, layers=["long_sents", "complex_words", "stopwords", "alliteration"])
 
@@ -480,9 +474,9 @@ def test_genitive_chains(doc):
         ("Он занял кресло вице-губернатора области.", ["кресло вице-губернатора области"]),
     ],
 )
-def test_syntax_layers_of_hyphenated_words(nlp, text, fragments):
-    # Слои считают слова, как SyntaxStats, и покрывают дефисное слово целиком
-    doc = nlp(text)
+def test_syntax_layers_of_hyphenated_words(model_nlp, text, fragments):
+    # Слои считают слова, как SyntaxStats, и покрывают дефисное слово, разрезанное spaCy, целиком
+    doc = model_nlp(text)
     ss = SyntaxStats(doc)
     ht = highlight(doc, layers=["genitive_chains", "passive"])
     assert [text[h.start : h.end] for h in ht.highlights] == fragments

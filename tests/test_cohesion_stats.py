@@ -34,6 +34,7 @@ from ruts.constants import (
 )
 from ruts.exceptions import ParameterError, SourceError
 from ruts.utils import lemmatize, normalize_yo
+from tests.pipelines import load_model_nlp
 
 text = (
     "Кот сидел на окне. Он смотрел на птиц. Птицы улетели, и кот уснул. "
@@ -44,12 +45,6 @@ text = (
 @pytest.fixture(scope="module")
 def cs():
     return CohesionStats(text)
-
-
-@pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
 
 
 def test_answer_particle_tense(nlp):
@@ -132,7 +127,7 @@ def test_token_info(nlp):
 
 
 def test_init_doc_without_lemmatizer(nlp):
-    tagger_nlp = spacy.load("ru_core_news_sm", exclude=["lemmatizer", "ner"])
+    tagger_nlp = load_model_nlp(exclude=["ner"])
     text = "Мы стали ждать поезда. Нож сделан из стали. Эта сталь очень прочна."
     doc = tagger_nlp(text)
     assert not doc.has_annotation("LEMMA")
@@ -595,10 +590,11 @@ def test_hyphenated_verb_doc(nlp):
     assert (unit_info(units[7]).tense, unit_info(units[7]).aspect) == (None, "Perf")
 
 
-def test_doc_without_sents(nlp):
+def test_doc_without_sents(model_nlp):
+    """Doc с разметкой без границ предложений делится экстрактором предложений"""
     text = "Раз он пришёл, значит, всё хорошо. Кое-как птицы улетели, т.е. исчезли."
-    doc = nlp(text)
-    tagged = spacy.load("ru_core_news_sm", exclude=["parser"])(text)
+    doc = model_nlp(text)
+    tagged = load_model_nlp(exclude=["parser"])(text)
     assert not tagged.has_annotation("SENT_START") and tagged.has_annotation("POS")
     cs = CohesionStats(tagged)
     assert cs.words == CohesionStats(doc).words
@@ -779,8 +775,8 @@ def test_paragraph_inside_sentence_with_lemmas():
         assert [normalize_yo(word) for word in opened] == ["все"]
 
 
-def test_paragraph_inside_sentence(nlp):
-    """Пустая строка внутри предложения Doc тоже открывает абзац"""
-    doc = nlp("Глава первая\n\nКот сидел на окне.")
+def test_paragraph_inside_sentence(model_nlp):
+    """Пустая строка внутри предложения Doc (парсер модели их склеивает) тоже открывает абзац"""
+    doc = model_nlp("Глава первая\n\nКот сидел на окне.")
     assert len(list(doc.sents)) == 1
     assert CohesionStats(doc).n_paragraphs == 2

@@ -73,6 +73,8 @@ python -m spacy download ru_core_news_sm
 
 Модели `md` и `lg` брать не стоит: по нашим замерам на золотой разметке Universal Dependencies они точнее `sm` меньше чем на пункт, а статистики по тексту у трёх моделей совпадают.
 
+Для `Doc` лучше всего подходит рекомендуемый конвейер `ruts.load_pipeline()`: токены и предложения в нём даёт сегментатор [anySeg](https://github.com/SergeyShk/anySeg), части речи, признаки и леммы - морфологический анализатор [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения, а модель - только разбор зависимостей, поэтому `Doc` размечается почти так же, как строка. Обычный `spacy.load("ru_core_news_sm")` тоже поддерживается, но тогда морфологию даёт модель.
+
 ## Быстрый старт
 
 ```python
@@ -541,19 +543,18 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 *   Синтаксические маркеры канцелярита: расщеплённые сказуемые («осуществлять проверку»), отношение существительных к глаголам
 
 ```python
->>> import spacy
->>> from ruts import SyntaxStats
+>>> from ruts import SyntaxStats, load_pipeline
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = load_pipeline()
 >>> text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
 >>> ss = SyntaxStats(nlp(text))
 
 >>> ss.tree_depth, ss.mean_dependency_distance
 (4.0, 1.9333333333333333)
 >>> ss.clauses_per_sent, ss.subordinate_clauses_per_sent
-(1.5, 0.5)
+(2.0, 1.0)
 >>> ss.participle_clauses_per_sent, ss.converb_clauses_per_sent, ss.p_passive
-(0.5, 0.5, 0.4)
+(0.5, 0.5, 0.3333333333333333)
 ```
 
 Подробнее - в [документации](https://sergeyshk.github.io/ruTS/stats/syntax_stats/).
@@ -776,10 +777,10 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 Графики matplotlib принимают оси `ax` и возвращают `Axes`, поэтому их можно раскладывать по одной фигуре. Подсветка возвращает объект, который отображается в Jupyter как HTML с легендой и всплывающими пояснениями; по умолчанию включены шесть слоёв, `layers="all"` включает все; синтаксические слои требуют `Doc` с разбором зависимостей:
 
 ```python
->>> import spacy
+>>> from ruts import load_pipeline
 >>> from ruts.visualizers import highlight
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = load_pipeline()
 >>> text = (
 ...     "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
 ...     "Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента. "
@@ -841,9 +842,8 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 
 ```python
 >>> import ruts
->>> import spacy
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = ruts.load_pipeline()
 >>> nlp.add_pipe("ruts_basic", name="basic", last=True)
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")

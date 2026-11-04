@@ -9,15 +9,14 @@ StatsComponent(nlp, name)
 The components of ruTS are subclasses of the `StatsComponent` of the [anyTS](https://sergeyshk.github.io/anyTS/components/) core, one for every class of statistics.
 
 !!! note "Note"
-    The examples below use the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
+    The examples below use the [recommended pipeline](#load_pipeline) on the `ru_core_news_sm` model, which is installed separately: `python -m spacy download ru_core_news_sm` (see [installation](installation.md)).
 
 === "Code"
 
     ``` python
     import ruts
-    import spacy
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = ruts.load_pipeline()
     nlp.add_pipe("ruts_basic", name="basic")
     nlp("мама мыла раму")._.basic.c_letters
     nlp("?!")._.basic is None
@@ -49,9 +48,51 @@ In `ruts_lexical` a document of numbers alone passes untouched as well, and in `
 
 --8<-- "components.md:StatsComponent-serialization"
 
-Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.
+Adding a component extends the spaCy tokenizer of its pipeline with the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) splits words as a string, and the components leave it as it is.
 
-ruTS removes stress marks from the words of a `Doc`, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after `accentuate` the `ru_core_news_sm` model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - `nlp(ruts.utils.strip_marks(text))`.
+ruTS removes stress marks from the words of a `Doc`. They do not change the parts of speech and features of the [recommended pipeline](#load_pipeline), but the model sees a word with a mark as unknown and tags it worse: on a text after `accentuate` the tagger of `ru_core_news_sm` changes the part of speech of over half of the words, and the dependencies change in both pipelines. Pass a text with stresses to the pipeline without them - `nlp(ruts.utils.strip_marks(text))`.
+
+## Recommended pipeline { #load_pipeline }
+
+``` {.python .signature}
+load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
+```
+
+A spaCy pipeline in which a `Doc` is annotated the same way as a string (except the words with a particle after a hyphen - муж-то, скажи-ка, - which are one word in a `Doc`): the tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. The function loads the model with the anySeg tokenizer, without its `morphologizer` and `lemmatizer`, and adds the `rumorph` component first and `anyseg_sentencizer` before the parser. The same by hand:
+
+``` python
+nlp = spacy.load(
+    "ru_core_news_sm",
+    exclude=["morphologizer", "lemmatizer"],
+    config={"nlp": {"tokenizer": {"@tokenizers": "anyseg.Tokenizer.v1"}}},
+)
+nlp.add_pipe("rumorph", first=True)
+nlp.add_pipe("anyseg_sentencizer", before="parser")
+```
+
+On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string.
+
+| Parameter | Type | Default | Description |
+| :-------- | :--- | :------ | :---------- |
+| `model` | `str` | `"ru_core_news_sm"` | Name or path of the spaCy model: `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` |
+| `exclude` | `list[str]` | `()` | More components of the model not to load, for example `ner` |
+| `**kwargs` | - | - | Other parameters of `spacy.load`; the tokenizer in `config` is replaced with anySeg |
+
+=== "Code"
+
+    ``` python
+    from ruts import load_pipeline
+
+    load_pipeline().pipe_names
+    [(token.text, token.pos_, token.lemma_) for token in nlp("Нож из стали.")]
+    ```
+
+=== "Result"
+
+    ```
+    ['rumorph', 'tok2vec', 'anyseg_sentencizer', 'parser', 'attribute_ruler', 'ner']
+    [('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
+    ```
 
 ## Components of the classes of statistics { #class-components }
 
@@ -239,7 +280,7 @@ SyntaxStatsComponent(nlp, name)
 
 --8<-- "components.md:SyntaxStatsComponent"
 
-The `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser and the parts of speech.
+The [recommended pipeline](#load_pipeline) and the `ru_core_news_sm`, `ru_core_news_md` and `ru_core_news_lg` models have a parser and the parts of speech.
 
 Raises:
 
@@ -360,11 +401,13 @@ Raises:
 
 --8<-- "components.md:start_sents_after_blank_lines"
 
-In ruTS the component is registered as `ruts_blank_lines`. Without it the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence, and the statistics of a `Doc` differ from those of the same string.
+In ruTS the component is registered as `ruts_blank_lines`. Without it the parser of the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence, and the statistics of a `Doc` differ from those of the same string. In the [recommended pipeline](#load_pipeline) the sentences are split by `anyseg_sentencizer`, and the component is not needed.
 
 === "Code"
 
     ``` python
+    import spacy
+
     nlp = spacy.load("ru_core_news_sm")
     nlp.add_pipe("ruts_blank_lines", before="parser")
     [sent.text.strip() for sent in nlp("Что нового\n\nБыстрый импорт. Меньше ошибок").sents]

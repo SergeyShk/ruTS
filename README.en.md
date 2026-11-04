@@ -73,6 +73,8 @@ python -m spacy download ru_core_news_sm
 
 The `md` and `lg` models are not worth it: in our measurements on the gold Universal Dependencies annotation they are less than one point more accurate than `sm`, and the text-level statistics of the three models coincide.
 
+The recommended pipeline for a `Doc` is `ruts.load_pipeline()`: its tokens and sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives only the dependency parse, so a `Doc` is annotated almost the same way as a string. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the morphology comes from the model.
+
 ## Quick start
 
 ```python
@@ -541,19 +543,18 @@ The library counts over the spaCy dependency tree (a model with a parser and par
 *   Syntactic officialese markers: split predicates ("осуществлять проверку"), noun-to-verb ratio
 
 ```python
->>> import spacy
->>> from ruts import SyntaxStats
+>>> from ruts import SyntaxStats, load_pipeline
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = load_pipeline()
 >>> text = "Дом, построенный рабочими в прошлом году, был продан. Он сказал, что не придёт, и ушёл, хлопнув дверью."
 >>> ss = SyntaxStats(nlp(text))
 
 >>> ss.tree_depth, ss.mean_dependency_distance
 (4.0, 1.9333333333333333)
 >>> ss.clauses_per_sent, ss.subordinate_clauses_per_sent
-(1.5, 0.5)
+(2.0, 1.0)
 >>> ss.participle_clauses_per_sent, ss.converb_clauses_per_sent, ss.p_passive
-(0.5, 0.5, 0.4)
+(0.5, 0.5, 0.3333333333333333)
 ```
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/).
@@ -776,10 +777,10 @@ The library allows visualizing text with the help of the following graphs:
 Matplotlib plots accept `ax` and return `Axes`, so they can be laid out on one figure. Highlighting returns an object rendered in Jupyter as HTML with a legend and hover notes; six layers are on by default, `layers="all"` enables every layer; syntactic layers require a `Doc` with a dependency parse:
 
 ```python
->>> import spacy
+>>> from ruts import load_pipeline
 >>> from ruts.visualizers import highlight
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = load_pipeline()
 >>> text = (
 ...     "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
 ...     "Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента. "
@@ -841,9 +842,8 @@ The library allows creating the following classes of spaCy components:
 
 ```python
 >>> import ruts
->>> import spacy
 
->>> nlp = spacy.load('ru_core_news_sm')
+>>> nlp = ruts.load_pipeline()
 >>> nlp.add_pipe("ruts_basic", name="basic", last=True)
 
 >>> doc = nlp("Существуют три вида лжи: ложь, наглая ложь и статистика")

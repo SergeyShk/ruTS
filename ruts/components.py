@@ -11,7 +11,8 @@
     spacy.load() без импорта ruts
     Документ без слов проходит пайплайн нетронутым, расширение остается None;
     имя, занятое расширением другого пакета, - ParameterError
-    Добавление компонента расширяет токенизатор пайплайна правилами add_dash_rules
+    Добавление компонента расширяет токенизатор spaCy правилами add_dash_rules,
+    токенизатор anySeg (anyseg.Tokenizer.v1) остается прежним
     ruts_blank_lines - компонент ядра start_sents_after_blank_lines: ставит начало
     предложения после пустой строки, если добавлен перед parser, senter или sentencizer
 """
@@ -45,7 +46,7 @@ Language.component("ruts_blank_lines", func=start_sents_after_blank_lines)
 
 
 class _Component(StatsComponent):
-    """Компонент ruTS: расширяет токенизатор пайплайна правилами add_dash_rules"""
+    """Компонент ruTS: расширяет токенизатор spaCy правилами add_dash_rules"""
 
     messages = CORE_MESSAGES
 
@@ -61,8 +62,7 @@ class BasicStatsComponent(_Component, anyts.components.BasicStatsComponent):
     Примеры использования:
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_basic", name="basic", last=True)
         <ruts.components.BasicStatsComponent object at 0x...>
 
@@ -84,13 +84,13 @@ class MorphStatsComponent(_Component, anyts.components.MorphStatsComponent):
     Класс для компонента морфологических статистик текста
 
     Описание:
-        Части речи и признаки берутся из разметки модели (token.pos_, token.morph)
-        в терминах Universal Dependencies, в пайплайне без теггера - из ruMorph
+        Части речи и признаки берутся из разметки пайплайна (token.pos_, token.morph:
+        компонент rumorph или теггер модели) в терминах Universal Dependencies,
+        в пайплайне без них - из ruMorph
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_morph", name="morph", last=True)
         <ruts.components.MorphStatsComponent object at 0x...>
 
@@ -113,8 +113,7 @@ class ReadabilityStatsComponent(_Component, anyts.components.ReadabilityStatsCom
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_readability", name="readability", last=True)
         <ruts.components.ReadabilityStatsComponent object at 0x...>
 
@@ -161,8 +160,7 @@ class UnadaptedReadabilityStatsComponent(
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_unadapted_readability", name="unadapted", last=True)
         <ruts.components.UnadaptedReadabilityStatsComponent object at 0x...>
 
@@ -192,8 +190,7 @@ class DiversityStatsComponent(_Component, anyts.components.DiversityStatsCompone
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_diversity", name="diversity", last=True)
         <ruts.components.DiversityStatsComponent object at 0x...>
 
@@ -225,8 +222,7 @@ class StyleStatsComponent(_Component, anyts.components.StyleStatsComponent):
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_style", name="style", last=True)
         <ruts.components.StyleStatsComponent object at 0x...>
 
@@ -263,8 +259,7 @@ class PhonStatsComponent(_Component, anyts.components.PhonStatsComponent):
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_phon", name="phon", last=True)
         <ruts.components.PhonStatsComponent object at 0x...>
 
@@ -297,8 +292,7 @@ class SyntaxStatsComponent(_Component, anyts.components.SyntaxStatsComponent):
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_syntax", name="syntax", last=True)
         <ruts.components.SyntaxStatsComponent object at 0x...>
 
@@ -321,8 +315,7 @@ class CohesionStatsComponent(_Component, anyts.components.CohesionStatsComponent
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_cohesion", name="cohesion", last=True)
         <ruts.components.CohesionStatsComponent object at 0x...>
         >>> nlp.add_pipe(
@@ -359,8 +352,7 @@ class LexicalStatsComponent(_Component, anyts.components.LexicalStatsComponent):
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_lexical", name="lexical", last=True)
         <ruts.components.LexicalStatsComponent object at 0x...>
 
@@ -404,8 +396,7 @@ class VerseStatsComponent(_Component):
 
     Добавление компонента в пайплайн:
         >>> import ruts
-        >>> import spacy
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> nlp = ruts.load_pipeline()
         >>> nlp.add_pipe("ruts_verse", name="verse", last=True)
         <ruts.components.VerseStatsComponent object at 0x...>
 

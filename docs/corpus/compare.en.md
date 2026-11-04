@@ -133,10 +133,10 @@ Features of your own go to `features` as a function of a text, `text_features` w
     ``` python
     from functools import partial
 
-    import spacy
+    from ruts import load_pipeline
     from ruts.corpus import compare_corpora, text_features
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     result = compare_corpora(
         chekhov,
         tolstoy,
@@ -151,11 +151,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.090           0.192  -0.131   -0.081   -1.049       -0.617  0.192     0.0
-    syntax_participle_clauses_per_sent         0.045           0.119  -0.100   -0.052   -0.862       -0.583  0.208     0.0
-    syntax_tree_depth                          3.012           3.625  -0.911   -0.414   -1.010       -0.541  0.230     0.0
-    syntax_mean_clause_len                     4.980           5.780  -1.218   -0.473   -0.895       -0.524  0.238     0.0
-    syntax_clauses_per_t_unit                  1.256           1.398  -0.213   -0.095   -0.802       -0.521  0.239     0.0
+    syntax_converb_clauses_per_sent            0.101           0.207  -0.138   -0.086   -1.034       -0.608  0.196     0.0
+    syntax_participle_clauses_per_sent         0.040           0.117  -0.098   -0.056   -0.877       -0.586  0.207     0.0
+    syntax_tree_depth                          3.023           3.634  -0.906   -0.405   -1.012       -0.541  0.229     0.0
+    syntax_mean_clause_len                     4.965           5.808  -1.257   -0.479   -0.886       -0.534  0.233     0.0
+    syntax_clauses_per_t_unit                  1.250           1.399  -0.212   -0.095   -0.799       -0.520  0.240     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }

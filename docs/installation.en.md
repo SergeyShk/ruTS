@@ -33,7 +33,7 @@ This installs the release version of the library with all dependencies.
 `import ruts` loads neither spaCy nor matplotlib nor pandas: spaCy comes with a `Doc` object or a component, and the plots and the corpus functions on first use. The statistics of a string work without them.
 
 !!! tip "spaCy model"
-    The [spaCy components](components.md), the [syntactic statistics](stats/syntax_stats.md) and the examples that start with `spacy.load("ru_core_news_sm")` need the Russian-language model; without it `spacy.load` fails with `OSError: [E050]`. The model is installed separately:
+    The [spaCy components](components.md), the [syntactic statistics](stats/syntax_stats.md) and the examples with the [recommended pipeline](components.md#load_pipeline) `ruts.load_pipeline()` need the Russian-language model; without it loading fails with `OSError: [E050]`. The model is installed separately:
 
     ``` bash
     python -m spacy download ru_core_news_sm

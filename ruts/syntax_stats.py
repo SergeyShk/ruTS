@@ -80,9 +80,8 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         https://dialogue-conf.org/media/4302/ivanovvv.pdf
 
     Пример использования:
-        >>> import spacy
-        >>> from ruts import SyntaxStats
-        >>> nlp = spacy.load('ru_core_news_sm')
+        >>> from ruts import SyntaxStats, load_pipeline
+        >>> nlp = load_pipeline()
         >>> text = "Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."
         >>> ss = SyntaxStats(nlp(text))
         >>> ss.get_stats()
