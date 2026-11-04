@@ -2511,7 +2511,7 @@
 </tr>
 </tbody>
 </table>
-<p>The values for a string and for an annotated <code>Doc</code> may differ: both spaCy and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.</p>
+<p>For a <code>Doc</code> of the <a href="../../components/#load_pipeline">recommended pipeline</a> the values are those of the string: ruMorph annotates it; only a hyphenated word that anySeg splits into parts (муж-то, скажи-ка) is one word in a <code>Doc</code>. With a plain spaCy model they may differ: both the model and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.</p>
 <div class="metric-card">
 <h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>

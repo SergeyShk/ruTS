@@ -2513,7 +2513,7 @@
 </tr>
 </tbody>
 </table>
-<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: омонимию по контексту снимают и spaCy, и ruMorph, но модели у них разные, как и часть соглашений - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.</p>
+<p>Для <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> значения - те же, что у строки: разметку в нем дает ruMorph; только слово через дефис, которое anySeg делит на части (муж-то, скажи-ка), в <code>Doc</code> одно. У обычной модели spaCy они могут отличаться: омонимию по контексту снимают и модель, и ruMorph, но модели у них разные, как и часть соглашений - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.</p>
 <div class="metric-card">
 <h3 id="pos">Часть речи<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>

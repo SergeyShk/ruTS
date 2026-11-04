@@ -2520,10 +2520,10 @@ cohesion_argument_overlap_2_sent          0.161           0.215  -0.083   -0.038
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_corpora</span><span class="p">,</span> <span class="n">text_features</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">compare_corpora</span><span class="p">(</span>
     <span class="n">chekhov</span><span class="p">,</span>
     <span class="n">tolstoy</span><span class="p">,</span>
@@ -2536,11 +2536,11 @@ cohesion_argument_overlap_2_sent          0.161           0.215  -0.083   -0.038
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>                                    median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-syntax_converb_clauses_per_sent            0.090           0.192  -0.131   -0.081   -1.049       -0.617  0.192     0.0
-syntax_participle_clauses_per_sent         0.045           0.119  -0.100   -0.052   -0.862       -0.583  0.208     0.0
-syntax_tree_depth                          3.012           3.625  -0.911   -0.414   -1.010       -0.541  0.230     0.0
-syntax_mean_clause_len                     4.980           5.780  -1.218   -0.473   -0.895       -0.524  0.238     0.0
-syntax_clauses_per_t_unit                  1.256           1.398  -0.213   -0.095   -0.802       -0.521  0.239     0.0
+syntax_converb_clauses_per_sent            0.101           0.207  -0.138   -0.086   -1.034       -0.608  0.196     0.0
+syntax_participle_clauses_per_sent         0.040           0.117  -0.098   -0.056   -0.877       -0.586  0.207     0.0
+syntax_tree_depth                          3.023           3.634  -0.906   -0.405   -1.012       -0.541  0.229     0.0
+syntax_mean_clause_len                     4.965           5.808  -1.257   -0.479   -0.886       -0.534  0.233     0.0
+syntax_clauses_per_t_unit                  1.250           1.399  -0.212   -0.095   -0.799       -0.520  0.240     0.0
 </code></pre></div>
 </div>
 </div>

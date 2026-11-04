@@ -2088,6 +2088,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#load_pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2301,6 +2312,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#load_pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2476,15 +2498,14 @@
 <p>The components of ruTS are subclasses of the <code>StatsComponent</code> of the <a href="https://sergeyshk.github.io/anyTS/components/">anyTS</a> core, one for every class of statistics.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The examples below use the <code>ru_core_news_sm</code> model, which is installed separately: <code>python -m spacy download ru_core_news_sm</code> (see <a href="../installation/">installation</a>).</p>
+<p>The examples below use the <a href="#load_pipeline">recommended pipeline</a> on the <code>ru_core_news_sm</code> model, which is installed separately: <code>python -m spacy download ru_core_news_sm</code> (see <a href="../installation/">installation</a>).</p>
 </div>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">ruts</span><span class="o">.</span><span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_basic"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"basic"</span><span class="p">)</span>
 <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span><span class="o">.</span><span class="n">c_letters</span>
 <span class="n">nlp</span><span class="p">(</span><span class="s2">"?!"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -2531,8 +2552,68 @@ True
 <p class="admonition-title">Serialization</p>
 <p>A component keeps an object of statistics in <code>doc._.&lt;name&gt;</code>, and spaCy cannot serialize it: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> and <code>nlp.pipe(..., n_process&gt;1)</code> fail with these components in the pipeline. To save a document, leave the user data out (<code>doc.to_bytes(exclude=["user_data"])</code>) or keep <code>doc._.&lt;name&gt;.get_stats()</code> separately; for multiprocessing compute the statistics in the main process after <code>nlp.pipe</code>, without the components.</p>
 </div>
-<p>Adding a component extends the tokenizer of its pipeline with the rules for the dialogue dashes glued to words (<code>ruts.utils.add_dash_rules</code>), so that a <code>Doc</code> is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself.</p>
-<p>ruTS removes stress marks from the words of a <code>Doc</code>, but the parts of speech, features and dependencies come from the model, which sees a word with a mark as unknown and tags it worse: on a text after <code>accentuate</code> the <code>ru_core_news_sm</code> model changes the part of speech of over half of the words. Pass a text with stresses to the pipeline without them - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
+<p>Adding a component extends the spaCy tokenizer of its pipeline with the rules for the dialogue dashes glued to words (<code>ruts.utils.add_dash_rules</code>), so that a <code>Doc</code> is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself. The anySeg tokenizer of the <a href="#load_pipeline">recommended pipeline</a> splits words as a string, and the components leave it as it is.</p>
+<p>ruTS removes stress marks from the words of a <code>Doc</code>. They do not change the parts of speech and features of the <a href="#load_pipeline">recommended pipeline</a>, but the model sees a word with a mark as unknown and tags it worse: on a text after <code>accentuate</code> the tagger of <code>ru_core_news_sm</code> changes the part of speech of over half of the words, and the dependencies change in both pipelines. Pass a text with stresses to the pipeline without them - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
+<h2 id="load_pipeline">Recommended pipeline<a class="headerlink" href="#load_pipeline" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">load_pipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">'ru_core_news_sm'</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+<p>A spaCy pipeline in which a <code>Doc</code> is annotated the same way as a string (except the hyphenated words that anySeg splits into parts - муж-то, скажи-ка, два-три: they are one word in a <code>Doc</code>): the tokens and the sentences come from the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter, the parts of speech, features and lemmas from the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. The function loads the model with the anySeg tokenizer, without its <code>morphologizer</code> and <code>lemmatizer</code>, and adds the <code>anyseg_sentencizer</code> and <code>rumorph</code> components first: ruMorph analyzes the words in the context of the anySeg sentences. A saved pipeline of this kind loads as it is. The same by hand:</p>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="s2">"ru_core_news_sm"</span><span class="p">,</span>
+    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">"morphologizer"</span><span class="p">,</span> <span class="s2">"lemmatizer"</span><span class="p">],</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"nlp"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"tokenizer"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"@tokenizers"</span><span class="p">:</span> <span class="s2">"anyseg.Tokenizer.v1"</span><span class="p">}}},</span>
+<span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"anyseg_sentencizer"</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"rumorph"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"anyseg_sentencizer"</span><span class="p">)</span>
+</code></pre></div>
+<p>On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain <code>spacy.load("ru_core_news_sm")</code> is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a <code>Doc</code> may differ from those of the string.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>model</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>"ru_core_news_sm"</code></td>
+<td style="text-align: left;">Name or path of the spaCy model: <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>exclude</code></td>
+<td style="text-align: left;"><code>str</code>, <code>list[str]</code></td>
+<td style="text-align: left;"><code>()</code></td>
+<td style="text-align: left;">More components of the model not to load, for example <code>ner</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Other parameters of <code>spacy.load</code>; the tokenizer in <code>config</code> is replaced with anySeg</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">pipe_names</span>
+<span class="p">[(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"Нож из стали."</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
+[('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="class-components">Components of the classes of statistics<a class="headerlink" href="#class-components" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2620,8 +2701,8 @@ True
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p><code>MorphStatsComponent</code> puts the morphological statistics into the extension; by default they need the parts of speech before it.</p>
-<p>In ruTS the parts of speech and the features are taken from the model annotation (<code>token.pos_</code>, <code>token.morph</code>), and in a pipeline without <code>morphologizer</code> from ruMorph.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
+<p>In ruTS the parts of speech and the features are taken from the annotation of the pipeline (<code>token.pos_</code>, <code>token.morph</code>): ruMorph gives them in the <a href="#load_pipeline">recommended pipeline</a>, the <code>morphologizer</code> in a plain model, and in a pipeline without them they come from the ruMorph analysis by word.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_morph"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"morph"</span><span class="p">)</span>
@@ -2670,7 +2751,7 @@ True
 <li><code>SourceError</code> - a document whose extension <code>basic</code> holds no basic statistics of the class.</li>
 </ul>
 <p>The <a href="../stats/readability_stats/#presets">presets</a> of ruTS are <code>plainrussian</code>, <code>fiction</code> and <code>academic</code>, the preset of the class <code>plainrussian</code>. In ruTS the class of statistics and its <code>basic_stats_class</code> are set, so the errors of <code>stats_class</code> and <code>SourceTypeError</code> do not occur; the message of <code>SourceError</code> names the component <code>ruts_basic</code> (<code>basic_factory</code>) to add before it.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability"</span><span class="p">)</span>
@@ -2717,7 +2798,7 @@ True
 <li><code>SourceError</code> - a document whose extension <code>basic</code> holds no basic statistics of the class.</li>
 </ul>
 <p>The formulas are those of <a href="../stats/unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>, with their original coefficients and without a calibration for Russian. As for <code>ReadabilityStatsComponent</code>, the errors of <code>stats_class</code> and <code>SourceTypeError</code> do not occur in ruTS, and the message of <code>SourceError</code> names the component <code>ruts_basic</code> to add before it.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_unadapted_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"unadapted"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"basic"</span><span class="p">:</span> <span class="s2">"basic"</span><span class="p">})</span>
@@ -2783,7 +2864,7 @@ True
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">}</span>
@@ -2843,7 +2924,7 @@ True
 <li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
 </ul>
 <p>Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> is a constant of <code>anyts.constants</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2867,7 +2948,7 @@ True
 <ul>
 <li><code>ParameterError</code> - a <code>window_len</code> that is not an integer of at least 2.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2884,12 +2965,12 @@ True
 <div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </code></pre></div>
 <p><code>SyntaxStatsComponent</code> puts the syntactic statistics into the extension; they need a parser and the parts of speech before it.</p>
-<p>The <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models have a parser and the parts of speech.</p>
+<p>The <a href="#load_pipeline">recommended pipeline</a> and the <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> models have a parser and the parts of speech.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceError</code> - a document without a dependency parse or parts of speech, in a pipeline without a parser or <code>morphologizer</code>.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">)</span>
@@ -2928,7 +3009,7 @@ True
 <ul>
 <li><code>ParameterError</code> - a <code>blank_lines</code> that is not a <code>bool</code>.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Code</label><label for="__tabbed_9_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Code</label><label for="__tabbed_10_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">)</span>
@@ -2973,7 +3054,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - the frequency dictionary metrics and <code>get_stats()</code> when <code>FreqDict</code> is not downloaded.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Code</label><label for="__tabbed_10_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Code</label><label for="__tabbed_11_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">)</span>
@@ -3012,7 +3093,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded; the first document with letters raises it.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Code</label><label for="__tabbed_11_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Code</label><label for="__tabbed_12_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">)</span>
@@ -3052,11 +3133,13 @@ True
 </tr>
 </tbody>
 </table>
-<p>In ruTS the component is registered as <code>ruts_blank_lines</code>. Without it the <code>ru_core_news_sm</code> model glues a paragraph without a final mark to the next sentence, and the statistics of a <code>Doc</code> differ from those of the same string.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Code</label><label for="__tabbed_12_2">Result</label></div>
+<p>In ruTS the component is registered as <code>ruts_blank_lines</code>. Without it the parser of the <code>ru_core_news_sm</code> model glues a paragraph without a final mark to the next sentence, and the statistics of a <code>Doc</code> differ from those of the same string. In the <a href="#load_pipeline">recommended pipeline</a> the sentences are split by <code>anyseg_sentencizer</code>, and the component is not needed.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Code</label><label for="__tabbed_13_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_blank_lines"</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">"parser"</span><span class="p">)</span>
 <span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
 </code></pre></div>

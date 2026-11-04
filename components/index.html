@@ -2088,6 +2088,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#load_pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Рекомендуемый конвейер
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2301,6 +2312,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#load_pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Рекомендуемый конвейер
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#class-components" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2477,15 +2499,14 @@
 <p>Компоненты ruTS - подклассы <code>StatsComponent</code> ядра <a href="https://sergeyshk.github.io/anyTS/components/">anyTS</a>, по одному на каждый класс статистик.</p>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Примеры ниже используют модель <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
+<p>Примеры ниже используют <a href="#load_pipeline">рекомендуемый конвейер</a> на модели <code>ru_core_news_sm</code>, которая ставится отдельно: <code>python -m spacy download ru_core_news_sm</code> (см. <a href="../installation/">установку</a>).</p>
 </div>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">ruts</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">ruts</span><span class="o">.</span><span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_basic"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"basic"</span><span class="p">)</span>
 <span class="n">nlp</span><span class="p">(</span><span class="s2">"мама мыла раму"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span><span class="o">.</span><span class="n">c_letters</span>
 <span class="n">nlp</span><span class="p">(</span><span class="s2">"?!"</span><span class="p">)</span><span class="o">.</span><span class="n">_</span><span class="o">.</span><span class="n">basic</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -2534,8 +2555,68 @@ True
 <p class="admonition-title">Сериализация</p>
 <p>Компонент кладет в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code>, без компонентов.</p>
 </div>
-<p>Добавление компонента расширяет токенизатор его пайплайна правилами для приклеенных к словам тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами.</p>
-<p>Знаки ударения ruTS снимает со слов <code>Doc</code>, но части речи, признаки и зависимости дает модель, а она видит слово со знаком как незнакомое и размечает его хуже: на тексте после <code>accentuate</code> у модели <code>ru_core_news_sm</code> меняется часть речи больше половины слов. Текст с ударениями передавайте в пайплайн без них - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
+<p>Добавление компонента расширяет токенизатор spaCy его пайплайна правилами для приклеенных к словам тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы <code>Doc</code> делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами. Токенизатор anySeg <a href="#load_pipeline">рекомендуемого конвейера</a> делит слова, как строка, и компоненты его не меняют.</p>
+<p>Знаки ударения ruTS снимает со слов <code>Doc</code>. На части речи и признаки <a href="#load_pipeline">рекомендуемого конвейера</a> они не влияют, а модель видит слово со знаком как незнакомое и размечает его хуже: на тексте после <code>accentuate</code> у теггера <code>ru_core_news_sm</code> меняется часть речи больше половины слов, а зависимости - в обоих конвейерах. Текст с ударениями передавайте в пайплайн без них - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
+<h2 id="load_pipeline">Рекомендуемый конвейер<a class="headerlink" href="#load_pipeline" title="Permanent link">&para;</a></h2>
+<div class="signature highlight"><pre><span></span><code><span class="n">load_pipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">'ru_core_news_sm'</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+<p>Конвейер spaCy, в котором <code>Doc</code> размечается так же, как строка (кроме слов через дефис, которые anySeg делит на части, - муж-то, скажи-ка, два-три: в <code>Doc</code> это одно слово): токены и предложения дает сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, части речи, признаки и леммы - морфологический анализатор <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Функция загружает модель с токенизатором anySeg, без ее <code>morphologizer</code> и <code>lemmatizer</code>, и добавляет первыми компоненты <code>anyseg_sentencizer</code> и <code>rumorph</code>: ruMorph разбирает слова в контексте предложений anySeg. Сохраненный такой конвейер загружается как есть. То же вручную:</p>
+<div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="s2">"ru_core_news_sm"</span><span class="p">,</span>
+    <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">"morphologizer"</span><span class="p">,</span> <span class="s2">"lemmatizer"</span><span class="p">],</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"nlp"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"tokenizer"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"@tokenizers"</span><span class="p">:</span> <span class="s2">"anyseg.Tokenizer.v1"</span><span class="p">}}},</span>
+<span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"anyseg_sentencizer"</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"rumorph"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"anyseg_sentencizer"</span><span class="p">)</span>
+</code></pre></div>
+<p>На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный <code>spacy.load("ru_core_news_sm")</code> тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики <code>Doc</code> могут расходиться со статистиками строки.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>model</code></td>
+<td style="text-align: left;"><code>str</code></td>
+<td style="text-align: left;"><code>"ru_core_news_sm"</code></td>
+<td style="text-align: left;">Имя или путь модели spaCy: <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>exclude</code></td>
+<td style="text-align: left;"><code>str</code>, <code>list[str]</code></td>
+<td style="text-align: left;"><code>()</code></td>
+<td style="text-align: left;">Еще компоненты модели, которые не загружаются, например <code>ner</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Остальные параметры <code>spacy.load</code>; токенизатор в <code>config</code> заменяется на anySeg</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">pipe_names</span>
+<span class="p">[(</span><span class="n">token</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span><span class="p">,</span> <span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">"Нож из стали."</span><span class="p">)]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
+[('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="class-components">Компоненты классов статистик<a class="headerlink" href="#class-components" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2625,8 +2706,8 @@ True
 </code></pre></div>
 <!-- core: components.md:MorphStatsComponent 5d99bc4 -->
 <p><code>MorphStatsComponent</code> кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.</p>
-<p>В ruTS части речи и признаки берутся из разметки модели (<code>token.pos_</code>, <code>token.morph</code>), а в пайплайне без <code>morphologizer</code> - из ruMorph.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
+<p>В ruTS части речи и признаки берутся из разметки пайплайна (<code>token.pos_</code>, <code>token.morph</code>): в <a href="#load_pipeline">рекомендуемом конвейере</a> их дает ruMorph, в обычной модели - ее <code>morphologizer</code>, а в пайплайне без них - разбор ruMorph по слову.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_morph"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"morph"</span><span class="p">)</span>
@@ -2676,7 +2757,7 @@ True
 <li><code>SourceError</code> - документ, в расширении <code>basic</code> которого нет основных статистик класса.</li>
 </ul>
 <p><a href="../stats/readability_stats/#presets">Пресеты</a> ruTS - <code>plainrussian</code>, <code>fiction</code> и <code>academic</code>, пресет класса - <code>plainrussian</code>. В ruTS класс статистик и его <code>basic_stats_class</code> заданы, поэтому ошибок <code>stats_class</code> и <code>SourceTypeError</code> не бывает; сообщение <code>SourceError</code> называет компонент <code>ruts_basic</code> (<code>basic_factory</code>), который нужно добавить перед ним.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"readability"</span><span class="p">)</span>
@@ -2724,7 +2805,7 @@ True
 <li><code>SourceError</code> - документ, в расширении <code>basic</code> которого нет основных статистик класса.</li>
 </ul>
 <p>Формулы - <a href="../stats/unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a> с исходными коэффициентами, без калибровки под русский язык. Как и у <code>ReadabilityStatsComponent</code>, в ruTS ошибок <code>stats_class</code> и <code>SourceTypeError</code> не бывает, а сообщение <code>SourceError</code> называет компонент <code>ruts_basic</code>, который нужно добавить перед ним.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_unadapted_readability"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"unadapted"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"basic"</span><span class="p">:</span> <span class="s2">"basic"</span><span class="p">})</span>
@@ -2791,7 +2872,7 @@ True
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"log_base"</span><span class="p">:</span> <span class="mf">2.718281828459045</span><span class="p">}</span>
@@ -2852,7 +2933,7 @@ True
 <li><code>ParameterError</code> - <code>top_n</code>, который не целое число не меньше единицы.</li>
 </ul>
 <p>Без списков слова «воды» и стоп-слова тошноты определяются по разметке ruMorph, а штампы берутся из <code>OFFICIALESE_CLICHES</code>; <code>NAUSEA_TOP_N</code> - константа <code>anyts.constants</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_style"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"style"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"stopwords"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"и"</span><span class="p">,</span> <span class="s2">"в"</span><span class="p">,</span> <span class="s2">"не"</span><span class="p">],</span> <span class="s2">"top_n"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2877,7 +2958,7 @@ True
 <ul>
 <li><code>ParameterError</code> - <code>window_len</code>, который не целое число не меньше 2.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_phon"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"phon"</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">"window_len"</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
@@ -2895,12 +2976,12 @@ True
 </code></pre></div>
 <!-- core: components.md:SyntaxStatsComponent f99599b -->
 <p><code>SyntaxStatsComponent</code> кладет в расширение синтаксические статистики; перед ним нужны парсер и части речи.</p>
-<p>Парсер и части речи есть в моделях <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>.</p>
+<p>Парсер и части речи есть в <a href="#load_pipeline">рекомендуемом конвейере</a> и в моделях <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceError</code> - документ без разбора зависимостей или частей речи, в пайплайне без парсера или <code>morphologizer</code>.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_syntax"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"syntax"</span><span class="p">)</span>
@@ -2939,7 +3020,7 @@ True
 <ul>
 <li><code>ParameterError</code> - <code>blank_lines</code> не <code>bool</code>.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Код</label><label for="__tabbed_10_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_cohesion"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cohesion"</span><span class="p">)</span>
@@ -2984,7 +3065,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - метрики частотного словаря и <code>get_stats()</code>, когда <code>FreqDict</code> не загружен.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Код</label><label for="__tabbed_10_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Код</label><label for="__tabbed_11_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_lexical"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"lexical"</span><span class="p">)</span>
@@ -3023,7 +3104,7 @@ True
 <ul>
 <li><code>DatasetNotFoundError</code> - словарь ударений не загружен; ошибку дает первый документ с буквами.</li>
 </ul>
-<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Код</label><label for="__tabbed_11_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Код</label><label for="__tabbed_12_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_verse"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"verse"</span><span class="p">)</span>
@@ -3064,11 +3145,13 @@ True
 </tr>
 </tbody>
 </table>
-<p>В ruTS компонент зарегистрирован как <code>ruts_blank_lines</code>. Без него модель <code>ru_core_news_sm</code> склеивает абзац без конечного знака со следующим предложением, и статистики <code>Doc</code> расходятся со статистиками той же строки.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Код</label><label for="__tabbed_12_2">Результат</label></div>
+<p>В ruTS компонент зарегистрирован как <code>ruts_blank_lines</code>. Без него парсер модели <code>ru_core_news_sm</code> склеивает абзац без конечного знака со следующим предложением, и статистики <code>Doc</code> расходятся со статистиками той же строки. В <a href="#load_pipeline">рекомендуемом конвейере</a> предложения делит <code>anyseg_sentencizer</code>, и компонент не нужен.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Код</label><label for="__tabbed_13_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_blank_lines"</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">"parser"</span><span class="p">)</span>
 <span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
 </code></pre></div>

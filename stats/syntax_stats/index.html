@@ -2943,15 +2943,14 @@
 <li><code>SourceTypeError</code> - источник, который не <code>Doc</code>;</li>
 <li><code>SourceError</code> - источник без разбора зависимостей (отношений и границ предложений), без частей речи, без лемм, если класс их требует, или без слов.</li>
 </ul>
-<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем. Отношения и признаки берутся из разметки <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> моделей <code>ru_core_news_sm</code>, <code>ru_core_news_md</code> и <code>ru_core_news_lg</code>; качество статистик ограничено качеством разбора: маленькая модель <code>ru_core_news_sm</code> ошибается в частях речи и связях заметно чаще, чем <code>ru_core_news_lg</code>. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>SYNTAX_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем. Отношения <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> берутся из разбора зависимостей модели spaCy (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), части речи и признаки - из разметки пайплайна: в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>SYNTAX_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <p>Иванов, Солнышкина и Соловьёв проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93. Карточки метрик называют исходные признаки работы и их коэффициенты корреляции с классом учебника.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SyntaxStats</span><span class="p">,</span> <span class="n">load_pipeline</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">text</span> <span class="o">=</span> <span class="s2">"Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."</span>
 <span class="n">ss</span> <span class="o">=</span> <span class="n">SyntaxStats</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">print_stats</span><span class="p">()</span>
@@ -3489,10 +3488,10 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_dependency_distances</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
 <span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 </code></pre></div>
@@ -3724,10 +3723,10 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_clause_head</span><span class="p">,</span> <span class="n">is_infinitive_clause_head</span><span class="p">,</span> <span class="n">is_subordinate_clause_head</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Он хочет уйти, но может остаться, если его попросят."</span><span class="p">)</span>
 <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
 <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
@@ -3838,10 +3837,10 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_genitive_chains</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">calc_genitive_chains</span><span class="p">(</span>
     <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
 <span class="p">)</span>
@@ -3998,10 +3997,10 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_split_predicates</span><span class="p">,</span> <span class="n">is_negation</span>
 
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Проверка проводится ежегодно, но решение не принято."</span><span class="p">)</span>
 <span class="n">find_split_predicates</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
@@ -4053,20 +4052,20 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>{'mean_dependency_distance': 1.9333333333333333,
+<div class="highlight"><pre><span></span><code>{'mean_dependency_distance': 2.066666666666667,
  'std_dependency_distance': 1.6110727964792764,
  'max_dependency_distance': 5.0,
- 'p_adjacent_dependencies': 0.6,
- 'tree_depth': 4.0,
+ 'p_adjacent_dependencies': 0.5333333333333333,
+ 'tree_depth': 3.5,
  'leaves_per_sent': 4.5,
  'subtrees_per_sent': 4.0,
  'nodes_per_leaf': 1.9,
- 'words_before_root': 4.0,
- 'verb_valency': 2.0,
+ 'words_before_root': 5.0,
+ 'verb_valency': 1.6666666666666667,
  'coordination_chains_per_sent': 0.5,
  'mean_coordination_chain_len': 2.0,
- 'clauses_per_sent': 1.5,
- 'mean_clause_len': 5.666666666666667,
+ 'clauses_per_sent': 2.0,
+ 'mean_clause_len': 4.25,
  'subordinate_clauses_per_sent': 0.5,
  'p_complex_sents': 0.5,
  'infinitive_clauses_per_sent': 0.0,
@@ -4077,7 +4076,7 @@ T-единиц на предложение                                  |   
  'verb_phrases_per_t_unit': 2.5,
  'coordinate_phrases_per_clause': 0.3333333333333333,
  'complex_nominals_per_clause': 1.0,
- 'modifiers_per_noun': 0.4,
+ 'modifiers_per_noun': 0.5,
  'prep_chains_per_sent': 0.0,
  'max_prep_chain_len': 0,
  'genitive_chains_per_sent': 0.0,
@@ -4086,16 +4085,16 @@ T-единиц на предложение                                  |   
  'mean_participle_clause_len': 5.0,
  'converb_clauses_per_sent': 0.5,
  'mean_converb_clause_len': 2.0,
- 'p_passive': 0.4,
+ 'p_passive': 0.3333333333333333,
  'p_agentless_passive': 0.5,
  'infinitives_per_sent': 0.0,
  'negations_per_sent': 0.5,
  'split_predicates_per_sent': 0.0,
  'p_preverbal_subjects': 1.0,
- 'p_preverbal_objects': nan,
+ 'p_preverbal_objects': 0.0,
  'pos_edit_distance': 0.7777777777777778,
  'syntax_similarity': 0.0625,
- 'noun_verb_ratio': 1.0}
+ 'noun_verb_ratio': 0.6666666666666666}
 </code></pre></div>
 </div>
 </div>
