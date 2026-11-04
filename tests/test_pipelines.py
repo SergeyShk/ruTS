@@ -85,6 +85,9 @@ def test_imperative_labels():
     stats = MorphStats(load_nlp()(text)).get_stats("involvement", "transitivity")
     assert stats == MorphStats(text).get_stats("involvement", "transitivity")
     assert stats["involvement"]["Ex"] == 3
+    # У модели лицо Second, у ruMorph - 2
+    model = MorphStats(load_model_nlp()(text)).get_stats("involvement", filter_none=True)
+    assert model["involvement"] == {"Ex": 3}
 
 
 def test_load_pipeline_options(tmp_path):

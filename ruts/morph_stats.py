@@ -503,11 +503,12 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
     features["person"] = UD_PERSONS.get(features["person"] or "", features["person"])
     if features["style_variant"] is None and "Short" in morph.get("Variant", "").split(","):
         features["style_variant"] = "Short"
-    verb = (
-        parse_verb(token.text, token.lemma_, str(token.morph))
-        if token.pos_ in VERBAL_POS
-        else None
+    # Лицо моделей ru_core_news (Second) - в обозначениях ruMorph (2), иначе разбор не найдется
+    feats = "|".join(
+        f"{name}={UD_PERSONS.get(value, value) if name == 'Person' else value}"
+        for name, value in morph.items()
     )
+    verb = parse_verb(token.text, token.lemma_, feats) if token.pos_ in VERBAL_POS else None
     labels = verb.labels if verb else frozenset()
     for stat, values in LABEL_FEATURES.items():
         features[stat] = next((value for label, value in values.items() if label in labels), None)
