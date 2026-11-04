@@ -1317,6 +1317,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nominal_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Именные цепочки
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#participle_clauses" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2689,6 +2700,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nominal_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Именные цепочки
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#participle_clauses" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2988,6 +3010,8 @@ T-единиц на предложение                                  |   
 Максимальная длина предложной цепочки                    |    0
 Цепочек родительных падежей на предложение               |   0.00
 Максимальная длина цепочки родительных падежей           |    0
+Именных цепочек на предложение                           |   0.00
+Максимальная длина именной цепочки                       |    0
 Причастных оборотов на предложение                       |   0.50
 Средняя длина причастного оборота (слов)                 |   5.00
 Деепричастных оборотов на предложение                    |   0.50
@@ -3133,7 +3157,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>Атрибуты конструкций ruTS - <code>n_genitive_chains</code> и <code>n_converb_clauses</code> (<code>int</code>): количество цепочек родительных падежей и деепричастных оборотов.</p>
+<p>Атрибуты конструкций ruTS - <code>n_genitive_chains</code>, <code>n_nominal_chains</code> и <code>n_converb_clauses</code> (<code>int</code>): количество цепочек родительных падежей, именных цепочек и деепричастных оборотов.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3436,6 +3460,18 @@ T-единиц на предложение                                  |   
 <tr>
 <td style="text-align: left;"><a href="#genitive_chains"><code>max_genitive_chain_len</code></a></td>
 <td style="text-align: left;">Наибольшая длина цепочки родительных падежей в тексте</td>
+<td style="text-align: left;">0 без цепочек, иначе от 2</td>
+<td style="text-align: left;">длиннее цепочка</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#nominal_chains"><code>nominal_chains_per_sent</code></a></td>
+<td style="text-align: left;">Именных цепочек (родительные и предложные звенья) на предложение</td>
+<td style="text-align: left;">от 0</td>
+<td style="text-align: left;">больше цепочек</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#nominal_chains"><code>max_nominal_chain_len</code></a></td>
+<td style="text-align: left;">Наибольшая длина именной цепочки в тексте</td>
 <td style="text-align: left;">0 без цепочек, иначе от 2</td>
 <td style="text-align: left;">длиннее цепочка</td>
 </tr>
@@ -3854,6 +3890,60 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 <div class="metric-card">
+<h3 id="nominal_chains">Именные цепочки<a class="headerlink" href="#nominal_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>nominal_chains_per_sent</code> · <code>max_nominal_chain_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_nominal_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<p>Длины именных цепочек в порядке слов - цепочек <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a>, звенья которых - определения в родительном падеже и дополнения с предлогом в любом порядке: «рост цен на нефть» - цепочка длины 2, «о повышении эффективности работы отдела» - длины 4. Предложная группа - сама звено, как у предложных цепочек, поэтому та же группа при глаголе дает цепочку длиннее, чем в роли подлежащего: «сидел во втором ряду кресел» - длина 2, «второй ряд кресел пустовал» - цепочки нет. Цепочки родительных падежей и предложные цепочки - частные случаи именной: на TextsByGrade больше двух третей именных цепочек смешанные (68 %), почти половина (46 %) не содержит ни одной из них, а с классом текста именные цепочки связаны сильнее (ρ = 0.76 против 0.65 и 0.63).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_nominal_chain_link</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Проверяет, является ли слово звеном именной цепочки: беспредложным определением в родительном падеже (<a href="#genitive_chains"><code>is_genitive_modifier</code></a>) или дополнением с предлогом (<code>is_prep_complement</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Параметр</th>
+<th style="text-align: left;">Тип</th>
+<th style="text-align: left;">По умолчанию</th>
+<th style="text-align: left;">Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Последовательность токенов (<code>calc_nominal_chains</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Токен (<code>is_nominal_chain_link</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_nominal_chains</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
+<span class="n">calc_nominal_chains</span><span class="p">(</span>
+    <span class="n">nlp</span><span class="p">(</span>
+        <span class="s2">"Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[2, 4]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
 <h3 id="participle_clauses">Причастные обороты<a class="headerlink" href="#participle_clauses" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>participle_clauses_per_sent</code> · <code>mean_participle_clause_len</code></p>
 <!-- core: stats/syntax_stats.md:SyntaxStats-participle_clauses 098c370 -->
@@ -3994,7 +4084,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
@@ -4045,7 +4135,7 @@ T-единиц на предложение                                  |   
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у синтаксических статистик нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
@@ -4081,6 +4171,8 @@ T-единиц на предложение                                  |   
  'max_prep_chain_len': 0,
  'genitive_chains_per_sent': 0.0,
  'max_genitive_chain_len': 0,
+ 'nominal_chains_per_sent': 0.0,
+ 'max_nominal_chain_len': 0,
  'participle_clauses_per_sent': 0.5,
  'mean_participle_clause_len': 5.0,
  'converb_clauses_per_sent': 0.5,

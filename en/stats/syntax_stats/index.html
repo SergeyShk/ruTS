@@ -1317,6 +1317,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nominal_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nominal chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#participle_clauses" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2689,6 +2700,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nominal_chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nominal chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#participle_clauses" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2987,6 +3009,8 @@ T-единиц на предложение                                  |   
 Максимальная длина предложной цепочки                    |    0
 Цепочек родительных падежей на предложение               |   0.00
 Максимальная длина цепочки родительных падежей           |    0
+Именных цепочек на предложение                           |   0.00
+Максимальная длина именной цепочки                       |    0
 Причастных оборотов на предложение                       |   0.50
 Средняя длина причастного оборота (слов)                 |   5.00
 Деепричастных оборотов на предложение                    |   0.50
@@ -3131,7 +3155,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>The attributes of the constructions of ruTS are <code>n_genitive_chains</code> and <code>n_converb_clauses</code> (<code>int</code>): the numbers of genitive chains and of adverbial participle clauses.</p>
+<p>The attributes of the constructions of ruTS are <code>n_genitive_chains</code>, <code>n_nominal_chains</code> and <code>n_converb_clauses</code> (<code>int</code>): the numbers of genitive chains, of nominal chains and of adverbial participle clauses.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3433,6 +3457,18 @@ T-единиц на предложение                                  |   
 <tr>
 <td style="text-align: left;"><a href="#genitive_chains"><code>max_genitive_chain_len</code></a></td>
 <td style="text-align: left;">Longest genitive chain of the text</td>
+<td style="text-align: left;">0 without chains, otherwise 2 and above</td>
+<td style="text-align: left;">A longer chain</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#nominal_chains"><code>nominal_chains_per_sent</code></a></td>
+<td style="text-align: left;">Nominal chains (genitive and prepositional links) per sentence</td>
+<td style="text-align: left;">0 and above</td>
+<td style="text-align: left;">More chains</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#nominal_chains"><code>max_nominal_chain_len</code></a></td>
+<td style="text-align: left;">Longest nominal chain of the text</td>
 <td style="text-align: left;">0 without chains, otherwise 2 and above</td>
 <td style="text-align: left;">A longer chain</td>
 </tr>
@@ -3842,6 +3878,60 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 <div class="metric-card">
+<h3 id="nominal_chains">Nominal chains<a class="headerlink" href="#nominal_chains" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>nominal_chains_per_sent</code> · <code>max_nominal_chain_len</code></p>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_nominal_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</code></pre></div>
+<p>The lengths of the nominal chains in the order of the words: the chains of <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a> whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2, «о повышении эффективности работы отдела» of length 4. A prepositional phrase is a link itself, as in prepositional chains, so the same phrase gives a longer chain with a verb than as a subject: «сидел во втором ряду кресел» has length 2, «второй ряд кресел пустовал» no chain. Genitive chains and prepositional chains are special cases of a nominal one: on TextsByGrade more than two thirds of the nominal chains are mixed (68 %), almost half (46 %) contain neither, and the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_nominal_chain_link</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</code></pre></div>
+<p>Checks whether a word is a link of a nominal chain: a prepositionless genitive modifier (<a href="#genitive_chains"><code>is_genitive_modifier</code></a>) or a complement with a preposition (<code>is_prep_complement</code>).</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Default</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>tokens</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Sequence of tokens (<code>calc_nominal_chains</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>token</code></td>
+<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Token (<code>is_nominal_chain_link</code>)</td>
+</tr>
+</tbody>
+</table>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_nominal_chains</span>
+
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
+<span class="n">calc_nominal_chains</span><span class="p">(</span>
+    <span class="n">nlp</span><span class="p">(</span>
+        <span class="s2">"Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>[2, 4]
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="metric-card">
 <h3 id="participle_clauses">Participial clauses<a class="headerlink" href="#participle_clauses" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>participle_clauses_per_sent</code> · <code>mean_participle_clause_len</code></p>
 <p>The clauses headed by the words of the hook <code>is_participle_clause</code>; the length of a clause is the number of the words in the subtree of its head (<code>subtree_len</code>).</p>
@@ -3977,7 +4067,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
@@ -4025,7 +4115,7 @@ T-единиц на предложение                                  |   
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the syntactic statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">get_stats</span><span class="p">()</span>
@@ -4061,6 +4151,8 @@ T-единиц на предложение                                  |   
  'max_prep_chain_len': 0,
  'genitive_chains_per_sent': 0.0,
  'max_genitive_chain_len': 0,
+ 'nominal_chains_per_sent': 0.0,
+ 'max_nominal_chain_len': 0,
  'participle_clauses_per_sent': 0.5,
  'mean_participle_clause_len': 5.0,
  'converb_clauses_per_sent': 0.5,
