@@ -441,7 +441,9 @@ Checks whether a word is a link of a nominal chain: a prepositionless genitive m
 
     nlp = load_pipeline()
     calc_nominal_chains(
-        nlp("Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили.")
+        nlp(
+            "Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."
+        )
     )
     ```
 
