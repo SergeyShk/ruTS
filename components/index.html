@@ -2569,7 +2569,7 @@ True
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"anyseg_sentencizer"</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"rumorph"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"anyseg_sentencizer"</span><span class="p">)</span>
 </code></pre></div>
-<p>На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный <code>spacy.load("ru_core_news_sm")</code> тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики <code>Doc</code> могут расходиться со статистиками строки.</p>
+<p>На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный <code>spacy.load("ru_core_news_sm")</code> тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики <code>Doc</code> могут расходиться со статистиками строки. Ошибки ее теггера ruTS не обходит: «коли» и «ежели» она размечает глаголом или именем, коннекторы «значит» и «главное» - глаголом и прилагательным, «т.е.» - знаком препинания, и такие коннекторы не находятся (на TextsByGrade и SovChLit - 11 на 71 тыс. слов), а «боишься», «смеешься» - инфинитивом, и придаточная с ними считается инфинитивной клаузой.</p>
 <table>
 <thead>
 <tr>
