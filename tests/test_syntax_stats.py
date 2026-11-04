@@ -917,3 +917,12 @@ def test_model_new_core_stats(nlp, text, expected):
     """Метрики ядра 0.4 на русских предложениях с русскими крючками клауз"""
     stats = SyntaxStats(nlp(text)).get_stats()
     assert {key: stats[key] for key in expected} == pytest.approx(expected)
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["– Но так увлекаться невозможно, тут что-нибудь да есть.", "Так увлекаться возможно."],
+)
+def test_possible_with_infinitive(nlp, text):
+    """«Возможно», «невозможно» с инфинитивом - одна предикация и у наречия ruMorph"""
+    assert SyntaxStats(nlp(text)).n_infinitive_clauses == 0

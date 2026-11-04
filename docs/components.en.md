@@ -70,7 +70,7 @@ nlp.add_pipe("anyseg_sentencizer", first=True)
 nlp.add_pipe("rumorph", after="anyseg_sentencizer")
 ```
 
-On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags коли and ежели as a verb or a noun, the connector значит as a verb and т.е. as a punctuation mark, so these connectors are not found (15 of 5525 on TextsByGrade and SovChLit), and боишься, смеешься as an infinitive, so the subordinate clause with them counts as an infinitive clause.
+On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags коли and ежели as a verb or a noun, the connectors значит and главное as a verb and an adjective and т.е. as a punctuation mark, so these connectors are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься, смеешься as an infinitive, so the subordinate clause with them counts as an infinitive clause.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
