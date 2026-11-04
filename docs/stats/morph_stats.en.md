@@ -78,7 +78,7 @@ The statistics are the part of speech `pos` and the features of the table below 
 | `verb_form` | Verb form | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Voice | `Act`, `Pass`, `Mid` |
 
-The values for a string and for an annotated `Doc` may differ: both spaCy and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.
+For a `Doc` of the [recommended pipeline](../components.md#load_pipeline) the values are those of the string: ruMorph annotates it; only a hyphenated word that anySeg splits into parts (муж-то, скажи-ка) is one word in a `Doc`. With a plain spaCy model they may differ: both the model and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.
 
 <div class="metric-card" markdown>
 

@@ -10,15 +10,14 @@ StatsComponent(nlp, name)
 Компоненты ruTS - подклассы `StatsComponent` ядра [anyTS](https://sergeyshk.github.io/anyTS/components/), по одному на каждый класс статистик.
 
 !!! note "Примечание"
-    Примеры ниже используют модель `ru_core_news_sm`, которая ставится отдельно: `python -m spacy download ru_core_news_sm` (см. [установку](installation.md)).
+    Примеры ниже используют [рекомендуемый конвейер](#load_pipeline) на модели `ru_core_news_sm`, которая ставится отдельно: `python -m spacy download ru_core_news_sm` (см. [установку](installation.md)).
 
 === "Код"
 
     ``` python
     import ruts
-    import spacy
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = ruts.load_pipeline()
     nlp.add_pipe("ruts_basic", name="basic")
     nlp("мама мыла раму")._.basic.c_letters
     nlp("?!")._.basic is None
@@ -53,9 +52,52 @@ StatsComponent(nlp, name)
 !!! warning "Сериализация"
     Компонент кладет в `doc._.<name>` объект класса статистик, который spaCy сериализовать не умеет: `Doc.to_bytes()`, `DocBin(store_user_data=True)` и `nlp.pipe(..., n_process>1)` с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (`doc.to_bytes(exclude=["user_data"])`) или сохраняйте `doc._.<name>.get_stats()` отдельно; для многопроцессной обработки считайте статистики в основном процессе после `nlp.pipe`, без компонентов.
 
-Добавление компонента расширяет токенизатор его пайплайна правилами для приклеенных к словам тире реплик (`ruts.utils.add_dash_rules`), чтобы `Doc` делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами.
+Добавление компонента расширяет токенизатор spaCy его пайплайна правилами для приклеенных к словам тире реплик (`ruts.utils.add_dash_rules`), чтобы `Doc` делился на слова так же, как строка; для своего пайплайна без компонентов ruTS вызовите эту функцию сами. Токенизатор anySeg [рекомендуемого конвейера](#load_pipeline) делит слова, как строка, и компоненты его не меняют.
 
-Знаки ударения ruTS снимает со слов `Doc`, но части речи, признаки и зависимости дает модель, а она видит слово со знаком как незнакомое и размечает его хуже: на тексте после `accentuate` у модели `ru_core_news_sm` меняется часть речи больше половины слов. Текст с ударениями передавайте в пайплайн без них - `nlp(ruts.utils.strip_marks(text))`.
+Знаки ударения ruTS снимает со слов `Doc`. На части речи и признаки [рекомендуемого конвейера](#load_pipeline) они не влияют, а модель видит слово со знаком как незнакомое и размечает его хуже: на тексте после `accentuate` у теггера `ru_core_news_sm` меняется часть речи больше половины слов, а зависимости - в обоих конвейерах. Текст с ударениями передавайте в пайплайн без них - `nlp(ruts.utils.strip_marks(text))`.
+
+## Рекомендуемый конвейер { #load_pipeline }
+
+``` {.python .signature}
+load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
+```
+
+Конвейер spaCy, в котором `Doc` размечается так же, как строка (кроме слов через дефис, которые anySeg делит на части, - муж-то, скажи-ка, два-три: в `Doc` это одно слово): токены и предложения дает сегментатор [anySeg](https://github.com/SergeyShk/anySeg), части речи, признаки и леммы - морфологический анализатор [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Функция загружает модель с токенизатором anySeg, без ее `morphologizer` и `lemmatizer`, и добавляет первыми компоненты `anyseg_sentencizer` и `rumorph`: ruMorph разбирает слова в контексте предложений anySeg. Сохраненный такой конвейер загружается как есть. То же вручную:
+
+``` python
+nlp = spacy.load(
+    "ru_core_news_sm",
+    exclude=["morphologizer", "lemmatizer"],
+    config={"nlp": {"tokenizer": {"@tokenizers": "anyseg.Tokenizer.v1"}}},
+)
+nlp.add_pipe("anyseg_sentencizer", first=True)
+nlp.add_pipe("rumorph", after="anyseg_sentencizer")
+```
+
+На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный `spacy.load("ru_core_news_sm")` тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики `Doc` могут расходиться со статистиками строки.
+
+| Параметр | Тип | По умолчанию | Описание |
+| :------- | :-- | :----------- | :------- |
+| `model` | `str` | `"ru_core_news_sm"` | Имя или путь модели spaCy: `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` |
+| `exclude` | `str`, `list[str]` | `()` | Еще компоненты модели, которые не загружаются, например `ner` |
+| `**kwargs` | - | - | Остальные параметры `spacy.load`; токенизатор в `config` заменяется на anySeg |
+
+=== "Код"
+
+    ``` python
+    from ruts import load_pipeline
+
+    pipeline = load_pipeline()
+    pipeline.pipe_names
+    [(token.text, token.pos_, token.lemma_) for token in pipeline("Нож из стали.")]
+    ```
+
+=== "Результат"
+
+    ```
+    ['anyseg_sentencizer', 'rumorph', 'tok2vec', 'parser', 'attribute_ruler', 'ner']
+    [('Нож', 'NOUN', 'нож'), ('из', 'ADP', 'из'), ('стали', 'NOUN', 'сталь'), ('.', 'PUNCT', '.')]
+    ```
 
 ## Компоненты классов статистик { #class-components }
 
@@ -91,7 +133,7 @@ MorphStatsComponent(nlp, name)
 <!-- core: components.md:MorphStatsComponent 5d99bc4 -->
 `MorphStatsComponent` кладет в расширение морфологические статистики; по умолчанию перед ним нужны части речи.
 
-В ruTS части речи и признаки берутся из разметки модели (`token.pos_`, `token.morph`), а в пайплайне без `morphologizer` - из ruMorph.
+В ruTS части речи и признаки берутся из разметки пайплайна (`token.pos_`, `token.morph`): в [рекомендуемом конвейере](#load_pipeline) их дает ruMorph, в обычной модели - ее `morphologizer`, а в пайплайне без них - разбор ruMorph по слову.
 
 === "Код"
 
@@ -294,7 +336,7 @@ SyntaxStatsComponent(nlp, name)
 <!-- core: components.md:SyntaxStatsComponent f99599b -->
 `SyntaxStatsComponent` кладет в расширение синтаксические статистики; перед ним нужны парсер и части речи.
 
-Парсер и части речи есть в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`.
+Парсер и части речи есть в [рекомендуемом конвейере](#load_pipeline) и в моделях `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`.
 
 Исключения:
 
@@ -424,11 +466,13 @@ start_sents_after_blank_lines(doc)
 | :------- | :-- | :----------- | :------- |
 | `doc` | `Doc` | - | Объект Doc |
 
-В ruTS компонент зарегистрирован как `ruts_blank_lines`. Без него модель `ru_core_news_sm` склеивает абзац без конечного знака со следующим предложением, и статистики `Doc` расходятся со статистиками той же строки.
+В ruTS компонент зарегистрирован как `ruts_blank_lines`. Без него парсер модели `ru_core_news_sm` склеивает абзац без конечного знака со следующим предложением, и статистики `Doc` расходятся со статистиками той же строки. В [рекомендуемом конвейере](#load_pipeline) предложения делит `anyseg_sentencizer`, и компонент не нужен.
 
 === "Код"
 
     ``` python
+    import spacy
+
     nlp = spacy.load("ru_core_news_sm")
     nlp.add_pipe("ruts_blank_lines", before="parser")
     [sent.text.strip() for sent in nlp("Что нового\n\nБыстрый импорт. Меньше ошибок").sents]

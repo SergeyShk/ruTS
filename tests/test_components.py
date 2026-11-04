@@ -35,6 +35,7 @@ from ruts.constants import (
 from ruts.datasets import FreqDict, StressDict
 from ruts.datasets.stress_dict import FILENAME as STRESS_FILENAME
 from ruts.exceptions import ParameterError, SourceError, SourceTypeError
+from tests.pipelines import load_model_nlp, load_nlp
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -234,8 +235,7 @@ def test_components_filter_punctuation(spacy_doc):
 
 @pytest.fixture(scope="module")
 def parsed_nlp():
-    pytest.importorskip("ru_core_news_sm")
-    parsed_nlp = spacy.load("ru_core_news_sm")
+    parsed_nlp = load_nlp()
     parsed_nlp.add_pipe("ruts_syntax", name="syntax", last=True)
 
     yield parsed_nlp
@@ -252,14 +252,15 @@ def test_component_syntax(parsed_nlp):
 
 
 def test_component_blank_lines(parsed_nlp):
-    """Перед парсером ruts_blank_lines дает Doc те же предложения, что и строке"""
+    """Перед парсером модели ruts_blank_lines дает Doc те же предложения, что и строке;
+    в конвейере с anyseg_sentencizer они такие и без него"""
     post = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\nСписок изменений"
-    assert BasicStats(parsed_nlp(post)).n_sents == 2
-    parsed_nlp.add_pipe("ruts_blank_lines", before="parser")
-    try:
-        doc = parsed_nlp(post)
-    finally:
-        parsed_nlp.remove_pipe("ruts_blank_lines")
+    assert BasicStats(parsed_nlp(post)).n_sents == BasicStats(post).n_sents == 4
+    model_nlp = load_model_nlp()
+    model_nlp.add_pipe("ruts_syntax", name="syntax", last=True)
+    assert BasicStats(model_nlp(post)).n_sents == 2
+    model_nlp.add_pipe("ruts_blank_lines", before="parser")
+    doc = model_nlp(post)
     assert [sent.text.strip() for sent in doc.sents] == [
         "Что нового",
         "Быстрый импорт.",
@@ -312,8 +313,7 @@ def test_component_syntax_requires_parser():
 
 def test_component_syntax_requires_pos():
     """Пайплайн без частей речи spaCy называет проблемой до первого документа"""
-    pytest.importorskip("ru_core_news_sm")
-    nlp = spacy.load("ru_core_news_sm", exclude=["morphologizer"])
+    nlp = load_model_nlp(exclude=["morphologizer"])
     nlp.add_pipe("ruts_syntax", name="syntax", last=True)
     assert nlp.analyze_pipes(pretty=False)["problems"]["syntax"] == ["token.pos"]
     with pytest.raises(ValueError, match="части речи"):

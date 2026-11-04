@@ -11,6 +11,7 @@ from ruts.corpus import sentence_rhythm, split_windows
 from ruts.diversity_stats import calc_ttr, calc_windowed, check_params
 from ruts.readability_stats import calc_reading_time
 from ruts.visualizers.highlight import HighlightedText
+from tests.pipelines import load_model_nlp
 
 # Публичные имена 0.15.0.dev7: переезд на ядро не должен терять ни одного
 PACKAGE_NAMES = {
@@ -626,7 +627,7 @@ def test_pipeline_without_morphologizer(tmp_path):
     freq_dict = FreqDict(data_dir=tmp_path)
 
     text = "Мама мыла раму, а папа читал книгу.\n\nДети играли во дворе. Они устали."
-    tagged = spacy.load("ru_core_news_sm", exclude=["morphologizer"])(text)
+    tagged = load_model_nlp(exclude=["morphologizer"])(text)
     blank = spacy.blank("ru")
     blank.add_pipe("sentencizer")
     untagged = blank(text)

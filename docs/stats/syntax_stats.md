@@ -12,17 +12,16 @@ SyntaxStats(source)
 - `SourceTypeError` - источник, который не `Doc`;
 - `SourceError` - источник без разбора зависимостей (отношений и границ предложений), без частей речи, без лемм, если класс их требует, или без слов.
 
-Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем. Отношения и признаки берутся из разметки [Universal Dependencies](https://universaldependencies.org/u/dep/) моделей `ru_core_news_sm`, `ru_core_news_md` и `ru_core_news_lg`; качество статистик ограничено качеством разбора: маленькая модель `ru_core_news_sm` ошибается в частях речи и связях заметно чаще, чем `ru_core_news_lg`. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица `print_stats` и сообщения об ошибках - по-русски (`SYNTAX_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем. Отношения [Universal Dependencies](https://universaldependencies.org/u/dep/) берутся из разбора зависимостей модели spaCy (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), части речи и признаки - из разметки пайплайна: в [рекомендуемом конвейере](../components.md#load_pipeline) - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица `print_stats` и сообщения об ошибках - по-русски (`SYNTAX_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 Иванов, Солнышкина и Соловьёв проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93. Карточки метрик называют исходные признаки работы и их коэффициенты корреляции с классом учебника.
 
 === "Код"
 
     ``` python
-    import spacy
-    from ruts import SyntaxStats
+    from ruts import SyntaxStats, load_pipeline
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     text = "Дом, построенный рабочими в прошлом году, был продан. Хлопнув дверью, он ушел и сказал, что не придет."
     ss = SyntaxStats(nlp(text))
     ss.print_stats()
@@ -224,10 +223,10 @@ calc_dependency_distances(tokens, join_hyphens=False)
 === "Код"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import calc_dependency_distances
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
     calc_dependency_distances(doc)
     ```
@@ -421,10 +420,10 @@ is_infinitive_clause_head(token)
 === "Код"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import is_clause_head, is_infinitive_clause_head, is_subordinate_clause_head
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Он хочет уйти, но может остаться, если его попросят.")
     [token.text for token in doc if is_clause_head(token)]
     [token.text for token in doc if is_subordinate_clause_head(token)]
@@ -530,10 +529,10 @@ is_genitive_modifier(token)
 === "Код"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import calc_genitive_chains
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     calc_genitive_chains(
         nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
     )
@@ -670,10 +669,10 @@ is_split_predicate_noun(token, verb=None)
 === "Код"
 
     ``` python
-    import spacy
+    from ruts import load_pipeline
     from ruts.syntax_stats import find_split_predicates, is_negation
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     doc = nlp("Проверка проводится ежегодно, но решение не принято.")
     find_split_predicates(doc)
     [token.text for token in doc if is_negation(token)]
@@ -751,20 +750,20 @@ $$
 === "Результат"
 
     ```
-    {'mean_dependency_distance': 1.9333333333333333,
+    {'mean_dependency_distance': 2.066666666666667,
      'std_dependency_distance': 1.6110727964792764,
      'max_dependency_distance': 5.0,
-     'p_adjacent_dependencies': 0.6,
-     'tree_depth': 4.0,
+     'p_adjacent_dependencies': 0.5333333333333333,
+     'tree_depth': 3.5,
      'leaves_per_sent': 4.5,
      'subtrees_per_sent': 4.0,
      'nodes_per_leaf': 1.9,
-     'words_before_root': 4.0,
-     'verb_valency': 2.0,
+     'words_before_root': 5.0,
+     'verb_valency': 1.6666666666666667,
      'coordination_chains_per_sent': 0.5,
      'mean_coordination_chain_len': 2.0,
-     'clauses_per_sent': 1.5,
-     'mean_clause_len': 5.666666666666667,
+     'clauses_per_sent': 2.0,
+     'mean_clause_len': 4.25,
      'subordinate_clauses_per_sent': 0.5,
      'p_complex_sents': 0.5,
      'infinitive_clauses_per_sent': 0.0,
@@ -775,7 +774,7 @@ $$
      'verb_phrases_per_t_unit': 2.5,
      'coordinate_phrases_per_clause': 0.3333333333333333,
      'complex_nominals_per_clause': 1.0,
-     'modifiers_per_noun': 0.4,
+     'modifiers_per_noun': 0.5,
      'prep_chains_per_sent': 0.0,
      'max_prep_chain_len': 0,
      'genitive_chains_per_sent': 0.0,
@@ -784,16 +783,16 @@ $$
      'mean_participle_clause_len': 5.0,
      'converb_clauses_per_sent': 0.5,
      'mean_converb_clause_len': 2.0,
-     'p_passive': 0.4,
+     'p_passive': 0.3333333333333333,
      'p_agentless_passive': 0.5,
      'infinitives_per_sent': 0.0,
      'negations_per_sent': 0.5,
      'split_predicates_per_sent': 0.0,
      'p_preverbal_subjects': 1.0,
-     'p_preverbal_objects': nan,
+     'p_preverbal_objects': 0.0,
      'pos_edit_distance': 0.7777777777777778,
      'syntax_similarity': 0.0625,
-     'noun_verb_ratio': 1.0}
+     'noun_verb_ratio': 0.6666666666666666}
     ```
 
 Функции работают с токенами spaCy: функции `calc_*`, `find_*` и `dependency_triples` принимают последовательность токенов (`Doc`, `Span` или список), функции `is_*` и `count_*` - отдельный токен, а `calc_edit_distance` и `calc_multiset_similarity` - списки элементов предложений; слова последовательности - токены [`is_word`](#helpers). Функции дерева зависимостей взяты из ядра, функции русских конструкций - собственные функции ruTS. Подтипы отношений (`acl:relcl`, `nsubj:pass`, `nummod:gov`) учитываются по базовому отношению ([`base_dep`](#base_dep)) там, где это указано.

@@ -30,7 +30,7 @@ The function `highlight` returns a `HighlightedText` object of ruTS with the lay
 | | `connectors` | Connectives by part of speech from the `Doc` annotation or ruMorph, the tooltip shows the class and type | [CohesionStats](../stats/cohesion_stats.md) |
 | Phonics | `alliteration` | Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies | [PhonStats](../stats/phon_stats.md) |
 
-The groups are defined in `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. The layers of the "Syntax" group are computed over the dependency tree and are available only for a `Doc` object with a dependency parse (the `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` models). By default the `HIGHLIGHT_DEFAULT_LAYERS` layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; `layers="all"` enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.
+The groups are defined in `ruts.constants.HIGHLIGHT_LAYER_GROUPS`. The layers of the "Syntax" group are computed over the dependency tree and are available only for a `Doc` object with a dependency parse (the [recommended pipeline](../components.md#load_pipeline) or the `ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg` models). By default the `HIGHLIGHT_DEFAULT_LAYERS` layers are enabled - long sentences, complex words, passive voice, genitive chains, split predicates, clichés - among those available to the source; `layers="all"` enables all available ones. Fifteen layers at once overlap each other (a compound preposition consists of stop words, a connective may be a parenthetical), so pick the ones you need.
 
 !!! note "Alliteration"
     Alliteration is searched within a sentence as a chain of two or more adjacent words each of whose stems contains the same consonant letter. The stem is the common initial part of the word form and its ruMorph lemma (*крупных* → *крупны*, *руках* → *рука*): endings agree with neighboring words and repeat consonants by grammar rather than by sound (*этих крупных*, *своим целям и нуждам*). The probability of a chain under an independent letter distribution is the product over the words of the probabilities of meeting the consonant among the stem letters, $1 - (1 - f)^n$, where $f$ is the [frequency of the consonant](https://ru.wikipedia.org/wiki/Частотность) in Russian texts and $n$ the number of stem letters; a chain is highlighted if the probability is below the `alliteration_threshold`. About twenty consonants are checked at every position, so the threshold is strict: in prose about 5% of words are highlighted at 0.001, about 20% at 0.01, mostly random coincidences of frequent letters. A repeat of a rare consonant (*слышно, бесшумно шуршат камыши*) is noticeable in two or three words, a repeat of a frequent one in long words is expected and not highlighted. Words shorter than three letters, stop words and words without vowels neither break nor continue a chain, the letter *й* is not counted, since in the nominative case it is part of the adjective lemma. The alliteration index of [PhonStats](../stats/phon_stats.md) measures how clustered the repeats are across the whole text; the highlighting shows where they are.
@@ -40,11 +40,10 @@ The class extends the `HighlightedText` of the [anyTS](https://sergeyshk.github.
 === "Code"
 
     ``` python
-    import spacy
-
+    from ruts import load_pipeline
     from ruts.visualizers import highlight
 
-    nlp = spacy.load("ru_core_news_sm")
+    nlp = load_pipeline()
     text = (
         "Проект, подготовленный за неделю, был одобрен советом без обсуждения. "
         "Повышение эффективности использования бюджетных средств обсуждалось, не выходя за рамки регламента. "

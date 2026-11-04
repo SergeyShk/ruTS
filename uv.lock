@@ -3768,7 +3768,7 @@ wheels = [
 
 [[package]]
 name = "ruts"
-version = "0.20.0.dev4"
+version = "0.20.0.dev5"
 source = { editable = "." }
 dependencies = [
     { name = "anyseg" },
@@ -3792,7 +3792,6 @@ dev = [
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pymdown-extensions" },
-    { name = "pymorphy3" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ru-core-news-sm" },
@@ -3808,7 +3807,6 @@ examples = [
     { name = "jupyterlab" },
     { name = "nbmake" },
     { name = "nbstripout" },
-    { name = "pymorphy3" },
 ]
 lint = [
     { name = "mypy" },
@@ -3816,7 +3814,6 @@ lint = [
     { name = "ruff" },
 ]
 test = [
-    { name = "pymorphy3" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ru-core-news-sm" },
@@ -3843,7 +3840,6 @@ dev = [
     { name = "mypy", specifier = ">=1.14" },
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pymdown-extensions", specifier = ">=10.0" },
-    { name = "pymorphy3", specifier = ">=2.0.4" },
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=6.0" },
     { name = "ru-core-news-sm", url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" },
@@ -3859,7 +3855,6 @@ examples = [
     { name = "jupyterlab", specifier = ">=4.3" },
     { name = "nbmake", specifier = ">=1.5" },
     { name = "nbstripout", specifier = ">=0.8" },
-    { name = "pymorphy3", specifier = ">=2.0.4" },
 ]
 lint = [
     { name = "mypy", specifier = ">=1.14" },
@@ -3867,7 +3862,6 @@ lint = [
     { name = "ruff", specifier = ">=0.9" },
 ]
 test = [
-    { name = "pymorphy3", specifier = ">=2.0.4" },
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=6.0" },
     { name = "ru-core-news-sm", url = "https://github.com/explosion/spacy-models/releases/download/ru_core_news_sm-3.8.0/ru_core_news_sm-3.8.0-py3-none-any.whl" },

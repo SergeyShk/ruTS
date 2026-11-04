@@ -44,12 +44,6 @@ ZIPF_HALF = ["кот"] * 11 + ["пес"] * 8 + ["дом"] * 8 + ["лес"] * 2 +
 
 
 @pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
-
-
-@pytest.fixture(scope="module")
 def ss():
     return StyleStats(text)
 

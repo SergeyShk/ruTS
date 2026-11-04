@@ -33,7 +33,7 @@ pip install ruts
 `import ruts` не загружает spaCy, matplotlib и pandas: spaCy подключается вместе с объектом `Doc` или компонентом, а графики и корпусные функции - при первом обращении к ним. Статистики по строке работают и без них.
 
 !!! tip "Модель spaCy"
-    Для [компонентов spaCy](components.md), [синтаксических статистик](stats/syntax_stats.md) и примеров, которые начинаются с `spacy.load("ru_core_news_sm")`, нужна русскоязычная модель; без нее `spacy.load` завершится ошибкой `OSError: [E050]`. Модель устанавливается отдельно:
+    Для [компонентов spaCy](components.md), [синтаксических статистик](stats/syntax_stats.md) и примеров с [рекомендуемым конвейером](components.md#load_pipeline) `ruts.load_pipeline()` нужна русскоязычная модель; без нее загрузка завершится ошибкой `OSError: [E050]`. Модель устанавливается отдельно:
 
     ``` bash
     python -m spacy download ru_core_news_sm

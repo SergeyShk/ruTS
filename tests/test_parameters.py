@@ -1,7 +1,6 @@
 """Функции библиотеки проверяют свои числа и списки слов так же, как ядро"""
 
 import pytest
-import spacy
 
 from ruts import (
     BasicStats,
@@ -45,6 +44,7 @@ from ruts.style_stats import (
 from ruts.syllables import count_syllables, stress_type, syllabify
 from ruts.utils import find_phrases
 from ruts.visualizers import fingerprinting, highlight, sentence_lengths, sentence_lengths_plot
+from tests.pipelines import load_nlp
 
 TEXT = "Кот спит на окне. Собака ест на полу, и кот на нее смотрит."
 WORDS = ["кот", "спит", "на", "окне", "собака", "ест", "на", "полу"]
@@ -215,7 +215,7 @@ EXTRACTED_WORDS = {
 
 @pytest.fixture(scope="module")
 def doc():
-    return spacy.load("ru_core_news_sm")(TEXT)
+    return load_nlp()(TEXT)
 
 
 @pytest.mark.parametrize("words", EXTRACTED_WORDS.values(), ids=EXTRACTED_WORDS)

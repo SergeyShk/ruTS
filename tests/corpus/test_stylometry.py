@@ -7,6 +7,7 @@ from ruts.corpus import (
     delta,
     function_words_profile,
 )
+from tests.pipelines import load_nlp
 
 texts = {
     "А": "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне.",
@@ -47,8 +48,7 @@ def test_function_words_profile():
 
 
 def test_function_words_profile_tagged():
-    pytest.importorskip("ru_core_news_sm")
-    doc = spacy.load("ru_core_news_sm")("Он сказал, что кот спал, а пёс во-первых ел.")
+    doc = load_nlp()("Он сказал, что кот спал, а пёс во-первых ел.")
     profile = function_words_profile(doc)
     assert profile["PRON"] == pytest.approx(1 / 9)
     assert profile["SCONJ"] == pytest.approx(1 / 9)

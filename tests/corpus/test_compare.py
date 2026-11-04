@@ -15,6 +15,7 @@ from ruts.corpus import (
 )
 from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES
 from ruts.exceptions import ParameterError, SourceError
+from tests.pipelines import load_nlp
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
 short = [
@@ -148,9 +149,8 @@ def test_text_features():
         text_features("...")
 
 
-def test_text_features_syntax():
+def test_text_features_syntax(nlp):
     """С пайплайном spaCy - синтаксические признаки его разбора, без него их нет"""
-    nlp = pytest.importorskip("ru_core_news_sm").load()
     features = text_features(text, nlp=nlp)
     syntax = {key: value for key, value in features.items() if key.startswith("syntax_")}
     assert len(syntax) == len(SYNTAX_STATS_DESC)
@@ -162,7 +162,7 @@ def test_text_features_syntax():
         text_features(text, nlp="ru_core_news_sm")
     with pytest.raises(ValueError):
         text_features(text, nlp=spacy.blank("ru"))
-    short = spacy.load("ru_core_news_sm")
+    short = load_nlp()
     short.max_length = 10
     with pytest.raises(
         ValueError, match=r"^Текст из \d+ символов длиннее предела пайплайна \(10\)"
@@ -171,10 +171,9 @@ def test_text_features_syntax():
 
 
 @pytest.mark.parametrize("separator", ["\n\n", "\n"])
-def test_text_features_syntax_sentences(separator):
+def test_text_features_syntax_sentences(nlp, separator):
     """Предложения разбора - те же, что у остальных групп, и через пустую строку, и через
     перевод строки, который парсер склеивает"""
-    nlp = pytest.importorskip("ru_core_news_sm").load()
     dialogue = separator.join(["— Ты пришел?", "— Пришел.", "— Ну и хорошо."])
     assert text_features(dialogue, nlp=nlp)["syntax_clauses_per_sent"] == 1.0
 

@@ -40,12 +40,6 @@ def ls(freq_dict):
     return LexicalStats(text, freq_dict=freq_dict)
 
 
-@pytest.fixture(scope="module")
-def nlp():
-    pytest.importorskip("ru_core_news_sm")
-    return spacy.load("ru_core_news_sm")
-
-
 def test_init_value_error(freq_dict):
     with pytest.raises(ValueError):
         LexicalStats("+ _", freq_dict=freq_dict)
