@@ -2916,7 +2916,7 @@ True
 <h3 id="CohesionStatsComponent">Статистики связности<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p><code>CohesionStatsComponent</code> кладет в расширение статистики связности. Парсер ему не нужен, а <code>Doc</code> без границ предложений делится на предложения русским <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; при наличии разметки части речи берутся из нее, леммы - из ruMorph по части речи токена, без разметки - из первого разбора ruMorph. С <code>blank_lines</code> абзацы начинаются только после пустых строк, как в <code>CohesionStats</code>.</p>
+<p><code>CohesionStatsComponent</code> кладет в расширение статистики связности. Парсер ему не нужен, а <code>Doc</code> без границ предложений делится на предложения русским <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; при наличии разметки части речи берутся из нее, леммы - из ruMorph по части речи токена, без разметки - из разбора ruMorph, как у строки. С <code>blank_lines</code> абзацы начинаются только после пустых строк, как в <code>CohesionStats</code>.</p>
 <table>
 <thead>
 <tr>

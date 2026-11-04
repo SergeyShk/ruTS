@@ -2547,7 +2547,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - неизвестный класс или тип коннектора, <code>blank_lines</code>, который не <code>bool</code>.</li>
 </ul>
-<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора ruMorph с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов - из первого разбора ruMorph (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора ruMorph с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки - из разбора ruMorph в контексте предложения (<a href="#word_info"><code>analysis_info</code></a>), для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <p>Слова классифицируются по частям речи и признакам Universal Dependencies - разбора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> для строки или разметки объекта <code>Doc</code>:</p>
 <table>
 <thead>
@@ -3427,7 +3427,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">connector_pos</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Часть речи UD слова по ruMorph для проверки коннектора: первый разбор с частью речи, подходящей коннектору (<code>CONNECTOR_POS</code> или <code>CONNECTOR_POS_EXTRA</code> для этого слова), иначе первый разбор. Так <code>CohesionStats</code> получает части речи для строки и <code>Doc</code> без разметки.</p>
+<p>Часть речи UD слова по ruMorph для проверки коннектора: первый разбор с частью речи, подходящей коннектору (<code>CONNECTOR_POS</code> или <code>CONNECTOR_POS_EXTRA</code> для этого слова), иначе первый разбор. Так <code>CohesionStats</code> получает части речи слов, которые разбираются по одному: с заданным экстрактором слов и в предложениях <code>Doc</code> без разметки, слова которых не совпали со словами строки.</p>
 <table>
 <thead>
 <tr>
@@ -3468,7 +3468,9 @@
 <h2 id="word_info">Признаки слова<a class="headerlink" href="#word_info" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">word_info</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">analyses</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">analysis_info</span><span class="p">(</span><span class="n">analysis</span><span class="p">)</span>
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">token_info</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
@@ -3476,7 +3478,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
-<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph; <code>words_info</code> - так же для слов предложений текста, где ответное «нет» (Нет, не видел) - частица. <code>token_info</code> берет их из разметки spaCy (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (<code>word_to_ud</code>).</p>
+<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора ruMorph, например выбранного по контексту (<code>ruts.utils.analyze_sentence</code>); <code>words_info</code> - так же для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. <code>token_info</code> берет их из разметки spaCy (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (<code>word_to_ud</code>).</p>
 <table>
 <thead>
 <tr>
@@ -3504,6 +3506,18 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Текст, из которого извлечены слова (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>analyses</code></td>
+<td style="text-align: left;"><code>list[list[Analysis \| None]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Разборы слов предложений, <code>None</code> - разбор по слову (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>analysis</code></td>
+<td style="text-align: left;"><code>Analysis</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">Разбор ruMorph (<code>analysis_info</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>token</code></td>

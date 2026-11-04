@@ -2905,7 +2905,7 @@ True
 <h3 id="CohesionStatsComponent">Cohesion statistics<a class="headerlink" href="#CohesionStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the first ruMorph analysis. With <code>blank_lines</code> the paragraphs start after the blank lines alone, as in <code>CohesionStats</code>.</p>
+<p><code>CohesionStatsComponent</code> puts the cohesion statistics into the extension. It needs no parser, and a <code>Doc</code> without sentence boundaries is split into sentences by the Russian <a href="../extractors/sentences/"><code>SentsExtractor</code></a>; when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the ruMorph analysis, as for a string. With <code>blank_lines</code> the paragraphs start after the blank lines alone, as in <code>CohesionStats</code>.</p>
 <table>
 <thead>
 <tr>

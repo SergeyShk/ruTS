@@ -2547,7 +2547,7 @@
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - an unknown class or kind of a connector, a <code>blank_lines</code> that is not a <code>bool</code>.</li>
 </ul>
-<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the ruMorph analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a word extractor given, from the first ruMorph analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The class extends the <code>CohesionStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> core with the Russian layer and, unlike the core, reads a string too. A string and a <code>Doc</code> without sentence boundaries are split into sentences by the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; the words of a string come from the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or from the <code>words_extractor</code> given. For a <code>Doc</code> with part-of-speech annotation the part of speech, the tense and the aspect come from <code>token.pos_</code> and <code>token.morph</code>, and the lemma from the ruMorph analysis with the part of speech of the token (<a href="#word_info"><code>unit_info</code></a>); for a string, from the ruMorph analysis in the context of the sentence (<a href="#word_info"><code>analysis_info</code></a>), for a <code>Doc</code> without annotation the same in the sentences whose words are those of the string, and for the other words, as with a word extractor given, from the first ruMorph analysis (<a href="#word_info"><code>words_info</code></a>), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The connectors are found by <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> over the dictionary of <a href="#connectors"><code>load_connectors</code></a>. The <code>print_stats</code> table and the error messages are in Russian (<code>COHESION_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <p>The words are classified by the Universal Dependencies parts of speech and features - of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis for a string or of the annotation of a <code>Doc</code>:</p>
 <table>
 <thead>
@@ -3410,7 +3410,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">connector_pos</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (<code>CONNECTOR_POS</code> or <code>CONNECTOR_POS_EXTRA</code> for the word), otherwise the first analysis. This is how <code>CohesionStats</code> gets the parts of speech of a string and of a <code>Doc</code> without annotation.</p>
+<p>The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (<code>CONNECTOR_POS</code> or <code>CONNECTOR_POS_EXTRA</code> for the word), otherwise the first analysis. This is how <code>CohesionStats</code> gets the parts of speech of the words analyzed one by one: with a words extractor given and in the sentences of a <code>Doc</code> without annotation whose words are not those of the string.</p>
 <table>
 <thead>
 <tr>
@@ -3451,7 +3451,9 @@
 <h2 id="word_info">Word features<a class="headerlink" href="#word_info" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">word_info</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">words_info</span><span class="p">(</span><span class="n">sents</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">analyses</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<div class="signature highlight"><pre><span></span><code><span class="n">analysis_info</span><span class="p">(</span><span class="n">analysis</span><span class="p">)</span>
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">token_info</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
@@ -3459,7 +3461,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
-<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first ruMorph analysis; <code>words_info</code> does the same for the words of the sentences of a text, where the answer «нет» (Нет, не видел) is a particle. <code>token_info</code> takes them from the spaCy annotation (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (<code>ruts.utils.lemmatize</code>), not from <code>token.lemma_</code>. <code>unit_info</code> gives the features of a word from its tokens: a single token by <code>token_info</code>, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (<code>word_to_ud</code>).</p>
+<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first ruMorph analysis, <code>analysis_info</code> from a given ruMorph analysis, for example one chosen by context (<code>ruts.utils.analyze_sentence</code>); <code>words_info</code> does the same for the words of the sentences of a text: by the analysis of <code>analyses</code> when it is given, otherwise by the first analysis, where the answer «нет» (Нет, не видел) is a particle. <code>token_info</code> takes them from the spaCy annotation (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> from a given part of speech, tense and aspect of UD; the lemma comes from the ruMorph analysis with that part of speech (<code>ruts.utils.lemmatize</code>), not from <code>token.lemma_</code>. <code>unit_info</code> gives the features of a word from its tokens: a single token by <code>token_info</code>, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (<code>word_to_ud</code>).</p>
 <table>
 <thead>
 <tr>
@@ -3487,6 +3489,18 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Text the words are extracted from (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>analyses</code></td>
+<td style="text-align: left;"><code>list[list[Analysis \| None]]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Analyses of the words of the sentences, <code>None</code> for the analysis by word (<code>words_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>analysis</code></td>
+<td style="text-align: left;"><code>Analysis</code></td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">ruMorph analysis (<code>analysis_info</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>token</code></td>

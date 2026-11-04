@@ -2342,8 +2342,7 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>---------------Часть речи---------------
 Глагол                        |    6
-Местоимение-существительное   |    2
-Подчинительный союз           |    2
+Местоимение-существительное   |    4
 Наречие                       |    1
 
 -----------------Время------------------
@@ -2352,8 +2351,8 @@
 Прошедшее                     |    1
 
 -----------------Число------------------
+Единственное                  |    5
 Множественное                 |    3
-Единственное                  |    3
 
 ------------------Лицо------------------
 2                             |    2
@@ -2422,7 +2421,7 @@
 </table>
 <p>В ruTS есть и атрибут <code>lemmas</code> (<code>tuple[str]</code>) - леммы слов, которые ruMorph дает по части речи слова.</p>
 <h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Статистики - часть речи <code>pos</code> и признаки из таблицы ниже (<code>MORPHOLOGY_FEATURES</code> из <code>ruts.constants</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки, <code>Doc</code> без разметки и <code>Doc</code> с заданным экстрактором слов используется первый разбор морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> - части речи и признаки UD по соглашениям корпуса SynTagRus.</p>
+<p>Статистики - часть речи <code>pos</code> и признаки из таблицы ниже (<code>MORPHOLOGY_FEATURES</code> из <code>ruts.constants</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки - разбор морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения (части речи и признаки UD по соглашениям корпуса SynTagRus); для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов, как и с заданным экстрактором слов, - первый разбор слова без учета соседних.</p>
 <table>
 <thead>
 <tr>
@@ -2514,11 +2513,11 @@
 </tr>
 </tbody>
 </table>
-<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: spaCy снимает омонимию по контексту, а для строки берется первый разбор ruMorph без учета соседних слов; часть соглашений у них разная - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.</p>
+<p>Значения для строки и для <code>Doc</code> с разметкой могут отличаться: омонимию по контексту снимают и spaCy, и ruMorph, но модели у них разные, как и часть соглашений - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.</p>
 <div class="metric-card">
 <h3 id="pos">Часть речи<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
-<p>Для строки части речи - первого разбора ruMorph по соглашениям SynTagRus: предикативы («надо», «можно», бытийное «нет») - <code>VERB</code> без формы глагола, «который» - <code>DET</code>, вводные «конечно», «например» - <code>ADV</code>, вспомогательное «быть» - <code>AUX</code>, имена собственные - <code>PROPN</code> с учетом регистра («Лев», но «лев»). Без контекста первый разбор омонима - самый частый: «стали» - глагол, «её» - притяжательное <code>DET</code>.</p>
+<p>Для строки части речи - разбора ruMorph по соглашениям SynTagRus: предикативы («надо», «можно», бытийное «нет») - <code>VERB</code> без формы глагола, «который» - <code>DET</code>, вводные «конечно», «например» - <code>ADV</code>, вспомогательное «быть» - <code>AUX</code>, имена собственные - <code>PROPN</code>, по слову - с учетом регистра («Вера», но «вера»). Омоним разбирается по соседним словам: «стали» в «Мы стали ждать» - глагол, в «Нож сделан из стали» - существительное; без контекста (с заданным экстрактором слов) - самый частый разбор.</p>
 </div>
 <div class="metric-card">
 <h3 id="derived">Степень сравнения, отрицание и краткая форма<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
@@ -2655,27 +2654,21 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
+<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'PRON': 4, 'ADV': 1},
  'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
- 'number': {'Plur': 3, 'Sing': 3},
+ 'number': {'Plur': 3, 'Sing': 5},
  'person': {'2': 2, '3': 1}}
-{'pos_VERB': 6,
- 'pos_PRON': 2,
- 'pos_SCONJ': 2,
- 'pos_ADV': 1,
- 'tense_Pres': 1,
- 'tense_Fut': 1,
- 'tense_Past': 1}
+{'pos_VERB': 6, 'pos_PRON': 4, 'pos_ADV': 1, 'tense_Pres': 1, 'tense_Fut': 1, 'tense_Past': 1}
 (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
  ('получить', {'pos': 'VERB'}),
  ('то', {'pos': 'PRON', 'number': 'Sing'}),
- ('что', {'pos': 'SCONJ'}),
+ ('что', {'pos': 'PRON', 'number': 'Sing'}),
  ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
  ('иначе', {'pos': 'ADV'}),
  ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
  ('полюбить', {'pos': 'VERB'}),
  ('то', {'pos': 'PRON', 'number': 'Sing'}),
- ('что', {'pos': 'SCONJ'}),
+ ('что', {'pos': 'PRON', 'number': 'Sing'}),
  ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
 </code></pre></div>
 </div>
@@ -2690,8 +2683,8 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>   pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
-0         6         2          2        1
+<div class="highlight"><pre><span></span><code>   pos_VERB  pos_PRON  pos_ADV  animacy_Inan
+0         6         4        1             4
 </code></pre></div>
 </div>
 </div>

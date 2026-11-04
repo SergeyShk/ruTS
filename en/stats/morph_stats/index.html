@@ -2341,8 +2341,7 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>---------------Часть речи---------------
 Глагол                        |    6
-Местоимение-существительное   |    2
-Подчинительный союз           |    2
+Местоимение-существительное   |    4
 Наречие                       |    1
 
 -----------------Время------------------
@@ -2351,8 +2350,8 @@
 Прошедшее                     |    1
 
 -----------------Число------------------
+Единственное                  |    5
 Множественное                 |    3
-Единственное                  |    3
 
 ------------------Лицо------------------
 2                             |    2
@@ -2420,7 +2419,7 @@
 </table>
 <p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words that ruMorph gives by the part of speech of the word.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
-<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string, a <code>Doc</code> without annotation and a <code>Doc</code> with a words extractor given the first analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer is used - UD parts of speech and features by the conventions of the SynTagRus corpus.</p>
+<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string the analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a <code>Doc</code> without annotation the same in the sentences whose words are those of the string, and for the other words, as with a words extractor given, the first analysis of the word without its neighbours.</p>
 <table>
 <thead>
 <tr>
@@ -2512,11 +2511,11 @@
 </tr>
 </tbody>
 </table>
-<p>The values for a string and for an annotated <code>Doc</code> may differ: spaCy resolves homonymy by context, while a string takes the first ruMorph analysis without the neighbouring words; some conventions differ too - spaCy models give the existential нет the present tense, ruMorph does not.</p>
+<p>The values for a string and for an annotated <code>Doc</code> may differ: both spaCy and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.</p>
 <div class="metric-card">
 <h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
-<p>For a string the parts of speech are those of the first ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - <code>VERB</code> without a verb form, который - <code>DET</code>, the parenthetical конечно, например - <code>ADV</code>, the auxiliary быть - <code>AUX</code>, proper nouns - <code>PROPN</code> by case (Лев, but лев). Without context the first analysis of a homonym is the most frequent one: стали is a verb, её is the possessive <code>DET</code>.</p>
+<p>For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - <code>VERB</code> without a verb form, который - <code>DET</code>, the parenthetical конечно, например - <code>ADV</code>, the auxiliary быть - <code>AUX</code>, proper nouns - <code>PROPN</code>, by word with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.</p>
 </div>
 <div class="metric-card">
 <h3 id="derived">Degree, negation and short form<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
@@ -2650,27 +2649,21 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'PRON': 2, 'SCONJ': 2, 'ADV': 1},
+<div class="highlight"><pre><span></span><code>{'pos': {'VERB': 6, 'PRON': 4, 'ADV': 1},
  'tense': {'Pres': 1, 'Fut': 1, 'Past': 1},
- 'number': {'Plur': 3, 'Sing': 3},
+ 'number': {'Plur': 3, 'Sing': 5},
  'person': {'2': 2, '3': 1}}
-{'pos_VERB': 6,
- 'pos_PRON': 2,
- 'pos_SCONJ': 2,
- 'pos_ADV': 1,
- 'tense_Pres': 1,
- 'tense_Fut': 1,
- 'tense_Past': 1}
+{'pos_VERB': 6, 'pos_PRON': 4, 'pos_ADV': 1, 'tense_Pres': 1, 'tense_Fut': 1, 'tense_Past': 1}
 (('Постарайтесь', {'pos': 'VERB', 'number': 'Plur', 'person': '2'}),
  ('получить', {'pos': 'VERB'}),
  ('то', {'pos': 'PRON', 'number': 'Sing'}),
- ('что', {'pos': 'SCONJ'}),
+ ('что', {'pos': 'PRON', 'number': 'Sing'}),
  ('любите', {'pos': 'VERB', 'tense': 'Pres', 'number': 'Plur', 'person': '2'}),
  ('иначе', {'pos': 'ADV'}),
  ('придется', {'pos': 'VERB', 'tense': 'Fut', 'number': 'Sing', 'person': '3'}),
  ('полюбить', {'pos': 'VERB'}),
  ('то', {'pos': 'PRON', 'number': 'Sing'}),
- ('что', {'pos': 'SCONJ'}),
+ ('что', {'pos': 'PRON', 'number': 'Sing'}),
  ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
 </code></pre></div>
 </div>
@@ -2684,8 +2677,8 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>   pos_VERB  pos_PRON  pos_SCONJ  pos_ADV
-0         6         2          2        1
+<div class="highlight"><pre><span></span><code>   pos_VERB  pos_PRON  pos_ADV  animacy_Inan
+0         6         4        1             4
 </code></pre></div>
 </div>
 </div>
