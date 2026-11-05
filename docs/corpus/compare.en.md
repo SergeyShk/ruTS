@@ -6,7 +6,7 @@ compare_corpora(a, b, window=1000, features=None, labels=('A', 'B'), n_bootstrap
 
 Compares two corpora of Russian texts by every feature of a text at once: which statistics tell authors, genres, translations, human and generated texts apart - and by how much. For single words [`keyness`](keyness.md) does the same, for the distances between texts - [`delta`](stylometry.md#delta).
 
-The texts are cut in a row into windows of exactly `window` words by [`split_windows`](#split_windows), so the windows of all texts have one length; an incomplete remainder at the end of a text and a text shorter than a window are dropped unless `min_words` allows shorter windows. The features of every window are computed by [`text_features`](#text_features) or a function of one's own, and the tables of the two corpora are compared by [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core.
+The texts are cut into windows of `window` words by [`split_windows`](#split_windows), the features of every window come from [`text_features`](#text_features) or a function of one's own, and [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core compares the tables of the two corpora.
 
 Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1422 windows of 1000 words, about a minute.
 
@@ -52,9 +52,9 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows of Chekhov is 0.90, of Tolstoy 0.75), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) is only weakly related to it (0.23 and 0.31). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.31). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
 
-The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 111 of the 147 features have a corrected p-value below 0.01, but only 22 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8. For the ellipses it spans 6 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 111 of the 147 features have a corrected p-value below 0.01, but only 22 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
 
 ## Parameters
 
@@ -66,7 +66,7 @@ The p-values take the 1671 windows for independent (see the [warning](#statistic
 | `features` | `Callable` | `None` | Text feature function; `None` - `text_features` |
 | `min_words` | `int` | `None` | Smallest number of words in a window, at most `window`; `None` - a whole window, one word with `window=None` |
 
-`labels`, `n_bootstrap` and `seed` go on to [`compare_features`](#compare_features). `compare_corpora` checks them with `check_comparison_params` first, so a wrong name of a corpus or seed fails before any text is processed.
+`labels`, `n_bootstrap` and `seed` go on to [`compare_features`](#compare_features) and are checked before any text is processed.
 
 Raises:
 
@@ -87,15 +87,13 @@ Returns 147 features of a text prefixed by source, 192 with the pipeline `nlp`; 
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
 | `diversity_` | lexical diversity measures, but for Orlov's Z, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
-| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`, `morph_style_variant_Short`) and shares of values within the other features (`morph_case_Gen`, `morph_tense_Past`, `morph_degree_Cmp`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by ruMorph |
-| `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) - the rhythm of the text | [`sentence_lengths`](../visualizers/sentences.md) |
+| `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`) and shares of values within the other features (`morph_case_Gen`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by ruMorph |
+| `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
-| `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors; without the overlaps between paragraphs (`*_para`): a window cuts the paragraphs of a text | [`CohesionStats`](../stats/cohesion_stats.md) by ruMorph |
-| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the parse takes the sentences of the other groups. The leaves, the subtrees, the longest dependency and the depth of the tree nearly repeat the length of a sentence `sents_mean` | [`SyntaxStats`](../stats/syntax_stats.md) |
+| `cohesion_` | the overlap of the sentences, pronouns, givenness, temporal cohesion and connectors, without the overlaps between paragraphs (`*_para`) | [`CohesionStats`](../stats/cohesion_stats.md) by ruMorph |
+| `syntax_` | all syntactic statistics of the parse, only with the pipeline `nlp`; the leaves, the subtrees, the longest dependency and the depth of the tree nearly repeat `sents_mean` | [`SyntaxStats`](../stats/syntax_stats.md) |
 
-A 1000-word window takes about 0.04 s. Syntactic features need a parse, so they are not in the default set: a spaCy pipeline with a parser and parts of speech in `nlp` adds them, and `compare_corpora` and `corpus_features` take it through `functools.partial`, see the example below.
-
-The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count characters as they are: line indents, double and non-breaking spaces in the files reflect the typesetting of the edition, not the text. In a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
+A 1000-word window takes about 0.04 s. The shares of spaces, letters and punctuation marks (`basic_p_spaces`, `basic_p_letters`, `basic_p_punctuations`) count the characters as they are, with the indents and double spaces of the edition; in a corpus from different sources collapse them beforehand, for example `re.sub(r"[^\S\n]+", " ", text)`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -111,7 +109,7 @@ Raises:
 corpus_features(texts, window=1000, features=text_features, min_words=None)
 ```
 
-Returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; the level `text` of the index is what the bootstrap of `compare_features` resamples. Texts without words and windows shorter than `min_words` are skipped. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; the split is needed when the features are computed once for several corpora and pairs have to be compared, for example all authors pairwise.
+Returns the feature matrix of the windows indexed by (text number, window number), for your own classifiers as well; texts without words and windows shorter than `min_words` are skipped. `compare_corpora` is `corpus_features` for each corpus followed by `compare_features`; apart they compute the features once to compare several pairs of corpora, for example all authors pairwise.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -206,7 +204,7 @@ The statistics of a row are available one by one from `ruts.corpus`:
 split_windows(text, window=1000, min_words=None)
 ```
 
-Cuts a text into consecutive windows of exactly `window` words, so the features that depend on length are comparable between texts. The rest is a window only with at least `min_words` words (by default a whole window, so it is dropped). A boundary goes before the first word of a window and its opening marks; a symmetric mark, such as a straight quote or the dash of an aside, closes the previous window when glued to its last word or after a closing mark. Windows are stripped of whitespace; `window=None` gives the whole text. The words are those of [`WordsExtractor`](../extractors/words.md), and the marks those of `ruts.constants`: quotes, brackets and dashes open a phrase (`OPENING_MARKS`), the straight and the English quotes and the dashes are symmetric (`SYMMETRIC_MARKS`), and the final marks, the comma, the semicolon, the closing brackets and guillemet close one (`CLOSING_MARKS`).
+Cuts a text into consecutive windows of exactly `window` words, the words of [`WordsExtractor`](../extractors/words.md), so the features that depend on length are comparable between texts. The rest is a window only with at least `min_words` words (by default a whole window, so it is dropped). A boundary goes before the first word of a window and the quotes, brackets and dashes that open it, so the punctuation stays with its phrase.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

@@ -12,7 +12,7 @@ Raises:
 - `SourceError` - a source without words;
 - `ParameterError` - an unknown class or kind of a connector, a `blank_lines` that is not a `bool`.
 
-The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer and, unlike the core, reads a string too. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given. For a `Doc` with part-of-speech annotation the features of a token of the [recommended pipeline](../components.md#load_pipeline) come from its ruMorph analysis, as for a string, and with a plain model the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, the lemma from the ruMorph analysis with the part of speech of the token ([`unit_info`](#word_info)); for a string, from the ruMorph analysis in the context of the sentence ([`analysis_info`](#word_info)), for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a word extractor given, from the first ruMorph analysis ([`words_info`](#word_info)), where the answer «нет» is a particle. The parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `CohesionStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/cohesion_stats/) core with the Russian layer. A string and a `Doc` without sentence boundaries are split into sentences by the Russian [`SentsExtractor`](../extractors/sentences.md); the words of a string come from the Russian [`WordsExtractor`](../extractors/words.md) or from the `words_extractor` given, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The [features of the words](#word_info) of a string come from the ruMorph analysis in the context of the sentence, those of a `Doc` of the [recommended pipeline](../components.md#load_pipeline) from its ruMorph annotation, and with a plain model the part of speech, the tense and the aspect come from `token.pos_` and `token.morph`, with the lemma by ruMorph. In a `Doc` without annotation the sentences whose words are those of the string are analyzed in context, and the other words, as with a word extractor given, get the first ruMorph analysis. The connectors are found by [`RussianConnectorMatcher`](#ConnectorMatcher) over the dictionary of [`load_connectors`](#connectors). The `print_stats` table and the error messages are in Russian (`COHESION_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 The words are classified by the Universal Dependencies parts of speech and features - of the [ruMorph](https://github.com/SergeyShk/ruMorph) analysis for a string or of the annotation of a `Doc`:
 
@@ -148,7 +148,7 @@ The extractors given are kept in the attributes `sents_extractor` and `words_ext
 
 --8<-- "stats/cohesion_stats.md:calc_forward_overlap"
 
-In ruTS both a string and a `Doc` are split into paragraphs. In a poem without blank lines a paragraph is a line of verse; `blank_lines=True` gives the stanzas, as in [`VerseStats`](verse_stats.md), where blank lines set them off.
+In ruTS both a string and a `Doc` are split into paragraphs. In a poem a paragraph is a line of verse by default, and `blank_lines=True` gives the stanzas set off by blank lines, as in [`VerseStats`](verse_stats.md).
 
 === "Code"
 
@@ -207,7 +207,7 @@ In ruTS they are marked by the functions of the [word features](#word_info) afte
 
 --8<-- "stats/cohesion_stats.md:dominant"
 
-`CohesionStats` of ruTS does not compare the mood: `mood_repetition` is always `nan`, and `temporal_cohesion` is the mean of `tense_repetition` and `aspect_repetition`.
+ruTS does not compare the mood: `mood_repetition` is always `nan`, and `temporal_cohesion` is the mean of `tense_repetition` and `aspect_repetition`.
 
 </div>
 
@@ -224,19 +224,19 @@ In ruTS they are marked by the functions of the [word features](#word_info) afte
 load_connectors()
 ```
 
-The connector dictionary of ruTS: the file `ruts/resources/connectors.tsv`, 316 connectors with a class of `CONNECTOR_CLASSES` and a kind of `CONNECTOR_TYPES` of `ruts.constants`, compiled after the classification of Krioni, Nikin and Filippova (2008) and checked against the [Ru-RSTreebank](https://rstreebank.ru/markersFull) marker list, the [Ruscon](https://ruslinkers.github.io/) database and the causal marker list of Toldova et al. (2018). The one-word «и», «а», «но» are in the dictionary, as in Coh-Metrix and TAACO; «что» and «как» are no connectors.
+The connector dictionary of ruTS: the file `ruts/resources/connectors.tsv`, 316 connectors with a class of `CONNECTOR_CLASSES` and a kind of `CONNECTOR_TYPES` of `ruts.constants`, compiled after the classification of Krioni, Nikin and Filippova (2008) and checked against the [Ru-RSTreebank](https://rstreebank.ru/markersFull) marker list, the [Ruscon](https://ruslinkers.github.io/) database and the causal marker list of Toldova et al. (2018). The one-word «и», «а», «но» are in the dictionary, while «что» and «как» are no connectors.
 
 | Class | Key | Examples |
 | :---- | :-- | :------- |
-| Causal (consequential and purposive included) | `causal` | потому что, поэтому, в результате, чтобы, таким образом |
-| Adversative | `adversative` | но, однако, зато, с другой стороны, в то же время |
-| Concessive | `concessive` | хотя, несмотря на, тем не менее, и всё же, в любом случае |
-| Temporal | `temporal` | когда, затем, после того как, тем временем, в дальнейшем |
-| Additive | `additive` | и, также, кроме того, более того, например, во-первых |
-| Conditional | `conditional` | если, в случае если, при условии что, в противном случае |
-| Reformulative | `reformulative` | то есть, иными словами, в общем, подводя итог |
+| Causal (consequential and purposive included) | `causal` | потому что, поэтому, чтобы |
+| Adversative | `adversative` | но, однако, с другой стороны |
+| Concessive | `concessive` | хотя, несмотря на, тем не менее |
+| Temporal | `temporal` | когда, затем, после того как |
+| Additive | `additive` | и, кроме того, например |
+| Conditional | `conditional` | если, при условии что, в противном случае |
+| Reformulative | `reformulative` | то есть, иными словами, подводя итог |
 
-The primary connectors (`primary`) are conjunctions, adverbs and particles (потому что, однако, затем), the secondary ones (`secondary`) lexicalized phrases with nouns and verbs (в результате этого, с другой стороны, иными словами). The rules by which a word of the dictionary counts as a connector are those of the [matcher](#ConnectorMatcher).
+The primary connectors (`primary`) are conjunctions, adverbs and particles (потому что, однако), the secondary ones (`secondary`) lexicalized phrases with nouns and verbs (с другой стороны, иными словами). The rules by which a word of the dictionary counts as a connector are those of the [matcher](#ConnectorMatcher).
 
 </div>
 
@@ -263,7 +263,7 @@ The primary connectors (`primary`) are conjunctions, adverbs and particles (по
 
 ## Methods
 
-The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the cohesion statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
+The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the cohesion statistics have no scales.
 
 === "Code"
 
@@ -313,8 +313,6 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
 
 --8<-- "stats/cohesion_stats.md:calc_overlaps"
 
-`CohesionStats` computes with it the overlaps of the nouns and of the arguments without the proportional ones, and those of the content words with them.
-
 === "Code"
 
     ``` python
@@ -337,13 +335,13 @@ RussianConnectorMatcher(connectors)
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher"
 
-`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian. Words and connectors are compared in lower case without the letter ё and stress marks (`normalize_yo`). A one-word connector takes a part of speech of the core `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (словом and главное - `NOUN`, допустим, предположим, резюмируя - `VERB`): «раз» as a noun and «значит» as a verb are no connectors. The context rules are lists of `ruts.constants`: words after a connector (`CONNECTOR_BLOCKED_AFTER`: *пока что*, *хоть бы*) and before it (`CONNECTOR_BLOCKED_BEFORE`: *ещё раз*, *и так далее*) that make it no connector; connectors that count inside a sentence only after particular words (`CONNECTOR_ONLY_AFTER`: *и отсюда*) and do not count at its start (`CONNECTOR_NOT_AT_START`: the interrogative *отчего*); parts of speech of the word after a connector that make it a preposition or a member of the clause (`CONNECTOR_BLOCKED_AFTER_POS`: *после обеда*, *едва заметный*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*), so the parenthetical *значит,* stays a connector, and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*). These parts of speech and lists are attributes of the matcher: `CONNECTOR_POS` is `pos_tags`, the others are named without `CONNECTOR_` in lower case (`CONNECTOR_BLOCKED_AFTER` is `blocked_after`); the attributes `not_after_pos` and `start_only_pos` are empty in ruTS, so these rules of `find` do not apply.
+`RussianConnectorMatcher` is a subclass of the core `ConnectorMatcher` with the rules of Russian - lists of `ruts.constants` that become attributes of the matcher named without `CONNECTOR_` in lower case (`CONNECTOR_BLOCKED_AFTER` is `blocked_after`, the core `CONNECTOR_POS` is `pos_tags`); the attributes `not_after_pos` and `start_only_pos` are empty in ruTS. Words and connectors are compared in lower case without the letter ё and stress marks. A one-word connector takes a part of speech of `CONNECTOR_POS` (`CCONJ`, `SCONJ`, `PART`, `ADV`, `ADP`, `INTJ`, `X`) or of `CONNECTOR_POS_EXTRA` for its form (словом - `NOUN`, допустим - `VERB`): «раз» as a noun and «значит» as a verb are no connectors. A connector does not count with a word after it of `CONNECTOR_BLOCKED_AFTER` (*пока что*), before it of `CONNECTOR_BLOCKED_BEFORE` (*ещё раз*) or with a part of speech of the next word of `CONNECTOR_BLOCKED_AFTER_POS` (*после обеда*); a connector of `CONNECTOR_ONLY_AFTER` counts inside a sentence only after the words given (*и отсюда*), and one of `CONNECTOR_NOT_AT_START` does not count at its start (the interrogative *отчего*). The rules read through a punctuation mark only for `CONNECTOR_READ_THROUGH_MARKS` (*не знал, отчего*), and a mark between the words of a connector of `CONNECTOR_SPLIT_BY_MARKS` splits it (*так, как*).
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher-find"
 
 --8<-- "stats/cohesion_stats.md:ConnectorMatcher-is_subordinator"
 
-The subordinators of ruTS besides the one-word ones tagged `SCONJ` and `ADP` are `CONNECTOR_SUBORDINATORS`: the multi-word conjunctions and prepositions (*так как*, *после того как*, *несмотря на*) and the one-word ones the spaCy models or ruMorph tag otherwise (*ежели*, *коли*, *пока*, *раз*, *хоть*, *едва*). A conjunction of `CONNECTOR_PARCELLATION` (*ибо*) opening a sentence attaches it to the one before, so it is no subordinator.
+The subordinators of ruTS besides the one-word ones tagged `SCONJ` and `ADP` are `CONNECTOR_SUBORDINATORS`: the multi-word conjunctions and prepositions (*так как*, *несмотря на*) and the one-word ones the spaCy models or ruMorph tag otherwise (*ежели*, *пока*). A conjunction of `CONNECTOR_PARCELLATION` (*ибо*) opening a sentence attaches it to the one before and is no subordinator.
 
 ## Connector search { #find_connectors }
 
@@ -361,7 +359,7 @@ Searches a sentence for connectors with the `find` method of `RussianConnectorMa
 connector_pos(word)
 ```
 
-The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis. This is how `CohesionStats` gets the parts of speech of the words analyzed one by one: with a words extractor given and in the sentences of a `Doc` without annotation whose words are not those of the string.
+The UD part of speech of a word by ruMorph for the check of a connector: the first analysis with a part of speech that suits a connector (`CONNECTOR_POS` or `CONNECTOR_POS_EXTRA` for the word), otherwise the first analysis.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -412,7 +410,7 @@ ud_info(word, pos, tense, aspect, feats=None)
 unit_info(unit)
 ```
 
-The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given ruMorph analysis, for example one chosen by context (`ruts.utils.analyze_sentence`); `words_info` does the same for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first analysis, where the answer «нет» (Нет, не видел) is a particle. `token_info` takes them from the ruMorph analysis the token is annotated with (`ruts.utils.token_analysis`, the `rumorph` component), and without it from the spaCy annotation (`token.pos_`, `token.morph`), `ud_info` from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech (`ruts.utils.lemmatize`), not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были, назовите-ка) by the ruMorph analysis of the joined text (`word_to_ud`).
+The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given analysis, for example one chosen by context, `words_info` for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first one. `token_info` takes them from the ruMorph analysis the token is annotated with (the `rumorph` component), and without it from the spaCy annotation (`token.pos_`, `token.morph`), `ud_info` from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech, not from `token.lemma_`. `unit_info` gives the features of a word from its tokens: a single token by `token_info`, a hyphenated word of several tokens (жили-были) by the ruMorph analysis of the joined text.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -444,8 +442,6 @@ The features of a word for the cohesion statistics, a `WordInfo` named tuple: `l
 
 --8<-- "utils/spacy.md:split_doc_units"
 
-`CohesionStats` always joins the parts of hyphenated words, the function only with `join_hyphens=True`.
-
 ``` {.python .signature}
 unit_text(unit)
 ```
@@ -454,7 +450,7 @@ unit_text(unit)
 unit_pos(unit)
 ```
 
-`unit_text` gives the text of a word from its tokens without a byte order mark, stress marks and soft hyphens (`ruts.utils.strip_marks`), `unit_pos` its part of speech of UD: that of the token for a single token, and that of `connector_pos` of the joined text for a hyphenated word of several tokens.
+`unit_text` gives the text of a word from its tokens without a byte order mark, stress marks, soft hyphens and the period of an abbreviation when the word is the same without it, `unit_pos` its part of speech of UD: that of the token for a single token, and that of `connector_pos` of the joined text for a hyphenated word of several tokens.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -499,7 +495,7 @@ Checks whether a word is a pronoun by the ruMorph analysis: `PRON` (он, себ
 is_content_word(word)
 ```
 
-Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs) and the copula быть, except pronominal (`PronType` Dem, Int, Rel: там, где, почему; `ruts.utils.is_pronominal`) and parenthetical (the `Prnt` label and `PARENTHETICAL_WORDS`) words, predicatives (надо, можно) and numbers in digits.
+Checks whether a word is a content word by the ruMorph analysis: a part of speech of `CONTENT_UD_POS` (nouns, proper nouns, adjectives, verbs in all forms, adverbs) and the copula быть, except pronominal and parenthetical words, predicatives and numbers in digits.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

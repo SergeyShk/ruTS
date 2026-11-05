@@ -13,7 +13,7 @@ DiversityStats(source, words_extractor=None, window_len=50, mtld_threshold=0.72,
 - `SourceError` - источник без слов;
 - `ParameterError` - параметр, который отвергает `check_params`.
 
-Класс расширяет `DiversityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/): вместо списка слов он принимает текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Слова текста извлекает русский [`WordsExtractor`](../extractors/words.md) или заданный экстрактор, который для `Doc` применяется к его тексту; без экстрактора слова `Doc` берутся из его токенов без знаков ударения, а части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Слова всегда приводятся к нижнему регистру. Таблица `print_stats` выводится с русскими заголовками и русскими описаниями метрик из `ruts.constants.DIVERSITY_STATS_DESC`, а сообщения об ошибках - по-русски, из `ruts.constants.CORE_MESSAGES`.
+Класс расширяет `DiversityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/): вместо списка слов он принимает текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Слова текста извлекает русский [`WordsExtractor`](../extractors/words.md), слова `Doc` без экстрактора - его токены без знаков ударения, а дефисное слово, разрезанное spaCy, остается одним словом (`во-первых`). Слова приводятся к нижнему регистру. Таблица `print_stats` и сообщения об ошибках - по-русски.
 
 === "Код"
 
@@ -1187,4 +1187,4 @@ calc_windowed(text, func, window_len=100, step=None, confidence=0.95, *, message
      'burstiness': nan}
     ```
 
-Остальные методы - `to_dataframe` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у метрик лексического разнообразия нет, поэтому `describe` для метрик `get_stats` возвращает `None`.
+Остальные методы - `to_dataframe` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у метрик лексического разнообразия нет, и `describe` для метрик `get_stats` возвращает `None`.

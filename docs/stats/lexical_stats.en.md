@@ -8,9 +8,9 @@ LexicalStats(source, words_extractor=None, freq_dict=None)
 
 In ruTS a source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError` too, and the metrics by the dictionary without the dictionary downloaded `DatasetNotFoundError`.
 
-Unlike the [lexical diversity metrics](diversity_stats.md), which compare the words of a text with each other, here the words are compared with the frequencies of the language ([TAALES](https://doi.org/10.3758/s13428-017-0924-4)). The data source is a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
+The words of a text are compared with the frequencies of the language ([TAALES](https://doi.org/10.3758/s13428-017-0924-4)), not with each other as in the [lexical diversity metrics](diversity_stats.md). The data source is a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
 
-The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens, and the parts of a hyphenated word that spaCy splits are joined. Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a `Doc` with part-of-speech annotation by the part of speech of the token (`ruts.utils.lemmatize`), for a string in the context of the sentence, for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian (`LEXICAL_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), the words of a `Doc` without an extractor are its tokens, and a hyphenated word that spaCy splits stays one word. Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a `Doc` with part-of-speech annotation by the part of speech of the token, for a string and a `Doc` without annotation in the context of the sentence, with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -77,7 +77,7 @@ The metrics rely on two resources; always read the means by the dictionary next 
 `coverage` · `mean_ipm` · `mean_ipm_content` · `mean_log_ipm` · `mean_log_ipm_content` · `mean_range` · `mean_dispersion` · [Lyashevskaya, Sharoff](http://dict.ruslang.ru/freq.php)
 { .metric-meta }
 
-The metrics are computed from the `FreqDict` entries for the keys of the words (`keys`, `entries`): the means are taken over the words found in the dictionary, over all of them or only over the content words. The mean frequency in ipm is sensitive to function words (и - 35,000 ipm, в - 31,000), so for comparing texts the log frequency or the mean over the content words is more convenient. The mean frequency of the content words `mean_ipm_content` is the FREQ2 feature of the 2023 Solovyev, Ivanov and Solnyshkina formula, whose values in the paper lie within 200-1000 ([`sis_grade_by_freq`](readability_stats.md#sis_grade_by_freq)).
+The metrics are computed from the `FreqDict` entries for the keys of the words (`keys`, `entries`). The mean frequency in ipm is sensitive to function words (и - 35,000 ipm, в - 31,000), so for comparing texts the log frequency or the mean over the content words is more convenient. `mean_ipm_content` is the FREQ2 feature of the Solovyev, Ivanov and Solnyshkina formula ([`sis_grade_by_freq`](readability_stats.md#sis_grade_by_freq)).
 
 Rare words lower the coverage and the log frequency and raise the surprisal and the share beyond the top 10000:
 
@@ -151,7 +151,7 @@ The rank of a lemma by the embedded Sharoff list, `None` for a lemma outside the
 load_top_lemmas()
 ```
 
-The whole list from the file `ruts/resources/sharoff_top10000.txt`: the rank of every lemma, lowercased and with ё replaced by е, starting from 1; duplicates keep the smaller rank.
+The whole embedded list: the rank of every lemma, lowercased and with ё replaced by е, starting from 1; duplicates keep the smaller rank.
 
 === "Code"
 
@@ -207,7 +207,7 @@ $$
     {100: 0.375, 500: 0.75}
     ```
 
-The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical sophistication statistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
+The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical sophistication statistics have no scales, and `describe` gives `None` for the statistics of `get_stats`.
 
 === "Code"
 

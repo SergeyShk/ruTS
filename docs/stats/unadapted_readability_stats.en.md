@@ -6,9 +6,9 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats"
 
-The class extends the `UnadaptedReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) core with the [basic statistics](basic_stats.md) of ruTS, which count the syllables and the letters of Russian words and take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default. The `print_stats` table and the error messages are in Russian (`UNADAPTED_READABILITY_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `UnadaptedReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) core with the [basic statistics](basic_stats.md) of ruTS, which count the syllables and the letters of Russian words and take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default. The `print_stats` table and the error messages are in Russian.
 
-The formulas are not calibrated for Russian. Their values serve to compare Russian texts with each other and with the results of these formulas in other tools, but they give no grade of the Russian school: on the first-grade texts of the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2. These formulas therefore have no reading scales, `describe` gives `None` for them, and they do not enter the [consensus grade](readability_stats.md#consensus_grade). The formulas with coefficients for Russian are in [`ReadabilityStats`](readability_stats.md).
+The formulas give no grade of the Russian school (on the first-grade texts of the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2) and do not enter the [consensus grade](readability_stats.md#consensus_grade). The formulas with coefficients for Russian are in [`ReadabilityStats`](readability_stats.md).
 
 === "Code"
 
@@ -49,7 +49,7 @@ The formulas are not calibrated for Russian. Their values serve to compare Russi
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-attributes"
 
-Ready basic statistics can be taken from a [`ReadabilityStats`](readability_stats.md) object, so as not to compute them again:
+The basic statistics can be taken from a [`ReadabilityStats`](readability_stats.md) object:
 
 === "Code"
 
@@ -71,7 +71,7 @@ Ready basic statistics can be taken from a [`ReadabilityStats`](readability_stat
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-metrics"
 
-Here ASL is the mean number of words per sentence, ASW the mean number of syllables per word. The functions of the formulas are imported from `ruts.unadapted_readability_stats` and compute a value from counts:
+Here ASL is the mean number of words per sentence, ASW the mean number of syllables per word. The functions of the formulas in `ruts.unadapted_readability_stats` compute a value from counts:
 
 === "Code"
 

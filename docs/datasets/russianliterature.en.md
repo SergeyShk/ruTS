@@ -12,9 +12,9 @@ The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical lit
 | Poetry | `poems` | Pushkin (35), Lermontov (18), Nekrasov (15), Blok (10) | 78 |
 | Publicism | `publicism` | Tolstoy | 26 |
 
-The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. The year of writing is taken from the collection's `info.csv` files (`1825` or `1824-1825`); 27 works have none. The collection's folder names are in Latin script; records give authors by their Russian names from the `AUTHORS` table (`Chekhov` → «Антон Чехов»). The collection suits authorship attribution and genre comparison: texts of one author in different genres and of one genre by different authors.
+The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The collection suits authorship attribution and genre comparison.
 
-The repository archive (20 MB) is downloaded at a pinned commit, verified against a SHA-256 checksum and extracted; texts are read one at a time, the single cp1251 file is decoded automatically.
+The repository archive (20 MB) is downloaded at a pinned commit, texts are read one at a time.
 
 Raises:
 
@@ -78,7 +78,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-Works without a year do not pass the year filters. An unknown genre, an `author` that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file that cannot be read `DataFileError`.
+Works without a year do not pass the year filters. An unknown genre, an `author` that is not a string, an earliest year above the latest, a length bound that is not a positive integer, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file that cannot be read `DataFileError`.
 
 === "Code"
 
@@ -95,7 +95,7 @@ Works without a year do not pass the year filters. An unknown genre, an `author`
     ```
 
 !!! warning "Author name in the text"
-    In the source most files begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль», «Л.Н.Толстой», «Горький Максим»), which is a feature leak for authorship attribution. Such headers are stripped in unambiguous cases (`strip_header`): the first line is the record's author name in any of these forms, alone or with the record's title, the next line is the title; 288 of 373 texts are cleaned this way. The author's surname remains within the first 200 characters of 8 texts: headers in other forms («Антон Павлович Чехов. Палата No 6», «Горький Максим (Алексей Максимович Пешков)», «Лев Толстой. О НАУКЕ» with the title «О науке (Ответ крестьянину)») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.
+    Most files of the source begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль»), which is a feature leak for authorship attribution. Unambiguous headers are stripped, which cleans 288 of 373 texts. In 8 texts the author's surname remains within the first 200 characters - in headers of other forms («Антон Павлович Чехов. Палата No 6») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.
 
 `get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `genre` - genre, `author` - author, `title` - title, `year_from` and `year_to` - years of writing (`None` without a date), `text` - text without the author-and-title header, `file` - path to the file.
 

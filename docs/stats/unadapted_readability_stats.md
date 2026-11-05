@@ -12,9 +12,9 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 - `SourceTypeError` - источник, который не строка, не `Doc` и не объект `BasicStats`, базовые статистики не того класса, экстрактор другого типа, строка или `Doc` для класса без `basic_stats_class`;
 - `SourceError` - источник без слов или без предложений.
 
-Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md). Таблица `print_stats` и сообщения об ошибках - по-русски (`UNADAPTED_READABILITY_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md). Таблица `print_stats` и сообщения об ошибках - по-русски.
 
-Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2. Поэтому шкал прочтения у этих формул нет, `describe` возвращает для них `None`, а в [сводный класс](readability_stats.md#consensus_grade) они не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
+Класса российской школы формулы не дают (на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2) и в [сводный класс](readability_stats.md#consensus_grade) не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
 
 === "Код"
 
@@ -63,7 +63,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 | :------ | :-- | :------- |
 | `bs` | `BasicStats` | Базовые статистики текста |
 
-Готовые базовые статистики можно взять у объекта [`ReadabilityStats`](readability_stats.md), чтобы не считать их второй раз:
+Базовые статистики можно взять у объекта [`ReadabilityStats`](readability_stats.md):
 
 === "Код"
 
@@ -100,7 +100,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 | [`elf`](#elf) | английские тексты для чтения вслух | от 0 | сложнее текст |
 | [`wheeler_smith`](#wheeler_smith) | английские тексты начальной школы | от 0 | сложнее текст |
 
-Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Функции формул импортируются из `ruts.unadapted_readability_stats` и считают значение по количествам:
+Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Функции формул из `ruts.unadapted_readability_stats` считают значение по количествам:
 
 === "Код"
 

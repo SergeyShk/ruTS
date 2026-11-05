@@ -40,7 +40,7 @@ spaCy sets both at `nlp.add_pipe(factory, name=...)`; the other parameters of a 
 
 ## Names { #names }
 
-The factories carry the prefix of the library: `ruts_basic`, `ruts_readability`, `ruts_unadapted_readability`, `ruts_diversity`, `ruts_morph`, `ruts_syntax`, `ruts_cohesion`, `ruts_lexical`, `ruts_style`, `ruts_phon`, `ruts_verse`, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines). They are declared as entry points of `spacy_factories`, so a pipeline saved with these components (`nlp.to_disk(path)`) loads with `spacy.load(path)` without `import ruts`. `import ruts` does not load the components while spaCy is not loaded - the entry points find them; from the sources without an installed package, `import ruts.components` comes before `add_pipe`.
+The factories carry the prefix `ruts_` ([table](#class-components) below, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines)). They are declared as entry points of `spacy_factories`, so spaCy finds them without `import ruts`, and a pipeline saved with them (`nlp.to_disk(path)`) loads with `spacy.load(path)`.
 
 --8<-- "components.md:StatsComponent-names"
 
@@ -48,9 +48,9 @@ In `ruts_lexical` a document of numbers alone passes untouched as well, and in `
 
 --8<-- "components.md:StatsComponent-serialization"
 
-Adding a component extends the spaCy tokenizer of its pipeline with the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words the same way as a string; for your own pipeline without ruTS components call this function yourself. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) splits words as a string, and the components leave it as it is.
+Adding a component adds to the spaCy tokenizer the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words as a string; a pipeline without ruTS components needs this call of its own. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) is left as it is.
 
-ruTS removes stress marks from the words of a `Doc`. They do not change the parts of speech and features of the [recommended pipeline](#load_pipeline), but the model sees a word with a mark as unknown and tags it worse: on a text after `accentuate` the tagger of `ru_core_news_sm` changes the part of speech of over half of the words, and the dependencies change in both pipelines. Pass a text with stresses to the pipeline without them - `nlp(ruts.utils.strip_marks(text))`.
+ruTS removes stress marks from the words of a `Doc`, but the model parses such words worse: on a text after `accentuate` the tagger of `ru_core_news_sm` changes the part of speech of over half of the words, and the dependencies change in the [recommended pipeline](#load_pipeline) as well. Pass a text with stresses without them - `nlp(ruts.utils.strip_marks(text))`.
 
 ## Recommended pipeline { #load_pipeline }
 
@@ -58,7 +58,7 @@ ruTS removes stress marks from the words of a `Doc`. They do not change the part
 load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
 ```
 
-A spaCy pipeline in which a `Doc` is annotated the same way as a string (except the hyphenated words that anySeg splits into parts - муж-то, скажи-ка, два-три: they are one word in a `Doc`): the tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. The function loads the model with the anySeg tokenizer, without its `morphologizer` and `lemmatizer`, and adds the `anyseg_sentencizer` and `rumorph` components first: ruMorph analyzes the words in the context of the anySeg sentences. A saved pipeline of this kind loads as it is. The same by hand:
+A spaCy pipeline in which a `Doc` is annotated the same way as a string, except the hyphenated words such as муж-то and два-три: a string splits them into parts, a `Doc` keeps one word. The tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. A saved pipeline of this kind loads as it is. The same by hand:
 
 ``` python
 nlp = spacy.load(
@@ -70,7 +70,7 @@ nlp.add_pipe("anyseg_sentencizer", first=True)
 nlp.add_pipe("rumorph", after="anyseg_sentencizer")
 ```
 
-On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags коли and ежели as a verb or a noun, the connectors значит and главное as a verb and an adjective and т.е. as a punctuation mark, so these connectors are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься, смеешься as an infinitive, so the subordinate clause with them counts as an infinitive clause.
+On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags connectors such as значит and т.е. as a verb and a punctuation mark, so they are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься as an infinitive, so the subordinate clause with it counts as an infinitive clause.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -127,7 +127,7 @@ MorphStatsComponent(nlp, name)
 
 --8<-- "components.md:MorphStatsComponent"
 
-In ruTS the parts of speech and the features are taken from the annotation of the pipeline (`token.pos_`, `token.morph`): ruMorph gives them in the [recommended pipeline](#load_pipeline), the `morphologizer` in a plain model, and in a pipeline without them they come from the ruMorph analysis by word.
+In ruTS the parts of speech and the features come from the annotation of the pipeline (`token.pos_`, `token.morph`), and without it from the ruMorph analysis by word.
 
 === "Code"
 
@@ -150,7 +150,7 @@ ReadabilityStatsComponent(nlp, name, preset=None, basic=None)
 
 --8<-- "components.md:ReadabilityStatsComponent"
 
-The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian`, `fiction` and `academic`, the preset of the class `plainrussian`. In ruTS the class of statistics and its `basic_stats_class` are set, so the errors of `stats_class` and `SourceTypeError` do not occur; the message of `SourceError` names the component `ruts_basic` (`basic_factory`) to add before it.
+The [presets](stats/readability_stats.md#presets) of ruTS are `plainrussian` (the default), `fiction` and `academic`. In ruTS the errors of `stats_class` and `SourceTypeError` do not occur, and the message of `SourceError` names the component `ruts_basic` to add before it.
 
 === "Code"
 
@@ -178,7 +178,7 @@ UnadaptedReadabilityStatsComponent(nlp, name, basic=None)
 
 --8<-- "components.md:UnadaptedReadabilityStatsComponent"
 
-The formulas are those of [`UnadaptedReadabilityStats`](stats/unadapted_readability_stats.md), with their original coefficients and without a calibration for Russian. As for `ReadabilityStatsComponent`, the errors of `stats_class` and `SourceTypeError` do not occur in ruTS, and the message of `SourceError` names the component `ruts_basic` to add before it.
+The formulas are those of [`UnadaptedReadabilityStats`](stats/unadapted_readability_stats.md), with their original coefficients and without a calibration for Russian; the errors in ruTS are as for `ReadabilityStatsComponent`.
 
 === "Code"
 
@@ -234,7 +234,7 @@ StyleStatsComponent(nlp, name, stopwords=None, top_n=10, nausea_stopwords=None, 
 
 --8<-- "components.md:StyleStatsComponent"
 
-Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from `OFFICIALESE_CLICHES`; `NAUSEA_TOP_N` is a constant of `anyts.constants`.
+Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from `OFFICIALESE_CLICHES`.
 
 === "Code"
 
@@ -285,7 +285,7 @@ The [recommended pipeline](#load_pipeline) and the `ru_core_news_sm`, `ru_core_n
 
 Raises:
 
-- `SourceError` - a document without a dependency parse or parts of speech, in a pipeline without a parser or without parts of speech (`rumorph` of the recommended pipeline or the `morphologizer` of a model).
+- `SourceError` - a document without a dependency parse or parts of speech (`rumorph` of the recommended pipeline or the `morphologizer` of a model).
 
 === "Code"
 
@@ -306,7 +306,7 @@ Raises:
 CohesionStatsComponent(nlp, name, blank_lines=False)
 ```
 
-`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser, and a `Doc` without sentence boundaries is split into sentences by the Russian [`SentsExtractor`](extractors/sentences.md); when annotation is present, parts of speech are taken from it, lemmas - from ruMorph by the token's part of speech, without annotation - from the ruMorph analysis, as for a string. With `blank_lines` the paragraphs start after the blank lines alone, as in `CohesionStats`.
+`CohesionStatsComponent` puts the cohesion statistics into the extension. It needs no parser: a `Doc` without sentence boundaries is split into sentences by [`SentsExtractor`](extractors/sentences.md). The parts of speech come from the annotation, and the lemmas from ruMorph by the part of speech of the token; without annotation both come from the ruMorph analysis, as for a string.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -370,7 +370,7 @@ Raises:
 VerseStatsComponent(nlp, name, data_dir=None)
 ```
 
-`VerseStatsComponent` puts the verse statistics into the extension; it requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary. The component works on the `Doc` text with line breaks, so pass the poem text to `nlp` as is, without joining the lines. A text with letters but without Russian words gives empty statistics, like `VerseStats`, so `nlp.pipe` over a corpus does not stop on it.
+`VerseStatsComponent` puts the verse statistics into the extension; it requires a downloaded [`StressDict`](datasets/stressdict.md) stress dictionary. The lines of a poem are the lines of the `Doc` text, so pass the poem to `nlp` without joining them. A text with letters but without Russian words gives empty statistics, as in `VerseStats`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -402,7 +402,7 @@ Raises:
 
 --8<-- "components.md:start_sents_after_blank_lines"
 
-In ruTS the component is registered as `ruts_blank_lines`. Without it the parser of the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence, and the statistics of a `Doc` differ from those of the same string. In the [recommended pipeline](#load_pipeline) the sentences are split by `anyseg_sentencizer`, and the component is not needed.
+In ruTS the component is registered as `ruts_blank_lines`. Without it the parser of the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence; the [recommended pipeline](#load_pipeline) does not need it.
 
 === "Code"
 

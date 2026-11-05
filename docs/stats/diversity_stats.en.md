@@ -12,7 +12,7 @@ Raises:
 - `SourceError` - a source without words;
 - `ParameterError` - a parameter that `check_params` rejects.
 
-The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/) core: instead of a list of words it takes a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library. The words of a text are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given one, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens without stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The words are always lower-cased. The `print_stats` table has Russian headers and the Russian descriptions of the metrics from `ruts.constants.DIVERSITY_STATS_DESC`, and the error messages are in Russian, from `ruts.constants.CORE_MESSAGES`.
+The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/) core: instead of a list of words it takes a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library. The words of a text are extracted by the Russian [`WordsExtractor`](../extractors/words.md), the words of a `Doc` without an extractor are its tokens without stress marks, and a hyphenated word that spaCy splits stays one word (`во-первых`). The words are lower-cased. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -638,4 +638,4 @@ In ruTS `messages` defaults to `CORE_MESSAGES`.
      'burstiness': nan}
     ```
 
-The other methods - `to_dataframe` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical diversity metrics have no scales, so `describe` gives `None` for the metrics of `get_stats`.
+The other methods - `to_dataframe` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the lexical diversity metrics have no scales, and `describe` gives `None` for the metrics of `get_stats`.

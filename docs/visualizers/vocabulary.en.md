@@ -1,6 +1,6 @@
 # Vocabulary growth and frequency spectrum
 
-Two plots about the word distribution of a text complementing [Zipf's law](zipf.md): vocabulary growth with text length by Heaps' law and the frequency spectrum - how many lexemes occur exactly once, twice, three times. Both plots exist in zipfR (`plot.vgc`, `plot.spc`). The functions take axes `ax` and return `Axes`.
+Two plots about the word distribution of a text complementing [Zipf's law](zipf.md): vocabulary growth with text length by Heaps' law and the frequency spectrum - how many lexemes occur exactly once, twice, three times. The functions take axes `ax` and return `Axes`.
 
 The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/vocabulary/) core with the Russian labels of `ruts.constants.VISUALIZER_LABELS` by default; `labels` puts the given labels over them. The fit of Heaps' law is described in [`fit_heaps`](../stats/diversity_stats.md#heaps_beta) and the spectrum in [`calc_frequency_spectrum`](../stats/diversity_stats.md#frequency_spectrum).
 

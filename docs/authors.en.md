@@ -18,7 +18,7 @@
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. The workflow, the checks to run before submitting a pull request and how to shape the changes are described in [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md) (in Russian); the rules of conduct are in the [code of conduct](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
+Bug reports, ideas and pull requests are welcome - [issues](https://github.com/SergeyShk/ruTS/issues) are open. The workflow and the checks before a pull request are in [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md) (in Russian), the rules of conduct are in the [code of conduct](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
 
 ## Citation
 

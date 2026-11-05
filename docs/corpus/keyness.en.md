@@ -44,7 +44,7 @@ The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/co
 | :-------- | :--- | :------ | :---------- |
 | `lemmatize` | `bool` | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
-A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`: the dictionary holds words.
+A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`.
 
 --8<-- "corpus/keyness.md:check_keyness_params"
 
@@ -59,12 +59,12 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 | `counts` | the frequencies of `FreqDict.word_ipm` converted to occurrences in the corpus of the dictionary |
 | `size` | `CORPUS_SIZE` of `ruts.datasets.freq2011`, 92 million tokens of the modern subcorpus of the Russian National Corpus |
 | `missing` | the least frequency of the dictionary `FreqDict.min_ipm`, 0.4 ipm (about 37 occurrences) |
-| `key` | the lemma of the dictionary: a word form is lemmatized by ruMorph (with `lemmatize=False` it is taken as a lemma) and brought to the conventions of the dictionary by `ruts.lexical_stats.dictionary_lemma`, as in [`LexicalStats`](../stats/lexical_stats.md) |
-| `keep` | the words of the Cyrillic letters of `ruts.lexical_stats.DICTIONARY_WORD`; numbers and words with Latin letters are left out |
+| `key` | the lemma of the dictionary: the ruMorph lemma of a word form (with `lemmatize=False` the word itself) brought to the conventions of the dictionary, as in [`LexicalStats`](../stats/lexical_stats.md) |
+| `keep` | words of Cyrillic letters; numbers and words with Latin letters are left out |
 
-A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «во», «со», while [ruMorph](https://github.com/SergeyShk/ruMorph) reduces these word forms to «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,150 for word forms and 1,450 for lemmas - are listed in the resources of the package; the forms of the words outside the ruMorph dictionary («Михайлыч») are guessed.
+A dictionary entry that no word form is reduced to is never a negative keyword: the dictionary keeps «во» and «со» as entries of their own, while [ruMorph](https://github.com/SergeyShk/ruMorph) reduces these word forms to «в» and «с».
 
-With `lemmatize=False` the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.
+With `lemmatize=False` a lemma loses the conventions of the dictionary - the short form, the plural, the spelling variant («должный» instead of «должен», «деньга» instead of «деньги») - and such entries come out as false keywords, so compare word forms with the dictionary.
 
 === "Code"
 

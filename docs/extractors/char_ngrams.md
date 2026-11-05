@@ -13,7 +13,7 @@ CharNgramsExtractor(n=2, lowercase=False, within_words=False, tokenizer=None)
 
 - `ParameterError` - `n`, который не целое число не меньше единицы, `lowercase` или `within_words`, который не `bool`.
 
-Класс расширяет `CharNgramsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) крючком русского языка: его токенизатор слов по умолчанию для `within_words`, метод `tokenize(text)`, - токенизатор по умолчанию [`WordsExtractor`](words.md), токены сегментатора [anySeg](https://github.com/SergeyShk/anySeg) по соглашениям UD (`ruts.utils.iter_tokens`). Перед извлечением из текста снимаются знаки ударения и мягкие переносы (`ruts.utils.strip_marks`). Список N-грамм подается в [`delta`](../corpus/stylometry.md) как единицы текста вместо слов.
+Класс расширяет `CharNgramsExtractor` ядра [anyTS](https://sergeyshk.github.io/anyTS/extractors/char_ngrams/) крючком русского языка: слова для `within_words` (метод `tokenize(text)`) - слова [`WordsExtractor`](words.md), токены сегментатора [anySeg](https://github.com/SergeyShk/anySeg). Перед извлечением из текста снимаются знаки ударения и мягкие переносы. Список N-грамм подается в [`delta`](../corpus/stylometry.md) как единицы текста вместо слов.
 
 === "Код"
 
