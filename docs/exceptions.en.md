@@ -2,20 +2,20 @@
 
 ## Exceptions
 
-All library exceptions inherit the base class `RutsError` and one of the built-in Python classes, so they can be caught both by their ruTS name and by the familiar built-in type - existing code with `except ValueError` keeps working.
+All library exceptions inherit the base class `RutsError` and one of the built-in Python classes, so they can be caught both by their ruTS name and by the built-in type, for example `except ValueError`.
 
 | Exception | Built-in class | When raised |
 | :-------- | :------------- | :---------- |
 | `RutsError` | `Exception` | Base class, never raised itself |
-| `SourceTypeError` | `TypeError` | The data source is neither a string nor a `Doc`, the frequency counter is not a `Counter`, the list of texts is not a list of lists, the path is neither a string nor a `Path`, the tokenizer is not callable |
-| `SourceError` | `ValueError` | The source has no words, sentences, texts or collocations, lacks a dependency parse, has fewer texts than the measure needs, or nothing is left after culling |
-| `ParameterError` | `ValueError` | A threshold, window, segment size or number of items is out of range; an unknown measure, variant, preset, layer, stage or dataset category |
-| `UnknownStatError` | `ParameterError`, `KeyError` | An unknown statistic is requested by name (`describe` of the statistics classes, `get_stats`, `print_stats` and `explain_text` of `MorphStats`, `DiversityStats.windowed`, `describe_level_norm`) |
+| `SourceTypeError` | `TypeError` | An argument of a wrong type: the data source is neither a string nor a `Doc`, the frequency counter is not a `Counter`, the tokenizer is not callable and the like |
+| `SourceError` | `ValueError` | The source has no words, sentences, texts, collocations or dependency parse, has fewer texts than the measure needs, or nothing is left after culling |
+| `ParameterError` | `ValueError` | A parameter value is out of range; an unknown measure, preset, layer, dataset category and the like |
+| `UnknownStatError` | `ParameterError`, `KeyError` | An unknown statistic is requested by name (`describe`, `DiversityStats.windowed`, `MorphStats.get_stats` and others) |
 | `DatasetNotFoundError` | `OSError` | The dataset is not downloaded; the message shows the download command |
 | `DataFileError` | `ValueError` | A dataset file is corrupted, has an unexpected format or cannot be decoded |
 | `DownloadError` | `RuntimeError` | The file could not be downloaded or failed the checksum verification |
 
-The classes are available from `ruts` and from `ruts.exceptions`. They are the classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core under the same names, `RutsError` being its `anyts.exceptions.AnyTSError`: aliases, not subclasses, so `except RutsError` catches the errors raised by the code of the core too, and a traceback shows `anyts.exceptions.SourceError`. The messages of ruTS are in Russian, the messages of the statistics classes, the extractors, the components and the highlighting built on the core included (`ruts.constants.CORE_MESSAGES`). English remain the checks of the types of arguments in the code of the core (a string instead of a number and the like) and some functions of the core.
+The classes are available from `ruts` and `ruts.exceptions`. They are the very classes of the [anyTS](https://sergeyshk.github.io/anyTS/exceptions/) core (`RutsError` is its `AnyTSError`), not subclasses: `except RutsError` catches the errors of the core code too, and a traceback shows `anyts.exceptions.SourceError`. The messages are in Russian, except the argument type checks in the core code and some core functions.
 
 === "Code"
 
@@ -43,7 +43,7 @@ The classes are available from `ruts` and from `ruts.exceptions`. They are the c
 
 ## Logging
 
-The library prints nothing on its own: the anyTS core sends messages about downloading and extracting datasets (the `download()` methods) to the `anyts` logger at the `INFO` level. The logger has a `NullHandler` by default, so the messages are silent; to see them, configure logging in your application:
+The anyTS core writes messages about downloading and extracting datasets (`download()`) to the `anyts` logger at the `INFO` level. They are silent by default; to see them, configure logging in your application:
 
 === "Code"
 
@@ -64,4 +64,4 @@ The library prints nothing on its own: the anyTS core sends messages about downl
     anyts.datasets: Extracting the archive /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
     ```
 
-The `print_stats()` methods of the statistics classes and `print_kwic()` write to standard output by design; logging does not affect them.
+`print_stats()` and `print_kwic()` write to standard output; logging does not affect them.

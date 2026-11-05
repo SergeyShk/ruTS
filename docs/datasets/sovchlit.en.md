@@ -4,7 +4,7 @@
 SovChLit(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-The dataset of Soviet reading-books for literature classes. It is built from digitized editions of the ["School textbooks of the USSR"](https://sheba.spb.ru/shkola/) project:
+Soviet reading-books for literature classes from digitized editions of the ["School textbooks of the USSR"](https://sheba.spb.ru/shkola/) project:
 
 *   Родная речь. Книга для чтения в I классе начальной школы. Е.Е. Соловьева, Л.А. Карпинская, Н.Н. Щепетова
 
@@ -71,7 +71,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-An unknown grade level or text type, a `book`, `category`, `subject` or `author` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
+An unknown grade level or text type, a `book`, `category`, `subject` or `author` that is not a string, a length bound that is not a positive integer, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
 === "Code"
 

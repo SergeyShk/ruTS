@@ -1,6 +1,6 @@
 # Syllables and stress
 
-The `ruts.syllables` module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (`ruts.utils.strip_marks`), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.
+The `ruts.syllables` module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the [`StressDict`](datasets/stressdict.md) dictionary. Stress marks and soft hyphens are removed from the word, and a stress given by a mark (за́мок, замо́к) overrides the dictionary.
 
 ## Syllabification { #syllabify }
 
@@ -20,7 +20,7 @@ Division of a word into syllables by the rising sonority rule (Avanesov): there 
 | ь and ъ go with the preceding letter | боль-шой, по-дъезд |
 | every vowel of a hiatus forms its own syllable | а-э-ро-порт, а-ист |
 
-The division is orthographic, by letters, as in school phonetics; a compound word is divided part by part (`со-рок-во-ро-вка`).
+The division is orthographic, by letters; a compound word is divided part by part (`со-рок-во-ро-вка`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

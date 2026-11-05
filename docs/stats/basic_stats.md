@@ -15,7 +15,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 - `SourceError` - источник без слов;
 - `ParameterError` - порог, который не целое число не меньше единицы, `normalize`, который не `bool`.
 
-Класс расширяет `BasicStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) крючками русского языка: слоги слова считает [`count_syllables`](../syllables.md#count_syllables), экстракторы по умолчанию - русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), знаки препинания - [`count_punctuations`](#count_punctuations) ruTS, а части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Компонент пустых строк в ruTS называется [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`; в [рекомендуемом конвейере](../components.md#load_pipeline) он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (`ruts.utils.strip_marks`): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица `print_stats` - по-русски.
+Класс расширяет `BasicStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) для русского языка: слоги считает [`count_syllables`](../syllables.md#count_syllables), экстракторы по умолчанию - русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), знаки препинания - [`count_punctuations`](#count_punctuations) ruTS, а дефисное слово, разрезанное spaCy, остается одним словом (`во-первых`). Компонент пустых строк ruTS - [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`; в [рекомендуемом конвейере](../components.md#load_pipeline) он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (`ruts.utils.strip_marks`): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица `print_stats` - по-русски.
 
 === "Код"
 
@@ -96,7 +96,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 <!-- core: stats/basic_stats.md:BasicStats-count_words_by abc6821 -->
 `count_words_by_syllables(min_syllables)` и `count_words_by_letters(min_letters)` возвращают количество слов не меньше чем с заданным числом слогов или букв; минимум, который не целое число, дает `ParameterError`.
 
-Методы пересчитывают сложные и длинные слова с порогом, отличным от заданного при создании объекта: так класс [`ReadabilityStats`](readability_stats.md) считает индекс SMOG (сложное слово - от 5 слогов) и LIX (длинное слово - от 7 букв).
+Так класс [`ReadabilityStats`](readability_stats.md) считает сложные слова SMOG (от 5 слогов) и длинные слова LIX (от 7 букв).
 
 <!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
 `get_stats(flat)` возвращает справочник с распределениями `c_letters` и `c_syllables`, статистиками из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
@@ -161,7 +161,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
      'p_punctuations': 0.03636363636363636}
     ```
 
-Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у базовых статистик нет, поэтому он для статистик `get_stats` возвращает `None`.
+Метод `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у базовых статистик нет, и для статистик `get_stats` он возвращает `None`.
 
 ## Знаки препинания { #count_punctuations }
 
@@ -254,7 +254,7 @@ punctuation_profile(text, n_words=None)
 | `text` | `str` | - | Строка текста |
 | `n_words` | `int` | `None` | Количество слов; без него слова извлекает `WordsExtractor` |
 
-Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. [сравнение корпусов](../corpus/compare.md)). Он зависит от оформления текста - типографских кавычек и тире, буквы ё - и легко подделывается, поэтому его стоит смотреть отдельно от лингвистических признаков.
+Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. [сравнение корпусов](../corpus/compare.md)). Он зависит от оформления текста - кавычек, тире, буквы ё, - и его стоит смотреть отдельно от лингвистических признаков.
 
 === "Код"
 

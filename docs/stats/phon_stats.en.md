@@ -6,7 +6,7 @@ PhonStats(source, words_extractor=None, window_len=3)
 
 --8<-- "stats/phon_stats.md:PhonStats"
 
-The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress; the iotated е, ё, ю, я after a vowel make no hiatus, and a word is divided into syllables by the rising sonority rule (Avanesov) of the [`syllabify`](../syllables.md#syllabify) function. Stress marks are dropped from the words of a text and of a `Doc`, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`PHON_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`). The computation time grows linearly with the length of the text.
+The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the [`syllabify`](../syllables.md#syllabify) function. Stress marks are dropped from the words of a text and of a `Doc`, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`PHON_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 | Class | Letters | Constant |
 | :---- | :------ | :------- |
@@ -54,7 +54,7 @@ The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/any
 check_params(window_len)
 ```
 
-Checks the window of the alliteration and the assonance apart from the class: one that is not an integer of at least 2 raises `ParameterError`.
+Checks the window of the alliteration and the assonance apart from the class, with the same `ParameterError`.
 
 ## Attributes
 
@@ -117,7 +117,7 @@ The ruTS attribute `n_marks` (`int`) is the number of ь and ъ.
 calc_consonant_clusters(text)
 ```
 
-The distribution of the consonant clusters of the words by length. A cluster is a run of consonants inside a word, a single consonant between vowels or at the edge of a word included; ь and ъ do not break a cluster.
+The distribution of the consonant clusters of the words by length. A cluster is a run of consonants inside a word, a single consonant between vowels or at the edge of a word included.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -157,7 +157,7 @@ The number of the vowel hiatuses, two or more vowels in a row inside a word: а�
 calc_cv_entropy(text)
 ```
 
-The entropy of the CV patterns of a list of words: the higher the value, the more varied the phonetic shape of the words. Words without vowels and consonants (numbers, Latin script) are left out, and without other words the value is `nan`.
+The entropy of the CV patterns of a list of words; words without vowels and consonants (numbers, Latin script) are left out, and without other words the value is `nan`.
 
 ``` {.python .signature}
 cv_pattern(word)
@@ -198,7 +198,7 @@ calc_alliteration(text, window_len=3)
 calc_assonance(text, window_len=3)
 ```
 
-The alliteration and assonance indices of a list of words: the repetition index `calc_repetition_index` over the consonant and over the vowel letters of the words. Letters are compared, not sounds: devoicing, stress and reduction are not taken into account.
+The alliteration and assonance indices of a list of words: the repetition index `calc_repetition_index` over the consonant and over the vowel letters of the words.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -234,7 +234,7 @@ Checks whether a syllable is open, that is ends in a vowel; ь and ъ after a vo
 
 </div>
 
-The functions of ruTS take words as strings and count by the Russian classes of letters of the table above. The `calc_*` functions check their arguments: words that are not a list of strings raise `SourceTypeError`, and a window that is not an integer of at least 2 `ParameterError`.
+The functions of ruTS count by the classes of letters of the table above. In the `calc_*` functions words that are not a list of strings raise `SourceTypeError`, and a window that is not an integer of at least 2 `ParameterError`.
 
 === "Code"
 
@@ -266,7 +266,7 @@ The functions of ruTS take words as strings and count by the Russian classes of 
 
 ## Methods
 
-The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the phonostatistics have no scales, so `describe` gives `None` for the statistics of `get_stats`.
+The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the phonostatistics have no scales, and `describe` gives `None` for them.
 
 === "Code"
 

@@ -2,11 +2,11 @@
 
 ![ruTS](img/ruts.svg)
 
-**ruTS** computes for Russian texts what usually requires assembling several separate tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
+**ruTS** computes for Russian texts what usually takes several different tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
 
-The library works both with raw strings and with `Doc` objects of [spaCy](https://github.com/explosion/spaCy) - every statistic is available both as a standalone class and as a spaCy pipeline component.
+The source is a string or a [spaCy](https://github.com/explosion/spaCy) `Doc`; every statistic is available both as a class and as a spaCy pipeline component.
 
-Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): paste a text and get the readability grade, metrics, plots and highlighted fragments.
+Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): the readability grade, metrics, plots and highlighted fragments of a pasted text.
 
 ## Features
 
@@ -32,7 +32,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Numbers of words, sentences, punctuation marks, syllables and other basic text statistics
+    Numbers of words, sentences, syllables, punctuation marks and their distributions
 
     [:octicons-arrow-right-24: Basic statistics](stats/basic_stats.md)
 
@@ -40,7 +40,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Flesch-Kincaid test, SMOG index, LIX readability index and other metrics with coefficients for Russian, and formulas of other languages with their original coefficients
+    Flesch-Kincaid test, SMOG index, LIX and other metrics with coefficients for Russian, formulas of other languages
 
     [:octicons-arrow-right-24: Readability metrics](stats/readability_stats.md)
 
@@ -80,7 +80,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Statistics of the spaCy dependency tree: dependency distances, tree depth, coordination chains, clauses, L2SCA indices, participial clauses, passive voice, prepositional and genitive chains, word order, similarity of adjacent sentences
+    Statistics of the spaCy dependency tree: dependency distances, tree depth, clauses, participial clauses, passive voice, genitive chains, word order
 
     [:octicons-arrow-right-24: Syntactic statistics](stats/syntax_stats.md)
 
@@ -88,7 +88,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Noun, argument and content word overlap between sentences and paragraphs, givenness, temporal cohesion, connectives by class, inter- and intrasentential
+    Word overlap between sentences and paragraphs, givenness, temporal cohesion, connectives
 
     [:octicons-arrow-right-24: Cohesion statistics](stats/cohesion_stats.md)
 
@@ -104,7 +104,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Stresses by the Koziev dictionary, meter and number of feet, pyrrhics and stress profile, rhyme schemes, line endings and stanzas
+    Stresses by the Koziev dictionary, meter, stress profile, rhyme schemes and stanzas
 
     [:octicons-arrow-right-24: Verse statistics](stats/verse_stats.md)
 
@@ -112,7 +112,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    [Keywords](corpus/keyness.md) relative to a reference corpus or a frequency dictionary, [collocations](corpus/collocations.md), [word dispersion](corpus/dispersion.md) across text parts, [KWIC concordance](corpus/kwic.md), [stylometry](corpus/stylometry.md) measures (Burrows's Delta with its variants and rolling Delta along a text, Zeta and the shares of its markers in segments, Kilgarriff's chi-square, Mendenhall curve, function word profile) and the [comparison of corpora](corpus/compare.md) across all features at once (Mann-Whitney test, Cohen's d, Cliff's delta, bootstrap intervals, AUC)
+    [Keywords](corpus/keyness.md), [collocations](corpus/collocations.md), [word dispersion](corpus/dispersion.md), [KWIC concordance](corpus/kwic.md), [stylometry](corpus/stylometry.md) measures (Burrows's Delta, Zeta, Kilgarriff's chi-square) and the [comparison of corpora](corpus/compare.md) across all features at once
 
     [:octicons-arrow-right-24: Corpus measures](corpus/keyness.md)
 
@@ -144,7 +144,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Errors of one hierarchy whose classes are also built-in Python exceptions
+    One error hierarchy compatible with built-in Python exceptions
 
     [:octicons-arrow-right-24: Exceptions and logging](exceptions.md)
 
@@ -241,56 +241,4 @@ Any statistic can be printed in a readable form:
     Энтропия длин слов в слогах (бит) |   1.66
     ```
 
-A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb), which opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb); the other notebooks are on the [examples](examples.md) page.
-
-??? note "Project structure"
-
-    *   **docs** - project documentation
-    *   **ruts**:
-        *   basic_stats.py - basic text statistics
-        *   cohesion_stats.py - cohesion statistics
-        *   components.py - spaCy components
-        *   constants.py - main constants
-        *   diversity_stats.py - lexical diversity metrics
-        *   exceptions.py - library exceptions
-        *   extractors.py - tools for object extraction from a text
-        *   lexical_stats.py - lexical sophistication statistics
-        *   morph_stats.py - morphological statistics
-        *   phon_stats.py - phonostatistics
-        *   readability_stats.py - readability metrics
-        *   style_stats.py - SEO style metrics
-        *   syllables.py - syllables and stress
-        *   syntax_stats.py - syntactic statistics
-        *   unadapted_readability_stats.py - readability formulas of other languages
-        *   utils.py - helper tools
-        *   verse_stats.py - verse statistics: stresses, meter, rhyme, stanzas
-        *   **corpus** - corpus measures:
-            *   collocations.py - collocations and association measures
-            *   compare.py - corpus comparison by text features
-            *   dispersion.py - word dispersion across text parts
-            *   keyness.py - keywords relative to a reference corpus
-            *   kwic.py - KWIC concordance
-            *   stylometry.py - Burrows's Delta, Zeta and other stylometry measures
-        *   **datasets** - datasets:
-            *   dataset.py - base class for working with datasets
-            *   freq2011.py - the Lyashevskaya-Sharoff frequency dictionary
-            *   poetry_corpus.py - Ilya Gusev's PoetryCorpus
-            *   russian_literature.py - the RusLit collection of Russian classics
-            *   sov_chrest_lit.py - soviet reading-books for literature classes
-            *   stalin_works.py - the collected works of Stalin
-            *   stress_dict.py - the Koziev stress dictionary
-            *   texts_by_grade.py - texts with grade labels from the Plain Russian Language project
-        *   **resources** - embedded lexical resources (the most frequent lemmas list, the connectives dictionary)
-        *   **visualizers** - tools for text visualization:
-            *   corpus.py - lexical dispersion, keyness chart, collocation network
-            *   fingerprinting.py - Literature Fingerprinting
-            *   highlight.py - text highlighting
-            *   sentences.py - sentence lengths
-            *   stylometry.py - dendrogram, principal components, scaling, distances within and between authors, rolling Delta, Zeta markers, Mendenhall curves
-            *   vocabulary.py - Heaps's law and frequency spectrum
-            *   word_tree.py - Word Tree
-            *   zipf.py - Zipf's law
-    *   **tests** - tests mirroring the package structure
-    *   **scripts** - a script that fetches the anyTS documentation pages
-    *   **examples** - example notebooks
-    *   **demo** - Gradio demo for Hugging Face Spaces
+A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb) (opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb)), the other notebooks are on the [examples](examples.md) page.

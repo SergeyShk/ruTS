@@ -39,7 +39,7 @@ nav:
         - Стилометрия: corpus/stylometry.md
         - Сравнение корпусов: corpus/compare.md
     - Наборы данных:
-        - Советские христоматии (литература): datasets/sovchlit.md
+        - Советские хрестоматии (литература): datasets/sovchlit.md
         - Полное собрание сочинений И.В. Сталина: datasets/stalinworks.md
         - Тексты с метками класса: datasets/textsbygrade.md
         - Частотный словарь Ляшевской и Шарова: datasets/freq2011.md
@@ -140,7 +140,7 @@ plugins:
             Стилометрия: Stylometry
             Сравнение корпусов: Corpus comparison
             Наборы данных: Datasets
-            Советские христоматии (литература): Soviet literature readers
+            Советские хрестоматии (литература): Soviet literature readers
             Полное собрание сочинений И.В. Сталина: Collected works of Stalin
             Тексты с метками класса: Texts with grade labels
             Частотный словарь Ляшевской и Шарова: Lyashevskaya and Sharoff frequency dictionary

@@ -17,7 +17,7 @@ def russian_labels(name: str, labels: Any) -> Any:
         labels (dict[str, str]): Заданные подписи; пара подписей легенды keyness_plot
 
     Вывод:
-        dict[str, str]: Подписи для функции ядра; неверные возвращаются как есть - их отвергает ядро
+        dict[str, str]: Подписи для функции ядра; неверные - как есть, их отвергает ядро
     """
     if name == "keyness_plot" and isinstance(labels, Sequence) and not isinstance(labels, str):
         if len(labels) != 2:

@@ -4,7 +4,7 @@
 StalinWorks(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-The dataset of the complete collected works of J.V. Stalin. It is built from the 16 main volumes of the digitized complete collected works:
+The 16 main volumes of the digitized complete collected works of J.V. Stalin:
 
 *   Volume 1. Works of 1901-1907
 *   Volume 2. Works of 1907-1913
@@ -86,7 +86,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-A volume number outside 1-16, an unknown text type, a `source`, `subject` or `topic` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
+A volume number outside 1-16, an unknown text type, a `source`, `subject` or `topic` that is not a string, a length bound that is not a positive integer, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
 === "Code"
 

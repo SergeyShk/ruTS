@@ -6,7 +6,7 @@ StyleStats(source, words_extractor=None, stopwords=None, top_n=10, cliches=None,
 
 --8<-- "stats/style_stats.md:StyleStats"
 
-The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) core with the hooks of Russian, given in the cards of the metrics. The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) and are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a `WordsExtractor` with `use_lexemes=True` and `lowercase=True`. The given word lists and the phrases are compared without the letter ё (`normalize_yo`). The words of a `Doc` lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`STYLE_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) core with the hooks of Russian of the metric cards; they tag a word by the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis, without its neighbours. The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) without lemmatization, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a `WordsExtractor` with `use_lexemes=True` and `lowercase=True`. The words are compared with the stop words, the phrases and the keywords ignoring case and the letter ё (`normalize_yo`). The words of a `Doc` lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`STYLE_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -47,7 +47,7 @@ The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/style_stats.md:StyleStats-metrics"
 
-The cards give the bands that [`describe`](#methods) reads, after the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`). The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms.
+The bands of the cards are the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`), which [`describe`](#methods) reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms, and `describe` gives `None` for them.
 
 <div class="metric-card" markdown>
 
@@ -89,8 +89,6 @@ $$
 | `top_n` | `int` | `10` | Number of the most frequent words |
 | `stopwords` | `list[str]` | `None` | Stop words; without them `is_stopword` decides |
 
-A `top_n` that is not an integer of at least one raises `ParameterError`.
-
 | Value | Reading |
 | :---- | :------ |
 | `[0, 5)` | below the Advego norm |
@@ -101,7 +99,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 find_nausea_words(text, top_n=10, stopwords=None)
 ```
 
-The `top_n` most frequent words without the stop words, those the academic nausea counts, with their occurrences: the most frequent first, words of equal frequency in the order of the text. A stop word is a word of `stopwords`, compared ignoring case and the letter ё, or, without the list, a word of `is_stopword`.
+The `top_n` most frequent words without the stop words, those the academic nausea counts, with their occurrences: the most frequent first, words of equal frequency in the order of the text.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -109,13 +107,11 @@ The `top_n` most frequent words without the stop words, those the academic nause
 | `top_n` | `int` | `10` | Number of the most frequent words |
 | `stopwords` | `list[str]` | `None` | Stop words; without them `is_stopword` decides |
 
-A `top_n` that is not an integer of at least one raises `ParameterError`.
-
 ``` {.python .signature}
 is_stopword(word)
 ```
 
-Whether a word is insignificant for the academic nausea by the first [ruMorph](https://github.com/SergeyShk/ruMorph) analysis, without its neighbours: conjunctions, particles, prepositions, pronouns, determiners and interjections (`CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`; the set `ruts.constants.STOPWORD_POS`), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (`PronType` Dem, Int, Rel: там, тогда, где, почему; `ruts.utils.is_pronominal`) and parenthetical words (the `Prnt` label and `PARENTHETICAL_WORDS`: кстати, наверно).
+Whether a word is insignificant for the academic nausea: conjunctions, particles, prepositions, pronouns, determiners and interjections (`STOPWORD_POS`: `CCONJ`, `SCONJ`, `PART`, `ADP`, `PRON`, `DET`, `INTJ`), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (там, тогда, где, почему) and the parenthetical words of `is_parenthetical`.
 
 === "Code"
 
@@ -144,7 +140,7 @@ Whether a word is insignificant for the academic nausea by the first [ruMorph](h
 calc_water(text, stopwords=None)
 ```
 
-The share of the words without content, in percent: the words of `stopwords`, compared ignoring case and the letter ё, or, without the list, the words of `is_water_word`. Advego's "water" is a different indicator; it is not implemented here.
+The share of the words without content, in percent: the words of `stopwords` or, without the list, the words of `is_water_word`. Advego's "water" is a different indicator; it is not implemented here.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -161,7 +157,7 @@ The share of the words without content, in percent: the words of `stopwords`, co
 is_water_word(word)
 ```
 
-Whether a word is "water" by the first ruMorph analysis, without its neighbours, for the water content and the `stopwords` layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (`CCONJ`, `SCONJ`, `PART`, `PRON`, `INTJ`; the set `ruts.constants.WATER_POS`), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in `is_stopword`, are not water.
+Whether a word is "water": conjunctions, particles (and бы), pronominal nouns and interjections (`WATER_POS`: `CCONJ`, `SCONJ`, `PART`, `PRON`, `INTJ`), его, её, их and the parenthetical words of `is_parenthetical`. Prepositions, determiners and predicatives, unlike in `is_stopword`, are not water.
 
 </div>
 
@@ -204,8 +200,6 @@ $$
 | `text` | `list[str]` | - | List of words |
 | `top_n` | `int` | `10` | Number of the most frequent words |
 
-A `top_n` that is not an integer of at least one raises `ParameterError`.
-
 | Value | Reading |
 | :---- | :------ |
 | `[0, 50)` | below the pr-cy and megaindex norm |
@@ -224,7 +218,7 @@ A `top_n` that is not an integer of at least one raises `ParameterError`.
 calc_verbal_nouns(text)
 ```
 
-The share of the verbal nouns among the nouns (by the first ruMorph analysis), in percent; `nan` for a text without nouns. A noun is verbal when its lemma ends with a suffix of `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство, строительство) - the function `ruts.utils.is_verbal_noun`. The heuristic also catches non-verbal words with the same suffixes (здание). `find_verbal_nouns(text)` returns the bounds of the words found as slices of the list.
+The share of the verbal nouns among the nouns, in percent; `nan` for a text without nouns. A noun is verbal when its lemma ends with a suffix of `VERBAL_NOUN_SUFFIXES` (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to `VERBAL_NOUN_LEMMAS` (производство, руководство). The heuristic also catches non-verbal words with the same suffixes (здание). `find_verbal_nouns(text)` returns the bounds of the words found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -243,7 +237,7 @@ The share of the verbal nouns among the nouns (by the first ruMorph analysis), i
 calc_phrase_density(text, phrases)
 ```
 
-The occurrences of the phrases of a list per 100 words. The phrases are compared ignoring case and the letter ё, and a phrase starting with an infinitive, alone or after «не», is found in any form of its verb, participles and gerunds included («имело место», «доведено до сведения»). `expand_phrases(text, phrases)` gives these variants from the text, each with its phrase. `StyleStats` counts this way, over the word forms (`forms`), the compound prepositions of `COMPOUND_PREPOSITIONS` (в целях, в связи с, в рамках, за счет) and the cliches of `OFFICIALESE_CLICHES` (на сегодняшний день, в настоящее время, иметь место) or of the parameter `cliches`.
+The occurrences of the phrases of a list per 100 words. A phrase starting with an infinitive (after «не» too) is found in any form of its verb, participles and gerunds included («имело место», «доведено до сведения»); `expand_phrases(text, phrases)` gives these variants from the text with their phrases. `StyleStats` counts this way the compound prepositions of `COMPOUND_PREPOSITIONS` (в целях, в связи с) and the cliches `cliches`, by default of `OFFICIALESE_CLICHES` (на сегодняшний день, иметь место).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -263,7 +257,7 @@ The occurrences of the phrases of a list per 100 words. The phrases are compared
 calc_parentheticals(text)
 ```
 
-The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the label `Prnt` of the first ruMorph analysis, without its neighbours, and of `PARENTHETICAL_WORDS` (конечно, например, впрочем, кстати; the function `is_parenthetical(word)`). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
+The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило) and, outside them, the single parenthetical words of `is_parenthetical(word)` - with the label `Prnt` (конечно, например) or with a lemma of `PARENTHETICAL_WORDS` (кстати, наверно). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -282,7 +276,7 @@ The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS`
 calc_keyword_density(text, keywords)
 ```
 
-The occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap. The words and the keywords are compared in lower case without the letter ё, as the stop words and the phrases, and the keywords of a set come in sorted order.
+The occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the keywords of a set come in sorted order.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -291,7 +285,7 @@ The occurrences of every keyword per 100 words. A keyword of several words separ
 
 </div>
 
-The functions check their words: words, stop words, keywords and phrases that are not a list of strings raise `SourceTypeError`.
+The functions check their arguments: words, stop words, keywords and phrases that are not a list of strings raise `SourceTypeError`, and a `top_n` that is not an integer of at least one `ParameterError`.
 
 ## Methods { #methods }
 
@@ -319,7 +313,7 @@ The functions check their words: words, stop words, keywords and phrases that ar
     {'целях': 1, 'повышения': 1}
     ```
 
-The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` reads the SEO metrics by the bands of the norms of their cards and gives `None` for the markers of the officialese.
+The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
 
 === "Code"
 

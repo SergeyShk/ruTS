@@ -6,9 +6,9 @@ MorphStats(source, words_extractor=None)
 
 --8<-- "stats/morph_stats.md:MorphStats"
 
-In ruTS the data source is a text or a `Doc` with or without part-of-speech annotation, and the statistics are computed when the object is created. A source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError`, and only a source without words raises `SourceError`.
+In ruTS the data source is a text or a `Doc` with or without part-of-speech annotation. A source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError`, and only a source without words raises `SourceError`.
 
-The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) core with the Russian analysis of the words and the [markers of the verb forms](#markers). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor, which for a `Doc` is applied to its text; without an extractor the words of a `Doc` come from its tokens, and the parts of a hyphenated word that spaCy splits are joined. The `print_stats` and `print_markers` tables and the error messages are in Russian (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) core with the Russian analysis of the words and the [markers of the verb forms](#markers). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor; the words of a `Doc` without an extractor are its tokens with the parts of a hyphenated word joined: муж-то, скажи-ка are one word in a `Doc` and two in a string. The `print_stats` and `print_markers` tables and the error messages are in Russian (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -53,11 +53,11 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/morph_stats.md:MorphStats-attributes"
 
-ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words that ruMorph gives by the part of speech of the word.
+ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words by the ruMorph analysis.
 
 ## Statistics
 
-The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` object with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, that is, by context (стали is a verb or a noun). For a string the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words, as with a words extractor given, the first analysis of the word without its neighbours.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, for a string from the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a `Doc` without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |
@@ -78,7 +78,7 @@ The statistics are the part of speech `pos` and the features of the table below 
 | `verb_form` | Verb form | `Fin`, `Inf`, `Part`, `Conv` |
 | `voice` | Voice | `Act`, `Pass`, `Mid` |
 
-For a `Doc` of the [recommended pipeline](../components.md#load_pipeline) the values are those of the string: ruMorph annotates it; only a hyphenated word that anySeg splits into parts (муж-то, скажи-ка) is one word in a `Doc`. With a plain spaCy model they may differ: both the model and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.
+For a `Doc` of the [recommended pipeline](../components.md#load_pipeline) the values are those of the string: ruMorph annotates it. With a plain spaCy model they may differ: it resolves homonymy with its own model and in places by other conventions (it gives the existential нет the present tense).
 
 <div class="metric-card" markdown>
 
@@ -87,7 +87,7 @@ For a `Doc` of the [recommended pipeline](../components.md#load_pipeline) the va
 `pos` · [UD](https://universaldependencies.org/u/pos/)
 { .metric-meta }
 
-For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - `VERB` without a verb form, который - `DET`, the parenthetical конечно, например - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN`, by word with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.
+The parts of speech of a string: predicatives (надо, the existential нет) - `VERB` without a verb form, который - `DET`, parenthetical words (конечно) - `ADV`, the auxiliary быть - `AUX`, proper nouns - `PROPN` with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun.
 
 </div>
 
@@ -98,7 +98,7 @@ For a string the parts of speech are those of the ruMorph analysis by the conven
 `degree` · `polarity` · `style_variant`
 { .metric-meta }
 
-For a string these features are those of the ruMorph analysis by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: `Cmp` for the comparative, `Sup` for the superlative (красивейший), `Pos` for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature `Variant=Short`.
+Adjectives (except pronominal ones) and adverbs have a degree: `Cmp` for the comparative, `Sup` for the superlative (красивейший), `Pos` for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature `Variant=Short`.
 
 === "Code"
 
@@ -132,7 +132,7 @@ For a string these features are those of the ruMorph analysis by the rules of Ru
 `transitivity` · `involvement` · [OpenCorpora](http://opencorpora.org/dict.php?act=gram)
 { .metric-meta }
 
-OpenCorpora features absent from Russian UD: transitivity (`Tran`, `Intr`) and clusivity (`In` - the speaker is included in the action, `Ex` - not included). They are taken from the labels of the ruMorph analysis of verbs (for a `Doc` - of the analysis with the spaCy lemma) and appear in the `tags` feature string as `Subcat` and `Clusivity`.
+OpenCorpora features absent from Russian UD: transitivity (`Tran`, `Intr`) and clusivity (`In` - the speaker is included in the action, `Ex` - not included). They are taken from the labels of the ruMorph analysis of verbs and appear in the `tags` feature string as `Subcat` and `Clusivity`.
 
 === "Code"
 
@@ -281,7 +281,7 @@ In ruTS the markers are the [shares of the verb forms](#markers).
     Возвратные формы (-ся, -сь) среди форм глагола |   0.00
     ```
 
-The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the morphological statistics have no scales, so it gives `None` for the statistics of `get_stats`.
+The `describe` method of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core gives `None` for the statistics of `get_stats`: the morphological statistics have no scales.
 
 --8<-- "stats/morph_stats.md:MorphWord"
 

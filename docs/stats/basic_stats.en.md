@@ -6,7 +6,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 --8<-- "stats/basic_stats.md:BasicStats"
 
-The class extends the `BasicStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) core with the hooks of Russian: the syllables of a word are counted by [`count_syllables`](../syllables.md#count_syllables), the default extractors are the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md), the punctuation marks are counted by the [`count_punctuations`](#count_punctuations) of ruTS, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The blank line component of ruTS is called [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`; the [recommended pipeline](../components.md#load_pipeline) does not need it. Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (`ruts.utils.strip_marks`): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the `print_stats` table is in Russian.
+The class extends the `BasicStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) core for Russian: the syllables are counted by [`count_syllables`](../syllables.md#count_syllables), the default extractors are the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md), the punctuation marks are counted by the [`count_punctuations`](#count_punctuations) of ruTS, and a hyphenated word that spaCy splits stays one word (`во-первых`). The blank line component of ruTS is [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`; the [recommended pipeline](../components.md#load_pipeline) does not need it. Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (`ruts.utils.strip_marks`): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the `print_stats` table is in Russian.
 
 === "Code"
 
@@ -54,7 +54,7 @@ In ruTS a complex word has four or more syllables and a long word six or more le
 
 --8<-- "stats/basic_stats.md:BasicStats-count_words_by"
 
-The methods recount complex and long words with a threshold other than the one set when the object was created: this is how [`ReadabilityStats`](readability_stats.md) computes the SMOG index (a complex word has 5 or more syllables) and LIX (a long word has 7 or more letters).
+This is how [`ReadabilityStats`](readability_stats.md) counts the complex words of SMOG (5 or more syllables) and the long words of LIX (7 or more letters).
 
 --8<-- "stats/basic_stats.md:BasicStats-get_stats"
 
@@ -116,7 +116,7 @@ The normalized statistics `p_*` are not in the table.
      'p_punctuations': 0.03636363636363636}
     ```
 
-The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, so it gives `None` for the statistics of `get_stats`.
+The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, and it gives `None` for the statistics of `get_stats`.
 
 ## Punctuation marks { #count_punctuations }
 
@@ -184,7 +184,7 @@ The frequencies of the punctuation marks by type (`count_punctuations`) per 1000
 | `text` | `str` | - | Text string |
 | `n_words` | `int` | `None` | Number of words; without it the words are extracted by `WordsExtractor` |
 
-The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see [corpus comparison](../corpus/compare.md)). It depends on text formatting - typographic quotation marks and dashes, the letter ё - and is easy to fake, so it is best read separately from linguistic features.
+The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see [corpus comparison](../corpus/compare.md)). It depends on text formatting - quotation marks, dashes, the letter ё - and is best read separately from linguistic features.
 
 === "Code"
 

@@ -2,19 +2,15 @@
 Компоненты spaCy для классов статистик
 
 Описание:
-    Каждый компонент кладет в doc._.<name> объект класса статистик, где name - имя
-    компонента в пайплайне: add_pipe("ruts_basic", name="basic") дает doc._.basic
-    spaCy такие объекты не сериализует, поэтому Doc.to_bytes(), DocBin(store_user_data=True)
-    и nlp.pipe(n_process > 1) с этими компонентами не работают - исключайте
-    user_data при сохранении или храните get_stats() отдельно
-    Фабрики - точки входа spacy_factories, поэтому сохраненный пайплайн загружается
-    spacy.load() без импорта ruts
-    Документ без слов проходит пайплайн нетронутым, расширение остается None;
-    имя, занятое расширением другого пакета, - ParameterError
-    Добавление компонента расширяет токенизатор spaCy правилами add_dash_rules,
-    токенизатор anySeg (anyseg.Tokenizer.v1) остается прежним
-    ruts_blank_lines - компонент ядра start_sents_after_blank_lines: ставит начало
-    предложения после пустой строки, если добавлен перед parser, senter или sentencizer
+    Компонент кладет в doc._.<name> объект класса статистик, где name - имя компонента
+    в пайплайне: add_pipe("ruts_basic", name="basic") дает doc._.basic; у документа без
+    слов расширение остается None. Имя, занятое расширением другого пакета, -
+    ParameterError. Doc.to_bytes(), DocBin(store_user_data=True) и nlp.pipe(n_process > 1)
+    с этими компонентами не работают: исключайте user_data при сохранении или храните
+    get_stats() отдельно. Сохраненный пайплайн загружается spacy.load() без импорта ruts
+    Компонент добавляет в токенизатор spaCy правила add_dash_rules, токенизатор anySeg
+    не меняется. ruts_blank_lines ставит начало предложения после пустой строки, если
+    добавлен перед parser, senter или sentencizer
 """
 
 import re
@@ -84,9 +80,8 @@ class MorphStatsComponent(_Component, anyts.components.MorphStatsComponent):
     Класс для компонента морфологических статистик текста
 
     Описание:
-        Части речи и признаки берутся из разметки пайплайна (token.pos_, token.morph:
-        компонент rumorph или теггер модели) в терминах Universal Dependencies,
-        в пайплайне без них - из ruMorph
+        Части речи и признаки UD берутся из разметки пайплайна (компонент rumorph
+        или теггер модели), без нее - из ruMorph
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -155,8 +150,7 @@ class UnadaptedReadabilityStatsComponent(
     Класс для компонента формул удобочитаемости других языков
 
     Описание:
-        Формулы UnadaptedReadabilityStats - с исходными коэффициентами, без калибровки
-        под русский язык
+        Формулы с исходными коэффициентами, без калибровки под русский язык
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -239,7 +233,8 @@ class StyleStatsComponent(_Component, anyts.components.StyleStatsComponent):
         name (str): Наименование компонента в пайплайне
         stopwords (list[str]): Список слов «воды» для водности; если не задан,
             используется разметка ruMorph
-        top_n (int): Количество самых частых слов для академической тошноты и естественности по Ципфу
+        top_n (int): Количество самых частых слов для академической тошноты
+            и естественности по Ципфу
         nausea_stopwords (list[str]): Список стоп-слов для академической тошноты; если
             не задан, используется разметка ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
@@ -286,10 +281,8 @@ class SyntaxStatsComponent(_Component, anyts.components.SyntaxStatsComponent):
     Класс для компонента синтаксических статистик текста
 
     Описание:
-        Компонент работает по дереву зависимостей и частям речи, поэтому в пайплайне
-        должны быть парсер и разметка частей речи: rumorph рекомендуемого конвейера
-        (load_pipeline) или morphologizer моделей ru_core_news_sm, ru_core_news_md,
-        ru_core_news_lg
+        В пайплайне нужны парсер и разметка частей речи: rumorph конвейера
+        load_pipeline или morphologizer моделей ru_core_news
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -380,7 +373,7 @@ class LexicalStatsComponent(_Component, anyts.components.LexicalStatsComponent):
         super().__init__(nlp, name)
 
     def is_number(self, word: str) -> bool:
-        """Число по шаблону ruTS без знаков ударения, мягких переносов и BOM, как в LexicalStats"""
+        """Проверка, что слово - число, как в LexicalStats"""
         return is_number(strip_marks(word).lstrip(BYTE_ORDER_MARK))
 
 
@@ -390,10 +383,9 @@ class VerseStatsComponent(_Component):
     Класс для компонента стиховедческих статистик текста
 
     Описание:
-        Компонент работает по тексту Doc с переносами строк, поэтому текст
-        стихотворения нужно передавать в nlp как есть, не склеивая строки;
-        текст с буквами, но без русских слов дает пустые статистики, как VerseStats,
-        документ без букв проходит нетронутым
+        Стихи делятся на строки по переносам строк текста Doc: передавайте текст
+        в nlp, не склеивая строки. Текст с буквами, но без русских слов дает пустые
+        статистики, у документа без букв расширение остается None
 
     Добавление компонента в пайплайн:
         >>> import ruts
@@ -406,8 +398,7 @@ class VerseStatsComponent(_Component):
         >>> doc._.verse.meter, doc._.verse.n_feet
         ('хорей', 4)
 
-    Словарь ударений из другой директории - компонент с этим словарем требует
-    его загрузки при первом вызове:
+    Словарь ударений из другой директории (должен быть загружен к первому вызову):
         >>> nlp.add_pipe('ruts_verse', name='verse_dicts', config={'data_dir': '/path/to/dicts'}, last=True)
         <ruts.components.VerseStatsComponent object at 0x...>
 

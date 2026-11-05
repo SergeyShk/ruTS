@@ -4,7 +4,7 @@
 TextsByGrade(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-The dataset of grade-labeled texts from Ivan Begtin's [Plain Russian Language](https://github.com/infoculture/plainrussian) project. The dataset contains 68 texts from the project repository distributed under the [CC0 1.0](https://github.com/infoculture/plainrussian/blob/master/LICENSE) license: 55 from the `TEXT_LIST` list, on which the coefficients of the Russian readability formulas of the `plainrussian` preset of [`ReadabilityStats`](../stats/readability_stats.md#presets) were fitted, and 13 from repository folders not included in the list. The label is the school grade or the year of study:
+68 grade-labeled texts from the repository of Ivan Begtin's [Plain Russian Language](https://github.com/infoculture/plainrussian) project, license [CC0 1.0](https://github.com/infoculture/plainrussian/blob/master/LICENSE): 55 from the `TEXT_LIST` list, on which the coefficients of the `plainrussian` preset of [`ReadabilityStats`](../stats/readability_stats.md#presets) were fitted, and 13 from repository folders outside the list. The label is the school grade or the year of study:
 
 | Label | Texts | Count |
 | :---- | :---- | :---- |
@@ -16,7 +16,7 @@ The dataset of grade-labeled texts from Ivan Begtin's [Plain Russian Language](h
 | 15 | newspaper article | 1 |
 | 17 | regulatory and business documents: laws, regulations, government news | 15 |
 
-Labels 12-14 correspond to years 1-3 of university, 15-17 - to years 4-6, as in the [`grade_to_age`](../stats/readability_stats.md#grade_to_age) table. Paragraphs are separated by line breaks; the hard line breaks of the original lib.ru files are removed.
+Labels 12-14 are years 1-3 of university, 15-17 - years 4-6, as in the [`grade_to_age`](../stats/readability_stats.md#grade_to_age) table. Paragraphs are separated by line breaks, the hard line breaks of the original files are removed.
 
 Raises:
 
@@ -77,7 +77,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 | `max_len` | `int` | `None` | Maximum text length (in characters) |
 | `limit` | `int` | `None` | Number of texts |
 
-An unknown grade level, a `subject` that is not a string, a length bound that is not an integer of at least one, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
+An unknown grade level, a `subject` that is not a string, a length bound that is not a positive integer, a minimum above the maximum and a `limit` that is not a non-negative integer raise `ParameterError`; a dataset that is not downloaded `DatasetNotFoundError`, a file a record cannot be extracted from `DataFileError`.
 
 === "Code"
 
@@ -92,7 +92,7 @@ An unknown grade level, a `subject` that is not a string, a length bound that is
     Жил себе дед да баба, у них была курочка Ряба; снесла под полом яичко - пестро, востро, костяно, мудрено!
     ```
 
-`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `grade` - grade level, `subject` - text title, `source` - source URL (an empty string for the two texts whose address is not published: "Золотой ключик" and the State Council report), `text` - text, `file` - path to the file.
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `grade` - grade level, `subject` - text title, `source` - source URL (an empty string for "Золотой ключик" and the State Council report, whose addresses are not published), `text` - text, `file` - path to the file.
 
 === "Code"
 
@@ -113,7 +113,7 @@ An unknown grade level, a `subject` that is not a string, a length bound that is
 
 ## Readability formula checks
 
-The dataset is used in the library tests to check the readability formulas: the Spearman correlation of formula values with the grade labels over all 68 texts must be at least 0.7, and that of the consensus grade at least 0.8. Values with the default coefficients:
+In the library tests the Spearman correlation of every formula with the grade label over the 68 texts must be at least 0.7 in absolute value, that of the consensus grade at least 0.8. Values with the default coefficients:
 
 | Formula | Spearman's ρ | Mean absolute error, grades |
 | :------ | :----------- | :-------------------------- |
@@ -131,6 +131,6 @@ The dataset is used in the library tests to check the readability formulas: the 
 | Gunning fog index | 0.81 | 4.1 |
 | Consensus grade | 0.81 | 3.7 |
 
-A breakdown over all groups of statistics - coefficient presets, lexis, syntax, morphology, cohesion and a check on the `SovChLit` reader - is in the notebook [02_text_complexity_by_grade.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb).
+The mean consensus grade grows with the label: 2.9 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.3 for 10-11 and 22.6 for documents labeled 12-17. The error on documents is large: the formulas are calibrated on school texts, and label 17 is nominal.
 
-The mean consensus grade grows with the label: 2.9 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.3 for 10-11 and 22.6 for documents labeled 12-17. The large error on documents is expected: the grade formulas are calibrated on school texts, and label 17 is nominal.
+A breakdown over all groups of statistics on this dataset is in the notebook [02_text_complexity_by_grade.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb).

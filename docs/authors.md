@@ -18,7 +18,7 @@
 
 ## Участие в разработке
 
-Баг-репорты, идеи и пул-реквесты приветствуются - [issues](https://github.com/SergeyShk/ruTS/issues) открыты. Как устроен процесс, что проверить перед отправкой пул-реквеста и как оформить изменения - в [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md); правила общения - в [кодексе поведения](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
+Баг-репорты, идеи и пул-реквесты приветствуются - [issues](https://github.com/SergeyShk/ruTS/issues) открыты. Порядок работы и проверки перед пул-реквестом - в [CONTRIBUTING.md](https://github.com/SergeyShk/ruTS/blob/master/CONTRIBUTING.md), правила общения - в [кодексе поведения](https://github.com/SergeyShk/ruTS/blob/master/CODE_OF_CONDUCT.md).
 
 ## Цитирование
 

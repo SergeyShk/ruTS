@@ -30,7 +30,7 @@ sentence_lengths_plot(text, window=10)
 sentence_lengths(source, sents_extractor=None, words_extractor=None)
 ```
 
-The lengths of the sentences in words, in order: a string is split into sentences by the sentence extractor and every sentence into words by the word extractor; the sentences of a `Doc` come from its boundaries and its words from its tokens, punctuation and symbols left out and the parts of a hyphenated word joined (`во-первых` is one word), while a `Doc` without boundaries or with partial ones (`has_sents`) is counted as its text, by the extractors. Sentences without words are skipped. Ready lengths (non-negative integers in a sequence or an iterator) are used as they are. The arguments are those of `sentence_lengths_plot`.
+The lengths of the sentences in words, in order: a string is split by the sentence and the word extractors, a `Doc` by its boundaries and tokens, punctuation and symbols left out and the parts of a hyphenated word joined (`во-первых` is one word); a `Doc` without boundaries or with partial ones (`has_sents`) is counted as its text. Sentences without words are skipped. Ready lengths (non-negative integers in a sequence or an iterator) are used as they are. The arguments are those of `sentence_lengths_plot`.
 
 A table, a set, a mapping, bytes, a length that is not an integer and an extractor of another type raise `SourceTypeError`, a negative length `SourceError`.
 
