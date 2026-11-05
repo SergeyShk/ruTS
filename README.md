@@ -859,7 +859,7 @@ uv run pre-commit install
 
 </details>
 
-## Автор
+## Авторы
 
 *   Шкарин Сергей (kouki.sergey@gmail.com)
 

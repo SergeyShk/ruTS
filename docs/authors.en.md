@@ -1,4 +1,4 @@
-# Author
+# Authors
 
 **Sergey Shkarin** - Data Scientist, Moscow
 

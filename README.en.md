@@ -859,7 +859,7 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 
 </details>
 
-## Author
+## Authors
 
 *   Sergey Shkarin (kouki.sergey@gmail.com)
 
