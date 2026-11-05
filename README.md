@@ -876,7 +876,6 @@ uv run pre-commit install
   author = {Sergey Shkarin},
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
   year = 2026,
-  publisher = {Moscow},
   doi = {10.5281/zenodo.22837587},
   url = {https://github.com/SergeyShk/ruTS}
 }
