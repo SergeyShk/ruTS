@@ -2547,7 +2547,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - неизвестный класс или тип коннектора, <code>blank_lines</code>, который не <code>bool</code>.</li>
 </ul>
-<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи часть речи, время и вид берутся из <code>token.pos_</code> и <code>token.morph</code>, а лемма - из разбора ruMorph с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки - из разбора ruMorph в контексте предложения (<a href="#word_info"><code>analysis_info</code></a>), для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем и, в отличие от ядра, читает и строку. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>. Для <code>Doc</code> с разметкой частей речи признаки токена <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> берутся из его разбора ruMorph, как у строки, а у обычной модели часть речи, время и вид - из <code>token.pos_</code> и <code>token.morph</code>, лемма - из разбора ruMorph с частью речи токена (<a href="#word_info"><code>unit_info</code></a>); для строки - из разбора ruMorph в контексте предложения (<a href="#word_info"><code>analysis_info</code></a>), для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, - из первого разбора ruMorph (<a href="#word_info"><code>words_info</code></a>), где ответное «нет» - частица. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <p>Слова классифицируются по частям речи и признакам Universal Dependencies - разбора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> для строки или разметки объекта <code>Doc</code>:</p>
 <table>
 <thead>
@@ -2570,17 +2570,17 @@
 </tr>
 <tr>
 <td style="text-align: left;">Аргументы</td>
-<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>PRON</code></td>
-<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>PRON</code></td>
+<td style="text-align: left;"><code>NOUN</code>, <code>PROPN</code>, <code>PRON</code>, притяжательные его, её, их - с леммой он, она, они</td>
+<td style="text-align: left;">то же</td>
 </tr>
 <tr>
 <td style="text-align: left;">Знаменательные слова</td>
-<td style="text-align: left;"><code>CONTENT_UD_POS</code> без указательных, местоименных (<code>PronType</code> Dem, Int, Rel: там, где, почему) и вводных (помета <code>Prnt</code>) слов, предикативов и чисел цифрами</td>
-<td style="text-align: left;"><code>CONTENT_UD_POS</code> без указательных</td>
+<td style="text-align: left;"><code>CONTENT_UD_POS</code> и связка «быть» (<code>AUX</code> с формой глагола) без указательных, местоименных (<code>PronType</code> Dem, Int, Rel: там, где, почему) и вводных (помета <code>Prnt</code> и <code>PARENTHETICAL_WORDS</code>: кстати, наверно) слов, предикативов и чисел цифрами</td>
+<td style="text-align: left;">то же по признакам токена</td>
 </tr>
 <tr>
 <td style="text-align: left;">Указательные</td>
-<td style="text-align: left;">леммы из <code>DEMONSTRATIVE_LEMMAS</code>: этот, это, тот, такой, таковой, столько, сей, оный</td>
+<td style="text-align: left;">леммы из <code>DEMONSTRATIVE_LEMMAS</code>: этот, это, тот, то (только местоимение), такой, таковой, столько, сей, оный</td>
 <td style="text-align: left;">те же леммы</td>
 </tr>
 <tr>
@@ -2610,7 +2610,7 @@
 Повтор знаменательных слов в соседних предложениях       |   0.33
 Повтор знаменательных слов во всех парах предложений     |   0.50
 Доля общих знаменательных слов в соседних предложениях   |   0.11
-Доля общих знаменательных слов во всех парах предложений |   0.20
+Доля общих знаменательных слов во всех парах предложений |   0.19
 Повтор существительных в двух следующих предложениях     |   0.67
 Повтор аргументов в двух следующих предложениях          |   0.75
 Повтор знаменательных слов в двух следующих предложениях |   0.40
@@ -2620,7 +2620,7 @@
 Доля местоимений                                         |   0.14
 Отношение местоимений к существительным                  |   0.50
 Доля указательных местоимений                            |   0.05
-Доля знаменательных слов, встречавшихся ранее            |   0.31
+Доля знаменательных слов, встречавшихся ранее            |   0.29
 Повтор времени в соседних предложениях                   |   0.67
 Повтор вида в соседних предложениях                      |   0.33
 Темпоральная связность                                   |   0.50
@@ -2748,7 +2748,7 @@
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>('он', 'смотреть', 'на', 'птица')
-(6, 3, 13, 4)
+(6, 3, 14, 4)
 (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
 {'и': 1}
 </code></pre></div>
@@ -3270,7 +3270,7 @@
  'content_overlap_adjacent': 0.3333333333333333,
  'content_overlap_all': 0.5,
  'content_overlap_prop_adjacent': 0.1111111111111111,
- 'content_overlap_prop_all': 0.19841269841269837,
+ 'content_overlap_prop_all': 0.18650793650793648,
  'noun_overlap_2_sent': 0.6666666666666666,
  'argument_overlap_2_sent': 0.75,
  'content_overlap_2_sent': 0.4,
@@ -3280,7 +3280,7 @@
  'p_pronouns': 0.14285714285714285,
  'pronoun_noun_ratio': 0.5,
  'p_demonstratives': 0.047619047619047616,
- 'p_given': 0.3076923076923077,
+ 'p_given': 0.2857142857142857,
  'tense_repetition': 0.6666666666666666,
  'aspect_repetition': 0.3333333333333333,
  'temporal_cohesion': 0.5,
@@ -3474,11 +3474,11 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">token_info</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<div class="signature highlight"><pre><span></span><code><span class="n">ud_info</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tense</span><span class="p">,</span> <span class="n">aspect</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">ud_info</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tense</span><span class="p">,</span> <span class="n">aspect</span><span class="p">,</span> <span class="n">feats</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 </code></pre></div>
-<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора ruMorph, например выбранного по контексту (<code>ruts.utils.analyze_sentence</code>); <code>words_info</code> - так же для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. <code>token_info</code> берет их из разметки spaCy (<code>token.pos_</code>, <code>Tense</code>, <code>Aspect</code>), <code>ud_info</code> - из заданных части речи, времени и вида UD; лемма берется из разбора ruMorph с этой частью речи (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (<code>word_to_ud</code>).</p>
+<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора ruMorph, например выбранного по контексту (<code>ruts.utils.analyze_sentence</code>); <code>words_info</code> - так же для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому разбору, где ответное «нет» (Нет, не видел) - частица. <code>token_info</code> берет их из разбора ruMorph, которым размечен токен (<code>ruts.utils.token_analysis</code>, компонент <code>rumorph</code>), а без него - из разметки spaCy (<code>token.pos_</code>, <code>token.morph</code>), <code>ud_info</code> - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи (<code>ruts.utils.lemmatize</code>), а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были, назовите-ка) - по разбору ruMorph склеенного текста (<code>word_to_ud</code>).</p>
 <table>
 <thead>
 <tr>
@@ -3530,6 +3530,12 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Часть речи, время и вид UD (<code>ud_info</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>feats</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Признаки UD слова, <code>None</code> - неизвестны (<code>ud_info</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>unit</code></td>
@@ -3658,7 +3664,7 @@
 <h2 id="is_content_word">Знаменательное слово<a class="headerlink" href="#is_content_word" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_content_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, является ли слово знаменательным по разметке ruMorph: часть речи из <code>CONTENT_UD_POS</code> (существительные, имена собственные, прилагательные, глаголы во всех формах, наречия), кроме местоименных (<code>PronType</code> Dem, Int, Rel: там, где, почему; <code>ruts.utils.is_pronominal</code>), вводных (помета <code>Prnt</code>) слов, предикативов (надо, можно) и чисел цифрами.</p>
+<p>Проверяет, является ли слово знаменательным по разметке ruMorph: часть речи из <code>CONTENT_UD_POS</code> (существительные, имена собственные, прилагательные, глаголы во всех формах, наречия) и связка «быть», кроме местоименных (<code>PronType</code> Dem, Int, Rel: там, где, почему; <code>ruts.utils.is_pronominal</code>), вводных (помета <code>Prnt</code> и <code>PARENTHETICAL_WORDS</code>) слов, предикативов (надо, можно) и чисел цифрами.</p>
 <table>
 <thead>
 <tr>

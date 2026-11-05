@@ -2315,24 +2315,24 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>                                   median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-cohesion_content_overlap_2_sent           0.061           0.099  -0.042   -0.030   -0.976       -0.815  0.092     0.0
-cohesion_noun_overlap_2_sent              0.081           0.141  -0.069   -0.050   -1.077       -0.759  0.121     0.0
-cohesion_content_overlap_all              0.072           0.146  -0.097   -0.055   -1.030       -0.722  0.139     0.0
-cohesion_content_overlap_adjacent         0.171           0.310  -0.171   -0.116   -1.222       -0.715  0.142     0.0
-cohesion_content_overlap_prop_all         0.013           0.021  -0.011   -0.007   -0.446       -0.714  0.143     0.0
-punct_ellipsis                           15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-cohesion_noun_overlap_adjacent            0.106           0.218  -0.138   -0.087   -1.049       -0.668  0.166     0.0
-cohesion_noun_overlap_all                 0.045           0.095  -0.071   -0.035   -0.846       -0.658  0.171     0.0
-punct_exclamation                        14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-cohesion_argument_overlap_2_sent          0.161           0.215  -0.083   -0.038   -1.013       -0.616  0.192     0.0
+<div class="highlight"><pre><span></span><code>                                        median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
+cohesion_content_overlap_2_sent                0.067           0.109  -0.047   -0.035   -1.067       -0.837  0.081     0.0
+cohesion_noun_overlap_2_sent                   0.081           0.141  -0.069   -0.050   -1.077       -0.759  0.121     0.0
+cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -0.531       -0.751  0.125     0.0
+cohesion_content_overlap_adjacent              0.190           0.342  -0.189   -0.126   -1.254       -0.717  0.141     0.0
+punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
+cohesion_content_overlap_all                   0.089           0.181  -0.120   -0.069   -1.081       -0.706  0.147     0.0
+cohesion_noun_overlap_adjacent                 0.106           0.218  -0.138   -0.087   -1.049       -0.668  0.166     0.0
+cohesion_noun_overlap_all                      0.045           0.095  -0.071   -0.035   -0.846       -0.658  0.171     0.0
+punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
+cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -0.018   -0.838       -0.643  0.178     0.0
 {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
 </code></pre></div>
 </div>
 </div>
 </div>
-<p>Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of <code>cohesion_content_overlap_all</code> with <code>sents_mean</code> over the windows of Chekhov is 0.86, of Tolstoy 0.66), while the share of the lemmas repeated in the next two sentences (<code>cohesion_content_overlap_2_sent</code>) is hardly related to it (0.07 and 0.23). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.</p>
-<p>The p-values take the 1671 windows for independent (see the <a href="#statistics">warning</a> below): 111 of the 147 features have a corrected p-value below 0.01, but only 20 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8. For the ellipses it spans 6 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.</p>
+<p>Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length: a long sentence has more words that may recur (the Spearman ρ of <code>cohesion_content_overlap_all</code> with <code>sents_mean</code> over the windows of Chekhov is 0.90, of Tolstoy 0.75), while the share of the lemmas repeated in the next two sentences (<code>cohesion_content_overlap_2_sent</code>) is only weakly related to it (0.23 and 0.31). Further down the list Chekhov has shorter sentences, a higher share of finite verb forms and a lower one of participles and converbs, and Tolstoy is harder by every readability formula. Twenty works of Chekhov and one of Tolstoy are shorter than 1000 words and give no window, so the windows come from 57 and 41 works; with a smaller window they would be compared too.</p>
+<p>The p-values take the 1671 windows for independent (see the <a href="#statistics">warning</a> below): 111 of the 147 features have a corrected p-value below 0.01, but only 22 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8. For the ellipses it spans 6 to 25 per 1000 words: the works of Chekhov differ in them a lot, on average from a fraction of one to 84 per 1000 words.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
