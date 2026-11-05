@@ -14,7 +14,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 
 Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md). Таблица `print_stats` и сообщения об ошибках - по-русски (`UNADAPTED_READABILITY_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
-Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.2, Венской формулы 1 - 9.4. Поэтому шкал прочтения у этих формул нет, `describe` возвращает для них `None`, а в [сводный класс](readability_stats.md#consensus_grade) они не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
+Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2. Поэтому шкал прочтения у этих формул нет, `describe` возвращает для них `None`, а в [сводный класс](readability_stats.md#consensus_grade) они не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
 
 === "Код"
 

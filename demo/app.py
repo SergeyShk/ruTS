@@ -388,7 +388,8 @@ def compute(text: str, layers: list[str]) -> dict:
     return {
         "text": text,
         "highlight": highlight(doc, layers=layers).to_html(),
-        "summary": readability_summary(rs),
+        # Без слогов (латиница, числа) формулы дают класс по пустым словам
+        "summary": readability_summary(rs) if bs.n_syllables else "*В тексте нет русских слов.*",
         "readability": stats_table(rs.get_stats(), READABILITY_STATS_DESC, rs.describe),
         "diversity": stats_table(ds.get_stats(), DIVERSITY_STATS_DESC),
         "pos": pos_table,

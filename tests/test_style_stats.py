@@ -481,3 +481,10 @@ def test_keyword_density_without_yo():
     """Ключевые слова сравниваются без буквы ё, как стоп-слова и словосочетания"""
     assert StyleStats("Ещё раз и еще раз").keyword_density("еще") == {"еще": 40.0}
     assert calc_keyword_density(["Ещё", "раз", "и", "еще"], ["ещё"]) == {"ещё": 50.0}
+
+
+def test_parenthetical_words():
+    """Вводные без пометы Prnt у ruMorph (кстати, наверно, видимо) - вводные и «вода»"""
+    ss = StyleStats("Он, кстати, пришёл. Она, наверно, ушла. Они, видимо, спят.")
+    assert ss.markers()["parentheticals"] == ("кстати", "наверно", "видимо")
+    assert is_parenthetical("кстати") and is_water_word("наверно") and is_stopword("видимо")

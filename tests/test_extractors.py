@@ -275,3 +275,21 @@ class TestCharNgramsExtractor:
             CharNgramsExtractor().get_most_common(0)
         with pytest.raises(TypeError):
             CharNgramsExtractor(within_words=True, tokenizer=42).extract(self.text)
+
+
+def test_words_lexemes_in_context():
+    """Леммы строки - в контексте предложения: личное «его» - «он», притяжательное - «его»"""
+    text = "В 2020 году я увидел его. Его брат ушёл."
+    assert WordsExtractor(use_lexemes=True, filter_nums=True).extract(text) == (
+        "в",
+        "год",
+        "я",
+        "увидеть",
+        "он",
+        "его",
+        "брат",
+        "уйти",
+    )
+    assert (
+        WordsExtractor(use_lexemes=True, tokenizer=re.compile(r"\s+")).extract("его")[0] == "его"
+    )

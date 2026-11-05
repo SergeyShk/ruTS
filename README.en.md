@@ -566,7 +566,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/syntax_sta
 
 <br>
 
-The library counts over lemmas (spaCy for an annotated `Doc`, ruMorph for a string), no dependency parse is needed:
+The library counts over ruMorph lemmas (by the part of speech of the token for an annotated `Doc`), no dependency parse is needed:
 
 *   Noun, argument and content word overlap between adjacent sentences and all sentence pairs (binary and proportional, as in Coh-Metrix), with the next two sentences and between paragraphs (as in TAACO)
 *   Givenness: share of pronouns, pronoun-to-noun ratio, share of demonstratives and of content words already seen
@@ -584,7 +584,7 @@ The library counts over lemmas (spaCy for an annotated `Doc`, ruMorph for a stri
 >>> cs.argument_overlap_all, cs.content_overlap_prop_adjacent
 (0.6666666666666666, 0.1111111111111111)
 >>> cs.p_pronouns, cs.p_given, cs.temporal_cohesion
-(0.14285714285714285, 0.3076923076923077, 0.5)
+(0.14285714285714285, 0.2857142857142857, 0.5)
 
 >>> cs = CohesionStats("Кот ждал птиц, потому что был голоден. Однако птицы улетели, и всё же кот не ушёл.")
 >>> cs.connectors_causal, cs.connectors_adversative, cs.connectors_concessive

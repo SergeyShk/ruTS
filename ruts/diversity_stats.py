@@ -61,7 +61,7 @@ from anyts.utils import is_doc, iter_doc_words, source_type_error
 from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
 from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
-from .utils import strip_marks
+from .utils import strip_marks, word_form
 
 if TYPE_CHECKING:
     from spacy.tokens import Doc
@@ -258,7 +258,8 @@ class DiversityStats(anyts.DiversityStats):
         )
         if is_doc(source) and words_extractor is None:
             words: Sequence[str] = [
-                strip_marks(word) for _, _, word in iter_doc_words(source, join_hyphens=True)
+                word_form(strip_marks(word))
+                for _, _, word in iter_doc_words(source, join_hyphens=True)
             ]
         elif is_doc(source) or isinstance(source, str):
             text = source if isinstance(source, str) else source.text

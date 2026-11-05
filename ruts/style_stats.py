@@ -24,9 +24,10 @@ from .constants import (
     STYLE_STATS_DESC,
     WATER_POS,
 )
-from .exceptions import SourceTypeError
 from .extractors import WordsExtractor
 from .utils import (
+    _word_cache,
+    is_parenthetical_analysis,
     is_predicative,
     is_pronominal,
     is_verbal_noun,
@@ -34,6 +35,7 @@ from .utils import (
     parse_all,
     parse_word,
     strip_marks,
+    word_form,
 )
 
 if TYPE_CHECKING:
@@ -142,8 +144,8 @@ class StyleStats(anyts.style_stats.StyleStats):
         return normalize_yo(word)
 
     def doc_words(self, doc: Doc) -> tuple[str, ...]:
-        """Слова Doc ядра без знаков ударения"""
-        return tuple(map(strip_marks, super().doc_words(doc)))
+        """Слова Doc ядра без знаков ударения и точки сокращения (word_form)"""
+        return tuple(word_form(strip_marks(word)) for word in super().doc_words(doc))
 
     def is_stopword(self, word: str) -> bool:
         """Стоп-слово академической тошноты по разметке ruMorph (is_stopword)"""
@@ -173,7 +175,7 @@ class StyleStats(anyts.style_stats.StyleStats):
         return is_verbal_noun(lemma)
 
 
-@lru_cache(maxsize=65536)
+@_word_cache(maxsize=65536)
 def is_stopword(word: str) -> bool:
     """
     Проверка, является ли слово стоп-словом по части речи
@@ -191,18 +193,16 @@ def is_stopword(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not isinstance(word, str):
-        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
     analysis = parse_word(word)
     return (
         analysis.pos in STOPWORD_POS
         or is_predicative(analysis)
         or is_pronominal(analysis)
-        or "Prnt" in analysis.labels
+        or is_parenthetical_analysis(analysis)
     )
 
 
-@lru_cache(maxsize=65536)
+@_word_cache(maxsize=65536)
 def is_water_word(word: str) -> bool:
     """
     Проверка, является ли слово «водой» по части речи
@@ -220,13 +220,11 @@ def is_water_word(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    if not isinstance(word, str):
-        raise SourceTypeError(f"Слово должно быть строкой, а не {type(word).__name__}")
     analysis = parse_word(word)
     return (
         analysis.pos in WATER_POS
         or (analysis.pos == "AUX" and "VerbForm" not in analysis.feats)
-        or "Prnt" in analysis.labels
+        or is_parenthetical_analysis(analysis)
         or (
             analysis.feats.get("Poss") == "Yes"
             and any(other.pos == "PRON" for other in parse_all(word))
@@ -244,7 +242,7 @@ def is_parenthetical(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    return "Prnt" in parse_word(word).labels
+    return is_parenthetical_analysis(parse_word(word))
 
 
 def calc_academic_nausea(

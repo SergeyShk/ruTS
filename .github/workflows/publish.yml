@@ -33,6 +33,11 @@ jobs:
         run: |
           uv tool run twine check dist/*
           ls -l dist
+      - name: Check wheel install
+        run: >-
+          uv run --isolated --no-project --with dist/*.whl python -c
+          "import ruts; from ruts.lexical_stats import get_rank; get_rank('кот');
+          ruts.CohesionStats('Кот спит. Кот ест.').get_stats(); ruts.StyleStats('Кот спит.').get_stats()"
       - name: Publish distribution (test)
         if: github.event_name == 'push'
         run: uv publish --index testpypi --trusted-publishing always

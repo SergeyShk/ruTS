@@ -706,3 +706,22 @@ def test_multiple_values_of_a_feature():
     ms = MorphStats(doc)
     assert ms.case == ("Acc,Nom", None)
     assert ms.tags[0] == "Case=Acc,Nom|Number=Sing"
+
+
+def test_lemmas_in_context(nlp):
+    """Леммы строки и Doc конвейера - разбора в контексте, а не первого с той же частью речи"""
+    text = "Стоит подождать, банки закрыты. Физики спорят о политике."
+    lemmas = ("стоить", "подождать", "банк", "закрыть", "физик", "спорить", "о", "политика")
+    assert MorphStats(text).lemmas == MorphStats(nlp(text)).lemmas == lemmas
+    assert MorphStats(text, words_extractor=WordsExtractor()).lemmas[2] == "банка"
+
+
+def test_lemmas_filtered_analyze():
+    """Подкласс, который отбрасывает слова в analyze, получает леммы по слову"""
+
+    class LongWords(MorphStats):
+        def analyze(self, source):
+            return [word for word in super().analyze(source) if len(word.word) > 2]
+
+    ms = LongWords("Я видел его брата у реки.")
+    assert ms.lemmas == ("видеть", "его", "брат", "река")
