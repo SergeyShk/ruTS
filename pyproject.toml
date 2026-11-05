@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.20.0.dev9"
+version = "0.20.0"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -8,7 +8,6 @@ license = "MIT"
 license-files = ["LICENSE.txt"]
 authors = [
     { name = "Шкарин Сергей", email = "kouki.sergey@gmail.com" },
-    { name = "Смирнова Екатерина", email = "ekanerina@yandex.ru" },
 ]
 maintainers = [{ name = "Шкарин Сергей", email = "kouki.sergey@gmail.com" }]
 keywords = [

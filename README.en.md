@@ -862,7 +862,6 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 ## Authors
 
 *   Sergey Shkarin (kouki.sergey@gmail.com)
-*   Ekaterina Smirnova (ekanerina@yandex.ru)
 
 ## License
 
@@ -877,7 +876,6 @@ If you use **ruTS** in research or software, please cite the library. The Zenodo
   author = {Sergey Shkarin},
   title = {{ruTS, a library for statistics extraction from texts in Russian}},
   year = 2026,
-  publisher = {Moscow},
   doi = {10.5281/zenodo.22837587},
   url = {https://github.com/SergeyShk/ruTS}
 }
