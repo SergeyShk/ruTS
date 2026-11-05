@@ -1594,7 +1594,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2273,7 +2273,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - порог, который не целое число не меньше единицы, <code>normalize</code>, который не <code>bool</code>.</li>
 </ul>
-<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> крючками русского языка: слоги слова считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки препинания - <a href="#count_punctuations"><code>count_punctuations</code></a> ruTS, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Компонент пустых строк в ruTS называется <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>; в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица <code>print_stats</code> - по-русски.</p>
+<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> для русского языка: слоги считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки препинания - <a href="#count_punctuations"><code>count_punctuations</code></a> ruTS, а дефисное слово, разрезанное spaCy, остается одним словом (<code>во-первых</code>). Компонент пустых строк ruTS - <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>; в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица <code>print_stats</code> - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2484,7 +2484,7 @@
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <!-- core: stats/basic_stats.md:BasicStats-count_words_by abc6821 -->
 <p><code>count_words_by_syllables(min_syllables)</code> и <code>count_words_by_letters(min_letters)</code> возвращают количество слов не меньше чем с заданным числом слогов или букв; минимум, который не целое число, дает <code>ParameterError</code>.</p>
-<p>Методы пересчитывают сложные и длинные слова с порогом, отличным от заданного при создании объекта: так класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> считает индекс SMOG (сложное слово - от 5 слогов) и LIX (длинное слово - от 7 букв).</p>
+<p>Так класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> считает сложные слова SMOG (от 5 слогов) и длинные слова LIX (от 7 букв).</p>
 <!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
 <p><code>get_stats(flat)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, статистиками из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
 <!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
@@ -2544,7 +2544,7 @@
 </div>
 </div>
 </div>
-<p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у базовых статистик нет, поэтому он для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у базовых статистик нет, и для статистик <code>get_stats</code> он возвращает <code>None</code>.</p>
 <h2 id="count_punctuations">Знаки препинания<a class="headerlink" href="#count_punctuations" title="Permanent link">&para;</a></h2>
 <!-- core: stats/basic_stats.md:count_punctuations b982de2 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="n">PUNCTUATION_MARKS</span><span class="p">,</span> <span class="n">dash_pattern</span><span class="o">=</span><span class="n">DASH_PATTERN</span><span class="p">)</span>
@@ -2682,7 +2682,7 @@
 </tr>
 </tbody>
 </table>
-<p>Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. <a href="../../corpus/compare/">сравнение корпусов</a>). Он зависит от оформления текста - типографских кавычек и тире, буквы ё - и легко подделывается, поэтому его стоит смотреть отдельно от лингвистических признаков.</p>
+<p>Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. <a href="../../corpus/compare/">сравнение корпусов</a>). Он зависит от оформления текста - кавычек, тире, буквы ё, - и его стоит смотреть отдельно от лингвистических признаков.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

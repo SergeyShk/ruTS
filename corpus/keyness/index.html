@@ -1655,7 +1655,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2493,7 +2493,7 @@
 </tr>
 </tbody>
 </table>
-<p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>: словарь хранит слова.</p>
+<p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>.</p>
 <!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
@@ -2569,16 +2569,16 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>key</code></td>
-<td style="text-align: left;">лемма словаря: словоформа лемматизируется ruMorph (с <code>lemmatize=False</code> берется как лемма) и приводится к соглашениям словаря функцией <code>ruts.lexical_stats.dictionary_lemma</code>, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+<td style="text-align: left;">лемма словаря: лемма словоформы по ruMorph (с <code>lemmatize=False</code> - само слово), приведенная к соглашениям словаря, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
-<td style="text-align: left;">слова из кириллических букв <code>ruts.lexical_stats.DICTIONARY_WORD</code>; числа и слова с латиницей отбрасываются</td>
+<td style="text-align: left;">слова из кириллических букв; числа и слова с латиницей отбрасываются</td>
 </tr>
 </tbody>
 </table>
-<p>Статья словаря, которой нет в тексте, бывает отрицательным ключевым словом, только если к ней приводится хотя бы одна форма слова: статьи «во», «со» словарь ведет отдельно, а <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> приводит эти словоформы к «в», «с», и без этого правила они выходили бы отрицательными ключевыми словами у любого текста. Такие статьи - около 1 150 для словоформ и 1 450 для лемм - перечислены в ресурсах пакета; у слов вне словаря ruMorph («Михайлыч») формы угаданы.</p>
-<p>С <code>lemmatize=False</code> соглашения словаря по лемме не восстановить: краткая форма, множественное число и вариант написания теряются («должный» вместо «должен», «деньга» вместо «деньги», «счастие» вместо «счастье»), и такие статьи выходят ложными ключевыми словами. Для сравнения со словарем передавайте словоформы.</p>
+<p>Статья словаря, к которой не приводится ни одна словоформа, не бывает отрицательным ключевым словом: «во» и «со» словарь ведет отдельными статьями, а <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> приводит эти словоформы к «в» и «с».</p>
+<p>С <code>lemmatize=False</code> лемма теряет соглашения словаря - краткую форму, множественное число, вариант написания («должный» вместо «должен», «деньга» вместо «деньги»), - и такие статьи выходят ложными ключевыми словами, поэтому со словарем сравнивайте словоформы.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

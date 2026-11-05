@@ -1832,7 +1832,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2749,8 +2749,7 @@
 <li><code>SourceError</code> - источник без слов или предложений;</li>
 <li><code>ParameterError</code> - неизвестный пресет или пресет, который не строка.</li>
 </ul>
-<p>Метрики оценивают удобочитаемость со стороны языка - сложности слов и синтаксических конструкций, а не полиграфического исполнения текста. Они исходят из того, что короткие предложения читать легче, чем длинные, длинные слова затрудняют чтение, а низкочастотные и незнакомые слова замедляют читателя.</p>
-<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> крючками русского языка, о которых говорят карточки метрик: <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, <a href="#presets">пресетами</a> коэффициентов, русскими формулами, сводным классом по формулам ruTS, ступенями обучения российской школы, шкалами с русскими подписями и скоростями чтения русских читателей. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>READABILITY_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>ReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> для русского языка: <a href="../basic_stats/">базовые статистики</a> ruTS с русскими <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a> по умолчанию, <a href="#presets">пресеты</a> коэффициентов, русские формулы, шкалы и скорости чтения. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2819,9 +2818,9 @@
 </tr>
 </tbody>
 </table>
-<p>Объект хранит базовые статистики текста в <code>bs</code>, название пресета - в <code>preset</code>, только для чтения, а коэффициенты формул пресета - в <code>coefficients</code>, копии, которую можно менять для отдельного объекта. Объект другого пресета может взять готовые базовые статистики: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
+<p>Объект хранит базовые статистики текста в <code>bs</code>, название пресета - в <code>preset</code> (только для чтения), коэффициенты пресета - в <code>coefficients</code>, копии, которую можно менять для отдельного объекта. Базовые статистики можно передать объекту другого пресета: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
 <h2 id="presets">Пресеты коэффициентов<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
-<p>Коэффициенты формул - параметры их функций, а пресет задает их по формулам. Пресеты различаются коэффициентами теста Флеша-Кинкайда и индекса Флеша; коэффициенты индексов Колман-Лиау, SMOG и ARI во всех пресетах взяты из проекта plainrussian, так как других адаптаций для русского языка не опубликовано, а остальные формулы от пресета не зависят.</p>
+<p>Пресеты различаются коэффициентами теста Флеша-Кинкайда и индекса Флеша; коэффициенты индексов Колман-Лиау, SMOG и ARI во всех пресетах - из проекта plainrussian, остальные формулы от пресета не зависят.</p>
 <table>
 <thead>
 <tr>
@@ -2838,7 +2837,7 @@
 <td style="text-align: left;"><a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (Бегтин)</td>
 <td style="text-align: left;">68 текстов с метками класса</td>
 <td style="text-align: left;"><code>0.318·ASL + 14.2·ASW − 30.5</code></td>
-<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Оборнева, вариант А, так как plainrussian индекс Флеша не выводит)</td>
+<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Оборнева, вариант А)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>fiction</code></td>
@@ -2873,7 +2872,7 @@
 </div>
 </div>
 </div>
-<p>Пресеты одинаково согласуются с меткой класса, но дают разную шкалу, а порядок текстов у них совпадает не полностью. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> корреляция Спирмена теста Флеша-Кинкайда с меткой класса у <code>plainrussian</code> 0.80, у <code>fiction</code> и <code>academic</code> 0.79, а медианы теста по группам меток различаются:</p>
+<p>На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a>, на котором подбирались коэффициенты <code>plainrussian</code>, пресеты одинаково согласуются с меткой класса - корреляция Спирмена теста Флеша-Кинкайда у <code>plainrussian</code> 0.80, у <code>fiction</code> и <code>academic</code> 0.79, - но дают разную шкалу, медианы теста по группам меток:</p>
 <table>
 <thead>
 <tr>
@@ -2929,9 +2928,9 @@
 </tr>
 </tbody>
 </table>
-<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.7 против −1.0 у <code>plainrussian</code> и −0.1 у <code>academic</code>), на хрестоматии для 1 класса <code>SovChLit</code> - примерно на пять. Поэтому его значение не стоит читать как класс российской школы: для класса читателя подходят <code>plainrussian</code> (по умолчанию; его коэффициенты подбирались на <code>TextsByGrade</code>) и <code>academic</code>, а <code>fiction</code> - для сравнения с работами, где использованы коэффициенты Оборневой. Сводный класс от пресета зависит меньше: тест Флеша-Кинкайда в нем лишь одна из формул (медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> против 6.75 у <code>plainrussian</code>).</p>
+<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.7 против −1.0 у <code>plainrussian</code> и −0.1 у <code>academic</code>). Для класса читателя подходят <code>plainrussian</code> и <code>academic</code>, а <code>fiction</code> - для сравнения с работами на коэффициентах Оборневой. Сводный класс зависит от пресета меньше: его медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> и 6.75 у <code>plainrussian</code>.</p>
 <h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Формулу считает функция из ее карточки по количествам <code>bs</code>; коэффициенты по умолчанию функций адаптированы для русского языка. Формулы ядра берут коэффициенты из <code>coefficients</code>, где пресет задает коэффициенты теста Флеша-Кинкайда, индекса Флеша и индексов Колман-Лиау, SMOG и ARI; формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла считаются с коэффициентами своих функций, и <code>coefficients</code> на них не действует. Формула по количествам дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю. Формулы других языков с исходными коэффициентами, без калибровки под русский язык, считает класс <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>.</p>
+<p>Формулу считает функция из ее карточки по количествам <code>bs</code>. Формулы ядра берут коэффициенты из <code>coefficients</code>, а формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла - из своих функций, и <code>coefficients</code> на них не действует. Формула дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю. Формулы других языков с исходными коэффициентами считает класс <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>.</p>
 <table>
 <thead>
 <tr>
@@ -3044,7 +3043,7 @@
 <div class="arithmatex">\[
 a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}} - c
 \]</div>
-<p>Коэффициенты по умолчанию взяты из актуальной версии проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>. Другие коэффициенты для русского языка дают <a href="#presets">пресеты</a>: Оборневой (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) и FKG_SIS Соловьёва, Иванова и Солнышкиной (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
+<p>Коэффициенты по умолчанию - из проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>, другие дают <a href="#presets">пресеты</a>.</p>
 <table>
 <thead>
 <tr>
@@ -3104,7 +3103,7 @@ a \cdot \frac{\textrm{Количество слов}}{\textrm{Количеств
 <div class="arithmatex">\[
 c - a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} - b \cdot \frac{\textrm{Количество слогов}}{\textrm{Количество слов}}
 \]</div>
-<p>Коэффициенты по умолчанию принадлежат Оборневой (2005/2006, вариант А). Вариант Б тех же работ (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), которым пользуется казанская группа, дает пресет <code>academic</code>.</p>
+<p>Коэффициенты по умолчанию - Оборневой (2005/2006, вариант А), вариант Б дает пресет <code>academic</code>.</p>
 <table>
 <thead>
 <tr>
@@ -3264,7 +3263,7 @@ a \cdot \frac{100 \cdot \textrm{Количество букв}}{\textrm{Коли
 a \cdot \sqrt{b \cdot \frac{\textrm{Количество сложных слов}}{\textrm{Количество предложений}}} + c
 \]</div>
 <p>Количество слов или предложений, которое не целое неотрицательное число, дает <code>ParameterError</code>.</p>
-<p>Коэффициенты по умолчанию проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> получены для сложных слов от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), а не атрибут <code>n_complex_words</code> базовых статистик.</p>
+<p>Коэффициенты по умолчанию проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> получены для сложных слов от пяти слогов: <code>ReadabilityStats</code> передает в функцию количество таких слов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>), а не <code>n_complex_words</code> базовых статистик.</p>
 <table>
 <thead>
 <tr>
@@ -3505,7 +3504,7 @@ a \cdot \frac{\textrm{Количество букв}}{\textrm{Количеств
 </tr>
 </tbody>
 </table>
-<p>Эти полосы - шкала <code>describe</code>, <code>ruts.constants.LIX_LEVELS</code>; ее последняя полоса открыта сверху. Атрибут <code>n_long_words</code> базовых статистик ruTS считает слова от шести букв, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв.</p>
+<p>Эти полосы - шкала <code>describe</code> (<code>ruts.constants.LIX_LEVELS</code>), последняя открыта сверху. <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв, а не <code>n_long_words</code> базовых статистик ruTS - слов от шести букв.</p>
 </div>
 <div class="metric-card">
 <h3 id="rix">Индекс удобочитаемости RIX<a class="headerlink" href="#rix" title="Permanent link">&para;</a></h3>
@@ -3603,7 +3602,7 @@ a \cdot \frac{\textrm{Количество букв}}{\textrm{Количеств
 </tr>
 </tbody>
 </table>
-<p>Как и для LIX, класс <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв. Полосы <code>describe</code> - классы Андерсона как классы российской школы (<code>ruts.constants.RIX_LEVELS</code>); 12-го класса в ней нет, и его полоса входит в 11-й:</p>
+<p>Как и для LIX, <code>ReadabilityStats</code> передает в функцию количество слов от 7 букв. Полосы <code>describe</code> (<code>ruts.constants.RIX_LEVELS</code>) - классы Андерсона, полоса 12-го класса входит в 11-й:</p>
 <table>
 <thead>
 <tr>
@@ -3668,7 +3667,7 @@ a \cdot \frac{\textrm{Количество букв}}{\textrm{Количеств
 <p class="metric-meta"><code>sis_grade</code> · <code>sis_grade_by_stage(stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.56</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.45</span><span class="p">)</span>
 </code></pre></div>
-<p>Класс школы, необходимый для чтения русского академического текста, по средней длине предложения в словах и средней длине слова в буквах, а не в слогах, как в тесте Флеша-Кинкайда. Формула получена на корпусе Russian Academic Corpus из 154 учебников для 2-11 классов (5.7 млн токенов), средняя ошибка - около одного класса. Авторы считали среднюю длину предложения по токенам spaCy, куда попадает пунктуация, поэтому расчет по словам ruTS дает класс чуть ниже.</p>
+<p>Класс школы, необходимый для чтения русского академического текста, по средней длине предложения в словах и средней длине слова в буквах. Формула получена на корпусе Russian Academic Corpus из 154 учебников для 2-11 классов (5.7 млн токенов), средняя ошибка - около одного класса. Авторы считали длину предложения в токенах spaCy вместе с пунктуацией, поэтому расчет по словам ruTS дает класс чуть ниже.</p>
 <div class="arithmatex">\[
 a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + c \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}}
 \]</div>
@@ -3720,7 +3719,7 @@ a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количес
 </tr>
 </tbody>
 </table>
-<p>Коэффициенты по умолчанию - общей формулы. Коэффициенты, которые авторы приводят для ступеней обучения, - в справочнике <code>ruts.constants.SIS_GRADE_STAGES</code>, их берет метод <a href="#sis_grade_by_stage"><code>sis_grade_by_stage</code></a>:</p>
+<p>Коэффициенты по умолчанию - общей формулы, коэффициенты ступеней обучения - в <code>ruts.constants.SIS_GRADE_STAGES</code>, их берет метод <a href="#sis_grade_by_stage"><code>sis_grade_by_stage</code></a>:</p>
 <table>
 <thead>
 <tr>
@@ -3757,7 +3756,7 @@ a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количес
 <p class="metric-meta"><code>sis_grade_by_freq(mean_ipm, stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Соловьёв, Иванов, Солнышкина, 2023</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade_freq</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">mean_ipm</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">14.46</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.58</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.15</span><span class="p">,</span> <span class="n">d</span><span class="o">=-</span><span class="mf">0.0026</span><span class="p">)</span>
 </code></pre></div>
-<p>Вариант общей формулы с четвертым признаком FREQ2 - средней частотностью слов текста по словарю Ляшевской и Шарова (таблица 7 статьи): чем чаще слова, тем ниже класс. В статье значения FREQ2 лежат в пределах 200-1000, что соответствует средней частотности знаменательных слов (<code>LexicalStats.mean_ipm_content</code>); среднее по всем словам с учетом союзов и предлогов в разы больше. На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> формула с частотностью дает ту же корреляцию с классом, что и формула без нее (ρ Спирмена 0.76 против 0.78), как и в статье.</p>
+<p>Вариант общей формулы с четвертым признаком FREQ2 - средней частотностью слов текста по словарю Ляшевской и Шарова (таблица 7 статьи): чем чаще слова, тем ниже класс. Значениям FREQ2 статьи (200-1000) соответствует частотность знаменательных слов (<code>LexicalStats.mean_ipm_content</code>). На наборе <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> формула с частотностью коррелирует с классом не лучше формулы без нее (ρ Спирмена 0.76 против 0.78).</p>
 <div class="arithmatex">\[
 a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + c \cdot \frac{\textrm{Количество букв}}{\textrm{Количество слов}} + d \cdot \textrm{FREQ2}
 \]</div>
@@ -3821,7 +3820,7 @@ a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количес
 </tr>
 </tbody>
 </table>
-<p>Коэффициенты по умолчанию - общей формулы. Коэффициенты ступеней обучения из той же таблицы - в справочнике <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>, их берет параметр <code>stage</code> метода <a href="#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>:</p>
+<p>Коэффициенты по умолчанию - общей формулы, коэффициенты ступеней - в <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>, их берет параметр <code>stage</code> метода <a href="#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>:</p>
 <table>
 <thead>
 <tr>
@@ -3880,7 +3879,7 @@ a + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количес
 <p class="metric-meta"><code>matskovsky_index</code> · Мацковский, 1976</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_matskovsky_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.62</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.123</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.051</span><span class="p">)</span>
 </code></pre></div>
-<p>Первая формула удобочитаемости для русского языка, полученная методом последовательных интервалов, - по средней длине предложения и проценту сложных слов. Сложное слово здесь - больше чем из трех слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 4 слогов.</p>
+<p>Первая формула удобочитаемости для русского языка - по средней длине предложения и проценту сложных слов; <code>ReadabilityStats</code> передает в функцию количество слов от 4 слогов.</p>
 <div class="arithmatex">\[
 a \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + b \cdot \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}} + c
 \]</div>
@@ -3938,7 +3937,7 @@ a \cdot \frac{\textrm{Количество слов}}{\textrm{Количеств
 <p class="metric-meta"><code>tuldava</code> · Тулдава, 1975</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_tuldava</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
 </code></pre></div>
-<p>Формула трудности текста Тулдавы («Об измерении трудности текстов», Ученые записки Тартуского университета, вып. 345, 1975, с. 102-120) в изложении <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванова, Солнышкиной и Соловьёва (2018)</a>: среднее число слогов в слове, умноженное на десятичный логарифм средней длины предложения в словах; подбираемых коэффициентов нет. Шкалы и перевода в класс у формулы нет: в сводный класс она не входит, а <code>describe</code> возвращает <code>None</code>. В koRpus формула считается с натуральным логарифмом.</p>
+<p>Формула трудности текста Тулдавы («Об измерении трудности текстов», Ученые записки Тартуского университета, вып. 345, 1975, с. 102-120) в изложении <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Иванова, Солнышкиной и Соловьёва (2018)</a>: среднее число слогов в слове, умноженное на десятичный логарифм средней длины предложения в словах; подбираемых коэффициентов нет. Шкалы у формулы нет: в сводный класс она не входит, а <code>describe</code> возвращает <code>None</code>.</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество слогов}}{\textrm{Количество слов}} \cdot \lg \frac{\textrm{Количество слов}}{\textrm{Количество предложений}}
 \]</div>
@@ -3996,7 +3995,7 @@ a \cdot \frac{\textrm{Количество слов}}{\textrm{Количеств
 <p class="metric-meta"><code>dale_chall_index</code> · <a href="https://en.wikipedia.org/wiki/Dale–Chall_readability_formula">Dale and Chall, 1948</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_dale_chall_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.552</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.273</span><span class="p">)</span>
 </code></pre></div>
-<p>Число лет обучения в американской системе образования, необходимых для понимания текста, по проценту сложных слов и средней длине предложения. Исходная формула берет долю незнакомых слов по списку из 3000 знакомых, а для русского языка такого свободного списка нет, поэтому применяется адаптация проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> с долей сложных слов. Сложное слово - от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). Исходные коэффициенты формулы - <code>0.1579</code> и <code>0.0496</code>.</p>
+<p>Число лет обучения, необходимых для понимания текста, по проценту сложных слов и средней длине предложения. Это адаптация проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>: доля незнакомых слов по списку из 3000 знакомых заменена долей слов от пяти слогов, и <code>ReadabilityStats</code> передает в функцию их количество (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). Исходные коэффициенты формулы - <code>0.1579</code> и <code>0.0496</code>.</p>
 <div class="arithmatex">\[
 a \cdot \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}} + b \cdot \frac{\textrm{Количество слов}}{\textrm{Количество предложений}}
 \]</div>
@@ -4053,7 +4052,7 @@ a \cdot \frac{100 \cdot \textrm{Количество сложных слов}}{\
 <div class="arithmatex">\[
 a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количество предложений}} + \frac{100 \cdot \textrm{Количество сложных слов}}{\textrm{Количество слов}}\right)
 \]</div>
-<p>Индекс используется в адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a>: сложное слово - от пяти слогов, поэтому класс <code>ReadabilityStats</code> передает в функцию количество слов от 5 слогов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). SEO-сервисы дополнительно умножают результат на <code>0.78</code>, обоснование этого множителя не опубликовано.</p>
+<p>В адаптации проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> сложное слово - от пяти слогов: <code>ReadabilityStats</code> передает в функцию количество таких слов (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>).</p>
 <table>
 <thead>
 <tr>
@@ -4096,7 +4095,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <p class="metric-meta"><code>consensus_grade</code></p>
 <!-- core: stats/readability_stats.md:ReadabilityStats-consensus c4a6ea5 -->
 <p>Атрибут <code>consensus_grade</code> - медиана значений формул класса (<code>grade_stats</code>), округленных арифметически, вместе с индексом удобочитаемости Флеша, переведенным в число лет обучения (<code>reading_ease_to_grade</code>) без округления. Библиотека выравнивает границы <code>reading_ease_grades</code> и каждой шкалы <code>preset_reading_ease_grades</code> по своей шкале индекса Флеша, чтобы сводный класс и <code>describe</code> читали значение одинаково.</p>
-<p>Формулы класса в ruTS (<code>ruts.constants.READABILITY_GRADE_STATS</code>) - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной, а индекс Флеша переводится в класс по полосам своей шкалы прочтения, так что индекс 45 и в <code>describe</code>, и в сводном классе читается как университет. Сводный класс - аналог <code>text_standard</code> библиотеки textstat, где вместо медианы используется мода; медиана устойчивее к выбросам отдельных формул.</p>
+<p>Формулы класса в ruTS (<code>ruts.constants.READABILITY_GRADE_STATS</code>) - тест Флеша-Кинкайда, индексы Колман-Лиау, SMOG, ARI, Дейла-Чейла и Ганнинга и формула Соловьёва, Иванова, Солнышкиной.</p>
 <!-- core: stats/readability_stats.md:calc_consensus_grade 3bb15f7 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_consensus_grade</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">flesch_reading_easy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_grade</span><span class="o">=</span><span class="n">flesch_reading_easy_to_grade</span><span class="p">)</span>
 </code></pre></div>
@@ -4139,7 +4138,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </code></pre></div>
 <!-- core: stats/readability_stats.md:flesch_reading_easy_to_grade f9bc88b -->
 <p>Перевод индекса удобочитаемости Флеша в число лет обучения для сводного класса: класс первого диапазона, нижней границы которого достигает значение, или <code>below</code> ниже последней границы; значения больше 100 относятся к первому диапазону. Индекс Флеша или <code>below</code>, которые не конечное число, дают <code>ParameterError</code>, как и <code>grades</code>, которые пусты или не состоят из пар конечных чисел с границами по убыванию.</p>
-<p>Полосы ruTS по умолчанию - полосы шкалы прочтения индекса (<code>READING_EASE_LEVELS</code>), чтобы сводный класс и <code>describe</code> читали значение одинаково: 8.5 и 10.5 - середины полос «8-й и 9-й класс» и «10-й и 11-й класс», 14 - «университет», 17 - «выпускник университета», то есть 1-3-й и 4-6-й курс вуза по <a href="#grade_to_age">таблице ступеней</a>. Эти полосы - <code>ruts.constants.READING_EASE_GRADES</code>, атрибут <code>reading_ease_grades</code> класса <code>ReadabilityStats</code>:</p>
+<p>Полосы ruTS по умолчанию (<code>ruts.constants.READING_EASE_GRADES</code>, атрибут <code>reading_ease_grades</code>) повторяют шкалу прочтения индекса; 14 и 17 - 1-3-й и 4-6-й курс вуза по <a href="#grade_to_age">таблице ступеней</a>:</p>
 <table>
 <thead>
 <tr>
@@ -4220,7 +4219,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 \frac{\textrm{Количество слов}}{\textrm{wpm}}
 \]</div>
 <p>Количество слов, которое не целое неотрицательное число, и скорость, которая не положительное число, дают <code>ParameterError</code>.</p>
-<p>Норма чтения про себя для взрослого - 120-180 слов в минуту (Кузнецов и Хромов, 1991), по умолчанию берется верхняя граница. Нормы - в справочнике <code>ruts.constants.READING_SPEED_NORMS</code>, в том числе нормы чтения вслух для начальной школы по ФГОС:</p>
+<p>Скорость по умолчанию - верхняя граница нормы чтения про себя для взрослого. Нормы - в <code>ruts.constants.READING_SPEED_NORMS</code>, для начальной школы - нормы чтения вслух по ФГОС:</p>
 <table>
 <thead>
 <tr>
@@ -4290,7 +4289,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 100 \cdot \frac{\bar{x}}{s^2}, \quad s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}
 \]</div>
 <p>где <span class="arithmatex">\(x_i\)</span> - количество букв слова, <span class="arithmatex">\(n\)</span> - количество слов.</p>
-<p>Индекс получен на испанских текстах, поэтому в <code>get_stats</code> ruTS не входит, хотя свойство <code>mu_index</code> у объекта есть. Его функция - <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/#mu_index"><code>calc_mu_index</code></a> ядра anyTS.</p>
+<p>Индекс получен на испанских текстах и в <code>get_stats</code> ruTS не входит, но доступен как свойство <code>mu_index</code>; его функция - <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/#mu_index"><code>calc_mu_index</code></a> ядра anyTS.</p>
 </div>
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <!-- core: stats/readability_stats.md:ReadabilityStats-describe_grade 01276a5 -->
@@ -4303,9 +4302,9 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <p><code>reading_time_by_speed(wpm)</code> возвращает время чтения текста в минутах при скорости <code>wpm</code>, слов в минуту; скорость, которая не положительное число, дает <code>ParameterError</code>.</p>
 <!-- core: stats/readability_stats.md:ReadabilityStats-reading_time_by_norm 8a24e05 -->
 <p><code>reading_time_by_norm(norm)</code> возвращает время чтения текста в минутах при скоростях нормы <code>norm</code> из <code>reading_speed_norms</code> в их порядке; неизвестная норма дает <code>ParameterError</code>.</p>
-<p>В ruTS нормы - из справочника <code>ruts.constants.READING_SPEED_NORMS</code>, и метод возвращает время чтения при верхней и при нижней границе нормы.</p>
+<p>В ruTS метод возвращает время чтения при верхней и нижней границе нормы из <code>ruts.constants.READING_SPEED_NORMS</code>.</p>
 <p id="sis_grade_by_stage"><code>sis_grade_by_stage(stage)</code> возвращает значение <a href="#sis_grade">формулы Соловьёва, Иванова, Солнышкиной</a> с коэффициентами ступени обучения <code>stage</code>: <code>2-4</code>, <code>5-7</code> или <code>8-11</code>; неизвестная ступень дает <code>ParameterError</code>.</p>
-<p id="sis_grade_by_freq"><code>sis_grade_by_freq(mean_ipm, stage=None)</code> возвращает значение <a href="#calc_sis_grade_freq">формулы с частотностью</a> при средней частотности знаменательных слов <code>mean_ipm</code> - атрибуте <a href="../lexical_stats/#frequency"><code>mean_ipm_content</code></a> класса <code>LexicalStats</code> - с коэффициентами ступени <code>stage</code> или, без нее, общей формулы. Отрицательная или бесконечная частотность, частотность, которая не число, и неизвестная ступень дают <code>ParameterError</code>, а <code>nan</code> дает <code>nan</code>.</p>
+<p id="sis_grade_by_freq"><code>sis_grade_by_freq(mean_ipm, stage=None)</code> возвращает значение <a href="#calc_sis_grade_freq">формулы с частотностью</a> при средней частотности знаменательных слов <code>mean_ipm</code> - атрибуте <a href="../lexical_stats/#frequency"><code>mean_ipm_content</code></a> класса <code>LexicalStats</code> - с коэффициентами ступени <code>stage</code> или, без нее, общей формулы. Отрицательная, бесконечная или нечисловая частотность и неизвестная ступень дают <code>ParameterError</code>, а <code>nan</code> дает <code>nan</code>.</p>
 <!-- core: stats/readability_stats.md:ReadabilityStats-get_stats 0cb58e2 -->
 <p><code>get_stats()</code> возвращает справочник метрик удобочитаемости из <code>stats_desc</code>.</p>
 <!-- core: stats/readability_stats.md:ReadabilityStats-print_stats ac340b3 -->
@@ -4349,7 +4348,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </div>
 <p>Метод <code>to_dataframe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS.</p>
 <h2 id="scales">Шкалы<a class="headerlink" href="#scales" title="Permanent link">&para;</a></h2>
-<p>Метод <code>describe_level</code> читает индекс Флеша, LIX и RIX по шкалам полос из их карточек (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), а <code>describe</code> - любую метрику: эти три по тем же шкалам, формулы класса и сводный класс - по ступеням обучения <a href="#grade_to_age"><code>grade_to_age</code></a>; для метрики без шкалы он возвращает <code>None</code>.</p>
+<p>Шкалы полос индекса Флеша, LIX и RIX приведены в их карточках (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), а формулы класса и сводный класс <code>describe</code> читает по ступеням обучения <a href="#grade_to_age"><code>grade_to_age</code></a>.</p>
 <h3 id="grade_to_age">Класс и возраст читателя<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">grade_to_age</span><span class="p">(</span><span class="n">grade</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'1-3-й класс'</span><span class="p">,</span> <span class="s1">'6-8 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">'4-6-й класс'</span><span class="p">,</span> <span class="s1">'9-11 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">'7-9-й класс'</span><span class="p">,</span> <span class="s1">'12-14 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">'10-11-й класс'</span><span class="p">,</span> <span class="s1">'15-16 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s1">'1-3-й курс вуза'</span><span class="p">,</span> <span class="s1">'17-19 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">'4-6-й курс вуза'</span><span class="p">,</span> <span class="s1">'20-22 года'</span><span class="p">)),</span> <span class="n">above</span><span class="o">=</span><span class="p">(</span><span class="s1">'аспирантура'</span><span class="p">,</span> <span class="s1">'старше 22 лет'</span><span class="p">))</span>
 </code></pre></div>
@@ -4462,7 +4461,6 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tbody>
 </table>
 <p>Значение, которое не конечное число, и шкала, которая пуста, не является списком пар из конечной нижней границы и полосы или с границами не по убыванию, дают <code>ParameterError</code>.</p>
-<p>Шкалы ruTS - <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> и <code>RIX_LEVELS</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4480,7 +4478,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </div>
 </div>
 <h2 id="level_norms">Нормы ступеней<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
-<p>Сводный класс говорит, для какой ступени текст, но не каким бывает текст этой ступени. Для этого в справочнике <code>ruts.constants.LEVEL_NORMS</code> есть нормы признаков ступеней: обычные диапазоны (квартили) длины предложения в словах, длины слова в буквах, доли слов от пяти слогов и лексического разнообразия MTLD у текстов от 100 слов с меткой ступени из наборов <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> и <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a>. Нормы есть у школьных ступеней, для которых в наборах не меньше 10 таких текстов:</p>
+<p>Справочник <code>ruts.constants.LEVEL_NORMS</code> хранит нормы признаков ступеней обучения - обычные диапазоны (квартили) длины предложения в словах, длины слова в буквах, доли слов от пяти слогов и лексического разнообразия MTLD у текстов от 100 слов с меткой ступени из наборов <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> и <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a>. Нормы есть у школьных ступеней, где таких текстов не меньше 10:</p>
 <table>
 <thead>
 <tr>
@@ -4519,11 +4517,11 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 </tr>
 </tbody>
 </table>
-<p>Нормы 1-3-го класса сняты почти целиком с текстов 1-го класса (70 из 73), поэтому текст для 2-3-го класса может выйти выше нормы, особенно по длине предложения. У 7-9-го класса в наборах семь текстов, а с метками вуза в <code>TextsByGrade</code> - статья Википедии, газетная статья и нормативные документы, написанные не для студентов определенного курса, поэтому у этих ступеней норм нет. Признаки текста короче 100 слов, особенно MTLD, с нормами сравнивать не стоит.</p>
+<p>Нормы 1-3-го класса сняты почти целиком с текстов 1-го класса (70 из 73), так что текст для 2-3-го класса может выйти выше нормы, особенно по длине предложения. Признаки текста короче 100 слов, особенно MTLD, с нормами сравнивать не стоит.</p>
 <h3 id="level_features">Признаки текста<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">level_features</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 </code></pre></div>
-<p>Признаки текста, для которых есть нормы ступеней: слов в предложении, букв в слове (у слов, которые учитывают формулы класса), доля слов от пяти слогов (сложные слова SMOG, индексов Ганнинга и Дейла-Чейла) и лексическое разнообразие MTLD. Признаки считаются так же, как для норм, поэтому их можно сравнивать с нормами; признаки <code>Doc</code> считаются по его тексту, а не по границам предложений spaCy. Источник, который не строка и не <code>Doc</code>, дает <code>SourceTypeError</code>, источник без слов или предложений - <code>SourceError</code>.</p>
+<p>Признаки текста, для которых есть нормы ступеней, - слов в предложении, букв в слове, доля слов от пяти слогов и MTLD; они считаются так же, как нормы. Признаки <code>Doc</code> считаются по его тексту, а не по границам предложений spaCy. Источник, который не строка и не <code>Doc</code>, дает <code>SourceTypeError</code>, источник без слов или предложений - <code>SourceError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4545,7 +4543,7 @@ a \cdot \left(\frac{\textrm{Количество слов}}{\textrm{Количе
 <h3 id="describe_level_norm">Нормы и прочтение признака<a class="headerlink" href="#describe_level_norm" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">level_norms</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span>
 </code></pre></div>
-<p>Нормы признаков ступени обучения, к которой относится класс, - обычные диапазоны (квартили) каждого признака <code>level_features</code>, или <code>None</code> для ступени без норм. Класс относится к ступени, как в <a href="#grade_to_age"><code>grade_to_age</code></a>: округляется арифметически, класс меньше 1 - первая ступень. Класс, который не конечное число, дает <code>ParameterError</code>.</p>
+<p>Нормы (квартили) признаков <code>level_features</code> ступени обучения, к которой относится класс (как в <a href="#grade_to_age"><code>grade_to_age</code></a>), или <code>None</code> для ступени без норм. Класс, который не конечное число, дает <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>

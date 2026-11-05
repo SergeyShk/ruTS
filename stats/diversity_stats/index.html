@@ -1985,7 +1985,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -3054,7 +3054,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - параметр, который отвергает <code>check_params</code>.</li>
 </ul>
-<p>Класс расширяет <code>DiversityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a>: вместо списка слов он принимает текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Слова текста извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов без знаков ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Слова всегда приводятся к нижнему регистру. Таблица <code>print_stats</code> выводится с русскими заголовками и русскими описаниями метрик из <code>ruts.constants.DIVERSITY_STATS_DESC</code>, а сообщения об ошибках - по-русски, из <code>ruts.constants.CORE_MESSAGES</code>.</p>
+<p>Класс расширяет <code>DiversityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a>: вместо списка слов он принимает текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Слова текста извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, слова <code>Doc</code> без экстрактора - его токены без знаков ударения, а дефисное слово, разрезанное spaCy, остается одним словом (<code>во-первых</code>). Слова приводятся к нижнему регистру. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4742,7 +4742,7 @@ A_n = \frac{\sqrt{n + 1} \cdot r - \sqrt{n - 1}}{(\sqrt{n + 1} - 2) \cdot r + \s
 </div>
 </div>
 </div>
-<p>Остальные методы - <code>to_dataframe</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у метрик лексического разнообразия нет, поэтому <code>describe</code> для метрик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Остальные методы - <code>to_dataframe</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у метрик лексического разнообразия нет, и <code>describe</code> для метрик <code>get_stats</code> возвращает <code>None</code>.</p>
 
 
 

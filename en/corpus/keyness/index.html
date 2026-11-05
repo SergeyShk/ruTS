@@ -2491,7 +2491,7 @@
 </tr>
 </tbody>
 </table>
-<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>: the dictionary holds words.</p>
+<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer, the number of keywords is <code>None</code> or an integer of at least one, the length of the n-grams <code>n</code> is an integer of at least one and <code>positive</code> is a <code>bool</code>. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings, a list of such lists or a mapping of strings to whole frequencies, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
@@ -2565,16 +2565,16 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>key</code></td>
-<td style="text-align: left;">the lemma of the dictionary: a word form is lemmatized by ruMorph (with <code>lemmatize=False</code> it is taken as a lemma) and brought to the conventions of the dictionary by <code>ruts.lexical_stats.dictionary_lemma</code>, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+<td style="text-align: left;">the lemma of the dictionary: the ruMorph lemma of a word form (with <code>lemmatize=False</code> the word itself) brought to the conventions of the dictionary, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
-<td style="text-align: left;">the words of the Cyrillic letters of <code>ruts.lexical_stats.DICTIONARY_WORD</code>; numbers and words with Latin letters are left out</td>
+<td style="text-align: left;">words of Cyrillic letters; numbers and words with Latin letters are left out</td>
 </tr>
 </tbody>
 </table>
-<p>A dictionary entry absent from the text can be a negative keyword only if some word form is reduced to it: the dictionary keeps separate entries «во», «со», while <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> reduces these word forms to «в», «с», and without this rule they would be negative keywords of any text. Such entries - about 1,150 for word forms and 1,450 for lemmas - are listed in the resources of the package; the forms of the words outside the ruMorph dictionary («Михайлыч») are guessed.</p>
-<p>With <code>lemmatize=False</code> the conventions of the dictionary cannot be recovered from a lemma: the short form, the plural and the spelling variant are lost («должный» instead of «должен», «деньга» instead of «деньги», «счастие» instead of «счастье»), and such entries come out as false keywords. Compare word forms with the dictionary.</p>
+<p>A dictionary entry that no word form is reduced to is never a negative keyword: the dictionary keeps «во» and «со» as entries of their own, while <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> reduces these word forms to «в» and «с».</p>
+<p>With <code>lemmatize=False</code> a lemma loses the conventions of the dictionary - the short form, the plural, the spelling variant («должный» instead of «должен», «деньга» instead of «деньги») - and such entries come out as false keywords, so compare word forms with the dictionary.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

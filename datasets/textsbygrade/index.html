@@ -1481,7 +1481,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2220,7 +2220,7 @@
 <h1 id="_1">Тексты с метками класса<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">TextsByGrade</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">DEFAULT_DATASET_DIR</span><span class="p">)</span>
 </code></pre></div>
-<p>Набор данных текстов с метками класса проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> Ивана Бегтина. Набор содержит 68 текстов из репозитория проекта, распространяемых под лицензией <a href="https://github.com/infoculture/plainrussian/blob/master/LICENSE">CC0 1.0</a>: 55 из списка <code>TEXT_LIST</code>, на которых подбирались коэффициенты формул удобочитаемости для русского языка из пресета <code>plainrussian</code> класса <a href="../../stats/readability_stats/#presets"><code>ReadabilityStats</code></a>, и 13 из папок репозитория, не вошедших в список. Метка - класс школы или год обучения:</p>
+<p>68 текстов с метками класса из репозитория проекта <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> Ивана Бегтина, лицензия <a href="https://github.com/infoculture/plainrussian/blob/master/LICENSE">CC0 1.0</a>: 55 из списка <code>TEXT_LIST</code>, на которых подбирались коэффициенты пресета <code>plainrussian</code> класса <a href="../../stats/readability_stats/#presets"><code>ReadabilityStats</code></a>, и 13 из папок репозитория вне списка. Метка - класс школы или год обучения:</p>
 <table>
 <thead>
 <tr>
@@ -2267,7 +2267,7 @@
 </tr>
 </tbody>
 </table>
-<p>Метки 12-14 соответствуют 1-3 курсам вуза, 15-17 - 4-6 курсам, как в таблице <a href="../../stats/readability_stats/#grade_to_age"><code>grade_to_age</code></a>. Абзацы текстов разделены переводом строки, жесткие переносы строк исходных файлов с lib.ru убраны.</p>
+<p>Метки 12-14 - это 1-3 курсы вуза, 15-17 - 4-6 курсы, как в таблице <a href="../../stats/readability_stats/#grade_to_age"><code>grade_to_age</code></a>. Абзацы разделены переводом строки, жесткие переносы строк исходных файлов убраны.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - <code>data_dir</code>, который не строка и не <code>Path</code>.</li>
@@ -2398,7 +2398,7 @@
 </tr>
 </tbody>
 </table>
-<p>Неизвестный уровень сложности, <code>subject</code>, который не строка, граница длины, которая не целое число не меньше единицы, минимум больше максимума и <code>limit</code>, который не целое неотрицательное число, дают <code>ParameterError</code>; незагруженный набор данных - <code>DatasetNotFoundError</code>, файл, из которого не удалось извлечь запись, - <code>DataFileError</code>.</p>
+<p>Неизвестный уровень сложности, <code>subject</code>, который не строка, граница длины, которая не целое положительное число, минимум больше максимума и <code>limit</code>, который не целое неотрицательное число, дают <code>ParameterError</code>; незагруженный набор данных - <code>DatasetNotFoundError</code>, файл, из которого не удалось извлечь запись, - <code>DataFileError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2412,7 +2412,7 @@
 </div>
 </div>
 </div>
-<p><code>get_records</code> с теми же параметрами извлекает записи (с заголовками) из набора данных. Поля записи: <code>grade</code> - уровень сложности, <code>subject</code> - наименование текста, <code>source</code> - адрес источника (пустая строка у двух текстов, для которых адрес не опубликован: «Золотой ключик» и доклад Госсовета), <code>text</code> - текст, <code>file</code> - путь к файлу.</p>
+<p><code>get_records</code> с теми же параметрами извлекает записи (с заголовками) из набора данных. Поля записи: <code>grade</code> - уровень сложности, <code>subject</code> - наименование текста, <code>source</code> - адрес источника (пустая строка у «Золотого ключика» и доклада Госсовета, адреса которых не опубликованы), <code>text</code> - текст, <code>file</code> - путь к файлу.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2431,7 +2431,7 @@
 </div>
 </div>
 <h2 id="_5">Проверка формул удобочитаемости<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>Набор используется в тестах библиотеки для проверки формул удобочитаемости: корреляция Спирмена значений формул с метками класса на всех 68 текстах должна быть не ниже 0.7, а сводный класс - не ниже 0.8. Значения при коэффициентах по умолчанию:</p>
+<p>В тестах библиотеки корреляция Спирмена каждой формулы с меткой класса на 68 текстах должна быть по модулю не ниже 0.7, сводного класса - не ниже 0.8. Значения при коэффициентах по умолчанию:</p>
 <table>
 <thead>
 <tr>
@@ -2508,8 +2508,8 @@
 </tr>
 </tbody>
 </table>
-<p>Разбор по всем группам статистик - пресеты коэффициентов, лексика, синтаксис, морфология, связность и проверка на хрестоматии <code>SovChLit</code> - в ноутбуке <a href="https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb">02_text_complexity_by_grade.ipynb</a>.</p>
-<p>Средний сводный класс растет с меткой: 2.9 для 1 класса, 5.8 для 3-4 классов, 6.5 для 5-9, 7.3 для 10-11 и 22.6 для документов с метками 12-17. Большая ошибка на документах ожидаема: формулы класса откалиброваны на школьных текстах, а метка 17 условна.</p>
+<p>Средний сводный класс растет с меткой: 2.9 для 1 класса, 5.8 для 3-4 классов, 6.5 для 5-9, 7.3 для 10-11 и 22.6 для документов с метками 12-17. Ошибка на документах велика: формулы откалиброваны на школьных текстах, а метка 17 условна.</p>
+<p>Разбор всех групп статистик на этом наборе - в ноутбуке <a href="https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb">02_text_complexity_by_grade.ipynb</a>.</p>
 
 
 

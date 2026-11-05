@@ -2480,8 +2480,8 @@
 <li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>BasicStats</code> object, basic statistics of another class, an extractor of another type, a string or a <code>Doc</code> for a class without <code>basic_stats_class</code>;</li>
 <li><code>SourceError</code> - a source without words or without sentences.</li>
 </ul>
-<p>The class extends the <code>UnadaptedReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> core with the <a href="../basic_stats/">basic statistics</a> of ruTS, which count the syllables and the letters of Russian words and take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default. The <code>print_stats</code> table and the error messages are in Russian (<code>UNADAPTED_READABILITY_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
-<p>The formulas are not calibrated for Russian. Their values serve to compare Russian texts with each other and with the results of these formulas in other tools, but they give no grade of the Russian school: on the first-grade texts of the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2. These formulas therefore have no reading scales, <code>describe</code> gives <code>None</code> for them, and they do not enter the <a href="../readability_stats/#consensus_grade">consensus grade</a>. The formulas with coefficients for Russian are in <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
+<p>The class extends the <code>UnadaptedReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> core with the <a href="../basic_stats/">basic statistics</a> of ruTS, which count the syllables and the letters of Russian words and take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default. The <code>print_stats</code> table and the error messages are in Russian.</p>
+<p>The formulas give no grade of the Russian school (on the first-grade texts of the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2) and do not enter the <a href="../readability_stats/#consensus_grade">consensus grade</a>. The formulas with coefficients for Russian are in <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2561,7 +2561,7 @@
 </tr>
 </tbody>
 </table>
-<p>Ready basic statistics can be taken from a <a href="../readability_stats/"><code>ReadabilityStats</code></a> object, so as not to compute them again:</p>
+<p>The basic statistics can be taken from a <a href="../readability_stats/"><code>ReadabilityStats</code></a> object:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2658,7 +2658,7 @@
 </tr>
 </tbody>
 </table>
-<p>Here ASL is the mean number of words per sentence, ASW the mean number of syllables per word. The functions of the formulas are imported from <code>ruts.unadapted_readability_stats</code> and compute a value from counts:</p>
+<p>Here ASL is the mean number of words per sentence, ASW the mean number of syllables per word. The functions of the formulas in <code>ruts.unadapted_readability_stats</code> compute a value from counts:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

@@ -1666,7 +1666,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2416,7 +2416,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - окно, которое не целое число не меньше 2.</li>
 </ul>
-<p>Класс расширяет <code>PhonStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения; йотированные е, ё, ю, я после гласной не дают зияния, а слова делятся на слоги по правилу восходящей звучности (Аванесов) функцией <a href="../../syllables/#syllabify"><code>syllabify</code></a>. Из слов текста и <code>Doc</code> убираются знаки ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>PHON_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>). Время вычисления растет линейно с длиной текста.</p>
+<p>Класс расширяет <code>PhonStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения, а слоги - по правилу восходящей звучности функции <a href="../../syllables/#syllabify"><code>syllabify</code></a>. Из слов текста и <code>Doc</code> убираются знаки ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>PHON_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <table>
 <thead>
 <tr>
@@ -2517,7 +2517,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">check_params</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет окно аллитерации и ассонанса отдельно от класса: окно, которое не целое число не меньше 2, дает <code>ParameterError</code>.</p>
+<p>Проверяет окно аллитерации и ассонанса отдельно от класса, с той же <code>ParameterError</code>.</p>
 <h2 id="_3">Атрибуты<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <!-- core: stats/phon_stats.md:PhonStats-attributes a595894 -->
 <table>
@@ -2696,7 +2696,7 @@
 <p class="metric-meta"><code>p_heavy_clusters</code> · <code>c_clusters</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_consonant_clusters</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Распределение консонантных кластеров слов по длине. Кластер - последовательность согласных внутри слова, в том числе одиночная согласная между гласными или на краю слова; ь и ъ кластер не прерывают.</p>
+<p>Распределение консонантных кластеров слов по длине. Кластер - последовательность согласных внутри слова, в том числе одиночная согласная между гласными или на краю слова.</p>
 <table>
 <thead>
 <tr>
@@ -2751,7 +2751,7 @@
 \]</div>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_cv_entropy</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Энтропия CV-шаблонов списка слов: чем выше значение, тем разнообразнее фонетическая форма слов. Слова без гласных и согласных (числа, латиница) не учитываются, а без других слов значение - <code>nan</code>.</p>
+<p>Энтропия CV-шаблонов списка слов; слова без гласных и согласных (числа, латиница) не учитываются, а без других слов значение - <code>nan</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">cv_pattern</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
 <p>CV-шаблон слова или слога: гласные обозначаются буквой <code>V</code>, согласные - <code>C</code>, ь, ъ и остальные символы пропускаются.</p>
@@ -2796,7 +2796,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_assonance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-<p>Индексы аллитерации и ассонанса списка слов - индекс повторов <code>calc_repetition_index</code> по согласным и по гласным буквам слов. Сравниваются буквы, а не звуки: оглушение, ударение и редукция не учитываются.</p>
+<p>Индексы аллитерации и ассонанса списка слов - индекс повторов <code>calc_repetition_index</code> по согласным и по гласным буквам слов.</p>
 <table>
 <thead>
 <tr>
@@ -2890,7 +2890,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 </tbody>
 </table>
 </div>
-<p>Функции ruTS принимают слова строками и считают по русским классам букв из таблицы выше. Функции <code>calc_*</code> проверяют аргументы: слова, которые не список строк, дают <code>SourceTypeError</code>, а окно, которое не целое число не меньше 2, - <code>ParameterError</code>.</p>
+<p>Функции ruTS считают по классам букв из таблицы выше. У функций <code>calc_*</code> слова, которые не список строк, дают <code>SourceTypeError</code>, а окно, которое не целое число не меньше 2, - <code>ParameterError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2920,7 +2920,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 </div>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у фоностатистик нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у фоностатистик нет, и <code>describe</code> возвращает для них <code>None</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

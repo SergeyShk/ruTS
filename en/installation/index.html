@@ -2196,9 +2196,8 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<p>The library can be installed with <code>pip</code> or by cloning the project repository with <code>git</code>.</p>
+<p>The library can be installed with <code>pip</code> or from the project repository with <code>git</code>.</p>
 <h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
-<p>ruTS relies on the following third-party libraries:</p>
 <ul>
 <li><code>python</code> - 3.11 or newer</li>
 <li><a href="https://sergeyshk.github.io/anyTS/"><code>anyts</code></a> - 0.4.6 or newer within 0.4, the language-independent core ruTS is built on</li>
@@ -2212,37 +2211,36 @@
 <li><code>graphviz</code></li>
 </ul>
 <h2 id="installing-with-pip">Installing with <code>pip</code><a class="headerlink" href="#installing-with-pip" title="Permanent link">&para;</a></h2>
-<p>Run in the command line:</p>
+<p>The release version is installed with all dependencies:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ruts
 </code></pre></div>
-<p>This installs the release version of the library with all dependencies.</p>
 <div class="admonition warning">
 <p class="admonition-title">Graphviz</p>
-<p>The <code>graphviz</code> package among the dependencies is only a wrapper: rendering the <a href="../visualizers/word_tree/">word tree</a> and the <a href="../visualizers/corpus/#collocation_network">collocation network</a> requires the <a href="https://graphviz.org/download/">Graphviz</a> executables (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), otherwise <code>render()</code> and displaying the graph in Jupyter fail with <code>ExecutableNotFound</code>. Nothing else needs them.</p>
+<p>Only the <a href="../visualizers/word_tree/">word tree</a> and the <a href="../visualizers/corpus/#collocation_network">collocation network</a> need the <a href="https://graphviz.org/download/">Graphviz</a> executables (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>): the <code>graphviz</code> package among the dependencies is just a wrapper, and without them <code>render()</code> and displaying the graph in Jupyter fail with <code>ExecutableNotFound</code>.</p>
 </div>
-<p><code>import ruts</code> loads neither spaCy nor matplotlib nor pandas: spaCy comes with a <code>Doc</code> object or a component, and the plots and the corpus functions on first use. The statistics of a string work without them.</p>
+<p><code>import ruts</code> loads neither spaCy nor matplotlib nor pandas: they come on first use of a <code>Doc</code>, components, plots and corpus functions.</p>
 <div class="admonition tip">
 <p class="admonition-title">spaCy model</p>
-<p>The <a href="../components/">spaCy components</a>, the <a href="../stats/syntax_stats/">syntactic statistics</a> and the examples with the <a href="../components/#load_pipeline">recommended pipeline</a> <code>ruts.load_pipeline()</code> need the Russian-language model; without it loading fails with <code>OSError: [E050]</code>. The model is installed separately:</p>
+<p>The <a href="../components/">spaCy components</a>, the <a href="../stats/syntax_stats/">syntactic statistics</a> and the <a href="../components/#load_pipeline">recommended pipeline</a> <code>ruts.load_pipeline()</code> need the Russian-language model, without it loading fails with <code>OSError: [E050]</code>. The model is installed separately:</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>spacy<span class="w"> </span>download<span class="w"> </span>ru_core_news_sm
 </code></pre></div>
-<p>The larger models <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> make no sense for ruTS statistics: in our measurements on the gold Universal Dependencies annotation (Taiga and GSD) they are less than one UAS point more accurate than <code>sm</code>, the text-level statistics of the three models nearly coincide, and they weigh 93 and 670 MB against 47.</p>
+<p>The larger models <code>ru_core_news_md</code> and <code>ru_core_news_lg</code> (93 and 670 MB against 47) hardly change the ruTS statistics: on the gold Universal Dependencies annotation (Taiga and GSD) they are less than one UAS point more accurate than <code>sm</code>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Datasets</p>
-<p>The <a href="../datasets/sovchlit/">datasets</a> are downloaded by default into the <code>ruts_data</code> directory next to the package (<code>DEFAULT_DATA_DIR</code> in <code>ruts.constants</code>): for an installation from a wheel that is <code>site-packages/ruts_data</code>, where writing may be forbidden for a system Python. In that case pass your own directory in the <code>data_dir</code> argument when creating a dataset or set the environment variable <code>RUTS_DATA_DIR</code> before the package is imported:</p>
+<p>The <a href="../datasets/sovchlit/">datasets</a> are downloaded by default into the <code>ruts_data</code> directory next to the package (<code>DEFAULT_DATA_DIR</code> in <code>ruts.constants</code>), for an installation from a wheel into <code>site-packages/ruts_data</code>, where writing may be forbidden for a system Python. Your own directory is set by the <code>data_dir</code> argument of a dataset or by the <code>RUTS_DATA_DIR</code> environment variable before the package is imported:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RUTS_DATA_DIR</span><span class="o">=</span>~/ruts_data
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A detailed guide to the <code>pip</code> package manager is available on its <a href="https://pip.pypa.io/en/stable/">website</a>.</p>
+<p>A guide to <code>pip</code> is on its <a href="https://pip.pypa.io/en/stable/">website</a>.</p>
 </div>
 <h2 id="installing-with-git">Installing with <code>git</code><a class="headerlink" href="#installing-with-git" title="Permanent link">&para;</a></h2>
-<p>This way you get the latest version of the library straight from the project repository. Run the following commands:</p>
+<p>The latest version is installed from the project repository:</p>
 <ol>
 <li>
-<p>Clone the repository into a local directory:</p>
+<p>Clone the repository:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SergeyShk/ruTS.git
 </code></pre></div>
 </li>
@@ -2255,7 +2253,7 @@
 <p>Install the library into the current environment:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.
 </code></pre></div>
-<p>For development it is more convenient to use <a href="https://docs.astral.sh/uv/">uv</a>, which creates an isolated environment and installs all dependencies, including the development tools:</p>
+<p>For development <a href="https://docs.astral.sh/uv/">uv</a> is more convenient: it creates an isolated environment with all dependencies, including the development tools:</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups<span class="w"> </span>--no-group<span class="w"> </span>examples
 </code></pre></div>
 <p>The <code>examples</code> group with Jupyter is needed only for the <a href="../examples/">example notebooks</a>.</p>
@@ -2263,7 +2261,7 @@
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>A detailed guide to the <code>git</code> version control system is available on its <a href="https://git-scm.com/">website</a>.</p>
+<p>A guide to <code>git</code> is on its <a href="https://git-scm.com/">website</a>.</p>
 </div>
 
 

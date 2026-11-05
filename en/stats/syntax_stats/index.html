@@ -2964,8 +2964,8 @@
 <li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>;</li>
 <li><code>SourceError</code> - a source without a dependency parse (relations and sentence boundaries), without parts of speech, without lemmas when the class requires them, or without words.</li>
 </ul>
-<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer. The <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> relations come from the dependency parse of the spaCy model (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), the parts of speech and features from the annotation of the pipeline: ruMorph in the <a href="../../components/#load_pipeline">recommended pipeline</a>, otherwise the model; the quality of the statistics is bounded by the quality of the parse. The parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word), and the clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. ruTS adds its own metrics of genitive chains and adverbial participle clauses. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The <code>print_stats</code> table and the error messages are in Russian (<code>SYNTAX_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
-<p>Ivanov, Solnyshkina and Solovyev tested the features on a corpus of school textbooks: the numbers of coordination chains, participial clauses and noun phrase modifiers correlate with the textbook grade at 0.88-0.93. The cards of the metrics name the original features of the paper and their correlation coefficients with the textbook grade.</p>
+<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer. The <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> relations come from the dependency parse of the spaCy model (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), the parts of speech and features from the annotation of the pipeline: ruMorph in the <a href="../../components/#load_pipeline">recommended pipeline</a>, otherwise the model; the quality of the statistics is bounded by the quality of the parse. The clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The <code>print_stats</code> table and the error messages are in Russian (<code>SYNTAX_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The cards of the metrics name the original features of the paper of Ivanov, Solnyshkina and Solovyev and their correlation with the grade of a school textbook.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3516,7 +3516,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>The mean dependency distance grows with sentence length, and the longest one is the best of the tree features at the level of a single sentence. One-word sentences enter none of the metrics of the distances.</p>
+<p>The mean dependency distance grows with sentence length, and the longest one is the best of the tree features at the level of a single sentence.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3574,7 +3574,7 @@ T-единиц на предложение                                  |   
 <div class="arithmatex">\[
 \frac{1}{S} \sum_{s=1}^{S} \frac{\textrm{Number of words of } s}{\textrm{Number of leaves of } s}
 \]</div>
-<p>The features of the paper: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) and <code>AVERAGE_PATH</code> (r = 0.84). The distribution of the words by number of dependents, the branching profile, is the attribute <code>c_children</code>.</p>
+<p>The features of the paper: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) and <code>AVERAGE_PATH</code> (r = 0.84).</p>
 </div>
 <div class="metric-card">
 <h3 id="words_before_root">Words before the root<a class="headerlink" href="#words_before_root" title="Permanent link">&para;</a></h3>
@@ -3643,20 +3643,20 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>The number of chains per sentence (<code>SOCHIN_NUMBER</code>, r = 0.93) and their mean length (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) are the strongest syntactic predictors of textbook complexity.</p>
+<p>The features of the paper: <code>SOCHIN_NUMBER</code> (r = 0.93), the number of chains per sentence, and <code>AVERAGE_SOCHIN_LENGTH</code> (r = 0.87), their mean length.</p>
 </div>
 <div class="metric-card">
 <h3 id="clauses">Clauses<a class="headerlink" href="#clauses" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>clauses_per_sent</code> · <code>mean_clause_len</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads a clause: the head of the sentence or a word with <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> and their subtypes (<code>anyts.constants.CLAUSE_DEPS</code>), except full participles, adverbial participles and infinitives under a noun («желание уйти»): participial and adverbial participle clauses are counted apart, and a short participle («дом построен») is the predicate of its clause. Under <code>xcomp</code> only an infinitive of <code>is_infinitive_clause</code> heads a clause: a finite form under <code>xcomp</code> is a parse error of the Russian models. An infinitive subject (<code>csubj</code>) of a modal word («нужно уйти», «можно войти», «следует отметить») heads no clause of its own. A parenthetical construction (<code>parataxis</code>) and a coordinated predicate (a <code>conj</code> relation from the clause head) form their own clause only if they can be a predicate (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» and «думала, что он умен» are clauses, while the parentheticals «например», «конечно», «во-первых», which spaCy models also attach as <code>parataxis</code>, are not.</p>
+<p>Checks whether a word heads a clause: the head of the sentence or a word with <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> and their subtypes (<code>anyts.constants.CLAUSE_DEPS</code>), except full participles and adverbial participles, whose clauses are counted apart, and infinitives under a noun («желание уйти»). Under <code>xcomp</code> only an infinitive of <code>is_infinitive_clause</code> heads a clause. An infinitive subject (<code>csubj</code>) of a modal word («нужно уйти») heads no clause of its own. A parenthetical construction (<code>parataxis</code>) and a coordinated predicate (a <code>conj</code> relation from the clause head) form their own clause only if they can be a predicate (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» is a clause, while parenthetical words («например»), which spaCy models also attach as <code>parataxis</code>, are not.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether an infinitive under <code>xcomp</code> heads a clause of its own («хочет уйти», «попросил его уйти»): it does not when it makes one predicate with its head (<code>is_infinitive_periphrasis</code>) or stands in a participial or adverbial participle clause («решивший уйти», «желая уйти»).</p>
+<p>Checks whether an infinitive under <code>xcomp</code> heads a clause of its own («хочет уйти»): it does not when it makes one predicate with its head (<code>is_infinitive_periphrasis</code>) or stands in a participial or adverbial participle clause («решивший уйти», «желая уйти»).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «невозможно описать», «пора идти»), the short form of a modal adjective of <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») or the hortative «давай», «давайте» of <code>HORTATIVE_WORDS</code> without a negation («давайте играть», but not «не давайте детям играть»).</p>
+<p>Checks whether an infinitive makes one predicate with its head: a modal or phasal verb or a modal word of <code>INFINITIVE_PERIPHRASES</code> («может уйти», «начал читать», «нужно уйти»), the short form of a modal adjective of <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти») or the hortative «давай», «давайте» of <code>HORTATIVE_WORDS</code> without a negation («давайте играть», but not «не давайте детям играть»).</p>
 <table>
 <thead>
 <tr>
@@ -3681,7 +3681,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads a subordinate clause: a clause head (<code>is_clause_head</code>) whose predicate is no infinitive under <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> and their subtypes, a coordinated predicate of a subordinate clause, or a clause under <code>conj</code> or <code>parataxis</code> with a subordinating conjunction (<code>is_subordinating_mark</code>: «ушел, ибо устал») with its conjuncts that have a subject of their own: the models attach such a clause to the main one as a conjunct, and the predicates of the main clause sharing its subject to it, which are no subordinate clauses. An infinitive heads an infinitive clause, not a subordinate one.</p>
+<p>Checks whether a word heads a subordinate clause: a clause head (<code>is_clause_head</code>) whose predicate is no infinitive under <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> and their subtypes, a coordinated predicate of a subordinate clause, or a clause under <code>conj</code> or <code>parataxis</code> with a subordinating conjunction (<code>is_subordinating_mark</code>: «ушел, ибо устал») with its conjoined predicates that have a subject of their own, but not those sharing its subject.</p>
 <table>
 <thead>
 <tr>
@@ -3702,7 +3702,7 @@ T-единиц на предложение                                  |   
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinating_mark</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a conjunction (relation <code>mark</code>) of a conjunct or a parataxis is a subordinating one: a conjunction of <code>SUBORDINATING_MARKS</code> with the words of a compound conjunction («потому что», «так как») or «как» in «после того как», «перед тем как», «с тех пор как», «в то время как». Not subordinating are a conjunction after «не то» and «всё равно» («не то что», «не то чтоб»), a conjunction of a predicate with a correlative «то» after it that is not of a nested «если..., то» («когда пришел, то...»: the model lost the subordinate clause), and «что», «чем» used as a pronoun or a particle: «что ж», «что ль», «что за», «что называется» and at the start of a replica that ends with a question or an exclamation («А что вы сделаете?», «Любопытно стало: что это сделалось?»).</p>
+<p>Checks whether a conjunction (relation <code>mark</code>) of a conjunct or a parataxis is a subordinating one: a conjunction of <code>SUBORDINATING_MARKS</code> with the words of a compound conjunction («потому что») or «как» in «после того как», «с тех пор как». Not subordinating are a conjunction after «не то» and «всё равно» («не то что»), a conjunction of a predicate with a correlative «то» after it that is not of a nested «если..., то» («когда пришел, то...»), and «что», «чем» used as a pronoun or a particle: «что ж», «что за» and at the start of a replica that ends with a question or an exclamation («А что вы сделаете?»).</p>
 <table>
 <thead>
 <tr>
@@ -3728,7 +3728,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads an infinitive clause: an infinitive under <code>xcomp</code> that heads a clause of its own (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), an infinitive clause head under <code>ccomp</code>, <code>advcl</code>, <code>acl</code> or <code>csubj</code> («пришел, чтобы помочь», «трудно сказать»), or an infinitive coordinated with it. Such a clause is counted apart from the subordinate ones, as grammars of many languages take it for a part of a simple sentence.</p>
+<p>Checks whether a word heads an infinitive clause: an infinitive under <code>xcomp</code> that heads a clause of its own (<code>is_infinitive_clause</code>: «хочет уйти»), an infinitive clause head under <code>ccomp</code>, <code>advcl</code>, <code>acl</code> or <code>csubj</code> («пришел, чтобы помочь»), or an infinitive coordinated with it.</p>
 <table>
 <thead>
 <tr>
@@ -3823,7 +3823,7 @@ T-единиц на предложение                                  |   
 <h3 id="prep_chains">Prepositional chains<a class="headerlink" href="#prep_chains" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>prep_chains_per_sent</code> · <code>max_prep_chain_len</code> · <a href="https://aclanthology.org/2020.lrec-1.883/">Profiling-UD</a></p>
 <p>A prepositional chain is two or more nested complements with a preposition, each hanging on the previous one: <em>on the mat of the house of the mayor</em> (length 3). The links are the words of the hook <code>is_prep_complement</code>, and the chains and their lengths are those of <code>calc_modifier_chains</code>; a chain may start at a complement of a verb (<code>obl</code>) or at a prepositional predicate with a copula (<em>was in the house of the mayor</em>), but not at a conjunct of a complement (<em>in Madrid and in the centre of the city</em>), and a predicate of a relative clause (<em>the house that was by the river</em>) is no link of the chain of its noun. The chains read Universal Dependencies alone: ClearNLP heads a phrase by its preposition (<code>prep</code>, <code>pobj</code>), so its parses give no chains.</p>
-<p>The genitive chains of ruTS (<a href="#genitive_chains"><code>genitive_chains_per_sent</code></a>) are counted apart: their links are prepositionless genitive modifiers («повышение эффективности использования ресурсов»), and those of a prepositional chain are complements with a preposition.</p>
+<p>ruTS counts the prepositionless genitive chains apart (<a href="#genitive_chains"><code>genitive_chains_per_sent</code></a>).</p>
 </div>
 <div class="metric-card">
 <h3 id="genitive_chains">Genitive chains<a class="headerlink" href="#genitive_chains" title="Permanent link">&para;</a></h3>
@@ -3882,7 +3882,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>nominal_chains_per_sent</code> · <code>max_nominal_chain_len</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_nominal_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
 </code></pre></div>
-<p>The lengths of the nominal chains in the order of the words: the chains of <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a> whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2, «о повышении эффективности работы отдела» of length 4. A prepositional phrase is a link itself, as in prepositional chains, so the same phrase gives a longer chain with a verb than as a subject: «сидел во втором ряду кресел» has length 2, «второй ряд кресел пустовал» no chain. Genitive chains and prepositional chains are special cases of a nominal one: on TextsByGrade more than two thirds of the nominal chains are mixed (68 %), almost half (46 %) contain neither, and the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).</p>
+<p>The lengths of the nominal chains in the order of the words: the chains of <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a> whose links are genitive modifiers and complements with a preposition in any order; «рост цен на нефть» is a chain of length 2. A prepositional phrase is a link itself, so with a verb the same phrase gives a longer chain than as a subject: «сидел во втором ряду кресел» has length 2, «второй ряд кресел пустовал» no chain. Genitive chains and prepositional chains are special cases of a nominal one; on TextsByGrade the nominal chains go with the grade of a text more closely (ρ = 0.76 against 0.65 and 0.63).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_nominal_chain_link</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks whether a word is a link of a nominal chain: a prepositionless genitive modifier (<a href="#genitive_chains"><code>is_genitive_modifier</code></a>) or a complement with a preposition (<code>is_prep_complement</code>).</p>
@@ -3937,7 +3937,7 @@ T-единиц на предложение                                  |   
 <p>The clauses headed by the words of the hook <code>is_participle_clause</code>; the length of a clause is the number of the words in the subtree of its head (<code>subtree_len</code>).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_participle_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word heads a participial clause: a full participle (<a href="#is_finite_verb"><code>is_participle</code></a>) with at least one dependent word, the coordination and parenthetical relations left out. Short participles («дом построен») are predicates rather than modifiers and head no clauses. The features of the paper are <code>PRICH_RATE</code> (r = 0.91) and <code>PRICH_V</code>.</p>
+<p>Checks whether a word heads a participial clause: a full participle (<a href="#is_finite_verb"><code>is_participle</code></a>) with at least one dependent word, the coordination and parenthetical relations left out. The features of the paper are <code>PRICH_RATE</code> (r = 0.91) and <code>PRICH_V</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4036,7 +4036,7 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_split_predicate_noun</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">verb</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The split predicates, a marker of officialese, are pairs of a verb and a noun in the order of the words: a light verb (<code>is_light_verb</code>) with a lemma of <code>LIGHT_VERBS</code> (for example: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь and their reflexive passives проводиться, приниматься, вестись) with a nominal part (<code>is_split_predicate_noun</code>), a noun with a verbal lemma (<code>ruts.utils.is_verbal_noun</code>) or a lemma of <code>SPLIT_PREDICATE_NOUNS</code> (for example: роль, работа, помощь, мера) with a verb <code>verb</code> of its own phrase (оказать помощь, принять меры, but not получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. At most one nominal part is taken per verb in the order of preference <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (only for a reflexive or passive verb, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; prepositional adjuncts and the passive agent (<code>obl:agent</code>, instrumental <code>obl</code>) are not counted. The verb lemma is taken from the ruMorph analysis twice: with the part of speech of the token (<a href="#helpers"><code>get_lemma</code></a>) and as a verb (<code>ruts.utils.lemmatize</code>).</p>
+<p>The split predicates are pairs of a verb and a noun in the order of the words: a light verb (<code>is_light_verb</code>) with a lemma of <code>LIGHT_VERBS</code> (осуществлять, проводить, оказывать and reflexive passives such as проводиться) with a nominal part (<code>is_split_predicate_noun</code>), a noun with a verbal lemma (<code>ruts.utils.is_verbal_noun</code>) or a lemma of <code>SPLIT_PREDICATE_NOUNS</code> (роль, работа, помощь) with a verb <code>verb</code> of its own phrase (оказать помощь, but not получить работу). At most one nominal part is taken per verb in the order of preference <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (only for a reflexive or passive verb, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; prepositional adjuncts and the passive agent (<code>obl:agent</code>, instrumental <code>obl</code>) are not counted.</p>
 <table>
 <thead>
 <tr>
@@ -4114,7 +4114,7 @@ T-единиц на предложение                                  |   
 \]</div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the syntactic statistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>: the syntactic statistics have no scales.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Code</label><label for="__tabbed_8_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4171,7 +4171,7 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 </div>
-<p>The functions work with spaCy tokens: the <code>calc_*</code> and <code>find_*</code> functions and <code>dependency_triples</code> take a sequence of tokens (<code>Doc</code>, <code>Span</code> or a list), the <code>is_*</code> and <code>count_*</code> functions a single token, and <code>calc_edit_distance</code> and <code>calc_multiset_similarity</code> lists of the items of sentences; the words of a sequence are the tokens of <a href="#helpers"><code>is_word</code></a>. The functions of the dependency tree come from the core, those of the Russian constructions are ruTS's own. Relation subtypes (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) are counted by the base relation (<a href="#base_dep"><code>base_dep</code></a>) where noted.</p>
+<p>The words of a sequence of tokens in the functions below are the tokens of <a href="#helpers"><code>is_word</code></a>.</p>
 <h2 id="get_words">Words of a sequence<a class="headerlink" href="#get_words" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
@@ -4202,7 +4202,7 @@ T-единиц на предложение                                  |   
 </table>
 <h2 id="hyphenated-words">Hyphenated words<a class="headerlink" href="#hyphenated-words" title="Permanent link">&para;</a></h2>
 <p>A tokenizer may split a word at its hyphens (<code>well-known</code> into <code>well</code>, <code>-</code>, <code>known</code>), and a parser then hangs every part on its own head. With <code>join_hyphens=True</code> the functions of the tree take a word whose parts <code>anyts.utils.joins_previous</code> joins for one word with its hyphens. A word holding the head of the sentence has no head; the head of another one is that of its part hanging outside it, the nearest to the root (a word rather than a hyphen when equal). The dependents of a word are the words whose head hangs on one of its tokens, each given by that part (or by its first part when it hangs by a hyphen); its subtree is the word and the words that hang on it, directly or through punctuation. So every word has one dependency and is the dependent of one word.</p>
-<p><code>SyntaxStats</code> and the functions of the Russian constructions always join hyphenated words. The functions of the core, <code>is_predicate</code>, <code>count_noun_modifiers</code>, <code>is_passive</code>, <code>has_agent</code> and <code>is_agentless</code> included, take <code>join_hyphens=False</code> by default: they give the values of <code>SyntaxStats</code> with <code>join_hyphens=True</code>.</p>
+<p><code>SyntaxStats</code> and the functions of the Russian constructions always join hyphenated words, and the functions of the core with the parameter <code>join_hyphens</code> give the values of <code>SyntaxStats</code> with <code>join_hyphens=True</code>.</p>
 <h2 id="is_root">Head of a sentence<a class="headerlink" href="#is_root" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
@@ -4553,7 +4553,7 @@ T-единиц на предложение                                  |   
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">get_lemma</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>The lemma of a token in lower case by the ruMorph analysis with the part of speech of the token (<code>ruts.utils.lemmatize</code>), not <code>token.lemma_</code>.</p>
+<p>The lemma of a token in lower case by the ruMorph analysis with the part of speech of the token, not <code>token.lemma_</code>.</p>
 <table>
 <thead>
 <tr>

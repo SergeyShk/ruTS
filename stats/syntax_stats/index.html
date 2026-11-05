@@ -1941,7 +1941,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2965,8 +2965,8 @@
 <li><code>SourceTypeError</code> - источник, который не <code>Doc</code>;</li>
 <li><code>SourceError</code> - источник без разбора зависимостей (отношений и границ предложений), без частей речи, без лемм, если класс их требует, или без слов.</li>
 </ul>
-<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем. Отношения <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> берутся из разбора зависимостей модели spaCy (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), части речи и признаки - из разметки пайплайна: в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово), а клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. ruTS добавляет свои метрики цепочек родительных падежей и деепричастных оборотов. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>SYNTAX_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
-<p>Иванов, Солнышкина и Соловьёв проверили признаки на корпусе школьных учебников: число сочинительных цепочек, причастных оборотов и модификаторов именной группы коррелирует с классом учебника на уровне 0.88-0.93. Карточки метрик называют исходные признаки работы и их коэффициенты корреляции с классом учебника.</p>
+<p>Класс расширяет <code>SyntaxStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> русским слоем. Отношения <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> берутся из разбора зависимостей модели spaCy (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), части речи и признаки - из разметки пайплайна: в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>SYNTAX_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Карточки метрик называют исходные признаки работы Иванова, Солнышкиной и Соловьёва и их корреляцию с классом школьного учебника.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3520,7 +3520,7 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>Средняя длина зависимости растет с длиной предложения, а наибольшая - лучший из древесных признаков на уровне отдельного предложения. Предложения из одного слова в метрики длин не входят.</p>
+<p>Средняя длина зависимости растет с длиной предложения, а наибольшая - лучший из древесных признаков на уровне отдельного предложения.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3580,7 +3580,7 @@ T-единиц на предложение                                  |   
 <div class="arithmatex">\[
 \frac{1}{S} \sum_{s=1}^{S} \frac{\textrm{Количество слов } s}{\textrm{Количество листьев } s}
 \]</div>
-<p>Признаки работы: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) и <code>AVERAGE_PATH</code> (r = 0.84). Распределение слов по числу зависимых - профиль ветвления - дает атрибут <code>c_children</code>.</p>
+<p>Признаки работы: <code>LEAVES_NUMBER</code> (r = 0.84), <code>PATH_NUMBER</code> (r = 0.87) и <code>AVERAGE_PATH</code> (r = 0.84).</p>
 </div>
 <div class="metric-card">
 <h3 id="words_before_root">Слова до вершины предложения<a class="headerlink" href="#words_before_root" title="Permanent link">&para;</a></h3>
@@ -3652,20 +3652,20 @@ T-единиц на предложение                                  |   
 </tr>
 </tbody>
 </table>
-<p>Число цепочек на предложение (<code>SOCHIN_NUMBER</code>, r = 0.93) и их средняя длина (<code>AVERAGE_SOCHIN_LENGTH</code>, r = 0.87) - сильнейшие синтаксические предикторы сложности учебника.</p>
+<p>Признаки работы: <code>SOCHIN_NUMBER</code> (r = 0.93) - число цепочек на предложение, <code>AVERAGE_SOCHIN_LENGTH</code> (r = 0.87) - их средняя длина.</p>
 </div>
 <div class="metric-card">
 <h3 id="clauses">Клаузы<a class="headerlink" href="#clauses" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>clauses_per_sent</code> · <code>mean_clause_len</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово клаузу: вершина предложения или слово со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> и их подтипами (<code>anyts.constants.CLAUSE_DEPS</code>), кроме полных причастий, деепричастий и инфинитивов при существительном («желание уйти»): причастные и деепричастные обороты считаются отдельно, а краткое причастие («дом построен») - сказуемое своей клаузы. Со связью <code>xcomp</code> клаузу возглавляет только инфинитив <code>is_infinitive_clause</code>: личная форма со связью <code>xcomp</code> у русских моделей - ошибка разбора. Инфинитив-подлежащее (<code>csubj</code>) модального слова («нужно уйти», «можно войти», «следует отметить») своей клаузы не образует. Вставная конструкция (<code>parataxis</code>) и однородное сказуемое (связь <code>conj</code> от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» и «думала, что он умен» - клаузы, а вводные слова «например», «конечно», «во-первых», на которые модели spaCy тоже вешают <code>parataxis</code>, - нет.</p>
+<p>Проверяет, возглавляет ли слово клаузу: вершина предложения или слово со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code>, <code>parataxis</code> и их подтипами (<code>anyts.constants.CLAUSE_DEPS</code>), кроме полных причастий и деепричастий, обороты которых считаются отдельно, и инфинитивов при существительном («желание уйти»). Со связью <code>xcomp</code> клаузу возглавляет только инфинитив <code>is_infinitive_clause</code>. Инфинитив-подлежащее (<code>csubj</code>) модального слова («нужно уйти») своей клаузы не образует. Вставная конструкция (<code>parataxis</code>) и однородное сказуемое (связь <code>conj</code> от вершины клаузы) образуют свою клаузу, только если могут быть сказуемым (<a href="#is_predicate"><code>is_predicate</code></a>): «Он сказал: „Уходи“» - клауза, а вводные слова («например»), на которые модели spaCy тоже вешают <code>parataxis</code>, - нет.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли инфинитив со связью <code>xcomp</code> свою клаузу («хочет уйти», «попросил его уйти»): не возглавляет, если образует одну предикацию со своей вершиной (<code>is_infinitive_periphrasis</code>) или стоит в обороте («решивший уйти», «желая уйти»).</p>
+<p>Проверяет, возглавляет ли инфинитив со связью <code>xcomp</code> свою клаузу («хочет уйти»): не возглавляет, если образует одну предикацию со своей вершиной (<code>is_infinitive_periphrasis</code>) или стоит в обороте («решивший уйти», «желая уйти»).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_periphrasis</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из <code>INFINITIVE_PERIPHRASES</code> («может уйти», «должен прийти», «начал читать», «взялся читать», «перестал курить», «пришлось уйти», «стоит отметить», «нужно уйти», «можно войти», «невозможно описать», «пора идти»), краткой формой модального прилагательного из <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти», «рад помочь») или побудительным «давай», «давайте» из <code>HORTATIVE_WORDS</code> без отрицания («давайте играть», но не «не давайте детям играть»).</p>
+<p>Проверяет, образует ли инфинитив одну предикацию со своей вершиной: модальным или фазовым глаголом или модальным словом из <code>INFINITIVE_PERIPHRASES</code> («может уйти», «начал читать», «нужно уйти»), краткой формой модального прилагательного из <code>MODAL_SHORT_ADJECTIVES</code> («готов уйти») или побудительным «давай», «давайте» из <code>HORTATIVE_WORDS</code> без отрицания («давайте играть», но не «не давайте детям играть»).</p>
 <table>
 <thead>
 <tr>
@@ -3690,7 +3690,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>subordinate_clauses_per_sent</code> · <code>p_complex_sents</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (<code>is_clause_head</code>), сказуемое которой не инфинитив, со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> и их подтипами, однородное сказуемое придаточной клаузы, а также клауза <code>conj</code> или <code>parataxis</code> с подчинительным союзом (<code>is_subordinating_mark</code>: «ушел, ибо устал») и однородные ей со своим подлежащим: модели вешают такое придаточное на главное как однородное, а на него - сказуемые главного с общим подлежащим, которые придаточными не считаются. Инфинитив возглавляет инфинитивную клаузу, а не придаточную.</p>
+<p>Проверяет, возглавляет ли слово придаточную клаузу: вершина клаузы (<code>is_clause_head</code>), сказуемое которой не инфинитив, со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code>, <code>csubj</code> и их подтипами, однородное сказуемое придаточной клаузы, а также клауза <code>conj</code> или <code>parataxis</code> с подчинительным союзом (<code>is_subordinating_mark</code>: «ушел, ибо устал») и однородные ей сказуемые со своим подлежащим, но не с общим.</p>
 <table>
 <thead>
 <tr>
@@ -3711,7 +3711,7 @@ T-единиц на предложение                                  |   
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_subordinating_mark</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, подчинительный ли союз (связь <code>mark</code>) при однородном или вставной конструкции: союз из <code>SUBORDINATING_MARKS</code> со словами составного союза («потому что», «так как») или «как» в «после того как», «перед тем как», «с тех пор как», «в то время как». Не подчинительные - союз после «не то» и «всё равно» («не то что», «не то чтоб»), союз при сказуемом, у которого после него есть соотносительное «то» не из вложенного «если..., то» («когда пришел, то...»: модель потеряла придаточное), и «что», «чем» в роли местоимения или частицы: «что ж», «что ль», «что за», «что называется» и в начале реплики, которая кончается вопросом или восклицанием («А что вы сделаете?», «Любопытно стало: что это сделалось?»).</p>
+<p>Проверяет, подчинительный ли союз (связь <code>mark</code>) при однородном или вставной конструкции: союз из <code>SUBORDINATING_MARKS</code> со словами составного союза («потому что») или «как» в «после того как», «с тех пор как». Не подчинительные - союз после «не то» и «всё равно» («не то что»), союз при сказуемом, у которого после него есть соотносительное «то» не из вложенного «если..., то» («когда пришел, то...»), и «что», «чем» в роли местоимения или частицы: «что ж», «что за» и в начале реплики, которая кончается вопросом или восклицанием («А что вы сделаете?»).</p>
 <table>
 <thead>
 <tr>
@@ -3737,7 +3737,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>infinitive_clauses_per_sent</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово инфинитивную клаузу: инфинитив со связью <code>xcomp</code>, который образует свою клаузу (<code>is_infinitive_clause</code>: «хочет уйти», «попросил его уйти»), инфинитив-вершина клаузы со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code> или <code>csubj</code> («пришел, чтобы помочь», «трудно сказать»), а также однородный ему инфинитив. Такая клауза считается отдельно от придаточных, так как грамматики многих языков считают ее частью простого предложения.</p>
+<p>Проверяет, возглавляет ли слово инфинитивную клаузу: инфинитив со связью <code>xcomp</code>, который образует свою клаузу (<code>is_infinitive_clause</code>: «хочет уйти»), инфинитив-вершина клаузы со связью <code>ccomp</code>, <code>advcl</code>, <code>acl</code> или <code>csubj</code> («пришел, чтобы помочь»), а также однородный ему инфинитив.</p>
 <table>
 <thead>
 <tr>
@@ -3835,7 +3835,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>prep_chains_per_sent</code> · <code>max_prep_chain_len</code> · <a href="https://aclanthology.org/2020.lrec-1.883/">Profiling-UD</a></p>
 <!-- core: stats/syntax_stats.md:SyntaxStats-prep_chains 1c1340a -->
 <p>Предложная цепочка - два и более вложенных дополнения с предлогом, каждое из которых висит на предыдущем: <em>на коврике в доме у мэра</em> (длина 3). Звенья - слова крючка <code>is_prep_complement</code>, а цепочки и их длины - те же, что у <code>calc_modifier_chains</code>; цепочка может начинаться с дополнения глагола (<code>obl</code>) или с предложного сказуемого со связкой (<em>был в доме у мэра</em>), но не с однородного члена дополнения (<em>в Мадриде и в доме у моря</em>), а сказуемое определительной придаточной клаузы (<em>дом, который был у реки</em>) звеном цепочки своего существительного не является. Цепочки читают только Universal Dependencies: ClearNLP делает вершиной группы предлог (<code>prep</code>, <code>pobj</code>), поэтому его разборы цепочек не дают.</p>
-<p>Цепочки родительных падежей ruTS (<a href="#genitive_chains"><code>genitive_chains_per_sent</code></a>) считаются отдельно: их звенья - беспредложные определения в родительном падеже («повышение эффективности использования ресурсов»), а звенья предложной цепочки - дополнения с предлогом.</p>
+<p>Беспредложные цепочки родительных падежей ruTS считает отдельно (<a href="#genitive_chains"><code>genitive_chains_per_sent</code></a>).</p>
 </div>
 <div class="metric-card">
 <h3 id="genitive_chains">Цепочки родительных падежей<a class="headerlink" href="#genitive_chains" title="Permanent link">&para;</a></h3>
@@ -3894,7 +3894,7 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>nominal_chains_per_sent</code> · <code>max_nominal_chain_len</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_nominal_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
 </code></pre></div>
-<p>Длины именных цепочек в порядке слов - цепочек <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a>, звенья которых - определения в родительном падеже и дополнения с предлогом в любом порядке: «рост цен на нефть» - цепочка длины 2, «о повышении эффективности работы отдела» - длины 4. Предложная группа - сама звено, как у предложных цепочек, поэтому та же группа при глаголе дает цепочку длиннее, чем в роли подлежащего: «сидел во втором ряду кресел» - длина 2, «второй ряд кресел пустовал» - цепочки нет. Цепочки родительных падежей и предложные цепочки - частные случаи именной: на TextsByGrade больше двух третей именных цепочек смешанные (68 %), почти половина (46 %) не содержит ни одной из них, а с классом текста именные цепочки связаны сильнее (ρ = 0.76 против 0.65 и 0.63).</p>
+<p>Длины именных цепочек в порядке слов - цепочек <a href="#calc_modifier_chains"><code>calc_modifier_chains</code></a>, звенья которых - определения в родительном падеже и дополнения с предлогом в любом порядке: «рост цен на нефть» - цепочка длины 2. Предложная группа - сама звено, поэтому при глаголе та же группа дает цепочку длиннее, чем в роли подлежащего: «сидел во втором ряду кресел» - длина 2, «второй ряд кресел пустовал» - цепочки нет. Цепочки родительных падежей и предложные цепочки - частные случаи именной; на TextsByGrade именные цепочки связаны с классом текста сильнее (ρ = 0.76 против 0.65 и 0.63).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_nominal_chain_link</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
 <p>Проверяет, является ли слово звеном именной цепочки: беспредложным определением в родительном падеже (<a href="#genitive_chains"><code>is_genitive_modifier</code></a>) или дополнением с предлогом (<code>is_prep_complement</code>).</p>
@@ -3950,7 +3950,7 @@ T-единиц на предложение                                  |   
 <p>Обороты, которые возглавляют слова крючка <code>is_participle_clause</code>; длина оборота - число слов в поддереве его вершины (<code>subtree_len</code>).</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_participle_clause</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет, возглавляет ли слово причастный оборот: полное причастие (<a href="#is_finite_verb"><code>is_participle</code></a>) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Краткие причастия («дом построен») - сказуемые, а не определения, и оборотов не образуют. Признаки работы - <code>PRICH_RATE</code> (r = 0.91) и <code>PRICH_V</code>.</p>
+<p>Проверяет, возглавляет ли слово причастный оборот: полное причастие (<a href="#is_finite_verb"><code>is_participle</code></a>) хотя бы с одним зависимым словом, не считая сочинительных и вставных связей. Признаки работы - <code>PRICH_RATE</code> (r = 0.91) и <code>PRICH_V</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4053,7 +4053,7 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_split_predicate_noun</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">verb</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Расщепленные сказуемые - маркер канцелярита - пары глагола и существительного в порядке слов: легкий глагол (<code>is_light_verb</code>) с леммой из <code>LIGHT_VERBS</code> (например: осуществлять, производить, проводить, вести, обеспечивать, оказывать, принимать, иметь и их возвратный пассив проводиться, приниматься, вестись) с именной частью (<code>is_split_predicate_noun</code>) - существительным с отглагольной леммой (<code>ruts.utils.is_verbal_noun</code>) или леммой из <code>SPLIT_PREDICATE_NOUNS</code> (например: роль, работа, помощь, мера) при глаголе своего оборота <code>verb</code> (оказать помощь, принять меры, но не получить работу): осуществлять проверку, оказать помощь, принято решение, проверка проводится. У глагола берется не больше одной именной части в порядке предпочтения <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (только у возвратного или пассивного глагола, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; предложные обстоятельства и агенс пассива (<code>obl:agent</code>, творительный <code>obl</code>) не учитываются. Лемма глагола берется из разбора ruMorph дважды: с частью речи токена (<a href="#helpers"><code>get_lemma</code></a>) и как глагола (<code>ruts.utils.lemmatize</code>).</p>
+<p>Расщепленные сказуемые - пары глагола и существительного в порядке слов: легкий глагол (<code>is_light_verb</code>) с леммой из <code>LIGHT_VERBS</code> (осуществлять, проводить, оказывать и возвратный пассив вроде проводиться) с именной частью (<code>is_split_predicate_noun</code>) - существительным с отглагольной леммой (<code>ruts.utils.is_verbal_noun</code>) или леммой из <code>SPLIT_PREDICATE_NOUNS</code> (роль, работа, помощь) при глаголе своего оборота <code>verb</code> (оказать помощь, но не получить работу). У глагола берется не больше одной именной части в порядке предпочтения <code>obj</code>, <code>nsubj:pass</code>, <code>nsubj</code> (только у возвратного или пассивного глагола, <code>is_reflexive</code>), <code>iobj</code>, <code>nmod</code>, <code>obl</code>; предложные обстоятельства и агенс пассива (<code>obl:agent</code>, творительный <code>obl</code>) не учитываются.</p>
 <table>
 <thead>
 <tr>
@@ -4134,7 +4134,7 @@ T-единиц на предложение                                  |   
 \]</div>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у синтаксических статистик нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>: шкал у синтаксических статистик нет.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4191,7 +4191,7 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 </div>
-<p>Функции работают с токенами spaCy: функции <code>calc_*</code>, <code>find_*</code> и <code>dependency_triples</code> принимают последовательность токенов (<code>Doc</code>, <code>Span</code> или список), функции <code>is_*</code> и <code>count_*</code> - отдельный токен, а <code>calc_edit_distance</code> и <code>calc_multiset_similarity</code> - списки элементов предложений; слова последовательности - токены <a href="#helpers"><code>is_word</code></a>. Функции дерева зависимостей взяты из ядра, функции русских конструкций - собственные функции ruTS. Подтипы отношений (<code>acl:relcl</code>, <code>nsubj:pass</code>, <code>nummod:gov</code>) учитываются по базовому отношению (<a href="#base_dep"><code>base_dep</code></a>) там, где это указано.</p>
+<p>Слова последовательности токенов у функций ниже - токены <a href="#helpers"><code>is_word</code></a>.</p>
 <h2 id="get_words">Слова последовательности<a class="headerlink" href="#get_words" title="Permanent link">&para;</a></h2>
 <!-- core: stats/syntax_stats.md:get_words fb9eece -->
 <div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -4224,7 +4224,7 @@ T-единиц на предложение                                  |   
 <h2 id="hyphenated-words">Дефисные слова<a class="headerlink" href="#hyphenated-words" title="Permanent link">&para;</a></h2>
 <!-- core: stats/syntax_stats.md:hyphenated_words 2598bfe -->
 <p>Токенизатор может разрезать слово по дефисам (<code>во-первых</code> на <code>во</code>, <code>-</code>, <code>первых</code>), и тогда парсер вешает каждую часть на свою вершину. С <code>join_hyphens=True</code> функции дерева считают одним словом вместе с дефисами слово, части которого склеивает <code>anyts.utils.joins_previous</code>. У слова, которое держит вершину предложения, вершины нет; вершина другого слова - вершина его части, которая висит вне слова и ближе всех к корню (при равенстве - слова, а не дефиса). Зависимые слова - слова, чья часть, висящая вне слова, висит на одном из его токенов; каждое представлено этой частью (или своей первой частью, если наружу висит дефис). Поддерево слова - само слово и слова, которые висят на нем прямо или через знаки препинания. Так у каждого слова одна зависимость, и зависит оно от одного слова.</p>
-<p><code>SyntaxStats</code> и функции русских конструкций всегда склеивают дефисные слова. Функции ядра, в том числе <code>is_predicate</code>, <code>count_noun_modifiers</code>, <code>is_passive</code>, <code>has_agent</code> и <code>is_agentless</code>, по умолчанию принимают <code>join_hyphens=False</code>: значения <code>SyntaxStats</code> они дают с <code>join_hyphens=True</code>.</p>
+<p><code>SyntaxStats</code> и функции русских конструкций всегда склеивают дефисные слова, а функции ядра с параметром <code>join_hyphens</code> дают значения <code>SyntaxStats</code> с <code>join_hyphens=True</code>.</p>
 <h2 id="is_root">Вершина предложения<a class="headerlink" href="#is_root" title="Permanent link">&para;</a></h2>
 <!-- core: stats/syntax_stats.md:is_root bffd90b -->
 <div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
@@ -4590,7 +4590,7 @@ T-единиц на предложение                                  |   
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">get_lemma</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>Лемма токена в нижнем регистре по разбору ruMorph с частью речи токена (<code>ruts.utils.lemmatize</code>), а не <code>token.lemma_</code>.</p>
+<p>Лемма токена в нижнем регистре по разбору ruMorph с частью речи токена, а не <code>token.lemma_</code>.</p>
 <table>
 <thead>
 <tr>

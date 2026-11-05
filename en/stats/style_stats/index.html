@@ -2438,7 +2438,7 @@
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
 </ul>
-<p>The class extends the <code>StyleStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> core with the hooks of Russian, given in the cards of the metrics. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> and are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a <code>WordsExtractor</code> with <code>use_lexemes=True</code> and <code>lowercase=True</code>. The given word lists and the phrases are compared without the letter ё (<code>normalize_yo</code>). The words of a <code>Doc</code> lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>STYLE_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The class extends the <code>StyleStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> core with the hooks of Russian of the metric cards; they tag a word by the first <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis, without its neighbours. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> without lemmatization, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a <code>WordsExtractor</code> with <code>use_lexemes=True</code> and <code>lowercase=True</code>. The words are compared with the stop words, the phrases and the keywords ignoring case and the letter ё (<code>normalize_yo</code>). The words of a <code>Doc</code> lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>STYLE_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2606,7 +2606,7 @@
 </tr>
 </tbody>
 </table>
-<p>The cards give the bands that <a href="#methods"><code>describe</code></a> reads, after the norms of <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy and megaindex, in Russian (<code>STYLE_NORMS</code>). The norms are guidelines of the services for website texts of several hundred words: on short texts nausea and spam values are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms.</p>
+<p>The bands of the cards are the norms of <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy and megaindex, in Russian (<code>STYLE_NORMS</code>), which <a href="#methods"><code>describe</code></a> reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms, and <code>describe</code> gives <code>None</code> for them.</p>
 <div class="metric-card">
 <h3 id="classic_nausea">Classic nausea<a class="headerlink" href="#classic_nausea" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>classic_nausea</code> · <a href="https://advego.com/text/seo/">Advego</a></p>
@@ -2696,7 +2696,6 @@
 </tr>
 </tbody>
 </table>
-<p>A <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2721,7 +2720,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">find_nausea_words</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The <code>top_n</code> most frequent words without the stop words, those the academic nausea counts, with their occurrences: the most frequent first, words of equal frequency in the order of the text. A stop word is a word of <code>stopwords</code>, compared ignoring case and the letter ё, or, without the list, a word of <code>is_stopword</code>.</p>
+<p>The <code>top_n</code> most frequent words without the stop words, those the academic nausea counts, with their occurrences: the most frequent first, words of equal frequency in the order of the text.</p>
 <table>
 <thead>
 <tr>
@@ -2752,10 +2751,9 @@
 </tr>
 </tbody>
 </table>
-<p>A <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_stopword</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Whether a word is insignificant for the academic nausea by the first <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis, without its neighbours: conjunctions, particles, prepositions, pronouns, determiners and interjections (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>; the set <code>ruts.constants.STOPWORD_POS</code>), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (<code>PronType</code> Dem, Int, Rel: там, тогда, где, почему; <code>ruts.utils.is_pronominal</code>) and parenthetical words (the <code>Prnt</code> label and <code>PARENTHETICAL_WORDS</code>: кстати, наверно).</p>
+<p>Whether a word is insignificant for the academic nausea: conjunctions, particles, prepositions, pronouns, determiners and interjections (<code>STOPWORD_POS</code>: <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>), predicatives (надо, можно, нет) and бы, demonstrative, interrogative and relative adverbs (там, тогда, где, почему) and the parenthetical words of <code>is_parenthetical</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2776,7 +2774,7 @@
 <p class="metric-meta"><code>water</code> · <a href="https://text.ru/seo">Text.ru</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_water</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The share of the words without content, in percent: the words of <code>stopwords</code>, compared ignoring case and the letter ё, or, without the list, the words of <code>is_water_word</code>. Advego's "water" is a different indicator; it is not implemented here.</p>
+<p>The share of the words without content, in percent: the words of <code>stopwords</code> or, without the list, the words of <code>is_water_word</code>. Advego's "water" is a different indicator; it is not implemented here.</p>
 <table>
 <thead>
 <tr>
@@ -2825,7 +2823,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_water_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Whether a word is "water" by the first ruMorph analysis, without its neighbours, for the water content and the <code>stopwords</code> layer of the highlighting: conjunctions, particles (and бы), pronominal nouns and interjections (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>; the set <code>ruts.constants.WATER_POS</code>), его, её, их and parenthetical words (конечно, например). Prepositions, determiners and predicatives, unlike in <code>is_stopword</code>, are not water.</p>
+<p>Whether a word is "water": conjunctions, particles (and бы), pronominal nouns and interjections (<code>WATER_POS</code>: <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>), его, её, их and the parenthetical words of <code>is_parenthetical</code>. Prepositions, determiners and predicatives, unlike in <code>is_stopword</code>, are not water.</p>
 </div>
 <div class="metric-card">
 <h3 id="spam">Spam score<a class="headerlink" href="#spam" title="Permanent link">&para;</a></h3>
@@ -2910,7 +2908,6 @@
 </tr>
 </tbody>
 </table>
-<p>A <code>top_n</code> that is not an integer of at least one raises <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2935,7 +2932,7 @@
 <p class="metric-meta"><code>verbal_nouns</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_verbal_nouns</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The share of the verbal nouns among the nouns (by the first ruMorph analysis), in percent; <code>nan</code> for a text without nouns. A noun is verbal when its lemma ends with a suffix of <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - the function <code>ruts.utils.is_verbal_noun</code>. The heuristic also catches non-verbal words with the same suffixes (здание). <code>find_verbal_nouns(text)</code> returns the bounds of the words found as slices of the list.</p>
+<p>The share of the verbal nouns among the nouns, in percent; <code>nan</code> for a text without nouns. A noun is verbal when its lemma ends with a suffix of <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) or belongs to <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство). The heuristic also catches non-verbal words with the same suffixes (здание). <code>find_verbal_nouns(text)</code> returns the bounds of the words found as slices of the list.</p>
 <table>
 <thead>
 <tr>
@@ -2960,7 +2957,7 @@
 <p class="metric-meta"><code>compound_prepositions</code> · <code>cliches</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_phrase_density</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">phrases</span><span class="p">)</span>
 </code></pre></div>
-<p>The occurrences of the phrases of a list per 100 words. The phrases are compared ignoring case and the letter ё, and a phrase starting with an infinitive, alone or after «не», is found in any form of its verb, participles and gerunds included («имело место», «доведено до сведения»). <code>expand_phrases(text, phrases)</code> gives these variants from the text, each with its phrase. <code>StyleStats</code> counts this way, over the word forms (<code>forms</code>), the compound prepositions of <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет) and the cliches of <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, иметь место) or of the parameter <code>cliches</code>.</p>
+<p>The occurrences of the phrases of a list per 100 words. A phrase starting with an infinitive (after «не» too) is found in any form of its verb, participles and gerunds included («имело место», «доведено до сведения»); <code>expand_phrases(text, phrases)</code> gives these variants from the text with their phrases. <code>StyleStats</code> counts this way the compound prepositions of <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с) and the cliches <code>cliches</code>, by default of <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, иметь место).</p>
 <table>
 <thead>
 <tr>
@@ -2991,7 +2988,7 @@
 <p class="metric-meta"><code>parentheticals</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_parentheticals</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The number of parenthetical words per 100 words: the phrases of <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) and, outside them, the single words with the label <code>Prnt</code> of the first ruMorph analysis, without its neighbours, and of <code>PARENTHETICAL_WORDS</code> (конечно, например, впрочем, кстати; the function <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> returns the bounds of the words and phrases found as slices of the list.</p>
+<p>The number of parenthetical words per 100 words: the phrases of <code>PARENTHETICALS</code> (таким образом, как правило) and, outside them, the single parenthetical words of <code>is_parenthetical(word)</code> - with the label <code>Prnt</code> (конечно, например) or with a lemma of <code>PARENTHETICAL_WORDS</code> (кстати, наверно). <code>find_parentheticals(text)</code> returns the bounds of the words and phrases found as slices of the list.</p>
 <table>
 <thead>
 <tr>
@@ -3016,7 +3013,7 @@
 <p class="metric-meta"><code>keyword_density(*keywords)</code> · <a href="https://text.ru/seo">Text.ru</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_keyword_density</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span>
 </code></pre></div>
-<p>The occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap. The words and the keywords are compared in lower case without the letter ё, as the stop words and the phrases, and the keywords of a set come in sorted order.</p>
+<p>The occurrences of every keyword per 100 words. A keyword of several words separated by spaces is a sequence of words whose occurrences may overlap; the keywords of a set come in sorted order.</p>
 <table>
 <thead>
 <tr>
@@ -3042,7 +3039,7 @@
 </tbody>
 </table>
 </div>
-<p>The functions check their words: words, stop words, keywords and phrases that are not a list of strings raise <code>SourceTypeError</code>.</p>
+<p>The functions check their arguments: words, stop words, keywords and phrases that are not a list of strings raise <code>SourceTypeError</code>, and a <code>top_n</code> that is not an integer of at least one <code>ParameterError</code>.</p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p><code>keyword_density(*keywords)</code> gives the density of keywords and phrases in percent (<code>calc_keyword_density</code> with <code>normalize</code> of the class), <code>nausea_words()</code> the most frequent significant words of the academic nausea with their occurrences (<code>find_nausea_words</code>).</p>
 <p><code>markers()</code> returns the markers of the officialese found by metric - <code>verbal_nouns</code>, <code>compound_prepositions</code>, <code>parentheticals</code>, <code>cliches</code> - as the forms write them, in the order of the text.</p>
@@ -3066,7 +3063,7 @@
 </div>
 </div>
 </div>
-<p>The other methods - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> - are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; <code>describe</code> reads the SEO metrics by the bands of the norms of their cards and gives <code>None</code> for the markers of the officialese.</p>
+<p>The other methods - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> - are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

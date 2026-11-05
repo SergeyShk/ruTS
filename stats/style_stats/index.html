@@ -1677,7 +1677,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2439,7 +2439,7 @@
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - <code>top_n</code>, который не целое число не меньше единицы.</li>
 </ul>
-<p>Класс расширяет <code>StyleStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> крючками русского языка, о которых говорят карточки метрик. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> и не лемматизирует, поэтому формы одного слова считаются разными словами, как в Advego; для расчета по леммам передайте <code>WordsExtractor</code> с параметрами <code>use_lexemes=True</code> и <code>lowercase=True</code>. Переданные списки слов и словосочетания сравниваются без буквы ё (<code>normalize_yo</code>). Слова <code>Doc</code> берутся без знаков ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>STYLE_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>StyleStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> крючками русского языка из карточек метрик; разметку слова в них дает первый разбор <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> без учета соседних слов. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> без лемматизации, поэтому формы одного слова считаются разными словами, как в Advego; для расчета по леммам передайте <code>WordsExtractor</code> с параметрами <code>use_lexemes=True</code> и <code>lowercase=True</code>. Со стоп-словами, словосочетаниями и ключевыми словами слова сравниваются без учета регистра и буквы ё (<code>normalize_yo</code>). Слова <code>Doc</code> берутся без знаков ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>STYLE_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2610,7 +2610,7 @@
 </tr>
 </tbody>
 </table>
-<p>Карточки дают полосы, по которым читает метод <a href="#methods"><code>describe</code></a>, - нормы <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy и megaindex (<code>STYLE_NORMS</code>). Нормы - ориентиры сервисов для текстов сайтов в несколько сотен слов: на коротких текстах значения тошноты и заспамленности неинформативны, к художественной прозе нормы неприменимы. У маркеров канцелярита норм нет.</p>
+<p>Полосы в карточках - нормы <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy и megaindex (<code>STYLE_NORMS</code>), по которым читает метод <a href="#methods"><code>describe</code></a>. Это ориентиры сервисов для текстов сайтов в несколько сотен слов: на коротких текстах тошнота и заспамленность неинформативны, к художественной прозе нормы неприменимы. У маркеров канцелярита норм нет, и <code>describe</code> возвращает для них <code>None</code>.</p>
 <div class="metric-card">
 <h3 id="classic_nausea">Классическая тошнота<a class="headerlink" href="#classic_nausea" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>classic_nausea</code> · <a href="https://advego.com/text/seo/">Advego</a></p>
@@ -2701,7 +2701,6 @@
 </tr>
 </tbody>
 </table>
-<p><code>top_n</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2726,7 +2725,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">find_nausea_words</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p><code>top_n</code> самых частых слов без стоп-слов, которые считает академическая тошнота, с числом вхождений: сначала самые частые, слова равной частоты - в порядке текста. Стоп-слово - слово из <code>stopwords</code> без учета регистра и буквы ё или, без списка, слово <code>is_stopword</code>.</p>
+<p><code>top_n</code> самых частых слов без стоп-слов, которые считает академическая тошнота, с числом вхождений: сначала самые частые, слова равной частоты - в порядке текста.</p>
 <table>
 <thead>
 <tr>
@@ -2757,10 +2756,9 @@
 </tr>
 </tbody>
 </table>
-<p><code>top_n</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_stopword</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Незначимо ли слово для академической тошноты по первому разбору <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a>, без учета соседних слов: союзы, частицы, предлоги, местоимения, определительные местоимения и междометия (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>; набор <code>ruts.constants.STOPWORD_POS</code>), предикативы (надо, можно, нет) и «бы», указательные, вопросительные и относительные наречия (<code>PronType</code> Dem, Int, Rel: там, тогда, где, почему; <code>ruts.utils.is_pronominal</code>) и вводные слова (помета <code>Prnt</code> и <code>PARENTHETICAL_WORDS</code>: кстати, наверно).</p>
+<p>Незначимо ли слово для академической тошноты: союзы, частицы, предлоги, местоимения, определительные местоимения и междометия (<code>STOPWORD_POS</code>: <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>ADP</code>, <code>PRON</code>, <code>DET</code>, <code>INTJ</code>), предикативы (надо, можно, нет) и «бы», указательные, вопросительные и относительные наречия (там, тогда, где, почему) и вводные слова <code>is_parenthetical</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2781,7 +2779,7 @@
 <p class="metric-meta"><code>water</code> · <a href="https://text.ru/seo">Text.ru</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_water</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Доля слов без содержания в процентах: слов из <code>stopwords</code> без учета регистра и буквы ё или, без списка, слов <code>is_water_word</code>. «Вода» Advego - другой показатель, здесь он не реализован.</p>
+<p>Доля слов без содержания в процентах: слов из <code>stopwords</code> или, без списка, слов <code>is_water_word</code>. «Вода» Advego - другой показатель, здесь он не реализован.</p>
 <table>
 <thead>
 <tr>
@@ -2830,7 +2828,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_water_word</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Является ли слово «водой» по первому разбору ruMorph, без учета соседних слов, - для водности и слоя <code>stopwords</code> подсветки: союзы, частицы (и «бы»), местоимения-существительные и междометия (<code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>; набор <code>ruts.constants.WATER_POS</code>), «его», «её», «их» и вводные слова (конечно, например). Предлоги, определительные местоимения и предикативы, в отличие от <code>is_stopword</code>, водой не считаются.</p>
+<p>Является ли слово «водой»: союзы, частицы (и «бы»), местоимения-существительные и междометия (<code>WATER_POS</code>: <code>CCONJ</code>, <code>SCONJ</code>, <code>PART</code>, <code>PRON</code>, <code>INTJ</code>), «его», «её», «их» и вводные слова <code>is_parenthetical</code>. Предлоги, определительные местоимения и предикативы, в отличие от <code>is_stopword</code>, водой не считаются.</p>
 </div>
 <div class="metric-card">
 <h3 id="spam">Заспамленность<a class="headerlink" href="#spam" title="Permanent link">&para;</a></h3>
@@ -2916,7 +2914,6 @@
 </tr>
 </tbody>
 </table>
-<p><code>top_n</code>, который не целое число не меньше единицы, дает <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2941,7 +2938,7 @@
 <p class="metric-meta"><code>verbal_nouns</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_verbal_nouns</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Доля отглагольных существительных среди существительных (по первому разбору ruMorph) в процентах; <code>nan</code> для текста без существительных. Существительное отглагольное, если его лемма оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство, строительство) - функция <code>ruts.utils.is_verbal_noun</code>. Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). <code>find_verbal_nouns(text)</code> возвращает границы найденных слов как срезы списка.</p>
+<p>Доля отглагольных существительных среди существительных в процентах; <code>nan</code> для текста без существительных. Существительное отглагольное, если его лемма оканчивается на суффикс из <code>VERBAL_NOUN_SUFFIXES</code> (-ние, -нье, -тие, -тье, -ствие, -ция) или входит в <code>VERBAL_NOUN_LEMMAS</code> (производство, руководство). Эвристика захватывает и неотглагольные слова с теми же суффиксами (здание). <code>find_verbal_nouns(text)</code> возвращает границы найденных слов как срезы списка.</p>
 <table>
 <thead>
 <tr>
@@ -2966,7 +2963,7 @@
 <p class="metric-meta"><code>compound_prepositions</code> · <code>cliches</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_phrase_density</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">phrases</span><span class="p">)</span>
 </code></pre></div>
-<p>Число вхождений словосочетаний из списка на 100 слов. Словосочетания сравниваются без учета регистра и буквы ё, а словосочетание, начинающееся с инфинитива, в том числе после «не», находится в любой форме своего глагола, включая причастия и деепричастия («имело место», «доведено до сведения»). Эти варианты из текста, каждый со своим словосочетанием, дает <code>expand_phrases(text, phrases)</code>. Так <code>StyleStats</code> считает по словоформам (<code>forms</code>) производные предлоги из <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с, в рамках, за счет) и штампы из <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, в настоящее время, иметь место) или из параметра <code>cliches</code>.</p>
+<p>Число вхождений словосочетаний из списка на 100 слов. Словосочетание, начинающееся с инфинитива (в том числе после «не»), находится в любой форме своего глагола, включая причастия и деепричастия («имело место», «доведено до сведения»); эти варианты из текста со своими словосочетаниями дает <code>expand_phrases(text, phrases)</code>. Так <code>StyleStats</code> считает производные предлоги из <code>COMPOUND_PREPOSITIONS</code> (в целях, в связи с) и штампы <code>cliches</code>, по умолчанию из <code>OFFICIALESE_CLICHES</code> (на сегодняшний день, иметь место).</p>
 <table>
 <thead>
 <tr>
@@ -2997,7 +2994,7 @@
 <p class="metric-meta"><code>parentheticals</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_parentheticals</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>Число вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило, в частности, кроме того) и вне их одиночные слова с пометой <code>Prnt</code> первого разбора ruMorph, без учета соседних слов, и из <code>PARENTHETICAL_WORDS</code> (конечно, например, впрочем, кстати; функция <code>is_parenthetical(word)</code>). <code>find_parentheticals(text)</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
+<p>Число вводных слов на 100 слов: словосочетания из <code>PARENTHETICALS</code> (таким образом, как правило) и вне их одиночные вводные слова <code>is_parenthetical(word)</code> - с пометой <code>Prnt</code> (конечно, например) или с леммой из <code>PARENTHETICAL_WORDS</code> (кстати, наверно). <code>find_parentheticals(text)</code> возвращает границы найденных слов и словосочетаний как срезы списка.</p>
 <table>
 <thead>
 <tr>
@@ -3022,7 +3019,7 @@
 <p class="metric-meta"><code>keyword_density(*keywords)</code> · <a href="https://text.ru/seo">Text.ru</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_keyword_density</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span>
 </code></pre></div>
-<p>Число вхождений каждого ключевого слова на 100 слов. Ключевое слово из нескольких слов через пробел - последовательность слов, вхождения которой могут пересекаться. Слова и ключевые слова сравниваются в нижнем регистре без буквы ё, как стоп-слова и словосочетания, а ключевые слова из множества идут в отсортированном порядке.</p>
+<p>Число вхождений каждого ключевого слова на 100 слов. Ключевое слово из нескольких слов через пробел - последовательность слов, вхождения которой могут пересекаться; ключевые слова из множества идут в отсортированном порядке.</p>
 <table>
 <thead>
 <tr>
@@ -3048,7 +3045,7 @@
 </tbody>
 </table>
 </div>
-<p>Функции проверяют свои слова: слова, стоп-слова, ключевые слова и словосочетания, которые не список строк, дают <code>SourceTypeError</code>.</p>
+<p>Функции проверяют аргументы: слова, стоп-слова, ключевые слова и словосочетания, которые не список строк, дают <code>SourceTypeError</code>, а <code>top_n</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
 <h2 id="methods">Методы<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <!-- core: stats/style_stats.md:StyleStats-keyword_density 5d9b0bc -->
 <p><code>keyword_density(*keywords)</code> дает плотность ключевых слов и фраз в процентах (<code>calc_keyword_density</code> с <code>normalize</code> класса), <code>nausea_words()</code> - самые частые значимые слова академической тошноты с числом вхождений (<code>find_nausea_words</code>).</p>
@@ -3074,7 +3071,7 @@
 </div>
 </div>
 </div>
-<p>Остальные методы - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; <code>describe</code> читает SEO-метрики по полосам норм из их карточек, а для маркеров канцелярита возвращает <code>None</code>.</p>
+<p>Остальные методы - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

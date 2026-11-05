@@ -1699,7 +1699,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2481,8 +2481,8 @@
 <li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не объект <code>BasicStats</code>, базовые статистики не того класса, экстрактор другого типа, строка или <code>Doc</code> для класса без <code>basic_stats_class</code>;</li>
 <li><code>SourceError</code> - источник без слов или без предложений.</li>
 </ul>
-<p>Класс расширяет <code>UnadaptedReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>UNADAPTED_READABILITY_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
-<p>Формулы не откалиброваны для русского языка. Их значения годятся, чтобы сравнивать русские тексты между собой и с расчетами этих формул в других инструментах, но класса российской школы не дают: на текстах 1-го класса набора <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2. Поэтому шкал прочтения у этих формул нет, <code>describe</code> возвращает для них <code>None</code>, а в <a href="../readability_stats/#consensus_grade">сводный класс</a> они не входят. Формулы с коэффициентами для русского языка - в <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
+<p>Класс расширяет <code>UnadaptedReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
+<p>Класса российской школы формулы не дают (на текстах 1-го класса набора <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2) и в <a href="../readability_stats/#consensus_grade">сводный класс</a> не входят. Формулы с коэффициентами для русского языка - в <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2564,7 +2564,7 @@
 </tr>
 </tbody>
 </table>
-<p>Готовые базовые статистики можно взять у объекта <a href="../readability_stats/"><code>ReadabilityStats</code></a>, чтобы не считать их второй раз:</p>
+<p>Базовые статистики можно взять у объекта <a href="../readability_stats/"><code>ReadabilityStats</code></a>:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2662,7 +2662,7 @@
 </tr>
 </tbody>
 </table>
-<p>Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Функции формул импортируются из <code>ruts.unadapted_readability_stats</code> и считают значение по количествам:</p>
+<p>Здесь ASL - среднее число слов в предложении, ASW - среднее число слогов в слове. Функции формул из <code>ruts.unadapted_readability_stats</code> считают значение по количествам:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

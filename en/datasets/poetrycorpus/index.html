@@ -2241,8 +2241,8 @@
 </tr>
 </tbody>
 </table>
-<p>The most poems are by Vysotsky (539), Pushkin (401), Blok (286), Akhmatova (277) and Fet (251). The corpus is distributed under the <a href="https://github.com/IlyaGusev/PoetryCorpus/blob/master/LICENSE">Apache-2.0</a> license and suits <a href="../../corpus/stylometry/">stylometry</a> - comparing authors and periods, verse studies and model training.</p>
-<p>The corpus file (27 MB) is downloaded from the repository at a pinned commit and verified against a SHA-256 checksum; it is read as a stream, so memory does not depend on the corpus size.</p>
+<p>The most poems are by Vysotsky (539), Pushkin (401), Blok (286), Akhmatova (277) and Fet (251). License - <a href="https://github.com/IlyaGusev/PoetryCorpus/blob/master/LICENSE">Apache-2.0</a>. The corpus suits <a href="../../corpus/stylometry/">stylometry</a>, verse studies and model training.</p>
+<p>The corpus file (27 MB) is downloaded from the repository at a pinned commit and read as a stream.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a <code>data_dir</code> that is neither a string nor a <code>Path</code>.</li>
@@ -2390,7 +2390,7 @@
 </tr>
 </tbody>
 </table>
-<p>Poems without a year do not pass the year filters. An <code>author</code> or a <code>theme</code> that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a <code>limit</code> that is not a non-negative integer raise <code>ParameterError</code>; a corpus that is not downloaded <code>DatasetNotFoundError</code>, a file the records cannot be extracted from <code>DataFileError</code>.</p>
+<p>Poems without a year do not pass the year filters. An <code>author</code> or a <code>theme</code> that is not a string, an earliest year above the latest, a length bound that is not a positive integer, a minimum above the maximum and a <code>limit</code> that is not a non-negative integer raise <code>ParameterError</code>; a corpus that is not downloaded <code>DatasetNotFoundError</code>, a file the records cannot be extracted from <code>DataFileError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

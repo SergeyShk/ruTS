@@ -2198,13 +2198,13 @@
 <h1 id="lyashevskaya-and-sharoff-frequency-dictionary">Lyashevskaya and Sharoff frequency dictionary<a class="headerlink" href="#lyashevskaya-and-sharoff-frequency-dictionary" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">FreqDict</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">DEFAULT_DATASET_DIR</span><span class="p">)</span>
 </code></pre></div>
-<p>The <a href="http://dict.ruslang.ru/freq.php">frequency dictionary of modern Russian</a> by O. N. Lyashevskaya and S. A. Sharoff (Freq2011): 52,138 lemmas of the modern subcorpus of the Russian National Corpus (1950-2007, 92 million tokens) with the ipm frequency, the range R (the number of corpus segments out of 100 in which the lemma occurs), Juilland's D, the number of documents and the part of speech in MyStem tags (<code>s</code>, <code>v</code>, <code>a</code>, <code>adv</code>, <code>s.PROP</code> for proper names).</p>
+<p>The <a href="http://dict.ruslang.ru/freq.php">frequency dictionary of modern Russian</a> by O. N. Lyashevskaya and S. A. Sharoff (Freq2011): 52,138 lemmas of the modern subcorpus of the Russian National Corpus (1950-2007, 92 million tokens) with the ipm frequency, the range R, Juilland's D, the number of documents and the part of speech in MyStem tags (<code>s</code>, <code>v</code>, <code>a</code>, <code>adv</code>, <code>s.PROP</code> for proper names).</p>
 <p>The dictionary is downloaded from <code>dict.ruslang.ru</code> (HTTP only, 493 KB). No license is stated; the authors ask to cite the original source:</p>
 <div class="admonition quote">
 <p class="admonition-title">Citation</p>
 <p>Ляшевская О. Н., Шаров С. А. Частотный словарь современного русского языка (на материалах Национального корпуса русского языка). М.: Азбуковник, 2009.</p>
 </div>
-<p>For lookup, a lemma with several parts of speech (а - conjunction, particle, interjection) is merged: ipm is summed, R, D and the number of documents are taken as maxima; the lemma is lowercased and ё is replaced with е, as in the dictionary. The parsed dictionary is cached by file path and read once per process, so creating <code>FreqDict()</code> for every text is cheap. The dictionary is used by <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a> and as a reference corpus in <a href="../../corpus/keyness/"><code>keyness</code></a> (the dictionary corpus size is <code>CORPUS_SIZE</code>, 92 million tokens).</p>
+<p>For lookup, the entries of one lemma with different parts of speech (а - conjunction, particle, interjection) are merged: ipm is summed, R, D and the number of documents are taken as maxima. The dictionary is read once per process, so creating <code>FreqDict()</code> for every text is cheap. It is used by <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a> and by <a href="../../corpus/keyness/"><code>keyness</code></a> as a reference corpus (of size <code>CORPUS_SIZE</code>).</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a <code>data_dir</code> that is neither a string nor a <code>Path</code>.</li>
@@ -2321,7 +2321,7 @@
 </tbody>
 </table>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p><code>download(force=False)</code> downloads the dictionary from the network and extracts the file. The downloaded archive is verified against a SHA-256 checksum (the file on the site has not changed since 2013); a corrupted or replaced file is deleted with a <code>DownloadError</code>, so that a repeated download is not skipped. If the archive is present but the dictionary file is not, the archive is extracted again.</p>
+<p><code>download(force=False)</code> downloads the dictionary from the network and extracts the file; if the archive is present but the dictionary file is not, the archive is extracted again. The archive is verified against a SHA-256 checksum, a corrupted or replaced file is deleted.</p>
 <table>
 <thead>
 <tr>
@@ -2340,7 +2340,7 @@
 </tr>
 </tbody>
 </table>
-<p>A file that cannot be downloaded raises <code>DownloadError</code> too, an archive that cannot be extracted <code>DataFileError</code>.</p>
+<p>A file that cannot be downloaded or fails the checksum raises <code>DownloadError</code>, an archive that cannot be extracted <code>DataFileError</code>.</p>
 <p><code>check_data()</code> checks that the dictionary file is in place and returns <code>True</code>; a dictionary that is not downloaded raises <code>DatasetNotFoundError</code> with the commands to download it, and so does reading its entries and frequencies.</p>
 <p><code>lookup(lemma)</code> returns the dictionary entry for a lemma in any case, with or without ё, <code>None</code> for a lemma outside the dictionary; <code>ipm(lemma)</code> returns the lemma frequency per million tokens, 0 for a lemma outside the dictionary.</p>
 <table>

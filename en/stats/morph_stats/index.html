@@ -2326,8 +2326,8 @@
 <li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>, an <code>analyze</code> that does not give <code>MorphWord</code> objects;</li>
 <li><code>SourceError</code> - a source without parts of speech or without words.</li>
 </ul>
-<p>In ruTS the data source is a text or a <code>Doc</code> with or without part-of-speech annotation, and the statistics are computed when the object is created. A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, and only a source without words raises <code>SourceError</code>.</p>
-<p>The class extends the <code>MorphStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> core with the Russian analysis of the words and the <a href="#markers">markers of the verb forms</a>. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens, and the parts of a hyphenated word that spaCy splits are joined. The <code>print_stats</code> and <code>print_markers</code> tables and the error messages are in Russian (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>In ruTS the data source is a text or a <code>Doc</code> with or without part-of-speech annotation. A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, and only a source without words raises <code>SourceError</code>.</p>
+<p>The class extends the <code>MorphStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> core with the Russian analysis of the words and the <a href="#markers">markers of the verb forms</a>. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor; the words of a <code>Doc</code> without an extractor are its tokens with the parts of a hyphenated word joined: муж-то, скажи-ка are one word in a <code>Doc</code> and two in a string. The <code>print_stats</code> and <code>print_markers</code> tables and the error messages are in Russian (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2417,9 +2417,9 @@
 </tr>
 </tbody>
 </table>
-<p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words that ruMorph gives by the part of speech of the word.</p>
+<p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words by the ruMorph analysis.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
-<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> object with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, that is, by context (стали is a verb or a noun). For a string the analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence is used (UD parts of speech and features by the conventions of the SynTagRus corpus); for a <code>Doc</code> without annotation the same in the sentences whose words are those of the string, and for the other words, as with a words extractor given, the first analysis of the word without its neighbours.</p>
+<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, for a string from the analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a <code>Doc</code> without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.</p>
 <table>
 <thead>
 <tr>
@@ -2511,16 +2511,16 @@
 </tr>
 </tbody>
 </table>
-<p>For a <code>Doc</code> of the <a href="../../components/#load_pipeline">recommended pipeline</a> the values are those of the string: ruMorph annotates it; only a hyphenated word that anySeg splits into parts (муж-то, скажи-ка) is one word in a <code>Doc</code>. With a plain spaCy model they may differ: both the model and ruMorph resolve homonymy by context, but with different models and partly different conventions - spaCy models give the existential нет the present tense, ruMorph does not.</p>
+<p>For a <code>Doc</code> of the <a href="../../components/#load_pipeline">recommended pipeline</a> the values are those of the string: ruMorph annotates it. With a plain spaCy model they may differ: it resolves homonymy with its own model and in places by other conventions (it gives the existential нет the present tense).</p>
 <div class="metric-card">
 <h3 id="pos">Part of speech<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
-<p>For a string the parts of speech are those of the ruMorph analysis by the conventions of SynTagRus: predicatives (надо, можно, the existential нет) - <code>VERB</code> without a verb form, который - <code>DET</code>, the parenthetical конечно, например - <code>ADV</code>, the auxiliary быть - <code>AUX</code>, proper nouns - <code>PROPN</code>, by word with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun; without context (with a words extractor given) the most frequent analysis is taken.</p>
+<p>The parts of speech of a string: predicatives (надо, the existential нет) - <code>VERB</code> without a verb form, который - <code>DET</code>, parenthetical words (конечно) - <code>ADV</code>, the auxiliary быть - <code>AUX</code>, proper nouns - <code>PROPN</code> with regard to case (Вера, but вера). A homonym is analyzed by its neighbours: стали in Мы стали ждать is a verb, in Нож сделан из стали a noun.</p>
 </div>
 <div class="metric-card">
 <h3 id="derived">Degree, negation and short form<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>degree</code> · <code>polarity</code> · <code>style_variant</code></p>
-<p>For a string these features are those of the ruMorph analysis by the rules of Russian UD. Adjectives (except pronominal ones) and adverbs have a degree: <code>Cmp</code> for the comparative, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature <code>Variant=Short</code>.</p>
+<p>Adjectives (except pronominal ones) and adverbs have a degree: <code>Cmp</code> for the comparative, <code>Sup</code> for the superlative (красивейший), <code>Pos</code> for the others. не, ни and нет carry the negation. Short adjectives and participles (рад, прочитана) carry the short form, the feature <code>Variant=Short</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2548,7 +2548,7 @@
 <div class="metric-card">
 <h3 id="opencorpora">Transitivity and clusivity<a class="headerlink" href="#opencorpora" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>transitivity</code> · <code>involvement</code> · <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a></p>
-<p>OpenCorpora features absent from Russian UD: transitivity (<code>Tran</code>, <code>Intr</code>) and clusivity (<code>In</code> - the speaker is included in the action, <code>Ex</code> - not included). They are taken from the labels of the ruMorph analysis of verbs (for a <code>Doc</code> - of the analysis with the spaCy lemma) and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
+<p>OpenCorpora features absent from Russian UD: transitivity (<code>Tran</code>, <code>Intr</code>) and clusivity (<code>In</code> - the speaker is included in the action, <code>Ex</code> - not included). They are taken from the labels of the ruMorph analysis of verbs and appear in the <code>tags</code> feature string as <code>Subcat</code> and <code>Clusivity</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2709,7 +2709,7 @@
 </div>
 </div>
 </div>
-<p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the morphological statistics have no scales, so it gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<p>The <code>describe</code> method of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core gives <code>None</code> for the statistics of <code>get_stats</code>: the morphological statistics have no scales.</p>
 <p><code>MorphWord</code> is a word of <code>analyze</code>: its text <code>word</code>, its part of speech <code>pos</code> (<code>None</code> when unknown) and its features <code>features</code> - the values of the features of Universal Dependencies by their names (<code>{"Case": "Nom"}</code>), a value of several joined by commas.</p>
 <p>In ruTS <code>MorphWord</code> is imported from <code>ruts.morph_stats</code> too.</p>
 

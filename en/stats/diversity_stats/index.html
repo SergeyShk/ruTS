@@ -3053,7 +3053,7 @@
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a parameter that <code>check_params</code> rejects.</li>
 </ul>
-<p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library. The words of a text are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given one, which for a <code>Doc</code> is applied to its text; without an extractor the words of a <code>Doc</code> come from its tokens without stress marks, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The words are always lower-cased. The <code>print_stats</code> table has Russian headers and the Russian descriptions of the metrics from <code>ruts.constants.DIVERSITY_STATS_DESC</code>, and the error messages are in Russian, from <code>ruts.constants.CORE_MESSAGES</code>.</p>
+<p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library. The words of a text are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the words of a <code>Doc</code> without an extractor are its tokens without stress marks, and a hyphenated word that spaCy splits stays one word (<code>во-первых</code>). The words are lower-cased. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4695,7 +4695,7 @@ A_n = \frac{\sqrt{n + 1} \cdot r - \sqrt{n - 1}}{(\sqrt{n + 1} - 2) \cdot r + \s
 </div>
 </div>
 </div>
-<p>The other methods - <code>to_dataframe</code> and <code>describe</code> - are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the lexical diversity metrics have no scales, so <code>describe</code> gives <code>None</code> for the metrics of <code>get_stats</code>.</p>
+<p>The other methods - <code>to_dataframe</code> and <code>describe</code> - are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the lexical diversity metrics have no scales, and <code>describe</code> gives <code>None</code> for the metrics of <code>get_stats</code>.</p>
 
 
 

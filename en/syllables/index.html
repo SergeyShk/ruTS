@@ -2235,7 +2235,7 @@
 
 
 <h1 id="syllables-and-stress">Syllables and stress<a class="headerlink" href="#syllables-and-stress" title="Permanent link">&para;</a></h1>
-<p>The <code>ruts.syllables</code> module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. The basic, phonetic and verse statistics and the readability formulas are built on these functions. Stress marks and soft hyphens are removed from the word (<code>ruts.utils.strip_marks</code>), and a stress given by a mark (за́мок, замо́к) overrides the dictionary.</p>
+<p>The <code>ruts.syllables</code> module divides a Russian word into syllables and finds its stressed syllable: syllables by rules, the stress by the <a href="../datasets/stressdict/"><code>StressDict</code></a> dictionary. Stress marks and soft hyphens are removed from the word, and a stress given by a mark (за́мок, замо́к) overrides the dictionary.</p>
 <h2 id="syllabify">Syllabification<a class="headerlink" href="#syllabify" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">syllabify</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
@@ -2278,7 +2278,7 @@
 </tr>
 </tbody>
 </table>
-<p>The division is orthographic, by letters, as in school phonetics; a compound word is divided part by part (<code>со-рок-во-ро-вка</code>).</p>
+<p>The division is orthographic, by letters; a compound word is divided part by part (<code>со-рок-во-ро-вка</code>).</p>
 <table>
 <thead>
 <tr>

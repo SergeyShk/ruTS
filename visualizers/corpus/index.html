@@ -1476,7 +1476,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2196,8 +2196,8 @@
 
 
 <h1 id="_1">Корпусные графики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Графики к <a href="../../corpus/keyness/">корпусным мерам</a>: лексическая дисперсия - где в тексте встречается слово, диаграмма ключевых слов по результатам <a href="../../corpus/keyness/"><code>keyness</code></a> и сеть коллокаций по результатам <a href="../../corpus/collocations/"><code>collocations</code></a>. Функции matplotlib принимают оси <code>ax</code> и возвращают <code>Axes</code>: без <code>ax</code> создается новая фигура, с <code>ax</code> график ложится в сетку пользователя; сеть коллокаций строится graphviz и возвращает <code>Graph</code>, как <a href="../word_tree/">дерево слов</a>.</p>
-<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/corpus/">anyTS</a> с русскими подписями графиков matplotlib из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них, а пара строк, переданная <code>keyness_plot</code>, заменяет две подписи легенды, остальные остаются русскими. <code>dispersion_plot</code> снимает знаки ударения со слов и с <code>targets</code>.</p>
+<p>Графики к <a href="../../corpus/keyness/">корпусным мерам</a>: лексическая дисперсия - где в тексте встречается слово, диаграмма ключевых слов по результатам <a href="../../corpus/keyness/"><code>keyness</code></a> и сеть коллокаций по результатам <a href="../../corpus/collocations/"><code>collocations</code></a>. Функции matplotlib принимают оси <code>ax</code>, без них создают новую фигуру и возвращают <code>Axes</code>; сеть коллокаций - <code>Graph</code> библиотеки graphviz, как <a href="../word_tree/">дерево слов</a> - <code>Digraph</code>.</p>
+<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/corpus/">anyTS</a> с русскими подписями графиков matplotlib из <code>ruts.constants.VISUALIZER_LABELS</code> по умолчанию; <code>labels</code> задает подписи поверх них. <code>dispersion_plot</code> снимает знаки ударения со слов и с <code>targets</code>.</p>
 <h2 id="dispersion_plot">Лексическая дисперсия<a class="headerlink" href="#dispersion_plot" title="Permanent link">&para;</a></h2>
 <!-- core: visualizers/corpus.md:dispersion_plot d906327 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">dispersion_plot</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>

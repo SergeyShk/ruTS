@@ -1476,7 +1476,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2247,7 +2247,7 @@
 <h2 id="sentence_lengths">Длины предложений<a class="headerlink" href="#sentence_lengths" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">sentence_lengths</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Длины предложений в словах по порядку: строка делится на предложения экстрактором предложений, каждое предложение - на слова экстрактором слов; предложения <code>Doc</code> берутся из его границ, а слова - из его токенов без знаков препинания и символов, причем части дефисного слова склеиваются (<code>во-первых</code> - одно слово); <code>Doc</code> без границ или с частичными границами (<code>has_sents</code>) считается как его текст, экстракторами. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у <code>sentence_lengths_plot</code>.</p>
+<p>Длины предложений в словах по порядку: строку делят экстракторы предложений и слов, <code>Doc</code> - его границы и токены без знаков препинания и символов, причем части дефисного слова склеиваются (<code>во-первых</code> - одно слово); <code>Doc</code> без границ или с частичными границами (<code>has_sents</code>) считается как его текст. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у <code>sentence_lengths_plot</code>.</p>
 <p>Таблица, множество, словарь, байты, длина, которая не целое число, и экстрактор другого типа дают <code>SourceTypeError</code>, отрицательная длина - <code>SourceError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">

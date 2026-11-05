@@ -1622,7 +1622,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2327,8 +2327,8 @@
 <li><code>SourceTypeError</code> - источник, который не <code>Doc</code>, <code>analyze</code>, который дает не объекты <code>MorphWord</code>;</li>
 <li><code>SourceError</code> - источник без частей речи или без слов.</li>
 </ul>
-<p>В ruTS источник данных - текст или <code>Doc</code> с разметкой частей речи или без нее, а статистики вычисляются при создании объекта. <code>SourceTypeError</code> дают источник, который не строка и не <code>Doc</code>, и экстрактор другого типа, а <code>SourceError</code> - только источник без слов.</p>
-<p>Класс расширяет <code>MorphStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> русским разбором слов и <a href="#markers">маркерами форм глагола</a>. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются. Таблицы <code>print_stats</code> и <code>print_markers</code> и сообщения об ошибках - по-русски (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>В ruTS источник данных - текст или <code>Doc</code> с разметкой частей речи или без нее. <code>SourceTypeError</code> дают источник, который не строка и не <code>Doc</code>, и экстрактор другого типа, а <code>SourceError</code> - только источник без слов.</p>
+<p>Класс расширяет <code>MorphStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> русским разбором слов и <a href="#markers">маркерами форм глагола</a>. Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор; слова <code>Doc</code> без экстрактора - его токены, причем части слова через дефис склеиваются: муж-то, скажи-ка в <code>Doc</code> - одно слово, а в строке - два. Таблицы <code>print_stats</code> и <code>print_markers</code> и сообщения об ошибках - по-русски (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2419,9 +2419,9 @@
 </tr>
 </tbody>
 </table>
-<p>В ruTS есть и атрибут <code>lemmas</code> (<code>tuple[str]</code>) - леммы слов, которые ruMorph дает по части речи слова.</p>
+<p>В ruTS есть и атрибут <code>lemmas</code> (<code>tuple[str]</code>) - леммы слов по разбору ruMorph.</p>
 <h2 id="_4">Статистики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<p>Статистики - часть речи <code>pos</code> и признаки из таблицы ниже (<code>MORPHOLOGY_FEATURES</code> из <code>ruts.constants</code>). Для объекта <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, то есть с учетом контекста (стали - глагол или существительное). Для строки - разбор морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения (части речи и признаки UD по соглашениям корпуса SynTagRus); для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов, как и с заданным экстрактором слов, - первый разбор слова без учета соседних.</p>
+<p>Статистики - часть речи <code>pos</code> и признаки из таблицы ниже (<code>MORPHOLOGY_FEATURES</code> из <code>ruts.constants</code>). Для <code>Doc</code> с разметкой частей речи значения берутся из <code>token.pos_</code> и <code>token.morph</code>, для строки - из разбора морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения (части речи и признаки UD по соглашениям корпуса SynTagRus), для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки. Остальные слова, как и с заданным экстрактором слов, получают первый разбор без учета соседних.</p>
 <table>
 <thead>
 <tr>
@@ -2513,16 +2513,16 @@
 </tr>
 </tbody>
 </table>
-<p>Для <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> значения - те же, что у строки: разметку в нем дает ruMorph; только слово через дефис, которое anySeg делит на части (муж-то, скажи-ка), в <code>Doc</code> одно. У обычной модели spaCy они могут отличаться: омонимию по контексту снимают и модель, и ruMorph, но модели у них разные, как и часть соглашений - у бытийного «нет» модели spaCy ставят настоящее время, ruMorph - нет.</p>
+<p>Для <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> значения - те же, что у строки: разметку в нем дает ruMorph. У обычной модели spaCy они могут отличаться: омонимию она снимает своей моделью и местами по другим соглашениям (бытийному «нет» ставит настоящее время).</p>
 <div class="metric-card">
 <h3 id="pos">Часть речи<a class="headerlink" href="#pos" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>pos</code> · <a href="https://universaldependencies.org/u/pos/">UD</a></p>
-<p>Для строки части речи - разбора ruMorph по соглашениям SynTagRus: предикативы («надо», «можно», бытийное «нет») - <code>VERB</code> без формы глагола, «который» - <code>DET</code>, вводные «конечно», «например» - <code>ADV</code>, вспомогательное «быть» - <code>AUX</code>, имена собственные - <code>PROPN</code>, по слову - с учетом регистра («Вера», но «вера»). Омоним разбирается по соседним словам: «стали» в «Мы стали ждать» - глагол, в «Нож сделан из стали» - существительное; без контекста (с заданным экстрактором слов) - самый частый разбор.</p>
+<p>Части речи строки: предикативы («надо», бытийное «нет») - <code>VERB</code> без формы глагола, «который» - <code>DET</code>, вводные слова («конечно») - <code>ADV</code>, вспомогательное «быть» - <code>AUX</code>, имена собственные - <code>PROPN</code> с учетом регистра («Вера», но «вера»). Омоним разбирается по соседним словам: «стали» в «Мы стали ждать» - глагол, в «Нож сделан из стали» - существительное.</p>
 </div>
 <div class="metric-card">
 <h3 id="derived">Степень сравнения, отрицание и краткая форма<a class="headerlink" href="#derived" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>degree</code> · <code>polarity</code> · <code>style_variant</code></p>
-<p>Для строки эти признаки - разбора ruMorph по правилам русского UD. Степень есть у прилагательных (кроме местоименных) и наречий: <code>Cmp</code> у сравнительной степени, <code>Sup</code> у превосходной («красивейший»), <code>Pos</code> у остальных. Отрицание - у «не», «ни» и «нет». Краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), признак <code>Variant=Short</code>.</p>
+<p>Степень есть у прилагательных (кроме местоименных) и наречий: <code>Cmp</code> у сравнительной степени, <code>Sup</code> у превосходной («красивейший»), <code>Pos</code> у остальных. Отрицание - у «не», «ни» и «нет». Краткая форма - у кратких прилагательных и причастий («рад», «прочитана»), признак <code>Variant=Short</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2550,7 +2550,7 @@
 <div class="metric-card">
 <h3 id="opencorpora">Переходность и совместность<a class="headerlink" href="#opencorpora" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>transitivity</code> · <code>involvement</code> · <a href="http://opencorpora.org/dict.php?act=gram">OpenCorpora</a></p>
-<p>Признаки OpenCorpora, которых в русском UD нет: переходность (<code>Tran</code>, <code>Intr</code>) и совместность (<code>In</code> - говорящий включен в действие, <code>Ex</code> - не включен). Они берутся из помет разбора ruMorph для глаголов (для <code>Doc</code> - разбора с леммой spaCy) и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>.</p>
+<p>Признаки OpenCorpora, которых в русском UD нет: переходность (<code>Tran</code>, <code>Intr</code>) и совместность (<code>In</code> - говорящий включен в действие, <code>Ex</code> - не включен). Они берутся из помет разбора ruMorph для глаголов и в строке признаков <code>tags</code> записываются как <code>Subcat</code> и <code>Clusivity</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2716,7 +2716,7 @@
 </div>
 </div>
 </div>
-<p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у морфологических статистик нет, поэтому он для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Метод <code>describe</code> <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS для статистик <code>get_stats</code> возвращает <code>None</code>: шкал у морфологических статистик нет.</p>
 <!-- core: stats/morph_stats.md:MorphWord 7a841ee -->
 <p><code>MorphWord</code> - слово <code>analyze</code>: его текст <code>word</code>, часть речи <code>pos</code> (<code>None</code>, если она неизвестна) и признаки <code>features</code> - значения признаков Universal Dependencies по их названиям (<code>{"Case": "Nom"}</code>), значение из нескольких - через запятую.</p>
 <p>В ruTS <code>MorphWord</code> импортируется и из <code>ruts.morph_stats</code>.</p>

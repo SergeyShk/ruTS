@@ -1481,7 +1481,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2241,8 +2241,8 @@
 </tr>
 </tbody>
 </table>
-<p>Больше всего стихотворений у Высоцкого (539), Пушкина (401), Блока (286), Ахматовой (277) и Фета (251). Корпус распространяется под лицензией <a href="https://github.com/IlyaGusev/PoetryCorpus/blob/master/LICENSE">Apache-2.0</a> и подходит для <a href="../../corpus/stylometry/">стилометрии</a> - сравнения авторов и эпох, стиховедения и обучения моделей.</p>
-<p>Файл корпуса (27 МБ) загружается из репозитория по закрепленному коммиту и сверяется с контрольной суммой SHA-256; читается потоково, поэтому память не зависит от размера корпуса.</p>
+<p>Больше всего стихотворений у Высоцкого (539), Пушкина (401), Блока (286), Ахматовой (277) и Фета (251). Лицензия - <a href="https://github.com/IlyaGusev/PoetryCorpus/blob/master/LICENSE">Apache-2.0</a>. Корпус подходит для <a href="../../corpus/stylometry/">стилометрии</a>, стиховедения и обучения моделей.</p>
+<p>Файл корпуса (27 МБ) загружается из репозитория по закрепленному коммиту и читается потоково.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - <code>data_dir</code>, который не строка и не <code>Path</code>.</li>
@@ -2390,7 +2390,7 @@
 </tr>
 </tbody>
 </table>
-<p>Стихотворения без года не проходят фильтры по годам. <code>author</code> или <code>theme</code>, который не строка, наименьший год больше наибольшего, граница длины, которая не целое число не меньше единицы, минимум больше максимума и <code>limit</code>, который не целое неотрицательное число, дают <code>ParameterError</code>; незагруженный корпус - <code>DatasetNotFoundError</code>, файл, из которого не удалось извлечь записи, - <code>DataFileError</code>.</p>
+<p>Стихотворения без года не проходят фильтры по годам. <code>author</code> или <code>theme</code>, который не строка, наименьший год больше наибольшего, граница длины, которая не целое положительное число, минимум больше максимума и <code>limit</code>, который не целое неотрицательное число, дают <code>ParameterError</code>; незагруженный корпус - <code>DatasetNotFoundError</code>, файл, из которого не удалось извлечь записи, - <code>DataFileError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

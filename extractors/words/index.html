@@ -1550,7 +1550,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2183,7 +2183,7 @@
 <li><code>ParameterError</code> - <code>ngram_range</code>, который не пара целых чисел или чья нижняя граница меньше единицы или больше верхней, граница длины, которая не целое число, отрицательная граница, минимум больше максимума, переключатель, который не <code>bool</code>;</li>
 <li><code>SourceTypeError</code> - стоп-слова, которые не набор строк.</li>
 </ul>
-<p>Класс расширяет <code>WordsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/words/">anyTS</a> крючками русского языка: токенизатор <code>tokenize(text)</code> - токены сегментатора <a href="https://github.com/SergeyShk/anySeg">anySeg</a> по соглашениям UD (<code>ruts.utils.iter_tokens</code>): тире реплик, приклеенные к словам, - отдельные токены, число с разделителями - один токен, точка сокращения в слово не входит, если без нее это то же слово (<code>руб.</code> в середине предложения и <code>руб</code> в конце - одно слово, а <code>им.</code> остается с точкой, <code>ruts.utils.word_form</code>), лемма <code>lemmatize(word)</code> - разбор морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения (с заданным токенизатором - первый разбор, <code>ruts.utils.parse_word</code>), а шаблон чисел <code>number_pattern</code> подходит и к диапазонам, дробям, порядковым числительным и числам с пробелами между разрядами: <code>2020-2021</code>, <code>5.5</code>, <code>1,5</code>, <code>3-й</code>, <code>90-х</code>, <code>1 250 000</code>. До любого токенизатора из текста снимаются знаки ударения и мягкие переносы, а й и ё из двух символов собираются в одну букву (<code>ruts.utils.strip_marks</code>).</p>
+<p>Класс расширяет <code>WordsExtractor</code> ядра <a href="https://sergeyshk.github.io/anyTS/extractors/words/">anyTS</a> крючками русского языка: токенизатор <code>tokenize(text)</code> - токены сегментатора <a href="https://github.com/SergeyShk/anySeg">anySeg</a> по соглашениям UD, лемма <code>lemmatize(word)</code> - разбор морфологического анализатора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения (с заданным токенизатором - первый разбор), а шаблон чисел <code>number_pattern</code> подходит и к диапазонам, дробям, порядковым числительным и числам с пробелами между разрядами (<code>2020-2021</code>, <code>1,5</code>, <code>3-й</code>, <code>1 250 000</code>). Точка сокращения остается в слове, только если различает слова: <code>руб.</code> и <code>руб</code> - одно слово, а <code>им.</code> остается с точкой. До любого токенизатора из текста снимаются знаки ударения и мягкие переносы.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

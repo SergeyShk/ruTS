@@ -1622,7 +1622,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2328,8 +2328,8 @@
 <li><code>SourceError</code> - источник без слов.</li>
 </ul>
 <p>В ruTS <code>SourceTypeError</code> дают также источник, который не строка и не <code>Doc</code>, и экстрактор другого типа, а метрики по словарю без загруженного словаря - <code>DatasetNotFoundError</code>.</p>
-<p>В отличие от <a href="../diversity_stats/">метрик лексического разнообразия</a>, которые сравнивают слова текста между собой, здесь слова сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>). Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный экстрактор, который для <code>Doc</code> применяется к его тексту; без экстрактора слова <code>Doc</code> берутся из его токенов, а части дефисного слова, разрезанного spaCy, склеиваются. Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> с разметкой частей речи - по части речи токена (<code>ruts.utils.lemmatize</code>), для строки - в контексте предложения, для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>LEXICAL_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Слова текста сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>), а не между собой, как в <a href="../diversity_stats/">метриках лексического разнообразия</a>. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, слова <code>Doc</code> без экстрактора - его токены, а дефисное слово, разрезанное spaCy, остается одним словом. Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> с разметкой частей речи - по части речи токена, для строки - в контексте предложения, для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2538,7 +2538,7 @@
 <div class="metric-card">
 <h3 id="frequency">Частотность по словарю<a class="headerlink" href="#frequency" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>coverage</code> · <code>mean_ipm</code> · <code>mean_ipm_content</code> · <code>mean_log_ipm</code> · <code>mean_log_ipm_content</code> · <code>mean_range</code> · <code>mean_dispersion</code> · <a href="http://dict.ruslang.ru/freq.php">Ляшевская, Шаров</a></p>
-<p>Метрики считаются по статьям <code>FreqDict</code> для ключей слов (<code>keys</code>, <code>entries</code>): средние берутся по словам, найденным в словаре, по всем или только по знаменательным. Средняя частотность в ipm чувствительна к служебным словам (и - 35 000 ipm, в - 31 000), поэтому для сравнения текстов удобнее логарифм частотности или средняя по знаменательным словам. Средняя частотность знаменательных слов <code>mean_ipm_content</code> - признак FREQ2 формулы Соловьёва, Иванова, Солнышкиной 2023 года, значения которого в статье лежат в пределах 200-1000 (<a href="../readability_stats/#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>).</p>
+<p>Метрики считаются по статьям <code>FreqDict</code> для ключей слов (<code>keys</code>, <code>entries</code>). Средняя частотность в ipm чувствительна к служебным словам (и - 35 000 ipm, в - 31 000), поэтому для сравнения текстов удобнее логарифм частотности или средняя по знаменательным словам. <code>mean_ipm_content</code> - признак FREQ2 формулы Соловьёва, Иванова, Солнышкиной (<a href="../readability_stats/#sis_grade_by_freq"><code>sis_grade_by_freq</code></a>).</p>
 <p>Редкие слова опускают покрытие и логарифм частотности и поднимают сюрпризал и долю вне топ-10000:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
@@ -2640,7 +2640,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">load_top_lemmas</span><span class="p">()</span>
 </code></pre></div>
-<p>Весь список из файла <code>ruts/resources/sharoff_top10000.txt</code>: ранг каждой леммы в нижнем регистре без буквы ё, начиная с 1; у дублей остается меньший ранг.</p>
+<p>Весь вшитый список: ранг каждой леммы в нижнем регистре без буквы ё, начиная с 1; у дублей остается меньший ранг.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2686,7 +2686,7 @@
 </div>
 </div>
 </div>
-<p>Остальные методы - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик лексической сложности нет, поэтому <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
+<p>Остальные методы - <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у статистик лексической сложности нет, и <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

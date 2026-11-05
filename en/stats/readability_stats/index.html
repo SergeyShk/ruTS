@@ -2748,8 +2748,7 @@
 <li><code>SourceError</code> - a source without words or sentences;</li>
 <li><code>ParameterError</code> - an unknown preset or one that is not a string.</li>
 </ul>
-<p>The metrics assess readability on the side of the language - the complexity of words and syntactic constructions, not the typographic design of the text. They presume that short sentences are easier to read than long ones, long words make reading harder, and low-frequency and unfamiliar words slow a reader down.</p>
-<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core with the hooks of Russian, given in the cards of the metrics: the <a href="../basic_stats/">basic statistics</a> of ruTS, which take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient <a href="#presets">presets</a>, the Russian formulas, the consensus grade over the formulas of ruTS, the stages of the Russian school, the scales with Russian labels and the reading speeds of Russian readers. The <code>print_stats</code> table and the error messages are in Russian (<code>READABILITY_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core for Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS with the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient <a href="#presets">presets</a>, the Russian formulas, scales and reading speeds. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2818,9 +2817,9 @@
 </tr>
 </tbody>
 </table>
-<p>The object keeps the basic statistics of the text in <code>bs</code>, the name of the preset in <code>preset</code>, read-only, and the coefficients of the preset by formula in <code>coefficients</code>, a copy that can be changed for one object. An object of another preset can reuse the basic statistics: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
+<p>The object keeps the basic statistics of the text in <code>bs</code>, the name of the preset in <code>preset</code> (read-only) and the coefficients of the preset in <code>coefficients</code>, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
 <h2 id="presets">Coefficient presets<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
-<p>The coefficients of the formulas are parameters of their functions, and a preset gives them by formula. The presets differ in the coefficients of the Flesch-Kincaid test and the Flesch index; the coefficients of the Coleman-Liau, SMOG and ARI indices in all presets come from the plainrussian project, since no other adaptations for Russian have been published, and the other formulas do not depend on the preset.</p>
+<p>The presets differ in the coefficients of the Flesch-Kincaid test and the Flesch index; the coefficients of the Coleman-Liau, SMOG and ARI indices in all presets come from the plainrussian project, and the other formulas do not depend on the preset.</p>
 <table>
 <thead>
 <tr>
@@ -2837,7 +2836,7 @@
 <td style="text-align: left;"><a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> (Begtin)</td>
 <td style="text-align: left;">68 grade-labeled texts</td>
 <td style="text-align: left;"><code>0.318·ASL + 14.2·ASW − 30.5</code></td>
-<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Oborneva, variant A, since plainrussian does not derive the Flesch index)</td>
+<td style="text-align: left;"><code>206.835 − 1.3·ASL − 60.1·ASW</code> (Oborneva, variant A)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>fiction</code></td>
@@ -2872,7 +2871,7 @@
 </div>
 </div>
 </div>
-<p>The presets agree with the grade label alike but give different scales, and they do not order texts quite alike. On the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the Spearman correlation of the Flesch-Kincaid test with the grade label for <code>fiction</code> and <code>academic</code> is 0.79, for <code>plainrussian</code> 0.80, while the medians of the test by label group differ:</p>
+<p>On the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset, on which the coefficients of <code>plainrussian</code> were fitted, the presets agree with the grade label alike - the Spearman correlation of the Flesch-Kincaid test is for <code>plainrussian</code> 0.80, for <code>fiction</code> and <code>academic</code> 0.79, - but give different scales, the medians of the test by label group:</p>
 <table>
 <thead>
 <tr>
@@ -2928,9 +2927,9 @@
 </tr>
 </tbody>
 </table>
-<p>On school texts (labels 1-11) the test with the <code>fiction</code> preset is about four grades above the label (median deviation +3.7 against −1.0 for <code>plainrussian</code> and −0.1 for <code>academic</code>), and about five on the first-grade reader <code>SovChLit</code>. Its value should therefore not be read as a grade of the Russian school: for the grade of the reader use <code>plainrussian</code> (the default; its coefficients were fitted on <code>TextsByGrade</code>) or <code>academic</code>, and <code>fiction</code> to compare with works that use Oborneva's coefficients. The consensus grade depends on the preset less, since the Flesch-Kincaid test is only one of its formulas (the median on <code>TextsByGrade</code> is 7.75 for <code>fiction</code> against 6.75 for <code>plainrussian</code>).</p>
+<p>On school texts (labels 1-11) the test with the <code>fiction</code> preset is about four grades above the label (median deviation +3.7 against −1.0 for <code>plainrussian</code> and −0.1 for <code>academic</code>). For the grade of the reader use <code>plainrussian</code> or <code>academic</code>, and <code>fiction</code> to compare with works on Oborneva's coefficients. The consensus grade depends on the preset less: its median on <code>TextsByGrade</code> is 7.75 for <code>fiction</code> and 6.75 for <code>plainrussian</code>.</p>
 <h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
-<p>A formula is computed by the function of its card on the counts of <code>bs</code>; the default coefficients of the functions are adapted for Russian. The core formulas take their coefficients from <code>coefficients</code>, where the preset sets those of the Flesch-Kincaid test, the Flesch index and the Coleman-Liau, SMOG and ARI indices, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall are computed with the coefficients of their functions, and <code>coefficients</code> does not affect them. A formula of counts gives <code>nan</code> when the number of words or of sentences it divides by is zero. The formulas of other languages, with their original coefficients and without a calibration for Russian, are computed by the <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a> class.</p>
+<p>A formula is computed by the function of its card on the counts of <code>bs</code>. The core formulas take their coefficients from <code>coefficients</code>, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall take those of their functions, and <code>coefficients</code> does not affect them. A formula gives <code>nan</code> when the number of words or of sentences it divides by is zero. The formulas of other languages with their original coefficients are computed by the <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a> class.</p>
 <table>
 <thead>
 <tr>
@@ -3042,7 +3041,7 @@
 <div class="arithmatex">\[
 a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot \frac{\textrm{Number of syllables}}{\textrm{Number of words}} - c
 \]</div>
-<p>The default coefficients come from the current version of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project. Other coefficients for Russian are given by the <a href="#presets">presets</a>: Oborneva's (<code>0.5</code>, <code>8.4</code>, <code>15.59</code>) and FKG_SIS of Solovyev, Ivanov and Solnyshkina (<code>0.36</code>, <code>5.76</code>, <code>11.97</code>).</p>
+<p>The default coefficients come from the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project, other ones are given by the <a href="#presets">presets</a>.</p>
 <table>
 <thead>
 <tr>
@@ -3101,7 +3100,7 @@ a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot 
 <div class="arithmatex">\[
 c - a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} - b \cdot \frac{\textrm{Number of syllables}}{\textrm{Number of words}}
 \]</div>
-<p>The default coefficients are Oborneva's (2005/2006, variant A). Variant B of the same works (<code>1.52</code>, <code>65.14</code>, <code>206.836</code>), used by the Kazan group, is given by the <code>academic</code> preset.</p>
+<p>The default coefficients are Oborneva's (2005/2006, variant A), variant B is given by the <code>academic</code> preset.</p>
 <table>
 <thead>
 <tr>
@@ -3259,7 +3258,7 @@ a \cdot \frac{100 \cdot \textrm{Number of letters}}{\textrm{Number of words}} - 
 a \cdot \sqrt{b \cdot \frac{\textrm{Number of polysyllabic words}}{\textrm{Number of sentences}}} + c
 \]</div>
 <p>A number of words or sentences that is not a non-negative integer raises <code>ParameterError</code>.</p>
-<p>The default coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project were fitted for complex words of five or more syllables, so <code>ReadabilityStats</code> passes the number of words of at least 5 syllables to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>) rather than the <code>n_complex_words</code> attribute of the basic statistics.</p>
+<p>The default coefficients of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project were fitted for complex words of five or more syllables: <code>ReadabilityStats</code> passes the number of such words to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>) rather than the <code>n_complex_words</code> of the basic statistics.</p>
 <table>
 <thead>
 <tr>
@@ -3498,7 +3497,7 @@ a \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + b \cdot \f
 </tr>
 </tbody>
 </table>
-<p>These bands are the scale of <code>describe</code>, <code>ruts.constants.LIX_LEVELS</code>; its last band is open above. The <code>n_long_words</code> attribute of the basic statistics of ruTS counts words of six or more letters, so <code>ReadabilityStats</code> passes the number of words of at least 7 letters to the function.</p>
+<p>These bands are the scale of <code>describe</code> (<code>ruts.constants.LIX_LEVELS</code>), the last one open above. <code>ReadabilityStats</code> passes the number of words of at least 7 letters to the function rather than the <code>n_long_words</code> of the basic statistics of ruTS - words of six or more letters.</p>
 </div>
 <div class="metric-card">
 <h3 id="rix">RIX readability index<a class="headerlink" href="#rix" title="Permanent link">&para;</a></h3>
@@ -3595,7 +3594,7 @@ a \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + b \cdot \f
 </tr>
 </tbody>
 </table>
-<p>As for LIX, <code>ReadabilityStats</code> passes the number of words of at least 7 letters to the function. The bands of <code>describe</code> are the grades of Anderson as the grades of the Russian school (<code>ruts.constants.RIX_LEVELS</code>); it has no 12th grade, and its band joins the 11th:</p>
+<p>As for LIX, <code>ReadabilityStats</code> passes the number of words of at least 7 letters to the function. The bands of <code>describe</code> (<code>ruts.constants.RIX_LEVELS</code>) are the grades of Anderson, the band of the 12th grade joining the 11th:</p>
 <table>
 <thead>
 <tr>
@@ -3660,7 +3659,7 @@ a \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + b \cdot \f
 <p class="metric-meta"><code>sis_grade</code> · <code>sis_grade_by_stage(stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Solovyev, Ivanov, Solnyshkina, 2023</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">17.5</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.56</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.45</span><span class="p">)</span>
 </code></pre></div>
-<p>The school grade needed to read a Russian academic text, by the mean sentence length in words and the mean word length in letters, not in syllables as in the Flesch-Kincaid test. The formula was derived on the Russian Academic Corpus of 154 textbooks for grades 2-11 (5.7 million tokens); the mean error is about one grade. The authors computed the mean sentence length over spaCy tokens, which include punctuation, so the ruTS computation over words gives a slightly lower grade.</p>
+<p>The school grade needed to read a Russian academic text, by the mean sentence length in words and the mean word length in letters. The formula was derived on the Russian Academic Corpus of 154 textbooks for grades 2-11 (5.7 million tokens); the mean error is about one grade. The authors counted the sentence length in spaCy tokens with punctuation, so the ruTS computation over words gives a slightly lower grade.</p>
 <div class="arithmatex">\[
 a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}}
 \]</div>
@@ -3712,7 +3711,7 @@ a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \c
 </tr>
 </tbody>
 </table>
-<p>The default coefficients are those of the general formula. The coefficients the authors give for the education stages are in the <code>ruts.constants.SIS_GRADE_STAGES</code> table, taken by the <a href="#sis_grade_by_stage"><code>sis_grade_by_stage</code></a> method:</p>
+<p>The default coefficients are those of the general formula, the coefficients of the education stages are in <code>ruts.constants.SIS_GRADE_STAGES</code>, taken by the <a href="#sis_grade_by_stage"><code>sis_grade_by_stage</code></a> method:</p>
 <table>
 <thead>
 <tr>
@@ -3749,7 +3748,7 @@ a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \c
 <p class="metric-meta"><code>sis_grade_by_freq(mean_ipm, stage)</code> · <a href="http://ftp.pdmi.ras.ru/pub/publicat/znsl/v529/p140.pdf">Solovyev, Ivanov, Solnyshkina, 2023</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_sis_grade_freq</span><span class="p">(</span><span class="n">n_letters</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">mean_ipm</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">14.46</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.58</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">2.15</span><span class="p">,</span> <span class="n">d</span><span class="o">=-</span><span class="mf">0.0026</span><span class="p">)</span>
 </code></pre></div>
-<p>The variant of the general formula with a fourth feature FREQ2 - the mean frequency of the words of the text by the Lyashevskaya and Sharoff dictionary (table 7 of the paper): the more frequent the words, the lower the grade. In the paper FREQ2 values lie within 200-1000, which corresponds to the mean frequency of content words (<code>LexicalStats.mean_ipm_content</code>); the mean over all words including conjunctions and prepositions is several times larger. On the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the formula with frequency gives the same correlation with the grade as the formula without it (Spearman's ρ 0.76 against 0.78), as in the paper.</p>
+<p>The variant of the general formula with a fourth feature FREQ2 - the mean frequency of the words of the text by the Lyashevskaya and Sharoff dictionary (table 7 of the paper): the more frequent the words, the lower the grade. The FREQ2 values of the paper (200-1000) correspond to the frequency of content words (<code>LexicalStats.mean_ipm_content</code>). On the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the formula with frequency correlates with the grade no better than the formula without it (Spearman's ρ 0.76 against 0.78).</p>
 <div class="arithmatex">\[
 a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \cdot \frac{\textrm{Number of letters}}{\textrm{Number of words}} + d \cdot \textrm{FREQ2}
 \]</div>
@@ -3813,7 +3812,7 @@ a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \c
 </tr>
 </tbody>
 </table>
-<p>The default coefficients are those of the general formula. The coefficients of the education stages from the same table are in the <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code> table, taken by the <code>stage</code> parameter of the <a href="#sis_grade_by_freq"><code>sis_grade_by_freq</code></a> method:</p>
+<p>The default coefficients are those of the general formula, the coefficients of the stages are in <code>ruts.constants.SIS_GRADE_FREQ_STAGES</code>, taken by the <code>stage</code> parameter of the <a href="#sis_grade_by_freq"><code>sis_grade_by_freq</code></a> method:</p>
 <table>
 <thead>
 <tr>
@@ -3872,7 +3871,7 @@ a + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + c \c
 <p class="metric-meta"><code>matskovsky_index</code> · Matskovsky, 1976</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_matskovsky_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.62</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.123</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.051</span><span class="p">)</span>
 </code></pre></div>
-<p>The first readability formula for Russian, derived by the method of successive intervals - by the mean sentence length and the percentage of complex words. A complex word here has more than three syllables, so <code>ReadabilityStats</code> passes the number of words of at least 4 syllables to the function.</p>
+<p>The first readability formula for Russian - by the mean sentence length and the percentage of complex words; <code>ReadabilityStats</code> passes the number of words of at least 4 syllables to the function.</p>
 <div class="arithmatex">\[
 a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot \frac{100 \cdot \textrm{Number of complex words}}{\textrm{Number of words}} + c
 \]</div>
@@ -3930,7 +3929,7 @@ a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot 
 <p class="metric-meta"><code>tuldava</code> · Tuldava, 1975</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_tuldava</span><span class="p">(</span><span class="n">n_syllables</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">)</span>
 </code></pre></div>
-<p>The text difficulty formula of Tuldava ("Ob izmerenii trudnosti tekstov" - "On measuring the difficulty of texts", Uchenye zapiski Tartuskogo universiteta, issue 345, 1975, pp. 102-120) as given by <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev (2018)</a>: the mean number of syllables per word times the decimal logarithm of the mean sentence length in words; there are no coefficients to fit. The formula has no scale and no conversion to a grade: it does not enter the consensus grade, and <code>describe</code> gives <code>None</code>. koRpus computes it with the natural logarithm.</p>
+<p>The text difficulty formula of Tuldava ("Ob izmerenii trudnosti tekstov" - "On measuring the difficulty of texts", Uchenye zapiski Tartuskogo universiteta, issue 345, 1975, pp. 102-120) as given by <a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev (2018)</a>: the mean number of syllables per word times the decimal logarithm of the mean sentence length in words; there are no coefficients to fit. The formula has no scale: it does not enter the consensus grade, and <code>describe</code> gives <code>None</code>.</p>
 <div class="arithmatex">\[
 \frac{\textrm{Number of syllables}}{\textrm{Number of words}} \cdot \lg \frac{\textrm{Number of words}}{\textrm{Number of sentences}}
 \]</div>
@@ -3988,7 +3987,7 @@ a \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}} + b \cdot 
 <p class="metric-meta"><code>dale_chall_index</code> · <a href="https://en.wikipedia.org/wiki/Dale–Chall_readability_formula">Dale and Chall, 1948</a></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_dale_chall_index</span><span class="p">(</span><span class="n">n_complex</span><span class="p">,</span> <span class="n">n_words</span><span class="p">,</span> <span class="n">n_sents</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.552</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.273</span><span class="p">)</span>
 </code></pre></div>
-<p>The years of schooling in the US system needed to understand the text, by the percentage of complex words and the mean sentence length. The original formula takes the share of unfamiliar words by a list of 3000 familiar ones; no such free list exists for Russian, so the adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project with the share of complex words is applied. A complex word has five or more syllables, so <code>ReadabilityStats</code> passes the number of words of at least 5 syllables to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). The original coefficients of the formula are <code>0.1579</code> and <code>0.0496</code>.</p>
+<p>The years of schooling needed to understand the text, by the percentage of complex words and the mean sentence length. This is the adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project: the share of unfamiliar words by a list of 3000 familiar ones is replaced by the share of words of five or more syllables, and <code>ReadabilityStats</code> passes their number to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). The original coefficients of the formula are <code>0.1579</code> and <code>0.0496</code>.</p>
 <div class="arithmatex">\[
 a \cdot \frac{100 \cdot \textrm{Number of complex words}}{\textrm{Number of words}} + b \cdot \frac{\textrm{Number of words}}{\textrm{Number of sentences}}
 \]</div>
@@ -4044,7 +4043,7 @@ a \cdot \frac{100 \cdot \textrm{Number of complex words}}{\textrm{Number of word
 <div class="arithmatex">\[
 a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \frac{100 \cdot \textrm{Number of complex words}}{\textrm{Number of words}}\right)
 \]</div>
-<p>The index is used in the adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project: a complex word has five or more syllables, so <code>ReadabilityStats</code> passes the number of words of at least 5 syllables to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>). SEO services additionally multiply the result by <code>0.78</code>; no justification for this multiplier has been published.</p>
+<p>In the adaptation of the <a href="https://github.com/infoculture/plainrussian">Plain Russian Language</a> project a complex word has five or more syllables: <code>ReadabilityStats</code> passes the number of such words to the function (<code>ruts.constants.SMOG_COMPLEX_SYL_FACTOR</code>).</p>
 <table>
 <thead>
 <tr>
@@ -4086,7 +4085,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <h3 id="consensus_grade">Consensus grade<a class="headerlink" href="#consensus_grade" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>consensus_grade</code></p>
 <p>The <code>consensus_grade</code> attribute is the median of the values of the grade formulas (<code>grade_stats</code>) rounded half up, together with the reading ease in years of schooling (<code>reading_ease_to_grade</code>), not rounded. A library aligns the bounds of <code>reading_ease_grades</code>, and of each scale of <code>preset_reading_ease_grades</code>, with its scale of the reading ease, so that the consensus grade and <code>describe</code> read the value alike.</p>
-<p>The grade formulas of ruTS (<code>ruts.constants.READABILITY_GRADE_STATS</code>) are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula, and the Flesch index is converted to a grade by the bands of its reading scale, so an index of 45 reads as university both in <code>describe</code> and in the consensus grade. The consensus grade is an analog of <code>text_standard</code> of textstat, which takes the mode instead of the median; the median is more robust to the outliers of individual formulas.</p>
+<p>The grade formulas of ruTS (<code>ruts.constants.READABILITY_GRADE_STATS</code>) are the Flesch-Kincaid test, the Coleman-Liau, SMOG, ARI, Dale-Chall and Gunning indices and the Solovyev, Ivanov and Solnyshkina formula.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_consensus_grade</span><span class="p">(</span><span class="n">grades</span><span class="p">,</span> <span class="n">flesch_reading_easy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_grade</span><span class="o">=</span><span class="n">flesch_reading_easy_to_grade</span><span class="p">)</span>
 </code></pre></div>
 <p>The median of the values of the grade formulas rounded half up, together with the reading ease in years of schooling by <code>to_grade</code>, not rounded - so a band of 8.5 votes for 8.5.</p>
@@ -4127,7 +4126,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <div class="signature highlight"><pre><span></span><code><span class="n">flesch_reading_easy_to_grade</span><span class="p">(</span><span class="n">flesch_reading_easy</span><span class="p">,</span> <span class="n">grades</span><span class="o">=</span><span class="p">((</span><span class="mi">90</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">8.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">14</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">17</span><span class="p">)),</span> <span class="n">below</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
 </code></pre></div>
 <p>Conversion of the Flesch reading ease into years of schooling for the consensus grade: the grade of the first band whose lower bound the value reaches, or <code>below</code> under the last bound; values above 100 belong to the first band. A reading ease or a <code>below</code> that is not a finite number raises <code>ParameterError</code>, and so do <code>grades</code> that are empty or not pairs of finite numbers with descending bounds.</p>
-<p>The default bands of ruTS are the bands of the reading scale of the index (<code>READING_EASE_LEVELS</code>), so that the consensus grade and <code>describe</code> read a value alike: 8.5 and 10.5 are the middles of the bands "8th and 9th grade" and "10th and 11th grade", 14 is "university" and 17 is "university graduate", that is university years 1-3 and 4-6 by the <a href="#grade_to_age">table of stages</a>. These bands are <code>ruts.constants.READING_EASE_GRADES</code>, the <code>reading_ease_grades</code> attribute of <code>ReadabilityStats</code>:</p>
+<p>The default bands of ruTS (<code>ruts.constants.READING_EASE_GRADES</code>, the <code>reading_ease_grades</code> attribute) follow the reading scale of the index; 14 and 17 are university years 1-3 and 4-6 by the <a href="#grade_to_age">table of stages</a>:</p>
 <table>
 <thead>
 <tr>
@@ -4207,7 +4206,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 \frac{\textrm{Number of words}}{\textrm{wpm}}
 \]</div>
 <p>A number of words that is not a non-negative integer and a speed that is not a positive number raise <code>ParameterError</code>.</p>
-<p>The silent reading norm of an adult is 120-180 words per minute (Kuznetsov and Khromov, 1991); the upper bound is the default. The norms are in the <code>ruts.constants.READING_SPEED_NORMS</code> table, the reading-aloud norms of primary school by the Russian federal standard among them:</p>
+<p>The default speed is the upper bound of the silent reading norm of an adult. The norms are in <code>ruts.constants.READING_SPEED_NORMS</code>, for primary school the reading-aloud norms of the Russian federal standard:</p>
 <table>
 <thead>
 <tr>
@@ -4277,7 +4276,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 100 \cdot \frac{\bar{x}}{s^2}, \quad s^2 = \frac{\sum (x_i - \bar{x})^2}{n - 1}
 \]</div>
 <p>where <span class="arithmatex">\(x_i\)</span> is the number of letters of a word and <span class="arithmatex">\(n\)</span> the number of words.</p>
-<p>The index was fitted on Spanish texts, so it stays outside the <code>get_stats</code> of ruTS, though the object has the <code>mu_index</code> property. Its function is <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/#mu_index"><code>calc_mu_index</code></a> of the anyTS core.</p>
+<p>The index was fitted on Spanish texts and stays outside the <code>get_stats</code> of ruTS, but is available as the <code>mu_index</code> property; its function is <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/#mu_index"><code>calc_mu_index</code></a> of the anyTS core.</p>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p><code>describe_grade(stat)</code> returns the school stage and reader age for the consensus grade or the grade formula <code>stat</code>, <code>consensus_grade</code> by default; another metric raises <code>ParameterError</code>.</p>
@@ -4285,9 +4284,9 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <p><code>describe(stat)</code> returns the reading of any metric by its scale: for the consensus grade and a grade formula the school stage and reader age (<code>describe_grade</code>), for a metric with a scale of bands (<code>level_scale</code>) its band, for another metric of <code>grade_scales</code> the stage and age of the years of schooling its scale gives, and <code>None</code> for a metric without a scale or with an undefined value (nan). A name that is neither in <code>stats_desc</code> nor a public property of the class raises <code>UnknownStatError</code>.</p>
 <p><code>reading_time_by_speed(wpm)</code> returns the reading time of the text in minutes at the speed <code>wpm</code>, words per minute; a speed that is not a positive number raises <code>ParameterError</code>.</p>
 <p><code>reading_time_by_norm(norm)</code> returns the reading times of the text in minutes at the speeds of the norm <code>norm</code> of <code>reading_speed_norms</code>, in their order; an unknown norm raises <code>ParameterError</code>.</p>
-<p>In ruTS the norms come from the <code>ruts.constants.READING_SPEED_NORMS</code> table, and the method returns the reading times at the upper and at the lower bound of the norm.</p>
+<p>In ruTS the method returns the reading times at the upper and the lower bound of the norm of <code>ruts.constants.READING_SPEED_NORMS</code>.</p>
 <p id="sis_grade_by_stage"><code>sis_grade_by_stage(stage)</code> returns the value of the <a href="#sis_grade">Solovyev, Ivanov and Solnyshkina formula</a> with the coefficients of the education stage <code>stage</code>: <code>2-4</code>, <code>5-7</code> or <code>8-11</code>; an unknown stage raises <code>ParameterError</code>.</p>
-<p id="sis_grade_by_freq"><code>sis_grade_by_freq(mean_ipm, stage=None)</code> returns the value of the <a href="#calc_sis_grade_freq">formula with frequency</a> at the mean frequency of content words <code>mean_ipm</code> - the <a href="../lexical_stats/#frequency"><code>mean_ipm_content</code></a> attribute of <code>LexicalStats</code> - with the coefficients of the stage <code>stage</code> or, without it, of the general formula. A negative or infinite frequency, a frequency that is not a number and an unknown stage raise <code>ParameterError</code>, and <code>nan</code> gives <code>nan</code>.</p>
+<p id="sis_grade_by_freq"><code>sis_grade_by_freq(mean_ipm, stage=None)</code> returns the value of the <a href="#calc_sis_grade_freq">formula with frequency</a> at the mean frequency of content words <code>mean_ipm</code> - the <a href="../lexical_stats/#frequency"><code>mean_ipm_content</code></a> attribute of <code>LexicalStats</code> - with the coefficients of the stage <code>stage</code> or, without it, of the general formula. A negative, infinite or non-numeric frequency and an unknown stage raise <code>ParameterError</code>, and <code>nan</code> gives <code>nan</code>.</p>
 <p><code>get_stats()</code> returns a dictionary of the readability metrics of <code>stats_desc</code>.</p>
 <p><code>print_stats()</code> prints a table of the readability metrics with their descriptions from <code>stats_desc</code> under the headers of <code>stats_headers</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
@@ -4329,7 +4328,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </div>
 <p>The <code>to_dataframe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core.</p>
 <h2 id="scales">Scales<a class="headerlink" href="#scales" title="Permanent link">&para;</a></h2>
-<p>The <code>describe_level</code> method reads the Flesch index, LIX and RIX by the scales of bands of their cards (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), and <code>describe</code> reads any metric: these three by the same scales, the grade formulas and the consensus grade by the education stages of <a href="#grade_to_age"><code>grade_to_age</code></a>; for a metric without a scale it gives <code>None</code>.</p>
+<p>The scales of bands of the Flesch index, LIX and RIX are given in their cards (<code>ruts.constants.READABILITY_LEVEL_SCALES</code>), and <code>describe</code> reads the grade formulas and the consensus grade by the education stages of <a href="#grade_to_age"><code>grade_to_age</code></a>.</p>
 <h3 id="grade_to_age">School stage and age<a class="headerlink" href="#grade_to_age" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">grade_to_age</span><span class="p">(</span><span class="n">grade</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'1-3-й класс'</span><span class="p">,</span> <span class="s1">'6-8 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">'4-6-й класс'</span><span class="p">,</span> <span class="s1">'9-11 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">'7-9-й класс'</span><span class="p">,</span> <span class="s1">'12-14 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">'10-11-й класс'</span><span class="p">,</span> <span class="s1">'15-16 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s1">'1-3-й курс вуза'</span><span class="p">,</span> <span class="s1">'17-19 лет'</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">'4-6-й курс вуза'</span><span class="p">,</span> <span class="s1">'20-22 года'</span><span class="p">)),</span> <span class="n">above</span><span class="o">=</span><span class="p">(</span><span class="s1">'аспирантура'</span><span class="p">,</span> <span class="s1">'старше 22 лет'</span><span class="p">))</span>
 </code></pre></div>
@@ -4440,7 +4439,6 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tbody>
 </table>
 <p>A value that is not a finite number and a scale that is empty, not a list of pairs of a finite lower bound and a band or with bounds that do not descend raise <code>ParameterError</code>.</p>
-<p>The scales of ruTS are <code>ruts.constants.READING_EASE_LEVELS</code>, <code>LIX_LEVELS</code> and <code>RIX_LEVELS</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -4458,7 +4456,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </div>
 </div>
 <h2 id="level_norms">Stage norms<a class="headerlink" href="#level_norms" title="Permanent link">&para;</a></h2>
-<p>The consensus grade tells which stage a text is for, but not what a text of that stage is like. For this the <code>ruts.constants.LEVEL_NORMS</code> table holds the norms of the features of the stages: the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of texts of at least 100 words labeled with the stage in the <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> and <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> datasets. School stages with at least 10 such texts have norms:</p>
+<p>The <code>ruts.constants.LEVEL_NORMS</code> table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of texts of at least 100 words labeled with the stage in the <a href="../../datasets/sovchlit/"><code>SovChLit</code></a> and <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> datasets. School stages with at least 10 such texts have norms:</p>
 <table>
 <thead>
 <tr>
@@ -4497,11 +4495,11 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 </tr>
 </tbody>
 </table>
-<p>The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. Grades 7-9 have seven texts in the datasets, and the university labels of <code>TextsByGrade</code> mark a Wikipedia article, a newspaper article and regulatory documents, not texts written for students of a given year, so these stages have no norms. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.</p>
+<p>The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.</p>
 <h3 id="level_features">Features of a text<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">level_features</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 </code></pre></div>
-<p>The features of a text that the stage norms cover: words per sentence, letters per word (of the words the grade formulas count), the share of words of five or more syllables (the complex words of SMOG, Gunning fog and Dale-Chall) and the lexical diversity MTLD. They are computed the same way as for the norms, so they can be compared with them; the features of a <code>Doc</code> are computed from its text, not from the sentence boundaries of spaCy. A source that is neither a string nor a <code>Doc</code> raises <code>SourceTypeError</code>, a source without words or sentences <code>SourceError</code>.</p>
+<p>The features of a text that the stage norms cover - words per sentence, letters per word, the share of words of five or more syllables and MTLD - computed the same way as the norms. The features of a <code>Doc</code> are computed from its text, not from the sentence boundaries of spaCy. A source that is neither a string nor a <code>Doc</code> raises <code>SourceTypeError</code>, a source without words or sentences <code>SourceError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4523,7 +4521,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <h3 id="describe_level_norm">Norms and the reading of a feature<a class="headerlink" href="#describe_level_norm" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">level_norms</span><span class="p">(</span><span class="n">grade</span><span class="p">)</span>
 </code></pre></div>
-<p>The norms of the features of the stage a grade belongs to - the usual range (quartiles) of each feature of <code>level_features</code> - or <code>None</code> for a stage without norms. A grade belongs to a stage as in <a href="#grade_to_age"><code>grade_to_age</code></a>: it is rounded half up, and a grade below 1 belongs to the first stage. A grade that is not a finite number raises <code>ParameterError</code>.</p>
+<p>The norms (quartiles) of the features of <code>level_features</code> of the education stage a grade belongs to (as in <a href="#grade_to_age"><code>grade_to_age</code></a>), or <code>None</code> for a stage without norms. A grade that is not a finite number raises <code>ParameterError</code>.</p>
 <table>
 <thead>
 <tr>

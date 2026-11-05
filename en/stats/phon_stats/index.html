@@ -2415,7 +2415,7 @@
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a window that is not an integer of at least 2.</li>
 </ul>
-<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress; the iotated е, ё, ю, я after a vowel make no hiatus, and a word is divided into syllables by the rising sonority rule (Avanesov) of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>PHON_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>). The computation time grows linearly with the length of the text.</p>
+<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>PHON_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <table>
 <thead>
 <tr>
@@ -2515,7 +2515,7 @@
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">check_params</span><span class="p">(</span><span class="n">window_len</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks the window of the alliteration and the assonance apart from the class: one that is not an integer of at least 2 raises <code>ParameterError</code>.</p>
+<p>Checks the window of the alliteration and the assonance apart from the class, with the same <code>ParameterError</code>.</p>
 <h2 id="attributes">Attributes<a class="headerlink" href="#attributes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2690,7 +2690,7 @@
 <p class="metric-meta"><code>p_heavy_clusters</code> · <code>c_clusters</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_consonant_clusters</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The distribution of the consonant clusters of the words by length. A cluster is a run of consonants inside a word, a single consonant between vowels or at the edge of a word included; ь and ъ do not break a cluster.</p>
+<p>The distribution of the consonant clusters of the words by length. A cluster is a run of consonants inside a word, a single consonant between vowels or at the edge of a word included.</p>
 <table>
 <thead>
 <tr>
@@ -2744,7 +2744,7 @@
 \]</div>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_cv_entropy</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
-<p>The entropy of the CV patterns of a list of words: the higher the value, the more varied the phonetic shape of the words. Words without vowels and consonants (numbers, Latin script) are left out, and without other words the value is <code>nan</code>.</p>
+<p>The entropy of the CV patterns of a list of words; words without vowels and consonants (numbers, Latin script) are left out, and without other words the value is <code>nan</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">cv_pattern</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
 <p>The CV pattern of a word or a syllable: vowels are marked <code>V</code>, consonants <code>C</code>, and ь, ъ and the other characters are left out.</p>
@@ -2788,7 +2788,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_assonance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-<p>The alliteration and assonance indices of a list of words: the repetition index <code>calc_repetition_index</code> over the consonant and over the vowel letters of the words. Letters are compared, not sounds: devoicing, stress and reduction are not taken into account.</p>
+<p>The alliteration and assonance indices of a list of words: the repetition index <code>calc_repetition_index</code> over the consonant and over the vowel letters of the words.</p>
 <table>
 <thead>
 <tr>
@@ -2879,7 +2879,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 </tbody>
 </table>
 </div>
-<p>The functions of ruTS take words as strings and count by the Russian classes of letters of the table above. The <code>calc_*</code> functions check their arguments: words that are not a list of strings raise <code>SourceTypeError</code>, and a window that is not an integer of at least 2 <code>ParameterError</code>.</p>
+<p>The functions of ruTS count by the classes of letters of the table above. In the <code>calc_*</code> functions words that are not a list of strings raise <code>SourceTypeError</code>, and a window that is not an integer of at least 2 <code>ParameterError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2909,7 +2909,7 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
 </div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the phonostatistics have no scales, so <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the phonostatistics have no scales, and <code>describe</code> gives <code>None</code> for them.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

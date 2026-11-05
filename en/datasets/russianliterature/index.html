@@ -2229,8 +2229,8 @@
 </tr>
 </tbody>
 </table>
-<p>The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. The year of writing is taken from the collection's <code>info.csv</code> files (<code>1825</code> or <code>1824-1825</code>); 27 works have none. The collection's folder names are in Latin script; records give authors by their Russian names from the <code>AUTHORS</code> table (<code>Chekhov</code> → «Антон Чехов»). The collection suits authorship attribution and genre comparison: texts of one author in different genres and of one genre by different authors.</p>
-<p>The repository archive (20 MB) is downloaded at a pinned commit, verified against a SHA-256 checksum and extracted; texts are read one at a time, the single cp1251 file is decoded automatically.</p>
+<p>The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (<code>1825</code> or <code>1824-1825</code>). Records give authors by their Russian names instead of folder names (<code>Chekhov</code> → «Антон Чехов»). The collection suits authorship attribution and genre comparison.</p>
+<p>The repository archive (20 MB) is downloaded at a pinned commit, texts are read one at a time.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a <code>data_dir</code> that is neither a string nor a <code>Path</code>.</li>
@@ -2378,7 +2378,7 @@
 </tr>
 </tbody>
 </table>
-<p>Works without a year do not pass the year filters. An unknown genre, an <code>author</code> that is not a string, an earliest year above the latest, a length bound that is not an integer of at least one, a minimum above the maximum and a <code>limit</code> that is not a non-negative integer raise <code>ParameterError</code>; a dataset that is not downloaded <code>DatasetNotFoundError</code>, a file that cannot be read <code>DataFileError</code>.</p>
+<p>Works without a year do not pass the year filters. An unknown genre, an <code>author</code> that is not a string, an earliest year above the latest, a length bound that is not a positive integer, a minimum above the maximum and a <code>limit</code> that is not a non-negative integer raise <code>ParameterError</code>; a dataset that is not downloaded <code>DatasetNotFoundError</code>, a file that cannot be read <code>DataFileError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2395,7 +2395,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Author name in the text</p>
-<p>In the source most files begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль», «Л.Н.Толстой», «Горький Максим»), which is a feature leak for authorship attribution. Such headers are stripped in unambiguous cases (<code>strip_header</code>): the first line is the record's author name in any of these forms, alone or with the record's title, the next line is the title; 288 of 373 texts are cleaned this way. The author's surname remains within the first 200 characters of 8 texts: headers in other forms («Антон Павлович Чехов. Палата No 6», «Горький Максим (Алексей Максимович Пешков)», «Лев Толстой. О НАУКЕ» with the title «О науке (Ответ крестьянину)») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.</p>
+<p>Most files of the source begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль»), which is a feature leak for authorship attribution. Unambiguous headers are stripped, which cleans 288 of 373 texts. In 8 texts the author's surname remains within the first 200 characters - in headers of other forms («Антон Павлович Чехов. Палата No 6») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.</p>
 </div>
 <p><code>get_records</code> with the same parameters extracts records (with headers) from the dataset. Record fields: <code>genre</code> - genre, <code>author</code> - author, <code>title</code> - title, <code>year_from</code> and <code>year_to</code> - years of writing (<code>None</code> without a date), <code>text</code> - text without the author-and-title header, <code>file</code> - path to the file.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>

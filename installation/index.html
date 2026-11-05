@@ -1561,7 +1561,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2196,9 +2196,8 @@
 
 
 <h1 id="_1">Установка<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>Для начала работы с библиотекой ее можно установить с помощью утилиты <code>pip</code> или склонировав репозиторий проекта через <code>git</code>.</p>
+<p>Библиотеку можно установить через <code>pip</code> или из репозитория проекта через <code>git</code>.</p>
 <h2 id="_2">Зависимости<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Функционал ruTS использует следующие сторонние библиотеки:</p>
 <ul>
 <li><code>python</code> - 3.11 и выше</li>
 <li><a href="https://sergeyshk.github.io/anyTS/"><code>anyts</code></a> - 0.4.6 и выше в пределах 0.4, независимое от языка ядро, на котором построен ruTS</li>
@@ -2212,37 +2211,36 @@
 <li><code>graphviz</code></li>
 </ul>
 <h2 id="pip">Установка с помощью <code>pip</code><a class="headerlink" href="#pip" title="Permanent link">&para;</a></h2>
-<p>Наберите в командной строке:</p>
+<p>Релизная версия ставится со всеми зависимостями:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>ruts
 </code></pre></div>
-<p>В результате будет установлена релизная версия библиотеки и все зависимости.</p>
 <div class="admonition warning">
 <p class="admonition-title">Graphviz</p>
-<p>Пакет <code>graphviz</code> из зависимостей - только обертка: для отрисовки <a href="../visualizers/word_tree/">дерева слов</a> и <a href="../visualizers/corpus/#collocation_network">сети коллокаций</a> нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a> (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>), иначе <code>render()</code> и показ графа в Jupyter завершатся ошибкой <code>ExecutableNotFound</code>. Остальному функционалу они не нужны.</p>
+<p>Только <a href="../visualizers/word_tree/">дереву слов</a> и <a href="../visualizers/corpus/#collocation_network">сети коллокаций</a> нужны исполняемые файлы <a href="https://graphviz.org/download/">Graphviz</a> (<code>brew install graphviz</code>, <code>apt install graphviz</code>, <code>conda install graphviz</code>): пакет <code>graphviz</code> из зависимостей - лишь обертка, без них <code>render()</code> и показ графа в Jupyter завершатся ошибкой <code>ExecutableNotFound</code>.</p>
 </div>
-<p><code>import ruts</code> не загружает spaCy, matplotlib и pandas: spaCy подключается вместе с объектом <code>Doc</code> или компонентом, а графики и корпусные функции - при первом обращении к ним. Статистики по строке работают и без них.</p>
+<p><code>import ruts</code> не загружает spaCy, matplotlib и pandas: они подключаются при первом обращении к <code>Doc</code>, компонентам, графикам и корпусным функциям.</p>
 <div class="admonition tip">
 <p class="admonition-title">Модель spaCy</p>
-<p>Для <a href="../components/">компонентов spaCy</a>, <a href="../stats/syntax_stats/">синтаксических статистик</a> и примеров с <a href="../components/#load_pipeline">рекомендуемым конвейером</a> <code>ruts.load_pipeline()</code> нужна русскоязычная модель; без нее загрузка завершится ошибкой <code>OSError: [E050]</code>. Модель устанавливается отдельно:</p>
+<p><a href="../components/">Компонентам spaCy</a>, <a href="../stats/syntax_stats/">синтаксическим статистикам</a> и <a href="../components/#load_pipeline">рекомендуемому конвейеру</a> <code>ruts.load_pipeline()</code> нужна русскоязычная модель, без нее загрузка завершится ошибкой <code>OSError: [E050]</code>. Модель устанавливается отдельно:</p>
 <div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>spacy<span class="w"> </span>download<span class="w"> </span>ru_core_news_sm
 </code></pre></div>
-<p>Большие модели <code>ru_core_news_md</code> и <code>ru_core_news_lg</code> для статистик ruTS смысла не имеют: по нашим замерам на золотой разметке Universal Dependencies (Taiga и GSD) они точнее <code>sm</code> меньше чем на пункт UAS, статистики по тексту у трёх моделей почти совпадают, а размер - 93 и 670 МБ против 47.</p>
+<p>Большие модели <code>ru_core_news_md</code> и <code>ru_core_news_lg</code> (93 и 670 МБ против 47) статистики ruTS почти не меняют: на золотой разметке Universal Dependencies (Taiga и GSD) они точнее <code>sm</code> меньше чем на пункт UAS.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Наборы данных</p>
-<p><a href="../datasets/sovchlit/">Наборы данных</a> по умолчанию загружаются в директорию <code>ruts_data</code> рядом с пакетом (<code>DEFAULT_DATA_DIR</code> в <code>ruts.constants</code>): при установке из колеса это <code>site-packages/ruts_data</code>, куда для системного Python запись может быть запрещена. В таком случае передавайте свою директорию в аргументе <code>data_dir</code> при создании набора данных или задайте переменную окружения <code>RUTS_DATA_DIR</code> до импорта пакета:</p>
+<p><a href="../datasets/sovchlit/">Наборы данных</a> по умолчанию загружаются в директорию <code>ruts_data</code> рядом с пакетом (<code>DEFAULT_DATA_DIR</code> в <code>ruts.constants</code>), при установке из колеса - в <code>site-packages/ruts_data</code>, куда у системного Python запись может быть запрещена. Свою директорию задает аргумент <code>data_dir</code> набора данных или переменная окружения <code>RUTS_DATA_DIR</code> до импорта пакета:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RUTS_DATA_DIR</span><span class="o">=</span>~/ruts_data
 </code></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>С подробным руководством по работе с менеджером пакетов <code>pip</code> можно ознакомиться на <a href="https://pip.pypa.io/en/stable/">сайте разработчика</a>.</p>
+<p>Руководство по <code>pip</code> - на <a href="https://pip.pypa.io/en/stable/">сайте разработчика</a>.</p>
 </div>
 <h2 id="git">Установка с помощью <code>git</code><a class="headerlink" href="#git" title="Permanent link">&para;</a></h2>
-<p>Данный способ позволяет установить последнюю версию библиотеки непосредственно из репозитория проекта. Для этого необходимо выполнить следующие команды:</p>
+<p>Последняя версия устанавливается из репозитория проекта:</p>
 <ol>
 <li>
-<p>Склонировать репозиторий в локальную директорию:</p>
+<p>Склонировать репозиторий:</p>
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SergeyShk/ruTS.git
 </code></pre></div>
 </li>
@@ -2255,7 +2253,7 @@
 <p>Установить библиотеку в текущее окружение:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>.
 </code></pre></div>
-<p>Для разработки удобнее использовать <a href="https://docs.astral.sh/uv/">uv</a>, который создаст изолированное окружение и установит все зависимости, включая инструменты разработки:</p>
+<p>Для разработки удобнее <a href="https://docs.astral.sh/uv/">uv</a>: он создаст изолированное окружение со всеми зависимостями, включая инструменты разработки:</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups<span class="w"> </span>--no-group<span class="w"> </span>examples
 </code></pre></div>
 <p>Группа <code>examples</code> с Jupyter нужна только для <a href="../examples/">ноутбуков с примерами</a>.</p>
@@ -2263,7 +2261,7 @@
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>С подробным руководством по работе с системой управления версиями <code>git</code> можно ознакомиться на <a href="https://git-scm.com/">сайте разработчика</a>.</p>
+<p>Руководство по <code>git</code> - на <a href="https://git-scm.com/">сайте разработчика</a>.</p>
 </div>
 
 

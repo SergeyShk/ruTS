@@ -1605,7 +1605,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2287,7 +2287,7 @@
 <div class="signature highlight"><pre><span></span><code><span class="n">compare_corpora</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Сравнивает два корпуса русских текстов по всем признакам текста сразу: какие статистики различают авторов, жанры, переводы, человеческие и сгенерированные тексты - и насколько. Для отдельных слов то же делает <a href="../keyness/"><code>keyness</code></a>, для расстояний между текстами - <a href="../stylometry/#delta"><code>delta</code></a>.</p>
-<p>Тексты режутся подряд на окна ровно по <code>window</code> слов функцией <a href="#split_windows"><code>split_windows</code></a>, так что окна всех текстов одной длины; неполный остаток в конце текста и текст короче окна отбрасываются, если <code>min_words</code> не разрешает окна короче. Признаки каждого окна считает <a href="#text_features"><code>text_features</code></a> или своя функция, а таблицы двух корпусов сравнивает <a href="#compare_features"><code>compare_features</code></a> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>.</p>
+<p>Тексты режутся на окна по <code>window</code> слов функцией <a href="#split_windows"><code>split_windows</code></a>, признаки каждого окна считает <a href="#text_features"><code>text_features</code></a> или своя функция, а таблицы двух корпусов сравнивает <a href="#compare_features"><code>compare_features</code></a> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/compare/">anyTS</a>.</p>
 <p>Чехов против Толстого по прозе из набора <a href="../../datasets/russianliterature/"><code>RussianLiterature</code></a>: 77 и 42 произведения, 249 и 1422 окна по 1000 слов, около минуты.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
@@ -2331,8 +2331,8 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </div>
 </div>
 </div>
-<p>Сильнее всего корпуса различает связность: Толстой чаще повторяет существительные и знаменательные слова в соседних и следующих предложениях, а у Чехова в разы больше многоточий и восклицаний на 1000 слов. Повторы в соседних и всех парах предложений отчасти повторяют длину предложения: в длинном предложении больше слов, которые могут повториться (ρ Спирмена <code>cohesion_content_overlap_all</code> с <code>sents_mean</code> по окнам Чехова - 0.90, Толстого - 0.75), а доля повторенных лемм в двух следующих предложениях (<code>cohesion_content_overlap_2_sent</code>) связана с ней слабо (0.23 и 0.31). Дальше по списку у Чехова короче предложения, выше доля личных форм глагола и ниже - причастий и деепричастий, а Толстой сложнее по всем формулам удобочитаемости. Двадцать произведений Чехова и одно Толстого короче 1000 слов и не дают ни одного окна, так что окна - из 57 и 41 произведения; с окном поменьше в сравнение вошли бы и они.</p>
-<p>p-значения считают 1671 окно независимыми (см. <a href="#statistics">предупреждение</a> ниже): у 111 из 147 признаков поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 22. Интервал разности медиан пересэмплирует целые произведения и надежнее: он не включает нуль у 81 из этих 111 признаков, а для длины предложения охватывает от −5.2 до −1.6 слова, тогда как по одним окнам вышло бы от −4.1 до −2.8. Для многоточий он охватывает от 6 до 25 на 1000 слов: произведения Чехова сильно различаются по ним - в среднем от долей единицы до 84 на 1000 слов.</p>
+<p>Сильнее всего корпуса различает связность: Толстой чаще повторяет существительные и знаменательные слова в соседних и следующих предложениях, а у Чехова в разы больше многоточий и восклицаний на 1000 слов. Повторы в соседних и всех парах предложений отчасти повторяют длину предложения (ρ Спирмена <code>cohesion_content_overlap_all</code> с <code>sents_mean</code> по окнам Чехова - 0.90, Толстого - 0.75), а доля повторенных лемм в двух следующих предложениях (<code>cohesion_content_overlap_2_sent</code>) связана с ней слабо (0.23 и 0.31). Двадцать произведений Чехова и одно Толстого короче окна, так что окна - из 57 и 41 произведения.</p>
+<p>p-значения считают 1671 окно независимыми (см. <a href="#statistics">предупреждение</a> ниже): у 111 из 147 признаков поправленное p-значение ниже 0.01, но большой эффект по дельте Клиффа только у 22. Интервал разности медиан пересэмплирует целые произведения и надежнее: он не включает нуль у 81 из этих 111 признаков, а для длины предложения охватывает от −5.2 до −1.6 слова, тогда как по одним окнам вышло бы от −4.1 до −2.8.</p>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2376,7 +2376,7 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </tr>
 </tbody>
 </table>
-<p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <a href="#compare_features"><code>compare_features</code></a>. <code>compare_corpora</code> первым делом проверяет их функцией <code>check_comparison_params</code>, так что неверное имя корпуса или зерно дает ошибку до обработки текстов.</p>
+<p><code>labels</code>, <code>n_bootstrap</code> и <code>seed</code> передаются в <a href="#compare_features"><code>compare_features</code></a> и проверяются до обработки текстов.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - тексты, которые не список строк, <code>features</code>, который нельзя вызвать;</li>
@@ -2413,12 +2413,12 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </tr>
 <tr>
 <td style="text-align: left;"><code>morph_</code></td>
-<td style="text-align: left;">доли частей речи и признаков с одним значением от числа слов (<code>morph_pos_NOUN</code>, <code>morph_polarity_Neg</code>, <code>morph_style_variant_Short</code>) и доли значений внутри остальных признаков (<code>morph_case_Gen</code>, <code>morph_tense_Past</code>, <code>morph_degree_Cmp</code>; у двузначных - одна доля, <code>morph_number_Plur</code>)</td>
+<td style="text-align: left;">доли частей речи и признаков с одним значением от числа слов (<code>morph_pos_NOUN</code>, <code>morph_polarity_Neg</code>) и доли значений внутри остальных признаков (<code>morph_case_Gen</code>; у двузначных - одна доля, <code>morph_number_Plur</code>)</td>
 <td style="text-align: left;"><a href="../../stats/morph_stats/"><code>MorphStats</code></a> по ruMorph</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_</code></td>
-<td style="text-align: left;">средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (<a href="#sentence_rhythm"><code>sentence_rhythm</code></a>) - ритм текста</td>
+<td style="text-align: left;">средняя длина предложения в словах, стандартное отклонение, коэффициент вариации, автокорреляция соседних длин (<a href="#sentence_rhythm"><code>sentence_rhythm</code></a>)</td>
 <td style="text-align: left;"><a href="../../visualizers/sentences/"><code>sentence_lengths</code></a></td>
 </tr>
 <tr>
@@ -2428,18 +2428,17 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </tr>
 <tr>
 <td style="text-align: left;"><code>cohesion_</code></td>
-<td style="text-align: left;">повторы слов в предложениях, местоимения, данность, темпоральная связность и коннекторы; без повторов между абзацами (<code>*_para</code>): окно режет абзацы текста</td>
+<td style="text-align: left;">повторы слов в предложениях, местоимения, данность, темпоральная связность и коннекторы, без повторов между абзацами (<code>*_para</code>)</td>
 <td style="text-align: left;"><a href="../../stats/cohesion_stats/"><code>CohesionStats</code></a> по ruMorph</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>syntax_</code></td>
-<td style="text-align: left;">все синтаксические статистики разбора, только с пайплайном <code>nlp</code>; предложения разбора - те же, что в остальных группах. Листья, поддеревья, наибольшая длина зависимости и глубина дерева почти повторяют длину предложения <code>sents_mean</code></td>
+<td style="text-align: left;">все синтаксические статистики разбора, только с пайплайном <code>nlp</code>; листья, поддеревья, наибольшая длина зависимости и глубина дерева почти повторяют <code>sents_mean</code></td>
 <td style="text-align: left;"><a href="../../stats/syntax_stats/"><code>SyntaxStats</code></a></td>
 </tr>
 </tbody>
 </table>
-<p>На окно в 1000 слов уходит около 0.04 с. Синтаксическим признакам нужен разбор, поэтому в набор по умолчанию они не входят: их добавляет пайплайн spaCy с парсером и частями речи в <code>nlp</code>, а в <code>compare_corpora</code> и <code>corpus_features</code> он передается через <code>functools.partial</code>, см. пример ниже.</p>
-<p>Доли пробелов, букв и знаков (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) считаются по символам как есть: отступы строк, двойные и неразрывные пробелы в файлах отражают верстку издания, а не текст. В корпусе из разных источников их стоит схлопнуть заранее, например <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
+<p>На окно в 1000 слов уходит около 0.04 с. Доли пробелов, букв и знаков (<code>basic_p_spaces</code>, <code>basic_p_letters</code>, <code>basic_p_punctuations</code>) считаются по символам как есть, с отступами и двойными пробелами издания; в корпусе из разных источников их стоит схлопнуть заранее, например <code>re.sub(r"[^\S\n]+", " ", text)</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2471,7 +2470,7 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </ul>
 <div class="signature highlight"><pre><span></span><code><span class="n">corpus_features</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">text_features</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Возвращает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; уровень <code>text</code> этого индекса и пересэмплирует бутстрэп <code>compare_features</code>. Тексты без слов и окна короче <code>min_words</code> пропускаются. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; разделение нужно, когда признаки посчитаны один раз для нескольких корпусов, а сравнить надо пары, например всех авторов попарно.</p>
+<p>Возвращает матрицу признаков окон с индексом (номер текста, номер окна), в том числе для своих классификаторов; тексты без слов и окна короче <code>min_words</code> пропускаются. <code>compare_corpora</code> - это <code>corpus_features</code> для каждого корпуса и <code>compare_features</code>; по отдельности они считают признаки один раз, чтобы сравнить несколько пар корпусов, например всех авторов попарно.</p>
 <table>
 <thead>
 <tr>
@@ -2815,7 +2814,7 @@ syntax_mean_clause_len                     4.965           5.808  -1.257   -0.47
 <h2 id="split_windows">Окна текста<a class="headerlink" href="#split_windows" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">split_windows</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_words</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Режет текст подряд на окна ровно по <code>window</code> слов, так что признаки, зависящие от длины, сравнимы между текстами. Остаток становится окном, только если в нем не меньше <code>min_words</code> слов (по умолчанию окно целиком, то есть остаток отбрасывается). Граница проходит перед первым словом окна и его открывающими знаками; симметричный знак, например прямая кавычка или тире вставки, закрывает предыдущее окно, если примыкает к его последнему слову или стоит после закрывающего знака. Пробельные символы по краям окон снимаются; <code>window=None</code> дает текст целиком. Слова - слова <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки - из <code>ruts.constants</code>: кавычки, скобки и тире открывают фразу (<code>OPENING_MARKS</code>), прямые и английские кавычки и тире симметричны (<code>SYMMETRIC_MARKS</code>), а конечные знаки, запятая, точка с запятой, закрывающие скобки и кавычка-елочка закрывают ее (<code>CLOSING_MARKS</code>).</p>
+<p>Режет текст подряд на окна ровно по <code>window</code> слов (слова <a href="../../extractors/words/"><code>WordsExtractor</code></a>), так что признаки, зависящие от длины, сравнимы между текстами. Остаток становится окном, только если в нем не меньше <code>min_words</code> слов (по умолчанию окно целиком, то есть остаток отбрасывается). Граница проходит перед первым словом окна и открывающими его кавычками, скобками и тире, так что знаки остаются при своей фразе.</p>
 <table>
 <thead>
 <tr>

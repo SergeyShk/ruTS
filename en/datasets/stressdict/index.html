@@ -2198,9 +2198,9 @@
 <h1 id="koziev-stress-dictionary">Koziev stress dictionary<a class="headerlink" href="#koziev-stress-dictionary" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">StressDict</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">DEFAULT_DATASET_DIR</span><span class="p">)</span>
 </code></pre></div>
-<p>Ilya Koziev's <a href="https://github.com/Koziev/NLP_Datasets#ударения">stress dictionary</a> (all_accents): 1,680,535 word forms with the position of the primary stress. Data from Wikipedia and Wiktionary is extended with forms generated from the inflection tables of the author's grammar dictionary under the assumption that stress does not move in declension and conjugation, so forms with mobile stress (реки́ - ре́ки, воды́ - во́ды) get one of the variants, homographs (за́мок - замо́к) share one line, and the letter ё is replaced with е throughout.</p>
-<p>The dictionary is distributed under the CC0 license and downloaded from the author's repository at a pinned commit (10.6 MB, a 77 MB file) with a SHA-256 checksum check. The file is read once per process and indexed in memory as a whole without parsing lines: a word form is found by binary search over the sorted file, so loading takes a fraction of a second and the dictionary occupies about 100 MB of memory.</p>
-<p>The dictionary is used by <a href="../../stats/verse_stats/"><code>VerseStats</code></a> and by the accentuation functions <a href="../../syllables/#word_stress"><code>word_stress</code></a> and <a href="../../stats/verse_stats/#accentuate"><code>accentuate</code></a>: they correct known dictionary errors, restore stress from the letter ё and fit it to the meter.</p>
+<p>Ilya Koziev's <a href="https://github.com/Koziev/NLP_Datasets#ударения">stress dictionary</a> (all_accents): 1,680,535 word forms with the position of the primary stress. Data from Wikipedia and Wiktionary is extended with forms from the inflection tables of the author's grammar dictionary under the assumption that stress does not move in inflection: forms with mobile stress (воды́ - во́ды) get one variant, homographs (за́мок - замо́к) share one line, ё is replaced with е.</p>
+<p>License - CC0. The dictionary is downloaded from the author's repository at a pinned commit (a 10.6 MB archive, a 77 MB file) and read once per process: loading takes a fraction of a second, the dictionary occupies about 100 MB of memory.</p>
+<p>The dictionary is used by <a href="../../stats/verse_stats/"><code>VerseStats</code></a> and the accentuation functions <a href="../../syllables/#word_stress"><code>word_stress</code></a> and <a href="../../stats/verse_stats/#accentuate"><code>accentuate</code></a>: they correct known dictionary errors and restore stress from ё, and <code>VerseStats</code> also fits it to the meter.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a <code>data_dir</code> that is neither a string nor a <code>Path</code>.</li>
@@ -2258,7 +2258,7 @@
 </tbody>
 </table>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p><code>download(force=False)</code> downloads the dictionary and extracts the file. The downloaded archive is checked against a SHA-256 checksum; a corrupted or replaced file is deleted with a <code>DownloadError</code> so that the next download is not skipped. If the archive exists but the dictionary file does not, the archive is extracted again.</p>
+<p><code>download(force=False)</code> downloads the dictionary and extracts the file; if the archive exists but the dictionary file does not, the archive is extracted again. The archive is checked against a SHA-256 checksum, a corrupted or replaced file is deleted.</p>
 <table>
 <thead>
 <tr>
@@ -2277,9 +2277,9 @@
 </tr>
 </tbody>
 </table>
-<p>A file that cannot be downloaded raises <code>DownloadError</code> too, an archive that cannot be extracted <code>DataFileError</code>.</p>
+<p>A file that cannot be downloaded or fails the checksum raises <code>DownloadError</code>, an archive that cannot be extracted <code>DataFileError</code>.</p>
 <p><code>check_data()</code> checks that the dictionary file is in place and returns <code>True</code>; a dictionary that is not downloaded raises <code>DatasetNotFoundError</code> with the commands to download it, and so does a lookup in it.</p>
-<p><code>lookup(word)</code> returns the zero-based number of the stressed syllable of a word form (syllables are counted by vowels), <code>None</code> for a form outside the dictionary or without a stress mark. The form is lowercased and ё is replaced with е, as in the dictionary.</p>
+<p><code>lookup(word)</code> returns the zero-based number of the stressed syllable of a word form in any case, with or without ё (syllables are counted by vowels), <code>None</code> for a form outside the dictionary or without a stress mark.</p>
 <table>
 <thead>
 <tr>

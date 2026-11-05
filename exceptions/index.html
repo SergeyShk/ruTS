@@ -1550,7 +1550,7 @@
   <span class="md-ellipsis">
     
   
-    Советские христоматии (литература)
+    Советские хрестоматии (литература)
   
 
     
@@ -2175,7 +2175,7 @@
 
 <h1 id="_1">Исключения и логирование<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <h2 id="_2">Исключения<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<p>Все исключения библиотеки наследуют базовый класс <code>RutsError</code> и один из встроенных классов Python, поэтому их можно ловить как по имени ruTS, так и по привычному встроенному типу - прежний код с <code>except ValueError</code> продолжает работать.</p>
+<p>Все исключения библиотеки наследуют базовый класс <code>RutsError</code> и один из встроенных классов Python, так что их можно ловить и по имени ruTS, и по встроенному типу, например <code>except ValueError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2193,22 +2193,22 @@
 <tr>
 <td style="text-align: left;"><code>SourceTypeError</code></td>
 <td style="text-align: left;"><code>TypeError</code></td>
-<td style="text-align: left;">Источник данных не строка и не <code>Doc</code>, справочник не <code>Counter</code>, список текстов не список списков, путь не строка и не <code>Path</code>, токенизатор не вызываемый объект</td>
+<td style="text-align: left;">Аргумент не того типа: источник данных не строка и не <code>Doc</code>, справочник не <code>Counter</code>, токенизатор не вызываемый объект и т. п.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>SourceError</code></td>
 <td style="text-align: left;"><code>ValueError</code></td>
-<td style="text-align: left;">В источнике нет слов, предложений, текстов или коллокаций, нет разбора зависимостей, текстов меньше, чем нужно мере, после отсева не осталось единиц</td>
+<td style="text-align: left;">В источнике нет слов, предложений, текстов, коллокаций или разбора зависимостей, текстов меньше, чем нужно мере, после отсева ничего не осталось</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ParameterError</code></td>
 <td style="text-align: left;"><code>ValueError</code></td>
-<td style="text-align: left;">Порог, окно, размер сегмента или число элементов вне допустимого диапазона; неизвестная мера, вариант, пресет, слой, ступень, категория набора данных</td>
+<td style="text-align: left;">Значение параметра вне допустимого диапазона; неизвестная мера, пресет, слой, категория набора данных и т. п.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>UnknownStatError</code></td>
 <td style="text-align: left;"><code>ParameterError</code>, <code>KeyError</code></td>
-<td style="text-align: left;">По имени запрошена неизвестная статистика (<code>describe</code> классов статистик, <code>get_stats</code>, <code>print_stats</code> и <code>explain_text</code> у <code>MorphStats</code>, <code>DiversityStats.windowed</code>, <code>describe_level_norm</code>)</td>
+<td style="text-align: left;">По имени запрошена неизвестная статистика (<code>describe</code>, <code>DiversityStats.windowed</code>, <code>MorphStats.get_stats</code> и другие)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>DatasetNotFoundError</code></td>
@@ -2227,7 +2227,7 @@
 </tr>
 </tbody>
 </table>
-<p>Классы доступны из <code>ruts</code> и из <code>ruts.exceptions</code>. Это классы ядра <a href="https://sergeyshk.github.io/anyTS/exceptions/">anyTS</a> под теми же именами, а <code>RutsError</code> - его <code>anyts.exceptions.AnyTSError</code>: псевдонимы, а не подклассы, поэтому <code>except RutsError</code> ловит и ошибки, поднятые кодом ядра, а в трассировке стоит <code>anyts.exceptions.SourceError</code>. Сообщения ruTS - на русском, в том числе сообщения классов статистик, экстракторов, компонентов и подсветки, построенных на ядре (<code>ruts.constants.CORE_MESSAGES</code>). На английском остаются проверки типов аргументов в коде ядра (строка вместо числа и т. п.) и отдельные функции ядра.</p>
+<p>Классы доступны из <code>ruts</code> и <code>ruts.exceptions</code>. Это сами классы ядра <a href="https://sergeyshk.github.io/anyTS/exceptions/">anyTS</a> (<code>RutsError</code> - его <code>AnyTSError</code>), а не подклассы: <code>except RutsError</code> ловит и ошибки кода ядра, а в трассировке стоит <code>anyts.exceptions.SourceError</code>. Сообщения - на русском, кроме проверок типов аргументов в коде ядра и отдельных функций ядра.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2253,7 +2253,7 @@ DatasetNotFoundError
 </div>
 </div>
 <h2 id="_3">Логирование<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Библиотека ничего не печатает сама: сообщения о загрузке и извлечении наборов данных (методы <code>download()</code>) ядро anyTS отправляет в логгер <code>anyts</code> уровня <code>INFO</code>. По умолчанию у логгера стоит <code>NullHandler</code>, и сообщения не видны; чтобы включить их, настройте логирование в приложении:</p>
+<p>Сообщения о загрузке и извлечении наборов данных (<code>download()</code>) ядро anyTS пишет в логгер <code>anyts</code> с уровнем <code>INFO</code>. По умолчанию они не видны; чтобы их увидеть, настройте логирование в приложении:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2273,7 +2273,7 @@ anyts.datasets: Extracting the archive /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
 </div>
 </div>
 </div>
-<p>Методы <code>print_stats()</code> классов статистик и <code>print_kwic()</code> печатают в стандартный вывод по своему назначению, логирование их не касается.</p>
+<p><code>print_stats()</code> и <code>print_kwic()</code> печатают в стандартный вывод, логирование на них не влияет.</p>
 
 
 

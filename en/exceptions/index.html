@@ -2175,7 +2175,7 @@
 
 <h1 id="exceptions-and-logging">Exceptions and logging<a class="headerlink" href="#exceptions-and-logging" title="Permanent link">&para;</a></h1>
 <h2 id="exceptions">Exceptions<a class="headerlink" href="#exceptions" title="Permanent link">&para;</a></h2>
-<p>All library exceptions inherit the base class <code>RutsError</code> and one of the built-in Python classes, so they can be caught both by their ruTS name and by the familiar built-in type - existing code with <code>except ValueError</code> keeps working.</p>
+<p>All library exceptions inherit the base class <code>RutsError</code> and one of the built-in Python classes, so they can be caught both by their ruTS name and by the built-in type, for example <code>except ValueError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2193,22 +2193,22 @@
 <tr>
 <td style="text-align: left;"><code>SourceTypeError</code></td>
 <td style="text-align: left;"><code>TypeError</code></td>
-<td style="text-align: left;">The data source is neither a string nor a <code>Doc</code>, the frequency counter is not a <code>Counter</code>, the list of texts is not a list of lists, the path is neither a string nor a <code>Path</code>, the tokenizer is not callable</td>
+<td style="text-align: left;">An argument of a wrong type: the data source is neither a string nor a <code>Doc</code>, the frequency counter is not a <code>Counter</code>, the tokenizer is not callable and the like</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>SourceError</code></td>
 <td style="text-align: left;"><code>ValueError</code></td>
-<td style="text-align: left;">The source has no words, sentences, texts or collocations, lacks a dependency parse, has fewer texts than the measure needs, or nothing is left after culling</td>
+<td style="text-align: left;">The source has no words, sentences, texts, collocations or dependency parse, has fewer texts than the measure needs, or nothing is left after culling</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ParameterError</code></td>
 <td style="text-align: left;"><code>ValueError</code></td>
-<td style="text-align: left;">A threshold, window, segment size or number of items is out of range; an unknown measure, variant, preset, layer, stage or dataset category</td>
+<td style="text-align: left;">A parameter value is out of range; an unknown measure, preset, layer, dataset category and the like</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>UnknownStatError</code></td>
 <td style="text-align: left;"><code>ParameterError</code>, <code>KeyError</code></td>
-<td style="text-align: left;">An unknown statistic is requested by name (<code>describe</code> of the statistics classes, <code>get_stats</code>, <code>print_stats</code> and <code>explain_text</code> of <code>MorphStats</code>, <code>DiversityStats.windowed</code>, <code>describe_level_norm</code>)</td>
+<td style="text-align: left;">An unknown statistic is requested by name (<code>describe</code>, <code>DiversityStats.windowed</code>, <code>MorphStats.get_stats</code> and others)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>DatasetNotFoundError</code></td>
@@ -2227,7 +2227,7 @@
 </tr>
 </tbody>
 </table>
-<p>The classes are available from <code>ruts</code> and from <code>ruts.exceptions</code>. They are the classes of the <a href="https://sergeyshk.github.io/anyTS/exceptions/">anyTS</a> core under the same names, <code>RutsError</code> being its <code>anyts.exceptions.AnyTSError</code>: aliases, not subclasses, so <code>except RutsError</code> catches the errors raised by the code of the core too, and a traceback shows <code>anyts.exceptions.SourceError</code>. The messages of ruTS are in Russian, the messages of the statistics classes, the extractors, the components and the highlighting built on the core included (<code>ruts.constants.CORE_MESSAGES</code>). English remain the checks of the types of arguments in the code of the core (a string instead of a number and the like) and some functions of the core.</p>
+<p>The classes are available from <code>ruts</code> and <code>ruts.exceptions</code>. They are the very classes of the <a href="https://sergeyshk.github.io/anyTS/exceptions/">anyTS</a> core (<code>RutsError</code> is its <code>AnyTSError</code>), not subclasses: <code>except RutsError</code> catches the errors of the core code too, and a traceback shows <code>anyts.exceptions.SourceError</code>. The messages are in Russian, except the argument type checks in the core code and some core functions.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2253,7 +2253,7 @@ DatasetNotFoundError
 </div>
 </div>
 <h2 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">&para;</a></h2>
-<p>The library prints nothing on its own: the anyTS core sends messages about downloading and extracting datasets (the <code>download()</code> methods) to the <code>anyts</code> logger at the <code>INFO</code> level. The logger has a <code>NullHandler</code> by default, so the messages are silent; to see them, configure logging in your application:</p>
+<p>The anyTS core writes messages about downloading and extracting datasets (<code>download()</code>) to the <code>anyts</code> logger at the <code>INFO</code> level. They are silent by default; to see them, configure logging in your application:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2273,7 +2273,7 @@ anyts.datasets: Extracting the archive /tmp/ruts_data/sov_chrest_lit_v1.tar.xz
 </div>
 </div>
 </div>
-<p>The <code>print_stats()</code> methods of the statistics classes and <code>print_kwic()</code> write to standard output by design; logging does not affect them.</p>
+<p><code>print_stats()</code> and <code>print_kwic()</code> write to standard output; logging does not affect them.</p>
 
 
 
