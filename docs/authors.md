@@ -1,6 +1,6 @@
 # Авторы
 
-**Шкарин Сергей Сергеевич** - Data Scientist, Москва
+**Шкарин Сергей Сергеевич** - Data Scientist
 
 [:fontawesome-brands-square-github:{ .contact }](https://github.com/SergeyShk)
 [:fontawesome-brands-google:{ .contact }](mailto:kouki.sergey@gmail.com)
