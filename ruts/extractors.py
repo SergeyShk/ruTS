@@ -156,7 +156,7 @@ class CharNgramsExtractor(anyts.CharNgramsExtractor):
         lowercase (bool): Конвертировать текст в нижний регистр
         within_words (bool): Брать N-граммы только внутри слов
         tokenizer (pattern|callable): Токенизатор слов для within_words
-            или регулярное выражение
+            или регулярное выражение; по умолчанию ruts.utils.iter_tokens
 
     Методы:
         extract: Извлечение N-грамм из текста

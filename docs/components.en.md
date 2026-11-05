@@ -48,7 +48,7 @@ In `ruts_lexical` a document of numbers alone passes untouched as well, and in `
 
 --8<-- "components.md:StatsComponent-serialization"
 
-Adding a component adds to the spaCy tokenizer the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a `Doc` is split into words as a string; a pipeline without ruTS components needs this call of its own. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) is left as it is.
+Adding a component adds to the spaCy tokenizer the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a dialogue dash is split off a word as in a string; a pipeline without ruTS components needs this call of its own. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) is left as it is.
 
 ruTS removes stress marks from the words of a `Doc`, but the model parses such words worse: on a text after `accentuate` the tagger of `ru_core_news_sm` changes the part of speech of over half of the words, and the dependencies change in the [recommended pipeline](#load_pipeline) as well. Pass a text with stresses without them - `nlp(ruts.utils.strip_marks(text))`.
 

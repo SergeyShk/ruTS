@@ -8,7 +8,7 @@ StressDict(data_dir=DEFAULT_DATASET_DIR)
 
 Лицензия - CC0. Словарь загружается из репозитория автора по закрепленному коммиту (архив 10.6 МБ, файл 77 МБ) и читается один раз на процесс: загрузка занимает доли секунды, словарь - около 100 МБ памяти.
 
-Словарь используют [`VerseStats`](../stats/verse_stats.md) и функции расстановки ударений [`word_stress`](../syllables.md#word_stress) и [`accentuate`](../stats/verse_stats.md#accentuate), которые поправляют известные ошибки словаря, восстанавливают ударение по ё и подгоняют его под метр.
+Словарь используют [`VerseStats`](../stats/verse_stats.md) и функции расстановки ударений [`word_stress`](../syllables.md#word_stress) и [`accentuate`](../stats/verse_stats.md#accentuate): они поправляют известные ошибки словаря и восстанавливают ударение по ё, а `VerseStats` еще и подгоняет его под метр.
 
 Исключения:
 

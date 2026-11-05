@@ -157,7 +157,7 @@ class StyleStats(anyts.style_stats.StyleStats):
         return is_water_word(word)
 
     def is_parenthetical(self, word: str) -> bool:
-        """Вводное слово по помете Prnt ruMorph (is_parenthetical)"""
+        """Вводное слово по помете Prnt ruMorph или PARENTHETICAL_WORDS (is_parenthetical)"""
         return is_parenthetical(word)
 
     def expand_phrases(self, text: Sequence[str], phrases: Collection[str]) -> dict[str, str]:
@@ -184,8 +184,9 @@ def is_stopword(word: str) -> bool:
     Описание:
         Стоп-слова по разметке ruMorph: союзы, частицы, предлоги, местоимения,
         определительные местоимения (этот, весь), междометия, предикативы (нет, надо)
-        и «бы» - глаголы без формы VerbForm, вводные слова (конечно, помета Prnt),
-        указательные, вопросительные и относительные наречия (там, где; is_pronominal)
+        и «бы» - глаголы без формы VerbForm, вводные слова (is_parenthetical: конечно,
+        кстати), указательные, вопросительные и относительные наречия (там, где;
+        is_pronominal)
 
     Аргументы:
         word (str): Слово
@@ -210,7 +211,7 @@ def is_water_word(word: str) -> bool:
     Описание:
         «Вода» по разметке ruMorph - союзы, частицы (и «бы»), местоимения-существительные
         (и притяжательные «его», «её», «их» с разбором личного местоимения), междометия
-        и вводные слова (конечно, помета Prnt); предлоги, определительные местоимения
+        и вводные слова (is_parenthetical: конечно, кстати); предлоги, определительные местоимения
         и предикативы водой не считаются
 
     Аргументы:
@@ -233,7 +234,7 @@ def is_water_word(word: str) -> bool:
 
 def is_parenthetical(word: str) -> bool:
     """
-    Проверка, является ли слово вводным по разметке ruMorph (помета Prnt)
+    Проверка, является ли слово вводным: помета Prnt ruMorph или лемма из PARENTHETICAL_WORDS
 
     Аргументы:
         word (str): Слово

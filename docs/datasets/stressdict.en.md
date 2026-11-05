@@ -8,7 +8,7 @@ Ilya Koziev's [stress dictionary](https://github.com/Koziev/NLP_Datasets#уда�
 
 License - CC0. The dictionary is downloaded from the author's repository at a pinned commit (a 10.6 MB archive, a 77 MB file) and read once per process: loading takes a fraction of a second, the dictionary occupies about 100 MB of memory.
 
-The dictionary is used by [`VerseStats`](../stats/verse_stats.md) and the accentuation functions [`word_stress`](../syllables.md#word_stress) and [`accentuate`](../stats/verse_stats.md#accentuate), which correct known dictionary errors, restore stress from ё and fit it to the meter.
+The dictionary is used by [`VerseStats`](../stats/verse_stats.md) and the accentuation functions [`word_stress`](../syllables.md#word_stress) and [`accentuate`](../stats/verse_stats.md#accentuate): they correct known dictionary errors and restore stress from ё, and `VerseStats` also fits it to the meter.
 
 Raises:
 
