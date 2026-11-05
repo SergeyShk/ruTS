@@ -13,7 +13,7 @@ nav:
       - Установка: installation.md
       - Примеры: examples.md
       - Исключения и логирование: exceptions.md
-      - Авторы: authors.md
+      - Автор: authors.md
     - Извлечение объектов:
       - Извлечение предложений: extractors/sentences.md
       - Извлечение слов: extractors/words.md
@@ -114,7 +114,7 @@ plugins:
             Установка: Installation
             Примеры: Examples
             Исключения и логирование: Exceptions and logging
-            Авторы: Authors
+            Автор: Author
             Извлечение объектов: Extraction
             Извлечение предложений: Sentence extraction
             Извлечение слов: Word extraction

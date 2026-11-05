@@ -859,10 +859,9 @@ uv run pre-commit install
 
 </details>
 
-## Авторы
+## Автор
 
 *   Шкарин Сергей (kouki.sergey@gmail.com)
-*   Смирнова Екатерина (ekanerina@yandex.ru)
 
 ## Лицензия
 

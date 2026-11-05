@@ -859,10 +859,9 @@ Bug reports, ideas and pull requests are welcome - [issues](https://github.com/S
 
 </details>
 
-## Authors
+## Author
 
 *   Sergey Shkarin (kouki.sergey@gmail.com)
-*   Ekaterina Smirnova (ekanerina@yandex.ru)
 
 ## License
 

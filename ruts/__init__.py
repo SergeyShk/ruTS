@@ -1,8 +1,7 @@
 # Russian Texts Statistics (ruTS)
 #
 # Copyright (C) 2019-2026
-# Авторы: Шкарин Сергей <kouki.sergey@gmail.com>
-#         Смирнова Екатерина <ekanerina@yandex.ru>
+# Автор: Шкарин Сергей <kouki.sergey@gmail.com>
 # URL: <https://github.com/SergeyShk/ruTS>
 
 import logging
@@ -61,8 +60,8 @@ except PackageNotFoundError:
     __version__ = "0.0.0"
 __description__ = """Инструмент для извлечения статистик для текстов на русском языке.
 Требует версию Python 3.11 и выше"""
-__author__ = "Шкарин Сергей, Смирнова Екатерина"
-__author_email__ = "kouki.sergey@gmail.com, ekanerina@yandex.ru"
+__author__ = "Шкарин Сергей"
+__author_email__ = "kouki.sergey@gmail.com"
 
 __all__ = [
     "BasicStats",
