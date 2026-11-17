@@ -63,8 +63,6 @@ MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 SEGMENTER = Segmenter("ru")
 # Разбор строки без видимых символов: знак препинания, а не слово
 NO_WORD = "_"
-# anySeg принимает только текст, который кодируется в UTF-8
-SURROGATES = re.compile("[\ud800-\udfff]")
 
 
 @lru_cache(maxsize=1)
@@ -598,7 +596,7 @@ def iter_tokens(text: str) -> Iterator[tuple[int, int, str]]:
         generator[tuple[int, int, str]]: Позиция первого символа, позиция за последним
             символом и текст каждого токена
     """
-    for span in SEGMENTER.tokenize(_segmentable(text)):
+    for span in SEGMENTER.tokenize(text):
         word = strip_marks(text[span.start : span.end])
         if word:
             yield span.start, span.end, word
@@ -688,14 +686,8 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
     """
     _check_text(text)
     return (
-        (sent.start, sent.end, text[sent.start : sent.end])
-        for sent in SEGMENTER.sentenize(_segmentable(text))
+        (sent.start, sent.end, text[sent.start : sent.end]) for sent in SEGMENTER.sentenize(text)
     )
-
-
-def _segmentable(text: str) -> str:
-    """Текст для anySeg: одиночный суррогат - U+FFFD, длина и позиции те же"""
-    return SURROGATES.sub("\ufffd", text) if SURROGATES.search(text) else text
 
 
 def strip_doc_marks(doc: Doc) -> Doc:

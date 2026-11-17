@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.20.0"
+version = "0.21.0.dev1"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -42,7 +42,7 @@ classifiers = [
     "Natural Language :: Russian",
 ]
 dependencies = [
-    "anyseg>=0.2,<0.3",
+    "anyseg>=0.3.1,<0.4",
     "anyts>=0.4.6,<0.5",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
