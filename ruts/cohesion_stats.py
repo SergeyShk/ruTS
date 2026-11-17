@@ -24,18 +24,16 @@ from anyts.cohesion_stats import (
     dominant as dominant,
 )
 from anyts.constants import CONNECTOR_POS, CONTENT_UD_POS
+from anyts.document import get_tree
 from anyts.utils import (
     BLANK_LINE,
     LINE_BREAK,
     find_marks,
     find_paragraph_starts,
-    find_unit_marks,
-    find_unit_paragraph_starts,
-    has_pos,
-    has_sents,
+    has_words,
     is_doc,
+    is_document,
     source_type_error,
-    split_doc_units as split_doc_units,
 )
 
 from .constants import (
@@ -60,23 +58,26 @@ from .constants import (
 )
 from .exceptions import SourceTypeError
 from .extractors import SentsExtractor, WordsExtractor
-from .morph_stats import answer_particles, word_to_ud
+from .morph_stats import answer_particles
 from .utils import (
     BYTE_ORDER_MARK,
     _word_cache,
     analyze_sents,
     analyze_words,
+    get_document,
     lemmatize,
     normalize_yo,
     parse_all,
     parse_word,
     strip_marks,
-    token_analysis,
+    word_analysis,
     word_form,
 )
 
 if TYPE_CHECKING:
-    from spacy.tokens import Doc, Token
+    from anyseg import Document
+    from anyts.document import TreeWord
+    from spacy.tokens import Doc
 
 # Римское число - номер главы, который модели размечают прилагательным или существительным
 ROMAN_NUMERAL = re.compile(r"(?=[MDCLXVI])M{0,3}(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})")
@@ -150,11 +151,11 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
 
     Описание:
         Расширяет CohesionStats ядра anyTS для русского языка. Леммы, части речи, время
-        и вид для Doc с разметкой частей речи - по token.pos_ и token.morph с леммой
-        разбора ruMorph с частью речи токена, для строки - по разбору ruMorph в контексте
-        предложения, для Doc без разметки - так же, если слова предложения те же, что
-        у строки; иначе и с заданным экстрактором слов - по первому разбору ruMorph.
-        Дефисные слова склеиваются; словарь коннекторов - resources/connectors.tsv
+        и вид для Doc и Document с разметкой частей речи - по части речи и признакам
+        слова с леммой разбора ruMorph с той же частью речи, для строки - по разбору
+        ruMorph в контексте предложения, для Doc и Document без разметки - так же;
+        с заданным экстрактором слов - по первому разбору ruMorph. Словарь
+        коннекторов - resources/connectors.tsv
         с классами по Криони, Никину и Филипповой (2008), сопоставитель -
         RussianConnectorMatcher
 
@@ -206,11 +207,11 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         (Connector(sent=2, start=2, end=3, text='и', cls='additive', kind='primary'),)
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
         connectors (dict[str, tuple[str, str]]): Словарь коннекторов - класс и тип
             по коннектору; если не задан, используется словарь из resources
         blank_lines (bool): Абзацы только после пустых строк - для текста, строки
@@ -283,23 +284,23 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         print_stats: Отображение вычисленных статистик связности текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
-            другого типа или словарь коннекторов задан неверно
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document,
+            экстрактор другого типа или словарь коннекторов задан неверно
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если в словаре коннекторов неизвестный класс или тип или
             blank_lines не bool
     """
 
-    sents_extractor_class = SentsExtractor
     connector_matcher_class = RussianConnectorMatcher
-    join_hyphens = True
+    requires_pos = False
+    requires_lemmas = False
     stats_desc = COHESION_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         sents_extractor: anyts.SentsExtractor | None = None,
         words_extractor: anyts.WordsExtractor | None = None,
         connectors: Mapping[str, tuple[str, str]] | None = None,
@@ -308,66 +309,62 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError(self.messages["words_extractor_type"])
         self.words_extractor = words_extractor
-        super().__init__(source, sents_extractor, connectors, blank_lines)  # type: ignore[arg-type]
+        self._context: dict[int, tuple[rumorph.Analysis | None, bool]] = {}
+        super().__init__(source, sents_extractor, connectors, blank_lines)
+
+    def __getstate__(self) -> dict[str, object]:
+        """Состояние для pickle и копирования без разборов анализа"""
+        state = self.__dict__.copy()
+        state.pop("_context", None)
+        return state
+
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
 
     @classmethod
     def load_connectors(cls) -> dict[str, tuple[str, str]]:
         """Словарь коннекторов resources/connectors.tsv (load_connectors)"""
         return load_connectors()
 
-    def analyze(self, source: str | Doc) -> list[list[CohesionWord]]:
+    def analyze(self, source: str | Doc | Document) -> Iterable[Sequence[CohesionWord]]:
         """
-        Слова предложений с признаками по разметке Doc или по ruMorph
+        Слова предложений с признаками по разметке документа или по ruMorph
 
         Описание:
             Признаки слов - как в описании класса; знаки препинания между словами
             и начала абзацев после перевода строки (пустой строки с blank_lines) -
-            по токенам Doc без экстрактора слов, иначе по тексту предложений
+            по словам документа без экстрактора слов (analyze ядра), иначе по тексту
+            предложений
         """
-        if is_doc(source) and self.words_extractor is None:
-            units = self.doc_units(source)
-            marks = [find_unit_marks(sent) for sent in units]
-            starts = find_unit_paragraph_starts(
-                [unit for sent in units for unit in sent], self.blank_lines
-            )
-            if has_pos(source):
-                positions = _positions(units)
-                return [
-                    [
-                        _cohesion_word(
-                            unit_text(unit),
-                            unit_info(unit),
-                            unit_pos(unit),
-                            i in sent_marks,
-                            position in starts,
-                        )
-                        for i, (unit, position) in enumerate(
-                            zip(sent, sent_positions, strict=True)
-                        )
-                    ]
-                    for sent, sent_marks, sent_positions in zip(
-                        units, marks, positions, strict=True
-                    )
-                ]
-            sents = [[unit_text(unit) for unit in sent] for sent in units]
-            found = iter(
-                analyze_words(
-                    [(unit[0].idx, unit_text(unit)) for sent in units for unit in sent],
-                    source.text,
-                )
-            )
-            by_sent = [[next(found) for _ in sent] for sent in sents]
-            return _cohesion_words(sents, source.text, marks, starts, by_sent)
+        if (is_doc(source) or is_document(source)) and self.words_extractor is None:
+            document = self._document(source)
+            words = [word for word in get_tree(document).words if has_words(word.form)]
+            if not any(word.upos for word in words):
+                # Слова без разметки - по разборам ruMorph в контексте предложений текста
+                found = [(word.start, word_text(word)) for word in words]
+                particles = answer_particles([text for _, text in found], document.text)
+                in_context = analyze_words(found, document.text)
+                self._context = {
+                    word.start: (analysis, particle)
+                    for word, analysis, particle in zip(words, in_context, particles, strict=True)
+                }
+            try:
+                return super().analyze(document)
+            finally:
+                self._context = {}
         texts: Iterable[str]
         if isinstance(source, str):
             text = source
-            texts = (self.sents_extractor or self.sents_extractor_class()).extract(text)
-        elif is_doc(source):
-            text = source.text
-            if has_sents(source) and not self.sents_extractor:
-                texts = tuple(sent.text for sent in source.sents)
-            else:
-                texts = (self.sents_extractor or self.sents_extractor_class()).extract(text)
+            texts = (self.sents_extractor or SentsExtractor()).extract(text)
+        elif is_doc(source) or is_document(source):
+            document = get_document(source)
+            text = document.text
+            texts = (
+                self.sents_extractor.extract(text)
+                if self.sents_extractor
+                else tuple(sentence.text for sentence in document.sentences)
+            )
         else:
             raise source_type_error(self.messages, source)
         extractor = self.words_extractor or WordsExtractor()
@@ -386,6 +383,23 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         ]
         starts = _paragraph_starts(text, texts, sent_words, extractor, self.blank_lines)
         return _cohesion_words(sent_words, text, marks, starts, analyses)
+
+    def word_info(self, word: TreeWord) -> CohesionWord:
+        """
+        Признаки слова дерева документа
+
+        Описание:
+            Слово с частью речи - по разметке (token_info), без нее - по разбору ruMorph
+            в контексте предложения; ответное «нет» - частица
+        """
+        text = word_text(word)
+        if word.upos:
+            return _cohesion_word(text, token_info(word), word.upos)
+        analysis, particle = self._context.get(word.start, (None, False))
+        if analysis is not None:
+            return _cohesion_word(text, analysis_info(analysis), analysis.pos)
+        info = ud_info(text, "PART", None, None) if particle else word_info(text)
+        return _cohesion_word(text, info, connector_pos(text))
 
 
 def _cohesion_word(
@@ -702,34 +716,38 @@ def words_info(
     ]
 
 
-def token_info(token: Token) -> WordInfo:
+def token_info(token: TreeWord) -> WordInfo:
     """
-    Получение признаков токена spaCy по разметке Universal Dependencies
+    Получение признаков слова дерева документа по разметке Universal Dependencies
 
     Описание:
-        Признаки - как у word_info, по части речи и признакам токена (ud_info). Токен,
+        Признаки - как у word_info, по части речи и признакам слова (ud_info). Слово,
         разметка которого - разбор ruMorph (компонент rumorph), получает признаки этого
-        разбора (analysis_info), как слово строки; у токена другой модели лемма берется
-        из разбора ruMorph с частью речи токена (lemmatize), а не из token.lemma_
+        разбора (analysis_info), как слово строки; у слова другой модели лемма берется
+        из разбора ruMorph с частью речи слова (lemmatize), а не из его леммы
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         WordInfo: Признаки слова
     """
-    analysis = token_analysis(token)
+    analysis = word_analysis(token)
     if analysis is not None:
         return analysis_info(analysis)
-    tense = token.morph.get("Tense", [])
-    aspect = token.morph.get("Aspect", [])
+    feats = token.feats
     return ud_info(
-        token.text,
-        token.pos_,
-        tense[0] if tense else None,
-        aspect[0] if aspect else None,
-        token.morph.to_dict() if token.has_morph() else None,
+        token.form,
+        token.upos or "",
+        _first_value(feats.get("Tense")),
+        _first_value(feats.get("Aspect")),
+        dict(feats) or None,
     )
+
+
+def _first_value(value: str | None) -> str | None:
+    """Первое значение признака UD из нескольких через запятую"""
+    return value.split(",")[0] if value else None
 
 
 def ud_info(
@@ -767,58 +785,18 @@ def ud_info(
     return _word_info(lemma, pos, feats, labels, tense, aspect)
 
 
-def unit_text(unit: Sequence[Token]) -> str:
+def word_text(word: TreeWord) -> str:
     """
-    Текст слова из токенов iter_doc_units
+    Текст слова дерева документа
 
     Аргументы:
-        unit (list[Token]): Токены слова
+        word (TreeWord): Слово дерева документа
 
     Вывод:
         str: Текст слова без BOM, знаков ударения, мягких переносов (strip_marks) и точки
             сокращения (word_form)
     """
-    return word_form(strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK))
-
-
-def unit_pos(unit: Sequence[Token]) -> str | None:
-    """
-    Часть речи UD слова из токенов iter_doc_units
-
-    Описание:
-        Обычное слово - по разметке токена, дефисное слово из нескольких токенов -
-        по разбору ruMorph склеенного текста (connector_pos)
-
-    Аргументы:
-        unit (list[Token]): Токены слова
-
-    Вывод:
-        str|None: Часть речи UD
-    """
-    if len(unit) == 1:
-        return unit[0].pos_ or None
-    return connector_pos(unit_text(unit))
-
-
-def unit_info(unit: Sequence[Token]) -> WordInfo:
-    """
-    Получение признаков слова из токенов iter_doc_units
-
-    Описание:
-        Обычное слово - по разметке токена (token_info), дефисное слово из нескольких
-        токенов - по разбору ruMorph склеенного текста (word_to_ud)
-
-    Аргументы:
-        unit (list[Token]): Токены слова
-
-    Вывод:
-        WordInfo: Признаки слова
-    """
-    if len(unit) == 1:
-        return token_info(unit[0])
-    text = unit_text(unit)
-    features = word_to_ud(text)
-    return ud_info(text, features["pos"] or "", features["tense"], features["aspect"])
+    return word_form(strip_marks(word.form).lstrip(BYTE_ORDER_MARK))
 
 
 def is_pronoun(word: str) -> bool:

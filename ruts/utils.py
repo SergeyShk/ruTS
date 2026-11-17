@@ -4,36 +4,31 @@ import functools
 import inspect
 import re
 import unicodedata
+from bisect import bisect_left
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
+import anyts.document
 import anyts.utils
 import rumorph
-from anyseg import Segmenter
-from anyts.utils import (
-    add_tokenizer_rules,
-    check_sequence,
-    has_sents,
-    is_punctuation,
-    set_sent_starts as set_sent_starts,
-)
+from anyseg import Document, Segmenter
+from anyts.document import to_document
+from anyts.utils import check_sequence, is_punctuation
 
 from .constants import (
     CORE_MESSAGES,
     PARENTHETICAL_WORDS,
     PRONOMINAL_TYPES,
-    TOKENIZER_INFIXES,
-    TOKENIZER_PREFIXES,
-    TOKENIZER_SUFFIXES,
     VERBAL_NOUN_LEMMAS,
     VERBAL_NOUN_SUFFIXES,
 )
 from .exceptions import SourceTypeError
 
 if TYPE_CHECKING:
+    from anyts.document import TreeWord
     from spacy.language import Language
-    from spacy.tokens import Doc, Token
+    from spacy.tokens import Doc
 
 F = TypeVar("F", bound=Callable[..., Any])
 BYTE_ORDER_MARK = "\ufeff"
@@ -485,28 +480,29 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
     return found
 
 
-def token_analysis(token: Token) -> rumorph.Analysis | None:
+def word_analysis(word: TreeWord) -> rumorph.Analysis | None:
     """
-    Получение разбора ruMorph, которым размечен токен
+    Получение разбора ruMorph, которым размечено слово документа
 
     Описание:
-        Разбор словоформы с леммой, частью речи и признаками токена, как у компонента
-        rumorph; у токена обычной модели такого разбора обычно нет
+        Разбор словоформы с леммой, частью речи и признаками слова, как у компонента
+        rumorph; у слова обычной модели такого разбора обычно нет
 
     Аргументы:
-        token (Token): Токен
+        word (TreeWord): Слово дерева документа
 
     Вывод:
         Analysis|None: Разбор или None
     """
-    if not token.lemma_:
+    if not word.lemma:
         return None
-    return _matching_analysis(token.text, token.lemma_, token.pos_, str(token.morph))
+    morph = "|".join(f"{name}={value}" for name, value in word.feats.items())
+    return _matching_analysis(word.form, word.lemma, word.upos or "", morph)
 
 
 @lru_cache(maxsize=131072)
 def _matching_analysis(word: str, lemma: str, pos: str, morph: str) -> rumorph.Analysis | None:
-    """Разбор ruMorph словоформы с заданными леммой, частью речи и признаками (token_analysis)"""
+    """Разбор ruMorph словоформы с заданными леммой, частью речи и признаками (word_analysis)"""
     feats = dict(pair.split("=", 1) for pair in morph.split("|") if "=" in pair)
     return next(
         (
@@ -690,40 +686,95 @@ def iter_text_sents(text: str) -> Iterator[tuple[int, int, str]]:
     )
 
 
-def strip_doc_marks(doc: Doc) -> Doc:
+def get_document(source: str | Doc | Document) -> Document:
     """
-    Объект Doc со словами без знаков ударения и мягких переносов
+    Получение документа anySeg источника данных
 
     Описание:
-        Новый Doc из текстов токенов после strip_marks с теми же пробелами
-        и границами предложений (если они есть у каждого токена), без прочей разметки;
-        токен из одних знаков пропускается. Doc без знаков возвращается как есть
+        Строку делит anySeg (токены iter_tokens, предложения iter_text_sents); Doc
+        сохраняет свои токены, разметку и предложения, а Doc без предложений получает
+        предложения iter_text_sents (to_document ядра); Document возвращается как есть
 
     Аргументы:
-        doc (Doc): Объект Doc
+        source (str|Doc|Document): Источник данных
 
     Вывод:
-        Doc: Объект Doc без знаков
+        Document: Документ anySeg
+
+    Исключения:
+        SourceTypeError: Если источник данных не строка, не Doc и не Document
+
+    Пример использования:
+        >>> from ruts.utils import get_document
+        >>> document = get_document("Цена - 5 руб. Хватит?")
+        >>> [token.text for token in document.tokens]
+        ['Цена', '-', '5', 'руб', '.', 'Хватит', '?']
+        >>> [sentence.text for sentence in document.sentences]
+        ['Цена - 5 руб.', 'Хватит?']
     """
-    if not MARKED.search(doc.text):
-        return doc
-    sents = has_sents(doc)
-    words: list[str] = []
-    spaces: list[bool] = []
-    starts: list[bool | int | None] = []
-    start = False
-    for token in doc:
-        start = start or bool(sents and token.is_sent_start)
-        word = strip_marks(token.text)
-        if not word:
-            if spaces:
-                spaces[-1] = spaces[-1] or bool(token.whitespace_)
+    if isinstance(source, str):
+        return SEGMENTER.segment(source)
+    return to_document(source, sentenize=iter_text_sents, messages=CORE_MESSAGES)
+
+
+def document_words(document: Document) -> tuple[str, ...]:
+    """
+    Слова документа anySeg
+
+    Описание:
+        Токены с буквой или цифрой (document_words ядра) без знаков ударения, мягких
+        переносов и точки сокращения (word_form)
+
+    Аргументы:
+        document (Document): Документ anySeg
+
+    Вывод:
+        tuple[str, ...]: Слова
+
+    Исключения:
+        SourceTypeError: Если документ не Document
+
+    Пример использования:
+        >>> from ruts.utils import document_words, get_document
+        >>> document_words(get_document("Ма\\u0301ма, 5 руб. в день!"))
+        ('Мама', '5', 'руб', 'в', 'день')
+    """
+    return tuple(word_form(strip_marks(word)) for word in anyts.document.document_words(document))
+
+
+def strip_document_marks(document: Document) -> Document:
+    """
+    Документ без знаков ударения и мягких переносов
+
+    Описание:
+        Новый документ из текста strip_marks с теми же токенами и предложениями,
+        без разметки слов; токен из одних знаков пропускается. Документ без знаков
+        возвращается как есть
+
+    Аргументы:
+        document (Document): Документ anySeg
+
+    Вывод:
+        Document: Документ без знаков
+    """
+    text = document.text
+    if not MARKED.search(text):
+        return document
+    stripped, origin, _ = take_marks(text)
+    starts: list[int] = []
+    ends: list[int] = []
+    sentence_starts: list[int] = []
+    sentence = -1
+    for token in document.tokens:
+        start, end = bisect_left(origin, token.start), bisect_left(origin, token.end)
+        if start == end:
             continue
-        words.append(word)
-        spaces.append(bool(token.whitespace_))
+        if token.sentence.index != sentence:
+            sentence_starts.append(len(starts))
+            sentence = token.sentence.index
         starts.append(start)
-        start = False
-    return type(doc)(doc.vocab, words=words, spaces=spaces, sent_starts=starts if sents else None)
+        ends.append(end)
+    return Document.from_tokens(stripped, starts, ends, sentence_starts=sentence_starts)
 
 
 def load_pipeline(
@@ -773,28 +824,3 @@ def load_pipeline(
     if "rumorph" not in nlp.component_names:
         nlp.add_pipe("rumorph", after="anyseg_sentencizer")
     return nlp
-
-
-def add_dash_rules(nlp: Language) -> None:
-    """
-    Добавление в токенизатор пайплайна spaCy правил для тире реплик
-
-    Описание:
-        С правилами TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES и TOKENIZER_INFIXES тире
-        реплик отделяется от слова, как у строки (iter_tokens); повторный вызов правил
-        не дублирует. Компоненты ruTS добавляют их в свой пайплайн сами
-
-    Аргументы:
-        nlp (Language): Пайплайн, в токенизатор которого добавляются правила
-
-    Примеры использования:
-        >>> import spacy
-        >>> from ruts.utils import add_dash_rules
-        >>> nlp = spacy.blank("ru")
-        >>> [token.text for token in nlp("-Нет -сказал он.")]
-        ['-Нет', '-сказал', 'он', '.']
-        >>> add_dash_rules(nlp)
-        >>> [token.text for token in nlp("-Нет -сказал он.")]
-        ['-', 'Нет', '-', 'сказал', 'он', '.']
-    """
-    add_tokenizer_rules(nlp, TOKENIZER_PREFIXES, TOKENIZER_SUFFIXES, TOKENIZER_INFIXES)

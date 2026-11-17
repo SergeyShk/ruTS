@@ -4,11 +4,12 @@ from statistics import pstdev
 import anyts.syntax_stats
 import pytest
 import spacy
-from anyts.utils import iter_doc_units
+from anyts.document import get_tree
 from spacy.tokens import Doc
 
 from ruts import SyntaxStats
 from ruts.constants import SYNTAX_STATS_DESC
+from ruts.exceptions import SourceError
 from ruts.syntax_stats import (
     calc_genitive_chains,
     calc_nominal_chains,
@@ -37,7 +38,19 @@ from ruts.syntax_stats import (
     is_subordinating_mark,
     subtree_len,
 )
+from ruts.utils import document_words, get_document
 from tests.pipelines import load_model_nlp
+
+
+def tree_words(doc):
+    """Слова дерева документа Doc"""
+    return get_tree(get_document(doc)).words
+
+
+def tree_sents(doc):
+    """Слова предложений дерева документа Doc"""
+    return get_tree(get_document(doc)).sentences
+
 
 text = (
     "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота значений\
@@ -152,7 +165,7 @@ def doc():
 
 @pytest.fixture(scope="module")
 def sents(doc):
-    return list(doc.sents)
+    return list(tree_sents(doc))
 
 
 @pytest.fixture(scope="module")
@@ -169,10 +182,16 @@ def test_init_value_error():
         )
 
 
-@pytest.mark.parametrize("source", [666, ["a", "b"], {"a": "b"}, text])
+@pytest.mark.parametrize("source", [666, ["a", "b"], {"a": "b"}])
 def test_init_type_error(source):
     with pytest.raises(TypeError):
         SyntaxStats(source)
+
+
+def test_init_string_without_parse():
+    """У строки нет разбора зависимостей: SyntaxStats нужен Doc или Document с разбором"""
+    with pytest.raises(SourceError, match="отсутствует разбор зависимостей"):
+        SyntaxStats(text)
 
 
 def test_counts(ss):
@@ -199,7 +218,7 @@ def test_counts(ss):
 def test_distributions(ss):
     assert ss.c_children == {0: 13, 1: 9, 2: 3, 3: 1, 4: 1}
     assert sum(ss.c_deps.values()) == 27
-    assert ss.c_deps["ROOT"] == 5
+    assert ss.c_deps["root"] == 5
     assert ss.c_deps["nmod"] == 4
     assert "punct" not in ss.c_deps
 
@@ -310,19 +329,27 @@ def test_split_predicates():
             ),
         ]
     )
-    pairs = find_split_predicates(doc)
-    assert [(verb.text, noun.text) for verb, noun in pairs] == [
+    pairs = find_split_predicates(tree_words(doc))
+    assert [(verb.form, noun.form) for verb, noun in pairs] == [
         ("осуществляет", "проверку"),
         ("оказывает", "помощь"),
         ("принято", "решение"),
         ("проведена", "Проверка"),
         ("проводится", "Работа"),
     ]
-    assert is_light_verb(doc[1]) and is_light_verb(doc[5]) and not is_light_verb(doc[14])
-    assert is_split_predicate_noun(doc[2]) and is_split_predicate_noun(doc[6])
-    assert not is_split_predicate_noun(doc[3]) and not is_split_predicate_noun(doc[15])
-    assert get_lemma(doc[2]) == "проверка"
-    assert get_lemma(doc[1]) == "осуществлять"
+    assert (
+        is_light_verb(tree_words(doc)[1])
+        and is_light_verb(tree_words(doc)[5])
+        and not is_light_verb(tree_words(doc)[14])
+    )
+    assert is_split_predicate_noun(tree_words(doc)[2]) and is_split_predicate_noun(
+        tree_words(doc)[6]
+    )
+    assert not is_split_predicate_noun(tree_words(doc)[3]) and not is_split_predicate_noun(
+        tree_words(doc)[15]
+    )
+    assert get_lemma(tree_words(doc)[2]) == "проверка"
+    assert get_lemma(tree_words(doc)[1]) == "осуществлять"
     ss = SyntaxStats(doc)
     assert ss.n_split_predicates == 5
     assert ss.split_predicates == (
@@ -384,20 +411,20 @@ NOMINAL_SENTENCES = [
 def test_nominal_chains(doc):
     """Именная цепочка - родительные и предложные звенья вперемешку"""
     nominal = build_doc(NOMINAL_SENTENCES)
-    first, second = nominal.sents
-    assert [token.text for token in first if is_nominal_chain_link(token)] == ["цен", "нефть"]
+    first, second = tree_sents(nominal)
+    assert [token.form for token in first if is_nominal_chain_link(token)] == ["цен", "нефть"]
     assert (calc_nominal_chains(first), calc_genitive_chains(first)) == ([2], [])
     assert (calc_nominal_chains(second), calc_genitive_chains(second)) == ([4], [3])
     ss = SyntaxStats(nominal)
     assert (ss.n_nominal_chains, ss.nominal_chains_per_sent, ss.max_nominal_chain_len) == (2, 1, 4)
     assert ss.max_prep_chain_len == 0
     # Цепочка родительных - частный случай именной
-    assert calc_nominal_chains(doc) == calc_genitive_chains(doc) == [3]
+    assert calc_nominal_chains(tree_words(doc)) == calc_genitive_chains(tree_words(doc)) == [3]
 
 
 def test_calc_genitive_chains(doc, sents):
     assert [calc_genitive_chains(sent) for sent in sents] == [[], [], [3], [], []]
-    assert calc_genitive_chains(doc) == [3]
+    assert calc_genitive_chains(tree_words(doc)) == [3]
     assert [is_genitive_modifier(token) for token in sents[2]] == [
         False,
         True,
@@ -410,7 +437,7 @@ def test_calc_genitive_chains(doc, sents):
 
 
 def test_clause_heads(sents):
-    assert [token.text for sent in sents for token in sent if is_clause_head(token)] == [
+    assert [token.form for sent in sents for token in sent if is_clause_head(token)] == [
         "продан",
         "сказал",
         "придёт",
@@ -421,10 +448,10 @@ def test_clause_heads(sents):
         "уйти",
     ]
     assert [
-        token.text for sent in sents for token in sent if is_subordinate_clause_head(token)
+        token.form for sent in sents for token in sent if is_subordinate_clause_head(token)
     ] == ["придёт"]
     assert [
-        token.text for sent in sents for token in sent if is_infinitive_clause_head(token)
+        token.form for sent in sents for token in sent if is_infinitive_clause_head(token)
     ] == ["уйти"]
 
 
@@ -454,14 +481,16 @@ def test_clause_heads(sents):
 def test_model_infinitive_clauses(nlp, text, clauses, infinitive, periphrasis):
     """Инфинитив при глаголе - своя клауза, но не придаточная, кроме сочетаний одной предикации"""
     doc = nlp(text)
-    assert [token.text for token in doc if is_clause_head(token)] == clauses
-    assert not any(is_subordinate_clause_head(token) for token in doc)
-    assert [token.text for token in doc if is_infinitive_clause_head(token)] == infinitive
+    assert [token.form for token in tree_words(doc) if is_clause_head(token)] == clauses
+    assert not any(is_subordinate_clause_head(token) for token in tree_words(doc))
+    assert [
+        token.form for token in tree_words(doc) if is_infinitive_clause_head(token)
+    ] == infinitive
     ss = SyntaxStats(doc)
     assert (ss.n_clauses, ss.n_subordinate_clauses) == (len(clauses), 0)
     assert ss.n_infinitive_clauses == len(infinitive)
-    assert [token.text for token in doc if is_infinitive_clause(token)] == infinitive
-    xcomp = next(token for token in doc if token.dep_ == "xcomp")
+    assert [token.form for token in tree_words(doc) if is_infinitive_clause(token)] == infinitive
+    xcomp = next(token for token in tree_words(doc) if token.deprel == "xcomp")
     assert ss.is_infinitive_periphrasis(xcomp) is is_infinitive_periphrasis(xcomp) is periphrasis
 
 
@@ -529,8 +558,10 @@ def test_finite_xcomp_is_no_clause():
             )
         ]
     )
-    assert not is_clause_head(doc[3]) and not is_infinitive_periphrasis(doc[3])
-    assert anyts.syntax_stats.is_clause_head(doc[3])
+    assert not is_clause_head(tree_words(doc)[3]) and not is_infinitive_periphrasis(
+        tree_words(doc)[3]
+    )
+    assert anyts.syntax_stats.is_clause_head(tree_words(doc)[3])
 
 
 def test_subordinate_conj():
@@ -545,7 +576,7 @@ def test_subordinate_conj():
             )
         ]
     )
-    assert [token.text for token in doc if is_subordinate_clause_head(token)] == [
+    assert [token.form for token in tree_words(doc) if is_subordinate_clause_head(token)] == [
         "придёт",
         "уйдёт",
     ]
@@ -580,16 +611,16 @@ def test_parataxis():
             ),
         ]
     )
-    assert [token.text for token in doc if is_clause_head(token)] == [
+    assert [token.form for token in tree_words(doc) if is_clause_head(token)] == [
         "пришёл",
         "сказал",
         "уходи",
         "думала",
         "умён",
     ]
-    assert not is_predicate(doc[0])
-    assert is_predicate(doc[9])
-    assert is_predicate(doc[16])
+    assert not is_predicate(tree_words(doc)[0])
+    assert is_predicate(tree_words(doc)[9])
+    assert is_predicate(tree_words(doc)[16])
     ss = SyntaxStats(doc)
     assert ss.n_clauses == 5
     assert ss.n_subordinate_clauses == 1
@@ -642,7 +673,7 @@ def test_model(nlp):
     doc = nlp(text)
     ss = SyntaxStats(doc)
     assert ss.n_sents == len(list(doc.sents))
-    assert ss.n_words == sum(1 for _ in iter_doc_units(doc, join_hyphens=True))
+    assert ss.n_words == len(document_words(get_document(doc)))
     assert ss.n_leaves + ss.n_subtrees == ss.n_words
     assert ss.n_clauses >= ss.n_sents
     assert ss.n_subordinate_clauses <= ss.n_clauses
@@ -709,10 +740,10 @@ def test_model_split_predicates(nlp):
 
 def test_is_split_predicate_noun_verb(nlp):
     doc = nlp("Провели работу. Получили работу. Получили разрешение.")
-    assert is_split_predicate_noun(doc[1], doc[0])
-    assert not is_split_predicate_noun(doc[4], doc[3])
-    assert is_split_predicate_noun(doc[4])
-    assert is_split_predicate_noun(doc[7], doc[6])
+    assert is_split_predicate_noun(tree_words(doc)[1], tree_words(doc)[0])
+    assert not is_split_predicate_noun(tree_words(doc)[4], tree_words(doc)[3])
+    assert is_split_predicate_noun(tree_words(doc)[4])
+    assert is_split_predicate_noun(tree_words(doc)[7], tree_words(doc)[6])
 
 
 @pytest.mark.parametrize(
@@ -741,15 +772,17 @@ def test_is_split_predicate_noun_verb(nlp):
     ],
 )
 def test_model_split_predicates_cases(nlp, text, expected):
-    assert [(verb.text, noun.text) for verb, noun in find_split_predicates(nlp(text))] == expected
+    assert [
+        (verb.form, noun.form) for verb, noun in find_split_predicates(tree_words(nlp(text)))
+    ] == expected
 
 
 def test_is_reflexive(nlp):
     doc = nlp("Проверка проводится, решение принято, кот спит.")
-    assert is_reflexive(doc[1])
-    assert is_reflexive(doc[4])
-    assert not is_reflexive(doc[7])
-    assert not is_reflexive(doc[0])
+    assert is_reflexive(tree_words(doc)[1])
+    assert is_reflexive(tree_words(doc)[4])
+    assert not is_reflexive(tree_words(doc)[7])
+    assert not is_reflexive(tree_words(doc)[0])
 
 
 def test_model_constructions(nlp):
@@ -767,7 +800,7 @@ def test_model_constructions(nlp):
 def test_negation_stress_mark():
     """Частица «не» со знаком ударения без признака Polarity - тоже отрицание"""
     doc = Doc(spacy.blank("ru").vocab, words=["не\u0301", "НЕ"], pos=["PART", "PART"])
-    assert [is_negation(token) for token in doc] == [True, True]
+    assert [is_negation(token) for token in tree_words(doc)] == [True, True]
 
 
 def test_clause_head_conj_loop():
@@ -780,7 +813,7 @@ def test_clause_head_conj_loop():
         deps=["nsubj", "ROOT", "conj", "conj"],
         pos=["PRON", "VERB", "VERB", "VERB"],
     )
-    assert not is_clause_head(doc[2])
+    assert not is_clause_head(tree_words(doc)[2])
     assert SyntaxStats(doc).n_clauses == 1
 
 
@@ -792,7 +825,7 @@ def test_pickle(nlp):
     stats = SyntaxStats(nlp("Дом, построенный рабочими, был продан. Он ушёл, хлопнув дверью."))
     for clone in (pickle.loads(pickle.dumps(stats)), copy.deepcopy(stats)):
         assert repr(clone.get_stats()) == repr(stats.get_stats())
-        assert [token.text for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
+        assert [token.form for token in clone.sents[1]] == ["Он", "ушёл", "хлопнув", "дверью"]
 
 
 @pytest.mark.parametrize(
@@ -813,15 +846,17 @@ def test_is_subordinating_mark(nlp, text, word, expected):
     """Подчинительный союз - по списку и контексту: составной «после того как», не «то»
     главной клаузы и не местоимение «что»"""
     doc = nlp(text)
-    marks = [token for token in doc if token.dep_ == "mark" and token.lower_ == word]
+    marks = [
+        token for token in tree_words(doc) if token.deprel == "mark" and token.form.lower() == word
+    ]
     assert marks and is_subordinating_mark(marks[0]) is expected
     stats = SyntaxStats(doc)
     assert stats.is_subordinating_mark(marks[0]) is expected
     # Модульные проверки клауз - с тем же правилом союза
     marked = [
         token
-        for token in doc
-        if token.dep_ in ("conj", "parataxis") and marks[0] in token.children
+        for token in tree_words(doc)
+        if token.deprel in ("conj", "parataxis") and marks[0] in token.children
     ]
     for head in marked:
         assert is_subordinate_clause_head(head) == stats.is_subordinate_clause_head(head)
@@ -858,7 +893,7 @@ def test_conjuncts_of_a_marked_clause(nlp):
         "воротилась домой и стала жить одна-одинехонька."
     )
     stats = SyntaxStats(doc)
-    heads = {token.text: token for token in doc}
+    heads = {token.form: token for token in tree_words(doc)}
     assert stats.is_subordinate_clause_head(heads["сказала"])
     assert not any(
         stats.is_subordinate_clause_head(heads[word]) for word in ("заплакала", "воротилась")

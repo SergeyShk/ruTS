@@ -187,6 +187,7 @@ RUSSIAN = {
     "ruts.style_stats": {
         "STYLE_STATS_DESC",
         "StyleStats",
+        "document_words",
         "WordsExtractor",
         "calc_academic_nausea",
         "calc_keyword_density",
@@ -198,7 +199,7 @@ RUSSIAN = {
         "find_nausea_words",
         "find_parentheticals",
     },
-    "ruts.lexical_stats": {"LEXICAL_STATS_DESC", "LexicalStats", "calc_surprisal"},
+    "ruts.lexical_stats": {"LEXICAL_STATS_DESC", "LexicalStats", "calc_surprisal", "is_number"},
     "ruts.morph_stats": {"MorphStats"},
     "ruts.corpus": {
         "collocations",
@@ -222,6 +223,7 @@ RUSSIAN = {
     "ruts.basic_stats": {
         "BASIC_STATS_DESC",
         "BasicStats",
+        "document_words",
         "COMPLEX_SYL_FACTOR",
         "DASH_PATTERN",
         "LONG_WORD_LETTER_FACTOR",
@@ -282,6 +284,7 @@ RUSSIAN = {
     "ruts.phon_stats": {
         "PHON_STATS_DESC",
         "PhonStats",
+        "document_words",
         "WordsExtractor",
         "check_params",
         "cv_pattern",

@@ -7,16 +7,17 @@
     слов расширение остается None. Имя, занятое расширением другого пакета, -
     ParameterError. Doc.to_bytes(), DocBin(store_user_data=True) и nlp.pipe(n_process > 1)
     с этими компонентами не работают: исключайте user_data при сохранении или храните
-    get_stats() отдельно. Сохраненный пайплайн загружается spacy.load() без импорта ruts
-    Компонент добавляет в токенизатор spaCy правила add_dash_rules, токенизатор anySeg
-    не меняется. ruts_blank_lines ставит начало предложения после пустой строки, если
-    добавлен перед parser, senter или sentencizer
+    get_stats() отдельно. Сохраненный пайплайн загружается spacy.load() без импорта ruts.
+    Компоненты не меняют токенизатор пайплайна: числа строки дает Doc конвейера
+    ruts.load_pipeline()
 """
+
+from __future__ import annotations
 
 import re
 
 import anyts.components
-from anyts.components import StatsComponent, start_sents_after_blank_lines
+from anyts.components import StatsComponent
 from spacy.language import Language
 from spacy.tokens import Doc
 
@@ -26,6 +27,7 @@ from .constants import CORE_MESSAGES
 from .datasets.freq2011 import FreqDict
 from .datasets.stress_dict import StressDict
 from .diversity_stats import DiversityStats
+from .exceptions import ParameterError
 from .lexical_stats import LexicalStats, is_number
 from .morph_stats import MorphStats
 from .phon_stats import PhonStats
@@ -33,21 +35,24 @@ from .readability_stats import ReadabilityStats
 from .style_stats import StyleStats
 from .syntax_stats import SyntaxStats
 from .unadapted_readability_stats import UnadaptedReadabilityStats
-from .utils import BYTE_ORDER_MARK, add_dash_rules, strip_marks
+from .utils import BYTE_ORDER_MARK, strip_marks
 from .verse_stats import VerseStats
 
 _LETTER = re.compile(r"[^\W\d_]")
 
-Language.component("ruts_blank_lines", func=start_sents_after_blank_lines)
-
 
 class _Component(StatsComponent):
-    """Компонент ruTS: расширяет токенизатор spaCy правилами add_dash_rules"""
+    """Компонент ruTS: русские сообщения об ошибках"""
 
     messages = CORE_MESSAGES
 
-    def prepare(self, nlp: Language) -> None:
-        add_dash_rules(nlp)
+
+def _check_data_dir(data_dir: object) -> None:
+    """Путь к директории словаря - строка или None"""
+    if data_dir is not None and not isinstance(data_dir, str):
+        raise ParameterError(
+            f"Параметр data_dir должен быть строкой, а не {type(data_dir).__name__}"
+        )
 
 
 @Language.factory("ruts_basic")
@@ -363,12 +368,14 @@ class LexicalStatsComponent(_Component, anyts.components.LexicalStatsComponent):
         name (str): Наименование компонента в пайплайне
         data_dir (str): Путь к директории с частотным словарем; если не задан,
             используется директория по умолчанию
+    Исключения:
+        ParameterError: Если data_dir не строка
     """
 
     stats_class = LexicalStats
-    join_hyphens = True
 
     def __init__(self, nlp: Language, name: str, data_dir: str | None = None):
+        _check_data_dir(data_dir)
         self.freq_dict = FreqDict(data_dir) if data_dir else FreqDict()
         super().__init__(nlp, name)
 
@@ -406,12 +413,15 @@ class VerseStatsComponent(_Component):
         name (str): Наименование компонента в пайплайне
         data_dir (str): Путь к директории со словарем ударений; если не задан,
             используется директория по умолчанию
+    Исключения:
+        ParameterError: Если data_dir не строка
     """
 
     stats_class = VerseStats
     stats_params = ("stress_dict",)
 
     def __init__(self, nlp: Language, name: str, data_dir: str | None = None):
+        _check_data_dir(data_dir)
         self.stress_dict = StressDict(data_dir) if data_dir else StressDict()
         super().__init__(nlp, name)
 

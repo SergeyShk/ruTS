@@ -3,7 +3,7 @@ from math import isnan
 
 import pytest
 import spacy
-from anyts.utils import iter_doc_units
+from anyts.document import get_tree
 from spacy.tokens import Doc
 
 from ruts import BasicStats, CohesionStats, SentsExtractor, WordsExtractor
@@ -15,10 +15,7 @@ from ruts.cohesion_stats import (
     is_content_word,
     is_pronoun,
     load_connectors,
-    split_doc_units,
     token_info,
-    unit_info,
-    unit_text,
     word_info,
 )
 from ruts.constants import (
@@ -33,7 +30,7 @@ from ruts.constants import (
     CONNECTOR_TYPES,
 )
 from ruts.exceptions import ParameterError, SourceError
-from ruts.utils import lemmatize, normalize_yo
+from ruts.utils import get_document, lemmatize, normalize_yo
 from tests.pipelines import load_model_nlp
 
 text = (
@@ -116,14 +113,18 @@ def test_word_info():
     assert word_info("нет").tense is None
 
 
+def _tree_words(source):
+    return get_tree(get_document(source)).words
+
+
 def test_token_info(nlp):
-    doc = nlp("Иван читает эту книгу.")
-    assert token_info(doc[0]) == WordInfo("иван", True, False, False, True, True, None, None)
-    assert token_info(doc[1]) == WordInfo(
+    words = _tree_words(nlp("Иван читает эту книгу."))
+    assert token_info(words[0]) == WordInfo("иван", True, False, False, True, True, None, None)
+    assert token_info(words[1]) == WordInfo(
         "читать", False, False, False, False, True, "Pres", "Imp"
     )
-    assert token_info(doc[2]) == WordInfo("этот", False, True, True, False, False, None, None)
-    assert token_info(doc[4]) == WordInfo(".", False, False, False, False, False, None, None)
+    assert token_info(words[2]) == WordInfo("этот", False, True, True, False, False, None, None)
+    assert token_info(words[4]) == WordInfo(".", False, False, False, False, False, None, None)
 
 
 def test_init_doc_without_lemmatizer(nlp):
@@ -577,19 +578,13 @@ def test_connector_rules_dictionary():
 
 
 def test_hyphenated_verb_doc(nlp):
-    doc = nlp("Жили-были дед и баба. Они жили долго. Назовите-ка их, говорить-то легко.")
-    cs = CohesionStats(doc)
-    assert cs.words[0] == ("Жили-были", "дед", "и", "баба")
-    assert cs.lemmas[0][0] == lemmatize("Жили-были", "VERB")
-    assert cs.tense_repetition == 1.0
-    # Вид «жили-были» ruMorph не угадывает: повтор вида - только у «назовите-ка»
-    assert cs.aspect_repetition == 0.0
-    units = list(iter_doc_units(doc, join_hyphens=True))
-    assert unit_info(units[0]) == WordInfo(
-        lemmatize("Жили-были", "VERB"), False, False, False, False, True, "Past", None
-    )
-    assert unit_info(units[1]) == token_info(doc[3])
-    assert (unit_info(units[7]).tense, unit_info(units[7]).aspect) == (None, "Perf")
+    """Слова через дефис Doc конвейера - те же, что у строки: anySeg делит «жили-были»
+    и частицы «-ка», «-то»"""
+    text = "Жили-были дед и баба. Они жили долго. Назовите-ка их, говорить-то легко."
+    cs = CohesionStats(nlp(text))
+    assert cs.words == CohesionStats(text).words
+    assert cs.words[0] == ("Жили", "были", "дед", "и", "баба")
+    assert cs.lemmas == CohesionStats(text).lemmas
 
 
 def test_doc_without_sents(model_nlp):
@@ -600,19 +595,14 @@ def test_doc_without_sents(model_nlp):
     assert not tagged.has_annotation("SENT_START") and tagged.has_annotation("POS")
     cs = CohesionStats(tagged)
     assert cs.words == CohesionStats(doc).words
-    assert cs.n_words == BasicStats(tagged).n_words == 11
+    # Токенизатор модели делит «Кое-как», и слова не склеиваются
+    assert cs.n_words == BasicStats(tagged).n_words == 12
     assert cs.lemmas == CohesionStats(doc).lemmas
     # «т.е.» у токенизатора и теггера модели - один токен PUNCT, не коннектор
     assert [connector.text for connector in cs.connector_spans] == ["раз", "значит"]
     blank = spacy.blank("ru")(text)
     assert CohesionStats(blank).words == cs.words
-    assert CohesionStats(blank).n_words == 11
-    units = split_doc_units(blank, SentsExtractor(), join_hyphens=True)
-    assert [[unit_text(unit) for unit in sent] for sent in units] == [
-        list(sent) for sent in cs.words
-    ]
-    extractor = SentsExtractor(tokenizer=lambda text: ("нет такого предложения",))
-    assert split_doc_units(blank, extractor) == []
+    assert CohesionStats(blank).n_words == 12
     short = "Кот сидел. Пёс спал."
     with pytest.raises(SourceError):
         CohesionStats(short, sents_extractor=SentsExtractor(min_len=50))
@@ -664,25 +654,23 @@ def test_connectors_single_sentence_words(cs):
     assert cs.connectors_additive == pytest.approx(1 / 21 * 1000)
 
 
-def test_sents_extractor_class_of_a_subclass():
-    """Свой экстрактор предложений подкласса делит и строку, и Doc без границ"""
+def test_sents_extractor_of_string_and_doc():
+    """Экстрактор предложений делит и строку, и Doc; атрибут класса 0.4 - ошибка"""
     import re
 
-    class Lines(SentsExtractor):
-        def __init__(self):
-            super().__init__(tokenizer=re.compile(r"; "))
-
-    class LineCohesion(CohesionStats):
-        sents_extractor_class = Lines
-
+    lines = SentsExtractor(tokenizer=re.compile(r"; "))
     text = "Кот спит, пёс лежит; мы ушли"
     blank = spacy.blank("ru")(text)
     counts = {
-        LineCohesion(text).n_sents,
-        LineCohesion(blank).n_sents,
-        LineCohesion(blank, words_extractor=WordsExtractor()).n_sents,
+        CohesionStats(text, lines).n_sents,
+        CohesionStats(blank, lines).n_sents,
+        CohesionStats(blank, lines, words_extractor=WordsExtractor()).n_sents,
     }
     assert counts == {2}
+    with pytest.raises(ParameterError, match="sents_extractor_class, который больше не читается"):
+
+        class LineCohesion(CohesionStats):
+            sents_extractor_class = SentsExtractor
 
 
 def test_forward_overlap(cs):
@@ -732,7 +720,7 @@ def test_paragraphs_are_lines(nlp):
         assert CohesionStats(source, blank_lines=True).n_paragraphs == 1
     assert CohesionStats(doc, words_extractor=WordsExtractor()).n_paragraphs == 3
     assert CohesionStats(paragraphs, blank_lines=True).n_paragraphs == 3
-    with pytest.raises(ParameterError, match=r"^The blank_lines must be a bool"):
+    with pytest.raises(ParameterError, match=r"^Параметр blank_lines должен быть логическим"):
         CohesionStats(lines, blank_lines="да")
 
 
@@ -809,7 +797,7 @@ def test_token_without_morph():
         words=["Кот", "спит", ".", "Кот", "ест", "."],
         pos=["NOUN", "VERB", "PUNCT", "NOUN", "VERB", "PUNCT"],
     )
-    assert [token_info(token).content for token in doc] == [True, True, False] * 2
+    assert [token_info(word).content for word in _tree_words(doc)] == [True, True, False] * 2
 
 
 def test_doc_pipeline_as_string(nlp):

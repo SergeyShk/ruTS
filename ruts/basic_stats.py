@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import anyts
 import anyts.basic_stats
 from anyts.basic_stats import dash_pattern
-from anyts.utils import check_integer, is_doc
+from anyts.utils import check_integer, is_doc, is_document
 
 from .constants import (
     BASIC_STATS_DESC,
@@ -16,11 +16,12 @@ from .constants import (
     LONG_WORD_LETTER_FACTOR,
 )
 from .exceptions import ParameterError
-from .extractors import SentsExtractor, WordsExtractor
+from .extractors import WordsExtractor
 from .syllables import count_syllables
-from .utils import strip_doc_marks, strip_marks
+from .utils import document_words, get_document, strip_document_marks, strip_marks
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 PUNCTUATION_MARKS = {**anyts.basic_stats.PUNCTUATION_MARKS, "„": "straight_quotes"}
@@ -68,8 +69,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
                             'other': 0}}
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc); у Doc слова - токены
-            (дефисные слова склеиваются), предложения - из разметки, без нее - через
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document);
+            у Doc и Document слова - токены, предложения - из разметки, без нее - через
             SentsExtractor; знаки ударения и мягкие переносы не считаются (strip_marks)
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений;
             если задан, применяется и к тексту Doc
@@ -119,22 +120,19 @@ class BasicStats(anyts.basic_stats.BasicStats):
         print_stats: Отображение вычисленных статистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc или экстрактор
-            другого типа
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
+            или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если порог не целое число или меньше 1
     """
 
-    sents_extractor_class = SentsExtractor
-    words_extractor_class = WordsExtractor
-    join_hyphens = True
     stats_desc = BASIC_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         sents_extractor: anyts.SentsExtractor | None = None,
         words_extractor: anyts.WordsExtractor | None = None,
         normalize: bool = False,
@@ -143,8 +141,8 @@ class BasicStats(anyts.basic_stats.BasicStats):
     ):
         if isinstance(source, str):
             source = strip_marks(source)
-        elif is_doc(source):
-            source = strip_doc_marks(source)
+        elif is_doc(source) or is_document(source):
+            source = strip_document_marks(get_document(source))
         super().__init__(
             source,
             sents_extractor,
@@ -153,6 +151,14 @@ class BasicStats(anyts.basic_stats.BasicStats):
             complex_syl_factor,
             long_word_letter_factor,
         )
+
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
+
+    def doc_words(self, document: Document) -> tuple[str, ...]:
+        """Слова документа без знаков ударения и точки сокращения (ruts.utils.document_words)"""
+        return document_words(document)
 
     def count_syllables(self, word: str) -> int:
         """

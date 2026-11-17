@@ -3,24 +3,26 @@ from __future__ import annotations
 import re
 from collections.abc import Mapping, Sequence
 from functools import cache, lru_cache
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import anyts
 import anyts.lexical_stats
 import anyts.utils
 import rumorph
 from anyts.constants import FREQUENCY_BANDS as FREQUENCY_BANDS
+from anyts.document import get_tree
 from anyts.lexical_stats import LexicalWord
-from anyts.utils import has_pos, is_doc, iter_doc_units, source_type_error
+from anyts.utils import has_words, is_doc, is_document, source_type_error
 
-from .cohesion_stats import WordInfo, analysis_info, unit_info, unit_text, word_info
+from .cohesion_stats import WordInfo, analysis_info, token_info, word_info, word_text
 from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
 from .extractors import NUMBER_PATTERN
-from .utils import analyze_text, analyze_words, normalize_yo, parse_all
+from .utils import analyze_text, analyze_words, get_document, normalize_yo, parse_all
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 TOP_LEMMAS_FILE = RESOURCES_DIR / "sharoff_top10000.txt"
@@ -36,11 +38,10 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
 
     Описание:
         Частотность - по частотному словарю Ляшевской и Шарова (FreqDict), частотные
-        полосы - по вшитому списку 10 000 лемм Шарова, леммы - ruMorph: у Doc с разметкой
-        частей речи - по части речи токена, у строки - в контексте предложения, у Doc без
-        разметки - так же в предложениях с теми же словами, что у строки; с words_extractor
-        и для остальных слов - первый разбор. Дефисные
-        слова Doc склеиваются, числа (2020, 5.5, 3-й) словами не считаются. Полосы
+        полосы - по вшитому списку 10 000 лемм Шарова, леммы - ruMorph: у Doc и Document
+        с разметкой частей речи - по части речи слова, у строки - в контексте предложения,
+        у Doc и Document без разметки - так же; с words_extractor и для остальных слов -
+        первый разбор. Числа (2020, 5.5, 3-й) словами не считаются. Полосы
         и лексическая плотность считаются без загруженного FreqDict
 
     Ссылки:
@@ -71,9 +72,9 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         {1000: 0.7142857142857143, 2000: 0.8571428571428571, 5000: 1.0, 10000: 1.0}
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
         freq_dict (FreqDict): Частотный словарь; если не задан, используется FreqDict()
             из директории по умолчанию
 
@@ -112,8 +113,8 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         print_stats: Отображение вычисленных статистик с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
-            или частотный словарь другого типа
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document,
+            экстрактор или частотный словарь другого типа
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: При обращении к метрикам по словарю, если словарь не загружен
     """
@@ -126,7 +127,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         words_extractor: anyts.WordsExtractor | None = None,
         freq_dict: FreqDict | None = None,
     ):
@@ -135,28 +136,37 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         self._words_extractor = words_extractor
         super().__init__(source, freq_dict)
 
-    def analyze(self, source: str | Doc) -> list[LexicalWord]:
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
+
+    def analyze(self, source: str | Doc | Document) -> list[LexicalWord]:
         """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаком
         знаменательного слова"""
         extractor = self._words_extractor
         infos: list[WordInfo]
-        if is_doc(source) and extractor is not None:
-            source = source.text
-        if is_doc(source):
-            all_units = list(iter_doc_units(source, join_hyphens=True))
-            keep = [not is_number(unit_text(unit)) for unit in all_units]
-            units = [unit for unit, kept in zip(all_units, keep, strict=True) if kept]
-            words = [unit_text(unit) for unit in units]
-            if has_pos(source):
-                infos = [unit_info(unit) for unit in units]
+        parsed = is_doc(source) or is_document(source)
+        if parsed and extractor is not None:
+            source = cast("Doc | Document", source).text
+            parsed = False
+        if parsed:
+            document = self._document(source)
+            all_words = [word for word in get_tree(document).words if has_words(word.form)]
+            texts = [word_text(word) for word in all_words]
+            keep = [not is_number(text) for text in texts]
+            kept = [word for word, flag in zip(all_words, keep, strict=True) if flag]
+            words = [text for text, flag in zip(texts, keep, strict=True) if flag]
+            if any(word.upos for word in all_words):
+                infos = [token_info(word) for word in kept]
             else:
                 found = analyze_words(
-                    [(unit[0].idx, unit_text(unit)) for unit in all_units], source.text
+                    [(word.start, text) for word, text in zip(all_words, texts, strict=True)],
+                    document.text,
                 )
                 infos = [
-                    analysis_info(analysis) if analysis is not None else word_info(unit_text(unit))
-                    for unit, analysis, kept in zip(all_units, found, keep, strict=True)
-                    if kept
+                    analysis_info(analysis) if analysis is not None else word_info(text)
+                    for text, analysis, flag in zip(texts, found, keep, strict=True)
+                    if flag
                 ]
         elif isinstance(source, str):
             if extractor is None:

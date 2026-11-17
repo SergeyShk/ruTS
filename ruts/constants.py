@@ -20,21 +20,6 @@ DEFAULT_DATA_DIR = (
 )
 # Заголовок User-Agent загрузок наборов данных
 USER_AGENT = "ruTS"
-# Правила токенизатора spaCy для тире реплик - как utils.iter_tokens для строки
-# Буква с комбинирующими знаками: ударение и NFD-запись й и ё - не \w
-LETTER = r"(?:[^\W\d_]|[\u0300-\u036f])"
-_OPENING = r"[«„“\"'(\[]"
-_CLOSING = r"[.,;:!?…»“”\"')\]]"
-_DASH = r"(?:-+|[—–―])"
-TOKENIZER_PREFIXES = (rf"-+(?={LETTER}|{_OPENING})", "―")
-TOKENIZER_SUFFIXES = (rf"(?<={LETTER})-+", "―", rf"(?<=―){_CLOSING}")
-TOKENIZER_INFIXES = (
-    rf"(?<={LETTER})-{{2,}}(?={LETTER}|{_OPENING})",
-    rf"(?<={LETTER}){_DASH}(?={_OPENING})",
-    rf"(?<={_CLOSING}){_DASH}(?={LETTER}|{_OPENING})",
-    rf"(?<={LETTER}){_CLOSING}+(?={_DASH})",
-    rf"(?<=[-—–―]){_OPENING}",
-)
 RESOURCES_DIR = Path(__file__).parent.resolve() / "resources"
 RU_VOWELS = ["а", "е", "и", "у", "о", "я", "ё", "э", "ю", "ы"]
 RU_VOWELS += list(map(str.upper, RU_VOWELS))
@@ -405,6 +390,7 @@ _RU_CORE_MESSAGES: dict[str, str] = {
         "В расширении {name} нет {stats}: добавьте компонент с именем {name} перед {component}"
     ),
     "extension_name": "Имя расширения должно быть строкой, а не {type}",
+    "empty_extension": "Имя расширения не может быть пустым",
     "no_stats_class": "У {cls} нет конкретного класса статистик в stats_class",
     "stats_param": "У {cls} нет атрибута {param} из stats_params",
     "foreign_extension": (
@@ -413,7 +399,8 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "layers_type": "Слои должны быть списком имен или строкой",
     "unknown_layer": "Неизвестный слой подсветки: {layer}",
     "layer_unavailable": "Слой {layer} недоступен",
-    "layer_annotations": "Слою {layer} нужен Doc с аннотациями: {annotations}",
+    "layer_annotations": "Слою {layer} нужен документ с аннотациями: {annotations}",
+    "layer_columns": "Слою {layer} класса {cls} нужны столбцы, которых нет в документе: {columns}",
     "fragment_layer": "Для слоя {layer} найден фрагмент слоя {found}",
     "fragment_outside": "Фрагмент слоя {layer} пуст или лежит вне текста: {start}-{end}",
     "long_sent_word_factor": "Количество слов в длинном предложении должно быть больше 0",
@@ -429,6 +416,15 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "top_words": "Количество слов должно быть больше 0",
     "top_ngrams": "Количество N-грамм должно быть больше 0",
     "text_type": "Ожидается строка текста, а не {type}",
+    "bool_param": "Параметр {param} должен быть логическим значением, а не {type}",
+    "integer_param": "Параметр {param} должен быть целым числом, а не {type}",
+    "number_param": "Параметр {param} должен быть числом, а не {type}",
+    "words_param": "Параметр {param} должен быть списком строк, а не {type}",
+    "mark_length": "Знак параметра {param} должен быть одним символом, а не {mark}",
+    "negative_words": "Число слов не может быть отрицательным",
+    "removed_attribute": (
+        "{cls} задает атрибут {name}, который больше не читается: переопределите {replacement}"
+    ),
     "min_words": "Наименьшее число слов в окне должно быть больше 0",
     "min_words_window": "Наименьшее число слов в окне не может быть больше окна",
     "sentence_lengths": "Длины предложений должны быть целыми числами",
@@ -458,7 +454,10 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "tokenizer": "Токенизатор задан некорректно",
     "tokenizer_iterable": "Токенизатор должен возвращать итерируемый объект",
     "tokenizer_strings": "Токенизатор должен возвращать строки, а не {type}",
-    "hook_doc": "Крючок {hook} класса {cls} должен возвращать Doc, а не {type}",
+    "hook_document": "Крючок {hook} класса {cls} должен возвращать Document, а не {type}",
+    "hook_words": "Крючок {hook} класса {cls} должен возвращать последовательность строк, а не {type}",
+    "hook_word_pairs": "Крючок {hook} класса {cls} должен возвращать пары объектов TreeWord, а не {type}",
+    "hook_string": "Крючок {hook} класса {cls} должен возвращать строку, а не {type}",
     "hook_lexical_words": (
         "Крючок {hook} класса {cls} должен возвращать объекты LexicalWord, а не {type}"
     ),
@@ -476,10 +475,11 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "hook_morph_words": (
         "Крючок {hook} класса {cls} должен возвращать объекты MorphWord, а не {type}"
     ),
-    "hook_spans": (
-        "Крючок {hook} класса {cls} должен давать тройки из возрастающих целых границ "
-        "внутри текста и строки, а не {span}"
+    "hook_bounds": (
+        "Крючок {hook} должен давать тройки из целых границ внутри текста и строки, "
+        "для tokenize - возрастающих, а не {span}"
     ),
+    "document_tokens": "Из токенов источника данных нельзя собрать документ: {error}",
     "connector_dict": "Коннекторы должны быть словарем: словосочетание - класс и тип",
     "connector_entry": "Коннектор должен быть словосочетанием с парой класс и тип: {connector}",
     "connector_class": "Неизвестный класс или тип коннектора: {cls}, {kind}",
@@ -495,6 +495,18 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     ),
     "connector_blocked_empty": "У предложения без слов нет позиций слов: {position}",
     "connector_type": "Ожидается Connector, а не {type}",
+    "connector_words": "Слова должны быть списком строк, а не {type}",
+    "connector_sent_index": "Номер предложения должен быть целым числом, а не {type}",
+    "connector_pos_list": "Части речи должны быть списком, а не {type}",
+    "connector_breaks_type": "Позиции знаков должны быть набором целых чисел, а не {type}",
+    "connector_blocked_type": (
+        "Позиции слов, с которых не начинается коннектор, должны быть набором целых чисел, "
+        "а не {type}"
+    ),
+    "matcher_class": (
+        "connector_matcher_class класса {cls} должен быть подклассом ConnectorMatcher, "
+        "а не {value}"
+    ),
     "morph_features": (
         "feature_names класса {cls} должен сопоставлять именам новых статистик - "
         "идентификаторам, кроме pos, tags, words и имен класса, - имена их признаков, "
@@ -1661,20 +1673,20 @@ HIGHLIGHT_DEFAULT_LAYERS = (
 )
 # Разметка Doc, которая нужна слою; леммы ruTS берет из ruMorph, а не из spaCy
 HIGHLIGHT_LAYER_ANNOTATIONS = {
-    "passive": ("DEP",),
-    "participle_clauses": ("DEP",),
-    "converb_clauses": ("DEP",),
-    "genitive_chains": ("DEP",),
-    "split_predicates": ("DEP",),
+    "passive": ("deprel",),
+    "participle_clauses": ("deprel",),
+    "converb_clauses": ("deprel",),
+    "genitive_chains": ("deprel",),
+    "split_predicates": ("deprel",),
 }
-# Названия аннотаций Doc в сообщении о недоступном слое
+# Названия столбцов документа в сообщении о недоступном слое
 HIGHLIGHT_ANNOTATION_NAMES = {
-    "DEP": "разбор зависимостей",
-    "LEMMA": "леммы",
-    "POS": "части речи",
-    "TAG": "теги",
-    "MORPH": "морфологические признаки",
-    "ENT_IOB": "именованные сущности",
+    "head": "разбор зависимостей",
+    "deprel": "разбор зависимостей",
+    "lemma": "леммы",
+    "upos": "части речи",
+    "xpos": "теги",
+    "feats": "морфологические признаки",
 }
 # Стили CSS слоев; где фоны слоев пересекаются, побеждает более поздний
 HIGHLIGHT_LAYER_STYLES = {

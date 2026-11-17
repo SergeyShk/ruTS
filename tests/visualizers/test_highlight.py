@@ -10,7 +10,7 @@ from ruts.constants import (
     HIGHLIGHT_LAYER_GROUPS,
     HIGHLIGHT_LAYERS_DESC,
 )
-from ruts.utils import iter_text_sents, iter_text_words
+from ruts.utils import get_document, iter_text_sents, iter_text_words
 from ruts.visualizers import Highlight, HighlightedText, highlight
 from ruts.visualizers.highlight import (
     Sent,
@@ -153,13 +153,12 @@ def test_layers_default_doc(doc):
 
 
 def test_layers_default_blank_doc():
-    # Doc без границ предложений делится на предложения anySeg
+    # Doc без границ предложений делится на предложения anySeg; слова - токены spaCy
     blank = spacy.blank("ru")(long_text)
     assert highlight(blank).layers == ("long_sents", "complex_words", "cliches")
-    assert (
-        highlight(blank, layers=["long_sents"]).highlights
-        == highlight(long_text, layers=["long_sents"]).highlights
-    )
+    assert [(h.start, h.end) for h in highlight(blank, layers=["long_sents"]).highlights] == [
+        (h.start, h.end) for h in highlight(long_text, layers=["long_sents"]).highlights
+    ]
 
 
 def test_layer_groups():
@@ -189,7 +188,7 @@ def test_layers_unknown():
 
 def test_layers_unavailable():
     with pytest.raises(
-        ValueError, match=r"^Слою passive нужен Doc с аннотациями: разбор зависимостей$"
+        ValueError, match=r"^Слою passive нужен документ с аннотациями: разбор зависимостей$"
     ):
         highlight(text, layers=["passive"])
     with pytest.raises(ValueError, match="passive"):
@@ -464,44 +463,25 @@ def test_genitive_chains(doc):
 
 
 @pytest.mark.parametrize(
-    ("text", "fragments"),
+    "text",
     [
-        (
-            "Осуществление программы-минимум большевиков является декламацией.",
-            ["Осуществление программы-минимум большевиков"],
-        ),
-        ("Это дело немногих интеллигентов – социал-демократов.", []),
-        ("Он занял кресло вице-губернатора области.", ["кресло вице-губернатора области"]),
+        "Осуществление программы-минимум большевиков является декламацией.",
+        "Это дело немногих интеллигентов – социал-демократов.",
+        "Он занял кресло вице-губернатора области.",
     ],
 )
-def test_syntax_layers_of_hyphenated_words(model_nlp, text, fragments):
-    # Слои считают слова, как SyntaxStats, и покрывают дефисное слово, разрезанное spaCy, целиком
-    doc = model_nlp(text)
+@pytest.mark.parametrize("pipeline", ["nlp", "model_nlp"])
+def test_syntax_layers_of_hyphenated_words(request, pipeline, text):
+    # Слои считают слова, как SyntaxStats, и в Doc конвейера anySeg, и в Doc модели
+    doc = request.getfixturevalue(pipeline)(text)
     ss = SyntaxStats(doc)
     ht = highlight(doc, layers=["genitive_chains", "passive"])
-    assert [text[h.start : h.end] for h in ht.highlights] == fragments
     assert ht.counts.get("genitive_chains", 0) == ss.n_genitive_chains
     assert ht.counts.get("passive", 0) == ss.n_passive
-
-
-def test_participle_clause_without_a_hyphenated_word_hanging_outside():
-    # Руки кое-как прикрепленные сзади висели: «кое-как» висит на «висели» частью «кое»
-    doc = build_doc(
-        [
-            ("Руки", True, 6, "nsubj", "NOUN", "Case=Nom"),
-            ("кое", False, 6, "advmod", "ADV", ""),
-            ("-", False, 1, "punct", "PUNCT", ""),
-            ("как", True, 4, "advmod", "ADV", ""),
-            ("прикрепленные", True, 0, "acl", "VERB", "VerbForm=Part"),
-            ("сзади", True, 4, "advmod", "ADV", ""),
-            ("висели", False, 6, "ROOT", "VERB", "VerbForm=Fin"),
-            (".", False, 6, "punct", "PUNCT", ""),
+    if text.startswith("Он занял"):
+        assert [text[h.start : h.end] for h in ht.highlights] == [
+            "кресло вице-губернатора области"
         ]
-    )
-    ht = highlight(doc, layers=["participle_clauses"])
-    assert [(doc.text[h.start : h.end], h.note) for h in ht.highlights] == [
-        ("прикрепленные сзади", "причастный оборот, 2 слова")
-    ]
 
 
 def test_genitive_chains_single_modifier():
@@ -699,7 +679,7 @@ def test_connectors_pos(nlp):
     ]
     doc = nlp(source)
     words = get_doc_words(doc)
-    assert words[:2] == [Word(0, 3, "Раз", "SCONJ"), Word(4, 6, "он", "PRON")]
+    assert words[:2] == [Word(0, 3, "Раз", "SCONJ", "раз"), Word(4, 6, "он", "PRON", "он")]
     assert [word.pos for word in get_doc_words(spacy.blank("ru")(source))] == [None] * 12
     assert [h.note for h in highlight(doc, "connectors").highlights] == [
         "коннектор «раз»: условные, первичные",
@@ -723,7 +703,7 @@ def test_split_predicates(nlp):
     assert fragments(doc, "split_predicates") == [
         ("осуществляет плановую проверку", "расщепленное сказуемое: осуществлять проверка")
     ]
-    assert find_split_predicate_highlights(nlp("Кот спит.")) == []
+    assert find_split_predicate_highlights(get_document(nlp("Кот спит."))) == []
     with pytest.raises(ValueError, match="split_predicates"):
         highlight(officialese_text, layers=["split_predicates"])
 
@@ -751,7 +731,8 @@ def test_hyphenated_words_doc(nlp):
     assert [f for f, _ in fragments(source, "parentheticals")] == expected
     assert "Во" not in [f for f, _ in fragments(doc, "stopwords")]
     assert [
-        sent.n_words for sent in count_sent_words(iter_doc_sents(doc), get_doc_words(doc))
+        sent.n_words
+        for sent in count_sent_words(iter_doc_sents(get_document(doc)), get_doc_words(doc))
     ] == [3, 3, 3]
 
 

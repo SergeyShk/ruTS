@@ -50,9 +50,10 @@ def test_kwic_abbreviations():
         assert len(kwic(source, keyword, ignore_case=False)) == 1, keyword
 
 
-def test_kwic_doc():
-    nlp = spacy.blank("ru")
-    assert kwic(nlp(text), "кот", window=2) == kwic(text, "кот", window=2)
+def test_kwic_doc(nlp):
+    blank = spacy.blank("ru")
+    assert kwic(blank(text), "кот", window=2) == kwic(text, "кот", window=2)
+    # Дефисное слово - один токен у anySeg, токенизатор spaCy его делит
     doc = nlp("Во-первых, кот спал. Во-вторых, кот ел.")
     assert kwic(doc, "во-первых") == [
         Concordance(0, 9, "", "Во-первых", ", кот спал. Во-вторых, кот ел")

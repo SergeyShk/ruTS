@@ -3,6 +3,7 @@ from math import isnan
 
 import pytest
 import spacy
+from anyts.document import get_tree
 from spacy.tokens import Doc
 
 from ruts import MorphStats, WordsExtractor
@@ -15,7 +16,7 @@ from ruts.morph_stats import (
     token_to_ud,
     word_to_ud,
 )
-from ruts.utils import parse_word
+from ruts.utils import get_document, parse_word
 from tests.pipelines import load_model_nlp
 
 text = "Постарайтесь получить то, что любите, иначе придется полюбить то, что получили"
@@ -519,15 +520,16 @@ def test_parse_verb():
 
 
 def test_token_to_ud(nlp):
-    doc = nlp("Я читаю.")
-    features = token_to_ud(doc[1])
+    words = get_tree(get_document(nlp("Я читаю."))).words
+    features = token_to_ud(words[1])
     assert features["pos"] == "VERB"
     assert features["person"] == "1"
     assert features["transitivity"] == "Tran"
     assert features["verb_form"] == "Fin"
-    assert token_to_ud(doc[0])["person"] == "1"
-    assert token_to_ud(doc[2])["pos"] == "PUNCT"
-    assert token_to_ud(spacy.blank("ru")("слово")[0]) == dict.fromkeys(MORPHOLOGY_STATS_DESC)
+    assert token_to_ud(words[0])["person"] == "1"
+    assert token_to_ud(words[2])["pos"] == "PUNCT"
+    blank = get_tree(get_document(spacy.blank("ru")("слово"))).words[0]
+    assert token_to_ud(blank) == dict.fromkeys(MORPHOLOGY_STATS_DESC)
 
 
 def test_get_stats(ms):

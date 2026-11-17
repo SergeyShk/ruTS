@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bisect import bisect_left
 from collections.abc import Callable, Mapping, Sequence
 from math import nan
 from typing import TYPE_CHECKING
@@ -16,7 +17,7 @@ from anyts.corpus.compare import (
     holm_correction as holm_correction,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
-from anyts.utils import check_words, count_words_by_spans, is_language, set_sent_starts
+from anyts.utils import check_words, count_words_by_spans, is_language
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..cohesion_stats import CohesionStats
@@ -36,6 +37,7 @@ from ..utils import iter_text_sents, iter_text_words
 
 if TYPE_CHECKING:
     from spacy.language import Language
+    from spacy.tokens import Doc
 
 Features = Callable[[str], Mapping[str, float]]
 # Компоненты моделей ru_core_news, разметка которых синтаксическим признакам не нужна
@@ -209,12 +211,21 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         if not key.endswith("_para")
     )
     if nlp is not None:
-        doc = set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
+        doc = _set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
         features.update(
             (f"syntax_{key}", float(value))
             for key, value in SyntaxStats(nlp(doc, disable=_UNUSED_COMPONENTS)).get_stats().items()
         )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
+
+
+def _set_sent_starts(doc: Doc, starts: Sequence[int]) -> Doc:
+    """Doc с началами предложений на первых токенах от позиций starts: парсер их сохраняет"""
+    positions = [token.idx for token in doc]
+    firsts = {bisect_left(positions, start) for start in starts}
+    for token in doc:
+        token.is_sent_start = token.i == 0 or token.i in firsts
+    return doc
 
 
 def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:

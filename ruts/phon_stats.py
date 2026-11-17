@@ -17,11 +17,11 @@ from .constants import (
     RU_CONSONANTS_HIGH,
     RU_CONSONANTS_LOW,
 )
-from .extractors import WordsExtractor
 from .syllables import CONSONANTS, MARKS, SONORANTS, VOWELS, _syllables, syllabify as syllabify
-from .utils import strip_marks
+from .utils import document_words, get_document
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 VOICELESS = frozenset(letter.lower() for letter in RU_CONSONANTS_LOW)
@@ -76,9 +76,9 @@ class PhonStats(anyts.phon_stats.PhonStats):
         (('ног',), ('нет',), ('а',), ('хо', 'жу'))
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
         window_len (int): Размер окна в словах для аллитерации и ассонанса
 
     Атрибуты:
@@ -115,14 +115,12 @@ class PhonStats(anyts.phon_stats.PhonStats):
         print_stats: Отображение вычисленных фоностатистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc или экстрактор
-            другого типа
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
+            или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если размер окна не целое число или меньше 2
     """
 
-    words_extractor_class = WordsExtractor
-    join_hyphens = True
     vowels = VOWELS
     sonorants = SONORANTS
     voiced = VOICED
@@ -135,7 +133,7 @@ class PhonStats(anyts.phon_stats.PhonStats):
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         words_extractor: anyts.WordsExtractor | None = None,
         window_len: int = PHON_WINDOW_LEN,
     ):
@@ -143,9 +141,13 @@ class PhonStats(anyts.phon_stats.PhonStats):
         letters = "".join(self.words)
         self.n_marks = sum(map(letters.count, MARKS))
 
-    def doc_words(self, doc: Doc) -> tuple[str, ...]:
-        """Слова Doc ядра без знаков ударения"""
-        return tuple(map(strip_marks, super().doc_words(doc)))
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
+
+    def doc_words(self, document: Document) -> tuple[str, ...]:
+        """Слова документа в нижнем регистре (ruts.utils.document_words)"""
+        return tuple(word.lower() for word in document_words(document))
 
     def syllabify(self, word: str) -> tuple[str, ...]:
         """Слоги слова по правилу восходящей звучности (ruts.syllables.syllabify)"""

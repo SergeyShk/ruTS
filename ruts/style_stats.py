@@ -24,9 +24,10 @@ from .constants import (
     STYLE_STATS_DESC,
     WATER_POS,
 )
-from .extractors import WordsExtractor
 from .utils import (
     _word_cache,
+    document_words,
+    get_document,
     is_parenthetical_analysis,
     is_predicative,
     is_pronominal,
@@ -34,11 +35,10 @@ from .utils import (
     normalize_yo,
     parse_all,
     parse_word,
-    strip_marks,
-    word_form,
 )
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 
@@ -63,8 +63,7 @@ class StyleStats(anyts.style_stats.StyleStats):
         Расширяет StyleStats ядра anyTS крючками русского языка: стоп-слова, «вода»,
         вводные слова и существительные - по разметке ruMorph, словосочетания
         сравниваются без буквы ё и находятся в любой форме глагола, нормы
-        сервисов - STYLE_NORMS. Слова Doc - без знаков ударения, дефисные слова
-        склеиваются
+        сервисов - STYLE_NORMS. Слова - без знаков ударения и точки сокращения
 
     Пример использования:
         >>> from ruts import StyleStats
@@ -91,9 +90,9 @@ class StyleStats(anyts.style_stats.StyleStats):
         'cliches': ('в кратчайшие сроки',)}
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
         stopwords (list[str]): Список слов «воды» для водности; если не задан - is_water_word
         top_n (int): Количество самых частых слов для академической тошноты
             и естественности по Ципфу
@@ -124,14 +123,12 @@ class StyleStats(anyts.style_stats.StyleStats):
         print_stats: Отображение вычисленных метрик стиля текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc, экстрактор
-            другого типа или список не список строк
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document,
+            экстрактор другого типа или список не список строк
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если количество самых частых слов не целое число или меньше единицы
     """
 
-    words_extractor_class = WordsExtractor
-    join_hyphens = True
     compound_prepositions_list = COMPOUND_PREPOSITIONS
     parentheticals_list = PARENTHETICALS
     cliches_list = OFFICIALESE_CLICHES
@@ -144,9 +141,13 @@ class StyleStats(anyts.style_stats.StyleStats):
         """Нижний регистр без буквы ё и знаков ударения (normalize_yo)"""
         return normalize_yo(word)
 
-    def doc_words(self, doc: Doc) -> tuple[str, ...]:
-        """Слова Doc ядра без знаков ударения и точки сокращения (word_form)"""
-        return tuple(word_form(strip_marks(word)) for word in super().doc_words(doc))
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
+
+    def doc_words(self, document: Document) -> tuple[str, ...]:
+        """Слова документа в нижнем регистре (ruts.utils.document_words)"""
+        return tuple(word.lower() for word in document_words(document))
 
     def is_stopword(self, word: str) -> bool:
         """Стоп-слово академической тошноты по разметке ruMorph (is_stopword)"""
