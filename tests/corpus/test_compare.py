@@ -295,3 +295,12 @@ def test_min_words_above_window():
     ):
         split_windows(text, 5, min_words=6)
     assert split_windows(text, None, min_words=100) == []
+
+
+def test_set_sent_starts_keeps_whitespace():
+    """Начала предложений - на первых непробельных токенах, ведущие пробелы - в первом"""
+    from ruts.corpus.compare import _set_sent_starts
+
+    nlp = spacy.blank("ru")
+    doc = _set_sent_starts(nlp.make_doc("  Кот спит.  Пёс лежит!"), [2, 13])
+    assert [sent.text for sent in doc.sents] == ["  Кот спит.  ", "Пёс лежит!"]

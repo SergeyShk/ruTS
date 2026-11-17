@@ -209,6 +209,11 @@ def test_strip_document_marks():
     assert strip_document_marks(plain) is plain
     leading = strip_document_marks(get_document("\u00adМороз"))
     assert [token.text for token in leading.tokens] == ["Мороз"]
+    # Токен из одного знака ударения пропускается, слово вокруг него склеивается по тексту
+    marked = Doc(nlp.vocab, words=["Ма", "\u0301", "ма", "."], spaces=[False] * 4)
+    clean = strip_document_marks(get_document(marked))
+    assert clean.text == "Мама."
+    assert [token.text for token in clean.tokens] == ["Ма", "ма", "."]
 
 
 def test_doc_with_marks_counts_as_string(nlp):

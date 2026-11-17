@@ -463,25 +463,32 @@ def test_genitive_chains(doc):
 
 
 @pytest.mark.parametrize(
-    "text",
+    ("pipeline", "text", "fragments"),
     [
-        "Осуществление программы-минимум большевиков является декламацией.",
-        "Это дело немногих интеллигентов – социал-демократов.",
-        "Он занял кресло вице-губернатора области.",
+        ("nlp", "Осуществление программы-минимум большевиков является декламацией.", []),
+        ("nlp", "Это дело немногих интеллигентов – социал-демократов.", []),
+        ("nlp", "Он занял кресло вице-губернатора области.", ["кресло вице-губернатора области"]),
+        ("model_nlp", "Осуществление программы-минимум большевиков является декламацией.", []),
+        (
+            "model_nlp",
+            "Это дело немногих интеллигентов – социал-демократов.",
+            ["дело немногих интеллигентов – социал-демократов"],
+        ),
+        (
+            "model_nlp",
+            "Он занял кресло вице-губернатора области.",
+            ["кресло вице-губернатора области"],
+        ),
     ],
 )
-@pytest.mark.parametrize("pipeline", ["nlp", "model_nlp"])
-def test_syntax_layers_of_hyphenated_words(request, pipeline, text):
-    # Слои считают слова, как SyntaxStats, и в Doc конвейера anySeg, и в Doc модели
+def test_syntax_layers_of_hyphenated_words(request, pipeline, text, fragments):
+    # Слои считают слова, как SyntaxStats; дефисное слово, разрезанное spaCy, покрыто целиком
     doc = request.getfixturevalue(pipeline)(text)
     ss = SyntaxStats(doc)
     ht = highlight(doc, layers=["genitive_chains", "passive"])
+    assert [text[h.start : h.end] for h in ht.highlights] == fragments
     assert ht.counts.get("genitive_chains", 0) == ss.n_genitive_chains
     assert ht.counts.get("passive", 0) == ss.n_passive
-    if text.startswith("Он занял"):
-        assert [text[h.start : h.end] for h in ht.highlights] == [
-            "кресло вице-губернатора области"
-        ]
 
 
 def test_genitive_chains_single_modifier():

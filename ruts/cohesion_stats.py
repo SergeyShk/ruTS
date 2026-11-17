@@ -153,8 +153,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         Расширяет CohesionStats ядра anyTS для русского языка. Леммы, части речи, время
         и вид для Doc и Document с разметкой частей речи - по части речи и признакам
         слова с леммой разбора ruMorph с той же частью речи, для строки - по разбору
-        ruMorph в контексте предложения, для Doc и Document без разметки - так же;
-        с заданным экстрактором слов - по первому разбору ruMorph. Словарь
+        ruMorph в контексте предложения, для Doc и Document без разметки - так же
+        в предложениях с теми же словами, что у строки; иначе и с заданным экстрактором
+        слов - по первому разбору ruMorph. Словарь
         коннекторов - resources/connectors.tsv
         с классами по Криони, Никину и Филипповой (2008), сопоставитель -
         RussianConnectorMatcher
@@ -395,7 +396,8 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
         text = word_text(word)
         if word.upos:
             return _cohesion_word(text, token_info(word), word.upos)
-        analysis, particle = self._context.get(word.start, (None, False))
+        # Копия и объект после pickle разборов анализа не хранят
+        analysis, particle = getattr(self, "_context", {}).get(word.start, (None, False))
         if analysis is not None:
             return _cohesion_word(text, analysis_info(analysis), analysis.pos)
         info = ud_info(text, "PART", None, None) if particle else word_info(text)

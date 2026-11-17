@@ -34,6 +34,7 @@ from ruts.utils import (
     parse_all,
     parse_word,
     strip_marks,
+    word_analysis,
     word_form,
 )
 
@@ -356,3 +357,14 @@ def test_word_helpers_type_errors():
         with pytest.raises(SourceTypeError):
             func(value)
     assert analyze_sents(["Кот спит."]) == analyze_sents(("Кот спит.",))
+
+
+def test_word_analysis(nlp, model_nlp):
+    """Разбор ruMorph слова, размеченного компонентом rumorph; у слова модели spaCy - None,
+    если ее разметка не совпадает ни с одним разбором"""
+    from anyts.document import get_tree
+
+    words = get_tree(get_document(nlp("Нож из стали."))).words
+    analysis = word_analysis(words[2])
+    assert (analysis.lemma, analysis.pos) == ("сталь", "NOUN")
+    assert word_analysis(get_tree(get_document(spacy.blank("ru")("сталь"))).words[0]) is None

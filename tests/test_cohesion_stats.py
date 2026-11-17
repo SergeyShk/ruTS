@@ -17,6 +17,7 @@ from ruts.cohesion_stats import (
     load_connectors,
     token_info,
     word_info,
+    word_text,
 )
 from ruts.constants import (
     COHESION_STATS_DESC,
@@ -809,3 +810,30 @@ def test_doc_pipeline_as_string(nlp):
     assert CohesionStats(nlp(text)).lemmas == CohesionStats(text).lemmas
     doc_stats, text_stats = CohesionStats(nlp(text)).get_stats(), CohesionStats(text).get_stats()
     assert doc_stats == pytest.approx(text_stats, nan_ok=True)
+
+
+def test_copy_and_pickle_keep_word_info():
+    """Копия и объект после pickle читают признаки слова без разборов анализа"""
+    import copy
+    import pickle
+
+    doc = spacy.blank("ru")("Кот спит. Он устал.")
+    cs = CohesionStats(doc)
+    words = _tree_words(doc)
+    for clone in (copy.copy(cs), pickle.loads(pickle.dumps(cs))):
+        assert clone.words == cs.words
+        assert [clone.word_info(word) for word in words] == [cs.word_info(word) for word in words]
+
+
+def test_word_text(nlp):
+    """Текст слова дерева - без знаков ударения и точки сокращения"""
+    words = _tree_words(nlp("Ма\u0301ма заплатила 5 руб. за хлеб."))
+    assert [word_text(word) for word in words] == [
+        "Мама",
+        "заплатила",
+        "5",
+        "руб",
+        "за",
+        "хлеб",
+        ".",
+    ]

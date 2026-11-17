@@ -840,6 +840,7 @@ def test_pickle(nlp):
         ("Он сказал, что придет.", "что", True),
         ("Когда у тебя заболел живот, то я к тебе зашёл.", "то", False),
         ("Любопытно стало Ваське: что это с ним сделалось?", "что", False),
+        ("Он сказал\nчто вы сделаете?", "что", False),
     ],
 )
 def test_is_subordinating_mark(nlp, text, word, expected):
@@ -996,3 +997,14 @@ def test_model_new_core_stats(nlp, text, expected):
 def test_possible_with_infinitive(nlp, text):
     """«Возможно», «невозможно» с инфинитивом - одна предикация и у наречия ruMorph"""
     assert SyntaxStats(nlp(text)).n_infinitive_clauses == 0
+
+
+def test_opens_replica_after_line_break(nlp):
+    """Реплика открывается после перевода строки, в том числе после начинающего ее слова"""
+    from ruts.syntax_stats import _opens_replica
+
+    for text in ("Он спросил\nа что вы теперь сделаете?", "Он сказал\nчто вы сделаете?"):
+        word = next(w for w in tree_words(nlp(text)) if w.form == "что")
+        assert _opens_replica(word)
+    word = next(w for w in tree_words(nlp("Он сказал, что вы сделаете.")) if w.form == "что")
+    assert not _opens_replica(word)
