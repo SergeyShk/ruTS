@@ -6,7 +6,7 @@ sentence_lengths_plot(source, window=10, inset=True, ax=None, labels=None, sents
 
 --8<-- "visualizers/sentences.md:sentence_lengths_plot"
 
-The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/sentences/) core; for a string ruTS passes its Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, and the `sents_extractor` and `words_extractor` parameters replace them. The default labels are the Russian ones of `ruts.constants.VISUALIZER_LABELS`; `labels` puts the given labels over them.
+The functions are those of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/sentences/) core; ruTS splits a string into sentences and words with the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, and with one extractor given the other is the Russian [`SentsExtractor`](../extractors/sentences.md) or [`WordsExtractor`](../extractors/words.md). The default labels are the Russian ones of `ruts.constants.VISUALIZER_LABELS`; `labels` puts the given labels over them.
 
 The curve of the first text of the [StalinWorks](../datasets/stalinworks.md) dataset:
 
@@ -30,9 +30,7 @@ sentence_lengths_plot(text, window=10)
 sentence_lengths(source, sents_extractor=None, words_extractor=None)
 ```
 
-The lengths of the sentences in words, in order: a string is split by the sentence and the word extractors, a `Doc` by its boundaries and tokens, punctuation and symbols left out and the parts of a hyphenated word joined (`во-первых` is one word); a `Doc` without boundaries or with partial ones (`has_sents`) is counted as its text. Sentences without words are skipped. Ready lengths (non-negative integers in a sequence or an iterator) are used as they are. The arguments are those of `sentence_lengths_plot`.
-
-A table, a set, a mapping, bytes, a length that is not an integer and an extractor of another type raise `SourceTypeError`, a negative length `SourceError`.
+--8<-- "visualizers/sentences.md:sentence_lengths"
 
 === "Code"
 

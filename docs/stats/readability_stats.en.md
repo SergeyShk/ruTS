@@ -6,7 +6,7 @@ ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='pla
 
 --8<-- "stats/readability_stats.md:ReadabilityStats"
 
-The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core for Russian: the [basic statistics](basic_stats.md) of ruTS with the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default, the coefficient [presets](#presets), the Russian formulas, scales and reading speeds. The `print_stats` table and the error messages are in Russian.
+The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/readability_stats/) core for Russian: the [basic statistics](basic_stats.md) of ruTS, the coefficient [presets](#presets), the Russian formulas, scales and reading speeds. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -43,7 +43,7 @@ The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `str` / `Doc` / `BasicStats` | - | Data source (a string, a Doc object or ready basic statistics) |
+| `source` | `str` / `Doc` / `Document` / `BasicStats` | - | Data source (a string, a Doc or a Document object, or ready basic statistics) |
 | `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool |
 | `words_extractor` | `WordsExtractor` | `None` | Word extraction tool |
 | `preset` | `str` | `'plainrussian'` | Coefficient preset: `plainrussian`, `fiction` or `academic` |
@@ -748,11 +748,11 @@ The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), s
 level_features(source)
 ```
 
-The features of a text that the stage norms cover - words per sentence, letters per word, the share of words of five or more syllables and MTLD - computed the same way as the norms. The features of a `Doc` are computed from its text, not from the sentence boundaries of spaCy. A source that is neither a string nor a `Doc` raises `SourceTypeError`, a source without words or sentences `SourceError`.
+The features of a text that the stage norms cover - words per sentence, letters per word, the share of words of five or more syllables and MTLD - computed the same way as the norms. The features of a `Doc` and a `Document` are computed from their text, not from their sentences. A source that is neither a string, a `Doc` nor a `Document` raises `SourceTypeError`, a source without words or sentences `SourceError`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `str` / `Doc` | - | Data source (a string or a Doc object) |
+| `source` | `str` / `Doc` / `Document` | - | Data source (a string, a Doc or a Document object) |
 
 ### Norms and the reading of a feature { #describe_level_norm }
 

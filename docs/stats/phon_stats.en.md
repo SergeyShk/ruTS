@@ -6,7 +6,7 @@ PhonStats(source, words_extractor=None, window_len=3)
 
 --8<-- "stats/phon_stats.md:PhonStats"
 
-The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the [`syllabify`](../syllables.md#syllabify) function. Stress marks are dropped from the words of a text and of a `Doc`, and the parts of a hyphenated word that spaCy splits are joined (`во-первых` is one word). The `print_stats` table and the error messages are in Russian (`PHON_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the [`syllabify`](../syllables.md#syllabify) function. Stress marks are dropped from the words of the document (`ruts.utils.document_words`). The `print_stats` table and the error messages are in Russian (`PHON_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 | Class | Letters | Constant |
 | :---- | :------ | :------- |

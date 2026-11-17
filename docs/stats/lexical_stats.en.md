@@ -6,11 +6,11 @@ LexicalStats(source, words_extractor=None, freq_dict=None)
 
 --8<-- "stats/lexical_stats.md:LexicalStats"
 
-In ruTS a source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError` too, and the metrics by the dictionary without the dictionary downloaded `DatasetNotFoundError`.
+In ruTS an extractor of another type raises `SourceTypeError` too, only a source without words raises `SourceError`, and the metrics by the dictionary without the dictionary downloaded raise `DatasetNotFoundError`.
 
-The words of a text are compared with the frequencies of the language ([TAALES](https://doi.org/10.3758/s13428-017-0924-4)), not with each other as in the [lexical diversity metrics](diversity_stats.md). The data source is a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library.
+The words of a text are compared with the frequencies of the language ([TAALES](https://doi.org/10.3758/s13428-017-0924-4)), not with each other as in the [lexical diversity metrics](diversity_stats.md).
 
-The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), the words of a `Doc` without an extractor are its tokens, and a hyphenated word that spaCy splits stays one word. Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a `Doc` with part-of-speech annotation by the part of speech of the token, for a string in the context of the sentence, for a `Doc` without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian.
+The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), and the words of a `Doc` and a `Document` without an extractor are those of their document (`ruts.utils.get_document`). Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a `Doc` and a `Document` with part-of-speech annotation by the part of speech of the word, for a string in the context of the sentence, for a `Doc` and a `Document` without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -49,8 +49,8 @@ The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `str` / `Doc` | - | Data source |
-| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; used for a `Doc` too, on its text |
+| `source` | `str` / `Doc` / `Document` | - | Data source |
+| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; used for a `Doc` and a `Document` too, on their text |
 | `freq_dict` | `FreqDict` | `None` | Frequency dictionary; `FreqDict()` from the default directory by default |
 
 ## Attributes
@@ -178,7 +178,7 @@ The whole embedded list: the rank of every lemma, lowercased and with ё replace
 `lexical_density`
 { .metric-meta }
 
-The share of the content words (nouns, adjectives, verbs, adverbs without pronominal and parenthetical words) among all the words; a content word is defined by [`is_content_word`](cohesion_stats.md#is_content_word) for a string and by `CONTENT_UD_POS` for an annotated `Doc`.
+The share of the content words (nouns, adjectives, verbs, adverbs without pronominal and parenthetical words) among all the words; a content word is defined by [`is_content_word`](cohesion_stats.md#is_content_word) for a string and by `CONTENT_UD_POS` for an annotated `Doc` and `Document`.
 
 $$
 \frac{\textrm{Number of content words}}{\textrm{Number of words}}

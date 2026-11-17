@@ -4,17 +4,17 @@
 MorphStats(source, words_extractor=None)
 ```
 
-<!-- core: stats/morph_stats.md:MorphStats 002c663 -->
-Морфологические статистики текста: часть речи и признаки [Universal Dependencies](https://universaldependencies.org/u/feat/) каждого слова, посчитанные по значениям или данные по словам. По умолчанию источник данных - объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) с частями речи, которые читаются по `token.pos_` и `token.morph`; строку или `Doc` без них языковая библиотека читает по-своему.
+<!-- core: stats/morph_stats.md:MorphStats e18b976 -->
+Морфологические статистики текста: часть речи и признаки [Universal Dependencies](https://universaldependencies.org/u/feat/) каждого слова, посчитанные по значениям или данные по словам. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg); слова - слова Universal Dependencies его [документа](https://sergeyshk.github.io/anyTS/document/) с буквой или цифрой (испанское `del` дает `de` и `el`), а их части речи и признаки - его столбцы `upos` и `feats`. Языковая библиотека размечает строку в своем `parse` или читает признаки в своем `analyze`.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не `Doc`, `analyze`, который дает не объекты `MorphWord`;
-- `SourceError` - источник без частей речи или без слов.
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, `parse`, который возвращает не `Document`, `analyze`, который дает не объекты `MorphWord`;
+- `SourceError` - слова без частей речи, источник без слов.
 
-В ruTS источник данных - текст или `Doc` с разметкой частей речи или без нее. `SourceTypeError` дают источник, который не строка и не `Doc`, и экстрактор другого типа, а `SourceError` - только источник без слов.
+В ruTS разметка частей речи у `Doc` и `Document` не обязательна, поэтому `SourceError` дает только источник без слов; `SourceTypeError` дает также экстрактор другого типа.
 
-Класс расширяет `MorphStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) русским разбором слов и [маркерами форм глагола](#markers). Слова строки извлекает русский [`WordsExtractor`](../extractors/words.md) или заданный экстрактор; слова `Doc` без экстрактора - его токены, причем части слова через дефис склеиваются: муж-то, скажи-ка в `Doc` - одно слово, а в строке - два. Таблицы `print_stats` и `print_markers` и сообщения об ошибках - по-русски (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `MorphStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) русским разбором слов и [маркерами форм глагола](#markers). Слова строки извлекает русский [`WordsExtractor`](../extractors/words.md) или заданный экстрактор. Таблицы `print_stats` и `print_markers` и сообщения об ошибках - по-русски (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 === "Код"
 
@@ -52,8 +52,8 @@ MorphStats(source, words_extractor=None)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` | - | Источник данных |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; применяется и к `Doc`, к его тексту |
+| `source` | `str` / `Doc` / `Document` | - | Источник данных |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; применяется и к `Doc` и `Document`, к их тексту |
 
 ## Атрибуты
 
@@ -69,7 +69,7 @@ MorphStats(source, words_extractor=None)
 
 ## Статистики
 
-Статистики - часть речи `pos` и признаки из таблицы ниже (`MORPHOLOGY_FEATURES` из `ruts.constants`). Для `Doc` с разметкой частей речи значения берутся из `token.pos_` и `token.morph`, для строки - из разбора морфологического анализатора [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения (части речи и признаки UD по соглашениям корпуса SynTagRus), для `Doc` без разметки - так же в предложениях, слова которых совпадают со словами строки. Остальные слова, как и с заданным экстрактором слов, получают первый разбор без учета соседних.
+Статистики - часть речи `pos` и признаки из таблицы ниже (`MORPHOLOGY_FEATURES` из `ruts.constants`). Для `Doc` и `Document` с разметкой частей речи значения берутся из части речи и признаков слова, для строки - из разбора морфологического анализатора [ruMorph](https://github.com/SergeyShk/ruMorph) в контексте предложения (части речи и признаки UD по соглашениям корпуса SynTagRus), для `Doc` и `Document` без разметки - так же в предложениях, слова которых совпадают со словами строки. Остальные слова, как и с заданным экстрактором слов, получают первый разбор без учета соседних.
 
 | Статистика | Признак | Значения |
 | :--------- | :------ | :------- |

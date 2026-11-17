@@ -40,7 +40,7 @@ spaCy sets both at `nlp.add_pipe(factory, name=...)`; the other parameters of a 
 
 ## Names { #names }
 
-The factories carry the prefix `ruts_` ([table](#class-components) below, and the component of sentence boundaries [`ruts_blank_lines`](#blank_lines)). They are declared as entry points of `spacy_factories`, so spaCy finds them without `import ruts`, and a pipeline saved with them (`nlp.to_disk(path)`) loads with `spacy.load(path)`.
+The factories carry the prefix `ruts_` ([table](#class-components) below). They are declared as entry points of `spacy_factories`, so spaCy finds them without `import ruts`, and a pipeline saved with them (`nlp.to_disk(path)`) loads with `spacy.load(path)`.
 
 --8<-- "components.md:StatsComponent-names"
 
@@ -48,7 +48,7 @@ In `ruts_lexical` a document of numbers alone passes untouched as well, and in `
 
 --8<-- "components.md:StatsComponent-serialization"
 
-Adding a component adds to the spaCy tokenizer the rules for the dialogue dashes glued to words (`ruts.utils.add_dash_rules`), so that a dialogue dash is split off a word as in a string; a pipeline without ruTS components needs this call of its own. The anySeg tokenizer of the [recommended pipeline](#load_pipeline) is left as it is.
+The components leave the tokenizer of the pipeline as it is: a `Doc` of the [recommended pipeline](#load_pipeline) gives the same statistics as the string.
 
 ruTS removes stress marks from the words of a `Doc`, but the model parses such words worse: on a text after `accentuate` the tagger of `ru_core_news_sm` changes the part of speech of over half of the words, and the dependencies change in the [recommended pipeline](#load_pipeline) as well. Pass a text with stresses without them - `nlp(ruts.utils.strip_marks(text))`.
 
@@ -58,7 +58,7 @@ ruTS removes stress marks from the words of a `Doc`, but the model parses such w
 load_pipeline(model='ru_core_news_sm', exclude=(), **kwargs)
 ```
 
-A spaCy pipeline in which a `Doc` is annotated the same way as a string, except the hyphenated words such as муж-то and два-три: a string splits them into parts, a `Doc` keeps one word. The tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. A saved pipeline of this kind loads as it is. The same by hand:
+A spaCy pipeline in which a `Doc` is annotated the same way as a string. The tokens and the sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the parts of speech, features and lemmas from the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. A saved pipeline of this kind loads as it is. The same by hand:
 
 ``` python
 nlp = spacy.load(
@@ -70,7 +70,7 @@ nlp.add_pipe("anyseg_sentencizer", first=True)
 nlp.add_pipe("rumorph", after="anyseg_sentencizer")
 ```
 
-On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags connectors such as значит and т.е. as a verb and a punctuation mark, so they are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься as an infinitive, so the subordinate clause with it counts as an infinitive clause.
+On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain `spacy.load("ru_core_news_sm")` is supported too, but then the tokens, the parts of speech, features and sentences come from the model, and the statistics of a `Doc` may differ from those of the string; a blank line ends a sentence of such a `Doc` too. ruTS does not work around the errors of its tagger: the model tags connectors such as значит and т.е. as a verb and a punctuation mark, so they are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься as an infinitive, so the subordinate clause with it counts as an infinitive clause.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -349,6 +349,7 @@ LexicalStatsComponent(nlp, name, data_dir=None)
 
 Raises:
 
+- `ParameterError` - a `data_dir` that is not a string;
 - `DatasetNotFoundError` - the frequency dictionary metrics and `get_stats()` when `FreqDict` is not downloaded.
 
 === "Code"
@@ -378,6 +379,7 @@ VerseStatsComponent(nlp, name, data_dir=None)
 
 Raises:
 
+- `ParameterError` - a `data_dir` that is not a string;
 - `DatasetNotFoundError` - the stress dictionary is not downloaded; the first document with letters raises it.
 
 === "Code"
@@ -396,26 +398,4 @@ Raises:
 
     ```
     ('хорей', 4)
-    ```
-
-## Sentences after blank lines { #blank_lines }
-
---8<-- "components.md:start_sents_after_blank_lines"
-
-In ruTS the component is registered as `ruts_blank_lines`. Without it the parser of the `ru_core_news_sm` model glues a paragraph without a final mark to the next sentence; the [recommended pipeline](#load_pipeline) does not need it.
-
-=== "Code"
-
-    ``` python
-    import spacy
-
-    nlp = spacy.load("ru_core_news_sm")
-    nlp.add_pipe("ruts_blank_lines", before="parser")
-    [sent.text.strip() for sent in nlp("Что нового\n\nБыстрый импорт. Меньше ошибок").sents]
-    ```
-
-=== "Result"
-
-    ```
-    ['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
     ```

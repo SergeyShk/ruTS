@@ -71,7 +71,7 @@ spaCy components and syntactic statistics need the Russian-language model (the l
 python -m spacy download ru_core_news_sm
 ```
 
-The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_pipeline) for a `Doc` is `ruts.load_pipeline()`: its tokens and sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the morphology from the [ruMorph](https://github.com/SergeyShk/ruMorph) analyzer and the dependency parse from the model, so a `Doc` is annotated almost like a string. With a plain `spacy.load("ru_core_news_sm")` the morphology comes from the model.
+The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_pipeline) for a `Doc` is `ruts.load_pipeline()`: its tokens and sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the morphology from the [ruMorph](https://github.com/SergeyShk/ruMorph) analyzer and the dependency parse from the model, so a `Doc` is annotated like a string. With a plain `spacy.load("ru_core_news_sm")` the morphology comes from the model.
 
 ## Quick start
 
@@ -767,7 +767,7 @@ Every statistics class, from `BasicStats` to `VerseStats`, plugs into a pipeline
 9
 ```
 
-The values match the string example above. For a blank line to end a sentence of a `Doc` of a plain model, put the `ruts_blank_lines` component before the parser: `nlp.add_pipe("ruts_blank_lines", before="parser")`.
+The values match the string example above.
 
 More in the [documentation](https://sergeyshk.github.io/ruTS/en/components/).
 

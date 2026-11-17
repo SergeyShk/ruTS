@@ -4,15 +4,15 @@
 UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 ```
 
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 0fc386b -->
-Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Слово без слогов (число, предлог из одной согласной) в FORCAST и венских формулах считается односложным, а в Linsear Write - легким, как в textstat. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или готовый объект `BasicStats`, как у `ReadabilityStats`.
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 966a27a -->
+Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Слово без слогов (число, предлог из одной согласной) в FORCAST и венских формулах считается односложным, а в Linsear Write - легким, как в textstat. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy), `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg) или готовый объект `BasicStats`, как у `ReadabilityStats`.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не строка, не `Doc` и не объект `BasicStats`, базовые статистики не того класса, экстрактор другого типа, строка или `Doc` для класса без `basic_stats_class`;
+- `SourceTypeError` - источник, который не строка, не `Doc`, не `Document` и не объект `BasicStats`, базовые статистики не того класса, экстрактор другого типа, источник, кроме базовых статистик, для класса без `basic_stats_class`;
 - `SourceError` - источник без слов или без предложений.
 
-Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md). Таблица `print_stats` и сообщения об ошибках - по-русски.
+Класс расширяет `UnadaptedReadabilityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) [базовыми статистиками](basic_stats.md) ruTS, которые считают слоги и буквы русских слов. Таблица `print_stats` и сообщения об ошибках - по-русски.
 
 Класса российской школы формулы не дают (на текстах 1-го класса набора [`TextsByGrade`](../datasets/textsbygrade.md) медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2) и в [сводный класс](readability_stats.md#consensus_grade) не входят. Формулы с коэффициентами для русского языка - в [`ReadabilityStats`](readability_stats.md).
 
@@ -49,10 +49,10 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 
 ## Параметры
 
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 2f3854b -->
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 5e63df9 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` / `BasicStats` | - | Источник данных |
+| `source` | `str` / `Doc` / `Document` / `BasicStats` | - | Источник данных (строка, объект Doc или Document или готовые базовые статистики) |
 | `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений, не используется для готовых базовых статистик |
 | `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, не используется для готовых базовых статистик |
 

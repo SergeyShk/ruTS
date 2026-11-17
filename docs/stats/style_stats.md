@@ -4,18 +4,18 @@
 StyleStats(source, words_extractor=None, stopwords=None, top_n=10, cliches=None, nausea_stopwords=None)
 ```
 
-<!-- core: stats/style_stats.md:StyleStats 145407f -->
-Метрики стиля текста: SEO-метрики Advego и Text.ru и маркеры канцелярита. Формулы сервисов не опубликованы, поэтому взяты общепринятые определения. Источник данных - текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy).
+<!-- core: stats/style_stats.md:StyleStats 8cd38b0 -->
+Метрики стиля текста: SEO-метрики Advego и Text.ru и маркеры канцелярита. Формулы сервисов не опубликованы, поэтому взяты общепринятые определения. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg).
 
-SEO-метрики считаются по словам экстрактора слов, по умолчанию в нижнем регистре, или по токенам `Doc`; явно переданный экстрактор применяется к тексту `Doc`. Маркеры считаются по словоформам в нижнем регистре (`forms`) независимо от экстрактора.
+SEO-метрики считаются по словам [документа](https://sergeyshk.github.io/anyTS/document/) источника в нижнем регистре (`doc_words`) или по словам явно переданного экстрактора, который применяется к тексту. Маркеры считаются по словам документа (`forms`) независимо от экстрактора.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа, список, который не список строк;
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, `parse`, который возвращает не `Document`, `doc_words`, который возвращает не последовательность строк, экстрактор другого типа, список, который не список строк;
 - `SourceError` - источник без слов;
 - `ParameterError` - `top_n`, который не целое число не меньше единицы.
 
-Класс расширяет `StyleStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) крючками русского языка из карточек метрик; разметку слова в них дает первый разбор [ruMorph](https://github.com/SergeyShk/ruMorph) без учета соседних слов. Слова строки извлекает русский [`WordsExtractor`](../extractors/words.md) без лемматизации, поэтому формы одного слова считаются разными словами, как в Advego; для расчета по леммам передайте `WordsExtractor` с параметрами `use_lexemes=True` и `lowercase=True`. Со стоп-словами, словосочетаниями и ключевыми словами слова сравниваются без учета регистра и буквы ё (`normalize_yo`). Слова `Doc` берутся без знаков ударения, а части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Таблица `print_stats` и сообщения об ошибках - по-русски (`STYLE_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `StyleStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/style_stats/) крючками русского языка из карточек метрик; разметку слова в них дает первый разбор [ruMorph](https://github.com/SergeyShk/ruMorph) без учета соседних слов. Слова документа не лемматизируются, поэтому формы одного слова считаются разными словами, как в Advego; для расчета по леммам передайте русский [`WordsExtractor`](../extractors/words.md) с параметрами `use_lexemes=True` и `lowercase=True`. Со стоп-словами, словосочетаниями и ключевыми словами слова сравниваются без учета регистра и буквы ё (`normalize_yo`). Слова документа берутся без знаков ударения и точки сокращения (`ruts.utils.document_words`). Таблица `print_stats` и сообщения об ошибках - по-русски (`STYLE_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 === "Код"
 
@@ -44,11 +44,11 @@ SEO-метрики считаются по словам экстрактора �
 
 ## Параметры
 
-<!-- core: stats/style_stats.md:StyleStats-parameters 632f8b3 -->
+<!-- core: stats/style_stats.md:StyleStats-parameters de03c76 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` | - | Источник данных |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; применяется и к `Doc`, к его тексту |
+| `source` | `str` / `Doc` / `Document` | - | Источник данных |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, применяется к тексту вместо слов документа |
 | `stopwords` | `list[str]` | `None` | Слова «воды»; без них решает `is_water_word` |
 | `top_n` | `int` | `10` | Количество самых частых слов академической тошноты и естественности по закону Ципфа (`NAUSEA_TOP_N`) |
 | `cliches` | `list[str]` | `None` | Штампы; по умолчанию `cliches_list` класса |

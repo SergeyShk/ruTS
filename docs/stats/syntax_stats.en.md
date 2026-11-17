@@ -6,9 +6,9 @@ SyntaxStats(source)
 
 --8<-- "stats/syntax_stats.md:SyntaxStats"
 
-The class extends the `SyntaxStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) core with the Russian layer. The [Universal Dependencies](https://universaldependencies.org/u/dep/) relations come from the dependency parse of the spaCy model (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), the parts of speech and features from the annotation of the pipeline: ruMorph in the [recommended pipeline](../components.md#load_pipeline), otherwise the model; the quality of the statistics is bounded by the quality of the parse. The clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The `print_stats` table and the error messages are in Russian (`SYNTAX_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `SyntaxStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) core with the Russian layer. The [Universal Dependencies](https://universaldependencies.org/u/dep/) relations come from the dependency parse of the spaCy model (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), the parts of speech and features from the annotation of the pipeline: ruMorph in the [recommended pipeline](../components.md#load_pipeline), otherwise the model; the quality of the statistics is bounded by the quality of the parse. A string raises `SourceError`: ruTS does not parse it syntactically. Hyphenated words are not joined: «кто-то» is one word in the recommended pipeline and two with a plain model, which splits it into parts. The clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The `print_stats` table and the error messages are in Russian (`SYNTAX_STATS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
-The cards of the metrics name the original features of the paper of Ivanov, Solnyshkina and Solovyev and their correlation with the grade of a school textbook.
+The cards of the metrics name the original features of the paper of Ivanov, Solnyshkina and Solovyev and their correlation with the grade of a school textbook. The functions of the tree and of the Russian constructions take the words of the tree of a document (`TreeWord`), such as `get_tree(get_document(doc)).words`, with `get_tree` of `anyts.document` and `get_document` of `ruts.utils`.
 
 === "Code"
 
@@ -77,7 +77,7 @@ The cards of the metrics name the original features of the paper of Ivanov, Soln
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `Doc` | - | Data source: a `Doc` with a dependency parse |
+| `source` | `Doc` / `Document` | - | Data source: a `Doc` or a `Document` with a dependency parse |
 
 ## Attributes
 
@@ -91,7 +91,7 @@ The attributes of the constructions of ruTS are `n_genitive_chains`, `n_nominal_
     ss.n_clauses, ss.n_nouns, ss.n_verbs
     ss.c_children
     ss.c_deps
-    ss.sents[0]
+    [word.form for word in ss.sents[0]]
     ```
 
 === "Result"
@@ -99,8 +99,7 @@ The attributes of the constructions of ruTS are `n_genitive_chains`, `n_nominal_
     ```
     (4, 4, 6)
     {0: 9, 1: 2, 2: 5, 3: 1}
-    {'ROOT': 2,
-     'acl': 1,
+    {'acl': 1,
      'advcl': 1,
      'advmod': 1,
      'amod': 1,
@@ -114,8 +113,9 @@ The attributes of the constructions of ruTS are `n_genitive_chains`, `n_nominal_
      'nsubj:pass': 1,
      'obj': 1,
      'obl': 1,
-     'obl:agent': 1}
-    (Дом, построенный, рабочими, в, прошлом, году, был, продан)
+     'obl:agent': 1,
+     'root': 2}
+    ['Дом', 'построенный', 'рабочими', 'в', 'прошлом', 'году', 'был', 'продан']
     ```
 
 ## Metrics
@@ -147,12 +147,15 @@ The mean dependency distance grows with sentence length, and the longest one is 
 === "Code"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_dependency_distances
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
-    calc_dependency_distances(doc)
+    calc_dependency_distances(get_tree(get_document(doc)).words)
     ```
 
 === "Result"
@@ -253,7 +256,7 @@ Checks whether an infinitive makes one predicate with its head: a modal or phasa
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 </div>
 
@@ -272,7 +275,7 @@ Checks whether a word heads a subordinate clause: a clause head (`is_clause_head
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 ``` {.python .signature}
 is_subordinating_mark(token)
@@ -282,7 +285,7 @@ Checks whether a conjunction (relation `mark`) of a conjunct or a parataxis is a
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 The features of the paper: `PODCHIN_RATE` (r = 0.64), the subordinate clauses per sentence, and `PODCHIN_NUMBER` (r = 0.62), the share of the sentences with at least one subordinate clause.
 
@@ -303,19 +306,23 @@ Checks whether a word heads an infinitive clause: an infinitive under `xcomp` th
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 === "Code"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import is_clause_head, is_infinitive_clause_head, is_subordinate_clause_head
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Он хочет уйти, но может остаться, если его попросят.")
-    [token.text for token in doc if is_clause_head(token)]
-    [token.text for token in doc if is_subordinate_clause_head(token)]
-    [token.text for token in doc if is_infinitive_clause_head(token)]
+    words = get_tree(get_document(doc)).words
+    [word.form for word in words if is_clause_head(word)]
+    [word.form for word in words if is_subordinate_clause_head(word)]
+    [word.form for word in words if is_infinitive_clause_head(word)]
     ```
 
 === "Result"
@@ -386,19 +393,21 @@ Checks whether a word is a prepositionless genitive modifier: a word with the `n
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Sequence of tokens (`calc_genitive_chains`) |
-| `token` | `Token` | - | Token (`is_genitive_modifier`) |
+| `tokens` | `list[TreeWord]` | - | Words of the tree (`calc_genitive_chains`) |
+| `token` | `TreeWord` | - | Word of the tree (`is_genitive_modifier`) |
 
 === "Code"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_genitive_chains
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
-    calc_genitive_chains(
-        nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
-    )
+    doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
+    calc_genitive_chains(get_tree(get_document(doc)).words)
     ```
 
 === "Result"
@@ -430,21 +439,23 @@ Checks whether a word is a link of a nominal chain: a prepositionless genitive m
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Sequence of tokens (`calc_nominal_chains`) |
-| `token` | `Token` | - | Token (`is_nominal_chain_link`) |
+| `tokens` | `list[TreeWord]` | - | Words of the tree (`calc_nominal_chains`) |
+| `token` | `TreeWord` | - | Word of the tree (`is_nominal_chain_link`) |
 
 === "Code"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_nominal_chains
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
-    calc_nominal_chains(
-        nlp(
-            "Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."
-        )
+    doc = nlp(
+        "Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."
     )
+    calc_nominal_chains(get_tree(get_document(doc)).words)
     ```
 
 === "Result"
@@ -472,7 +483,7 @@ Checks whether a word heads a participial clause: a full participle ([`is_partic
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 </div>
 
@@ -491,7 +502,7 @@ Checks whether a word heads an adverbial participle clause: an adverbial partici
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
 
 </div>
 
@@ -547,26 +558,30 @@ The split predicates are pairs of a verb and a noun in the order of the words: a
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Sequence of tokens (`find_split_predicates`) |
-| `verb` | `Token` | `None` | Light verb (`is_split_predicate_noun`); without it the phrase is not checked |
+| `token` | `TreeWord` | - | Word of the tree |
+| `tokens` | `list[TreeWord]` | - | Words of the tree (`find_split_predicates`) |
+| `verb` | `TreeWord` | `None` | Light verb (`is_split_predicate_noun`); without it the phrase is not checked |
 
 === "Code"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import find_split_predicates, is_negation
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Проверка проводится ежегодно, но решение не принято.")
-    find_split_predicates(doc)
-    [token.text for token in doc if is_negation(token)]
+    words = get_tree(get_document(doc)).words
+    [(verb.form, noun.form) for verb, noun in find_split_predicates(words)]
+    [word.form for word in words if is_negation(word)]
     ```
 
 === "Result"
 
     ```
-    [(проводится, Проверка), (принято, решение)]
+    [('проводится', 'Проверка'), ('принято', 'решение')]
     ['не']
     ```
 
@@ -665,17 +680,9 @@ The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those 
      'noun_verb_ratio': 0.6666666666666666}
     ```
 
-The words of a sequence of tokens in the functions below are the tokens of [`is_word`](#helpers).
-
 ## Words of a sequence { #get_words }
 
 --8<-- "stats/syntax_stats.md:get_words"
-
-## Hyphenated words { #hyphenated-words }
-
---8<-- "stats/syntax_stats.md:hyphenated_words"
-
-`SyntaxStats` and the functions of the Russian constructions always join hyphenated words, and the functions of the core with the parameter `join_hyphens` give the values of `SyntaxStats` with `join_hyphens=True`.
 
 ## Head of a sentence { #is_root }
 
@@ -707,7 +714,7 @@ is_participle(token)
 is_converb(token)
 ```
 
-`is_participle` checks whether a token is a full participle (`VerbForm=Part` without `Variant=Short` and `StyleVariant=Short`), `is_converb` whether it is an adverbial participle (`VerbForm=Conv`); the argument is the same token.
+`is_participle` checks whether a word of the tree is a full participle (`VerbForm=Part` without `Variant=Short` and `StyleVariant=Short`), `is_converb` whether it is an adverbial participle (`VerbForm=Conv`); the argument is the same word of the tree.
 
 ## Predicate of a clause { #is_predicate }
 
@@ -733,16 +740,14 @@ is_converb(token)
 
 ## Helper functions { #helpers }
 
---8<-- "utils/spacy.md:is_word"
-
 --8<-- "utils/spacy.md:has_feature"
 
 ``` {.python .signature}
 get_lemma(token)
 ```
 
-The lemma of a token in lower case by the ruMorph analysis with the part of speech of the token, not `token.lemma_`.
+The lemma of a word of the tree in lower case by the ruMorph analysis with the part of speech of the word, not the lemma of the annotation (`lemma`).
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `token` | `Token` | - | Token |
+| `token` | `TreeWord` | - | Word of the tree |
