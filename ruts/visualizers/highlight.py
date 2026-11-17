@@ -40,14 +40,14 @@ from ..lexical_stats import get_rank
 from ..style_stats import expand_phrases, is_stopword, is_water_word
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
-    find_split_predicates,
+    _find_split_predicates,
+    _get_lemma,
+    _is_converb_clause,
+    _is_genitive_modifier,
+    _is_participle_clause,
     get_children,
-    get_lemma,
     get_words,
     is_agentless,
-    is_converb_clause,
-    is_genitive_modifier,
-    is_participle_clause,
     is_passive,
     subtree_len,
 )
@@ -677,7 +677,7 @@ def find_participle_clauses(doc: Document) -> list[Highlight]:
     """
     highlights = []
     for token in get_words(get_tree(doc).words):
-        if is_participle_clause(token):
+        if _is_participle_clause(token):
             start, end = tokens_span(get_subtree(token))
             n_words = subtree_len(token)
             note = f"причастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
@@ -697,7 +697,7 @@ def find_converb_clauses(doc: Document) -> list[Highlight]:
     """
     highlights = []
     for token in get_words(get_tree(doc).words):
-        if is_converb_clause(token):
+        if _is_converb_clause(token):
             start, end = tokens_span(get_subtree(token))
             n_words = subtree_len(token)
             note = f"деепричастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
@@ -720,8 +720,8 @@ def find_split_predicate_highlights(doc: Document) -> list[Highlight]:
         list[Highlight]: Фрагменты слоя split_predicates
     """
     return anyts.visualizers.highlight.find_split_predicate_highlights(
-        find_split_predicates(get_tree(doc).words),
-        lambda verb, noun: f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}",
+        _find_split_predicates(get_tree(doc).words),
+        lambda verb, noun: f"расщепленное сказуемое: {_get_lemma(verb)} {_get_lemma(noun)}",
     )
 
 
@@ -729,7 +729,7 @@ def _genitive_chain(token: TreeWord) -> tuple[list[TreeWord], int]:
     tokens = [token]
     depth = 1
     for child in get_children(token):
-        if is_genitive_modifier(child):
+        if _is_genitive_modifier(child):
             child_tokens, child_depth = _genitive_chain(child)
             tokens += child_tokens
             depth = max(depth, child_depth + 1)
@@ -754,7 +754,7 @@ def find_genitive_chains(doc: Document) -> list[Highlight]:
     highlights = []
     for token in get_words(get_tree(doc).words):
         head = token.head or token
-        if not is_genitive_modifier(token) or is_genitive_modifier(head):
+        if not _is_genitive_modifier(token) or _is_genitive_modifier(head):
             continue
         chain, depth = _genitive_chain(token)
         if depth < 2:

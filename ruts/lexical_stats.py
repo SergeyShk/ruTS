@@ -14,7 +14,7 @@ from anyts.document import get_tree
 from anyts.lexical_stats import LexicalWord
 from anyts.utils import has_words, is_doc, is_document, source_type_error
 
-from .cohesion_stats import WordInfo, analysis_info, token_info, word_info, word_text
+from .cohesion_stats import WordInfo, _token_info, _word_text, analysis_info, word_info
 from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
@@ -152,12 +152,12 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         if parsed:
             document = self._document(source)
             all_words = [word for word in get_tree(document).words if has_words(word.form)]
-            texts = [word_text(word) for word in all_words]
+            texts = [_word_text(word) for word in all_words]
             keep = [not is_number(text) for text in texts]
             kept = [word for word, flag in zip(all_words, keep, strict=True) if flag]
             words = [text for text, flag in zip(texts, keep, strict=True) if flag]
             if any(word.upos for word in all_words):
-                infos = [token_info(word) for word in kept]
+                infos = [_token_info(word) for word in kept]
             else:
                 found = analyze_words(
                     [(word.start, text) for word, text in zip(all_words, texts, strict=True)],

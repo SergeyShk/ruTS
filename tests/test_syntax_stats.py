@@ -9,7 +9,7 @@ from spacy.tokens import Doc
 
 from ruts import SyntaxStats
 from ruts.constants import SYNTAX_STATS_DESC
-from ruts.exceptions import SourceError
+from ruts.exceptions import SourceError, SourceTypeError
 from ruts.syntax_stats import (
     calc_genitive_chains,
     calc_nominal_chains,
@@ -19,6 +19,7 @@ from ruts.syntax_stats import (
     get_lemma,
     is_agentless,
     is_clause_head,
+    is_converb,
     is_converb_clause,
     is_finite_verb,
     is_genitive_modifier,
@@ -1008,3 +1009,42 @@ def test_opens_replica_after_line_break(nlp):
         assert _opens_replica(word)
     word = next(w for w in tree_words(nlp("Он сказал, что вы сделаете.")) if w.form == "что")
     assert not _opens_replica(word)
+
+
+@pytest.mark.parametrize(
+    "check",
+    [
+        is_participle,
+        is_converb,
+        is_negation,
+        is_clause_head,
+        is_infinitive_clause,
+        is_infinitive_periphrasis,
+        is_subordinate_clause_head,
+        is_subordinating_mark,
+        is_infinitive_clause_head,
+        is_genitive_modifier,
+        is_nominal_chain_link,
+        is_participle_clause,
+        is_converb_clause,
+        get_lemma,
+        is_light_verb,
+        is_reflexive,
+        is_split_predicate_noun,
+    ],
+)
+def test_checks_of_a_word(nlp, check):
+    """Функция слова дерева на токене spaCy - SourceTypeError с русским сообщением"""
+    with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
+        check(nlp("Кот спит.")[0])
+
+
+@pytest.mark.parametrize(
+    "check", [calc_genitive_chains, calc_nominal_chains, find_split_predicates]
+)
+def test_checks_of_words(nlp, check):
+    """Последовательность слов с токеном spaCy - SourceTypeError; итератор читается один раз"""
+    doc = nlp("Повышение эффективности использования ресурсов обсуждалось.")
+    with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
+        check(doc)
+    assert check(iter(tree_words(doc))) == check(tree_words(doc))

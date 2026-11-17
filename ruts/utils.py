@@ -14,7 +14,7 @@ import anyts.utils
 import rumorph
 from anyseg import Document, Segmenter
 from anyts.document import to_document
-from anyts.utils import check_sequence, is_punctuation
+from anyts.utils import check_sequence, check_tree_word, is_punctuation
 
 from .constants import (
     CORE_MESSAGES,
@@ -58,6 +58,43 @@ MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 SEGMENTER = Segmenter("ru")
 # Разбор строки без видимых символов: знак препинания, а не слово
 NO_WORD = "_"
+
+
+# Сообщение функций ruTS о значении, которое не слово дерева документа
+TREE_WORD_MESSAGE = "Ожидается слово дерева TreeWord, а не {type}"
+
+
+def _takes_word(function: F) -> F:
+    """Функция слова дерева: значение не TreeWord - SourceTypeError; внутри пакета
+    вызывается версия без проверки (_unchecked)"""
+
+    @functools.wraps(function)
+    def checked(word: object, *args: Any, **kwargs: Any) -> Any:
+        check_tree_word(word, message=TREE_WORD_MESSAGE)
+        return function(word, *args, **kwargs)
+
+    checked.__unchecked__ = function  # type: ignore[attr-defined]
+    return cast(F, checked)
+
+
+def _takes_words(function: F) -> F:
+    """Функция последовательности слов дерева: каждое слово проверяется, итератор
+    читается один раз"""
+
+    @functools.wraps(function)
+    def checked(words: Iterable[object], *args: Any, **kwargs: Any) -> Any:
+        words = list(words)
+        for word in words:
+            check_tree_word(word, message=TREE_WORD_MESSAGE)
+        return function(words, *args, **kwargs)
+
+    checked.__unchecked__ = function  # type: ignore[attr-defined]
+    return cast(F, checked)
+
+
+def _unchecked(function: F) -> F:
+    """Функция слова или слов без проверки _takes_word и _takes_words"""
+    return cast(F, getattr(function, "__unchecked__", function))
 
 
 @lru_cache(maxsize=1)
@@ -480,6 +517,7 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
     return found
 
 
+@_takes_word
 def word_analysis(word: TreeWord) -> rumorph.Analysis | None:
     """
     Получение разбора ruMorph, которым размечено слово документа
@@ -498,6 +536,9 @@ def word_analysis(word: TreeWord) -> rumorph.Analysis | None:
         return None
     morph = "|".join(f"{name}={value}" for name, value in word.feats.items())
     return _matching_analysis(word.form, word.lemma, word.upos or "", morph)
+
+
+_word_analysis = _unchecked(word_analysis)
 
 
 @lru_cache(maxsize=131072)

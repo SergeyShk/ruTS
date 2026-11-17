@@ -61,6 +61,9 @@ from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import answer_particles
 from .utils import (
     BYTE_ORDER_MARK,
+    _takes_word,
+    _unchecked,
+    _word_analysis,
     _word_cache,
     analyze_sents,
     analyze_words,
@@ -70,7 +73,6 @@ from .utils import (
     parse_all,
     parse_word,
     strip_marks,
-    word_analysis,
     word_form,
 )
 
@@ -343,7 +345,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             words = [word for word in get_tree(document).words if has_words(word.form)]
             if not any(word.upos for word in words):
                 # Слова без разметки - по разборам ruMorph в контексте предложений текста
-                found = [(word.start, word_text(word)) for word in words]
+                found = [(word.start, _word_text(word)) for word in words]
                 particles = answer_particles([text for _, text in found], document.text)
                 in_context = analyze_words(found, document.text)
                 self._context = {
@@ -393,9 +395,9 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
             Слово с частью речи - по разметке (token_info), без нее - по разбору ruMorph
             в контексте предложения; ответное «нет» - частица
         """
-        text = word_text(word)
+        text = _word_text(word)
         if word.upos:
-            return _cohesion_word(text, token_info(word), word.upos)
+            return _cohesion_word(text, _token_info(word), word.upos)
         # Копия и объект после pickle разборов анализа не хранят
         analysis, particle = getattr(self, "_context", {}).get(word.start, (None, False))
         if analysis is not None:
@@ -718,6 +720,7 @@ def words_info(
     ]
 
 
+@_takes_word
 def token_info(token: TreeWord) -> WordInfo:
     """
     Получение признаков слова дерева документа по разметке Universal Dependencies
@@ -734,7 +737,7 @@ def token_info(token: TreeWord) -> WordInfo:
     Вывод:
         WordInfo: Признаки слова
     """
-    analysis = word_analysis(token)
+    analysis = _word_analysis(token)
     if analysis is not None:
         return analysis_info(analysis)
     feats = token.feats
@@ -745,6 +748,9 @@ def token_info(token: TreeWord) -> WordInfo:
         _first_value(feats.get("Aspect")),
         dict(feats) or None,
     )
+
+
+_token_info = _unchecked(token_info)
 
 
 def _first_value(value: str | None) -> str | None:
@@ -787,6 +793,7 @@ def ud_info(
     return _word_info(lemma, pos, feats, labels, tense, aspect)
 
 
+@_takes_word
 def word_text(word: TreeWord) -> str:
     """
     Текст слова дерева документа
@@ -799,6 +806,9 @@ def word_text(word: TreeWord) -> str:
             сокращения (word_form)
     """
     return word_form(strip_marks(word.form).lstrip(BYTE_ORDER_MARK))
+
+
+_word_text = _unchecked(word_text)
 
 
 def is_pronoun(word: str) -> bool:

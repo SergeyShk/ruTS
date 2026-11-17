@@ -28,6 +28,9 @@ from .constants import (
 from .exceptions import SourceTypeError
 from .utils import (
     BYTE_ORDER_MARK,
+    _takes_word,
+    _unchecked,
+    _word_analysis,
     _word_cache,
     analyze_text,
     analyze_words,
@@ -36,7 +39,6 @@ from .utils import (
     parse_all,
     parse_word,
     strip_marks,
-    word_analysis,
     word_form,
 )
 
@@ -209,11 +211,11 @@ class MorphStats(anyts.morph_stats.MorphStats):
                 features = []
                 chosen = []
                 for word in tree_words:
-                    analysis = word_analysis(word)
+                    analysis = _word_analysis(word)
                     chosen.append(analysis.lemma if analysis is not None else None)
                     key = (word.upos, _feats_text(word), word.form, word.lemma)
                     if (cached := known.get(key)) is None:
-                        cached = known[key] = token_to_ud(word)
+                        cached = known[key] = _token_to_ud(word)
                     features.append(cached)
             else:
                 positions = [
@@ -496,6 +498,7 @@ def parse_verb(word: str, lemma: str = "", feats: str = "") -> rumorph.Analysis 
     )
 
 
+@_takes_word
 def token_to_ud(token: TreeWord) -> dict[str, str | None]:
     """
     Получение признаков Universal Dependencies слова дерева документа
@@ -531,6 +534,9 @@ def token_to_ud(token: TreeWord) -> dict[str, str | None]:
     for stat, values in LABEL_FEATURES.items():
         features[stat] = next((value for label, value in values.items() if label in labels), None)
     return features
+
+
+_token_to_ud = _unchecked(token_to_ud)
 
 
 def _feats_text(word: TreeWord) -> str:

@@ -237,6 +237,8 @@ def test_lone_surrogate_not_a_word(nlp):
     words = ("Привет", "мир", "Ещё")
     assert document_words(get_document(text)) == document_words(get_document(nlp(text))) == words
     assert BasicStats(text).n_words == BasicStats(nlp(text)).n_words == 3
+    assert WordsExtractor().extract(text) == words
+    assert [word for *_, word in iter_text_words(text)] == list(words)
     for cls in (DiversityStats, PhonStats, StyleStats):
         assert len(cls(text).words) == len(cls(nlp(text)).words) == 3
 
