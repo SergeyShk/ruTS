@@ -31,7 +31,7 @@
 
 **ruTS** computes for Russian texts what usually takes several different tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
 
-The source is a string or a [spaCy](https://github.com/explosion/spaCy) `Doc`; every statistic is available both as a class and as a spaCy pipeline component.
+The source is a string, a [spaCy](https://github.com/explosion/spaCy) `Doc` or an [anySeg](https://github.com/SergeyShk/anySeg) document; every statistic is available both as a class and as a spaCy pipeline component.
 
 Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): the readability grade, metrics, plots and highlighted fragments of a pasted text.
 
@@ -71,7 +71,7 @@ spaCy components and syntactic statistics need the Russian-language model (the l
 python -m spacy download ru_core_news_sm
 ```
 
-The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_pipeline) for a `Doc` is `ruts.load_pipeline()`: its tokens and sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the morphology from the [ruMorph](https://github.com/SergeyShk/ruMorph) analyzer and the dependency parse from the model, so a `Doc` is annotated like a string. With a plain `spacy.load("ru_core_news_sm")` the morphology comes from the model.
+The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_pipeline) for a `Doc` is `ruts.load_pipeline()`: its tokens and sentences come from the [anySeg](https://github.com/SergeyShk/anySeg) segmenter, the morphology from the [ruMorph](https://github.com/SergeyShk/ruMorph) analyzer and the dependency parse from the model, so a `Doc` is annotated like a string. With a plain `spacy.load("ru_core_news_sm")` the tokens, the sentences and the morphology come from the model.
 
 ## Quick start
 
@@ -369,7 +369,7 @@ SEO metrics by the commonly accepted definitions (the formulas of the services a
 *   Classic and academic nausea, water content, spam score
 *   Naturalness by Zipf's law, keyword and phrase density
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
-*   Reading of the metrics by the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex
+*   Reading of the metrics by the norms of [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo)
 
 ```python
 >>> from pprint import pprint

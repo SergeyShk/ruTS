@@ -313,6 +313,8 @@ def test_get_document():
 
 def test_document_words():
     """Слова документа - токены с буквой или цифрой без знаков ударения и точки сокращения"""
+    with pytest.raises(SourceTypeError, match=r"^Источник данных не может быть типа str$"):
+        document_words("текст")
     text = "Ма\u0301ма, 5 руб. в день! — Да; т.е. и\u0306од №\u00a01"
     assert document_words(get_document(text)) == (
         "Мама",

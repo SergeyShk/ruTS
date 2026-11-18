@@ -3,41 +3,17 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from math import nan
 from statistics import fmean
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import anyts.syntax_stats
+import anyts.utils
 from anyts.constants import CLAUSE_DEPS
 from anyts.syntax_stats import (
-    base_dep as base_dep,
-    calc_coordination_chains as calc_coordination_chains,
-    calc_dependency_distances as calc_dependency_distances,
     calc_edit_distance as calc_edit_distance,
-    calc_modifier_chains as calc_modifier_chains,
     calc_multiset_similarity as calc_multiset_similarity,
-    calc_tree_depth as calc_tree_depth,
-    calc_valency as calc_valency,
-    count_children as count_children,
-    count_noun_modifiers as count_noun_modifiers,
-    dependency_triples as dependency_triples,
-    get_children as get_children,
     get_subtree,
-    get_words as get_words,
-    has_agent as has_agent,
-    is_agentless as is_agentless,
-    is_passive as is_passive,
-    is_predicate as is_predicate,
-    is_prep_complement as is_prep_complement,
-    is_root as is_root,
-    subtree_len as subtree_len,
 )
-from anyts.utils import (
-    check_tree_word,
-    has_feature as has_feature,
-    is_finite_verb as is_finite_verb,
-    is_infinitive as is_infinitive,
-    is_punctuation,
-    unchecked,
-)
+from anyts.utils import check_tree_word, is_punctuation, unchecked
 
 from .constants import (
     COMPOUND_AS_PREV_WORDS,
@@ -80,6 +56,38 @@ def _is_word(word: TreeWord) -> bool:
 
 
 # Функции ядра без проверки слова - для слов, которые класс берет из своего дерева
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def _checked(function: F, takes: Callable[[F], F] = _takes_word) -> F:
+    """Функция ядра с проверкой слова дерева по-русски, как функции ruTS, в этом модуле"""
+    wrapper = takes(unchecked(function))
+    wrapper.__module__ = __name__
+    return wrapper
+
+
+base_dep = _checked(anyts.syntax_stats.base_dep)
+calc_valency = _checked(anyts.syntax_stats.calc_valency)
+count_children = _checked(anyts.syntax_stats.count_children)
+count_noun_modifiers = _checked(anyts.syntax_stats.count_noun_modifiers)
+get_children = _checked(anyts.syntax_stats.get_children)
+has_agent = _checked(anyts.syntax_stats.has_agent)
+is_agentless = _checked(anyts.syntax_stats.is_agentless)
+is_passive = _checked(anyts.syntax_stats.is_passive)
+is_predicate = _checked(anyts.syntax_stats.is_predicate)
+is_prep_complement = _checked(anyts.syntax_stats.is_prep_complement)
+is_root = _checked(anyts.syntax_stats.is_root)
+subtree_len = _checked(anyts.syntax_stats.subtree_len)
+has_feature = _checked(anyts.utils.has_feature)
+is_finite_verb = _checked(anyts.utils.is_finite_verb)
+is_infinitive = _checked(anyts.utils.is_infinitive)
+calc_coordination_chains = _checked(anyts.syntax_stats.calc_coordination_chains, _takes_words)
+calc_dependency_distances = _checked(anyts.syntax_stats.calc_dependency_distances, _takes_words)
+calc_modifier_chains = _checked(anyts.syntax_stats.calc_modifier_chains, _takes_words)
+calc_tree_depth = _checked(anyts.syntax_stats.calc_tree_depth, _takes_words)
+dependency_triples = _checked(anyts.syntax_stats.dependency_triples, _takes_words)
+get_words = _checked(anyts.syntax_stats.get_words, _takes_words)
+
 _base_dep = unchecked(base_dep)
 _get_children = unchecked(get_children)
 _get_words = unchecked(get_words)

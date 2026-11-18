@@ -1,6 +1,6 @@
 import html
 import re
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from itertools import islice
 from pathlib import Path
 from typing import Any
@@ -96,26 +96,29 @@ NOTE_BLOCK = re.compile(
 )
 SOURCE_NOTES = re.compile(r"^[^\S\n]*Сверка произведена[^\n]*(?:\n[^\S\n]*\S[^\n]*)*", re.M)
 INSERT = re.compile(r"\[[^\[\]]{1,1000}\]|\{[^{}]{1,1000}\}")
-_LANGUAGES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат)\b"
+_LANGUAGES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат|тюрк)\b"
 _LANGUAGE_MARK = rf"\((?:от\.?\s*)?{_LANGUAGES}[^()]*\)"
+# Вставка в фигурных скобках - всегда сноска, в квадратных - если есть помета
 INSERT_MARK = re.compile(
-    rf"{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\s*[\]}}]$|\b(?:ред|прим|примеч)\.", re.I
+    rf"^\{{|{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\s*[\]}}]$|\b(?:ред|прим|примеч)\.", re.I
 )
-# Примечание после главы: номер, затем до четырех непустых строк с пометой языка в конце
+# Примечание после главы: номер, затем до четырех непустых строк с пометой языка или «Прим.»
 NOTE_LINES = re.compile(
     rf"^[^\S\n]*\d{{1,3}}(?:[^\S\n]+|[^\S\n]*\n(?:[^\S\n]*\n)*)(?:[^\S\n]*\S[^\n]*\n){{0,3}}?"
-    rf"[^\n]*?{_LANGUAGE_MARK}[.)]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
+    rf"[^\n]*?(?:{_LANGUAGE_MARK}|\(прим(?:еч)?\.[^()]*\))[.)]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
     re.I | re.M,
 )
 # Выражения начинаются с символа сноски, а не с ретроспективной проверки: так в разы быстрее
 NOTE_MARKER = re.compile(
-    r"\[\d+\]|\*\[\d+\]|\{\d+\}|<<\d+>>|\((?<=[^\W\d_]\()\d{1,3}\)"
+    r"\[\*?\d+\]|\*\[\d+\]|\{\d+\}|<<\d+>>|\((?<=[^\W\d_]\()\d{1,3}\)"
     r"|\*(?<=[a-zа-яёàâçéèêëîïôûùü]\*)(?![*\w])"
 )
 NOTE_DIGITS = re.compile(
     r"\d(?<=[^\W\d_]{2}\d)\d?(?!\w)|\d(?<=[^\W\d_][!?»]\d)\d?(?=\s)|\d(?<=[^\W\d_]\.\d)\d?$",
     re.M,
 )
+# Слово вразрядку через неразрывные пробелы («Ш\xa0у\xa0й\xa0с\xa0к\xa0и\xa0й»)
+SPACED_WORD = re.compile(r"(?<![^\W\d_])[^\W\d_](?:\xa0[^\W\d_]){2,}(?![^\W\d_])")
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -542,7 +545,7 @@ def clean_text(text: str) -> str:
     Вывод:
         str: Текст без аппарата издания
     """
-    text = html.unescape(text)
+    text = SPACED_WORD.sub(lambda match: match.group().replace("\xa0", ""), html.unescape(text))
     while match := APPARATUS.search(text):
         block = NOTE_LIST.match(text, match.end())
         if not block:
@@ -552,9 +555,18 @@ def clean_text(text: str) -> str:
     text = _strip_contents(text)
     text = SOURCE_NOTES.sub("", text)
     text = NOTE_BLOCK.sub("", text)
-    text = _remove(INSERT, text, INSERT_MARK.search)
+    text = _until_stable(lambda text: _remove(INSERT, text, INSERT_MARK.search), text)
     text = NOTE_LINES.sub("", text)
-    return _remove(NOTE_DIGITS, _remove(NOTE_MARKER, text)).strip()
+    return _until_stable(
+        lambda text: _remove(NOTE_DIGITS, _remove(NOTE_MARKER, text)), text
+    ).strip()
+
+
+def _until_stable(step: Callable[[str], str], text: str) -> str:
+    """Повтор шага, пока текст меняется: вставка в вставке и метка за меткой сноски"""
+    while (cleaned := step(text)) != text:
+        text = cleaned
+    return text
 
 
 def _remove(pattern: re.Pattern[str], text: str, condition: Any = None) -> str:

@@ -73,6 +73,18 @@ def test_kwic_doc_pos():
         assert [line.keyword for line in kwic(text, keyword, by_lemma=True)] == [keyword]
 
 
+def test_kwic_unannotated_by_lemma():
+    """Document и Doc без разметки - леммы в контексте, как у строки"""
+    from ruts.utils import get_document
+
+    sample = "Я видел его вчера. Стали делать из стали."
+    for source in (get_document(sample), spacy.blank("ru")(sample)):
+        for keyword in ("он", "стать", "сталь"):
+            found = [line.start for line in kwic(source, keyword, by_lemma=True)]
+            assert found == [line.start for line in kwic(sample, keyword, by_lemma=True)]
+    assert [line.keyword for line in kwic(get_document(sample), "он", by_lemma=True)] == ["его"]
+
+
 def test_kwic_errors():
     with pytest.raises(TypeError):
         kwic(["кот"], "кот")

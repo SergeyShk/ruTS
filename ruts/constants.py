@@ -652,10 +652,6 @@ STYLE_NORMS: dict[str, tuple[tuple[float, str], ...]] = {
         (15, "избыточная водность по Text.ru"),
         (0, "естественная водность по Text.ru"),
     ),
-    "zipf_naturalness": (
-        (50, "норма pr-cy и megaindex"),
-        (0, "ниже нормы pr-cy и megaindex"),
-    ),
 }
 VERBAL_NOUN_SUFFIXES = ("ние", "нье", "тие", "тье", "ствие", "ция")
 VERBAL_NOUN_LEMMAS = frozenset(

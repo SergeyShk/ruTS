@@ -81,3 +81,13 @@ def test_wrappers_pickle(name):
     """Обертка функции ядра - объект ruTS по своему пути: pickle (процессы) ее находит"""
     function = getattr(corpus, name)
     assert pickle.loads(pickle.dumps(function)) is function
+
+
+def test_partial_messages():
+    """Словарь части ключей дополняется русскими сообщениями: верный вызов работает,
+    заданный ключ берется из словаря"""
+    messages = {"association_measure": "Мера {measure} неизвестна"}
+    assert corpus.collocations(WORDS * 3, messages=messages)
+    assert corpus.holm_correction([0.1, 0.2], messages=messages).tolist() == [0.2, 0.2]
+    with pytest.raises(RutsError, match=r"^Мера x неизвестна$"):
+        corpus.collocations(WORDS, measure="x", messages=messages)

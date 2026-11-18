@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import unicodedata
 from collections import deque
-from collections.abc import Callable, Sequence
-from typing import TYPE_CHECKING
+from collections.abc import Callable, Iterable, Sequence
+from typing import TYPE_CHECKING, Any, cast
 
 import anyts.corpus
+from anyseg import Document
 from anyts.corpus.kwic import (
     Concordance as Concordance,
     format_kwic as core_format_kwic,
@@ -26,7 +27,7 @@ from ..utils import (
 )
 
 if TYPE_CHECKING:
-    from anyseg import Document, Word
+    from anyseg import Word
     from spacy.tokens import Doc
 
 format_kwic = with_core_messages(core_format_kwic)
@@ -87,11 +88,23 @@ def kwic(
         by_lemma,
         ignore_case or case_sensitive,
         tokenize=iter_text_words,
-        lemmatize=_string_lemmatizer(source) if by_lemma and isinstance(source, str) else _lemma,
+        lemmatize=_lemmatizer(source) if by_lemma else _lemma,
         fold=_fold_marks if case_sensitive else _fold,
         sentenize=iter_text_sents,
         messages=CORE_MESSAGES,
     )
+
+
+def _lemmatizer(source: object) -> Callable[[str, Sequence[Word]], str | tuple[str, ...]]:
+    """Лемматизатор источника: без частей речи у слов (строка, Document или Doc без
+    разметки) - в контексте предложений текста, как у строки"""
+    if isinstance(source, str):
+        return _string_lemmatizer(source)
+    if isinstance(source, Document):
+        annotated = any(word.upos for word in source.words)
+    else:
+        annotated = any(getattr(token, "pos_", "") for token in cast(Iterable[Any], source))
+    return _lemma if annotated else _string_lemmatizer(cast(Document, source).text)
 
 
 def _fold_marks(word: str) -> str:

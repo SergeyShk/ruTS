@@ -371,8 +371,7 @@ def calc_zipf_naturalness(text: Sequence[str], top_n: int = NAUSEA_TOP_N) -> flo
 
     Описание:
         100 · (1 - среднее относительное отклонение частот от идеальных f_r = f_1 / r)
-        по рангам от 2 до min(top_n, V, f_1) (pr-cy, megaindex); отрицательные
-        значения обрезаются до 0, норма сервисов - не меньше 50%, полосы - STYLE_NORMS
+        по рангам от 2 до min(top_n, V, f_1); отрицательные значения обрезаются до 0
 
     Ссылки:
         https://en.wikipedia.org/wiki/Zipf's_law

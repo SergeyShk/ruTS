@@ -4,6 +4,7 @@ from collections.abc import Callable, Mapping, Sequence
 from typing import Any, TypeVar, cast
 
 from ..constants import VISUALIZER_LABELS
+from ..utils import _in_ruts
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -48,4 +49,4 @@ def with_russian_labels(func: F) -> F:
         bound.arguments["labels"] = russian_labels(func.__name__, bound.arguments.get("labels"))
         return func(*bound.args, **bound.kwargs)
 
-    return cast(F, wrapper)
+    return cast(F, _in_ruts(wrapper))

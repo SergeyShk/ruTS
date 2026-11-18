@@ -47,7 +47,7 @@ The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/style_stats.md:StyleStats-metrics"
 
-The bands of the cards are the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`), which [`describe`](#methods) reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The spam score and the markers of the officialese have no norms, and `describe` gives `None` for them.
+The bands of the cards are the norms of [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo), in Russian (`STYLE_NORMS`), which [`describe`](#methods) reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The spam score, the naturalness by Zipf's law and the markers of the officialese have no norms, and `describe` gives `None` for them.
 
 <div class="metric-card" markdown>
 
@@ -176,7 +176,7 @@ Whether a word is "water": conjunctions, particles (and бы), pronominal nouns 
 
 ### Naturalness by Zipf's law { #zipf_naturalness }
 
-`zipf_naturalness` · pr-cy, megaindex
+`zipf_naturalness`
 { .metric-meta }
 
 ``` {.python .signature}
@@ -193,11 +193,6 @@ $$
 | :-------- | :--- | :------ | :---------- |
 | `text` | `list[str]` | - | List of words |
 | `top_n` | `int` | `10` | Number of the most frequent words |
-
-| Value | Reading |
-| :---- | :------ |
-| `[0, 50)` | below the pr-cy and megaindex norm |
-| `[50, 100]` | the pr-cy and megaindex norm |
 
 </div>
 

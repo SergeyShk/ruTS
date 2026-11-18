@@ -242,7 +242,7 @@ def test_unreachable_resource():
 
     freq_dict = FreqDict()
     if freq_dict.filepath is None:
-        pytest.skip("частотный словарь не загружен")
+        freq_dict.download()
     for lemmatize in (True, False):
         found = _find_unreachable_entries(freq_dict, lemmatize)
         assert set(found) == _unreachable_entries(lemmatize)
