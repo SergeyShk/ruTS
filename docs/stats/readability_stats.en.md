@@ -1,7 +1,7 @@
 # Readability metrics
 
 ``` {.python .signature}
-ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='plainrussian')
+ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='plainrussian', filter_nums=None)
 ```
 
 --8<-- "stats/readability_stats.md:ReadabilityStats"
@@ -47,6 +47,7 @@ The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github
 | `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool |
 | `words_extractor` | `WordsExtractor` | `None` | Word extraction tool |
 | `preset` | `str` | `'plainrussian'` | Coefficient preset: `plainrussian`, `fiction` or `academic` |
+| `filter_nums` | `bool` | `None` | Leave out the numbers among the words; `None` - the class attribute `filter_nums`, `True` in ruTS; not used for ready `BasicStats` |
 
 The object keeps the basic statistics of the text in `bs`, the name of the preset in `preset` (read-only) and the coefficients of the preset in `coefficients`, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: `ReadabilityStats(rs.bs, preset="fiction")`.
 

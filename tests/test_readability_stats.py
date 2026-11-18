@@ -554,3 +554,12 @@ def test_tuldava(rs):
     assert rs.tuldava == calc_tuldava(bs.n_syllables, bs.n_words, bs.n_sents)
     assert rs.describe("tuldava") is None
     assert "tuldava" not in rs.grade_stats
+
+
+def test_numbers_left_out():
+    """Число без слогов занижает класс: формулы его не считают, BasicStats - считает"""
+    text = "В 2026 году 5-й класс прочитал 1 250 000 страниц. Это много."
+    words = BasicStats(text).n_words
+    assert ReadabilityStats(text).bs.n_words == words - 3
+    assert ReadabilityStats(text, filter_nums=False).bs.n_words == words
+    assert BasicStats(text, filter_nums=True).n_words == words - 3

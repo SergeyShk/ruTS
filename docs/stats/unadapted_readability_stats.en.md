@@ -1,7 +1,7 @@
 # Formulas of other languages
 
 ``` {.python .signature}
-UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
+UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None, filter_nums=None)
 ```
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats"

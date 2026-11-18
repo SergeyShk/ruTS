@@ -106,7 +106,7 @@ An unknown grade level, a `subject` that is not a string, a length bound that is
 === "Result"
 
     ```
-    «Об утверждении Административного реглам 37.0
+    «Об утверждении Административного реглам 38.0
     Доклад Рабочей группы Государственного с 21.5
     Закон о ФКС 34.5
     ```
@@ -117,20 +117,20 @@ In the library tests the Spearman correlation of every formula with the grade la
 
 | Formula | Spearman's ρ | Mean absolute error, grades |
 | :------ | :----------- | :-------------------------- |
-| Flesch-Kincaid test | 0.80 | 4.1 |
+| Flesch-Kincaid test | 0.80 | 4.3 |
 | Flesch reading ease | −0.80 | - |
 | Coleman-Liau index | 0.78 | 3.0 |
 | SMOG index | 0.82 | 4.1 |
-| Automated readability index | 0.80 | 4.0 |
+| Automated readability index | 0.80 | 4.1 |
 | LIX readability index | 0.81 | - |
 | RIX readability index | 0.78 | - |
-| Solovyev, Ivanov and Solnyshkina formula | 0.78 | 5.0 |
+| Solovyev, Ivanov and Solnyshkina formula | 0.78 | 4.9 |
 | Matskovsky formula | 0.77 | - |
 | Tuldava formula | 0.79 | - |
-| Dale-Chall index | 0.82 | 3.8 |
-| Gunning fog index | 0.81 | 4.1 |
-| Consensus grade | 0.81 | 3.7 |
+| Dale-Chall index | 0.82 | 3.9 |
+| Gunning fog index | 0.81 | 4.0 |
+| Consensus grade | 0.81 | 3.8 |
 
-The mean consensus grade grows with the label: 2.9 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.3 for 10-11 and 22.6 for documents labeled 12-17. The error on documents is large: the formulas are calibrated on school texts, and label 17 is nominal.
+The mean consensus grade grows with the label: 2.9 for grade 1, 5.8 for grades 3-4, 6.5 for 5-9, 7.3 for 10-11 and 23.1 for documents labeled 12-17. The error on documents is large: the formulas are calibrated on school texts, and label 17 is nominal.
 
 A breakdown over all groups of statistics on this dataset is in the notebook [02_text_complexity_by_grade.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/02_text_complexity_by_grade.ipynb).

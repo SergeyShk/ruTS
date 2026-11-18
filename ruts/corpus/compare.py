@@ -187,7 +187,9 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         features[f"basic_{key}"] = float(getattr(basic, key))
     features["basic_letters_per_word"] = basic.n_letters / basic.n_words
     features["basic_syllables_per_word"] = basic.n_syllables / basic.n_words
-    for key, score in ReadabilityStats(basic).get_stats().items():
+    # Формулы, как ReadabilityStats, не считают чисел, базовые признаки - считают
+    unnumbered = BasicStats(text, sents, words, normalize=True, filter_nums=True)
+    for key, score in ReadabilityStats(unnumbered).get_stats().items():
         features[f"readability_{key}"] = float(score)
     lowered = FixedWordsExtractor(tuple(word.lower() for word in words.words))
     diversity = DiversityStats(text, words_extractor=lowered)
