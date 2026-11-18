@@ -40,15 +40,15 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
     ```
                                             median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
     cohesion_content_overlap_2_sent                0.067           0.111  -0.049   -0.036   -1.467       -0.835  0.082     0.0
-    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -1.195       -0.791  0.105     0.0
+    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -1.196       -0.791  0.104     0.0
     cohesion_noun_overlap_2_sent                   0.082           0.143  -0.071   -0.047   -1.315       -0.755  0.123     0.0
-    cohesion_content_overlap_adjacent              0.201           0.345  -0.170   -0.113   -1.219       -0.717  0.141     0.0
+    cohesion_content_overlap_adjacent              0.201           0.346  -0.170   -0.113   -1.220       -0.717  0.141     0.0
     cohesion_content_overlap_all                   0.096           0.181  -0.114   -0.060   -1.108       -0.710  0.145     0.0
     punct_ellipsis                                12.000           2.000   4.000   21.000    2.040        0.704  0.852     0.0
     cohesion_content_overlap_prop_adjacent         0.039           0.061  -0.026   -0.017   -1.029       -0.654  0.173     0.0
-    cohesion_noun_overlap_all                      0.048           0.097  -0.069   -0.032   -0.903       -0.648  0.176     0.0
-    cohesion_noun_overlap_adjacent                 0.114           0.217  -0.129   -0.079   -1.001       -0.647  0.176     0.0
-    cohesion_p_given                               0.312           0.368  -0.065   -0.034   -1.166       -0.638  0.181     0.0
+    cohesion_noun_overlap_all                      0.048           0.097  -0.069   -0.032   -0.904       -0.648  0.176     0.0
+    cohesion_noun_overlap_adjacent                 0.114           0.218  -0.129   -0.079   -1.001       -0.647  0.176     0.0
+    cohesion_p_given                               0.312           0.368  -0.065   -0.034   -1.167       -0.638  0.181     0.0
     {'n_Чехов': 220, 'n_Толстой': 1339, 'n_texts_Чехов': 55, 'n_texts_Толстой': 41}
     ```
 
@@ -151,9 +151,9 @@ Features of your own go to `features` as a function of a text, `text_features` w
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
     syntax_converb_clauses_per_sent            0.111           0.217  -0.128   -0.092   -1.063       -0.633  0.184     0.0
     syntax_participle_clauses_per_sent         0.049           0.119  -0.093   -0.052   -0.815       -0.546  0.227     0.0
-    syntax_nominal_chains_per_sent             0.087           0.164  -0.104   -0.053   -0.769       -0.531  0.235     0.0
+    syntax_nominal_chains_per_sent             0.087           0.164  -0.104   -0.053   -0.770       -0.531  0.235     0.0
     syntax_tree_depth                          3.096           3.657  -0.771   -0.348   -0.913       -0.524  0.238     0.0
-    syntax_verb_phrases_per_t_unit             1.632           1.882  -0.349   -0.167   -0.818       -0.507  0.246     0.0
+    syntax_verb_phrases_per_t_unit             1.632           1.880  -0.349   -0.167   -0.818       -0.507  0.246     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }
