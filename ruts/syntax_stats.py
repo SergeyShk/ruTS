@@ -31,6 +31,7 @@ from anyts.syntax_stats import (
     subtree_len as subtree_len,
 )
 from anyts.utils import (
+    check_tree_word,
     has_feature as has_feature,
     is_finite_verb as is_finite_verb,
     is_infinitive as is_infinitive,
@@ -57,9 +58,9 @@ from .constants import (
     SYNTAX_STATS_DESC,
 )
 from .utils import (
+    TREE_WORD_MESSAGE,
     _takes_word,
     _takes_words,
-    _unchecked,
     is_verbal_noun,
     lemmatize,
     normalize_yo,
@@ -334,7 +335,7 @@ def is_participle(token: TreeWord) -> bool:
     )
 
 
-_is_participle = _unchecked(is_participle)
+_is_participle = unchecked(is_participle)
 
 
 @_takes_word
@@ -351,7 +352,7 @@ def is_converb(token: TreeWord) -> bool:
     return _has_feature(token, "VerbForm", "Conv")
 
 
-_is_converb = _unchecked(is_converb)
+_is_converb = unchecked(is_converb)
 
 
 @_takes_word
@@ -377,7 +378,7 @@ def is_negation(token: TreeWord) -> bool:
     )
 
 
-_is_negation = _unchecked(is_negation)
+_is_negation = unchecked(is_negation)
 
 
 @_takes_word
@@ -496,7 +497,7 @@ def is_infinitive_periphrasis(token: TreeWord) -> bool:
     )
 
 
-_is_infinitive_periphrasis = _unchecked(is_infinitive_periphrasis)
+_is_infinitive_periphrasis = unchecked(is_infinitive_periphrasis)
 
 
 @_takes_word
@@ -523,7 +524,7 @@ def is_subordinate_clause_head(token: TreeWord) -> bool:
     )
 
 
-_is_subordinate_clause_head = _unchecked(is_subordinate_clause_head)
+_is_subordinate_clause_head = unchecked(is_subordinate_clause_head)
 
 
 @_takes_word
@@ -570,7 +571,7 @@ def is_subordinating_mark(token: TreeWord) -> bool:
     return not (_opens_replica(token) and _ends_with_question(head))
 
 
-_is_subordinating_mark = _unchecked(is_subordinating_mark)
+_is_subordinating_mark = unchecked(is_subordinating_mark)
 
 
 def _is_correlative(word: TreeWord, mark: TreeWord) -> bool:
@@ -639,7 +640,7 @@ def is_infinitive_clause_head(token: TreeWord) -> bool:
     )
 
 
-_is_infinitive_clause_head = _unchecked(is_infinitive_clause_head)
+_is_infinitive_clause_head = unchecked(is_infinitive_clause_head)
 
 
 @_takes_word
@@ -662,7 +663,7 @@ def is_genitive_modifier(token: TreeWord) -> bool:
     return not any(child.deprel == "case" for child in _get_children(token))
 
 
-_is_genitive_modifier = _unchecked(is_genitive_modifier)
+_is_genitive_modifier = unchecked(is_genitive_modifier)
 
 
 @_takes_words
@@ -682,10 +683,10 @@ def calc_genitive_chains(tokens: Iterable[TreeWord]) -> list[int]:
     Вывод:
         list[int]: Длины цепочек в порядке слов
     """
-    return _calc_modifier_chains(tokens, is_genitive_modifier)
+    return _calc_modifier_chains(tokens, _is_genitive_modifier)
 
 
-_calc_genitive_chains = _unchecked(calc_genitive_chains)
+_calc_genitive_chains = unchecked(calc_genitive_chains)
 
 
 @_takes_word
@@ -707,7 +708,7 @@ def is_nominal_chain_link(token: TreeWord) -> bool:
     return _is_genitive_modifier(token) or _is_prep_complement(token)
 
 
-_is_nominal_chain_link = _unchecked(is_nominal_chain_link)
+_is_nominal_chain_link = unchecked(is_nominal_chain_link)
 
 
 @_takes_words
@@ -727,10 +728,10 @@ def calc_nominal_chains(tokens: Iterable[TreeWord]) -> list[int]:
     Вывод:
         list[int]: Длины цепочек в порядке слов
     """
-    return _calc_modifier_chains(tokens, is_nominal_chain_link)
+    return _calc_modifier_chains(tokens, _is_nominal_chain_link)
 
 
-_calc_nominal_chains = _unchecked(calc_nominal_chains)
+_calc_nominal_chains = unchecked(calc_nominal_chains)
 
 
 @_takes_word
@@ -751,7 +752,7 @@ def is_participle_clause(token: TreeWord) -> bool:
     return _is_participle(token) and _calc_valency(token) > 0
 
 
-_is_participle_clause = _unchecked(is_participle_clause)
+_is_participle_clause = unchecked(is_participle_clause)
 
 
 @_takes_word
@@ -772,7 +773,7 @@ def is_converb_clause(token: TreeWord) -> bool:
     return _is_converb(token) and _calc_valency(token) > 0
 
 
-_is_converb_clause = _unchecked(is_converb_clause)
+_is_converb_clause = unchecked(is_converb_clause)
 
 
 @_takes_word
@@ -792,7 +793,7 @@ def get_lemma(token: TreeWord) -> str:
     return lemmatize(token.form, token.upos or "")
 
 
-_get_lemma = _unchecked(get_lemma)
+_get_lemma = unchecked(get_lemma)
 
 
 def _pos_lemmas(token: TreeWord) -> set[str]:
@@ -821,7 +822,7 @@ def is_light_verb(token: TreeWord) -> bool:
     return token.upos == "VERB" and not _verb_lemmas(token).isdisjoint(LIGHT_VERBS)
 
 
-_is_light_verb = _unchecked(is_light_verb)
+_is_light_verb = unchecked(is_light_verb)
 
 
 def _verb_lemmas(token: TreeWord) -> set[str]:
@@ -852,7 +853,7 @@ def is_reflexive(token: TreeWord) -> bool:
     )
 
 
-_is_reflexive = _unchecked(is_reflexive)
+_is_reflexive = unchecked(is_reflexive)
 
 
 @_takes_word
@@ -872,6 +873,8 @@ def is_split_predicate_noun(token: TreeWord, verb: TreeWord | None = None) -> bo
     Вывод:
         bool: Результат проверки
     """
+    if verb is not None:
+        check_tree_word(verb, message=TREE_WORD_MESSAGE)
     if token.upos != "NOUN":
         return False
     lemma = normalize_yo(_get_lemma(token))
@@ -886,7 +889,7 @@ def is_split_predicate_noun(token: TreeWord, verb: TreeWord | None = None) -> bo
     return not verb_lemmas.isdisjoint(SPLIT_PREDICATE_NOUNS[lemma])
 
 
-_is_split_predicate_noun = _unchecked(is_split_predicate_noun)
+_is_split_predicate_noun = unchecked(is_split_predicate_noun)
 
 
 @_takes_words
@@ -922,7 +925,7 @@ def find_split_predicates(tokens: Iterable[TreeWord]) -> list[tuple[TreeWord, Tr
     return pairs
 
 
-_find_split_predicates = _unchecked(find_split_predicates)
+_find_split_predicates = unchecked(find_split_predicates)
 
 
 def _nominal_part_dep(child: TreeWord) -> str:

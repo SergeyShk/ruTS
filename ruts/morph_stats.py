@@ -12,7 +12,7 @@ import anyts.morph_stats
 import rumorph
 from anyts.document import get_tree
 from anyts.morph_stats import MorphWord as MorphWord
-from anyts.utils import has_words, is_doc, is_document, safe_divide, source_type_error
+from anyts.utils import has_words, is_doc, is_document, safe_divide, source_type_error, unchecked
 
 from .constants import (
     ANSWER_PARTICLE_NEXT,
@@ -29,7 +29,6 @@ from .exceptions import SourceTypeError
 from .utils import (
     BYTE_ORDER_MARK,
     _takes_word,
-    _unchecked,
     _word_analysis,
     _word_cache,
     analyze_text,
@@ -536,7 +535,7 @@ def token_to_ud(token: TreeWord) -> dict[str, str | None]:
     return features
 
 
-_token_to_ud = _unchecked(token_to_ud)
+_token_to_ud = unchecked(token_to_ud)
 
 
 def _feats_text(word: TreeWord) -> str:

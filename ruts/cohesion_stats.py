@@ -34,6 +34,7 @@ from anyts.utils import (
     is_doc,
     is_document,
     source_type_error,
+    unchecked,
 )
 
 from .constants import (
@@ -62,7 +63,6 @@ from .morph_stats import answer_particles
 from .utils import (
     BYTE_ORDER_MARK,
     _takes_word,
-    _unchecked,
     _word_analysis,
     _word_cache,
     analyze_sents,
@@ -750,7 +750,7 @@ def token_info(token: TreeWord) -> WordInfo:
     )
 
 
-_token_info = _unchecked(token_info)
+_token_info = unchecked(token_info)
 
 
 def _first_value(value: str | None) -> str | None:
@@ -808,7 +808,7 @@ def word_text(word: TreeWord) -> str:
     return word_form(strip_marks(word.form).lstrip(BYTE_ORDER_MARK))
 
 
-_word_text = _unchecked(word_text)
+_word_text = unchecked(word_text)
 
 
 def is_pronoun(word: str) -> bool:

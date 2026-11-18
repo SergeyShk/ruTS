@@ -1048,3 +1048,12 @@ def test_checks_of_words(nlp, check):
     with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
         check(doc)
     assert check(iter(tree_words(doc))) == check(tree_words(doc))
+
+
+def test_split_predicate_noun_checks_the_verb(nlp):
+    """Глагол оборота от вызывающего тоже проверяется"""
+    doc = nlp("Он оказал помощь.")
+    words = tree_words(doc)
+    assert is_split_predicate_noun(words[2], words[1])
+    with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
+        is_split_predicate_noun(words[2], doc[1])

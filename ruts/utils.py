@@ -14,7 +14,7 @@ import anyts.utils
 import rumorph
 from anyseg import Document, Segmenter
 from anyts.document import to_document
-from anyts.utils import check_sequence, check_tree_word, is_punctuation
+from anyts.utils import check_sequence, check_tree_word, is_punctuation, unchecked
 
 from .constants import (
     CORE_MESSAGES,
@@ -66,7 +66,7 @@ TREE_WORD_MESSAGE = "Ожидается слово дерева TreeWord, а н�
 
 def _takes_word(function: F) -> F:
     """Функция слова дерева: значение не TreeWord - SourceTypeError; внутри пакета
-    вызывается версия без проверки (_unchecked)"""
+    вызывается версия без проверки (unchecked ядра)"""
 
     @functools.wraps(function)
     def checked(word: object, *args: Any, **kwargs: Any) -> Any:
@@ -90,11 +90,6 @@ def _takes_words(function: F) -> F:
 
     checked.__unchecked__ = function  # type: ignore[attr-defined]
     return cast(F, checked)
-
-
-def _unchecked(function: F) -> F:
-    """Функция слова или слов без проверки _takes_word и _takes_words"""
-    return cast(F, getattr(function, "__unchecked__", function))
 
 
 @lru_cache(maxsize=1)
@@ -538,7 +533,7 @@ def word_analysis(word: TreeWord) -> rumorph.Analysis | None:
     return _matching_analysis(word.form, word.lemma, word.upos or "", morph)
 
 
-_word_analysis = _unchecked(word_analysis)
+_word_analysis = unchecked(word_analysis)
 
 
 @lru_cache(maxsize=131072)
