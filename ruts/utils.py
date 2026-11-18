@@ -191,7 +191,7 @@ def with_stripped_marks(func: F, *names: str) -> F:
                 bound.arguments[name] = _strip_words(bound.arguments[name])
         return func(*bound.args, **bound.kwargs)
 
-    return cast(F, wrapper)
+    return cast(F, _in_ruts(wrapper))
 
 
 def with_core_messages(func: F) -> F:
@@ -213,7 +213,13 @@ def with_core_messages(func: F) -> F:
     def wrapper(*args: Any, messages: Mapping[str, str] | None = None, **kwargs: Any) -> Any:
         return func(*args, messages=CORE_MESSAGES if messages is None else messages, **kwargs)
 
-    return cast(F, wrapper)
+    return cast(F, _in_ruts(wrapper))
+
+
+def _in_ruts(wrapper: Callable[..., Any]) -> Callable[..., Any]:
+    """Обертка функции ядра в модуле ruTS с тем же путем: pickle находит ее, а не функцию ядра"""
+    wrapper.__module__ = wrapper.__module__.replace("anyts.", "ruts.", 1)
+    return wrapper
 
 
 def _strip_words(value: Any) -> Any:

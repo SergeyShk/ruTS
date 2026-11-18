@@ -12,7 +12,7 @@ from anyts.corpus.stylometry import (
 from anyts.document import get_tree
 from anyts.utils import check_words, has_words, is_doc, is_document, is_punctuation
 
-from ..constants import FUNCTION_UD_POS
+from ..constants import CORE_MESSAGES, FUNCTION_UD_POS
 from ..exceptions import SourceError
 from ..utils import get_document, parse_word, with_core_messages
 
@@ -59,7 +59,7 @@ def function_words_profile(source: Sequence[str] | Doc | Document) -> dict[str, 
         tags = [word.upos if tagged else _word_pos(word.form) for word in tree_words]
     else:
         words = cast("Sequence[str]", source)
-        check_words(words)
+        check_words(words, "source", message=CORE_MESSAGES["words_param"])
         tags = [_word_pos(word) for word in words if not is_punctuation(word)]
     if not tags:
         raise SourceError("В источнике данных отсутствуют слова")

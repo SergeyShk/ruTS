@@ -1,6 +1,7 @@
 """Ошибки корпусных функций - по-русски: латиница в сообщении - только имена параметров,
 типов и значений"""
 
+import pickle
 import re
 
 import pandas as pd
@@ -21,7 +22,7 @@ NAMES = {
     "positive", "min_freq", "size", "missing", "key", "keep", "fold", "width", "values_a",
     "p_values", "left", "right", "str", "int", "NoneType", "Doc", "DataFrame", "Generator",
     "numpy", "FrequencyReference", "WordsExtractor", "x", "up", "corpus", "list",
-    "N", "p",
+    "N", "p", "side", "node", "texts", "a", "source",
 }  # fmt: skip
 CALLS = [
     lambda: corpus.kwic("Кот спит.", "..."),
@@ -60,6 +61,9 @@ CALLS = [
     lambda: corpus.bootstrap_median_diff([1.0], [1.0], rng=5),
     lambda: corpus.holm_correction([2.0]),
     lambda: corpus.calc_cohen_d("кот", [1.0]),
+    lambda: corpus.corpus_features("Кот спит"),
+    lambda: corpus.compare_corpora("Кот спит", ["Пес лает"]),
+    lambda: corpus.function_words_profile([1]),
 ]
 
 
@@ -70,3 +74,10 @@ def test_corpus_errors_in_russian(call):
     message = str(raised.value).strip("'")
     assert re.search("[а-яё]", message, re.IGNORECASE), message
     assert set(re.findall(r"[A-Za-z_]+", message)) <= NAMES, message
+
+
+@pytest.mark.parametrize("name", ["delta", "collocations", "format_kwic", "compare_features"])
+def test_wrappers_pickle(name):
+    """Обертка функции ядра - объект ruTS по своему пути: pickle (процессы) ее находит"""
+    function = getattr(corpus, name)
+    assert pickle.loads(pickle.dumps(function)) is function

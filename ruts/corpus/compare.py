@@ -295,7 +295,7 @@ def corpus_features(
         ParameterError: Если размер окна или min_words меньше единицы или min_words
             больше окна
     """
-    check_words(texts, "texts")
+    check_words(texts, "texts", message=CORE_MESSAGES["words_param"])
     if not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)
@@ -367,8 +367,8 @@ def compare_corpora(
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)
-    check_words(a, "texts")
-    check_words(b, "texts")
+    check_words(a, "a", message=CORE_MESSAGES["words_param"])
+    check_words(b, "b", message=CORE_MESSAGES["words_param"])
     if features is not None and not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)

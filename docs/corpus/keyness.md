@@ -51,6 +51,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | `positive` | `bool` | `True` | Положительные ключевые слова (чаще в целевом корпусе) или отрицательные (чаще в эталонном) |
 | `top_n` | `int` | `None` | Количество ключевых слов; `None` - все |
 | `n` | `int` | `1` | Длина N-грамм слов каждого текста; `1` - слова |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Параметры и целевой корпус проверяет `check_keyness_params`; `n` больше 1 при частотах или `FrequencyReference` дает `ParameterError`. Эталон, который не список строк, не список таких списков, не справочник частот и не `FrequencyReference`, дает `SourceTypeError`, а отрицательная, `nan` или бесконечная частота справочника и корпус без слов или короче `n` слов - `SourceError`.
 
@@ -59,7 +60,6 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
-| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
 
