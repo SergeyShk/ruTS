@@ -2474,13 +2474,13 @@
 <h1 id="formulas-of-other-languages">Formulas of other languages<a class="headerlink" href="#formulas-of-other-languages" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">UnadaptedReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Readability formulas made for English, German or Italian, computed from the basic statistics of a text with the coefficients they were published with (Linsear Write in the form of textstat), without a calibration for its language. Their values compare texts of one language with each other; they are no grade levels of another language. A word without syllables (a number, a preposition of one consonant) counts as monosyllabic in FORCAST and the Wiener Sachtextformeln and as easy in Linsear Write, as in textstat. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a ready <code>BasicStats</code> object, as for <code>ReadabilityStats</code>.</p>
+<p>Readability formulas made for English, German or Italian, computed from the basic statistics of a text with the coefficients they were published with (Linsear Write in the form of textstat), without a calibration for its language. Their values compare texts of one language with each other; they are no grade levels of another language. A word without syllables (a number, a preposition of one consonant) counts as monosyllabic in FORCAST and the Wiener Sachtextformeln and as easy in Linsear Write, as in textstat. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>, a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a> or a ready <code>BasicStats</code> object, as for <code>ReadabilityStats</code>.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>BasicStats</code> object, basic statistics of another class, an extractor of another type, a string or a <code>Doc</code> for a class without <code>basic_stats_class</code>;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code>, a <code>Document</code> nor a <code>BasicStats</code> object, basic statistics of another class, an extractor of another type, a source other than basic statistics for a class without <code>basic_stats_class</code>;</li>
 <li><code>SourceError</code> - a source without words or without sentences.</li>
 </ul>
-<p>The class extends the <code>UnadaptedReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> core with the <a href="../basic_stats/">basic statistics</a> of ruTS, which count the syllables and the letters of Russian words and take the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default. The <code>print_stats</code> table and the error messages are in Russian.</p>
+<p>The class extends the <code>UnadaptedReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> core with the <a href="../basic_stats/">basic statistics</a> of ruTS, which count the syllables and the letters of Russian words. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <p>The formulas give no grade of the Russian school (on the first-grade texts of the <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2) and do not enter the <a href="../readability_stats/#consensus_grade">consensus grade</a>. The formulas with coefficients for Russian are in <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
@@ -2526,9 +2526,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>BasicStats</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code> / <code>BasicStats</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Data source</td>
+<td style="text-align: left;">Data source (a string, a Doc or a Document object, or ready basic statistics)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_extractor</code></td>

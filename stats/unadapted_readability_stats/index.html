@@ -2474,14 +2474,14 @@
 <h1 id="_1">Формулы других языков<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">UnadaptedReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 0fc386b -->
-<p>Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Слово без слогов (число, предлог из одной согласной) в FORCAST и венских формулах считается односложным, а в Linsear Write - легким, как в textstat. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или готовый объект <code>BasicStats</code>, как у <code>ReadabilityStats</code>.</p>
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats 966a27a -->
+<p>Формулы удобочитаемости, созданные для английского, немецкого или итальянского языка, считаются по базовым статистикам текста с опубликованными коэффициентами (Linsear Write - в форме textstat), без калибровки под язык текста. Их значения сравнивают тексты одного языка между собой, но классами обучения для другого языка не являются. Слово без слогов (число, предлог из одной согласной) в FORCAST и венских формулах считается односложным, а в Linsear Write - легким, как в textstat. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>, <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a> или готовый объект <code>BasicStats</code>, как у <code>ReadabilityStats</code>.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не объект <code>BasicStats</code>, базовые статистики не того класса, экстрактор другого типа, строка или <code>Doc</code> для класса без <code>basic_stats_class</code>;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code>, не <code>Document</code> и не объект <code>BasicStats</code>, базовые статистики не того класса, экстрактор другого типа, источник, кроме базовых статистик, для класса без <code>basic_stats_class</code>;</li>
 <li><code>SourceError</code> - источник без слов или без предложений.</li>
 </ul>
-<p>Класс расширяет <code>UnadaptedReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые считают слоги и буквы русских слов и по умолчанию берут русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
+<p>Класс расширяет <code>UnadaptedReadabilityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/">anyTS</a> <a href="../basic_stats/">базовыми статистиками</a> ruTS, которые считают слоги и буквы русских слов. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <p>Класса российской школы формулы не дают (на текстах 1-го класса набора <a href="../../datasets/textsbygrade/"><code>TextsByGrade</code></a> медиана FORCAST - 14.9, класса Пауэрса-Самнера-Керла - 8.1, Венской формулы 1 - 9.2) и в <a href="../readability_stats/#consensus_grade">сводный класс</a> не входят. Формулы с коэффициентами для русского языка - в <a href="../readability_stats/"><code>ReadabilityStats</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
@@ -2515,7 +2515,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 2f3854b -->
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 5e63df9 -->
 <table>
 <thead>
 <tr>
@@ -2528,9 +2528,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>BasicStats</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code> / <code>BasicStats</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Источник данных</td>
+<td style="text-align: left;">Источник данных (строка, объект Doc или Document или готовые базовые статистики)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_extractor</code></td>

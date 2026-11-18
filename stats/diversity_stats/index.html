@@ -3050,11 +3050,11 @@
 <p>Основные метрики <a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%8D%D1%84%D1%84%D0%B8%D1%86%D0%B8%D0%B5%D0%BD%D1%82_%D0%BB%D0%B5%D0%BA%D1%81%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_%D1%80%D0%B0%D0%B7%D0%BD%D0%BE%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%B8%D1%8F">лексического разнообразия</a> текста, вычисляемые по его словам.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, экстрактор другого типа;</li>
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - параметр, который отвергает <code>check_params</code>.</li>
 </ul>
-<p>Класс расширяет <code>DiversityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a>: вместо списка слов он принимает текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Слова текста извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, слова <code>Doc</code> без экстрактора - его токены без знаков ударения, а дефисное слово, разрезанное spaCy, остается одним словом (<code>во-первых</code>). Слова приводятся к нижнему регистру. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
+<p>Класс расширяет <code>DiversityStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a>: вместо списка слов он принимает текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>. Слова без экстрактора - слова документа источника, как у <a href="../basic_stats/">базовых статистик</a>, а заданный экстрактор, например русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, применяется к тексту. Слова приводятся к нижнему регистру. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3119,7 +3119,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Источник данных</td>
 </tr>
@@ -3127,7 +3127,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов; для <code>Doc</code> применяется к его тексту</td>
+<td style="text-align: left;">Инструмент для извлечения слов, применяется к тексту вместо слов документа</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window_len</code></td>

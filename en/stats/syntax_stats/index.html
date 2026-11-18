@@ -1432,17 +1432,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#hyphenated-words" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Hyphenated words
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#is_root" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2815,17 +2804,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#hyphenated-words" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Hyphenated words
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#is_root" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2958,14 +2936,14 @@
 <h1 id="syntactic-statistics">Syntactic statistics<a class="headerlink" href="#syntactic-statistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">SyntaxStats</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 </code></pre></div>
-<p>The syntactic statistics of a text by its dependency tree (<a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev 2018</a>): the measures of the tree and of the syntactic constructions. The data source is a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> with a dependency parse and parts of speech. Punctuation, symbols and whitespace are no nodes of the tree, and the distances are counted in positions of words. The units of L2SCA, the prepositional chains and the similarity of sentences are computed on first use, so a subclass whose <code>stats_desc</code> does not name them does not pay for them.</p>
+<p>The syntactic statistics of a text by its dependency tree (<a href="https://dialogue-conf.org/media/4302/ivanovvv.pdf">Ivanov, Solnyshkina and Solovyev 2018</a>): the measures of the tree and of the syntactic constructions. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a> with a dependency parse and parts of speech; a language library parses a string in its <code>parse</code>. The tree is that of its <a href="https://sergeyshk.github.io/anyTS/document/#get_tree">document</a> (<code>get_tree</code>), and its nodes are the words of Universal Dependencies of the document with a letter or a digit: punctuation marks and symbols are none, and the tokens of the document decide what a word is. The distances are counted in positions of words. The units of L2SCA, the prepositional chains and the similarity of sentences are computed on first use, so a subclass whose <code>stats_desc</code> does not name them does not pay for them.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>;</li>
-<li><code>SourceError</code> - a source without a dependency parse (relations and sentence boundaries), without parts of speech, without lemmas when the class requires them, or without words.</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, a <code>find_split_predicates</code> that returns no pairs of <code>TreeWord</code> objects;</li>
+<li><code>SourceError</code> - a source without a dependency parse, without parts of speech, without lemmas when the class requires them, or without words.</li>
 </ul>
-<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer. The <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> relations come from the dependency parse of the spaCy model (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), the parts of speech and features from the annotation of the pipeline: ruMorph in the <a href="../../components/#load_pipeline">recommended pipeline</a>, otherwise the model; the quality of the statistics is bounded by the quality of the parse. The clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The <code>print_stats</code> table and the error messages are in Russian (<code>SYNTAX_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
-<p>The cards of the metrics name the original features of the paper of Ivanov, Solnyshkina and Solovyev and their correlation with the grade of a school textbook.</p>
+<p>The class extends the <code>SyntaxStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/syntax_stats/">anyTS</a> core with the Russian layer. The <a href="https://universaldependencies.org/u/dep/">Universal Dependencies</a> relations come from the dependency parse of the spaCy model (<code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>), the parts of speech and features from the annotation of the pipeline: ruMorph in the <a href="../../components/#load_pipeline">recommended pipeline</a>, otherwise the model; the quality of the statistics is bounded by the quality of the parse. A string raises <code>SourceError</code>: ruTS does not parse it syntactically. The clauses, participial clauses, negations and split predicates follow the rules of Russian given in the cards of the metrics. The syntactic markers of officialese are the passive, participial clauses, genitive chains, split predicates and the ratio of nouns to verbs. The <code>print_stats</code> table and the error messages are in Russian (<code>SYNTAX_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The cards of the metrics name the original features of the paper of Ivanov, Solnyshkina and Solovyev and their correlation with the grade of a school textbook. The functions of the tree and of the Russian constructions take the words of the tree of a document (<code>TreeWord</code>), such as <code>get_tree(get_document(doc)).words</code>, with <code>get_tree</code> of <code>anyts.document</code> and <code>get_document</code> of <code>ruts.utils</code>. A value that is no <code>TreeWord</code>, such as a spaCy token, raises <code>SourceTypeError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3042,9 +3020,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>Doc</code></td>
+<td style="text-align: left;"><code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Data source: a <code>Doc</code> with a dependency parse</td>
+<td style="text-align: left;">Data source: a <code>Doc</code> or a <code>Document</code> with a dependency parse</td>
 </tr>
 </tbody>
 </table>
@@ -3060,8 +3038,8 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>sents</code></td>
-<td style="text-align: left;"><code>tuple[tuple[Token]]</code></td>
-<td style="text-align: left;">Words of every sentence with words, on a copy of the <code>Doc</code> without its tensor and user data</td>
+<td style="text-align: left;"><code>tuple[tuple[TreeWord]]</code></td>
+<td style="text-align: left;">Words of the tree of every sentence with words</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>n_sents</code>, <code>n_words</code></td>
@@ -3162,14 +3140,13 @@ T-единиц на предложение                                  |   
 <div class="highlight"><pre><span></span><code><span class="n">ss</span><span class="o">.</span><span class="n">n_clauses</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_nouns</span><span class="p">,</span> <span class="n">ss</span><span class="o">.</span><span class="n">n_verbs</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">c_children</span>
 <span class="n">ss</span><span class="o">.</span><span class="n">c_deps</span>
-<span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">form</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">ss</span><span class="o">.</span><span class="n">sents</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>(4, 4, 6)
 {0: 9, 1: 2, 2: 5, 3: 1}
-{'ROOT': 2,
- 'acl': 1,
+{'acl': 1,
  'advcl': 1,
  'advmod': 1,
  'amod': 1,
@@ -3183,8 +3160,9 @@ T-единиц на предложение                                  |   
  'nsubj:pass': 1,
  'obj': 1,
  'obl': 1,
- 'obl:agent': 1}
-(Дом, построенный, рабочими, в, прошлом, году, был, продан)
+ 'obl:agent': 1,
+ 'root': 2}
+['Дом', 'построенный', 'рабочими', 'в', 'прошлом', 'году', 'был', 'продан']
 </code></pre></div>
 </div>
 </div>
@@ -3489,9 +3467,9 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="dependency_distances">Dependency distance<a class="headerlink" href="#dependency_distances" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>mean_dependency_distance</code> · <code>std_dependency_distance</code> · <code>max_dependency_distance</code> · <code>p_adjacent_dependencies</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
-<p>The dependency distances (Liu 2008): the distance between a word and its head in positions of words, punctuation left out, in the order of the words. The head of a sentence and a word whose head lies outside the sequence are skipped.</p>
+<p>The dependency distances (Liu 2008): the distance between a word and its head in positions of words (<code>get_words</code>), punctuation left out, in the order of the words. The head of a sentence and a word whose head lies outside the sequence or is a punctuation mark are skipped.</p>
 <table>
 <thead>
 <tr>
@@ -3503,16 +3481,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one position</td>
+<td style="text-align: left;">Words of the tree, such as those of a sentence</td>
 </tr>
 </tbody>
 </table>
@@ -3520,12 +3492,15 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_dependency_distances</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
-<span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="n">calc_dependency_distances</span><span class="p">(</span><span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3538,9 +3513,9 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="tree_depth">Tree depth<a class="headerlink" href="#tree_depth" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>tree_depth</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_tree_depth</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_tree_depth</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
-<p>The depth of the dependency tree: the longest path from the head of a sentence to a leaf, in relations between words; the maximum for several sentences, 0 for a sentence of one word. With <code>join_hyphens</code> a hyphenated word is one word, and the words that hang on any of its parts are one level below it.</p>
+<p>The depth of the dependency tree: the longest path from the head of a sentence to a leaf, in relations between words, through punctuation; the maximum for several sentences, 0 for a sentence of one word.</p>
 <table>
 <thead>
 <tr>
@@ -3552,16 +3527,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Words of the tree, such as those of a sentence</td>
 </tr>
 </tbody>
 </table>
@@ -3584,9 +3553,9 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="valency">Valency of the finite verbs<a class="headerlink" href="#valency" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>verb_valency</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_valency</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_valency</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The valency of a token: the number of its dependent words, the relations <code>cc</code>, <code>conj</code>, <code>parataxis</code> and <code>punct</code> left out (<code>anyts.constants.VALENCY_IGNORED_DEPS</code>); with <code>join_hyphens=True</code> a hyphenated dependent counts once, so <code>came</code> in <code>Some-one came</code> has one dependent and not two.</p>
+<p>The valency of a word: the number of its dependent words (<code>get_children</code>), the relations <code>cc</code>, <code>conj</code>, <code>parataxis</code> and <code>punct</code> and their subtypes (<code>parataxis:discourse</code>) left out (<code>anyts.constants.VALENCY_IGNORED_DEPS</code>).</p>
 <table>
 <thead>
 <tr>
@@ -3598,16 +3567,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3616,9 +3579,9 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="coordination_chains">Coordination chains<a class="headerlink" href="#coordination_chains" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>coordination_chains_per_sent</code> · <code>mean_coordination_chain_len</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_coordination_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_coordination_chains</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
-<p>The lengths of the coordination chains, in the order of their first words. A chain is a group of words linked by <code>conj</code>, whichever word each conjunct hangs on: Universal Dependencies attaches every conjunct to the first one (<code>pears → apples</code>, <code>plums → apples</code>), ClearNLP to the previous one (<code>pears → apples</code>, <code>plums → pears</code>); both give one chain of three for <code>apples, pears and plums</code>. A nested coordination (<code>cats and dogs, or birds</code>) and an enumeration split between several heads are one chain too. The length of a chain is the number of its words; a conjunct whose head lies outside the sequence is not linked to it. With <code>join_hyphens</code> a hyphenated word is one conjunct, linked by the <code>conj</code> of any of its parts (<code>member and vice-governor</code> is a chain of two).</p>
+<p>The lengths of the coordination chains, in the order of their first words. A chain is a group of words linked by <code>conj</code> or a subtype of it, whichever word each conjunct hangs on: Universal Dependencies attaches every conjunct to the first one (<code>pears → apples</code>, <code>plums → apples</code>), ClearNLP to the previous one (<code>pears → apples</code>, <code>plums → pears</code>); both give one chain of three for <code>apples, pears and plums</code>. A nested coordination (<code>cats and dogs, or birds</code>) and an enumeration split between several heads are one chain too. The length of a chain is the number of its words; a conjunct whose head lies outside the sequence is not linked to it.</p>
 <table>
 <thead>
 <tr>
@@ -3630,16 +3593,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Words of the tree, such as those of a sentence</td>
 </tr>
 </tbody>
 </table>
@@ -3669,9 +3626,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3694,9 +3651,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3715,9 +3672,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3741,23 +3698,27 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
 <div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_clause_head</span><span class="p">,</span> <span class="n">is_infinitive_clause_head</span><span class="p">,</span> <span class="n">is_subordinate_clause_head</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Он хочет уйти, но может остаться, если его попросят."</span><span class="p">)</span>
-<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
-<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
-<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span><span class="o">.</span><span class="n">words</span>
+<span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">form</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">is_clause_head</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">form</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">is_subordinate_clause_head</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">form</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">is_infinitive_clause_head</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3774,11 +3735,11 @@ T-единиц на предложение                                  |   
 <p class="metric-meta"><code>t_units_per_sent</code> · <code>mean_t_unit_len</code> · <code>clauses_per_t_unit</code> · <code>p_complex_t_units</code> · <code>verb_phrases_per_t_unit</code> · <code>coordinate_phrases_per_clause</code> · <code>complex_nominals_per_clause</code> · <a href="https://doi.org/10.1075/ijcl.15.4.02lu">Lu 2010</a></p>
 <p>The indices of the L2 Syntactic Complexity Analyzer (L2SCA) that the other metrics do not give, on Universal Dependencies. MLC and C/S are <code>mean_clause_len</code> and <code>clauses_per_sent</code>; MLS and DC/C come from the counts, <code>n_words / n_sents</code> and <code>n_subordinate_clauses / n_clauses</code>.</p>
 <ul>
-<li>A T-unit is a main clause with the clauses that depend on it: the head of a sentence and every clause head joined to it through <code>conj</code> or <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), so <em>I came, and he left</em> holds two; a conjunct of a subordinate clause is none. A conjunct without a subject of its own (<em>I came and left</em>) is a predicate sharing the T-unit of the clause it is coordinated to, as in L2SCA, unless its person, number or gender - those of its auxiliary or copula, its own without one - differ from those of that clause: in a language that drops its subjects the ending names another one (<em>llegamos al puerto y nos esperabas</em>). An existential <em>there</em> (<code>expl</code> of ClearNLP) is a subject. A conjunct or a parataxis with a subordinating mark (<code>is_subordinating_mark</code>) heads a subordinate or an infinitive clause, which is no T-unit, nor is a clause under it. A finite conjunct with a subject of its own of an infinitive clause, a predicate a model attaches to the infinitive, joins the clause of the first word above the infinitives that is none (<em>he came to help and she stayed</em>: two T-units). A T-unit is complex with a subordinate clause (<code>is_subordinate_clause_head</code>) whose nearest T-unit above is it.</li>
+<li>A T-unit is a main clause with the clauses that depend on it: the head of a sentence and every clause head joined to it through <code>conj</code> or <code>parataxis</code> (<code>anyts.constants.MAIN_CLAUSE_DEPS</code>), so <em>I came, and he left</em> holds two; a conjunct of a subordinate clause is none. A conjunct without a subject of its own (<em>I came and left</em>) is a predicate sharing the T-unit of the clause it is coordinated to, as in L2SCA, unless its person, number or gender - those of its auxiliary or copula, its own without one - differ from those of that clause: in a language that drops its subjects the ending names another one (<em>llegamos al puerto y nos esperabas</em>). An existential <em>there</em> (<code>expl</code> of ClearNLP) is a subject. A conjunct or a parataxis with a subordinating mark (<code>is_subordinating_mark</code>) heads a subordinate or an infinitive clause, which is no T-unit, nor is a clause under it. A finite conjunct with a subject of its own of an infinitive clause, a predicate a model attaches to the infinitive, joins the clause of the first word above the infinitives that is none (<em>he came to help and she stayed</em>: two T-units); one of a marked clause without a coordinating conjunction of its own joins the clause the marked one hangs on (<em>he left, for he was tired, she slept</em>: two T-units), and one with a subject of its own on the infinitive of a periphrasis joins the clause of the periphrasis (<em>he must leave and she stayed</em>: two T-units). A T-unit is complex with a subordinate clause (<code>is_subordinate_clause_head</code>) whose nearest T-unit above is it.</li>
 <li>A verb phrase is a predicate (<code>is_predicate</code>) that is no auxiliary or copula: a verb, an auxiliary used as a predicate (<em>there <strong>is</strong> trouble</em>), a word with a subject or a copula; an infinitive that makes one predicate with its head (<code>is_infinitive_periphrasis</code>), and its infinitive conjunct, is part of the verb phrase of the head. A participle or another non-finite form under <code>amod</code> or <code>acl</code>, or coordinated to one, without an auxiliary, a copula or a subject of its own is an attribute of its noun (<em>the house built by workers</em>), as in L2SCA, not a verb phrase.</li>
-<li>A coordinate phrase is a coordination with a conjunct that is no clause head (<em>the man and the woman</em>, <em>is big and nice</em>) or a predicate without a subject of its own (<em>came and left</em>), counted once by its first conjunct; a coordination of clauses with their own subjects counts as clauses.</li>
-<li>The clauses of C/T, CP/C and CN/C are those of L2SCA (<code>n_l2sca_clauses</code>): the clauses of <code>is_clause_head</code> without the predicates sharing a subject (<em>came and left</em>) and the infinitive clauses, as L2SCA counts finite clauses with a subject. The head of a sentence heads a clause and a T-unit even without a predicate (<em>Yes.</em>, a heading, the name of a speaker), as a fragment does in L2SCA. C/S and MLC keep the clauses of the other metrics, so C/S runs higher and MLC lower than in L2SCA.</li>
-<li>A complex nominal is a noun with a modifier of <code>anyts.constants.COMPLEX_NOMINAL_DEPS</code> (an adjective, a complement, a relative or participial clause, an apposition, a possessive), or a nominal clause, a clause head of <code>anyts.constants.NOMINAL_CLAUSE_DEPS</code> or a conjunct of one.</li>
+<li>A coordinate phrase is a coordination with a conjunct that is no clause head (<em>the man and the woman</em>, <em>is big and nice</em>) or a predicate without a subject of its own (<em>came and left</em>), counted once by its first conjunct; a coordination of clauses with their own subjects counts as clauses. An infinitive that makes one predicate with its head (<code>is_infinitive_periphrasis</code>) is no conjunct when a model attaches it as <code>conj</code> (<em>he must leave</em>).</li>
+<li>The clauses of C/T, CP/C and CN/C are those of L2SCA (<code>n_l2sca_clauses</code>): the clauses of <code>is_clause_head</code> without the predicates sharing a subject (<em>came and left</em>) and the infinitive clauses, as L2SCA counts finite clauses with a subject; a conjunct or a parataxis with a subordinating mark of its own is a subordinate clause, and counts with or without a subject. The head of a sentence heads a clause and a T-unit whatever its relation and even without a predicate (<em>Yes.</em>, a heading, the name of a speaker), as a fragment does in L2SCA. C/S and MLC keep the clauses of the other metrics, so C/S runs higher and MLC lower than in L2SCA.</li>
+<li>A complex nominal is a noun with a modifier of <code>anyts.constants.COMPLEX_NOMINAL_DEPS</code> (an adjective, a complement, a relative or participial clause, an apposition, a possessive), or a nominal clause, a clause head of <code>anyts.constants.NOMINAL_CLAUSE_DEPS</code>, a conjunct of one or a conjunct that joins one, as for the T-units.</li>
 </ul>
 <div class="arithmatex">\[
 \textrm{MLT} = \frac{\textrm{Words}}{\textrm{T-units}}, \quad
@@ -3790,9 +3751,9 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="noun_modifiers">Modifiers of a noun<a class="headerlink" href="#noun_modifiers" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>modifiers_per_noun</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">count_noun_modifiers</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_noun_modifiers</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Counts the modifiers of a noun phrase: the dependents with the relations <code>amod</code>, <code>det</code>, <code>nmod</code>, <code>nummod</code>, <code>acl</code> and their subtypes (<code>anyts.constants.NOUN_MODIFIER_DEPS</code>); <code>conj</code> and <code>appos</code> are no modifiers.</p>
+<p>Counts the modifiers of a noun phrase: the dependent words (<code>get_children</code>) with the relations <code>amod</code>, <code>det</code>, <code>nmod</code>, <code>nummod</code>, <code>acl</code> and their subtypes (<code>anyts.constants.NOUN_MODIFIER_DEPS</code>); <code>conj</code> and <code>appos</code> are no modifiers.</p>
 <table>
 <thead>
 <tr>
@@ -3804,16 +3765,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3846,28 +3801,30 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens (<code>calc_genitive_chains</code>)</td>
+<td style="text-align: left;">Words of the tree (<code>calc_genitive_chains</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token (<code>is_genitive_modifier</code>)</td>
+<td style="text-align: left;">Word of the tree (<code>is_genitive_modifier</code>)</td>
 </tr>
 </tbody>
 </table>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_genitive_chains</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
-<span class="n">calc_genitive_chains</span><span class="p">(</span>
-    <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Повышение эффективности использования ресурсов предприятия обсуждалось на совещании."</span><span class="p">)</span>
+<span class="n">calc_genitive_chains</span><span class="p">(</span><span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3898,30 +3855,32 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens (<code>calc_nominal_chains</code>)</td>
+<td style="text-align: left;">Words of the tree (<code>calc_nominal_chains</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token (<code>is_nominal_chain_link</code>)</td>
+<td style="text-align: left;">Word of the tree (<code>is_nominal_chain_link</code>)</td>
 </tr>
 </tbody>
 </table>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_nominal_chains</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
-<span class="n">calc_nominal_chains</span><span class="p">(</span>
-    <span class="n">nlp</span><span class="p">(</span>
-        <span class="s2">"Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."</span>
-    <span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span>
+    <span class="s2">"Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."</span>
 <span class="p">)</span>
+<span class="n">calc_nominal_chains</span><span class="p">(</span><span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3950,9 +3909,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3975,9 +3934,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -3985,7 +3944,7 @@ T-единиц на предложение                                  |   
 <div class="metric-card">
 <h3 id="passive">Passive<a class="headerlink" href="#passive" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>p_passive</code> · <code>p_agentless_passive</code></p>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_passive</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_passive</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks whether a word is a passive verb form: a verb with <code>Voice=Pass</code> or a dependent <code>nsubj:pass</code>, <code>csubj:pass</code>, <code>aux:pass</code>, or <code>nsubjpass</code>, <code>csubjpass</code>, <code>auxpass</code> of ClearNLP (<code>PASSIVE_DEPS</code>).</p>
 <table>
@@ -3999,26 +3958,19 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
-<p>A value that is not a <code>Token</code> raises <code>SourceTypeError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">has_agent</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">has_agent</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word has an agent: a dependent <code>obl:agent</code>, or <code>agent</code> of ClearNLP (<code>AGENT_DEPS</code>). The arguments and the error are those of <code>is_passive</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_agentless</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<p>Checks whether a word has an agent: a dependent <code>obl:agent</code>, or <code>agent</code> of ClearNLP (<code>AGENT_DEPS</code>). The argument and the error are those of <code>is_passive</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_agentless</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a word is a passive form (<code>is_passive</code>) without an agent (<code>has_agent</code>), with the same arguments and error.</p>
+<p>Checks whether a word is a passive form (<code>is_passive</code>) without an agent (<code>has_agent</code>), with the same argument and error.</p>
 <p>In Russian the passive is a passive participle or the reflexive passive («обсуждалось»), and an agentless form is «дом построен», but not «дом построен рабочими».</p>
 </div>
 <div class="metric-card">
@@ -4049,19 +4001,19 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens (<code>find_split_predicates</code>)</td>
+<td style="text-align: left;">Words of the tree (<code>find_split_predicates</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>verb</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Light verb (<code>is_split_predicate_noun</code>); without it the phrase is not checked</td>
 </tr>
@@ -4070,17 +4022,21 @@ T-единиц на предложение                                  |   
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.syntax_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_split_predicates</span><span class="p">,</span> <span class="n">is_negation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Проверка проводится ежегодно, но решение не принято."</span><span class="p">)</span>
-<span class="n">find_split_predicates</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span> <span class="k">if</span> <span class="n">is_negation</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span><span class="o">.</span><span class="n">words</span>
+<span class="p">[(</span><span class="n">verb</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="n">noun</span><span class="o">.</span><span class="n">form</span><span class="p">)</span> <span class="k">for</span> <span class="n">verb</span><span class="p">,</span> <span class="n">noun</span> <span class="ow">in</span> <span class="n">find_split_predicates</span><span class="p">(</span><span class="n">words</span><span class="p">)]</span>
+<span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">form</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">is_negation</span><span class="p">(</span><span class="n">word</span><span class="p">)]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>[(проводится, Проверка), (принято, решение)]
+<div class="highlight"><pre><span></span><code>[('проводится', 'Проверка'), ('принято', 'решение')]
 ['не']
 </code></pre></div>
 </div>
@@ -4171,11 +4127,10 @@ T-единиц на предложение                                  |   
 </div>
 </div>
 </div>
-<p>The words of a sequence of tokens in the functions below are the tokens of <a href="#helpers"><code>is_word</code></a>.</p>
 <h2 id="get_words">Words of a sequence<a class="headerlink" href="#get_words" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_words</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
-<p>The words of a sequence of tokens in their order; with <code>join_hyphens=True</code> a word the tokenizer split at its hyphens is one word, given by its part that holds its relation, as with the dependents of <code>get_children</code> (<code>governor</code> in <code>He is vice-governor</code>), or by its first part when a hyphen holds it.</p>
+<p>The words of a sequence of words of the tree in their order: those with a letter or a digit, so punctuation marks and symbols are left out.</p>
 <table>
 <thead>
 <tr>
@@ -4187,26 +4142,17 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Words of the tree, such as those of a sentence</td>
 </tr>
 </tbody>
 </table>
-<h2 id="hyphenated-words">Hyphenated words<a class="headerlink" href="#hyphenated-words" title="Permanent link">&para;</a></h2>
-<p>A tokenizer may split a word at its hyphens (<code>well-known</code> into <code>well</code>, <code>-</code>, <code>known</code>), and a parser then hangs every part on its own head. With <code>join_hyphens=True</code> the functions of the tree take a word whose parts <code>anyts.utils.joins_previous</code> joins for one word with its hyphens. A word holding the head of the sentence has no head; the head of another one is that of its part hanging outside it, the nearest to the root (a word rather than a hyphen when equal). The dependents of a word are the words whose head hangs on one of its tokens, each given by that part (or by its first part when it hangs by a hyphen); its subtree is the word and the words that hang on it, directly or through punctuation. So every word has one dependency and is the dependent of one word.</p>
-<p><code>SyntaxStats</code> and the functions of the Russian constructions always join hyphenated words, and the functions of the core with the parameter <code>join_hyphens</code> give the values of <code>SyntaxStats</code> with <code>join_hyphens=True</code>.</p>
 <h2 id="is_root">Head of a sentence<a class="headerlink" href="#is_root" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_root</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a token is the head of its sentence: its head is the token itself.</p>
+<p>Checks whether a word is the head of its sentence: it has no head.</p>
 <table>
 <thead>
 <tr>
@@ -4218,17 +4164,17 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
 <h2 id="base_dep">Base relation<a class="headerlink" href="#base_dep" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">base_dep</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">base_dep</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The relation of a token without its subtype, which Universal Dependencies separates by a colon: <code>nsubj:pass</code> gives <code>nsubj</code>, <code>expl:pass</code> gives <code>expl</code>.</p>
+<p>The relation of a word without its subtype, which Universal Dependencies separates by a colon: <code>nsubj:pass</code> gives <code>nsubj</code>, <code>expl:pass</code> gives <code>expl</code>; a word without a relation gives an empty string.</p>
 <table>
 <thead>
 <tr>
@@ -4240,17 +4186,17 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
 <h2 id="get_children">Dependent words<a class="headerlink" href="#get_children" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">get_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">get_children</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The dependent words of a token, punctuation and whitespace left out; with <code>join_hyphens=True</code>, the dependents of the whole hyphenated word the token belongs to.</p>
+<p>The dependent words of a word, punctuation marks and symbols left out.</p>
 <table>
 <thead>
 <tr>
@@ -4262,29 +4208,23 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
-<div class="signature highlight"><pre><span></span><code><span class="n">count_children</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">count_children</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The number of the dependent words of a token; the arguments are those of <code>get_children</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">subtree_len</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<p>The number of the dependent words of a word; the argument is that of <code>get_children</code>.</p>
+<div class="signature highlight"><pre><span></span><code><span class="n">subtree_len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The number of words in the subtree of a token: the token itself and all of its direct and indirect dependents; the arguments are those of <code>get_children</code>.</p>
+<p>The number of words in the subtree of a word: the word itself and all of its direct and indirect dependents, punctuation left out; the argument is that of <code>get_children</code>.</p>
 <h2 id="is_finite_verb">Verb forms<a class="headerlink" href="#is_finite_verb" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_finite_verb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_finite_verb</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a token is a finite verb: the part of speech <code>VERB</code> with <code>VerbForm=Fin</code>, so a finite auxiliary (<code>AUX</code>) is not one.</p>
+<p>Checks whether a word of the tree of a document is a finite verb: the part of speech <code>VERB</code> with <code>VerbForm=Fin</code>, so a finite auxiliary (<code>AUX</code>) is not one.</p>
 <table>
 <thead>
 <tr>
@@ -4296,16 +4236,16 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_infinitive</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a token is an infinitive, <code>VerbForm=Inf</code> whatever its part of speech.</p>
+<p>Checks whether a word of the tree of a document is an infinitive, <code>VerbForm=Inf</code> whatever its part of speech.</p>
 <table>
 <thead>
 <tr>
@@ -4317,10 +4257,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
@@ -4328,9 +4268,9 @@ T-единиц на предложение                                  |   
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">is_converb</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p><code>is_participle</code> checks whether a token is a full participle (<code>VerbForm=Part</code> without <code>Variant=Short</code> and <code>StyleVariant=Short</code>), <code>is_converb</code> whether it is an adverbial participle (<code>VerbForm=Conv</code>); the argument is the same token.</p>
+<p><code>is_participle</code> checks whether a word of the tree is a full participle (<code>VerbForm=Part</code> without <code>Variant=Short</code> and <code>StyleVariant=Short</code>), <code>is_converb</code> whether it is an adverbial participle (<code>VerbForm=Conv</code>); the argument is the same word of the tree.</p>
 <h2 id="is_predicate">Predicate of a clause<a class="headerlink" href="#is_predicate" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_predicate</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_predicate</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks whether a word can be the predicate of its clause: a verb (<code>VERB</code>, <code>AUX</code>), a word with a subject of its own (<code>nsubj</code>, <code>csubj</code> and their subtypes, <code>anyts.constants.SUBJECT_DEPS</code>) or with a copula (<code>cop</code>), so the nominal predicate of <code>he is tall</code> and of a language that drops the subject passes and a parenthetical word does not.</p>
 <table>
@@ -4344,24 +4284,17 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
-<p>A value that is not a <code>Token</code> raises <code>SourceTypeError</code>.</p>
 <h2 id="calc_modifier_chains">Chains of modifiers<a class="headerlink" href="#calc_modifier_chains" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_modifier_chains</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">is_modifier</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_modifier_chains</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">is_modifier</span><span class="p">)</span>
 </code></pre></div>
-<p>The lengths of the chains of nested modifiers, in the order of the words. A chain is two or more modifiers each hanging on the previous one, such as the complements of <code>the increase of the efficiency of the use of resources</code> (length 3); the check <code>is_modifier</code> of a language says what a modifier is (a complement with a preposition, a noun in the genitive). A chain starts at a modifier whose head is none, and its length is the number of modifiers in its longest branch. The links are those of <code>get_children</code>: punctuation is no link, and with <code>join_hyphens</code> a hyphenated word is one link.</p>
+<p>The lengths of the chains of nested modifiers, in the order of the words. A chain is two or more modifiers each hanging on the previous one, such as the complements of <code>the increase of the efficiency of the use of resources</code> (length 3); the check <code>is_modifier</code> of a language says what a modifier is (a complement with a preposition, a noun in the genitive). A chain starts at a modifier whose head is none, and its length is the number of modifiers in its longest branch. The links are those of <code>get_children</code>: punctuation is no link.</p>
 <table>
 <thead>
 <tr>
@@ -4373,28 +4306,22 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
+<td style="text-align: left;">Words of the tree, such as those of a sentence</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>is_modifier</code></td>
-<td style="text-align: left;"><code>Callable[[Token], bool]</code></td>
+<td style="text-align: left;"><code>Callable[[TreeWord], bool]</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Whether a word is a modifier of the chain</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
 </tr>
 </tbody>
 </table>
 <p>A check that is not callable raises <code>SourceTypeError</code>.</p>
 <h2 id="is_prep_complement">Complements with a preposition<a class="headerlink" href="#is_prep_complement" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_prep_complement</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">is_prep_complement</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks whether a word is a complement with a preposition: a word with the relation <code>nmod</code> or <code>obl</code> or a subtype of them (<code>anyts.constants.PREP_COMPLEMENT_DEPS</code>), or a predicate with a copula or a subject of its own out of a relative clause (<code>acl</code>), such as a nominal predicate of a language that drops the copula of the present tense, that has a dependent of the relation <code>case</code> that is an adposition (<code>ADP</code>) or begins one of several words (<code>fixed</code>: <em>in front of</em>). A noun in a case without a preposition and a possessive marker are none.</p>
 <table>
@@ -4408,22 +4335,15 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>
-<p>A value that is not a <code>Token</code> raises <code>SourceTypeError</code>.</p>
 <h2 id="dependency_triples">Dependency triples<a class="headerlink" href="#dependency_triples" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">dependency_triples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">dependency_triples</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
 </code></pre></div>
 <p>The dependency triples of the words of a sentence (<code>get_words</code>), in their order: the part of speech of the head of a word - the nearest word above it through punctuation - its relation without a subtype (<code>base_dep</code>) and its own part of speech, such as <code>("NOUN", "amod", "ADJ")</code> for <em>a red house</em>. The head of the sentence, and a word with no word above it, give an empty head and the relation <code>root</code>, whatever its label.</p>
 <table>
@@ -4437,20 +4357,14 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>tokens</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code> / <code>list[Token]</code></td>
+<td style="text-align: left;"><code>words</code></td>
+<td style="text-align: left;"><code>list[TreeWord]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Sequence of tokens</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Take a hyphenated word for one word</td>
+<td style="text-align: left;">Words of the tree of a sentence</td>
 </tr>
 </tbody>
 </table>
-<p>Tokens that are not a <code>Doc</code>, a <code>Span</code> or a list of <code>Token</code> objects raise <code>SourceTypeError</code>.</p>
+<p>Words that are not a list of <code>TreeWord</code> objects raise <code>SourceTypeError</code>.</p>
 <h2 id="calc_edit_distance">Edit distance and multiset similarity<a class="headerlink" href="#calc_edit_distance" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_edit_distance</span><span class="p">(</span><span class="n">sents</span><span class="p">)</span>
 </code></pre></div>
@@ -4497,9 +4411,9 @@ T-единиц на предложение                                  |   
 </table>
 <p>Sentences that are not a list of collections, or items that cannot be hashed, raise <code>SourceTypeError</code>.</p>
 <h2 id="helpers">Helper functions<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">is_word</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">has_feature</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks whether a token is a word: not whitespace and not a token of <code>is_punctuation</code>, so symbols like <code>%</code>, <code>€</code>, <code>+</code> and invisible characters are no words either. The words of <code>iter_doc_tokens</code> and the nodes of the dependency tree of the syntactic statistics are such tokens.</p>
+<p>Checks whether a word of the tree of a document carries a morphological feature with a given value: <code>has_feature(word, "VerbForm", "Fin")</code>; a feature with several values (<code>PronType=Int,Rel</code>) carries each of them.</p>
 <table>
 <thead>
 <tr>
@@ -4511,31 +4425,10 @@ T-единиц на предложение                                  |   
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
-</tr>
-</tbody>
-</table>
-<div class="signature highlight"><pre><span></span><code><span class="n">has_feature</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</code></pre></div>
-<p>Checks whether a token carries a morphological feature with a given value: <code>has_feature(token, "VerbForm", "Fin")</code>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Parameter</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Default</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>field</code></td>
@@ -4553,7 +4446,7 @@ T-единиц на предложение                                  |   
 </table>
 <div class="signature highlight"><pre><span></span><code><span class="n">get_lemma</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </code></pre></div>
-<p>The lemma of a token in lower case by the ruMorph analysis with the part of speech of the token, not <code>token.lemma_</code>.</p>
+<p>The lemma of a word of the tree in lower case by the ruMorph analysis with the part of speech of the word, not the lemma of the annotation (<code>lemma</code>).</p>
 <table>
 <thead>
 <tr>
@@ -4566,9 +4459,9 @@ T-единиц на предложение                                  |   
 <tbody>
 <tr>
 <td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Token</td>
+<td style="text-align: left;">Word of the tree</td>
 </tr>
 </tbody>
 </table>

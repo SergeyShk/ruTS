@@ -2198,12 +2198,12 @@
 <h1 id="_1">Подсветка текста<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">HighlightedText</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">long_sent_word_factor</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alliteration_threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: visualizers/highlight.md:HighlightedText f056ba1 -->
-<p>Подсветка текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. Источник данных - текст или объект класса <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Результат отображается в Jupyter как HTML со стилями и легендой; <code>to_html</code> возвращает разметку, а <code>highlights</code> хранит фрагменты для собственной отрисовки. Фрагменты разных слоев могут пересекаться.</p>
+<!-- core: visualizers/highlight.md:HighlightedText 403548f -->
+<p>Подсветка текста по слоям в духе сервисов проверки стиля: каждый слой отмечает фрагменты текста, которые считает статистика, - длинные предложения, сложные слова, пассив. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, который читается через свой <a href="https://sergeyshk.github.io/anyTS/document/">документ</a>. Результат отображается в Jupyter как HTML со стилями и легендой; <code>to_html</code> возвращает разметку, а <code>highlights</code> хранит фрагменты для собственной отрисовки. Фрагменты разных слоев могут пересекаться.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>;</li>
-<li><code>SourceError</code> - источник без слов;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, <code>parse</code>, который возвращает не <code>Document</code>;</li>
+<li><code>SourceError</code> - источник без слов, <code>Doc</code> с токеном через пустую строку;</li>
 <li><code>ParameterError</code> - слои, которые не имя и не список имен, неизвестный слой или слой, которому нужна разметка, отсутствующая у источника.</li>
 </ul>
 <div class="signature highlight"><pre><span></span><code><span class="n">highlight</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">long_sent_word_factor</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alliteration_threshold</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
@@ -2311,12 +2311,12 @@
 </tr>
 </tbody>
 </table>
-<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слоям группы «Синтаксис» нужен объект <code>Doc</code> с разбором зависимостей (<a href="../../components/#load_pipeline">рекомендуемый конвейер</a> или модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>). Слои по умолчанию - <code>HIGHLIGHT_DEFAULT_LAYERS</code>: длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы. Все пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов), поэтому выбирайте нужные.</p>
+<p>Группы заданы в <code>ruts.constants.HIGHLIGHT_LAYER_GROUPS</code>. Слоям группы «Синтаксис» нужен объект <code>Doc</code> или <code>Document</code> с разбором зависимостей (<a href="../../components/#load_pipeline">рекомендуемый конвейер</a> или модели <code>ru_core_news_sm</code>, <code>ru_core_news_md</code>, <code>ru_core_news_lg</code>). Слои по умолчанию - <code>HIGHLIGHT_DEFAULT_LAYERS</code>: длинные предложения, сложные слова, пассив, цепочки родительных, расщепленные сказуемые, штампы. Все пятнадцать слоев сразу перекрывают друг друга (производный предлог состоит из стоп-слов), поэтому выбирайте нужные.</p>
 <div class="admonition note">
 <p class="admonition-title">Аллитерация</p>
 <p>Аллитерация ищется внутри предложения как цепочка из двух и более соседних слов, в основе каждого из которых есть одна и та же согласная буква. Основа - общая начальная часть словоформы и ее леммы по ruMorph (<em>крупных</em> → <em>крупны</em>, <em>руках</em> → <em>рука</em>), так что окончания, которые повторяют согласные по грамматике (<em>своим целям и нуждам</em>), не учитываются. Вероятность цепочки при независимом распределении букв - произведение по словам вероятностей встретить согласную среди букв основы, <span class="arithmatex">\(1 - (1 - f)^n\)</span>, где <span class="arithmatex">\(f\)</span> - <a href="https://ru.wikipedia.org/wiki/Частотность">частота согласной</a> в русских текстах, <span class="arithmatex">\(n\)</span> - число букв основы; цепочка подсвечивается, если вероятность ниже порога <code>alliteration_threshold</code>. Порог строгий, так как на каждой позиции проверяется около двадцати согласных: на прозе при 0.001 подсвечено около 5% слов, при 0.01 - около 20%, в основном случайные совпадения частых букв. Слова короче трех букв, стоп-слова и слова без гласных цепочку не прерывают и не продолжают, буква <em>й</em> не учитывается. Индекс аллитерации <a href="../../stats/phon_stats/">PhonStats</a> измеряет сгруппированность повторов во всем тексте, подсветка показывает их места.</p>
 </div>
-<p>Класс расширяет <code>HighlightedText</code> ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/">anyTS</a>; префикс классов CSS - <code>ruts</code>. Слова строки - слова <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а части дефисного слова <code>Doc</code> составляют одно слово. Предложения строки и <code>Doc</code> без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) делит anySeg, так что слой <code>long_sents</code> доступен и ему.</p>
+<p>Класс расширяет <code>HighlightedText</code> ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/highlight/">anyTS</a>; префикс классов CSS - <code>ruts</code>. Слова строки - слова <a href="../../extractors/words/"><code>WordsExtractor</code></a>. Предложения строки и <code>Doc</code> без границ предложений (<code>spacy.blank</code>, пайплайн без <code>parser</code> и <code>senter</code>) делит anySeg, так что слой <code>long_sents</code> доступен и ему.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2410,7 +2410,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/highlight.md:HighlightedText-parameters da96774 -->
+<!-- core: visualizers/highlight.md:HighlightedText-parameters bedd6da -->
 <table>
 <thead>
 <tr>
@@ -2423,9 +2423,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Источник данных (строка или объект Doc)</td>
+<td style="text-align: left;">Источник данных</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>layers</code></td>
@@ -2554,8 +2554,8 @@
 </table>
 <p>Пояснение фрагмента ruTS - число слов в предложении, слогов в слове, длина цепочки или согласная аллитерации.</p>
 <h2 id="_4">Методы<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/highlight.md:HighlightedText-to_html 1693b8b -->
-<p><code>to_html(legend=True, css=True)</code> возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>&lt;префикс&gt;-highlight</code>, в котором легенда со счетчиками и текст, где подсвеченный отрезок - <code>span</code> с классами <code>&lt;префикс&gt;-hl</code> и <code>&lt;префикс&gt;-hl-&lt;слой&gt;</code> с пояснениями в его <code>title</code>; <code>&lt;префикс&gt;</code> - <code>css_prefix</code>. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (<code>\n</code>, <code>\r\n</code>, <code>\r</code>) становятся символьными ссылками, по одной на перенос, поэтому разметку можно вставлять в Markdown.</p>
+<!-- core: visualizers/highlight.md:HighlightedText-to_html 8ab98d7 -->
+<p><code>to_html(legend=True, css=True)</code> возвращает HTML-разметку подсвеченного текста: блок <code>div</code> с классом <code>&lt;префикс&gt;-highlight</code>, в котором легенда со счетчиками и текст, где подсвеченный отрезок - <code>span</code> с классами <code>&lt;префикс&gt;-hl</code> и <code>&lt;префикс&gt;-hl-&lt;слой&gt;</code> с пояснениями в его <code>title</code>; <code>&lt;префикс&gt;</code> - <code>css_prefix</code>. Пересекающиеся фрагменты разных слоев дают отрезки с несколькими классами в порядке отрисовки. Переносы строк (<code>LINE_BREAK</code>: <code>\n</code>, <code>\r\n</code>, <code>\r</code>, вертикальная табуляция, перевод страницы, U+0085, U+2028, U+2029) становятся символьными ссылками, по одной на перенос, поэтому разметку можно вставлять в Markdown; управляющие символы, которые HTML не может содержать, например NUL, отбрасываются.</p>
 <table>
 <thead>
 <tr>

@@ -1339,17 +1339,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#split_doc_units" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Слова Doc
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#is_pronoun" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2485,17 +2474,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#split_doc_units" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Слова Doc
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#is_pronoun" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2540,21 +2518,21 @@
 <h1 id="_1">Статистики связности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">CohesionStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">connectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">blank_lines</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
-<p>Статистики связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы слов в предложениях, данность, темпоральная связность и коннекторы словаря. Предложения сравниваются по леммам. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
+<p>Статистики связности текста по образцу <a href="https://doi.org/10.1017/CBO9780511894664">Coh-Metrix</a> и <a href="https://doi.org/10.3758/s13428-015-0651-7">TAACO</a>: повторы слов в предложениях, данность, темпоральная связность и коннекторы словаря. Предложения сравниваются по леммам. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа, коннекторы, которые не словарь словосочетаний и пар строк;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, экстрактор другого типа, коннекторы, которые не словарь словосочетаний и пар строк;</li>
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - неизвестный класс или тип коннектора, <code>blank_lines</code>, который не <code>bool</code>.</li>
 </ul>
-<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем. Строка и <code>Doc</code> без границ предложений делятся на предложения русским <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>; слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). <a href="#word_info">Признаки слов</a> строки берутся из разбора ruMorph в контексте предложения, у <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> - из его разметки ruMorph, у обычной модели - часть речи, время и вид из <code>token.pos_</code> и <code>token.morph</code> с леммой по ruMorph. У <code>Doc</code> без разметки в контексте разбираются предложения, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, получают первый разбор ruMorph. Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
-<p>Слова классифицируются по частям речи и признакам Universal Dependencies - разбора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> для строки или разметки объекта <code>Doc</code>:</p>
+<p>Класс расширяет <code>CohesionStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/cohesion_stats/">anyTS</a> русским слоем. Строку делит на предложения русский <a href="../../extractors/sentences/"><code>SentsExtractor</code></a>, а слова строки дает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a> или заданный <code>words_extractor</code>; предложения и слова <code>Doc</code> и <code>Document</code> - из их документа (<code>ruts.utils.get_document</code>). <a href="#word_info">Признаки слов</a> строки берутся из разбора ruMorph в контексте предложения, у <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> - из его разметки ruMorph, у обычной модели - часть речи, время и вид из разметки слова с леммой по ruMorph. У <code>Doc</code> и <code>Document</code> без разметки в контексте разбираются предложения, слова которых совпадают со словами строки, а остальные слова, как и с заданным экстрактором слов, получают первый разбор ruMorph. Коннекторы ищет <a href="#ConnectorMatcher"><code>RussianConnectorMatcher</code></a> по словарю <a href="#connectors"><code>load_connectors</code></a>. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>COHESION_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Слова классифицируются по частям речи и признакам Universal Dependencies - разбора <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> для строки или разметки слов <code>Doc</code> и <code>Document</code>:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Понятие</th>
 <th style="text-align: left;">Строка (ruMorph)</th>
-<th style="text-align: left;"><code>Doc</code></th>
+<th style="text-align: left;"><code>Doc</code> / <code>Document</code></th>
 </tr>
 </thead>
 <tbody>
@@ -2576,7 +2554,7 @@
 <tr>
 <td style="text-align: left;">Знаменательные слова</td>
 <td style="text-align: left;"><code>CONTENT_UD_POS</code> и связка «быть» (<code>AUX</code> с формой глагола) без указательных, местоименных (<code>PronType</code> Dem, Int, Rel: там, где, почему) и вводных (помета <code>Prnt</code> и <code>PARENTHETICAL_WORDS</code>: кстати, наверно) слов, предикативов и чисел цифрами</td>
-<td style="text-align: left;">то же по признакам токена</td>
+<td style="text-align: left;">то же по признакам слова</td>
 </tr>
 <tr>
 <td style="text-align: left;">Указательные</td>
@@ -2590,6 +2568,7 @@
 </tr>
 </tbody>
 </table>
+<p>Слова многословного коннектора (<em>так как</em>, <em>то есть</em>) считаются только коннектором и ни к одному понятию таблицы не относятся.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2653,7 +2632,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Источник данных</td>
 </tr>
@@ -2661,13 +2640,13 @@
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения предложений; заданный, делит и <code>Doc</code> по его тексту независимо от границ</td>
+<td style="text-align: left;">Инструмент для извлечения предложений; заданный, делит и <code>Doc</code> и <code>Document</code> по их тексту вместо их предложений</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов; заданный, применяется и к тексту <code>Doc</code></td>
+<td style="text-align: left;">Инструмент для извлечения слов; заданный, применяется и к тексту <code>Doc</code> и <code>Document</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>connectors</code></td>
@@ -3064,7 +3043,7 @@
 </tbody>
 </table>
 <p>Сегменты, которые являются строкой, <code>Doc</code> или итератором, и сегмент, который не список строк, дают <code>SourceTypeError</code>, а <code>span</code>, который не целое число больше 0, - <code>ParameterError</code>.</p>
-<p>В ruTS на абзацы делятся и строка, и <code>Doc</code>. В стихах абзац по умолчанию - стих, а строфы, разделенные пустыми строками, как у <a href="../verse_stats/"><code>VerseStats</code></a>, дает <code>blank_lines=True</code>.</p>
+<p>В стихах абзац по умолчанию - стих, а строфы, разделенные пустыми строками, как у <a href="../verse_stats/"><code>VerseStats</code></a>, дает <code>blank_lines=True</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3475,9 +3454,9 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">ud_info</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tense</span><span class="p">,</span> <span class="n">aspect</span><span class="p">,</span> <span class="n">feats</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<div class="signature highlight"><pre><span></span><code><span class="n">unit_info</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">word_text</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора, например выбранного по контексту, <code>words_info</code> - для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому. <code>token_info</code> берет их из разбора ruMorph, которым размечен токен (компонент <code>rumorph</code>), а без него - из разметки spaCy (<code>token.pos_</code>, <code>token.morph</code>), <code>ud_info</code> - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из <code>token.lemma_</code>. <code>unit_info</code> дает признаки слова по его токенам: отдельного токена - по <code>token_info</code>, дефисного слова из нескольких токенов (жили-были) - по разбору ruMorph склеенного текста.</p>
+<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора, например выбранного по контексту, <code>words_info</code> - для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому. <code>token_info</code> берет их у слова дерева документа (<code>TreeWord</code>, например из <code>get_tree(get_document(doc)).words</code>, где <code>get_tree</code> - из <code>anyts.document</code>, а <code>get_document</code> - из <code>ruts.utils</code>): из разбора ruMorph, которым размечено слово (компонент <code>rumorph</code>), а без него - из его части речи и признаков UD, <code>ud_info</code> - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из леммы слова. <code>word_text</code> дает текст слова дерева без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово.</p>
 <table>
 <thead>
 <tr>
@@ -3519,10 +3498,10 @@
 <td style="text-align: left;">Разбор ruMorph (<code>analysis_info</code>)</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>token</code></td>
-<td style="text-align: left;"><code>Token</code></td>
+<td style="text-align: left;"><code>token</code>, <code>word</code></td>
+<td style="text-align: left;"><code>TreeWord</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Токен spaCy (<code>token_info</code>)</td>
+<td style="text-align: left;">Слово дерева документа (<code>token_info</code>, <code>word_text</code>)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>pos</code>, <code>tense</code>, <code>aspect</code></td>
@@ -3536,103 +3515,28 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Признаки UD слова, <code>None</code> - неизвестны (<code>ud_info</code>)</td>
 </tr>
-<tr>
-<td style="text-align: left;"><code>unit</code></td>
-<td style="text-align: left;"><code>list[Token]</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Токены слова (<code>unit_info</code>)</td>
-</tr>
 </tbody>
 </table>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Код</label><label for="__tabbed_8_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">word_info</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">anyts.document</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_tree</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">token_info</span><span class="p">,</span> <span class="n">word_info</span><span class="p">,</span> <span class="n">word_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_document</span>
 
 <span class="n">word_info</span><span class="p">(</span><span class="s2">"смотрел"</span><span class="p">)</span>
+<span class="n">nlp</span> <span class="o">=</span> <span class="n">load_pipeline</span><span class="p">()</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">get_tree</span><span class="p">(</span><span class="n">get_document</span><span class="p">(</span><span class="n">nlp</span><span class="p">(</span><span class="s2">"Он заплатил 5 руб."</span><span class="p">)))</span><span class="o">.</span><span class="n">words</span>
+<span class="p">[</span><span class="n">word_text</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
+<span class="n">token_info</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
-</code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="split_doc_units">Слова Doc<a class="headerlink" href="#split_doc_units" title="Permanent link">&para;</a></h2>
-<!-- core: utils/spacy.md:split_doc_units bc3b793 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">split_doc_units</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="p">,</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</code></pre></div>
-<p>Разбивает слова <code>Doc</code> или <code>Span</code> по предложениям экстрактора предложений - для <code>Doc</code> без границ предложений или для того, который нужно разбить иначе: предложения находятся в его тексте по порядку, а слово <code>iter_doc_units</code> относится к предложению, в котором лежит его первый токен. Слова вне найденных предложений, отброшенные экстрактором, не учитываются, поэтому если ни одного предложения не найдено, слов нет.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Параметр</th>
-<th style="text-align: left;">Тип</th>
-<th style="text-align: left;">По умолчанию</th>
-<th style="text-align: left;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>Doc</code> / <code>Span</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Объект Doc или Span</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>sents_extractor</code></td>
-<td style="text-align: left;"><code>SentsExtractor</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Инструмент для извлечения предложений</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>join_hyphens</code></td>
-<td style="text-align: left;"><code>bool</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">Склеивать части дефисных слов</td>
-</tr>
-</tbody>
-</table>
-<div class="signature highlight"><pre><span></span><code><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-</code></pre></div>
-<div class="signature highlight"><pre><span></span><code><span class="n">unit_pos</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
-</code></pre></div>
-<p><code>unit_text</code> дает текст слова по его токенам без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово, <code>unit_pos</code> - его часть речи UD: для отдельного токена - часть речи токена, для дефисного слова из нескольких токенов - часть речи <code>connector_pos</code> склеенного текста.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Параметр</th>
-<th style="text-align: left;">Тип</th>
-<th style="text-align: left;">По умолчанию</th>
-<th style="text-align: left;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>unit</code></td>
-<td style="text-align: left;"><code>list[Token]</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Токены слова</td>
-</tr>
-</tbody>
-</table>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Код</label><label for="__tabbed_9_2">Результат</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentsExtractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.cohesion_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_doc_units</span><span class="p">,</span> <span class="n">unit_text</span>
-
-<span class="n">doc</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">blank</span><span class="p">(</span><span class="s2">"ru"</span><span class="p">)(</span><span class="s2">"Жили-были дед да баба. Во-первых, кот спит."</span><span class="p">)</span>
-<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">())</span>
-<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
-<span class="n">units</span> <span class="o">=</span> <span class="n">split_doc_units</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">SentsExtractor</span><span class="p">(),</span> <span class="n">join_hyphens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="p">[[</span><span class="n">unit_text</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">sent</span><span class="p">]</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">units</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>[['Жили', 'были', 'дед', 'да', 'баба'], ['Во', 'первых', 'кот', 'спит']]
-[['Жили-были', 'дед', 'да', 'баба'], ['Во-первых', 'кот', 'спит']]
+['Он', 'заплатил', '5', 'руб', '.']
+WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None)
 </code></pre></div>
 </div>
 </div>

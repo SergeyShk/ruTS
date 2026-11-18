@@ -3049,11 +3049,11 @@
 <p>The main <a href="https://en.wikipedia.org/wiki/Lexical_diversity">lexical diversity</a> metrics of a text, computed from its words.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, an extractor of another type;</li>
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a parameter that <code>check_params</code> rejects.</li>
 </ul>
-<p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text or a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library. The words of a text are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the words of a <code>Doc</code> without an extractor are its tokens without stress marks, and a hyphenated word that spaCy splits stays one word (<code>во-первых</code>). The words are lower-cased. The <code>print_stats</code> table and the error messages are in Russian.</p>
+<p>The class extends the <code>DiversityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/diversity_stats/">anyTS</a> core: instead of a list of words it takes a text, a <code>Doc</code> object of the <a href="https://github.com/explosion/spaCy">spaCy</a> library or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>. Without an extractor the words are those of the document of the source, as in the <a href="../basic_stats/">basic statistics</a>, and an extractor given, such as the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, is used on the text. The words are lower-cased. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3118,7 +3118,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Data source</td>
 </tr>
@@ -3126,7 +3126,7 @@ Hypergeometric Distribution D (HD-D)                                   |   nan
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool; for a <code>Doc</code> it is applied to its text</td>
+<td style="text-align: left;">Word extraction tool, used on the text in place of the words of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window_len</code></td>

@@ -2236,17 +2236,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#blank_lines" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Предложения после пустых строк
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2460,17 +2449,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#blank_lines" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Предложения после пустых строк
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2546,21 +2524,21 @@ True
 </table>
 <p>Оба параметра задает spaCy при <code>nlp.add_pipe(factory, name=...)</code>, остальные параметры компонента передаются словарем <code>config</code> того же вызова.</p>
 <h2 id="names">Имена<a class="headerlink" href="#names" title="Permanent link">&para;</a></h2>
-<p>Фабрики носят префикс <code>ruts_</code> (<a href="#class-components">таблица</a> ниже и компонент границ предложений <a href="#blank_lines"><code>ruts_blank_lines</code></a>). Они объявлены точками входа <code>spacy_factories</code>, поэтому spaCy находит их без <code>import ruts</code>, а пайплайн, сохраненный с ними (<code>nlp.to_disk(path)</code>), загружается через <code>spacy.load(path)</code>.</p>
-<!-- core: components.md:StatsComponent-names 33ebb87 -->
-<p>Имя компонента в пайплайне - это имя расширения: <code>nlp.add_pipe(factory, name="basic")</code> кладет статистики в <code>doc._.basic</code>. Без <code>name</code> компонент и расширение получают имя фабрики. Расширение следует за компонентом, когда пайплайн переименовывает его (<code>nlp.rename_pipe</code>). Имя, занятое расширением другого пакета, дает <code>ParameterError</code> вместо замены: при <code>add_pipe</code> или на первом документе после <code>rename_pipe</code>, который переименовывает компонент раньше, чем тот узнает свое имя. Компонент, взятый из другого пайплайна (<code>add_pipe(name, source=other)</code>), - один и тот же объект в обоих, поэтому под новым именем он пишет и в то расширение в другом пайплайне; отдельный компонент дает фабрика, <code>add_pipe(factory, name=...)</code>. Один и тот же компонент можно добавить дважды под разными именами, с разными параметрами. Документ без слов - пустая строка, пробелы, одни знаки препинания - проходит компонент нетронутым, а его расширение остается <code>None</code>.</p>
+<p>Фабрики носят префикс <code>ruts_</code> (<a href="#class-components">таблица</a> ниже). Они объявлены точками входа <code>spacy_factories</code>, поэтому spaCy находит их без <code>import ruts</code>, а пайплайн, сохраненный с ними (<code>nlp.to_disk(path)</code>), загружается через <code>spacy.load(path)</code>.</p>
+<!-- core: components.md:StatsComponent-names 737f20b -->
+<p>Имя компонента в пайплайне - это имя расширения: <code>nlp.add_pipe(factory, name="basic")</code> кладет статистики в <code>doc._.basic</code>. Без <code>name</code> компонент и расширение получают имя фабрики. Расширение следует за компонентом, когда пайплайн переименовывает его (<code>nlp.rename_pipe</code>), а расширение, удаленное через <code>Doc.remove_extension</code> при живом компоненте, регистрируется снова на его следующем документе. Имя, занятое расширением другого пакета, дает <code>ParameterError</code> вместо замены: при <code>add_pipe</code> или на первом документе после <code>rename_pipe</code>, который переименовывает компонент раньше, чем тот узнает свое имя. Компонент, взятый из другого пайплайна (<code>add_pipe(name, source=other)</code>), - один и тот же объект в обоих, поэтому под новым именем он пишет и в то расширение в другом пайплайне; отдельный компонент дает фабрика, <code>add_pipe(factory, name=...)</code>. Один и тот же компонент можно добавить дважды под разными именами, с разными параметрами. Документ без слов - пустая строка, пробелы, одни знаки препинания - проходит компонент нетронутым, а его расширение остается <code>None</code>. Документ без разметки, которая нужна статистикам, например без разбора зависимостей для <code>SyntaxStats</code> в пайплайне без парсера, дает в компоненте <code>SourceError</code>, и вызов пайплайна завершается ошибкой.</p>
 <p>У <code>ruts_lexical</code> нетронутым проходит и документ из одних чисел, у <code>ruts_verse</code> - документ без букв.</p>
-<!-- core: components.md:StatsComponent-serialization a238412 -->
+<!-- core: components.md:StatsComponent-serialization b114bf2 -->
 <div class="admonition warning">
 <p class="admonition-title">Сериализация</p>
-<p>Компонент кладет в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа исключайте пользовательские данные (<code>doc.to_bytes(exclude=["user_data"])</code>) или сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно; для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code>, без компонентов.</p>
+<p>Компонент кладет в <code>doc._.&lt;name&gt;</code> объект класса статистик, который spaCy сериализовать не умеет: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> и <code>nlp.pipe(..., n_process&gt;1)</code> с такими компонентами в пайплайне завершатся ошибкой. Для сохранения документа сохраняйте <code>doc._.&lt;name&gt;.get_stats()</code> отдельно и очищайте расширение (<code>doc._.&lt;name&gt; = None</code>) перед <code>doc.to_bytes()</code>: если исключить все пользовательские данные (<code>exclude=["user_data"]</code>), пропадут и слова многословных токенов anySeg (<code>token._.anyseg_words</code>), а документ, слова которого несут собственные колонки, например документ <code>anyseg.spacy.to_doc</code>, прочитается с другими словами. Для многопроцессной обработки считайте статистики в основном процессе после <code>nlp.pipe</code>, без компонентов.</p>
 </div>
-<p>Добавление компонента расширяет токенизатор spaCy правилами для приклеенных к словам тире реплик (<code>ruts.utils.add_dash_rules</code>), чтобы тире реплик отделялось от слова, как в строке; пайплайну без компонентов ruTS эту функцию нужно вызвать самому. Токенизатор anySeg <a href="#load_pipeline">рекомендуемого конвейера</a> компоненты не меняют.</p>
+<p>Компоненты не меняют токенизатор пайплайна: те же статистики, что у строки, дает <code>Doc</code> <a href="#load_pipeline">рекомендуемого конвейера</a>.</p>
 <p>Знаки ударения ruTS снимает со слов <code>Doc</code>, но модель разбирает такие слова хуже: на тексте после <code>accentuate</code> у теггера <code>ru_core_news_sm</code> меняется часть речи больше половины слов, а зависимости меняются и в <a href="#load_pipeline">рекомендуемом конвейере</a>. Текст с ударениями передавайте в пайплайн без них - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
 <h2 id="load_pipeline">Рекомендуемый конвейер<a class="headerlink" href="#load_pipeline" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">load_pipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">'ru_core_news_sm'</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
-<p>Конвейер spaCy, в котором <code>Doc</code> размечается так же, как строка, кроме слов через дефис вроде «муж-то» и «два-три»: строка делит их на части, а в <code>Doc</code> это одно слово. Токены и предложения дает сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, части речи, признаки и леммы - морфологический анализатор <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Сохраненный такой конвейер загружается как есть. То же вручную:</p>
+<p>Конвейер spaCy, в котором <code>Doc</code> размечается так же, как строка. Токены и предложения дает сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, части речи, признаки и леммы - морфологический анализатор <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> в контексте предложения, а модель - парсер зависимостей и распознавание сущностей. Сохраненный такой конвейер загружается как есть. То же вручную:</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
     <span class="s2">"ru_core_news_sm"</span><span class="p">,</span>
     <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">"morphologizer"</span><span class="p">,</span> <span class="s2">"lemmatizer"</span><span class="p">],</span>
@@ -2569,7 +2547,7 @@ True
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"anyseg_sentencizer"</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"rumorph"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"anyseg_sentencizer"</span><span class="p">)</span>
 </code></pre></div>
-<p>На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный <code>spacy.load("ru_core_news_sm")</code> тоже поддерживается, но части речи, признаки и предложения тогда дает модель, и статистики <code>Doc</code> могут расходиться со статистиками строки. Ошибки ее теггера ruTS не обходит: коннекторы вроде «значит» и «т.е.» она размечает глаголом и знаком препинания, и они не находятся (на TextsByGrade и SovChLit - 11 на 71 тыс. слов), а «боишься» - инфинитивом, и придаточная с ним считается инфинитивной клаузой.</p>
+<p>На UD SynTagRus такой конвейер точнее самой модели: часть речи верна у 97,3 % слов против 93,3 %, зависимость с отношением (LAS) - у 82,7 % против 82,1 %. Обычный <code>spacy.load("ru_core_news_sm")</code> тоже поддерживается, но токены, части речи, признаки и предложения тогда дает модель, и статистики <code>Doc</code> могут расходиться со статистиками строки; пустая строка и в таком <code>Doc</code> завершает предложение. Ошибки ее теггера ruTS не обходит: коннекторы вроде «значит» и «т.е.» она размечает глаголом и знаком препинания, и они не находятся (на TextsByGrade и SovChLit - 11 на 71 тыс. слов), а «боишься» - инфинитивом, и придаточная с ним считается инфинитивной клаузой.</p>
 <table>
 <thead>
 <tr>
@@ -2723,7 +2701,7 @@ True
 <h3 id="ReadabilityStatsComponent">Метрики удобочитаемости<a class="headerlink" href="#ReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:ReadabilityStatsComponent 78d49ec -->
+<!-- core: components.md:ReadabilityStatsComponent 58263af -->
 <p><code>ReadabilityStatsComponent</code> кладет в расширение метрики удобочитаемости, посчитанные по документу или, с <code>basic</code>, по основным статистикам, которые положил в него другой компонент. Библиотека задает <code>basic_factory</code> - фабрику своего компонента основных статистик, которую называет ошибка, если в том расширении их нет.</p>
 <table>
 <thead>
@@ -2752,7 +2730,7 @@ True
 <p>Если <code>preset</code> оставлен <code>None</code>, конфигурация сохраненного пайплайна не содержит пресета, и загруженный пайплайн берет пресет класса по умолчанию; библиотека, которой нужно записать в конфигурацию свой пресет по умолчанию, задает его в сигнатуре своего подкласса.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>ParameterError</code> - <code>stats_class</code>, который не конкретный класс, пресет, который не строка или не пресет класса, расширение, имя которого не строка;</li>
+<li><code>ParameterError</code> - <code>stats_class</code>, который не конкретный класс, пресет, который не строка или не пресет класса, расширение, имя которого не строка или пустая строка;</li>
 <li><code>SourceTypeError</code> - класс без <code>basic_stats_class</code> и без <code>basic</code>;</li>
 <li><code>SourceError</code> - документ, в расширении <code>basic</code> которого нет основных статистик класса.</li>
 </ul>
@@ -2778,7 +2756,7 @@ True
 <h3 id="UnadaptedReadabilityStatsComponent">Формулы других языков<a class="headerlink" href="#UnadaptedReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">UnadaptedReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:UnadaptedReadabilityStatsComponent 7a47657 -->
+<!-- core: components.md:UnadaptedReadabilityStatsComponent b7871a2 -->
 <p><code>UnadaptedReadabilityStatsComponent</code> кладет в расширение формулы удобочитаемости других языков, посчитанные по документу или, с <code>basic</code>, по основным статистикам, которые положил в него другой компонент. Библиотека задает <code>basic_factory</code>, как для <code>ReadabilityStatsComponent</code>.</p>
 <table>
 <thead>
@@ -2800,7 +2778,7 @@ True
 </table>
 <p>Исключения:</p>
 <ul>
-<li><code>ParameterError</code> - <code>stats_class</code>, который не конкретный класс, расширение, имя которого не строка;</li>
+<li><code>ParameterError</code> - <code>stats_class</code>, который не конкретный класс, расширение, имя которого не строка или пустая строка;</li>
 <li><code>SourceTypeError</code> - класс без <code>basic_stats_class</code> и без <code>basic</code>;</li>
 <li><code>SourceError</code> - документ, в расширении <code>basic</code> которого нет основных статистик класса.</li>
 </ul>
@@ -2889,7 +2867,7 @@ True
 <h3 id="StyleStatsComponent">SEO-метрики стиля<a class="headerlink" href="#StyleStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">StyleStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nausea_stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:StyleStatsComponent 0abace1 -->
+<!-- core: components.md:StyleStatsComponent 957821f -->
 <p><code>StyleStatsComponent</code> кладет в расширение метрики стиля.</p>
 <table>
 <thead>
@@ -2929,8 +2907,7 @@ True
 </table>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - стоп-слова, стоп-слова тошноты или штампы, которые не список строк;</li>
-<li><code>ParameterError</code> - <code>top_n</code>, который не целое число не меньше единицы.</li>
+<li><code>ParameterError</code> - стоп-слова, стоп-слова тошноты или штампы, которые не список строк, <code>top_n</code>, который не целое число не меньше единицы.</li>
 </ul>
 <p>Без списков слова «воды» и стоп-слова тошноты определяются по разметке ruMorph, а штампы берутся из <code>OFFICIALESE_CLICHES</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Код</label><label for="__tabbed_7_2">Результат</label></div>
@@ -3063,6 +3040,7 @@ True
 </table>
 <p>Исключения:</p>
 <ul>
+<li><code>ParameterError</code> - <code>data_dir</code>, который не строка;</li>
 <li><code>DatasetNotFoundError</code> - метрики частотного словаря и <code>get_stats()</code>, когда <code>FreqDict</code> не загружен.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Код</label><label for="__tabbed_11_2">Результат</label></div>
@@ -3102,6 +3080,7 @@ True
 </table>
 <p>Исключения:</p>
 <ul>
+<li><code>ParameterError</code> - <code>data_dir</code>, который не строка;</li>
 <li><code>DatasetNotFoundError</code> - словарь ударений не загружен; ошибку дает первый документ с буквами.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Код</label><label for="__tabbed_12_2">Результат</label></div>
@@ -3118,46 +3097,6 @@ True
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>('хорей', 4)
-</code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="blank_lines">Предложения после пустых строк<a class="headerlink" href="#blank_lines" title="Permanent link">&para;</a></h2>
-<!-- core: components.md:start_sents_after_blank_lines b811493 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">start_sents_after_blank_lines</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-</code></pre></div>
-<p>Компонент ставит начало предложения на первый токен после пустой строки - перевода строки, необязательных пробельных символов и еще одного перевода строки, - чтобы заголовок, пункт списка или абзац без конечного знака были отдельным предложением, как в экстракторе предложений. Он ставится перед парсером, <code>senter</code> или <code>sentencizer</code>, а тот сохраняет его начала и расставляет остальные. Пробельные символы перед таким началом остаются в предыдущем предложении, а знаки, которые открывают абзац (тире реплики, <code>¡</code>, <code>«</code>), - при его первом слове. Сам по себе компонент предложения внутри абзаца не делит и ставит частичные границы (<code>has_sents</code>), поэтому статистики берут предложения такого документа из его текста. Разобранный документ, например повторно пропущенный через пайплайн, проходит нетронутым, потому что spaCy сохраняет его предложения. Языковая библиотека регистрирует компонент под своим префиксом: <code>Language.component("&lt;prefix&gt;_blank_lines", func=start_sents_after_blank_lines)</code>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Параметр</th>
-<th style="text-align: left;">Тип</th>
-<th style="text-align: left;">По умолчанию</th>
-<th style="text-align: left;">Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>doc</code></td>
-<td style="text-align: left;"><code>Doc</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Объект Doc</td>
-</tr>
-</tbody>
-</table>
-<p>В ruTS компонент зарегистрирован как <code>ruts_blank_lines</code>. Без него парсер модели <code>ru_core_news_sm</code> склеивает абзац без конечного знака со следующим предложением; <a href="#load_pipeline">рекомендуемому конвейеру</a> компонент не нужен.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Код</label><label for="__tabbed_13_2">Результат</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_blank_lines"</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">"parser"</span><span class="p">)</span>
-<span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
 </code></pre></div>
 </div>
 </div>

@@ -2320,16 +2320,16 @@
 <h1 id="_1">Статистики лексической сложности<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">LexicalStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">freq_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: stats/lexical_stats.md:LexicalStats baa1034 -->
-<p>Лексическая сложность (lexical sophistication) по образцу TAALES (Kyle, Crossley и Berger, 2018) - насколько редки слова текста: статистики по частотному словарю и его униграммной модели, доли частотных полос списка самых частых лемм и лексическая плотность. Статистики по словарю вычисляются при первом обращении, поэтому полосам и лексической плотности данные словаря не нужны.</p>
+<!-- core: stats/lexical_stats.md:LexicalStats 5286466 -->
+<p>Лексическая сложность (lexical sophistication) по образцу TAALES (Kyle, Crossley и Berger, 2018) - насколько редки слова текста: статистики по частотному словарю и его униграммной модели, доли частотных полос списка самых частых лемм и лексическая плотность. Статистики по словарю вычисляются при первом обращении, поэтому полосам и лексической плотности данные словаря не нужны. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; он читается через свой <a href="https://sergeyshk.github.io/anyTS/document/">документ</a>: по умолчанию - его слова Universal Dependencies без чисел, с их леммами и частями речи.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - словарь другого класса, чем у библиотеки, или, без <code>freq_dict_class</code>, словарь без <code>lookup</code> и <code>ipm</code> или его отсутствие; <code>analyze</code>, который дает не объекты <code>LexicalWord</code>;</li>
-<li><code>SourceError</code> - источник без слов.</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, <code>parse</code>, который возвращает не <code>Document</code>, словарь другого класса, чем у библиотеки, или, без <code>freq_dict_class</code>, словарь без <code>lookup</code> и <code>ipm</code> или его отсутствие; <code>analyze</code>, который дает не объекты <code>LexicalWord</code>;</li>
+<li><code>SourceError</code> - слова без частей речи, источник без слов.</li>
 </ul>
-<p>В ruTS <code>SourceTypeError</code> дают также источник, который не строка и не <code>Doc</code>, и экстрактор другого типа, а метрики по словарю без загруженного словаря - <code>DatasetNotFoundError</code>.</p>
-<p>Слова текста сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>), а не между собой, как в <a href="../diversity_stats/">метриках лексического разнообразия</a>. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, слова <code>Doc</code> без экстрактора - его токены, а дефисное слово, разрезанное spaCy, остается одним словом. Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> с разметкой частей речи - по части речи токена, для строки - в контексте предложения, для <code>Doc</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
+<p>В ruTS <code>SourceTypeError</code> дает также экстрактор другого типа, <code>SourceError</code> - только источник без слов, а метрики по словарю без загруженного словаря - <code>DatasetNotFoundError</code>.</p>
+<p>Слова текста сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>), а не между собой, как в <a href="../diversity_stats/">метриках лексического разнообразия</a>.</p>
+<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а слова <code>Doc</code> и <code>Document</code> без экстрактора - слова их документа (<code>ruts.utils.get_document</code>). Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> и <code>Document</code> с разметкой частей речи - по части речи слова, для строки - в контексте предложения, для <code>Doc</code> и <code>Document</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2376,7 +2376,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Источник данных</td>
 </tr>
@@ -2384,7 +2384,7 @@
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов; применяется и к <code>Doc</code>, к его тексту</td>
+<td style="text-align: left;">Инструмент для извлечения слов; применяется и к <code>Doc</code> и <code>Document</code>, к их тексту</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>freq_dict</code></td>
@@ -2661,7 +2661,7 @@
 <div class="metric-card">
 <h3 id="lexical_density">Лексическая плотность<a class="headerlink" href="#lexical_density" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>lexical_density</code></p>
-<p>Доля знаменательных слов (существительные, прилагательные, глаголы, наречия без местоименных и вводных слов) среди всех слов; знаменательное слово определяет <a href="../cohesion_stats/#is_content_word"><code>is_content_word</code></a> для строки и <code>CONTENT_UD_POS</code> для <code>Doc</code> с разметкой.</p>
+<p>Доля знаменательных слов (существительные, прилагательные, глаголы, наречия без местоименных и вводных слов) среди всех слов; знаменательное слово определяет <a href="../cohesion_stats/#is_content_word"><code>is_content_word</code></a> для строки и <code>CONTENT_UD_POS</code> для <code>Doc</code> и <code>Document</code> с разметкой.</p>
 <div class="arithmatex">\[
 \frac{\textrm{Количество знаменательных слов}}{\textrm{Количество слов}}
 \]</div>

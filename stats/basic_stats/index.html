@@ -2264,16 +2264,16 @@
 <h1 id="_1">Базовые статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: stats/basic_stats.md:BasicStats c1092e0 -->
-<p>Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
-<p>Слова и предложения строки дают экстракторы. <code>Doc</code> дает словами свои токены без знаков препинания и символов вроде <code>€</code> или <code>%</code>, предложениями - свои границы или, если их нет или они частичные (<code>has_sents</code>), границы экстрактора предложений; переданный экстрактор вместо этого применяется к его тексту. Пустая строка завершает предложение строки и <code>Doc</code> без границ; <code>Doc</code> с границами - если в его пайплайне до парсера, <code>senter</code> или <code>sentencizer</code> стоит <code>start_sents_after_blank_lines</code> (библиотека регистрирует компонент под своим именем). Предложение без слов, например из одних знаков препинания, не считается.</p>
+<!-- core: stats/basic_stats.md:BasicStats 259a268 -->
+<p>Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
+<p>Слова и предложения дает <a href="https://sergeyshk.github.io/anyTS/document/">документ</a> источника (<code>parse</code>): его токены без знаков препинания и символов вроде <code>€</code> или <code>%</code> (<code>doc_words</code>) и его предложения; переданный экстрактор вместо этого применяется к тексту. <code>Doc</code> сохраняет свои начала предложений, а <code>Doc</code> без начал предложений или с частичными (токен, у которого <code>is_sent_start</code> не задан) получает начала <code>parse</code>. Пустая строка завершает предложение любого источника, поскольку завершает абзац документа. Предложение без слов, например из одних знаков препинания, не считается.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, <code>parse</code>, который возвращает не <code>Document</code>, <code>doc_words</code>, который возвращает не последовательность строк, экстрактор другого типа;</li>
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - порог, который не целое число не меньше единицы, <code>normalize</code>, который не <code>bool</code>.</li>
 </ul>
-<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> для русского языка: слоги считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, экстракторы по умолчанию - русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, знаки препинания - <a href="#count_punctuations"><code>count_punctuations</code></a> ruTS, а дефисное слово, разрезанное spaCy, остается одним словом (<code>во-первых</code>). Компонент пустых строк ruTS - <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>; в <a href="../../components/#load_pipeline">рекомендуемом конвейере</a> он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица <code>print_stats</code> - по-русски.</p>
+<p>Класс расширяет <code>BasicStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> для русского языка: документ источника дает <code>ruts.utils.get_document</code>, где строку делит сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, как в русских <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, слова документа - без точки сокращения (<code>ruts.utils.document_words</code>), слоги считает <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, знаки препинания - <a href="#count_punctuations"><code>count_punctuations</code></a> ruTS. Слова <code>Doc</code> - его токены: у <code>Doc</code> <a href="../../components/#load_pipeline">рекомендуемого конвейера</a> слова и предложения те же, что у строки, а токенизатор обычной модели spaCy делит дефисные слова (<code>во-первых</code> - два слова). Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (<code>ruts.utils.strip_marks</code>): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица <code>print_stats</code> - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2307,7 +2307,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-parameters 362b585 -->
+<!-- core: stats/basic_stats.md:BasicStats-parameters 2d8e54b -->
 <table>
 <thead>
 <tr>
@@ -2320,21 +2320,21 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Источник данных (строка или объект Doc)</td>
+<td style="text-align: left;">Источник данных</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения предложений; для Doc применяется к его тексту</td>
+<td style="text-align: left;">Инструмент для извлечения предложений, применяется к тексту вместо предложений документа</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов; для Doc применяется к его тексту</td>
+<td style="text-align: left;">Инструмент для извлечения слов, применяется к тексту вместо слов документа</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>normalize</code></td>
@@ -2359,7 +2359,7 @@
 <p>Объект хранит <code>normalize</code>, <code>complex_syl_factor</code> и <code>long_word_letter_factor</code> под их именами.</p>
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 <h2 id="_3">Статистики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-attributes d457364 -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes ba0510d -->
 <table>
 <thead>
 <tr>
@@ -2433,7 +2433,7 @@
 <tr>
 <td style="text-align: left;"><code>n_chars</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Количество символов без переносов строк</td>
+<td style="text-align: left;">Количество символов без переносов строк (<code>LINE_BREAK</code>: <code>\n</code>, <code>\r\n</code>, <code>\r</code>, вертикальная табуляция, перевод страницы, U+0085, U+2028, U+2029)</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>
@@ -2485,8 +2485,8 @@
 <!-- core: stats/basic_stats.md:BasicStats-count_words_by abc6821 -->
 <p><code>count_words_by_syllables(min_syllables)</code> и <code>count_words_by_letters(min_letters)</code> возвращают количество слов не меньше чем с заданным числом слогов или букв; минимум, который не целое число, дает <code>ParameterError</code>.</p>
 <p>Так класс <a href="../readability_stats/"><code>ReadabilityStats</code></a> считает сложные слова SMOG (от 5 слогов) и длинные слова LIX (от 7 букв).</p>
-<!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
-<p><code>get_stats(flat)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, статистиками из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
+<!-- core: stats/basic_stats.md:BasicStats-get_stats 7d91a7c -->
+<p><code>get_stats(*, flat=False)</code> возвращает справочник с распределениями <code>c_letters</code> и <code>c_syllables</code>, статистиками из <code>stats_desc</code>, распределением <code>c_punctuations</code> и, с <code>normalize=True</code>, нормализованными количествами - копию: ее правка не меняет объект. С <code>flat=True</code> распределения дают по ключу на каждое значение, которое есть в тексте, например <code>c_letters_3</code> и <code>c_punctuations_comma</code>.</p>
 <!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
 <p><code>print_stats()</code> выводит таблицу со статистиками из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
 <p>Нормализованных статистик <code>p_*</code> в таблице нет.</p>

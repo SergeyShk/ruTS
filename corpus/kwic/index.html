@@ -2198,10 +2198,10 @@
 <h1 id="kwic">Конкорданс KWIC<a class="headerlink" href="#kwic" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">kwic</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">by_lemma</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: corpus/kwic.md:kwic 481d7d1 -->
-<p>Конкорданс KWIC (keyword in context) - все вхождения слова или словосочетания с контекстом с обеих сторон. Вхождения ищутся среди слов текста по словоформе без учета регистра или с его учетом (<code>ignore_case=False</code>) или по лемме (<code>by_lemma=True</code>); ключевое слово лемматизируется как строка, так что с лемматизатором словосочетание можно записать в любой форме, а без него оно задается леммами. Слова строки и ключевого слова дает токенизатор, слова <code>Doc</code> - его токены: токенизатор, который режет строку так же, как пайплайн, находит в обоих одно и то же. Знаки препинания и символы словами не считаются; словоформы сравниваются в нормальной форме композиции Unicode (NFC), без мягких переносов.</p>
-<p>Словосочетание не переходит через конец абзаца или предложения, если в ключевом слове нет конечного знака или начала предложения на том же месте (<code>U.S. Army</code>). Предложение кончается на границе <code>Doc</code> в любом месте между словами, включая открывающий знак, а без границ или с неполными границами (<code>has_sents</code>) - на начале предложения сегментатора предложений, по умолчанию на конечном знаке перед пробелом. Контекст - <code>window</code> слов с каждой стороны, как они записаны в тексте, со знаками препинания; пробельные символы схлопываются в один пробел, вхождения не пересекаются.</p>
-<p>Функция вызывает <code>kwic</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/kwic/">anyTS</a> с крючками русского языка: слова и предложения строки и ключевого слова дает сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, леммы - ruMorph в контексте предложения (в <code>Doc</code> - по части речи токена), так что «стали» находится по «сталь» или по «стать» в зависимости от соседних слов; у слова ключевого слова контекста нет, и оно совпадает по любой лемме своих разборов (<code>стали</code> находит оба). Знаки ударения и точка сокращения при сравнении не учитываются (<code>руб.</code> находится по <code>руб</code>), словоформы с <code>ignore_case</code> и леммы сравниваются в нижнем регистре с ё как е, а части дефисного слова, разрезанного spaCy, склеиваются (<code>кто-то</code> - одно слово).</p>
+<!-- core: corpus/kwic.md:kwic 8e91237 -->
+<p>Конкорданс KWIC (keyword in context) - все вхождения слова или словосочетания с контекстом с обеих сторон. Вхождения ищутся среди слов текста по словоформе без учета регистра или с его учетом (<code>ignore_case=False</code>) или по лемме (<code>by_lemma=True</code>); ключевое слово лемматизируется как строка, так что с лемматизатором словосочетание можно записать в любой форме, а без него оно задается леммами. Слова - это слова <a href="https://sergeyshk.github.io/anyTS/document/">документа</a> текста (токены строки - по токенизатору, <code>Doc</code> и <code>Document</code> - их собственные), а ключевое слово делится как строка: токенизатор, который режет строку так же, как пайплайн, находит в обоих одно и то же. В слове есть буква или цифра, поэтому знаки препинания и символы словами не считаются; словоформы сравниваются в нормальной форме композиции Unicode (NFC), без мягких переносов, а словоформы и леммы - без конечной точки слова с буквой: токенизатор по Universal Dependencies оставляет точку сокращения при нем внутри предложения и отделяет ее в конце, поэтому ключевое слово <code>Sr.</code> находит слово из <code>El Sr. García vino</code>, а <code>EE. UU.</code> - слова из <code>Viajó a EE. UU. en mayo</code>.</p>
+<p>Словосочетание не переходит через конец предложения или абзаца документа, если в ключевом слове нет конечного знака или начала предложения на том же месте (<code>U.S. Army</code>). Предложения - предложения <code>Doc</code> или <code>Document</code>, а у строки, ключевого слова и <code>Doc</code> без предложений - сегментатора предложений (по умолчанию <code>SentsExtractor</code>). Контекст - <code>window</code> слов с каждой стороны, как они записаны в тексте, со знаками препинания; пробельные символы схлопываются в один пробел, вхождения не пересекаются.</p>
+<p>Функция вызывает <code>kwic</code> ядра <a href="https://sergeyshk.github.io/anyTS/corpus/kwic/">anyTS</a> с крючками русского языка: слова и предложения строки и ключевого слова дает сегментатор <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, леммы - ruMorph в контексте предложения (в <code>Doc</code> и <code>Document</code> - по части речи слова), так что «стали» находится по «сталь» или по «стать» в зависимости от соседних слов; у слова ключевого слова контекста нет, и оно совпадает по любой лемме своих разборов (<code>стали</code> находит оба). Знаки ударения при сравнении не учитываются, а словоформы с <code>ignore_case</code> и леммы сравниваются в нижнем регистре с ё как е.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2229,7 +2229,7 @@
 </div>
 </div>
 <h2 id="_1">Параметры<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/kwic.md:kwic-parameters cc1548f -->
+<!-- core: corpus/kwic.md:kwic-parameters cb6665e -->
 <table>
 <thead>
 <tr>
@@ -2242,9 +2242,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Текст или объект Doc</td>
+<td style="text-align: left;">Текст, объект Doc или Document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keyword</code></td>
@@ -2272,7 +2272,7 @@
 </tr>
 </tbody>
 </table>
-<p>Ключевое слово без слов, окно, которое не целое число или отрицательно, и <code>by_lemma</code> или <code>ignore_case</code>, который не <code>bool</code>, дают <code>ParameterError</code>; источник, который не строка и не <code>Doc</code>, ключевое слово, которое не строка, и крючок, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
+<p>Ключевое слово без слов, окно, которое не целое число или отрицательно, и <code>by_lemma</code> или <code>ignore_case</code>, который не <code>bool</code>, дают <code>ParameterError</code>; источник, который не строка, не <code>Doc</code> и не <code>Document</code>, ключевое слово, которое не строка, и крючок, который нельзя вызвать, - <code>SourceTypeError</code>, а <code>Doc</code>, токен которого проходит через пустую строку, - <code>SourceError</code>.</p>
 <h2 id="_2">Результат<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <!-- core: corpus/kwic.md:Concordance ce8d89f -->
 <div class="signature highlight"><pre><span></span><code><span class="n">Concordance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">keyword</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>

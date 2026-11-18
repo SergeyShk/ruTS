@@ -2408,14 +2408,14 @@
 <h1 id="phonostatistics">Phonostatistics<a class="headerlink" href="#phonostatistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">PhonStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-<p>The phonetic statistics of a text: its sounds by class, their clusters, sequences and repetitions, and its syllables. A sound is a letter of a word by default, or a sound of its transcription when a library gives one. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>; the words are taken in lower case, and an extractor passed explicitly is used on the text of a <code>Doc</code>.</p>
+<p>The phonetic statistics of a text: its sounds by class, their clusters, sequences and repetitions, and its syllables. A sound is a letter of a word by default, or a sound of its transcription when a library gives one. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; the words are those of its <a href="https://sergeyshk.github.io/anyTS/document/">document</a> in lower case (<code>doc_words</code>), or those of an extractor passed explicitly, used on the text.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, a <code>doc_words</code>, <code>syllabify</code> or <code>transcribe</code> that returns no strings, an extractor of another type;</li>
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a window that is not an integer of at least 2.</li>
 </ul>
-<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of a text and of a <code>Doc</code>, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>PHON_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The class extends the <code>PhonStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> core with the hooks of Russian: the sounds are the letters of a word in the classes of the table below, without devoicing, reduction and stress, and the syllables follow the rising sonority rule of the <a href="../../syllables/#syllabify"><code>syllabify</code></a> function. Stress marks are dropped from the words of the document (<code>ruts.utils.document_words</code>). The <code>print_stats</code> table and the error messages are in Russian (<code>PHON_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <table>
 <thead>
 <tr>
@@ -2495,7 +2495,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Data source</td>
 </tr>
@@ -2503,7 +2503,7 @@
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
+<td style="text-align: left;">Word extraction tool, used on the text in place of the words of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window_len</code></td>

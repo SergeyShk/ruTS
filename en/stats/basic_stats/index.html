@@ -2264,15 +2264,15 @@
 <h1 id="basic-statistics">Basic statistics<a class="headerlink" href="#basic-statistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 </code></pre></div>
-<p>The basic statistics of a text: the counts of its sentences, words, characters, syllables and punctuation marks and the distributions of its words. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
-<p>The words and the sentences of a string come from the extractors. A <code>Doc</code> gives its tokens as words, without punctuation marks and symbols such as <code>€</code> or <code>%</code>, and its boundaries as sentences, or those of the sentence extractor when it has none or only partial ones (<code>has_sents</code>); an extractor given is used on its text instead. A blank line ends a sentence of a string and of a <code>Doc</code> without boundaries; a <code>Doc</code> with boundaries does so when its pipeline has <code>start_sents_after_blank_lines</code> (registered by a language library under its own name) before the parser, <code>senter</code> or <code>sentencizer</code>. A sentence without words, such as punctuation alone, is not counted.</p>
+<p>The basic statistics of a text: the counts of its sentences, words, characters, syllables and punctuation marks and the distributions of its words. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>. Letters are counted by <code>str.isalpha</code>, so digits, hyphens and marks inside a word are not letters.</p>
+<p>The words and the sentences come from the <a href="https://sergeyshk.github.io/anyTS/document/">document</a> of the source (<code>parse</code>): its tokens without punctuation marks and symbols such as <code>€</code> or <code>%</code> (<code>doc_words</code>) and its sentences; an extractor given is used on the text instead. A <code>Doc</code> keeps its sentence starts, and one with no or only partial sentence starts (a token whose <code>is_sent_start</code> is unset) gets those of <code>parse</code>. A blank line ends a sentence of every source, since it ends a paragraph of the document. A sentence without words, such as punctuation alone, is not counted.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, a <code>doc_words</code> that returns no sequence of strings, an extractor of another type;</li>
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a threshold that is not an integer of at least one, a <code>normalize</code> that is not a <code>bool</code>.</li>
 </ul>
-<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core for Russian: the syllables are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a>, the default extractors are the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the punctuation marks are counted by the <a href="#count_punctuations"><code>count_punctuations</code></a> of ruTS, and a hyphenated word that spaCy splits stays one word (<code>во-первых</code>). The blank line component of ruTS is <a href="../../components/#blank_lines"><code>ruts_blank_lines</code></a>: <code>nlp.add_pipe("ruts_blank_lines", before="parser")</code>; the <a href="../../components/#load_pipeline">recommended pipeline</a> does not need it. Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the <code>print_stats</code> table is in Russian.</p>
+<p>The class extends the <code>BasicStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/basic_stats/">anyTS</a> core for Russian: the document of a source comes from <code>ruts.utils.get_document</code>, where a string is split by the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter, as in the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a>, the words of the document drop the period of an abbreviation (<code>ruts.utils.document_words</code>), the syllables are counted by <a href="../../syllables/#count_syllables"><code>count_syllables</code></a> and the punctuation marks by the <a href="#count_punctuations"><code>count_punctuations</code></a> of ruTS. The words of a <code>Doc</code> are its tokens: a <code>Doc</code> of the <a href="../../components/#load_pipeline">recommended pipeline</a> has the words and the sentences of the string, while the tokenizer of a plain spaCy model splits hyphenated words (<code>во-первых</code> is two words). Stress marks and soft hyphens count neither as characters nor as parts of words, and й and ё of two characters are one letter (<code>ruts.utils.strip_marks</code>): a text with stresses gives the same statistics as without them. The statistics are computed when the object is created; the <code>print_stats</code> table is in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2318,21 +2318,21 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Data source (a string or a Doc object)</td>
+<td style="text-align: left;">Data source</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Sentence extraction tool; used for a Doc too, on its text</td>
+<td style="text-align: left;">Sentence extraction tool, used on the text in place of the sentences of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool; used for a Doc too, on its text</td>
+<td style="text-align: left;">Word extraction tool, used on the text in place of the words of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>normalize</code></td>
@@ -2430,7 +2430,7 @@
 <tr>
 <td style="text-align: left;"><code>n_chars</code></td>
 <td style="text-align: left;"><code>int</code></td>
-<td style="text-align: left;">Number of characters without the line breaks</td>
+<td style="text-align: left;">Number of characters without the line breaks (<code>LINE_BREAK</code>: <code>\n</code>, <code>\r\n</code>, <code>\r</code>, the vertical tab, the form feed, U+0085, U+2028, U+2029)</td>
 <td style="text-align: left;">-</td>
 </tr>
 <tr>
@@ -2481,7 +2481,7 @@
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <p><code>count_words_by_syllables(min_syllables)</code> and <code>count_words_by_letters(min_letters)</code> return the number of words with at least the given number of syllables or letters; a minimum that is not an integer raises <code>ParameterError</code>.</p>
 <p>This is how <a href="../readability_stats/"><code>ReadabilityStats</code></a> counts the complex words of SMOG (5 or more syllables) and the long words of LIX (7 or more letters).</p>
-<p><code>get_stats(flat)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the statistics of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
+<p><code>get_stats(*, flat=False)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the statistics of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
 <p><code>print_stats()</code> prints a table with the statistics of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
 <p>The normalized statistics <code>p_*</code> are not in the table.</p>
 <p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>

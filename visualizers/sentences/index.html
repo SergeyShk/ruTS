@@ -2178,7 +2178,7 @@
 </code></pre></div>
 <!-- core: visualizers/sentences.md:sentence_lengths_plot 36b6cdc -->
 <p>Кривая длин предложений - ритм текста: длина каждого предложения в словах по порядку, скользящее среднее по <code>window</code> предложениям и врезка с гистограммой длин. Чередование коротких и длинных предложений - редакторский признак живого текста, ровная кривая - монотонного. Функция принимает оси <code>ax</code> и возвращает <code>Axes</code>.</p>
-<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a>; для строки ruTS по умолчанию передает русские <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> и <a href="../../extractors/words/"><code>WordsExtractor</code></a>, параметры <code>sents_extractor</code> и <code>words_extractor</code> заменяют их. Подписи по умолчанию - русские из <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> задает подписи поверх них.</p>
+<p>Это функции ядра <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a>; строку ruTS делит на предложения и слова сегментатором <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, а если задан один экстрактор, второй - русский <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> или <a href="../../extractors/words/"><code>WordsExtractor</code></a>. Подписи по умолчанию - русские из <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> задает подписи поверх них.</p>
 <p>Кривая первого текста набора данных <a href="../../datasets/stalinworks/">StalinWorks</a>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StalinWorks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">sentence_lengths_plot</span>
@@ -2188,7 +2188,7 @@
 </code></pre></div>
 <p><img alt="ruts" class="center" src="../../img/sentences.png" /></p>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters e2b67de -->
+<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters 1d34170 -->
 <table>
 <thead>
 <tr>
@@ -2201,9 +2201,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Iterable[int]</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code> / <code>Iterable[int]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Текст, объект Doc или длины предложений (список, массив numpy, Series)</td>
+<td style="text-align: left;">Текст, объект Doc или Document либо длины предложений (список, массив numpy, Series)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window</code></td>
@@ -2233,13 +2233,13 @@
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения предложений строки; по умолчанию экстрактор предложений библиотеки</td>
+<td style="text-align: left;">Инструмент для извлечения предложений строки или <code>Doc</code> без предложений вместо предложений документа</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов предложения строки; по умолчанию экстрактор слов библиотеки</td>
+<td style="text-align: left;">Инструмент для извлечения слов предложения строки или <code>Doc</code> без предложений вместо слов документа</td>
 </tr>
 </tbody>
 </table>
@@ -2247,7 +2247,8 @@
 <h2 id="sentence_lengths">Длины предложений<a class="headerlink" href="#sentence_lengths" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">sentence_lengths</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Длины предложений в словах по порядку: строку делят экстракторы предложений и слов, <code>Doc</code> - его границы и токены без знаков препинания и символов, причем части дефисного слова склеиваются (<code>во-первых</code> - одно слово); <code>Doc</code> без границ или с частичными границами (<code>has_sents</code>) считается как его текст. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у <code>sentence_lengths_plot</code>.</p>
+<!-- core: visualizers/sentences.md:sentence_lengths ad94ae1 -->
+<p>Длины предложений в словах по порядку: предложения документа текста, <code>Doc</code> или <code>Document</code> (<code>to_document</code>) и их слова с буквой или цифрой либо, если задан экстрактор, предложения и слова экстракторов на тексте строки или <code>Doc</code> без собственных предложений (начало предложения задано не у всех токенов, нет ни крючка, ни разбора); <code>Doc</code> с предложениями и <code>Document</code> сохраняют свои. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у <code>sentence_lengths_plot</code>.</p>
 <p>Таблица, множество, словарь, байты, длина, которая не целое число, и экстрактор другого типа дают <code>SourceTypeError</code>, отрицательная длина - <code>SourceError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">

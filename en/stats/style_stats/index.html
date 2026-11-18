@@ -2430,15 +2430,15 @@
 <h1 id="seo-style-metrics">SEO style metrics<a class="headerlink" href="#seo-style-metrics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">StyleStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cliches</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nausea_stopwords</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The style metrics of a text: the SEO metrics of Advego and Text.ru and the markers of the officialese style. The services publish no formulas, so the common definitions are taken. The data source is a text or a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>.</p>
-<p>The SEO metrics are counted on the words of the word extractor, in lower case by default, or on the tokens of a <code>Doc</code>; an extractor passed explicitly is used on the text of a <code>Doc</code>. The markers are counted on the word forms in lower case (<code>forms</code>), whatever the extractor.</p>
+<p>The style metrics of a text: the SEO metrics of Advego and Text.ru and the markers of the officialese style. The services publish no formulas, so the common definitions are taken. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>.</p>
+<p>The SEO metrics are counted on the words of the <a href="https://sergeyshk.github.io/anyTS/document/">document</a> of the source in lower case (<code>doc_words</code>), or on those of an extractor passed explicitly, used on the text. The markers are counted on the words of the document (<code>forms</code>), whatever the extractor.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string nor a <code>Doc</code>, an extractor of another type, a list that is not a list of strings;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, a <code>doc_words</code> that returns no sequence of strings, an extractor of another type, a list that is not a list of strings;</li>
 <li><code>SourceError</code> - a source without words;</li>
 <li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
 </ul>
-<p>The class extends the <code>StyleStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> core with the hooks of Russian of the metric cards; they tag a word by the first <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis, without its neighbours. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> without lemmatization, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass a <code>WordsExtractor</code> with <code>use_lexemes=True</code> and <code>lowercase=True</code>. The words are compared with the stop words, the phrases and the keywords ignoring case and the letter ё (<code>normalize_yo</code>). The words of a <code>Doc</code> lose their stress marks, and the parts of a hyphenated word that spaCy splits are joined (<code>во-первых</code> is one word). The <code>print_stats</code> table and the error messages are in Russian (<code>STYLE_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>The class extends the <code>StyleStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/style_stats/">anyTS</a> core with the hooks of Russian of the metric cards; they tag a word by the first <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> analysis, without its neighbours. The words of the document are not lemmatized, so the forms of one word count as different words, as in Advego; to compute by lemmas, pass the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> with <code>use_lexemes=True</code> and <code>lowercase=True</code>. The words are compared with the stop words, the phrases and the keywords ignoring case and the letter ё (<code>normalize_yo</code>). The words of the document lose their stress marks and the period of an abbreviation (<code>ruts.utils.document_words</code>). The <code>print_stats</code> table and the error messages are in Russian (<code>STYLE_STATS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2477,7 +2477,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Data source</td>
 </tr>
@@ -2485,7 +2485,7 @@
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
+<td style="text-align: left;">Word extraction tool, used on the text in place of the words of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>stopwords</code></td>

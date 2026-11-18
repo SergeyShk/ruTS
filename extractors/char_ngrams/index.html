@@ -2176,9 +2176,9 @@
 <h1 id="n-">Извлечение символьных N-грамм<a class="headerlink" href="#n-" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">CharNgramsExtractor</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">within_words</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: extractors/char_ngrams.md:CharNgramsExtractor 1d91165 -->
+<!-- core: extractors/char_ngrams.md:CharNgramsExtractor af76148 -->
 <p>Класс для извлечения символьных N-грамм из текста - последовательностей из N символов, взятых окном по строке. Символьные N-граммы - стандартный признак стилометрии и атрибуции авторства (Stamatatos 2009), они могут заменять слова в мерах вроде дельты Барроуза.</p>
-<p>Пробельные символы схлопываются в один пробел, знаки препинания сохраняются. При <code>within_words=True</code> N-граммы не пересекают границ слов: текст режется токенизатором на слова, знаки препинания отбрасываются, слова короче N N-грамм не дают.</p>
+<p>Пробельные символы схлопываются в один пробел, знаки препинания сохраняются; после того как токенизатор разделил слова, мягкий перенос, соединитель слов и метка порядка байтов отбрасываются, а пробел нулевой ширины становится пробелом между словами, тогда как соединитель и разъединитель нулевой ширины остаются. При <code>within_words=True</code> N-граммы не пересекают границ слов: текст режется токенизатором на слова, знаки препинания отбрасываются, слова короче N N-грамм не дают.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>ParameterError</code> - <code>n</code>, который не целое число не меньше единицы, <code>lowercase</code> или <code>within_words</code>, который не <code>bool</code>.</li>

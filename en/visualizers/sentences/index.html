@@ -2177,7 +2177,7 @@
 <div class="signature highlight"><pre><span></span><code><span class="n">sentence_lengths_plot</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">inset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>The curve of the lengths of the sentences - the rhythm of a text: the length of every sentence in words, in order, the moving average over <code>window</code> sentences and an inset with the histogram of the lengths. Short and long sentences in turn are an editorial sign of a lively text, a flat curve of a monotonous one. The function takes the axes <code>ax</code> and returns <code>Axes</code>.</p>
-<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a> core; for a string ruTS passes its Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, and the <code>sents_extractor</code> and <code>words_extractor</code> parameters replace them. The default labels are the Russian ones of <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> puts the given labels over them.</p>
+<p>The functions are those of the <a href="https://sergeyshk.github.io/anyTS/visualizers/sentences/">anyTS</a> core; ruTS splits a string into sentences and words with the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter, and with one extractor given the other is the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> or <a href="../../extractors/words/"><code>WordsExtractor</code></a>. The default labels are the Russian ones of <code>ruts.constants.VISUALIZER_LABELS</code>; <code>labels</code> puts the given labels over them.</p>
 <p>The curve of the first text of the <a href="../../datasets/stalinworks/">StalinWorks</a> dataset:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">StalinWorks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.visualizers</span><span class="w"> </span><span class="kn">import</span> <span class="n">sentence_lengths_plot</span>
@@ -2199,9 +2199,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Iterable[int]</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code> / <code>Iterable[int]</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Text, Doc object or lengths of the sentences (a list, a numpy array, a Series)</td>
+<td style="text-align: left;">Text, Doc or Document object or lengths of the sentences (a list, a numpy array, a Series)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window</code></td>
@@ -2231,13 +2231,13 @@
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Extractor of the sentences of a string; the sentence extractor of the library by default</td>
+<td style="text-align: left;">Extractor of the sentences of a string or of a <code>Doc</code> without sentences, used in place of those of the document</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Extractor of the words of a sentence of a string; the word extractor of the library by default</td>
+<td style="text-align: left;">Extractor of the words of a sentence of a string or of a <code>Doc</code> without sentences, used in place of those of the document</td>
 </tr>
 </tbody>
 </table>
@@ -2245,7 +2245,7 @@
 <h2 id="sentence_lengths">Lengths of the sentences<a class="headerlink" href="#sentence_lengths" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">sentence_lengths</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The lengths of the sentences in words, in order: a string is split by the sentence and the word extractors, a <code>Doc</code> by its boundaries and tokens, punctuation and symbols left out and the parts of a hyphenated word joined (<code>во-первых</code> is one word); a <code>Doc</code> without boundaries or with partial ones (<code>has_sents</code>) is counted as its text. Sentences without words are skipped. Ready lengths (non-negative integers in a sequence or an iterator) are used as they are. The arguments are those of <code>sentence_lengths_plot</code>.</p>
+<p>The lengths of the sentences in words, in order: the sentences of the document of a text, a <code>Doc</code> or a <code>Document</code> (<code>to_document</code>) and their words with a letter or a digit, or, with an extractor given, the sentences and the words of the extractors on the text of a string or of a <code>Doc</code> without sentences of its own (no start at some token, no hook and no parse); a <code>Doc</code> with sentences and a <code>Document</code> keep theirs. Sentences without words are skipped. Ready lengths (non-negative integers in a sequence or an iterator) are used as they are. The arguments are those of <code>sentence_lengths_plot</code>.</p>
 <p>A table, a set, a mapping, bytes, a length that is not an integer and an extractor of another type raise <code>SourceTypeError</code>, a negative length <code>SourceError</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">

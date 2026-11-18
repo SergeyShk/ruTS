@@ -2740,15 +2740,15 @@
 <h1 id="readability-metrics">Readability metrics<a class="headerlink" href="#readability-metrics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">)</span>
 </code></pre></div>
-<p>The <a href="https://en.wikipedia.org/wiki/Readability">readability</a> metrics of a text from its basic statistics: the mean sentence length in words, the mean word length in syllables or letters, the share of polysyllabic and of long words and the variability of word length. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or ready basic statistics, which are reused as they are; the extractors are passed on to the basic statistics of a text or a <code>Doc</code>. The formulas count only the letters of the counted words, so a word extractor that drops words does not lengthen the mean word.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Readability">readability</a> metrics of a text from its basic statistics: the mean sentence length in words, the mean word length in syllables or letters, the share of polysyllabic and of long words and the variability of word length. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>, a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a> or ready basic statistics, which are reused as they are; the extractors are passed on to the basic statistics of the other sources. The formulas count only the letters of the counted words, so a word extractor that drops words does not lengthen the mean word.</p>
 <p>The metrics are properties computed on each access, so a change of the <code>coefficients</code> of an object applies at once.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor basic statistics, basic statistics of a class other than those of the library, an extractor of another type, a string or a <code>Doc</code> to a class without <code>basic_stats_class</code>;</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code>, a <code>Document</code> nor basic statistics, basic statistics of a class other than those of the library, an extractor of another type, a source other than basic statistics to a class without <code>basic_stats_class</code>;</li>
 <li><code>SourceError</code> - a source without words or sentences;</li>
 <li><code>ParameterError</code> - an unknown preset or one that is not a string.</li>
 </ul>
-<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core for Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS with the Russian <a href="../../extractors/sentences/"><code>SentsExtractor</code></a> and <a href="../../extractors/words/"><code>WordsExtractor</code></a> by default, the coefficient <a href="#presets">presets</a>, the Russian formulas, scales and reading speeds. The <code>print_stats</code> table and the error messages are in Russian.</p>
+<p>The class extends the <code>ReadabilityStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/readability_stats/">anyTS</a> core for Russian: the <a href="../basic_stats/">basic statistics</a> of ruTS, the coefficient <a href="#presets">presets</a>, the Russian formulas, scales and reading speeds. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2793,9 +2793,9 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>BasicStats</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code> / <code>BasicStats</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Data source (a string, a Doc object or ready basic statistics)</td>
+<td style="text-align: left;">Data source (a string, a Doc or a Document object, or ready basic statistics)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>sents_extractor</code></td>
@@ -4499,7 +4499,7 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <h3 id="level_features">Features of a text<a class="headerlink" href="#level_features" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">level_features</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
 </code></pre></div>
-<p>The features of a text that the stage norms cover - words per sentence, letters per word, the share of words of five or more syllables and MTLD - computed the same way as the norms. The features of a <code>Doc</code> are computed from its text, not from the sentence boundaries of spaCy. A source that is neither a string nor a <code>Doc</code> raises <code>SourceTypeError</code>, a source without words or sentences <code>SourceError</code>.</p>
+<p>The features of a text that the stage norms cover - words per sentence, letters per word, the share of words of five or more syllables and MTLD - computed the same way as the norms. The features of a <code>Doc</code> and a <code>Document</code> are computed from their text, not from their sentences. A source that is neither a string, a <code>Doc</code> nor a <code>Document</code> raises <code>SourceTypeError</code>, a source without words or sentences <code>SourceError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -4512,9 +4512,9 @@ a \cdot \left(\frac{\textrm{Number of words}}{\textrm{Number of sentences}} + \f
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Data source (a string or a Doc object)</td>
+<td style="text-align: left;">Data source (a string, a Doc or a Document object)</td>
 </tr>
 </tbody>
 </table>

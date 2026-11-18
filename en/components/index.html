@@ -2236,17 +2236,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#blank_lines" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sentences after blank lines
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2460,17 +2449,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#blank_lines" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sentences after blank lines
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -2545,19 +2523,19 @@ True
 </table>
 <p>spaCy sets both at <code>nlp.add_pipe(factory, name=...)</code>; the other parameters of a component are passed in the <code>config</code> dictionary of the same call.</p>
 <h2 id="names">Names<a class="headerlink" href="#names" title="Permanent link">&para;</a></h2>
-<p>The factories carry the prefix <code>ruts_</code> (<a href="#class-components">table</a> below, and the component of sentence boundaries <a href="#blank_lines"><code>ruts_blank_lines</code></a>). They are declared as entry points of <code>spacy_factories</code>, so spaCy finds them without <code>import ruts</code>, and a pipeline saved with them (<code>nlp.to_disk(path)</code>) loads with <code>spacy.load(path)</code>.</p>
-<p>The name of the pipe is the name of the extension: <code>nlp.add_pipe(factory, name="basic")</code> puts the statistics into <code>doc._.basic</code>. Without <code>name</code> both take the name of the factory. The extension follows the pipe when the pipeline renames it (<code>nlp.rename_pipe</code>). A name taken by an extension of another package raises <code>ParameterError</code> instead of replacing it: at <code>add_pipe</code>, or at the first document after <code>rename_pipe</code>, which renames the pipe before the component learns its name. A component taken from another pipeline (<code>add_pipe(name, source=other)</code>) is the same object in both, so under a new name it writes to that extension in the other pipeline too; a separate component comes from the factory, <code>add_pipe(factory, name=...)</code>. The same component can be added twice under different names, with different parameters. A document with no words - an empty string, whitespace, punctuation alone - passes through a component untouched, its extension left at <code>None</code>.</p>
+<p>The factories carry the prefix <code>ruts_</code> (<a href="#class-components">table</a> below). They are declared as entry points of <code>spacy_factories</code>, so spaCy finds them without <code>import ruts</code>, and a pipeline saved with them (<code>nlp.to_disk(path)</code>) loads with <code>spacy.load(path)</code>.</p>
+<p>The name of the pipe is the name of the extension: <code>nlp.add_pipe(factory, name="basic")</code> puts the statistics into <code>doc._.basic</code>. Without <code>name</code> both take the name of the factory. The extension follows the pipe when the pipeline renames it (<code>nlp.rename_pipe</code>), and an extension removed by <code>Doc.remove_extension</code> while the component lives is registered again at its next document. A name taken by an extension of another package raises <code>ParameterError</code> instead of replacing it: at <code>add_pipe</code>, or at the first document after <code>rename_pipe</code>, which renames the pipe before the component learns its name. A component taken from another pipeline (<code>add_pipe(name, source=other)</code>) is the same object in both, so under a new name it writes to that extension in the other pipeline too; a separate component comes from the factory, <code>add_pipe(factory, name=...)</code>. The same component can be added twice under different names, with different parameters. A document with no words - an empty string, whitespace, punctuation alone - passes through a component untouched, its extension left at <code>None</code>. A document without an annotation the statistics need, such as the parse of <code>SyntaxStats</code> in a pipeline without a parser, raises <code>SourceError</code> in the component, and so the call of the pipeline fails.</p>
 <p>In <code>ruts_lexical</code> a document of numbers alone passes untouched as well, and in <code>ruts_verse</code> a document without letters.</p>
 <div class="admonition warning">
 <p class="admonition-title">Serialization</p>
-<p>A component keeps an object of statistics in <code>doc._.&lt;name&gt;</code>, and spaCy cannot serialize it: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> and <code>nlp.pipe(..., n_process&gt;1)</code> fail with these components in the pipeline. To save a document, leave the user data out (<code>doc.to_bytes(exclude=["user_data"])</code>) or keep <code>doc._.&lt;name&gt;.get_stats()</code> separately; for multiprocessing compute the statistics in the main process after <code>nlp.pipe</code>, without the components.</p>
+<p>A component keeps an object of statistics in <code>doc._.&lt;name&gt;</code>, and spaCy cannot serialize it: <code>Doc.to_bytes()</code>, <code>DocBin(store_user_data=True)</code> and <code>nlp.pipe(..., n_process&gt;1)</code> fail with these components in the pipeline. To save a document, keep <code>doc._.&lt;name&gt;.get_stats()</code> separately and clear the extension (<code>doc._.&lt;name&gt; = None</code>) before <code>doc.to_bytes()</code>: leaving all the user data out (<code>exclude=["user_data"]</code>) drops the words of the multiword tokens of anySeg (<code>token._.anyseg_words</code>) too, and a document whose words carry columns of their own, such as one of <code>anyseg.spacy.to_doc</code>, is read back with other words. For multiprocessing compute the statistics in the main process after <code>nlp.pipe</code>, without the components.</p>
 </div>
-<p>Adding a component adds to the spaCy tokenizer the rules for the dialogue dashes glued to words (<code>ruts.utils.add_dash_rules</code>), so that a dialogue dash is split off a word as in a string; a pipeline without ruTS components needs this call of its own. The anySeg tokenizer of the <a href="#load_pipeline">recommended pipeline</a> is left as it is.</p>
+<p>The components leave the tokenizer of the pipeline as it is: a <code>Doc</code> of the <a href="#load_pipeline">recommended pipeline</a> gives the same statistics as the string.</p>
 <p>ruTS removes stress marks from the words of a <code>Doc</code>, but the model parses such words worse: on a text after <code>accentuate</code> the tagger of <code>ru_core_news_sm</code> changes the part of speech of over half of the words, and the dependencies change in the <a href="#load_pipeline">recommended pipeline</a> as well. Pass a text with stresses without them - <code>nlp(ruts.utils.strip_marks(text))</code>.</p>
 <h2 id="load_pipeline">Recommended pipeline<a class="headerlink" href="#load_pipeline" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">load_pipeline</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">'ru_core_news_sm'</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
-<p>A spaCy pipeline in which a <code>Doc</code> is annotated the same way as a string, except the hyphenated words such as муж-то and два-три: a string splits them into parts, a <code>Doc</code> keeps one word. The tokens and the sentences come from the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter, the parts of speech, features and lemmas from the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. A saved pipeline of this kind loads as it is. The same by hand:</p>
+<p>A spaCy pipeline in which a <code>Doc</code> is annotated the same way as a string. The tokens and the sentences come from the <a href="https://github.com/SergeyShk/anySeg">anySeg</a> segmenter, the parts of speech, features and lemmas from the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence, and the model gives the dependency parser and the named entities. A saved pipeline of this kind loads as it is. The same by hand:</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
     <span class="s2">"ru_core_news_sm"</span><span class="p">,</span>
     <span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s2">"morphologizer"</span><span class="p">,</span> <span class="s2">"lemmatizer"</span><span class="p">],</span>
@@ -2566,7 +2544,7 @@ True
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"anyseg_sentencizer"</span><span class="p">,</span> <span class="n">first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"rumorph"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="s2">"anyseg_sentencizer"</span><span class="p">)</span>
 </code></pre></div>
-<p>On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain <code>spacy.load("ru_core_news_sm")</code> is supported too, but then the parts of speech, features and sentences come from the model, and the statistics of a <code>Doc</code> may differ from those of the string. ruTS does not work around the errors of its tagger: the model tags connectors such as значит and т.е. as a verb and a punctuation mark, so they are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься as an infinitive, so the subordinate clause with it counts as an infinitive clause.</p>
+<p>On UD SynTagRus this pipeline is more accurate than the model itself: the part of speech is right for 97.3 % of the words against 93.3 %, the dependency with its relation (LAS) for 82.7 % against 82.1 %. A plain <code>spacy.load("ru_core_news_sm")</code> is supported too, but then the tokens, the parts of speech, features and sentences come from the model, and the statistics of a <code>Doc</code> may differ from those of the string; a blank line ends a sentence of such a <code>Doc</code> too. ruTS does not work around the errors of its tagger: the model tags connectors such as значит and т.е. as a verb and a punctuation mark, so they are not found (11 in 71 thousand words of TextsByGrade and SovChLit), and боишься as an infinitive, so the subordinate clause with it counts as an infinitive clause.</p>
 <table>
 <thead>
 <tr>
@@ -2746,7 +2724,7 @@ True
 <p>With <code>preset</code> left at <code>None</code> the config of a saved pipeline holds no preset, and the pipeline takes the default of the class when it is loaded; a library that wants its default written into the config gives it in the signature of its subclass.</p>
 <p>Raises:</p>
 <ul>
-<li><code>ParameterError</code> - a <code>stats_class</code> that is not concrete, a preset that is not a string or not one of the class, an extension not named by a string;</li>
+<li><code>ParameterError</code> - a <code>stats_class</code> that is not concrete, a preset that is not a string or not one of the class, an extension not named by a string or named by an empty one;</li>
 <li><code>SourceTypeError</code> - a class without <code>basic_stats_class</code> and no <code>basic</code>;</li>
 <li><code>SourceError</code> - a document whose extension <code>basic</code> holds no basic statistics of the class.</li>
 </ul>
@@ -2793,7 +2771,7 @@ True
 </table>
 <p>Raises:</p>
 <ul>
-<li><code>ParameterError</code> - a <code>stats_class</code> that is not concrete, an extension not named by a string;</li>
+<li><code>ParameterError</code> - a <code>stats_class</code> that is not concrete, an extension not named by a string or named by an empty one;</li>
 <li><code>SourceTypeError</code> - a class without <code>basic_stats_class</code> and no <code>basic</code>;</li>
 <li><code>SourceError</code> - a document whose extension <code>basic</code> holds no basic statistics of the class.</li>
 </ul>
@@ -2920,8 +2898,7 @@ True
 </table>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - stopwords, nausea stopwords or cliches that are not a list of strings;</li>
-<li><code>ParameterError</code> - a <code>top_n</code> that is not an integer of at least one.</li>
+<li><code>ParameterError</code> - stopwords, nausea stopwords or cliches that are not a list of strings, a <code>top_n</code> that is not an integer of at least one.</li>
 </ul>
 <p>Without the lists the water words and the stopwords of the nausea are determined by the ruMorph tags, and the cliches come from <code>OFFICIALESE_CLICHES</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Code</label><label for="__tabbed_7_2">Result</label></div>
@@ -3052,6 +3029,7 @@ True
 </table>
 <p>Raises:</p>
 <ul>
+<li><code>ParameterError</code> - a <code>data_dir</code> that is not a string;</li>
 <li><code>DatasetNotFoundError</code> - the frequency dictionary metrics and <code>get_stats()</code> when <code>FreqDict</code> is not downloaded.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Code</label><label for="__tabbed_11_2">Result</label></div>
@@ -3091,6 +3069,7 @@ True
 </table>
 <p>Raises:</p>
 <ul>
+<li><code>ParameterError</code> - a <code>data_dir</code> that is not a string;</li>
 <li><code>DatasetNotFoundError</code> - the stress dictionary is not downloaded; the first document with letters raises it.</li>
 </ul>
 <div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Code</label><label for="__tabbed_12_2">Result</label></div>
@@ -3107,45 +3086,6 @@ True
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>('хорей', 4)
-</code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="blank_lines">Sentences after blank lines<a class="headerlink" href="#blank_lines" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">start_sents_after_blank_lines</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-</code></pre></div>
-<p>A component that starts a sentence at the first token after a blank line - a line break, optional whitespace and another line break - so that a heading, a list item or a paragraph without a final mark is a sentence of its own, as in the sentence extractor. It goes before the parser, <code>senter</code> or <code>sentencizer</code>, which keeps its starts and places the others. The whitespace before such a start stays with the sentence before it, and the marks that open a paragraph (a dash of a dialogue, <code>¡</code>, <code>«</code>) stay with its first word. Alone, the component leaves the sentences within a paragraph unsplit and sets partial boundaries (<code>has_sents</code>), so the statistics take the sentences of such a document from its text. A parsed document, such as one passed through the pipeline again, passes untouched, since spaCy keeps its sentences. A language library registers the component under its prefix, <code>Language.component("&lt;prefix&gt;_blank_lines", func=start_sents_after_blank_lines)</code>.</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Parameter</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Default</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>doc</code></td>
-<td style="text-align: left;"><code>Doc</code></td>
-<td style="text-align: left;">-</td>
-<td style="text-align: left;">Doc object</td>
-</tr>
-</tbody>
-</table>
-<p>In ruTS the component is registered as <code>ruts_blank_lines</code>. Without it the parser of the <code>ru_core_news_sm</code> model glues a paragraph without a final mark to the next sentence; the <a href="#load_pipeline">recommended pipeline</a> does not need it.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Code</label><label for="__tabbed_13_2">Result</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">spacy</span>
-
-<span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ru_core_news_sm"</span><span class="p">)</span>
-<span class="n">nlp</span><span class="o">.</span><span class="n">add_pipe</span><span class="p">(</span><span class="s2">"ruts_blank_lines"</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">"parser"</span><span class="p">)</span>
-<span class="p">[</span><span class="n">sent</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">"Что нового</span><span class="se">\n\n</span><span class="s2">Быстрый импорт. Меньше ошибок"</span><span class="p">)</span><span class="o">.</span><span class="n">sents</span><span class="p">]</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>['Что нового', 'Быстрый импорт.', 'Меньше ошибок']
 </code></pre></div>
 </div>
 </div>

@@ -2320,14 +2320,14 @@
 <h1 id="morphological-statistics">Morphological statistics<a class="headerlink" href="#morphological-statistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">MorphStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>The morphological statistics of a text: the part of speech and the features of <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> of every word, counted by value or given word by word. By default the data source is a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> with the parts of speech, read by <code>token.pos_</code> and <code>token.morph</code>; a language library reads a string or a <code>Doc</code> without them in its own way.</p>
+<p>The morphological statistics of a text: the part of speech and the features of <a href="https://universaldependencies.org/u/feat/">Universal Dependencies</a> of every word, counted by value or given word by word. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; the words are the words of Universal Dependencies of its <a href="https://sergeyshk.github.io/anyTS/document/">document</a> with a letter or a digit (Spanish <code>del</code> gives <code>de</code> and <code>el</code>), and their parts of speech and features are its columns <code>upos</code> and <code>feats</code>. A language library annotates a string in its <code>parse</code>, or reads the features in its own <code>analyze</code>.</p>
 <p>Raises:</p>
 <ul>
-<li><code>SourceTypeError</code> - a source that is not a <code>Doc</code>, an <code>analyze</code> that does not give <code>MorphWord</code> objects;</li>
-<li><code>SourceError</code> - a source without parts of speech or without words.</li>
+<li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, an <code>analyze</code> that does not give <code>MorphWord</code> objects;</li>
+<li><code>SourceError</code> - words without parts of speech, a source without words.</li>
 </ul>
-<p>In ruTS the data source is a text or a <code>Doc</code> with or without part-of-speech annotation. A source that is neither a string nor a <code>Doc</code> and an extractor of another type raise <code>SourceTypeError</code>, and only a source without words raises <code>SourceError</code>.</p>
-<p>The class extends the <code>MorphStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> core with the Russian analysis of the words and the <a href="#markers">markers of the verb forms</a>. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor; the words of a <code>Doc</code> without an extractor are its tokens with the parts of a hyphenated word joined: муж-то, скажи-ка are one word in a <code>Doc</code> and two in a string. The <code>print_stats</code> and <code>print_markers</code> tables and the error messages are in Russian (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
+<p>In ruTS a <code>Doc</code> and a <code>Document</code> need no part-of-speech annotation, so only a source without words raises <code>SourceError</code>; an extractor of another type raises <code>SourceTypeError</code> too.</p>
+<p>The class extends the <code>MorphStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/morph_stats/">anyTS</a> core with the Russian analysis of the words and the <a href="#markers">markers of the verb forms</a>. The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a> or by a given extractor. The <code>print_stats</code> and <code>print_markers</code> tables and the error messages are in Russian (<code>MORPHOLOGY_STATS_DESC</code>, <code>MORPHOLOGY_MARKERS_DESC</code> and <code>CORE_MESSAGES</code> of <code>ruts.constants</code>).</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2373,7 +2373,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Data source</td>
 </tr>
@@ -2381,7 +2381,7 @@
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> too, on its text</td>
+<td style="text-align: left;">Word extraction tool; used for a <code>Doc</code> and a <code>Document</code> too, on their text</td>
 </tr>
 </tbody>
 </table>
@@ -2419,7 +2419,7 @@
 </table>
 <p>ruTS also has the attribute <code>lemmas</code> (<code>tuple[str]</code>) - the lemmas of the words by the ruMorph analysis.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
-<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> with part-of-speech annotation the values are taken from <code>token.pos_</code> and <code>token.morph</code>, for a string from the analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a <code>Doc</code> without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.</p>
+<p>The statistics are the part of speech <code>pos</code> and the features of the table below (<code>MORPHOLOGY_FEATURES</code> of <code>ruts.constants</code>). For a <code>Doc</code> and a <code>Document</code> with part-of-speech annotation the values are taken from the part of speech and the features of the word, for a string from the analysis of the <a href="https://github.com/SergeyShk/ruMorph">ruMorph</a> morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a <code>Doc</code> and a <code>Document</code> without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.</p>
 <table>
 <thead>
 <tr>

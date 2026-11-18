@@ -2408,15 +2408,15 @@
 <h1 id="_1">Фоностатистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">PhonStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window_len</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: stats/phon_stats.md:PhonStats 408ded2 -->
-<p>Фоностатистики текста: его звуки по классам, их кластеры, последовательности и повторы, его слоги. Звук - по умолчанию буква слова, а если библиотека дает транскрипцию, звук транскрипции. Источник данных - текст или объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>; слова берутся в нижнем регистре, а явно переданный экстрактор применяется к тексту <code>Doc</code>.</p>
+<!-- core: stats/phon_stats.md:PhonStats 1a12443 -->
+<p>Фоностатистики текста: его звуки по классам, их кластеры, последовательности и повторы, его слоги. Звук - по умолчанию буква слова, а если библиотека дает транскрипцию, звук транскрипции. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; слова - слова его <a href="https://sergeyshk.github.io/anyTS/document/">документа</a> в нижнем регистре (<code>doc_words</code>) или слова явно переданного экстрактора, который применяется к тексту.</p>
 <p>Исключения:</p>
 <ul>
-<li><code>SourceTypeError</code> - источник, который не строка и не <code>Doc</code>, экстрактор другого типа;</li>
+<li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, <code>parse</code>, который возвращает не <code>Document</code>, <code>doc_words</code>, <code>syllabify</code> или <code>transcribe</code>, которые возвращают не строки, экстрактор другого типа;</li>
 <li><code>SourceError</code> - источник без слов;</li>
 <li><code>ParameterError</code> - окно, которое не целое число не меньше 2.</li>
 </ul>
-<p>Класс расширяет <code>PhonStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения, а слоги - по правилу восходящей звучности функции <a href="../../syllables/#syllabify"><code>syllabify</code></a>. Из слов текста и <code>Doc</code> убираются знаки ударения, а части дефисного слова, разрезанного spaCy, склеиваются (<code>во-первых</code> - одно слово). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>PHON_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
+<p>Класс расширяет <code>PhonStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/phon_stats/">anyTS</a> крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения, а слоги - по правилу восходящей звучности функции <a href="../../syllables/#syllabify"><code>syllabify</code></a>. Из слов документа убираются знаки ударения (<code>ruts.utils.document_words</code>). Таблица <code>print_stats</code> и сообщения об ошибках - по-русски (<code>PHON_STATS_DESC</code> и <code>CORE_MESSAGES</code> из <code>ruts.constants</code>).</p>
 <table>
 <thead>
 <tr>
@@ -2484,7 +2484,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/phon_stats.md:PhonStats-parameters b90ae7b -->
+<!-- core: stats/phon_stats.md:PhonStats-parameters e3fdd09 -->
 <table>
 <thead>
 <tr>
@@ -2497,7 +2497,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><code>source</code></td>
-<td style="text-align: left;"><code>str</code> / <code>Doc</code></td>
+<td style="text-align: left;"><code>str</code> / <code>Doc</code> / <code>Document</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Источник данных</td>
 </tr>
@@ -2505,7 +2505,7 @@
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов; применяется и к <code>Doc</code>, к его тексту</td>
+<td style="text-align: left;">Инструмент для извлечения слов, применяется к тексту вместо слов документа</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>window_len</code></td>
