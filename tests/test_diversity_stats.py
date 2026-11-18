@@ -87,10 +87,11 @@ def test_init_doc_lowercase():
     assert DiversityStats(doc).ttr == DiversityStats(RIDDLE_TEXT).ttr
 
 
-def test_init_doc_hyphens():
-    """Дефисные слова Doc склеиваются, как в строке"""
+def test_init_doc_hyphens(nlp):
+    """Слова Doc - его токены: anySeg держит дефисные слова, как в строке, а spaCy их делит"""
     text = "Кто-то пришел, во-первых, по-видимому"
-    assert DiversityStats(spacy.blank("ru")(text)).words == DiversityStats(text).words
+    assert DiversityStats(nlp(text)).words == DiversityStats(text).words
+    assert DiversityStats(spacy.blank("ru")(text)).words[:2] == ("кто", "то")
 
 
 def test_init_byte_order_mark():

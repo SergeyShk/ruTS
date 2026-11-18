@@ -7,7 +7,7 @@ sentence_lengths_plot(source, window=10, inset=True, ax=None, labels=None, sents
 <!-- core: visualizers/sentences.md:sentence_lengths_plot 36b6cdc -->
 Кривая длин предложений - ритм текста: длина каждого предложения в словах по порядку, скользящее среднее по `window` предложениям и врезка с гистограммой длин. Чередование коротких и длинных предложений - редакторский признак живого текста, ровная кривая - монотонного. Функция принимает оси `ax` и возвращает `Axes`.
 
-Это функции ядра [anyTS](https://sergeyshk.github.io/anyTS/visualizers/sentences/); для строки ruTS по умолчанию передает русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), параметры `sents_extractor` и `words_extractor` заменяют их. Подписи по умолчанию - русские из `ruts.constants.VISUALIZER_LABELS`; `labels` задает подписи поверх них.
+Это функции ядра [anyTS](https://sergeyshk.github.io/anyTS/visualizers/sentences/); строку ruTS делит на предложения и слова сегментатором [anySeg](https://github.com/SergeyShk/anySeg), а если задан один экстрактор, второй - русский [`SentsExtractor`](../extractors/sentences.md) или [`WordsExtractor`](../extractors/words.md). Подписи по умолчанию - русские из `ruts.constants.VISUALIZER_LABELS`; `labels` задает подписи поверх них.
 
 Кривая первого текста набора данных [StalinWorks](../datasets/stalinworks.md):
 
@@ -23,16 +23,16 @@ sentence_lengths_plot(text, window=10)
 
 ## Параметры
 
-<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters e2b67de -->
+<!-- core: visualizers/sentences.md:sentence_lengths_plot-parameters 1d34170 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` / `Iterable[int]` | - | Текст, объект Doc или длины предложений (список, массив numpy, Series) |
+| `source` | `str` / `Doc` / `Document` / `Iterable[int]` | - | Текст, объект Doc или Document либо длины предложений (список, массив numpy, Series) |
 | `window` | `int` | `10` | Окно скользящего среднего в предложениях |
 | `inset` | `bool` | `True` | Показывать врезку с гистограммой |
 | `ax` | `Axes` | `None` | Оси для графика |
 | `labels` | `dict[str, str]` | `None` | Подписи поверх подписей по умолчанию: `title`, `xlabel`, `ylabel`, `length` (кривая), `average` (строка формата с `window`), `distribution` (врезка) |
-| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений строки; по умолчанию экстрактор предложений библиотеки |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов предложения строки; по умолчанию экстрактор слов библиотеки |
+| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений строки или `Doc` без предложений вместо предложений документа |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов предложения строки или `Doc` без предложений вместо слов документа |
 
 Источник и экстракторы дают ошибки `sentence_lengths`, а отсутствие предложений - `SourceError`; `window`, который не целое число не меньше единицы, подписи, которые отвергает `merge_labels`, и `ax`, который не `Axes` matplotlib, дают `ParameterError`.
 
@@ -42,7 +42,8 @@ sentence_lengths_plot(text, window=10)
 sentence_lengths(source, sents_extractor=None, words_extractor=None)
 ```
 
-Длины предложений в словах по порядку: строку делят экстракторы предложений и слов, `Doc` - его границы и токены без знаков препинания и символов, причем части дефисного слова склеиваются (`во-первых` - одно слово); `Doc` без границ или с частичными границами (`has_sents`) считается как его текст. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у `sentence_lengths_plot`.
+<!-- core: visualizers/sentences.md:sentence_lengths ad94ae1 -->
+Длины предложений в словах по порядку: предложения документа текста, `Doc` или `Document` (`to_document`) и их слова с буквой или цифрой либо, если задан экстрактор, предложения и слова экстракторов на тексте строки или `Doc` без собственных предложений (начало предложения задано не у всех токенов, нет ни крючка, ни разбора); `Doc` с предложениями и `Document` сохраняют свои. Предложения без слов пропускаются. Готовые длины (неотрицательные целые числа в последовательности или итераторе) используются как есть. Аргументы - те же, что у `sentence_lengths_plot`.
 
 Таблица, множество, словарь, байты, длина, которая не целое число, и экстрактор другого типа дают `SourceTypeError`, отрицательная длина - `SourceError`.
 

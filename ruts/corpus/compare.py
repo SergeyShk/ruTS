@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from bisect import bisect_left
 from collections.abc import Callable, Mapping, Sequence
 from math import nan
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import anyts.corpus.compare
 import pandas as pd
@@ -16,7 +17,7 @@ from anyts.corpus.compare import (
     holm_correction as holm_correction,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
-from anyts.utils import check_words, count_words_by_spans, is_language, set_sent_starts
+from anyts.utils import check_words, count_words_by_spans, is_language
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..cohesion_stats import CohesionStats
@@ -36,6 +37,8 @@ from ..utils import iter_text_sents, iter_text_words
 
 if TYPE_CHECKING:
     from spacy.language import Language
+    from spacy.tokens import Doc
+    from thinc.types import Ints2d
 
 Features = Callable[[str], Mapping[str, float]]
 # Компоненты моделей ru_core_news, разметка которых синтаксическим признакам не нужна
@@ -209,12 +212,35 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         if not key.endswith("_para")
     )
     if nlp is not None:
-        doc = set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
+        doc = _set_sent_starts(nlp.make_doc(text), [start for start, _ in spans])
         features.update(
             (f"syntax_{key}", float(value))
             for key, value in SyntaxStats(nlp(doc, disable=_UNUSED_COMPONENTS)).get_stats().items()
         )
     return {key: value for key, value in features.items() if key not in REDUNDANT_FEATURES}
+
+
+def _set_sent_starts(doc: Doc, starts: Sequence[int]) -> Doc:
+    """Doc с началами предложений на первых непробельных токенах от позиций starts: парсер
+    их сохраняет, пробелы остаются в предыдущем предложении"""
+    import numpy
+    from spacy.attrs import SENT_START
+
+    if not len(doc):
+        return doc
+    words = [token.i for token in doc if not token.is_space]
+    begins = [doc[i].idx for i in words]
+    flags = [-1] * len(doc)
+    flags[0] = 1
+    for start in starts:
+        position = bisect_left(begins, start)
+        if 0 < position < len(words):
+            flags[words[position]] = 1
+    # Одной записью: каждое присваивание is_sent_start заставляет spaCy проходить весь Doc
+    doc.from_array(
+        [SENT_START], cast("Ints2d", numpy.array(flags, dtype="int64").astype("uint64"))
+    )
+    return doc
 
 
 def sentence_rhythm(lengths: Sequence[int]) -> dict[str, float]:

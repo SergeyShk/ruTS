@@ -56,14 +56,14 @@ from anyts.diversity_stats import (
     fit_zipf_mandelbrot as fit_zipf_mandelbrot,
     vocabulary_growth as vocabulary_growth,
 )
-from anyts.utils import is_doc, iter_doc_words, source_type_error
+from anyts.utils import is_doc, is_document, source_type_error
 
 from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
 from .exceptions import SourceTypeError
-from .extractors import WordsExtractor
-from .utils import strip_marks, word_form
+from .utils import document_words, get_document
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 
@@ -159,10 +159,11 @@ class DiversityStats(anyts.DiversityStats):
         WindowStats(mean=0.9333, std=0.1155, lower=0.6465, upper=1.2202, n_windows=3)
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc); слова всегда
-            приводятся к нижнему регистру
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document);
+            слова всегда приводятся к нижнему регистру
         words_extractor (WordsExtractor): Инструмент для извлечения слов; для Doc
-            применяется к тексту Doc, без него слова берутся из токенов
+            и Document применяется к их тексту, без него слова - токены документа
+            с буквой или цифрой
         window_len (int): Размер окна для MATTR и сегмента для MSTTR, по умолчанию 50 слов
         mtld_threshold (float): Порог TTR для MTLD, MA-MTLD и MTLD-W, по умолчанию 0.72
         mtld_min_len (int): Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W,
@@ -218,7 +219,7 @@ class DiversityStats(anyts.DiversityStats):
         print_stats: Отображение вычисленных метрик с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
             или экстрактор не WordsExtractor
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если параметры метрик заданы некорректно
@@ -230,7 +231,7 @@ class DiversityStats(anyts.DiversityStats):
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         words_extractor: anyts.WordsExtractor | None = None,
         window_len: int = MATTR_WINDOW_LEN,
         mtld_threshold: float = MTLD_TTR_THRESHOLD,
@@ -248,16 +249,13 @@ class DiversityStats(anyts.DiversityStats):
             log_base,
             messages=self.messages,
         )
-        if is_doc(source) and words_extractor is None:
-            words: Sequence[str] = [
-                word_form(strip_marks(word))
-                for _, _, word in iter_doc_words(source, join_hyphens=True)
-            ]
-        elif is_doc(source) or isinstance(source, str):
-            text = source if isinstance(source, str) else source.text
-            words = (words_extractor or WordsExtractor()).extract(text)
-        else:
+        if not (isinstance(source, str) or is_doc(source) or is_document(source)):
             raise source_type_error(self.messages, source)
+        words: Sequence[str] = (
+            document_words(get_document(source))
+            if words_extractor is None
+            else words_extractor.extract(source if isinstance(source, str) else source.text)
+        )
         super().__init__(
             [word.lower() for word in words],
             window_len,

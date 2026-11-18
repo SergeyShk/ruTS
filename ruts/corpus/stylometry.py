@@ -17,27 +17,30 @@ from anyts.corpus.stylometry import (
     zeta as zeta,
     zeta_segments as zeta_segments,
 )
-from anyts.utils import check_words, has_pos, is_doc, is_punctuation, iter_doc_units
+from anyts.document import get_tree
+from anyts.utils import check_words, has_words, is_doc, is_document, is_punctuation
 
 from ..constants import FUNCTION_UD_POS
 from ..exceptions import SourceError
-from ..utils import parse_word
+from ..utils import get_document, parse_word
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 
-def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
+def function_words_profile(source: Sequence[str] | Doc | Document) -> dict[str, float]:
     """
     Вычисление профиля служебных слов - долей служебных частей речи
 
     Описание:
         Доли предлогов, сочинительных и подчинительных союзов, частиц, местоимений,
         детерминативов и междометий (FUNCTION_UD_POS) среди слов текста без знаков
-        препинания; части речи - из разметки Doc, без нее - по первому разбору ruMorph
+        препинания; части речи - из разметки Doc или Document, без нее - по первому разбору
+        ruMorph
 
     Аргументы:
-        source (list[str]|Doc): Слова текста или объект Doc
+        source (list[str]|Doc|Document): Слова текста, объект Doc или Document
 
     Вывод:
         dict[str, float]: Доли по частям речи из FUNCTION_UD_POS
@@ -46,13 +49,12 @@ def function_words_profile(source: Sequence[str] | Doc) -> dict[str, float]:
         SourceTypeError: Если слова не список строк
         SourceError: Если слов нет
     """
-    if is_doc(source):
-        units = list(iter_doc_units(source, join_hyphens=True))
-        tagged = has_pos(source)
-        tags = [
-            unit[0].pos_ if tagged and len(unit) == 1 else _word_pos("".join(t.text for t in unit))
-            for unit in units
+    if is_doc(source) or is_document(source):
+        tree_words = [
+            word for word in get_tree(get_document(source)).words if has_words(word.form)
         ]
+        tagged = any(word.upos for word in tree_words)
+        tags = [word.upos if tagged else _word_pos(word.form) for word in tree_words]
     else:
         words = cast("Sequence[str]", source)
         check_words(words)

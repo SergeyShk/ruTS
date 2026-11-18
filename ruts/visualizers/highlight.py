@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
+from collections.abc import Callable, Collection, Iterable, Mapping, Sequence
 from typing import TYPE_CHECKING
 
 import anyts.visualizers.highlight
 from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
-from anyts.utils import check_words, has_pos, iter_doc_units
+from anyts.document import get_tree
+from anyts.syntax_stats import get_subtree
+from anyts.utils import check_words, has_words
 from anyts.visualizers.highlight import (
     Highlight as Highlight,
     Sent as Sent,
@@ -16,7 +18,7 @@ from anyts.visualizers.highlight import (
 )
 
 from .. import style_stats
-from ..cohesion_stats import CohesionStats, connector_pos, unit_pos, unit_text
+from ..cohesion_stats import CohesionStats, connector_pos
 from ..constants import (
     ALLITERATION_IGNORED_LETTERS,
     COMPLEX_SYL_FACTOR,
@@ -38,27 +40,30 @@ from ..lexical_stats import get_rank
 from ..style_stats import expand_phrases, is_stopword, is_water_word
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
-    find_split_predicates,
+    _find_split_predicates,
+    _get_lemma,
+    _is_converb_clause,
+    _is_genitive_modifier,
+    _is_participle_clause,
     get_children,
-    get_lemma,
     get_words,
     is_agentless,
-    is_converb_clause,
-    is_genitive_modifier,
-    is_participle_clause,
     is_passive,
     subtree_len,
 )
 from ..utils import (
     BYTE_ORDER_MARK,
-    iter_text_sents,
-    iter_text_words,
+    get_document,
     normalize_yo,
     parse_word,
+    strip_marks,
+    word_form,
 )
 
 if TYPE_CHECKING:
-    from spacy.tokens import Doc, Token
+    from anyseg import Document
+    from anyts.document import TreeWord
+    from spacy.tokens import Doc
 
 RUSSIAN_WORD = re.compile(r"[а-яёА-ЯЁ][а-яёА-ЯЁ-]+")
 ALLITERATION_FREQUENCIES = {
@@ -90,8 +95,8 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             alliteration - повторы согласной в соседних словах, маловероятные при
                 частотах букв русского языка
         Синтаксические слои (от passive до split_predicates) доступны только для объекта
-        Doc с разбором зависимостей; строка и Doc без границ предложений делятся
-        на предложения anySeg. Фрагменты разных слоев могут пересекаться. В Jupyter
+        Doc или Document с разбором зависимостей; строка и Doc без границ предложений
+        делятся на предложения anySeg. Фрагменты разных слоев могут пересекаться. В Jupyter
         результат отображается как HTML с легендой
 
     Пример использования:
@@ -109,7 +114,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         '<div class="ruts-highlight"><div class="ruts-highlight-text">Чуть <span class="ruts-hl ruts-hl-alliteration" title="аллитерация на «ш»">слышно, бесшумно шуршат камыши</span>. ...'
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         layers (list[str]|str): Слои подсветки; если не заданы, включаются слои
             HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
@@ -131,7 +136,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         css: Получение стилей слоев
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc,
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document,
             а стоп-слова или штампы - набором строк
         SourceError: Если в источнике данных отсутствуют слова
         ParameterError: Если задан неизвестный или недоступный источнику слой
@@ -148,7 +153,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
 
     def __init__(
         self,
-        source: str | Doc,
+        source: str | Doc | Document,
         layers: Sequence[str] | str | None = None,
         long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
@@ -175,20 +180,16 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         self._alliteration_threshold = alliteration_threshold
         super().__init__(source, layers)
 
-    def iter_words(self, text: str) -> Iterator[tuple[int, int, str]]:
-        """Слова строки с позициями по iter_text_words, без знаков препинания"""
-        return iter_text_words(text)
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
 
-    def iter_sents(self, text: str) -> Iterator[tuple[int, int, str]]:
-        """Предложения строки с позициями по iter_text_sents"""
-        return iter_text_sents(text)
-
-    def doc_words(self, doc: Doc) -> list[Word]:
-        """Слова объекта Doc с позициями по get_doc_words"""
-        return get_doc_words(doc)
+    def doc_words(self, document: Document) -> list[Word]:
+        """Слова документа с позициями по get_doc_words"""
+        return get_doc_words(document)
 
     def find(
-        self, layer: str, words: Sequence[Word], sents: Sequence[Sent], doc: Doc | None
+        self, layer: str, words: Sequence[Word], sents: Sequence[Sent], doc: Document
     ) -> list[Highlight]:
         """
         Поиск фрагментов слоя
@@ -197,13 +198,13 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             layer (str): Слой подсветки
             words (list[Word]): Слова текста с позициями
             sents (list[Sent]): Предложения текста с позициями
-            doc (Doc): Объект Doc источника; None для строки
+            doc (Document): Документ источника (parse)
 
         Вывод:
             list[Highlight]: Фрагменты слоя
         """
         if layer in SYNTAX_FINDERS:
-            return SYNTAX_FINDERS[layer](doc) if doc is not None else []
+            return SYNTAX_FINDERS[layer](doc)
         finders: dict[str, Callable[[], list[Highlight]]] = {
             "long_sents": lambda: find_long_sents(sents, self._long_sent_word_factor),
             "complex_words": lambda: find_complex_words(words, self._complex_syl_factor),
@@ -220,7 +221,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
 
 
 def highlight(
-    source: str | Doc,
+    source: str | Doc | Document,
     layers: Sequence[str] | str | None = None,
     long_sent_word_factor: int = LONG_SENT_WORD_FACTOR,
     complex_syl_factor: int = COMPLEX_SYL_FACTOR,
@@ -235,7 +236,7 @@ def highlight(
         Слои и их доступность описаны в классе HighlightedText
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         layers (list[str]|str): Слои подсветки; если не заданы, включаются слои
             HIGHLIGHT_DEFAULT_LAYERS, доступные источнику; "all" - все доступные
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
@@ -260,28 +261,29 @@ def highlight(
     )
 
 
-def get_doc_words(doc: Doc) -> list[Word]:
+def get_doc_words(source: Doc | Document) -> list[Word]:
     """
-    Извлечение слов с позициями из объекта Doc
+    Извлечение слов с позициями из документа anySeg
 
     Описание:
-        Дефисные слова - одним словом; при разметке частей речи у слова есть
-        часть речи UD
+        Токены с буквой или цифрой без знаков ударения, мягких переносов и точки
+        сокращения (word_form); при разметке у слова есть часть речи UD и лемма
 
     Аргументы:
-        doc (Doc): Объект Doc
+        source (Doc|Document): Объект Doc или документ anySeg (get_document)
 
     Вывод:
         list[Word]: Слова с позициями
     """
-    tagged = has_pos(doc)
     words = []
-    for unit in iter_doc_units(doc, join_hyphens=True):
-        raw = "".join(token.text for token in unit)
-        word = unit_text(unit)
-        start = unit[0].idx + len(raw) - len(raw.lstrip(BYTE_ORDER_MARK))
-        end = unit[-1].idx + len(unit[-1])
-        words.append(Word(start, end, word, unit_pos(unit) if tagged else None))
+    for token in get_document(source).tokens:
+        text = token.text
+        if not has_words(text):
+            continue
+        word = word_form(strip_marks(text).lstrip(BYTE_ORDER_MARK))
+        start = token.start + len(text) - len(text.lstrip(BYTE_ORDER_MARK))
+        first = token.words[0]
+        words.append(Word(start, token.end, word, first.upos or None, first.lemma or None))
     return words
 
 
@@ -511,7 +513,7 @@ def find_connector_highlights(
 
     Описание:
         Коннекторы CohesionStats ищутся внутри каждого предложения; однословные
-        проверяются по части речи из разметки Doc, а без нее - по ruMorph;
+        проверяются по части речи из разметки документа, а без нее - по ruMorph;
         в подсказке класс и тип коннектора
 
     Аргументы:
@@ -640,52 +642,7 @@ def find_alliteration(
     )
 
 
-def _word_tokens(doc: Doc) -> Callable[[Iterable[Token]], list[Token]]:
-    """
-    Функция, дополняющая токены слов всеми частями их дефисных слов
-
-    Аргументы:
-        doc (Doc): Объект Doc
-
-    Вывод:
-        Callable[[Iterable[Token]], list[Token]]: Токены вместе с частями их слов
-    """
-    units = {token.i: unit for unit in iter_doc_units(doc, join_hyphens=True) for token in unit}
-    return lambda tokens: [part for token in tokens for part in units.get(token.i, [token])]
-
-
-def _clause_span(token: Token, units: Mapping[int, list[Token]]) -> tuple[int, int]:
-    """
-    Позиции фрагмента оборота: слова поддерева токена, представленные в нем
-    своей частью (get_words), со всеми частями
-
-    Аргументы:
-        token (Token): Вершина оборота
-        units (Mapping[int, list[Token]]): Токены слов по номеру представляющей части
-
-    Вывод:
-        tuple[int, int]: Позиция первого символа и позиция за последним символом
-    """
-    return tokens_span([part for child in token.subtree for part in units.get(child.i, ())])
-
-
-def _units_by_word(doc: Doc) -> dict[int, list[Token]]:
-    """
-    Токены каждого слова Doc по номеру части, которой слово представлено (get_words)
-
-    Аргументы:
-        doc (Doc): Объект Doc
-
-    Вывод:
-        dict[int, list[Token]]: Токены слов
-    """
-    return {
-        get_words(unit, join_hyphens=True)[0].i: unit
-        for unit in iter_doc_units(doc, join_hyphens=True)
-    }
-
-
-def find_passive(doc: Doc) -> list[Highlight]:
+def find_passive(doc: Document) -> list[Highlight]:
     """
     Поиск пассивных глагольных форм
 
@@ -693,69 +650,62 @@ def find_passive(doc: Doc) -> list[Highlight]:
         Форма подсвечивается вместе со вспомогательным глаголом (был продан)
 
     Аргументы:
-        doc (Doc): Объект Doc с разбором зависимостей
+        doc (Document): Документ anySeg с разбором зависимостей
 
     Вывод:
         list[Highlight]: Фрагменты слоя passive
     """
     highlights = []
-    word_tokens = _word_tokens(doc)
-    for token in get_words(doc, join_hyphens=True):
-        if is_passive(token, join_hyphens=True):
-            auxiliaries = [
-                child
-                for child in get_children(token, join_hyphens=True)
-                if child.dep_ == "aux:pass"
-            ]
-            start, end = tokens_span(word_tokens([token, *auxiliaries]))
-            note = "пассив без агенса" if is_agentless(token, join_hyphens=True) else "пассив"
+    for token in get_words(get_tree(doc).words):
+        if is_passive(token):
+            auxiliaries = [child for child in get_children(token) if child.deprel == "aux:pass"]
+            start, end = tokens_span([token, *auxiliaries])
+            note = "пассив без агенса" if is_agentless(token) else "пассив"
             highlights.append(Highlight(start, end, "passive", note))
     return highlights
 
 
-def find_participle_clauses(doc: Doc) -> list[Highlight]:
+def find_participle_clauses(doc: Document) -> list[Highlight]:
     """
     Поиск причастных оборотов
 
     Аргументы:
-        doc (Doc): Объект Doc с разбором зависимостей
+        doc (Document): Документ anySeg с разбором зависимостей
 
     Вывод:
         list[Highlight]: Фрагменты слоя participle_clauses
     """
     highlights = []
-    units = _units_by_word(doc)
-    for token in get_words(doc, join_hyphens=True):
-        if is_participle_clause(token):
-            start, end = _clause_span(token, units)
-            n_words = subtree_len(token, join_hyphens=True)
+    for token in get_words(get_tree(doc).words):
+        if _is_participle_clause(token):
+            start, end = tokens_span(get_subtree(token))
+            n_words = subtree_len(token)
             note = f"причастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "participle_clauses", note))
     return highlights
 
 
-def find_converb_clauses(doc: Doc) -> list[Highlight]:
+def find_converb_clauses(doc: Document) -> list[Highlight]:
     """
     Поиск деепричастных оборотов
 
     Аргументы:
-        doc (Doc): Объект Doc с разбором зависимостей
+        doc (Document): Документ anySeg с разбором зависимостей
 
     Вывод:
         list[Highlight]: Фрагменты слоя converb_clauses
     """
     highlights = []
-    units = _units_by_word(doc)
-    for token in get_words(doc, join_hyphens=True):
-        if is_converb_clause(token):
-            start, end = _clause_span(token, units)
-            n_words = subtree_len(token, join_hyphens=True)
+    for token in get_words(get_tree(doc).words):
+        if _is_converb_clause(token):
+            start, end = tokens_span(get_subtree(token))
+            n_words = subtree_len(token)
             note = f"деепричастный оборот, {plural(n_words, 'слово', 'слова', 'слов')}"
             highlights.append(Highlight(start, end, "converb_clauses", note))
     return highlights
 
 
-def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
+def find_split_predicate_highlights(doc: Document) -> list[Highlight]:
     """
     Поиск расщепленных сказуемых
 
@@ -764,29 +714,29 @@ def find_split_predicate_highlights(doc: Doc) -> list[Highlight]:
         от первого до последнего слова: осуществляет плановую проверку
 
     Аргументы:
-        doc (Doc): Объект Doc с разбором зависимостей
+        doc (Document): Документ anySeg с разбором зависимостей
 
     Вывод:
         list[Highlight]: Фрагменты слоя split_predicates
     """
     return anyts.visualizers.highlight.find_split_predicate_highlights(
-        find_split_predicates(doc),
-        lambda verb, noun: f"расщепленное сказуемое: {get_lemma(verb)} {get_lemma(noun)}",
+        _find_split_predicates(get_tree(doc).words),
+        lambda verb, noun: f"расщепленное сказуемое: {_get_lemma(verb)} {_get_lemma(noun)}",
     )
 
 
-def _genitive_chain(token: Token) -> tuple[list[Token], int]:
+def _genitive_chain(token: TreeWord) -> tuple[list[TreeWord], int]:
     tokens = [token]
     depth = 1
-    for child in get_children(token, join_hyphens=True):
-        if is_genitive_modifier(child):
+    for child in get_children(token):
+        if _is_genitive_modifier(child):
             child_tokens, child_depth = _genitive_chain(child)
             tokens += child_tokens
             depth = max(depth, child_depth + 1)
     return tokens, depth
 
 
-def find_genitive_chains(doc: Doc) -> list[Highlight]:
+def find_genitive_chains(doc: Document) -> list[Highlight]:
     """
     Поиск цепочек родительных падежей
 
@@ -796,26 +746,26 @@ def find_genitive_chains(doc: Doc) -> list[Highlight]:
         эффективности использования ресурсов)
 
     Аргументы:
-        doc (Doc): Объект Doc с разбором зависимостей
+        doc (Document): Документ anySeg с разбором зависимостей
 
     Вывод:
         list[Highlight]: Фрагменты слоя genitive_chains
     """
     highlights = []
-    word_tokens = _word_tokens(doc)
-    for token in get_words(doc, join_hyphens=True):
-        if not is_genitive_modifier(token) or is_genitive_modifier(token.head):
+    for token in get_words(get_tree(doc).words):
+        head = token.head or token
+        if not _is_genitive_modifier(token) or _is_genitive_modifier(head):
             continue
         chain, depth = _genitive_chain(token)
         if depth < 2:
             continue
-        start, end = tokens_span(word_tokens([token.head, *chain]))
+        start, end = tokens_span([head, *chain])
         note = f"цепочка из {plural(depth, 'родительного', 'родительных', 'родительных')}"
         highlights.append(Highlight(start, end, "genitive_chains", note))
     return highlights
 
 
-SYNTAX_FINDERS: dict[str, Callable[[Doc], list[Highlight]]] = {
+SYNTAX_FINDERS: dict[str, Callable[[Document], list[Highlight]]] = {
     "passive": find_passive,
     "participle_clauses": find_participle_clauses,
     "converb_clauses": find_converb_clauses,

@@ -38,8 +38,8 @@ class UnadaptedReadabilityStats(anyts.unadapted_readability_stats.UnadaptedReada
         (13.0, 65.67)
 
     Аргументы:
-        source (str|Doc|BasicStats): Источник данных - строка, объект Doc или готовый
-            объект BasicStats
+        source (str|Doc|Document|BasicStats): Источник данных - строка, объект Doc,
+            Document или готовый объект BasicStats
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений; не
             используется для готовых основных статистик
         words_extractor (WordsExtractor): Инструмент для извлечения слов; не используется
@@ -69,8 +69,8 @@ class UnadaptedReadabilityStats(anyts.unadapted_readability_stats.UnadaptedReada
         print_stats: Отображение вычисленных формул с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка, не объект Doc и не BasicStats
-            или экстрактор другого типа
+        SourceTypeError: Если источник данных не строка, не объект Doc, не Document
+            и не BasicStats или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
     """
 

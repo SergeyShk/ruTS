@@ -13,7 +13,7 @@ from anyts.readability_stats import (
     calc_rix as calc_rix,
     scale_level as scale_level,
 )
-from anyts.utils import is_doc, safe_divide
+from anyts.utils import is_doc, is_document, safe_divide
 
 from .basic_stats import BasicStats
 from .constants import (
@@ -38,6 +38,7 @@ from .diversity_stats import DiversityStats
 from .exceptions import ParameterError, UnknownStatError
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
@@ -82,8 +83,9 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         ('6-й класс', '6-й класс')
 
     Аргументы:
-        source (str|Doc|BasicStats): Источник данных - строка, объект Doc или готовый
-            объект BasicStats, чтобы не считать базовые статистики повторно
+        source (str|Doc|Document|BasicStats): Источник данных - строка, объект Doc,
+            Document или готовый объект BasicStats, чтобы не считать базовые статистики
+            повторно
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
         preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
@@ -123,8 +125,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         print_stats: Отображение вычисленных метрик удобочитаемости текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не строка, не объект Doc и не BasicStats ruTS
-            или экстрактор другого типа
+        SourceTypeError: Если источник данных не строка, не объект Doc, не Document
+            и не BasicStats ruTS или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
         ParameterError: Если пресет коэффициентов не строка или неизвестен
     """
@@ -714,23 +716,24 @@ def calc_reading_time(
     return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=messages)
 
 
-def level_features(source: str | Doc) -> dict[str, float]:
+def level_features(source: str | Doc | Document) -> dict[str, float]:
     """
     Признаки текста, для которых есть нормы ступеней обучения (LEVEL_NORMS)
 
     Описание:
         Слов в предложении, букв в слове (у слов, которые учитывают формулы класса),
         доля слов от пяти слогов (сложные слова SMOG) и лексическое разнообразие MTLD -
-        так же, как у норм (describe_level_norm). Признаки Doc считаются по его тексту
+        так же, как у норм (describe_level_norm). Признаки Doc и Document считаются
+        по их тексту
 
     Аргументы:
-        source (str|Doc): Источник данных - строка или объект Doc
+        source (str|Doc|Document): Источник данных - строка, объект Doc или Document
 
     Вывод:
         dict[str, float]: Признаки по ключам LEVEL_NORMS_DESC
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
         SourceError: Если в источнике данных отсутствуют слова или предложения
 
     Пример использования:
@@ -739,7 +742,7 @@ def level_features(source: str | Doc) -> dict[str, float]:
         >>> {stat: round(value, 2) for stat, value in features.items()}
         {'words_per_sent': 6.0, 'letters_per_word': 3.83, 'p_smog_complex_words': 0.0, 'mtld': 13.44}
     """
-    text = source.text if is_doc(source) else source
+    text = source.text if is_doc(source) or is_document(source) else source
     bs = BasicStats(text)
     n_words = bs.n_words
     return {

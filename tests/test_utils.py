@@ -5,17 +5,26 @@ import spacy
 
 import ruts.utils
 import ruts.verse_stats
-from ruts import CohesionStats, MorphStats, StyleStats, WordsExtractor
+from ruts import (
+    BasicStats,
+    CohesionStats,
+    DiversityStats,
+    MorphStats,
+    PhonStats,
+    StyleStats,
+    WordsExtractor,
+)
 from ruts.exceptions import SourceTypeError
 from ruts.morph_stats import word_to_ud
 from ruts.style_stats import is_water_word
 from ruts.utils import (
-    add_dash_rules,
     analyze_sentence,
     analyze_sents,
     analyze_text,
     analyze_words,
+    document_words,
     find_phrases,
+    get_document,
     is_verbal_noun,
     iter_text_sents,
     iter_text_words,
@@ -25,6 +34,7 @@ from ruts.utils import (
     parse_all,
     parse_word,
     strip_marks,
+    word_analysis,
     word_form,
 )
 
@@ -204,38 +214,6 @@ def test_iter_tokens(text, expected):
     assert all(strip_marks(text[start:stop]) == token for start, stop, token in tokens)
 
 
-def test_add_dash_rules():
-    import spacy
-
-    nlp = spacy.blank("ru")
-    add_dash_rules(nlp)
-    add_dash_rules(nlp)
-    for text in (
-        "-Нет -сказал он.",
-        "Нет- сказал",
-        "Нет,-сказал",
-        "сказал:—Нет",
-        "«-Нет»",
-        "да--сказал",
-        "Да\u0301- нет",
-        "Да\u0301,-нет",
-        "Он—«Нет»",
-        "он—(тихо)—сказал",
-    ):
-        tokens = [strip_marks(token.text) for token in nlp(text)]
-        assert tokens == [token for _, _, token in iter_tokens(text)]
-    assert [token.text for token in nlp("во-первых")] == ["во", "-", "первых"]
-
-
-def test_add_dash_rules_other_tokenizer():
-    import spacy
-
-    nlp = spacy.blank("ru")
-    tokenizer = nlp.tokenizer = lambda text: spacy.tokens.Doc(nlp.vocab, words=text.split())
-    add_dash_rules(nlp)
-    assert nlp.tokenizer is tokenizer
-
-
 def test_iter_text_words_dialogue():
     assert list(iter_text_words("он —сказал")) == [(0, 2, "он"), (4, 10, "сказал")]
 
@@ -251,6 +229,18 @@ def test_lone_surrogate():
     text = "Привет \ud83d мир. Ещё."
     assert [word for *_, word in iter_tokens(text)] == ["Привет", "\ud83d", "мир", ".", "Ещё", "."]
     assert list(iter_text_sents(text)) == [(0, 13, "Привет \ud83d мир."), (14, 18, "Ещё.")]
+
+
+def test_lone_surrogate_not_a_word(nlp):
+    """Одиночный суррогат - не слово статистик ни в строке, ни в Doc конвейера"""
+    text = "Привет \ud83d мир. Ещё."
+    words = ("Привет", "мир", "Ещё")
+    assert document_words(get_document(text)) == document_words(get_document(nlp(text))) == words
+    assert BasicStats(text).n_words == BasicStats(nlp(text)).n_words == 3
+    assert WordsExtractor().extract(text) == words
+    assert [word for *_, word in iter_text_words(text)] == list(words)
+    for cls in (DiversityStats, PhonStats, StyleStats):
+        assert len(cls(text).words) == len(cls(nlp(text)).words) == 3
 
 
 @pytest.mark.parametrize(
@@ -299,13 +289,42 @@ def test_text_must_be_a_string(func, value):
         func(value)
 
 
-def test_set_sent_starts_reexport():
-    """Предложения Doc по началам сегментатора - функция ядра из ruts.utils"""
-    import anyts.utils
+def test_get_document():
+    """Документ строки - anySeg, Doc и Document - со своими токенами и предложениями"""
+    document = get_document("Цена - 5 руб. Хватит?\n\nДа")
+    assert [token.text for token in document.tokens] == [
+        "Цена",
+        "-",
+        "5",
+        "руб",
+        ".",
+        "Хватит",
+        "?",
+        "Да",
+    ]
+    assert [sentence.text for sentence in document.sentences] == ["Цена - 5 руб.", "Хватит?", "Да"]
+    assert get_document(document) is document
+    doc = spacy.blank("ru")("Кот спит. Пёс ест")
+    assert [sentence.text for sentence in get_document(doc).sentences] == ["Кот спит.", "Пёс ест"]
+    with pytest.raises(SourceTypeError):
+        get_document(5)
 
-    from ruts.utils import set_sent_starts
 
-    assert set_sent_starts is anyts.utils.set_sent_starts
+def test_document_words():
+    """Слова документа - токены с буквой или цифрой без знаков ударения и точки сокращения"""
+    text = "Ма\u0301ма, 5 руб. в день! — Да; т.е. и\u0306од №\u00a01"
+    assert document_words(get_document(text)) == (
+        "Мама",
+        "5",
+        "руб",
+        "в",
+        "день",
+        "Да",
+        "т",
+        "е",
+        "йод",
+        "1",
+    )
 
 
 def test_abbreviation_dot():
@@ -340,3 +359,14 @@ def test_word_helpers_type_errors():
         with pytest.raises(SourceTypeError):
             func(value)
     assert analyze_sents(["Кот спит."]) == analyze_sents(("Кот спит.",))
+
+
+def test_word_analysis(nlp, model_nlp):
+    """Разбор ruMorph слова, размеченного компонентом rumorph; у слова модели spaCy - None,
+    если ее разметка не совпадает ни с одним разбором"""
+    from anyts.document import get_tree
+
+    words = get_tree(get_document(nlp("Нож из стали."))).words
+    analysis = word_analysis(words[2])
+    assert (analysis.lemma, analysis.pos) == ("сталь", "NOUN")
+    assert word_analysis(get_tree(get_document(spacy.blank("ru")("сталь"))).words[0]) is None

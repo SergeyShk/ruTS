@@ -8,11 +8,11 @@ DiversityStats(source, words_extractor=None, window_len=50, mtld_threshold=0.72,
 
 Raises:
 
-- `SourceTypeError` - a source that is neither a string nor a `Doc`, an extractor of another type;
+- `SourceTypeError` - a source that is neither a string, a `Doc` nor a `Document`, an extractor of another type;
 - `SourceError` - a source without words;
 - `ParameterError` - a parameter that `check_params` rejects.
 
-The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/) core: instead of a list of words it takes a text or a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library. The words of a text are extracted by the Russian [`WordsExtractor`](../extractors/words.md), the words of a `Doc` without an extractor are its tokens without stress marks, and a hyphenated word that spaCy splits stays one word (`во-первых`). The words are lower-cased. The `print_stats` table and the error messages are in Russian.
+The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/) core: instead of a list of words it takes a text, a `Doc` object of the [spaCy](https://github.com/explosion/spaCy) library or a `Document` of [anySeg](https://github.com/SergeyShk/anySeg). Without an extractor the words are those of the document of the source, as in the [basic statistics](basic_stats.md), and an extractor given, such as the Russian [`WordsExtractor`](../extractors/words.md), is used on the text. The words are lower-cased. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -69,8 +69,8 @@ The class extends the `DiversityStats` of the [anyTS](https://sergeyshk.github.i
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `str` / `Doc` | - | Data source |
-| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; for a `Doc` it is applied to its text |
+| `source` | `str` / `Doc` / `Document` | - | Data source |
+| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool, used on the text in place of the words of the document |
 | `window_len` | `int` | `50` | Window size for MATTR and segment size for MSTTR (`MATTR_WINDOW_LEN`) |
 | `mtld_threshold` | `float` | `0.72` | TTR threshold for MTLD, MA-MTLD and MTLD-W (`MTLD_TTR_THRESHOLD`) |
 | `mtld_min_len` | `int` | `10` | Minimum factor length for MTLD, MA-MTLD and MTLD-W (`MTLD_MIN_LEN`) |

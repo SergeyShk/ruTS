@@ -71,7 +71,7 @@ uv add ruts
 python -m spacy download ru_core_news_sm
 ```
 
-Для `Doc` рекомендуется [конвейер](https://sergeyshk.github.io/ruTS/components/#load_pipeline) `ruts.load_pipeline()`: токены и предложения в нём даёт сегментатор [anySeg](https://github.com/SergeyShk/anySeg), морфологию - анализатор [ruMorph](https://github.com/SergeyShk/ruMorph), а модель - разбор зависимостей, так что `Doc` размечается почти как строка. С обычным `spacy.load("ru_core_news_sm")` морфологию даёт модель.
+Для `Doc` рекомендуется [конвейер](https://sergeyshk.github.io/ruTS/components/#load_pipeline) `ruts.load_pipeline()`: токены и предложения в нём даёт сегментатор [anySeg](https://github.com/SergeyShk/anySeg), морфологию - анализатор [ruMorph](https://github.com/SergeyShk/ruMorph), а модель - разбор зависимостей, так что `Doc` размечается как строка. С обычным `spacy.load("ru_core_news_sm")` морфологию даёт модель.
 
 ## Быстрый старт
 
@@ -767,7 +767,7 @@ WindowStats(mean=0.9333333333333332, std=0.11547005383792512, lower=0.6464898180
 9
 ```
 
-Значения совпадают с примером для строки выше. Чтобы пустая строка завершала предложение `Doc` обычной модели, перед парсером ставится компонент `ruts_blank_lines`: `nlp.add_pipe("ruts_blank_lines", before="parser")`.
+Значения совпадают с примером для строки выше.
 
 Подробнее - в [документации](https://sergeyshk.github.io/ruTS/components/).
 

@@ -3,7 +3,7 @@ import sys
 
 import pytest
 import spacy
-from anyts.utils import is_punctuation, iter_doc_words
+from anyts.utils import is_punctuation
 from spacy.language import Language
 from spacy.tokens import Doc
 
@@ -34,7 +34,8 @@ from ruts.constants import (
 )
 from ruts.datasets import FreqDict, StressDict
 from ruts.datasets.stress_dict import FILENAME as STRESS_FILENAME
-from ruts.exceptions import ParameterError, SourceError, SourceTypeError
+from ruts.exceptions import ParameterError, SourceError
+from ruts.utils import document_words, get_document
 from tests.pipelines import load_model_nlp, load_nlp
 
 text = (
@@ -84,12 +85,19 @@ def test_components_names(spacy_nlp):
     assert spacy_nlp.has_pipe("cohesion") is True
 
 
-def test_components_add_dash_rules():
-    nlp = spacy.blank("ru")
-    nlp.add_pipe("sentencizer")
-    nlp.add_pipe("ruts_basic", name="basic")
+def test_components_keep_the_tokenizer(nlp):
+    """Компоненты не меняют токенизатор пайплайна; числа строки дает Doc конвейера anySeg"""
+    blank = spacy.blank("ru")
+    tokenizer = blank.tokenizer
+    blank.add_pipe("ruts_basic", name="basic")
+    assert blank.tokenizer is tokenizer
     dialogue = "-Нет -сказал он. -Да -сказал она. Нет- сказал он."
-    assert nlp(dialogue)._.basic.get_stats() == BasicStats(dialogue).get_stats()
+    assert [token.text for token in blank(dialogue)][:2] == ["-Нет", "-сказал"]
+    nlp.add_pipe("ruts_basic", name="basic_dialogue", last=True)
+    try:
+        assert nlp(dialogue)._.basic_dialogue.get_stats() == BasicStats(dialogue).get_stats()
+    finally:
+        nlp.remove_pipe("basic_dialogue")
 
 
 def test_component_basic(spacy_doc):
@@ -195,7 +203,7 @@ def test_component_style_cliches():
     stats = nlp("Мама мыла раму, в целях уборки")._.style_cliches
     assert stats.cliches_list == ("мама мыла",)
     assert stats.cliches == pytest.approx(100 / 6)
-    with pytest.raises(SourceTypeError):
+    with pytest.raises(ParameterError, match="cliches"):
         StyleStatsComponent(nlp, name="style_wrong_cliches", cliches=iter(["мама мыла"]))
 
 
@@ -221,15 +229,16 @@ def test_component_diversity_params(spacy_doc):
 
 def test_components_filter_punctuation(spacy_doc):
     n_tokens = sum(1 for token in spacy_doc if not token.is_punct and not token.is_space)
-    n_words = sum(1 for _ in iter_doc_words(spacy_doc, join_hyphens=True))
-    assert n_words < n_tokens < len(spacy_doc)
+    n_words = len(document_words(get_document(spacy_doc)))
+    assert n_words == n_tokens < len(spacy_doc)
     assert spacy_doc._.basic.n_words == n_words
     assert len(spacy_doc._.diversity.words) == n_words
     assert len(spacy_doc._.morph.words) == n_words
     assert len(spacy_doc._.style.words) == n_words
     assert len(spacy_doc._.phon.words) == n_words
     assert spacy_doc._.cohesion.n_words == n_words
-    assert "какого-либо" in spacy_doc._.diversity.words
+    # Токенизатор spaCy делит дефисное слово, и слова остаются раздельными
+    assert {"какого", "либо"} <= set(spacy_doc._.diversity.words)
     assert not any(map(is_punctuation, spacy_doc._.diversity.words))
 
 
@@ -252,23 +261,17 @@ def test_component_syntax(parsed_nlp):
 
 
 def test_component_blank_lines(parsed_nlp):
-    """Перед парсером модели ruts_blank_lines дает Doc те же предложения, что и строке;
-    в конвейере с anyseg_sentencizer они такие и без него"""
+    """Пустая строка завершает предложение и Doc обычной модели, и конвейера anySeg"""
     post = "Что нового\n\nБыстрый импорт. Меньше ошибок\n\nСписок изменений"
     assert BasicStats(parsed_nlp(post)).n_sents == BasicStats(post).n_sents == 4
     model_nlp = load_model_nlp()
-    model_nlp.add_pipe("ruts_syntax", name="syntax", last=True)
-    assert BasicStats(model_nlp(post)).n_sents == 2
-    model_nlp.add_pipe("ruts_blank_lines", before="parser")
-    doc = model_nlp(post)
-    assert [sent.text.strip() for sent in doc.sents] == [
-        "Что нового",
-        "Быстрый импорт.",
-        "Меньше ошибок",
-        "Список изменений",
-    ]
-    assert BasicStats(doc).n_sents == BasicStats(post).n_sents == 4
-    assert doc._.syntax.n_sents == 4
+    model_nlp.add_pipe("ruts_syntax", name="syntax_blank_lines", last=True)
+    try:
+        doc = model_nlp(post)
+        assert BasicStats(doc).n_sents == BasicStats(post).n_sents == 4
+        assert doc._.syntax_blank_lines.n_sents == 4
+    finally:
+        model_nlp.remove_pipe("syntax_blank_lines")
 
 
 def test_component_lexical(tmp_path):
@@ -411,9 +414,11 @@ def test_wrong_parameters_fail_at_add_pipe():
     nlp = spacy.blank("ru")
     with pytest.raises(ParameterError):
         nlp.add_pipe("ruts_readability", name="readability_wrong", config={"preset": "x"})
-    # config проверяет spaCy, прямой вызов класса - сам компонент
-    with pytest.raises(SourceTypeError):
+    with pytest.raises(ParameterError, match="stopwords"):
         StyleStatsComponent(nlp, name="style_wrong", stopwords=iter(["и"]))
+    for factory in ("ruts_lexical", "ruts_verse"):
+        with pytest.raises(ParameterError, match="data_dir должен быть строкой, а не int"):
+            nlp.add_pipe(factory, name=f"{factory}_wrong", config={"data_dir": 5})
 
 
 def test_extension_of_another_package():
@@ -438,19 +443,3 @@ def test_pipeline_is_loaded_without_importing_the_package(tmp_path):
         [sys.executable, "-c", code], capture_output=True, text=True, check=True
     )
     assert result.stdout.strip() == "4"
-
-
-def test_blank_lines_pipeline_is_loaded_without_importing_the_package(tmp_path):
-    nlp = spacy.blank("ru")
-    nlp.add_pipe("ruts_blank_lines")
-    nlp.add_pipe("sentencizer")
-    nlp.to_disk(tmp_path)
-    code = (
-        "import spacy;"
-        f"nlp = spacy.load({str(tmp_path)!r});"
-        "print(len(list(nlp('Итоги\\n\\nВсе на месте').sents)))"
-    )
-    result = subprocess.run(
-        [sys.executable, "-c", code], capture_output=True, text=True, check=True
-    )
-    assert result.stdout.strip() == "2"

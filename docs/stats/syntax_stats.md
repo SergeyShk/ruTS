@@ -4,17 +4,17 @@
 SyntaxStats(source)
 ```
 
-<!-- core: stats/syntax_stats.md:SyntaxStats 7110140 -->
-Синтаксические статистики текста по его дереву зависимостей ([Иванов, Солнышкина и Соловьёв 2018](https://dialogue-conf.org/media/4302/ivanovvv.pdf)): показатели дерева и синтаксических конструкций. Источник данных - объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) с разбором зависимостей и частями речи. Знаки препинания, символы и пробелы узлами дерева не являются, а длины считаются в позициях слов. Единицы L2SCA, предложные цепочки и схожесть предложений вычисляются при первом обращении, поэтому подкласс, в `stats_desc` которого их нет, не тратит на них время.
+<!-- core: stats/syntax_stats.md:SyntaxStats f4a6e5b -->
+Синтаксические статистики текста по его дереву зависимостей ([Иванов, Солнышкина и Соловьёв 2018](https://dialogue-conf.org/media/4302/ivanovvv.pdf)): показатели дерева и синтаксических конструкций. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg) с разбором зависимостей и частями речи; строку библиотека языка разбирает в своем `parse`. Дерево - дерево его [документа](https://sergeyshk.github.io/anyTS/document/#get_tree) (`get_tree`), а узлы дерева - слова Universal Dependencies документа с буквой или цифрой: знаки препинания и символы узлами не являются, а что считать словом, решают токены документа. Длины считаются в позициях слов. Единицы L2SCA, предложные цепочки и схожесть предложений вычисляются при первом обращении, поэтому подкласс, в `stats_desc` которого их нет, не тратит на них время.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не `Doc`;
-- `SourceError` - источник без разбора зависимостей (отношений и границ предложений), без частей речи, без лемм, если класс их требует, или без слов.
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, `parse`, который возвращает не `Document`, и `find_split_predicates`, который возвращает не пары объектов `TreeWord`;
+- `SourceError` - источник без разбора зависимостей, без частей речи, без лемм, если класс их требует, или без слов.
 
-Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем. Отношения [Universal Dependencies](https://universaldependencies.org/u/dep/) берутся из разбора зависимостей модели spaCy (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), части речи и признаки - из разметки пайплайна: в [рекомендуемом конвейере](../components.md#load_pipeline) - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица `print_stats` и сообщения об ошибках - по-русски (`SYNTAX_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `SyntaxStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/syntax_stats/) русским слоем. Отношения [Universal Dependencies](https://universaldependencies.org/u/dep/) берутся из разбора зависимостей модели spaCy (`ru_core_news_sm`, `ru_core_news_md`, `ru_core_news_lg`), части речи и признаки - из разметки пайплайна: в [рекомендуемом конвейере](../components.md#load_pipeline) - ruMorph, иначе - модели; качество статистик ограничено качеством разбора. Строка дает `SourceError`: ruTS не разбирает ее синтаксически. Клаузы, причастные обороты, отрицания и расщепленные сказуемые определяются по правилам русского языка из карточек метрик. Синтаксические маркеры канцелярита - пассив, причастные обороты, цепочки родительных падежей, расщепленные сказуемые и отношение существительных к глаголам. Таблица `print_stats` и сообщения об ошибках - по-русски (`SYNTAX_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
-Карточки метрик называют исходные признаки работы Иванова, Солнышкиной и Соловьёва и их корреляцию с классом школьного учебника.
+Карточки метрик называют исходные признаки работы Иванова, Солнышкиной и Соловьёва и их корреляцию с классом школьного учебника. Функции дерева и русских конструкций принимают слова дерева документа (`TreeWord`), например `get_tree(get_document(doc)).words`, где `get_tree` - из `anyts.document`, а `get_document` - из `ruts.utils`. Значение не `TreeWord`, например токен spaCy, дает `SourceTypeError`.
 
 === "Код"
 
@@ -83,14 +83,14 @@ SyntaxStats(source)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `Doc` | - | Источник данных - объект `Doc` с разбором зависимостей |
+| `source` | `Doc` / `Document` | - | Источник данных - объект `Doc` или `Document` с разбором зависимостей |
 
 ## Атрибуты
 
-<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 53be7dd -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-attributes 08df3d6 -->
 | Атрибут | Тип | Описание |
 | :------ | :-- | :------- |
-| `sents` | `tuple[tuple[Token]]` | Слова каждого предложения, в котором есть слова, на копии `Doc` без его тензора и пользовательских данных |
+| `sents` | `tuple[tuple[TreeWord]]` | Слова дерева каждого предложения, в котором есть слова |
 | `n_sents`, `n_words` | `int` | Количество предложений со словами и количество слов |
 | `n_leaves`, `n_subtrees` | `int` | Количество слов без зависимых слов и с ними |
 | `n_coordination_chains` | `int` | Количество сочинительных цепочек |
@@ -118,7 +118,7 @@ SyntaxStats(source)
     ss.n_clauses, ss.n_nouns, ss.n_verbs
     ss.c_children
     ss.c_deps
-    ss.sents[0]
+    [word.form for word in ss.sents[0]]
     ```
 
 === "Результат"
@@ -126,8 +126,7 @@ SyntaxStats(source)
     ```
     (4, 4, 6)
     {0: 9, 1: 2, 2: 5, 3: 1}
-    {'ROOT': 2,
-     'acl': 1,
+    {'acl': 1,
      'advcl': 1,
      'advmod': 1,
      'amod': 1,
@@ -141,8 +140,9 @@ SyntaxStats(source)
      'nsubj:pass': 1,
      'obj': 1,
      'obl': 1,
-     'obl:agent': 1}
-    (Дом, построенный, рабочими, в, прошлом, году, был, продан)
+     'obl:agent': 1,
+     'root': 2}
+    ['Дом', 'построенный', 'рабочими', 'в', 'прошлом', 'году', 'был', 'продан']
     ```
 
 ## Метрики
@@ -210,29 +210,31 @@ SyntaxStats(source)
 `mean_dependency_distance` · `std_dependency_distance` · `max_dependency_distance` · `p_adjacent_dependencies`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:calc_dependency_distances ccf4d91 -->
+<!-- core: stats/syntax_stats.md:calc_dependency_distances a92a9c3 -->
 ``` {.python .signature}
-calc_dependency_distances(tokens, join_hyphens=False)
+calc_dependency_distances(words)
 ```
 
-Длины зависимостей (Liu 2008): расстояние между словом и его вершиной в позициях слов без учета знаков препинания, в порядке слов. Вершина предложения и слово, вершина которого лежит вне последовательности, пропускаются.
+Длины зависимостей (Liu 2008): расстояние между словом и его вершиной в позициях слов (`get_words`) без учета знаков препинания, в порядке слов. Вершина предложения и слово, вершина которого лежит вне последовательности или является знаком препинания, пропускаются.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одной позицией |
+| `words` | `list[TreeWord]` | - | Слова дерева, например слова предложения |
 
 Средняя длина зависимости растет с длиной предложения, а наибольшая - лучший из древесных признаков на уровне отдельного предложения.
 
 === "Код"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_dependency_distances
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
-    calc_dependency_distances(doc)
+    calc_dependency_distances(get_tree(get_document(doc)).words)
     ```
 
 === "Результат"
@@ -250,17 +252,16 @@ calc_dependency_distances(tokens, join_hyphens=False)
 `tree_depth`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:calc_tree_depth 8fdd05e -->
+<!-- core: stats/syntax_stats.md:calc_tree_depth d6f1ca1 -->
 ``` {.python .signature}
-calc_tree_depth(tokens, join_hyphens=False)
+calc_tree_depth(words)
 ```
 
-Глубина дерева зависимостей: самый длинный путь от вершины предложения до листа в связях между словами; для нескольких предложений - максимум, для предложения из одного слова - 0. С `join_hyphens` дефисное слово - одно слово, а слова, которые висят на любой из его частей, - на уровень ниже него.
+Глубина дерева зависимостей: самый длинный путь от вершины предложения до листа в связях между словами, через знаки препинания; для нескольких предложений - максимум, для предложения из одного слова - 0.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `words` | `list[TreeWord]` | - | Слова дерева, например слова предложения |
 
 Глубина - признак `LONGEST_PATH` работы Иванова и др. (r = 0.84).
 
@@ -303,17 +304,16 @@ $$
 `verb_valency`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:calc_valency 4a77742 -->
+<!-- core: stats/syntax_stats.md:calc_valency ad471db -->
 ``` {.python .signature}
-calc_valency(token, join_hyphens=False)
+calc_valency(word)
 ```
 
-Валентность токена: число его зависимых слов без связей `cc`, `conj`, `parataxis` и `punct` (`anyts.constants.VALENCY_IGNORED_DEPS`); с `join_hyphens=True` дефисное зависимое считается один раз, поэтому у `пришел` в `Кто-то пришел` одно зависимое, а не два.
+Валентность слова: число его зависимых слов (`get_children`), кроме связей `cc`, `conj`, `parataxis` и `punct` и их подтипов (`parataxis:discourse`) из `anyts.constants.VALENCY_IGNORED_DEPS`.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `word` | `TreeWord` | - | Слово дерева |
 
 Финитный глагол - [`is_finite_verb`](#is_finite_verb); валентность - признак `VERBS_DEP` работы (r = 0.43).
 
@@ -326,17 +326,16 @@ calc_valency(token, join_hyphens=False)
 `coordination_chains_per_sent` · `mean_coordination_chain_len`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:calc_coordination_chains 1f94356 -->
+<!-- core: stats/syntax_stats.md:calc_coordination_chains 64d509d -->
 ``` {.python .signature}
-calc_coordination_chains(tokens, join_hyphens=False)
+calc_coordination_chains(words)
 ```
 
-Длины сочинительных цепочек в порядке их первых слов. Цепочка - группа слов, связанных `conj`, к какому бы слову ни присоединялся каждый однородный член: Universal Dependencies вешает каждый однородный член на первый (`груши → яблоки`, `сливы → яблоки`), ClearNLP - на предыдущий (`груши → яблоки`, `сливы → груши`); в обоих случаях `яблоки, груши и сливы` - одна цепочка из трех слов. Вложенное сочинение (`кошки и собаки, или птицы`) и перечисление, разбитое между несколькими вершинами, - тоже одна цепочка. Длина цепочки - число ее слов; однородный член, вершина которого лежит вне последовательности, с ней не связывается. С `join_hyphens` дефисное слово - один однородный член, связанный отношением `conj` любой своей части (`членом совета и вице-губернатором` - цепочка из двух слов).
+Длины сочинительных цепочек в порядке их первых слов. Цепочка - группа слов, связанных `conj` или его подтипом, к какому бы слову ни присоединялся каждый однородный член: Universal Dependencies вешает каждый однородный член на первый (`груши → яблоки`, `сливы → яблоки`), ClearNLP - на предыдущий (`груши → яблоки`, `сливы → груши`); в обоих случаях `яблоки, груши и сливы` - одна цепочка из трех слов. Вложенное сочинение (`кошки и собаки, или птицы`) и перечисление, разбитое между несколькими вершинами, - тоже одна цепочка. Длина цепочки - число ее слов; однородный член, вершина которого лежит вне последовательности, с ней не связывается.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `words` | `list[TreeWord]` | - | Слова дерева, например слова предложения |
 
 Признаки работы: `SOCHIN_NUMBER` (r = 0.93) - число цепочек на предложение, `AVERAGE_SOCHIN_LENGTH` (r = 0.87) - их средняя длина.
 
@@ -369,7 +368,7 @@ is_infinitive_periphrasis(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 </div>
 
@@ -388,7 +387,7 @@ is_subordinate_clause_head(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 ``` {.python .signature}
 is_subordinating_mark(token)
@@ -398,7 +397,7 @@ is_subordinating_mark(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 Признаки работы: `PODCHIN_RATE` (r = 0.64) - придаточные клаузы на предложение, `PODCHIN_NUMBER` (r = 0.62) - доля предложений хотя бы с одной придаточной.
 
@@ -419,19 +418,23 @@ is_infinitive_clause_head(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 === "Код"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import is_clause_head, is_infinitive_clause_head, is_subordinate_clause_head
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Он хочет уйти, но может остаться, если его попросят.")
-    [token.text for token in doc if is_clause_head(token)]
-    [token.text for token in doc if is_subordinate_clause_head(token)]
-    [token.text for token in doc if is_infinitive_clause_head(token)]
+    words = get_tree(get_document(doc)).words
+    [word.form for word in words if is_clause_head(word)]
+    [word.form for word in words if is_subordinate_clause_head(word)]
+    [word.form for word in words if is_infinitive_clause_head(word)]
     ```
 
 === "Результат"
@@ -451,14 +454,14 @@ is_infinitive_clause_head(token)
 `t_units_per_sent` · `mean_t_unit_len` · `clauses_per_t_unit` · `p_complex_t_units` · `verb_phrases_per_t_unit` · `coordinate_phrases_per_clause` · `complex_nominals_per_clause` · [Lu 2010](https://doi.org/10.1075/ijcl.15.4.02lu)
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:SyntaxStats-l2sca fc77bf3 -->
+<!-- core: stats/syntax_stats.md:SyntaxStats-l2sca 3f2fd4a -->
 Индексы L2 Syntactic Complexity Analyzer (L2SCA), которых нет среди других метрик, по разметке Universal Dependencies. MLC и C/S - это `mean_clause_len` и `clauses_per_sent`; MLS и DC/C получаются из счетчиков: `n_words / n_sents` и `n_subordinate_clauses / n_clauses`.
 
-- T-единица - главная клауза с зависящими от нее клаузами: вершина предложения и каждая вершина клаузы, присоединенная к ней через `conj` или `parataxis` (`anyts.constants.MAIN_CLAUSE_DEPS`), поэтому в *я пришел, а он ушел* их две; однородный член придаточной клаузы T-единицей не является. Однородный член без собственного подлежащего (*я пришел и ушел*) - сказуемое, которое делит T-единицу с клаузой, с которой оно сочинено, как в L2SCA, если только его лицо, число или род - его вспомогательного глагола или связки, а без них собственные - не отличаются от лица, числа или рода этой клаузы: в языке, опускающем подлежащее, окончание называет другое подлежащее (*llegamos al puerto y nos esperabas*). Экзистенциальное *there* (`expl` ClearNLP) - подлежащее. Однородный член или вставная конструкция с подчинительным союзом (`is_subordinating_mark`) возглавляет придаточную или инфинитивную клаузу, которая T-единицей не является, как и клауза под ней. Личный однородный член со своим подлежащим при инфинитивной клаузе - сказуемое, которое модель повесила на инфинитив, - присоединяется к клаузе первого слова над инфинитивами, которое само не инфинитив (*he came to help and she stayed*: две T-единицы). T-единица сложная, если в ней есть придаточная клауза (`is_subordinate_clause_head`), для которой она - ближайшая T-единица сверху.
+- T-единица - главная клауза с зависящими от нее клаузами: вершина предложения и каждая вершина клаузы, присоединенная к ней через `conj` или `parataxis` (`anyts.constants.MAIN_CLAUSE_DEPS`), поэтому в *я пришел, а он ушел* их две; однородный член придаточной клаузы T-единицей не является. Однородный член без собственного подлежащего (*я пришел и ушел*) - сказуемое, которое делит T-единицу с клаузой, с которой оно сочинено, как в L2SCA, если только его лицо, число или род - его вспомогательного глагола или связки, а без них собственные - не отличаются от лица, числа или рода этой клаузы: в языке, опускающем подлежащее, окончание называет другое подлежащее (*llegamos al puerto y nos esperabas*). Экзистенциальное *there* (`expl` ClearNLP) - подлежащее. Однородный член или вставная конструкция с подчинительным союзом (`is_subordinating_mark`) возглавляет придаточную или инфинитивную клаузу, которая T-единицей не является, как и клауза под ней. Личный однородный член со своим подлежащим при инфинитивной клаузе - сказуемое, которое модель повесила на инфинитив, - присоединяется к клаузе первого слова над инфинитивами, которое само не инфинитив (*he came to help and she stayed*: две T-единицы); такой член клаузы с подчинительным союзом без собственного сочинительного союза присоединяется к клаузе, на которой висит клауза с союзом (*he left, for he was tired, she slept*: две T-единицы), а член со своим подлежащим при инфинитиве сочетания одной предикации - к клаузе этого сочетания (*he must leave and she stayed*: две T-единицы). T-единица сложная, если в ней есть придаточная клауза (`is_subordinate_clause_head`), для которой она - ближайшая T-единица сверху.
 - Глагольная группа - сказуемое (`is_predicate`), которое не является вспомогательным глаголом или связкой: глагол, вспомогательный глагол в роли сказуемого (*there **is** trouble*), слово с подлежащим или со связкой; инфинитив, который образует одно сказуемое со своей вершиной (`is_infinitive_periphrasis`), и однородный ему инфинитив входят в глагольную группу вершины. Причастие или другая неличная форма со связью `amod` или `acl` либо однородная ей, без вспомогательного глагола, связки и собственного подлежащего, - определение своего существительного (*дом, построенный рабочими*), как в L2SCA, а не глагольная группа.
-- Сочиненная группа - сочинение с однородным членом, который не является вершиной клаузы (*мужчина и женщина*, *был большим и красивым*) или является сказуемым без собственного подлежащего (*пришел и ушел*); она считается один раз, по первому однородному члену, а сочинение клауз с собственными подлежащими считается клаузами.
-- Клаузы C/T, CP/C и CN/C - клаузы L2SCA (`n_l2sca_clauses`): клаузы `is_clause_head` без сказуемых с общим подлежащим (*пришел и ушел*) и без инфинитивных клауз, поскольку L2SCA считает финитные клаузы с подлежащим. Вершина предложения - вершина клаузы и T-единицы и без сказуемого (*Да.*, заголовок, имя говорящего), как фрагмент в L2SCA. C/S и MLC считаются по клаузам других метрик, поэтому C/S выше, а MLC ниже, чем в L2SCA.
-- Сложная именная группа - существительное с модификатором из `anyts.constants.COMPLEX_NOMINAL_DEPS` (прилагательным, дополнением, определительной придаточной клаузой или причастным оборотом, приложением, притяжательным словом) или именная клауза - вершина клаузы из `anyts.constants.NOMINAL_CLAUSE_DEPS` или однородный ей член.
+- Сочиненная группа - сочинение с однородным членом, который не является вершиной клаузы (*мужчина и женщина*, *был большим и красивым*) или является сказуемым без собственного подлежащего (*пришел и ушел*); она считается один раз, по первому однородному члену, а сочинение клауз с собственными подлежащими считается клаузами. Инфинитив, который образует одно сказуемое со своей вершиной (`is_infinitive_periphrasis`), однородным членом не является, когда модель вешает его через `conj` (*he must leave*).
+- Клаузы C/T, CP/C и CN/C - клаузы L2SCA (`n_l2sca_clauses`): клаузы `is_clause_head` без сказуемых с общим подлежащим (*пришел и ушел*) и без инфинитивных клауз, поскольку L2SCA считает финитные клаузы с подлежащим; однородный член или вставная конструкция с собственным подчинительным союзом - придаточная клауза и считается с подлежащим и без него. Вершина предложения - вершина клаузы и T-единицы при любом своем отношении и даже без сказуемого (*Да.*, заголовок, имя говорящего), как фрагмент в L2SCA. C/S и MLC считаются по клаузам других метрик, поэтому C/S выше, а MLC ниже, чем в L2SCA.
+- Сложная именная группа - существительное с модификатором из `anyts.constants.COMPLEX_NOMINAL_DEPS` (прилагательным, дополнением, определительной придаточной клаузой или причастным оборотом, приложением, притяжательным словом) или именная клауза - вершина клаузы из `anyts.constants.NOMINAL_CLAUSE_DEPS`, однородный ей член или однородный член, который к ней присоединяется, как у T-единиц.
 
 $$
 \textrm{MLT} = \frac{\textrm{Слова}}{\textrm{T-единицы}}, \quad
@@ -476,17 +479,16 @@ $$
 `modifiers_per_noun`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:count_noun_modifiers 6775fc1 -->
+<!-- core: stats/syntax_stats.md:count_noun_modifiers cf97360 -->
 ``` {.python .signature}
-count_noun_modifiers(token, join_hyphens=False)
+count_noun_modifiers(word)
 ```
 
-Считает модификаторы именной группы: зависимые со связями `amod`, `det`, `nmod`, `nummod`, `acl` и их подтипами (`anyts.constants.NOUN_MODIFIER_DEPS`); `conj` и `appos` модификаторами не являются.
+Считает модификаторы именной группы: зависимые слова (`get_children`) со связями `amod`, `det`, `nmod`, `nummod`, `acl` и их подтипами (`anyts.constants.NOUN_MODIFIER_DEPS`); `conj` и `appos` модификаторами не являются.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `word` | `TreeWord` | - | Слово дерева |
 
 Число модификаторов - признак `NOUNS_DEP` работы (r = 0.88).
 
@@ -527,19 +529,21 @@ is_genitive_modifier(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов (`calc_genitive_chains`) |
-| `token` | `Token` | - | Токен (`is_genitive_modifier`) |
+| `tokens` | `list[TreeWord]` | - | Слова дерева (`calc_genitive_chains`) |
+| `token` | `TreeWord` | - | Слово дерева (`is_genitive_modifier`) |
 
 === "Код"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_genitive_chains
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
-    calc_genitive_chains(
-        nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
-    )
+    doc = nlp("Повышение эффективности использования ресурсов предприятия обсуждалось на совещании.")
+    calc_genitive_chains(get_tree(get_document(doc)).words)
     ```
 
 === "Результат"
@@ -571,21 +575,23 @@ is_nominal_chain_link(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов (`calc_nominal_chains`) |
-| `token` | `Token` | - | Токен (`is_nominal_chain_link`) |
+| `tokens` | `list[TreeWord]` | - | Слова дерева (`calc_nominal_chains`) |
+| `token` | `TreeWord` | - | Слово дерева (`is_nominal_chain_link`) |
 
 === "Код"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import calc_nominal_chains
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
-    calc_nominal_chains(
-        nlp(
-            "Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."
-        )
+    doc = nlp(
+        "Рост цен на нефть замедлился, и о повышении эффективности работы отдела больше не говорили."
     )
+    calc_nominal_chains(get_tree(get_document(doc)).words)
     ```
 
 === "Результат"
@@ -614,7 +620,7 @@ is_participle_clause(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 </div>
 
@@ -633,7 +639,7 @@ is_converb_clause(token)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |
 
 </div>
 
@@ -644,33 +650,30 @@ is_converb_clause(token)
 `p_passive` · `p_agentless_passive`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:is_passive 86a66f2 -->
+<!-- core: stats/syntax_stats.md:is_passive 1692221 -->
 ``` {.python .signature}
-is_passive(token, join_hyphens=False)
+is_passive(word)
 ```
 
 Проверяет, является ли слово пассивной глагольной формой: глаголом с `Voice=Pass` или с зависимым `nsubj:pass`, `csubj:pass`, `aux:pass` либо `nsubjpass`, `csubjpass`, `auxpass` ClearNLP (`PASSIVE_DEPS`).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `word` | `TreeWord` | - | Слово дерева |
 
-Значение, которое не `Token`, дает `SourceTypeError`.
-
-<!-- core: stats/syntax_stats.md:has_agent 6cfa9da -->
+<!-- core: stats/syntax_stats.md:has_agent a130004 -->
 ``` {.python .signature}
-has_agent(token, join_hyphens=False)
+has_agent(word)
 ```
 
-Проверяет, есть ли у слова агенс: зависимое `obl:agent` или `agent` ClearNLP (`AGENT_DEPS`). Аргументы и ошибка - те же, что у `is_passive`.
+Проверяет, есть ли у слова агенс: зависимое `obl:agent` или `agent` ClearNLP (`AGENT_DEPS`). Аргумент и ошибка - те же, что у `is_passive`.
 
-<!-- core: stats/syntax_stats.md:is_agentless 2194d44 -->
+<!-- core: stats/syntax_stats.md:is_agentless 892f21e -->
 ``` {.python .signature}
-is_agentless(token, join_hyphens=False)
+is_agentless(word)
 ```
 
-Проверяет, является ли слово пассивной формой (`is_passive`) без агенса (`has_agent`), с теми же аргументами и ошибкой.
+Проверяет, является ли слово пассивной формой (`is_passive`) без агенса (`has_agent`), с тем же аргументом и ошибкой.
 
 В русском языке пассив - страдательные причастия и возвратный пассив («обсуждалось»), форма без агенса - «дом построен», но не «дом построен рабочими».
 
@@ -712,26 +715,30 @@ is_split_predicate_noun(token, verb=None)
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов (`find_split_predicates`) |
-| `verb` | `Token` | `None` | Легкий глагол (`is_split_predicate_noun`); без него оборот не проверяется |
+| `token` | `TreeWord` | - | Слово дерева |
+| `tokens` | `list[TreeWord]` | - | Слова дерева (`find_split_predicates`) |
+| `verb` | `TreeWord` | `None` | Легкий глагол (`is_split_predicate_noun`); без него оборот не проверяется |
 
 === "Код"
 
     ``` python
+    from anyts.document import get_tree
+
     from ruts import load_pipeline
     from ruts.syntax_stats import find_split_predicates, is_negation
+    from ruts.utils import get_document
 
     nlp = load_pipeline()
     doc = nlp("Проверка проводится ежегодно, но решение не принято.")
-    find_split_predicates(doc)
-    [token.text for token in doc if is_negation(token)]
+    words = get_tree(get_document(doc)).words
+    [(verb.form, noun.form) for verb, noun in find_split_predicates(words)]
+    [word.form for word in words if is_negation(word)]
     ```
 
 === "Результат"
 
     ```
-    [(проводится, Проверка), (принято, решение)]
+    [('проводится', 'Проверка'), ('принято', 'решение')]
     ['не']
     ```
 
@@ -847,106 +854,95 @@ $$
      'noun_verb_ratio': 0.6666666666666666}
     ```
 
-Слова последовательности токенов у функций ниже - токены [`is_word`](#helpers).
-
 ## Слова последовательности { #get_words }
 
-<!-- core: stats/syntax_stats.md:get_words fb9eece -->
+<!-- core: stats/syntax_stats.md:get_words bf0ccab -->
 ``` {.python .signature}
-get_words(tokens, join_hyphens=False)
+get_words(words)
 ```
 
-Слова последовательности токенов в их порядке; с `join_hyphens=True` слово, разрезанное токенизатором по дефисам, - одно слово, представленное частью, которая держит его связь, как у зависимых `get_children` (`губернатор` в `Он вице-губернатор`), или первой частью, если связь держит дефис.
+Слова последовательности слов дерева в их порядке: слова с буквой или цифрой, поэтому знаки препинания и символы пропускаются.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
-
-## Дефисные слова { #hyphenated-words }
-
-<!-- core: stats/syntax_stats.md:hyphenated_words 2598bfe -->
-Токенизатор может разрезать слово по дефисам (`во-первых` на `во`, `-`, `первых`), и тогда парсер вешает каждую часть на свою вершину. С `join_hyphens=True` функции дерева считают одним словом вместе с дефисами слово, части которого склеивает `anyts.utils.joins_previous`. У слова, которое держит вершину предложения, вершины нет; вершина другого слова - вершина его части, которая висит вне слова и ближе всех к корню (при равенстве - слова, а не дефиса). Зависимые слова - слова, чья часть, висящая вне слова, висит на одном из его токенов; каждое представлено этой частью (или своей первой частью, если наружу висит дефис). Поддерево слова - само слово и слова, которые висят на нем прямо или через знаки препинания. Так у каждого слова одна зависимость, и зависит оно от одного слова.
-
-`SyntaxStats` и функции русских конструкций всегда склеивают дефисные слова, а функции ядра с параметром `join_hyphens` дают значения `SyntaxStats` с `join_hyphens=True`.
+| `words` | `list[TreeWord]` | - | Слова дерева, например слова предложения |
 
 ## Вершина предложения { #is_root }
 
-<!-- core: stats/syntax_stats.md:is_root bffd90b -->
+<!-- core: stats/syntax_stats.md:is_root f100f85 -->
 ``` {.python .signature}
-is_root(token)
+is_root(word)
 ```
 
-Проверяет, является ли токен вершиной своего предложения: его вершина - он сам.
+Проверяет, является ли слово вершиной своего предложения: у него нет вершины.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `word` | `TreeWord` | - | Слово дерева |
 
 ## Базовое отношение { #base_dep }
 
-<!-- core: stats/syntax_stats.md:base_dep 66fdc26 -->
+<!-- core: stats/syntax_stats.md:base_dep bce7c64 -->
 ``` {.python .signature}
-base_dep(token)
+base_dep(word)
 ```
 
-Отношение токена без подтипа, который Universal Dependencies отделяет двоеточием: `nsubj:pass` дает `nsubj`, `expl:pass` - `expl`.
+Отношение слова без подтипа, который Universal Dependencies отделяет двоеточием: `nsubj:pass` дает `nsubj`, `expl:pass` - `expl`; слово без отношения дает пустую строку.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `word` | `TreeWord` | - | Слово дерева |
 
 ## Зависимые слова { #get_children }
 
-<!-- core: stats/syntax_stats.md:get_children 2fc8508 -->
+<!-- core: stats/syntax_stats.md:get_children fb62782 -->
 ``` {.python .signature}
-get_children(token, join_hyphens=False)
+get_children(word)
 ```
 
-Зависимые слова токена без знаков препинания и пробелов; с `join_hyphens=True` - зависимые всего дефисного слова, к которому относится токен.
+Зависимые слова у слова, кроме знаков препинания и символов.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `word` | `TreeWord` | - | Слово дерева |
 
-<!-- core: stats/syntax_stats.md:count_children 0178b39 -->
+<!-- core: stats/syntax_stats.md:count_children ec49132 -->
 ``` {.python .signature}
-count_children(token, join_hyphens=False)
+count_children(word)
 ```
 
-Количество зависимых слов токена; аргументы - те же, что у `get_children`.
+Количество зависимых слов у слова; аргумент - тот же, что у `get_children`.
 
-<!-- core: stats/syntax_stats.md:subtree_len bfb372e -->
+<!-- core: stats/syntax_stats.md:subtree_len b6a3e96 -->
 ``` {.python .signature}
-subtree_len(token, join_hyphens=False)
+subtree_len(word)
 ```
 
-Количество слов в поддереве токена: сам токен и все его прямые и косвенные зависимые; аргументы - те же, что у `get_children`.
+Количество слов в поддереве слова: само слово и все его прямые и косвенные зависимые без знаков препинания; аргумент - тот же, что у `get_children`.
 
 ## Формы глагола { #is_finite_verb }
 
-<!-- core: utils/spacy.md:is_finite_verb b2c6b58 -->
+<!-- core: utils/spacy.md:is_finite_verb d8742ce -->
 ``` {.python .signature}
-is_finite_verb(token)
+is_finite_verb(word)
 ```
 
-Проверяет, является ли токен финитным глаголом: часть речи `VERB` с `VerbForm=Fin`, поэтому финитный вспомогательный глагол (`AUX`) им не является.
+Проверяет, является ли слово дерева документа финитным глаголом: часть речи `VERB` с `VerbForm=Fin`, поэтому финитный вспомогательный глагол (`AUX`) им не является.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `word` | `TreeWord` | - | Слово дерева |
 
-<!-- core: utils/spacy.md:is_infinitive 6d44bde -->
+<!-- core: utils/spacy.md:is_infinitive ce1791d -->
 ``` {.python .signature}
-is_infinitive(token)
+is_infinitive(word)
 ```
 
-Проверяет, является ли токен инфинитивом: `VerbForm=Inf` при любой части речи.
+Проверяет, является ли слово дерева документа инфинитивом: `VerbForm=Inf` при любой части речи.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `word` | `TreeWord` | - | Слово дерева |
 
 ``` {.python .signature}
 is_participle(token)
@@ -956,72 +952,64 @@ is_participle(token)
 is_converb(token)
 ```
 
-`is_participle` проверяет, является ли токен полным причастием (`VerbForm=Part` без `Variant=Short` и `StyleVariant=Short`), `is_converb` - деепричастием (`VerbForm=Conv`); аргумент - тот же токен.
+`is_participle` проверяет, является ли слово дерева полным причастием (`VerbForm=Part` без `Variant=Short` и `StyleVariant=Short`), `is_converb` - деепричастием (`VerbForm=Conv`); аргумент - то же слово дерева.
 
 ## Сказуемое клаузы { #is_predicate }
 
-<!-- core: stats/syntax_stats.md:is_predicate b814232 -->
+<!-- core: stats/syntax_stats.md:is_predicate c753c13 -->
 ``` {.python .signature}
-is_predicate(token, join_hyphens=False)
+is_predicate(word)
 ```
 
 Проверяет, может ли слово быть сказуемым своей клаузы: глагол (`VERB`, `AUX`), слово с собственным подлежащим (`nsubj`, `csubj` и их подтипы, `anyts.constants.SUBJECT_DEPS`) или со связкой (`cop`), поэтому именное сказуемое в `он высок` и в языке, опускающем подлежащее, проходит, а вводное слово - нет.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
-
-Значение, которое не `Token`, дает `SourceTypeError`.
+| `word` | `TreeWord` | - | Слово дерева |
 
 ## Цепочки модификаторов { #calc_modifier_chains }
 
-<!-- core: stats/syntax_stats.md:calc_modifier_chains f16f96d -->
+<!-- core: stats/syntax_stats.md:calc_modifier_chains a9096ac -->
 ``` {.python .signature}
-calc_modifier_chains(tokens, is_modifier, join_hyphens=False)
+calc_modifier_chains(words, is_modifier)
 ```
 
-Длины цепочек вложенных модификаторов в порядке слов. Цепочка - два и более модификатора, каждый из которых висит на предыдущем, как дополнения в `повышение эффективности использования ресурсов` (длина 3); что считать модификатором (дополнение с предлогом, существительное в родительном падеже), решает проверка языка `is_modifier`. Цепочка начинается с модификатора, вершина которого модификатором не является, а ее длина - число модификаторов в самой длинной ветви. Связи - те же, что у `get_children`: знак препинания связью не является, а с `join_hyphens` дефисное слово - одно звено.
+Длины цепочек вложенных модификаторов в порядке слов. Цепочка - два и более модификатора, каждый из которых висит на предыдущем, как дополнения в `повышение эффективности использования ресурсов` (длина 3); что считать модификатором (дополнение с предлогом, существительное в родительном падеже), решает проверка языка `is_modifier`. Цепочка начинается с модификатора, вершина которого модификатором не является, а ее длина - число модификаторов в самой длинной ветви. Связи - те же, что у `get_children`: знак препинания связью не является.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `is_modifier` | `Callable[[Token], bool]` | - | Является ли слово модификатором цепочки |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `words` | `list[TreeWord]` | - | Слова дерева, например слова предложения |
+| `is_modifier` | `Callable[[TreeWord], bool]` | - | Является ли слово модификатором цепочки |
 
 Проверка, которую нельзя вызвать, дает `SourceTypeError`.
 
 ## Дополнения с предлогом { #is_prep_complement }
 
-<!-- core: stats/syntax_stats.md:is_prep_complement 6a6701b -->
+<!-- core: stats/syntax_stats.md:is_prep_complement dbd41f7 -->
 ``` {.python .signature}
-is_prep_complement(token, join_hyphens=False)
+is_prep_complement(word)
 ```
 
 Проверяет, является ли слово дополнением с предлогом: слово со связью `nmod` или `obl` либо их подтипом (`anyts.constants.PREP_COMPLEMENT_DEPS`) или сказуемое со связкой или собственным подлежащим вне определительной придаточной клаузы (`acl`), например именное сказуемое языка без связки в настоящем времени, у которого есть зависимое со связью `case` - предлог (`ADP`) или первое слово составного предлога (`fixed`: *в течение*). Существительное в падеже без предлога и притяжательный показатель дополнениями с предлогом не являются.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
-
-Значение, которое не `Token`, дает `SourceTypeError`.
+| `word` | `TreeWord` | - | Слово дерева |
 
 ## Тройки зависимостей { #dependency_triples }
 
-<!-- core: stats/syntax_stats.md:dependency_triples 8643971 -->
+<!-- core: stats/syntax_stats.md:dependency_triples 2cc48fb -->
 ``` {.python .signature}
-dependency_triples(tokens, join_hyphens=False)
+dependency_triples(words)
 ```
 
 Тройки зависимостей слов предложения (`get_words`) в их порядке: часть речи вершины слова - ближайшего слова над ним через знаки препинания, - его отношение без подтипа (`base_dep`) и его собственная часть речи, например `("NOUN", "amod", "ADJ")` для *красный дом*. Вершина предложения и слово, над которым нет слова, дают пустую вершину и отношение `root`, какой бы ни была их метка.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `tokens` | `Doc` / `Span` / `list[Token]` | - | Последовательность токенов |
-| `join_hyphens` | `bool` | `False` | Считать дефисное слово одним словом |
+| `words` | `list[TreeWord]` | - | Слова дерева предложения |
 
-Токены, которые не `Doc`, не `Span` и не список объектов `Token`, дают `SourceTypeError`.
+Слова, которые не список объектов `TreeWord`, дают `SourceTypeError`.
 
 ## Редакционное расстояние и схожесть мультимножеств { #calc_edit_distance }
 
@@ -1053,27 +1041,16 @@ calc_multiset_similarity(sents)
 
 ## Вспомогательные функции { #helpers }
 
-<!-- core: utils/spacy.md:is_word 70a9990 -->
+<!-- core: utils/spacy.md:has_feature 962a76b -->
 ``` {.python .signature}
-is_word(token)
+has_feature(word, field, value)
 ```
 
-Проверяет, является ли токен словом: не пробелом и не токеном `is_punctuation`, поэтому символы вроде `%`, `€`, `+` и невидимые знаки тоже не слова. Такие токены - слова `iter_doc_tokens` и узлы дерева зависимостей синтаксических статистик.
+Проверяет, есть ли у слова дерева документа морфологический признак с заданным значением: `has_feature(word, "VerbForm", "Fin")`; признак с несколькими значениями (`PronType=Int,Rel`) несет каждое из них.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
-
-<!-- core: utils/spacy.md:has_feature df7b055 -->
-``` {.python .signature}
-has_feature(token, field, value)
-```
-
-Проверяет, есть ли у токена морфологический признак с заданным значением: `has_feature(token, "VerbForm", "Fin")`.
-
-| Параметр | Тип | По умолчанию | Описание |
-| :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `word` | `TreeWord` | - | Слово дерева |
 | `field` | `str` | - | Название признака |
 | `value` | `str` | - | Значение признака |
 
@@ -1081,8 +1058,8 @@ has_feature(token, field, value)
 get_lemma(token)
 ```
 
-Лемма токена в нижнем регистре по разбору ruMorph с частью речи токена, а не `token.lemma_`.
+Лемма слова дерева в нижнем регистре по разбору ruMorph с частью речи слова, а не лемма разметки (`lemma`).
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `token` | `Token` | - | Токен |
+| `token` | `TreeWord` | - | Слово дерева |

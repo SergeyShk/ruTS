@@ -5,13 +5,14 @@ from collections import Counter
 from collections.abc import Mapping, Sequence
 from functools import cached_property, lru_cache
 from math import nan
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, cast
 
 import anyts
 import anyts.morph_stats
 import rumorph
+from anyts.document import get_tree
 from anyts.morph_stats import MorphWord as MorphWord
-from anyts.utils import has_pos, is_doc, iter_doc_units, safe_divide, source_type_error
+from anyts.utils import has_words, is_doc, is_document, safe_divide, source_type_error, unchecked
 
 from .constants import (
     ANSWER_PARTICLE_NEXT,
@@ -27,19 +28,23 @@ from .constants import (
 from .exceptions import SourceTypeError
 from .utils import (
     BYTE_ORDER_MARK,
+    _takes_word,
+    _word_analysis,
     _word_cache,
     analyze_text,
     analyze_words,
+    get_document,
     lemmatize,
     parse_all,
     parse_word,
     strip_marks,
-    token_analysis,
     word_form,
 )
 
 if TYPE_CHECKING:
-    from spacy.tokens import Doc, Token
+    from anyseg import Document
+    from anyts.document import TreeWord
+    from spacy.tokens import Doc
 
 # «нет» вне дефисных слов (нет-нет, нет‑с) с дефисами, которые склеивает токенизатор
 ANSWER_NET = re.compile(r"(?<!\w)(?<!\w[-‐‑‒])нет(?![\w\-‐‑‒])", re.IGNORECASE)
@@ -61,10 +66,11 @@ class MorphStats(anyts.morph_stats.MorphStats):
     Описание:
         Расширяет MorphStats ядра anyTS русским разбором слов и маркерами форм глагола.
         Часть речи и признаки - в терминах Universal Dependencies (NOUN, VERB; Nom, Gen):
-        для Doc с разметкой частей речи - из token.pos_ и token.morph, для строки -
-        из разбора ruMorph в контексте предложения (стали - глагол или существительное),
-        для Doc без разметки - так же, если слова предложения те же, что у строки;
-        иначе и с заданным экстрактором слов - из первого разбора ruMorph
+        для Doc и Document с разметкой частей речи - из части речи и признаков слова,
+        для строки - из разбора ruMorph в контексте предложения (стали - глагол или
+        существительное), для Doc и Document без разметки - так же в предложениях
+        с теми же словами, что у строки; иначе и с заданным экстрактором слов - из первого
+        разбора ruMorph
         Переходность и совместность - признаки OpenCorpora, которых в русском UD нет:
         они берутся из помет ruMorph для глаголов и в tags записываются как Subcat
         и Clusivity
@@ -98,9 +104,9 @@ class MorphStats(anyts.morph_stats.MorphStats):
         'Aspect=Perf|Clusivity=Ex|Mood=Imp|Number=Plur|Person=2|Subcat=Intr|VerbForm=Fin|Voice=Mid'
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         words_extractor (WordsExtractor): Инструмент для извлечения слов;
-            если задан, применяется и к тексту Doc
+            если задан, применяется и к тексту Doc и Document
 
     Атрибуты:
         words (tuple[str]): Кортеж извлеченных слов
@@ -135,7 +141,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
         print_markers: Отображение долей грамматических форм глагола с описанием на экран
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
         SourceError: Если в источнике данных отсутствуют слова
     """
 
@@ -155,63 +161,67 @@ class MorphStats(anyts.morph_stats.MorphStats):
     style_variant: tuple[str | None, ...]
     transitivity: tuple[str | None, ...]
 
-    def __init__(self, source: str | Doc, words_extractor: anyts.WordsExtractor | None = None):
+    def __init__(
+        self, source: str | Doc | Document, words_extractor: anyts.WordsExtractor | None = None
+    ):
         if words_extractor is not None and not isinstance(words_extractor, anyts.WordsExtractor):
             raise SourceTypeError(self.messages["words_extractor_type"])
         self._words_extractor = words_extractor
         super().__init__(source)
 
-    def analyze(self, source: str | Doc) -> list[MorphWord]:
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
+
+    def analyze(self, source: str | Doc | Document) -> list[MorphWord]:
         """
         Слова источника с частью речи и признаками UD
 
         Описание:
-            Источники разбираются, как в описании класса; дефисные слова Doc
-            склеиваются в одно слово
+            Источники разбираются, как в описании класса; слова Doc и Document -
+            слова их дерева с буквой или цифрой
 
         Аргументы:
-            source (str|Doc): Источник данных
+            source (str|Doc|Document): Источник данных
 
         Вывод:
             list[MorphWord]: Слова с частью речи и признаками
 
         Исключения:
-            SourceTypeError: Если источник данных не строка и не объект Doc
+            SourceTypeError: Если источник данных не строка, не объект Doc и не Document
         """
         features: list[dict[str, str | None]]
         # Леммы выбранных разборов (в контексте), None - лемма по слову в lemmas
         chosen: list[str | None]
         extractor = self._words_extractor
-        if is_doc(source) and extractor is not None:
-            source = source.text
-        if is_doc(source):
-            units = list(iter_doc_units(source, join_hyphens=True))
+        parsed = is_doc(source) or is_document(source)
+        if parsed and extractor is not None:
+            source = cast("Doc | Document", source).text
+            parsed = False
+        if parsed:
+            document = self._document(source)
+            tree_words = [word for word in get_tree(document).words if has_words(word.form)]
             # Разбор - по токену с точкой сокращения, слово - без нее, как у строки
-            forms = [
-                strip_marks("".join(token.text for token in unit)).lstrip(BYTE_ORDER_MARK)
-                for unit in units
-            ]
+            forms = [strip_marks(word.form).lstrip(BYTE_ORDER_MARK) for word in tree_words]
             words: Sequence[str] = [word_form(form) for form in forms]
-            if has_pos(source):
-                # Токены одной словоформы с одной разметкой получают один словарь, как в _word_to_ud
-                known: dict[tuple[int, str, str, int], dict[str, str | None]] = {}
+            if any(word.upos for word in tree_words):
+                # Слова одной словоформы с одной разметкой получают один словарь, как в _word_to_ud
+                known: dict[tuple[str | None, str, str, str | None], dict[str, str | None]] = {}
                 features = []
                 chosen = []
-                for unit, form in zip(units, forms, strict=True):
-                    analysis = token_analysis(unit[0]) if len(unit) == 1 else None
+                for word in tree_words:
+                    analysis = _word_analysis(word)
                     chosen.append(analysis.lemma if analysis is not None else None)
-                    if len(unit) > 1:
-                        features.append(_word_to_ud(form))
-                        continue
-                    token = unit[0]
-                    key = (token.pos, str(token.morph), token.text, token.lemma)
+                    key = (word.upos, _feats_text(word), word.form, word.lemma)
                     if (cached := known.get(key)) is None:
-                        cached = known[key] = token_to_ud(token)
+                        cached = known[key] = _token_to_ud(word)
                     features.append(cached)
             else:
-                positions = [(unit[0].idx, word) for unit, word in zip(units, words, strict=True)]
-                in_context = analyze_words(positions, source.text)
-                features = _words_to_ud(forms, source.text, in_context)
+                positions = [
+                    (word.start, form) for word, form in zip(tree_words, words, strict=True)
+                ]
+                in_context = analyze_words(positions, document.text)
+                features = _words_to_ud(forms, document.text, in_context)
                 chosen = [None if analysis is None else analysis.lemma for analysis in in_context]
         elif isinstance(source, str):
             if extractor is None:
@@ -487,25 +497,26 @@ def parse_verb(word: str, lemma: str = "", feats: str = "") -> rumorph.Analysis 
     )
 
 
-def token_to_ud(token: Token) -> dict[str, str | None]:
+@_takes_word
+def token_to_ud(token: TreeWord) -> dict[str, str | None]:
     """
-    Получение признаков Universal Dependencies токена spaCy
+    Получение признаков Universal Dependencies слова дерева документа
 
     Описание:
-        Часть речи и признаки - из token.pos_ и token.morph (признак из нескольких
-        значений - через запятую, как в разметке); лицо First, Second, Third моделей
+        Часть речи и признаки - из разметки слова (признак из нескольких значений -
+        через запятую, как в разметке); лицо First, Second, Third моделей
         ru_core_news - 1, 2, 3; краткая форма - StyleVariant моделей ru_core_news
         или Variant=Short разметки русского UD. Переходность и совместность глаголов
-        (VERB, AUX) - из помет разбора parse_verb с леммой и признаками токена
+        (VERB, AUX) - из помет разбора parse_verb с леммой и признаками слова
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         dict[str, str|None]: Признаки по ключам MORPHOLOGY_STATS_DESC
     """
-    features: dict[str, str | None] = {"pos": token.pos_ or None}
-    morph = token.morph.to_dict()
+    features: dict[str, str | None] = {"pos": token.upos or None}
+    morph = token.feats
     for stat, feature in MORPHOLOGY_FEATURES.items():
         value = morph.get(feature)
         features[stat] = value or None
@@ -517,8 +528,16 @@ def token_to_ud(token: Token) -> dict[str, str | None]:
         f"{name}={UD_PERSONS.get(value, value) if name == 'Person' else value}"
         for name, value in morph.items()
     )
-    verb = parse_verb(token.text, token.lemma_, feats) if token.pos_ in VERBAL_POS else None
+    verb = parse_verb(token.form, token.lemma or "", feats) if token.upos in VERBAL_POS else None
     labels = verb.labels if verb else frozenset()
     for stat, values in LABEL_FEATURES.items():
         features[stat] = next((value for label, value in values.items() if label in labels), None)
     return features
+
+
+_token_to_ud = unchecked(token_to_ud)
+
+
+def _feats_text(word: TreeWord) -> str:
+    """Признаки UD слова строкой, как в CoNLL-U"""
+    return "|".join(f"{name}={value}" for name, value in word.feats.items())

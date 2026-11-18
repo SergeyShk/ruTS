@@ -10,9 +10,8 @@ from itertools import pairwise
 from math import nan
 from typing import TYPE_CHECKING
 
-from anyts.extractors import BLANK_LINE
 from anyts.stats import Stats
-from anyts.utils import is_doc, safe_divide, source_type_error
+from anyts.utils import BLANK_LINE, is_doc, is_document, safe_divide, source_type_error
 
 from .constants import (
     CORE_MESSAGES,
@@ -39,6 +38,7 @@ from .syllables import (
 from .utils import MARKED, _check_text, take_marks
 
 if TYPE_CHECKING:
+    from anyseg import Document
     from spacy.tokens import Doc
 
 ACUTE = "\u0301"
@@ -152,7 +152,7 @@ class VerseStats(Stats):
         И лу́чше вы́думать не мо́г.
 
     Аргументы:
-        source (str|Doc): Источник данных (строка или объект Doc)
+        source (str|Doc|Document): Источник данных (строка, объект Doc или Document)
         stress_dict (StressDict): Словарь ударений; если не задан, используется StressDict()
 
     Атрибуты:
@@ -186,7 +186,7 @@ class VerseStats(Stats):
         accentuate: Получение текста с расставленными ударениями
 
     Исключения:
-        SourceTypeError: Если передаваемое значение не является строкой или объектом Doc
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
             или словарь ударений не StressDict
         SourceError: Если в источнике данных отсутствуют слова
         DatasetNotFoundError: Если словарь ударений не загружен
@@ -196,8 +196,8 @@ class VerseStats(Stats):
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
 
-    def __init__(self, source: str | Doc, stress_dict: StressDict | None = None):
-        if is_doc(source):
+    def __init__(self, source: str | Doc | Document, stress_dict: StressDict | None = None):
+        if is_doc(source) or is_document(source):
             text = source.text
         elif isinstance(source, str):
             text = source

@@ -25,7 +25,7 @@ from ruts import (
 from ruts.basic_stats import punctuation_profile
 from ruts.corpus import collocations, dispersion, keyness, kwic
 from ruts.datasets import FreqDict
-from ruts.utils import iter_text_sents, strip_doc_marks, strip_marks
+from ruts.utils import get_document, iter_text_sents, strip_document_marks, strip_marks
 from ruts.visualizers import dispersion_plot, wordtree
 from tests.datasets.test_freq2011 import write_dict
 
@@ -193,7 +193,7 @@ def test_kwic_case_sensitive():
         assert len(kwic(source, "мороз", ignore_case=False)) == 1
 
 
-def test_strip_doc_marks():
+def test_strip_document_marks():
     nlp = spacy.blank("ru")
     doc = Doc(
         nlp.vocab,
@@ -201,21 +201,22 @@ def test_strip_doc_marks():
         spaces=[True, True, True, False, True, False, False],
         sent_starts=[True, False, False, False, False, True, False],
     )
-    clean = strip_doc_marks(doc)
-    assert [token.text for token in clean] == ["Мороз", "и", "солнце", ".", "День", "."]
-    assert clean.text == "Мороз и солнце. День."
-    assert [sent.text for sent in clean.sents] == ["Мороз и солнце.", "День."]
-    plain = nlp("Мороз и солнце")
-    assert strip_doc_marks(plain) is plain
-    leading = Doc(nlp.vocab, words=["\u00ad", "Мороз"], spaces=[True, False])
-    assert strip_doc_marks(leading).text == "Мороз"
+    clean = strip_document_marks(get_document(doc))
+    assert [token.text for token in clean.tokens] == ["Мороз", "и", "солнце", ".", "День", "."]
+    assert clean.text == "Мороз  и солнце. День."
+    assert [sentence.text for sentence in clean.sentences] == ["Мороз  и солнце.", "День."]
+    plain = get_document("Мороз и солнце")
+    assert strip_document_marks(plain) is plain
+    leading = strip_document_marks(get_document("\u00adМороз"))
+    assert [token.text for token in leading.tokens] == ["Мороз"]
+    # Токен из одного знака ударения пропускается, слово вокруг него склеивается по тексту
+    marked = Doc(nlp.vocab, words=["Ма", "\u0301", "ма", "."], spaces=[False] * 4)
+    clean = strip_document_marks(get_document(marked))
+    assert clean.text == "Мама."
+    assert [token.text for token in clean.tokens] == ["Ма", "ма", "."]
 
 
-def test_strip_doc_marks_partial_sents():
-    """Частичные границы (ruts_blank_lines без парсера) не становятся полными: абзац - не предложение"""
-    nlp = spacy.blank("ru")
-    nlp.add_pipe("ruts_blank_lines")
+def test_doc_with_marks_counts_as_string(nlp):
+    """Doc конвейера со знаками ударения считается, как строка: знаки не символы и не буквы"""
     text = "Кот спит. Пёс лежит.\n\nМы ушли. Они при\u0301шли."
-    doc = nlp(text)
-    assert not strip_doc_marks(doc).has_annotation("SENT_START")
-    assert BasicStats(doc).n_sents == BasicStats(text).n_sents == 4
+    assert BasicStats(nlp(text)).get_stats() == BasicStats(text).get_stats()

@@ -6,9 +6,9 @@ MorphStats(source, words_extractor=None)
 
 --8<-- "stats/morph_stats.md:MorphStats"
 
-In ruTS the data source is a text or a `Doc` with or without part-of-speech annotation. A source that is neither a string nor a `Doc` and an extractor of another type raise `SourceTypeError`, and only a source without words raises `SourceError`.
+In ruTS a `Doc` and a `Document` need no part-of-speech annotation, so only a source without words raises `SourceError`; an extractor of another type raises `SourceTypeError` too.
 
-The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) core with the Russian analysis of the words and the [markers of the verb forms](#markers). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor; the words of a `Doc` without an extractor are its tokens with the parts of a hyphenated word joined: муж-то, скажи-ка are one word in a `Doc` and two in a string. The `print_stats` and `print_markers` tables and the error messages are in Russian (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
+The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/morph_stats/) core with the Russian analysis of the words and the [markers of the verb forms](#markers). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md) or by a given extractor. The `print_stats` and `print_markers` tables and the error messages are in Russian (`MORPHOLOGY_STATS_DESC`, `MORPHOLOGY_MARKERS_DESC` and `CORE_MESSAGES` of `ruts.constants`).
 
 === "Code"
 
@@ -46,8 +46,8 @@ The class extends the `MorphStats` of the [anyTS](https://sergeyshk.github.io/an
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `source` | `str` / `Doc` | - | Data source |
-| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; used for a `Doc` too, on its text |
+| `source` | `str` / `Doc` / `Document` | - | Data source |
+| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool; used for a `Doc` and a `Document` too, on their text |
 
 ## Attributes
 
@@ -57,7 +57,7 @@ ruTS also has the attribute `lemmas` (`tuple[str]`) - the lemmas of the words by
 
 ## Statistics
 
-The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` with part-of-speech annotation the values are taken from `token.pos_` and `token.morph`, for a string from the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a `Doc` without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.
+The statistics are the part of speech `pos` and the features of the table below (`MORPHOLOGY_FEATURES` of `ruts.constants`). For a `Doc` and a `Document` with part-of-speech annotation the values are taken from the part of speech and the features of the word, for a string from the analysis of the [ruMorph](https://github.com/SergeyShk/ruMorph) morphological analyzer in the context of the sentence (UD parts of speech and features by the conventions of the SynTagRus corpus), for a `Doc` and a `Document` without annotation the same in the sentences whose words are those of the string. The other words, as with a words extractor given, get the first analysis without their neighbours.
 
 | Statistic | Feature | Values |
 | :-------- | :------ | :----- |

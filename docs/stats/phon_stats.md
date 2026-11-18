@@ -4,16 +4,16 @@
 PhonStats(source, words_extractor=None, window_len=3)
 ```
 
-<!-- core: stats/phon_stats.md:PhonStats 408ded2 -->
-Фоностатистики текста: его звуки по классам, их кластеры, последовательности и повторы, его слоги. Звук - по умолчанию буква слова, а если библиотека дает транскрипцию, звук транскрипции. Источник данных - текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy); слова берутся в нижнем регистре, а явно переданный экстрактор применяется к тексту `Doc`.
+<!-- core: stats/phon_stats.md:PhonStats 1a12443 -->
+Фоностатистики текста: его звуки по классам, их кластеры, последовательности и повторы, его слоги. Звук - по умолчанию буква слова, а если библиотека дает транскрипцию, звук транскрипции. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg); слова - слова его [документа](https://sergeyshk.github.io/anyTS/document/) в нижнем регистре (`doc_words`) или слова явно переданного экстрактора, который применяется к тексту.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа;
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, `parse`, который возвращает не `Document`, `doc_words`, `syllabify` или `transcribe`, которые возвращают не строки, экстрактор другого типа;
 - `SourceError` - источник без слов;
 - `ParameterError` - окно, которое не целое число не меньше 2.
 
-Класс расширяет `PhonStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения, а слоги - по правилу восходящей звучности функции [`syllabify`](../syllables.md#syllabify). Из слов текста и `Doc` убираются знаки ударения, а части дефисного слова, разрезанного spaCy, склеиваются (`во-первых` - одно слово). Таблица `print_stats` и сообщения об ошибках - по-русски (`PHON_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
+Класс расширяет `PhonStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/phon_stats/) крючками русского языка: звуки - буквы слова по классам из таблицы ниже, без учета оглушения, редукции и ударения, а слоги - по правилу восходящей звучности функции [`syllabify`](../syllables.md#syllabify). Из слов документа убираются знаки ударения (`ruts.utils.document_words`). Таблица `print_stats` и сообщения об ошибках - по-русски (`PHON_STATS_DESC` и `CORE_MESSAGES` из `ruts.constants`).
 
 | Класс | Буквы | Константа |
 | :---- | :---- | :-------- |
@@ -55,11 +55,11 @@ PhonStats(source, words_extractor=None, window_len=3)
 
 ## Параметры
 
-<!-- core: stats/phon_stats.md:PhonStats-parameters b90ae7b -->
+<!-- core: stats/phon_stats.md:PhonStats-parameters e3fdd09 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` | - | Источник данных |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; применяется и к `Doc`, к его тексту |
+| `source` | `str` / `Doc` / `Document` | - | Источник данных |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, применяется к тексту вместо слов документа |
 | `window_len` | `int` | `3` | Окно в словах для аллитерации и ассонанса (`PHON_WINDOW_LEN`) |
 
 ``` {.python .signature}

@@ -6,7 +6,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats"
 
-The class extends the `UnadaptedReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) core with the [basic statistics](basic_stats.md) of ruTS, which count the syllables and the letters of Russian words and take the Russian [`SentsExtractor`](../extractors/sentences.md) and [`WordsExtractor`](../extractors/words.md) by default. The `print_stats` table and the error messages are in Russian.
+The class extends the `UnadaptedReadabilityStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/unadapted_readability_stats/) core with the [basic statistics](basic_stats.md) of ruTS, which count the syllables and the letters of Russian words. The `print_stats` table and the error messages are in Russian.
 
 The formulas give no grade of the Russian school (on the first-grade texts of the [`TextsByGrade`](../datasets/textsbygrade.md) dataset the median FORCAST is 14.9, the Powers-Sumner-Kearl grade 8.1 and the Wiener Sachtextformel 1 9.2) and do not enter the [consensus grade](readability_stats.md#consensus_grade). The formulas with coefficients for Russian are in [`ReadabilityStats`](readability_stats.md).
 

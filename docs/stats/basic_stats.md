@@ -4,18 +4,18 @@
 BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, complex_syl_factor=4, long_word_letter_factor=6)
 ```
 
-<!-- core: stats/basic_stats.md:BasicStats c1092e0 -->
-Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Буквы считаются по `str.isalpha`, поэтому цифры, дефисы и знаки внутри слова буквами не являются.
+<!-- core: stats/basic_stats.md:BasicStats 259a268 -->
+Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg). Буквы считаются по `str.isalpha`, поэтому цифры, дефисы и знаки внутри слова буквами не являются.
 
-Слова и предложения строки дают экстракторы. `Doc` дает словами свои токены без знаков препинания и символов вроде `€` или `%`, предложениями - свои границы или, если их нет или они частичные (`has_sents`), границы экстрактора предложений; переданный экстрактор вместо этого применяется к его тексту. Пустая строка завершает предложение строки и `Doc` без границ; `Doc` с границами - если в его пайплайне до парсера, `senter` или `sentencizer` стоит `start_sents_after_blank_lines` (библиотека регистрирует компонент под своим именем). Предложение без слов, например из одних знаков препинания, не считается.
+Слова и предложения дает [документ](https://sergeyshk.github.io/anyTS/document/) источника (`parse`): его токены без знаков препинания и символов вроде `€` или `%` (`doc_words`) и его предложения; переданный экстрактор вместо этого применяется к тексту. `Doc` сохраняет свои начала предложений, а `Doc` без начал предложений или с частичными (токен, у которого `is_sent_start` не задан) получает начала `parse`. Пустая строка завершает предложение любого источника, поскольку завершает абзац документа. Предложение без слов, например из одних знаков препинания, не считается.
 
 Исключения:
 
-- `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа;
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, `parse`, который возвращает не `Document`, `doc_words`, который возвращает не последовательность строк, экстрактор другого типа;
 - `SourceError` - источник без слов;
 - `ParameterError` - порог, который не целое число не меньше единицы, `normalize`, который не `bool`.
 
-Класс расширяет `BasicStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) для русского языка: слоги считает [`count_syllables`](../syllables.md#count_syllables), экстракторы по умолчанию - русские [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), знаки препинания - [`count_punctuations`](#count_punctuations) ruTS, а дефисное слово, разрезанное spaCy, остается одним словом (`во-первых`). Компонент пустых строк ruTS - [`ruts_blank_lines`](../components.md#blank_lines): `nlp.add_pipe("ruts_blank_lines", before="parser")`; в [рекомендуемом конвейере](../components.md#load_pipeline) он не нужен. Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (`ruts.utils.strip_marks`): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица `print_stats` - по-русски.
+Класс расширяет `BasicStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/basic_stats/) для русского языка: документ источника дает `ruts.utils.get_document`, где строку делит сегментатор [anySeg](https://github.com/SergeyShk/anySeg), как в русских [`SentsExtractor`](../extractors/sentences.md) и [`WordsExtractor`](../extractors/words.md), слова документа - без точки сокращения (`ruts.utils.document_words`), слоги считает [`count_syllables`](../syllables.md#count_syllables), знаки препинания - [`count_punctuations`](#count_punctuations) ruTS. Слова `Doc` - его токены: у `Doc` [рекомендуемого конвейера](../components.md#load_pipeline) слова и предложения те же, что у строки, а токенизатор обычной модели spaCy делит дефисные слова (`во-первых` - два слова). Знаки ударения и мягкие переносы не считаются ни символами, ни частями слов, а й и ё из двух символов - одна буква (`ruts.utils.strip_marks`): текст с ударениями дает те же статистики, что без них. Статистики вычисляются при создании объекта, таблица `print_stats` - по-русски.
 
 === "Код"
 
@@ -51,12 +51,12 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 ## Параметры
 
-<!-- core: stats/basic_stats.md:BasicStats-parameters 362b585 -->
+<!-- core: stats/basic_stats.md:BasicStats-parameters 2d8e54b -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` | - | Источник данных (строка или объект Doc) |
-| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений; для Doc применяется к его тексту |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; для Doc применяется к его тексту |
+| `source` | `str` / `Doc` / `Document` | - | Источник данных |
+| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений, применяется к тексту вместо предложений документа |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, применяется к тексту вместо слов документа |
 | `normalize` | `bool` | `False` | Вычислять нормализованные статистики |
 | `complex_syl_factor` | `int` | `COMPLEX_SYL_FACTOR` | Минимальное количество слогов в сложном слове |
 | `long_word_letter_factor` | `int` | `LONG_WORD_LETTER_FACTOR` | Минимальное количество букв в длинном слове |
@@ -67,7 +67,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 ## Статистики
 
-<!-- core: stats/basic_stats.md:BasicStats-attributes d457364 -->
+<!-- core: stats/basic_stats.md:BasicStats-attributes ba0510d -->
 | Статистика | Тип | Описание | Нормализованная |
 | :--------- | :-- | :------- | :-------------- |
 | `c_letters` | `dict[int, int]` | Распределение слов по количеству букв | - |
@@ -80,7 +80,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 | `n_simple_words` | `int` | Количество простых слов: со слогом, но не сложных | `p_simple_words` |
 | `n_monosyllable_words` | `int` | Количество односложных слов | `p_monosyllable_words` |
 | `n_polysyllable_words` | `int` | Количество многосложных слов, от двух слогов | `p_polysyllable_words` |
-| `n_chars` | `int` | Количество символов без переносов строк | - |
+| `n_chars` | `int` | Количество символов без переносов строк (`LINE_BREAK`: `\n`, `\r\n`, `\r`, вертикальная табуляция, перевод страницы, U+0085, U+2028, U+2029) | - |
 | `n_letters` | `int` | Количество букв | `p_letters` |
 | `n_spaces` | `int` | Количество пробелов Unicode (категория Zs), например неразрывных, и табуляций | `p_spaces` |
 | `n_syllables` | `int` | Количество слогов | - |
@@ -98,8 +98,8 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 Так класс [`ReadabilityStats`](readability_stats.md) считает сложные слова SMOG (от 5 слогов) и длинные слова LIX (от 7 букв).
 
-<!-- core: stats/basic_stats.md:BasicStats-get_stats 5352c3c -->
-`get_stats(flat)` возвращает справочник с распределениями `c_letters` и `c_syllables`, статистиками из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
+<!-- core: stats/basic_stats.md:BasicStats-get_stats 7d91a7c -->
+`get_stats(*, flat=False)` возвращает справочник с распределениями `c_letters` и `c_syllables`, статистиками из `stats_desc`, распределением `c_punctuations` и, с `normalize=True`, нормализованными количествами - копию: ее правка не меняет объект. С `flat=True` распределения дают по ключу на каждое значение, которое есть в тексте, например `c_letters_3` и `c_punctuations_comma`.
 
 <!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
 `print_stats()` выводит таблицу со статистиками из `stats_desc`, их описаниями и заголовками из `stats_headers`.

@@ -9,11 +9,11 @@ DiversityStats(source, words_extractor=None, window_len=50, mtld_threshold=0.72,
 
 Исключения:
 
-- `SourceTypeError` - источник, который не строка и не `Doc`, экстрактор другого типа;
+- `SourceTypeError` - источник, который не строка, не `Doc` и не `Document`, экстрактор другого типа;
 - `SourceError` - источник без слов;
 - `ParameterError` - параметр, который отвергает `check_params`.
 
-Класс расширяет `DiversityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/): вместо списка слов он принимает текст или объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy). Слова текста извлекает русский [`WordsExtractor`](../extractors/words.md), слова `Doc` без экстрактора - его токены без знаков ударения, а дефисное слово, разрезанное spaCy, остается одним словом (`во-первых`). Слова приводятся к нижнему регистру. Таблица `print_stats` и сообщения об ошибках - по-русски.
+Класс расширяет `DiversityStats` ядра [anyTS](https://sergeyshk.github.io/anyTS/stats/diversity_stats/): вместо списка слов он принимает текст, объект `Doc` библиотеки [spaCy](https://github.com/explosion/spaCy) или `Document` библиотеки [anySeg](https://github.com/SergeyShk/anySeg). Слова без экстрактора - слова документа источника, как у [базовых статистик](basic_stats.md), а заданный экстрактор, например русский [`WordsExtractor`](../extractors/words.md), применяется к тексту. Слова приводятся к нижнему регистру. Таблица `print_stats` и сообщения об ошибках - по-русски.
 
 === "Код"
 
@@ -70,8 +70,8 @@ DiversityStats(source, words_extractor=None, window_len=50, mtld_threshold=0.72,
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `source` | `str` / `Doc` | - | Источник данных |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов; для `Doc` применяется к его тексту |
+| `source` | `str` / `Doc` / `Document` | - | Источник данных |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, применяется к тексту вместо слов документа |
 | `window_len` | `int` | `50` | Размер окна для MATTR и сегмента для MSTTR (`MATTR_WINDOW_LEN`) |
 | `mtld_threshold` | `float` | `0.72` | Порог TTR для MTLD, MA-MTLD и MTLD-W (`MTLD_TTR_THRESHOLD`) |
 | `mtld_min_len` | `int` | `10` | Минимальная длина фактора для MTLD, MA-MTLD и MTLD-W (`MTLD_MIN_LEN`) |

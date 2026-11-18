@@ -23,11 +23,12 @@ from ..utils import (
 )
 
 if TYPE_CHECKING:
-    from spacy.tokens import Doc, Token
+    from anyseg import Document, Word
+    from spacy.tokens import Doc
 
 
 def kwic(
-    source: str | Doc,
+    source: str | Doc | Document,
     keyword: str,
     window: int = 5,
     by_lemma: bool = False,
@@ -40,7 +41,7 @@ def kwic(
         Ищутся вхождения слова или словосочетания среди слов текста: по словоформе
         без учета регистра и буквы ё, с учетом регистра или по лемме ruMorph («кота»
         находится по «кот»). Лемма слова строки - разбора в контексте предложения,
-        слова Doc с разметкой частей речи - с частью речи токена («стали» - «сталь»
+        слова Doc и Document с разметкой частей речи - с частью речи слова («стали» - «сталь»
         или «стать»); слово ключа совпадает по любой лемме своих разборов. Знаки
         препинания и символы словами не считаются; знаки ударения, мягкие переносы
         и точка сокращения при сравнении не учитываются («руб.» находится по «руб»)
@@ -50,7 +51,7 @@ def kwic(
         схлопнутыми в один пробел; вхождения не пересекаются
 
     Аргументы:
-        source (str|Doc): Текст или объект Doc
+        source (str|Doc|Document): Текст, объект Doc или Document
         keyword (str): Слово или словосочетание
         window (int): Число слов контекста с каждой стороны
         by_lemma (bool): Сравнивать леммы, а не словоформы
@@ -60,8 +61,8 @@ def kwic(
         list[Concordance]: Вхождения по порядку в тексте
 
     Исключения:
-        SourceTypeError: Если источник данных не строка и не объект Doc или ключевое
-            слово не строка
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
+            или ключевое слово не строка
         ParameterError: Если в ключевом слове нет слов или окно не целое число
             или отрицательно
 
@@ -82,7 +83,6 @@ def kwic(
         tokenize=iter_text_words,
         lemmatize=_string_lemmatizer(source) if by_lemma and isinstance(source, str) else _lemma,
         fold=_fold_marks if case_sensitive else _fold,
-        join_hyphens=True,
         sentenize=iter_text_sents,
     )
 
@@ -97,12 +97,12 @@ def _fold(word: str) -> str:
     return normalize_yo(word).removesuffix(".")
 
 
-def _lemma(word: str, tokens: Sequence[Token]) -> str | tuple[str, ...]:
-    """Лемма ruMorph с частью речи токена для слова Doc из одного токена; у слова
-    ключа (без токенов) контекста нет - леммы всех его разборов"""
+def _lemma(word: str, tokens: Sequence[Word]) -> str | tuple[str, ...]:
+    """Лемма ruMorph с частью речи слова для токена Doc или Document из одного слова; у слова
+    ключа (без слов) контекста нет - леммы всех его разборов"""
     if not tokens:
         return _key_lemmas(word)
-    return lemmatize(word, tokens[0].pos_ if len(tokens) == 1 else "")
+    return lemmatize(word, (tokens[0].upos or "") if len(tokens) == 1 else "")
 
 
 def _key_lemmas(word: str) -> tuple[str, ...]:
@@ -110,7 +110,7 @@ def _key_lemmas(word: str) -> tuple[str, ...]:
     return tuple(dict.fromkeys(analysis.lemma for analysis in parse_all(word)))
 
 
-def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Token]], str | tuple[str, ...]]:
+def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Word]], str | tuple[str, ...]]:
     """Леммы слов строки в контексте предложений (analyze_words): ядро разбирает слова
     текста по порядку, по разу каждое, а затем слова ключа"""
     positions = [(start, word) for start, _, word in iter_text_words(text)]
@@ -118,7 +118,7 @@ def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Token]], str | tupl
         zip((word for _, word in positions), analyze_words(positions, text), strict=True)
     )
 
-    def lemma(word: str, tokens: Sequence[Token]) -> str | tuple[str, ...]:
+    def lemma(word: str, tokens: Sequence[Word]) -> str | tuple[str, ...]:
         if not queue:
             return _key_lemmas(word)
         if unicodedata.normalize("NFC", queue[0][0]) == word:

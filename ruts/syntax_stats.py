@@ -20,6 +20,7 @@ from anyts.syntax_stats import (
     count_noun_modifiers as count_noun_modifiers,
     dependency_triples as dependency_triples,
     get_children as get_children,
+    get_subtree,
     get_words as get_words,
     has_agent as has_agent,
     is_agentless as is_agentless,
@@ -30,10 +31,12 @@ from anyts.syntax_stats import (
     subtree_len as subtree_len,
 )
 from anyts.utils import (
+    check_tree_word,
     has_feature as has_feature,
     is_finite_verb as is_finite_verb,
     is_infinitive as is_infinitive,
-    is_word as is_word,
+    is_punctuation,
+    unchecked,
 )
 
 from .constants import (
@@ -54,10 +57,41 @@ from .constants import (
     SUBORDINATING_MARKS,
     SYNTAX_STATS_DESC,
 )
-from .utils import is_verbal_noun, lemmatize, normalize_yo, parse_all, strip_marks
+from .utils import (
+    TREE_WORD_MESSAGE,
+    _takes_word,
+    _takes_words,
+    is_verbal_noun,
+    lemmatize,
+    normalize_yo,
+    parse_all,
+    strip_marks,
+)
 
 if TYPE_CHECKING:
-    from spacy.tokens import Doc, Token
+    from anyseg import Document
+    from anyts.document import TreeWord
+    from spacy.tokens import Doc
+
+
+def _is_word(word: TreeWord) -> bool:
+    """Слово, а не знак препинания"""
+    return not is_punctuation(word.form)
+
+
+# Функции ядра без проверки слова - для слов, которые класс берет из своего дерева
+_base_dep = unchecked(base_dep)
+_get_children = unchecked(get_children)
+_get_words = unchecked(get_words)
+_has_feature = unchecked(has_feature)
+_is_infinitive = unchecked(is_infinitive)
+_is_root = unchecked(is_root)
+_is_predicate = unchecked(is_predicate)
+_is_prep_complement = unchecked(is_prep_complement)
+_subtree_len = unchecked(subtree_len)
+_calc_valency = unchecked(calc_valency)
+_calc_modifier_chains = unchecked(calc_modifier_chains)
+_get_subtree = unchecked(get_subtree)
 
 SPLIT_PREDICATE_DEPS = ("obj", "nsubj:pass", "nsubj", "iobj", "nmod", "obl")
 
@@ -69,8 +103,8 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
     Описание:
         Расширяет SyntaxStats ядра anyTS правилами русского языка для клауз, причастных
         оборотов, отрицаний и расщепленных сказуемых и своими статистиками: цепочками
-        родительных падежей, именными цепочками и деепричастными оборотами; дефисные
-        слова склеиваются. Источник - Doc spaCy с разбором зависимостей и частями речи
+        родительных падежей, именными цепочками и деепричастными оборотами. Источник -
+        Doc spaCy или Document anySeg с разбором зависимостей и частями речи
         Universal Dependencies (конвейер load_pipeline или модели ru_core_news).
         Определения признаков следуют работе Иванова, Солнышкиной и Соловьёва (2018)
 
@@ -133,10 +167,11 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         {0: 9, 1: 2, 2: 5, 3: 1}
 
     Аргументы:
-        source (Doc): Источник данных (объект Doc с разбором зависимостей и частями речи)
+        source (Doc|Document): Источник данных (объект Doc или Document с разбором
+            зависимостей и частями речи)
 
     Атрибуты:
-        sents (tuple[tuple[Token, ...], ...]): Слова предложений
+        sents (tuple[tuple[TreeWord, ...], ...]): Слова предложений
         n_sents (int): Количество предложений, содержащих слова
         n_words (int): Количество слов
         n_leaves (int): Количество листьев - слов без зависимых слов
@@ -228,27 +263,24 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         print_stats: Отображение вычисленных синтаксических статистик текста с описанием на экран
 
     Исключения:
-        SourceTypeError: Если источник данных не объект Doc
-        SourceError: Если в источнике данных отсутствуют разбор зависимостей, части речи
-            или слова
+        SourceTypeError: Если источник данных не строка, не объект Doc и не Document
+        SourceError: Если в источнике данных (и в любой строке) отсутствуют разбор
+            зависимостей, части речи или слова
     """
 
-    join_hyphens = True
     subordinating_marks = SUBORDINATING_MARKS
     stats_desc = SYNTAX_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
 
-    def __init__(self, source: Doc):
+    def __init__(self, source: Doc | Document):
         super().__init__(source)
         words = [token for sent in self.sents for token in sent]
-        genitive_chains = [length for sent in self.sents for length in calc_genitive_chains(sent)]
+        genitive_chains = [length for sent in self.sents for length in _calc_genitive_chains(sent)]
         self.n_genitive_chains = len(genitive_chains)
-        nominal_chains = [length for sent in self.sents for length in calc_nominal_chains(sent)]
+        nominal_chains = [length for sent in self.sents for length in _calc_nominal_chains(sent)]
         self.n_nominal_chains = len(nominal_chains)
-        converb_clauses = [
-            subtree_len(token, join_hyphens=True) for token in words if is_converb_clause(token)
-        ]
+        converb_clauses = [_subtree_len(token) for token in words if _is_converb_clause(token)]
         self.n_converb_clauses = len(converb_clauses)
         self.genitive_chains_per_sent = self.n_genitive_chains / self.n_sents
         self.max_genitive_chain_len = max(genitive_chains, default=0)
@@ -257,32 +289,33 @@ class SyntaxStats(anyts.syntax_stats.SyntaxStats):
         self.converb_clauses_per_sent = self.n_converb_clauses / self.n_sents
         self.mean_converb_clause_len = fmean(converb_clauses) if converb_clauses else nan
 
-    def is_clause_head(self, token: Token) -> bool:
+    def is_clause_head(self, token: TreeWord) -> bool:
         """Вершина клаузы по правилам русского языка с крючком is_infinitive_periphrasis"""
         return _is_clause_head(token, self.is_infinitive_periphrasis)
 
-    def is_infinitive_periphrasis(self, token: Token) -> bool:
+    def is_infinitive_periphrasis(self, token: TreeWord) -> bool:
         """Инфинитив одной предикации с модальным или фазовым словом (is_infinitive_periphrasis)"""
-        return is_infinitive_periphrasis(token)
+        return _is_infinitive_periphrasis(token)
 
-    def is_subordinating_mark(self, token: Token) -> bool:
+    def is_subordinating_mark(self, token: TreeWord) -> bool:
         """Подчинительный союз при однородном или вставной конструкции (is_subordinating_mark)"""
-        return is_subordinating_mark(token)
+        return _is_subordinating_mark(token)
 
-    def is_participle_clause(self, token: Token) -> bool:
+    def is_participle_clause(self, token: TreeWord) -> bool:
         """Вершина причастного оборота - полного причастия (is_participle_clause)"""
-        return is_participle_clause(token)
+        return _is_participle_clause(token)
 
-    def is_negation(self, token: Token) -> bool:
+    def is_negation(self, token: TreeWord) -> bool:
         """Отрицательная частица (is_negation)"""
-        return is_negation(token)
+        return _is_negation(token)
 
-    def find_split_predicates(self, words: Sequence[Token]) -> list[tuple[Token, Token]]:
+    def find_split_predicates(self, words: Sequence[TreeWord]) -> list[tuple[TreeWord, TreeWord]]:
         """Расщепленные сказуемые (find_split_predicates)"""
-        return find_split_predicates(words)
+        return _find_split_predicates(words)
 
 
-def is_participle(token: Token) -> bool:
+@_takes_word
+def is_participle(token: TreeWord) -> bool:
     """
     Проверка, является ли токен полной формой причастия
 
@@ -290,32 +323,40 @@ def is_participle(token: Token) -> bool:
         Краткие причастия (дом построен) полными не считаются
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    if not has_feature(token, "VerbForm", "Part"):
+    if not _has_feature(token, "VerbForm", "Part"):
         return False
     return not (
-        has_feature(token, "Variant", "Short") or has_feature(token, "StyleVariant", "Short")
+        _has_feature(token, "Variant", "Short") or _has_feature(token, "StyleVariant", "Short")
     )
 
 
-def is_converb(token: Token) -> bool:
+_is_participle = unchecked(is_participle)
+
+
+@_takes_word
+def is_converb(token: TreeWord) -> bool:
     """
     Проверка, является ли токен деепричастием
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    return has_feature(token, "VerbForm", "Conv")
+    return _has_feature(token, "VerbForm", "Conv")
 
 
-def is_negation(token: Token) -> bool:
+_is_converb = unchecked(is_converb)
+
+
+@_takes_word
+def is_negation(token: TreeWord) -> bool:
     """
     Проверка, является ли токен отрицательной частицей
 
@@ -324,17 +365,24 @@ def is_negation(token: Token) -> bool:
         союз ни в конструкции ни... ни отрицанием не считается
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    if token.pos_ != "PART":
+    if token.upos != "PART":
         return False
-    return has_feature(token, "Polarity", "Neg") or strip_marks(token.lower_) in NEGATION_PARTICLES
+    return (
+        _has_feature(token, "Polarity", "Neg")
+        or strip_marks(token.form.lower()) in NEGATION_PARTICLES
+    )
 
 
-def is_clause_head(token: Token) -> bool:
+_is_negation = unchecked(is_negation)
+
+
+@_takes_word
+def is_clause_head(token: TreeWord) -> bool:
     """
     Проверка, является ли токен вершиной клаузы
 
@@ -349,7 +397,7 @@ def is_clause_head(token: Token) -> bool:
         (is_predicate), поэтому вводное наречие (конечно) клаузы не образует
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
@@ -357,34 +405,39 @@ def is_clause_head(token: Token) -> bool:
     return _is_clause_head(token, is_infinitive_periphrasis)
 
 
-def _is_clause_head(token: Token, is_infinitive_periphrasis: Callable[[Token], bool]) -> bool:
+def _is_clause_head(
+    token: TreeWord, is_infinitive_periphrasis: Callable[[TreeWord], bool]
+) -> bool:
     """is_clause_head с проверкой сочетания одной предикации"""
     seen = set()
     # Вверх по цепочке однородных до слова, которое само не conj; петля разбора - не клауза
-    while is_word(token) and token.i not in seen:
-        if is_root(token):
+    while _is_word(token) and token.index not in seen:
+        if _is_root(token):
             return True
-        if is_participle(token) or is_converb(token):
+        if _is_participle(token) or _is_converb(token):
             return False
-        dep = base_dep(token)
+        dep = _base_dep(token)
         if dep != "conj":
             if dep == "xcomp":
                 return _is_infinitive_clause(token, is_infinitive_periphrasis)
             if dep not in CLAUSE_DEPS:
                 return False
             if dep == "parataxis":
-                return is_predicate(token, join_hyphens=True)
-            if dep == "csubj" and is_infinitive(token):
-                return not is_infinitive_periphrasis(token)
-            return not (token.dep_ == "acl" and is_infinitive(token))
-        if not is_predicate(token, join_hyphens=True):
+                return _is_predicate(token)
+            if dep == "csubj" and _is_infinitive(token):
+                return not _is_infinitive_periphrasis(token)
+            return not (token.deprel == "acl" and _is_infinitive(token))
+        if not _is_predicate(token):
             return False
-        seen.add(token.i)
+        if token.head is None:
+            return False
+        seen.add(token.index)
         token = token.head
     return False
 
 
-def is_infinitive_clause(token: Token) -> bool:
+@_takes_word
+def is_infinitive_clause(token: TreeWord) -> bool:
     """
     Проверка, возглавляет ли инфинитив при глаголе свою клаузу
 
@@ -395,7 +448,7 @@ def is_infinitive_clause(token: Token) -> bool:
         клаузой не считается
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
@@ -404,7 +457,7 @@ def is_infinitive_clause(token: Token) -> bool:
 
 
 def _is_infinitive_clause(
-    token: Token, is_infinitive_periphrasis: Callable[[Token], bool]
+    token: TreeWord, is_infinitive_periphrasis: Callable[[TreeWord], bool]
 ) -> bool:
     """is_infinitive_clause с проверкой сочетания одной предикации"""
     return anyts.syntax_stats.is_infinitive_clause(
@@ -414,7 +467,8 @@ def _is_infinitive_clause(
     )
 
 
-def is_infinitive_periphrasis(token: Token) -> bool:
+@_takes_word
+def is_infinitive_periphrasis(token: TreeWord) -> bool:
     """
     Проверка, образует ли инфинитив одну предикацию со своим глаголом
 
@@ -425,25 +479,29 @@ def is_infinitive_periphrasis(token: Token) -> bool:
         без отрицания (давайте играть, но не давайте детям играть)
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    head = token.head
+    head = token.head or token
     lemmas = _pos_lemmas(head)
     if not lemmas.isdisjoint(INFINITIVE_PERIPHRASES):
         return True
     if not lemmas.isdisjoint(MODAL_SHORT_ADJECTIVES) and (
-        has_feature(head, "StyleVariant", "Short") or has_feature(head, "Variant", "Short")
+        _has_feature(head, "StyleVariant", "Short") or _has_feature(head, "Variant", "Short")
     ):
         return True
-    return head.text.lower() in HORTATIVE_WORDS and not any(
-        is_negation(child) for child in head.children
+    return head.form.lower() in HORTATIVE_WORDS and not any(
+        _is_negation(child) for child in head.children
     )
 
 
-def is_subordinate_clause_head(token: Token) -> bool:
+_is_infinitive_periphrasis = unchecked(is_infinitive_periphrasis)
+
+
+@_takes_word
+def is_subordinate_clause_head(token: TreeWord) -> bool:
     """
     Проверка, является ли токен вершиной придаточной клаузы
 
@@ -456,7 +514,7 @@ def is_subordinate_clause_head(token: Token) -> bool:
         (is_infinitive_clause_head)
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
@@ -466,7 +524,11 @@ def is_subordinate_clause_head(token: Token) -> bool:
     )
 
 
-def is_subordinating_mark(token: Token) -> bool:
+_is_subordinate_clause_head = unchecked(is_subordinate_clause_head)
+
+
+@_takes_word
+def is_subordinating_mark(token: TreeWord) -> bool:
     """
     Проверка, является ли союз (связь mark) подчинительным
 
@@ -481,71 +543,84 @@ def is_subordinating_mark(token: Token) -> bool:
         сделаете?»)
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    doc = token.doc
-    before = [word.lower_ for word in doc[max(token.i - 2, 0) : token.i] if is_word(word)]
+    words = token.tree.words
+    before = [
+        word.form.lower()
+        for word in words[max(token.index - 2, 0) : token.index]
+        if _is_word(word)
+    ]
     if anyts.syntax_stats.is_subordinating_mark(token, {"как"}):
         return bool(before) and before[-1] in COMPOUND_AS_PREV_WORDS
     if not anyts.syntax_stats.is_subordinating_mark(token, SUBORDINATING_MARKS):
         return False
     if " ".join(before) in NON_SUBORDINATING_PREV_PHRASES:
         return False
-    head = token.head
+    head = token.head or token
     if any(_is_correlative(child, token) for child in head.children):
         return False
-    if token.lower_ not in PRONOUN_MARKS:
+    if token.form.lower() not in PRONOUN_MARKS:
         return True
-    following = doc[token.i + 1] if token.i + 1 < len(doc) else None
-    if following is not None and following.lower_ in PRONOUN_MARK_NEXT_WORDS:
+    following = words[token.index + 1] if token.index + 1 < len(words) else None
+    if following is not None and following.form.lower() in PRONOUN_MARK_NEXT_WORDS:
         return False
     return not (_opens_replica(token) and _ends_with_question(head))
 
 
-def _is_correlative(word: Token, mark: Token) -> bool:
+_is_subordinating_mark = unchecked(is_subordinating_mark)
+
+
+def _is_correlative(word: TreeWord, mark: TreeWord) -> bool:
     """Соотносительное слово сказуемого после союза, не принадлежащее придаточному между ними
     со своим союзом (что если б..., то было бы)"""
-    if word.i < mark.i or word.lower_ not in CORRELATIVE_WORDS:
+    if word.index < mark.index or word.form.lower() not in CORRELATIVE_WORDS:
         return False
-    if base_dep(word) not in ("mark", "advmod"):
+    if _base_dep(word) not in ("mark", "advmod"):
         return False
     return not any(
-        base_dep(other) == "advcl"
-        and mark.i < other.i < word.i
-        and any(base_dep(child) == "mark" for child in other.children)
-        for other in mark.head.children
+        _base_dep(other) == "advcl"
+        and mark.index < other.index < word.index
+        and any(_base_dep(child) == "mark" for child in other.children)
+        for other in (mark.head or mark).children
     )
 
 
-def _opens_replica(token: Token) -> bool:
+def _opens_replica(token: TreeWord) -> bool:
     """Открывает ли слово реплику: перед ним после начала предложения, тире, двоеточия
     или перевода строки - только знаки и начинающие реплику слова (а, и, ну)"""
-    doc = token.doc
-    start = token.sent.start
-    for word in doc[start : token.i]:
-        if word.text in REPLICA_BOUNDARIES or "\n" in word.text:
-            start = word.i + 1
+    tree = token.tree
+    before = [word for word in tree.sentences[token.sentence] if word.index < token.index]
+    start = 0
+    for i, word in enumerate(before):
+        if word.form in REPLICA_BOUNDARIES:
+            start = i + 1
+        elif i and "\n" in tree.text[before[i - 1].end : word.start]:
+            start = i
+    if before and "\n" in tree.text[before[-1].end : token.start]:
+        start = len(before)
     return all(
-        not is_word(word) or word.lower_ in REPLICA_OPENING_WORDS for word in doc[start : token.i]
+        not _is_word(word) or word.form.lower() in REPLICA_OPENING_WORDS for word in before[start:]
     )
 
 
-def _ends_with_question(head: Token) -> bool:
+def _ends_with_question(head: TreeWord) -> bool:
     """Кончается ли клауза вопросительным или восклицательным знаком"""
-    doc = head.doc
-    end = head.right_edge.i
-    marks = [doc[end]]
-    for word in doc[end + 1 :]:
-        if is_word(word):
+    words = head.tree.words
+    end = _get_subtree(head)[-1].index
+    marks = [words[end]]
+    for word in words[end + 1 :]:
+        if _is_word(word):
             break
         marks.append(word)
-    return any(char in "?!" for word in marks for char in word.text)
+    return any(char in "?!" for word in marks for char in word.form)
 
 
-def is_infinitive_clause_head(token: Token) -> bool:
+@_takes_word
+def is_infinitive_clause_head(token: TreeWord) -> bool:
     """
     Проверка, является ли токен вершиной инфинитивной клаузы при глаголе
 
@@ -555,7 +630,7 @@ def is_infinitive_clause_head(token: Token) -> bool:
         а также однородный ему инфинитив
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
@@ -565,7 +640,11 @@ def is_infinitive_clause_head(token: Token) -> bool:
     )
 
 
-def is_genitive_modifier(token: Token) -> bool:
+_is_infinitive_clause_head = unchecked(is_infinitive_clause_head)
+
+
+@_takes_word
+def is_genitive_modifier(token: TreeWord) -> bool:
     """
     Проверка, является ли токен беспредложным определением в родительном падеже
 
@@ -574,17 +653,21 @@ def is_genitive_modifier(token: Token) -> bool:
         дом отца, но не дом у дороги
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    if base_dep(token) != "nmod" or not has_feature(token, "Case", "Gen"):
+    if _base_dep(token) != "nmod" or not _has_feature(token, "Case", "Gen"):
         return False
-    return not any(child.dep_ == "case" for child in get_children(token, join_hyphens=True))
+    return not any(child.deprel == "case" for child in _get_children(token))
 
 
-def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
+_is_genitive_modifier = unchecked(is_genitive_modifier)
+
+
+@_takes_words
+def calc_genitive_chains(tokens: Iterable[TreeWord]) -> list[int]:
     """
     Вычисление длин цепочек родительных падежей
 
@@ -595,15 +678,19 @@ def calc_genitive_chains(tokens: Iterable[Token]) -> list[int]:
         таким определением, длина - число слов в самой длинной ветви
 
     Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
+        tokens (list[TreeWord]): Слова дерева документа
 
     Вывод:
         list[int]: Длины цепочек в порядке слов
     """
-    return calc_modifier_chains(tokens, is_genitive_modifier, join_hyphens=True)
+    return _calc_modifier_chains(tokens, _is_genitive_modifier)
 
 
-def is_nominal_chain_link(token: Token) -> bool:
+_calc_genitive_chains = unchecked(calc_genitive_chains)
+
+
+@_takes_word
+def is_nominal_chain_link(token: TreeWord) -> bool:
     """
     Проверка, является ли токен звеном именной цепочки
 
@@ -613,15 +700,19 @@ def is_nominal_chain_link(token: Token) -> bool:
         на нефть»
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    return is_genitive_modifier(token) or is_prep_complement(token, join_hyphens=True)
+    return _is_genitive_modifier(token) or _is_prep_complement(token)
 
 
-def calc_nominal_chains(tokens: Iterable[Token]) -> list[int]:
+_is_nominal_chain_link = unchecked(is_nominal_chain_link)
+
+
+@_takes_words
+def calc_nominal_chains(tokens: Iterable[TreeWord]) -> list[int]:
     """
     Вычисление длин именных цепочек
 
@@ -632,15 +723,19 @@ def calc_nominal_chains(tokens: Iterable[Token]) -> list[int]:
         тоже: «сидел во втором ряду кресел» - длина 2, а «второй ряд кресел» - не цепочка
 
     Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
+        tokens (list[TreeWord]): Слова дерева документа
 
     Вывод:
         list[int]: Длины цепочек в порядке слов
     """
-    return calc_modifier_chains(tokens, is_nominal_chain_link, join_hyphens=True)
+    return _calc_modifier_chains(tokens, _is_nominal_chain_link)
 
 
-def is_participle_clause(token: Token) -> bool:
+_calc_nominal_chains = unchecked(calc_nominal_chains)
+
+
+@_takes_word
+def is_participle_clause(token: TreeWord) -> bool:
     """
     Проверка, является ли токен вершиной причастного оборота
 
@@ -649,15 +744,19 @@ def is_participle_clause(token: Token) -> bool:
         сочинительных и вставных связей (Иванов, Солнышкина, Соловьёв 2018)
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    return is_participle(token) and calc_valency(token, join_hyphens=True) > 0
+    return _is_participle(token) and _calc_valency(token) > 0
 
 
-def is_converb_clause(token: Token) -> bool:
+_is_participle_clause = unchecked(is_participle_clause)
+
+
+@_takes_word
+def is_converb_clause(token: TreeWord) -> bool:
     """
     Проверка, является ли токен вершиной деепричастного оборота
 
@@ -666,37 +765,45 @@ def is_converb_clause(token: Token) -> bool:
         сочинительных и вставных связей
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    return is_converb(token) and calc_valency(token, join_hyphens=True) > 0
+    return _is_converb(token) and _calc_valency(token) > 0
 
 
-def get_lemma(token: Token) -> str:
+_is_converb_clause = unchecked(is_converb_clause)
+
+
+@_takes_word
+def get_lemma(token: TreeWord) -> str:
     """
     Получение леммы токена в нижнем регистре
 
     Описание:
-        Лемма разбора ruMorph с частью речи токена (lemmatize), а не token.lemma_
+        Лемма разбора ruMorph с частью речи слова (lemmatize), а не лемма разметки
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         str: Лемма
     """
-    return lemmatize(token.text, token.pos_)
+    return lemmatize(token.form, token.upos or "")
 
 
-def _pos_lemmas(token: Token) -> set[str]:
+_get_lemma = unchecked(get_lemma)
+
+
+def _pos_lemmas(token: TreeWord) -> set[str]:
     """Леммы разборов ruMorph с частью речи токена: у омонимов (стоит - стоять, стоить) - все"""
-    lemmas = {analysis.lemma for analysis in parse_all(token.text) if analysis.pos == token.pos_}
-    return lemmas or {get_lemma(token)}
+    lemmas = {analysis.lemma for analysis in parse_all(token.form) if analysis.pos == token.upos}
+    return lemmas or {_get_lemma(token)}
 
 
-def is_light_verb(token: Token) -> bool:
+@_takes_word
+def is_light_verb(token: TreeWord) -> bool:
     """
     Проверка, является ли токен легким глаголом
 
@@ -707,20 +814,24 @@ def is_light_verb(token: Token) -> bool:
         ruMorph с частью речи токена (get_lemma) и как глагола (lemmatize)
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    return token.pos_ == "VERB" and not _verb_lemmas(token).isdisjoint(LIGHT_VERBS)
+    return token.upos == "VERB" and not _verb_lemmas(token).isdisjoint(LIGHT_VERBS)
 
 
-def _verb_lemmas(token: Token) -> set[str]:
+_is_light_verb = unchecked(is_light_verb)
+
+
+def _verb_lemmas(token: TreeWord) -> set[str]:
     """Леммы глагола по ruMorph: с частью речи токена и как глагола"""
-    return {normalize_yo(get_lemma(token)), normalize_yo(lemmatize(token.text, "VERB"))}
+    return {normalize_yo(_get_lemma(token)), normalize_yo(lemmatize(token.form, "VERB"))}
 
 
-def is_reflexive(token: Token) -> bool:
+@_takes_word
+def is_reflexive(token: TreeWord) -> bool:
     """
     Проверка, является ли токен возвратным или пассивным глаголом
 
@@ -728,21 +839,25 @@ def is_reflexive(token: Token) -> bool:
         Глагол с леммой на -ся или -сь либо с залогом Voice=Mid или Voice=Pass
 
     Аргументы:
-        token (Token): Токен
+        token (TreeWord): Слово дерева документа
 
     Вывод:
         bool: Результат проверки
     """
-    if token.pos_ != "VERB":
+    if token.upos != "VERB":
         return False
     return (
-        get_lemma(token).endswith(("ся", "сь"))
-        or has_feature(token, "Voice", "Mid")
-        or has_feature(token, "Voice", "Pass")
+        _get_lemma(token).endswith(("ся", "сь"))
+        or _has_feature(token, "Voice", "Mid")
+        or _has_feature(token, "Voice", "Pass")
     )
 
 
-def is_split_predicate_noun(token: Token, verb: Token | None = None) -> bool:
+_is_reflexive = unchecked(is_reflexive)
+
+
+@_takes_word
+def is_split_predicate_noun(token: TreeWord, verb: TreeWord | None = None) -> bool:
     """
     Проверка, может ли токен быть именной частью расщепленного сказуемого
 
@@ -752,15 +867,17 @@ def is_split_predicate_noun(token: Token, verb: Token | None = None) -> bool:
         при глаголе своего оборота: оказать помощь, но не получить работу
 
     Аргументы:
-        token (Token): Токен
-        verb (Token): Легкий глагол; если не задан, оборот не проверяется
+        token (TreeWord): Слово дерева документа
+        verb (TreeWord): Легкий глагол; если не задан, оборот не проверяется
 
     Вывод:
         bool: Результат проверки
     """
-    if token.pos_ != "NOUN":
+    if verb is not None:
+        check_tree_word(verb, message=TREE_WORD_MESSAGE)
+    if token.upos != "NOUN":
         return False
-    lemma = normalize_yo(get_lemma(token))
+    lemma = normalize_yo(_get_lemma(token))
     if is_verbal_noun(lemma):
         return True
     if lemma not in SPLIT_PREDICATE_NOUNS:
@@ -772,7 +889,11 @@ def is_split_predicate_noun(token: Token, verb: Token | None = None) -> bool:
     return not verb_lemmas.isdisjoint(SPLIT_PREDICATE_NOUNS[lemma])
 
 
-def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
+_is_split_predicate_noun = unchecked(is_split_predicate_noun)
+
+
+@_takes_words
+def find_split_predicates(tokens: Iterable[TreeWord]) -> list[tuple[TreeWord, TreeWord]]:
     """
     Поиск расщепленных сказуемых
 
@@ -785,43 +906,46 @@ def find_split_predicates(tokens: Iterable[Token]) -> list[tuple[Token, Token]]:
         творительный obl при пассивном или возвратном глаголе) не учитываются
 
     Аргументы:
-        tokens (Doc|Span|list[Token]): Последовательность токенов
+        tokens (list[TreeWord]): Слова дерева документа
 
     Вывод:
-        list[tuple[Token, Token]]: Пары глагол - существительное в порядке слов
+        list[tuple[TreeWord, TreeWord]]: Пары глагол - существительное в порядке слов
     """
     pairs = []
-    for token in get_words(tokens, join_hyphens=True):
-        if not is_light_verb(token):
+    for token in _get_words(tokens):
+        if not _is_light_verb(token):
             continue
         candidates = [
             child
-            for child in get_children(token, join_hyphens=True)
-            if is_split_predicate_noun(child, token) and _is_nominal_part(child, token)
+            for child in _get_children(token)
+            if _is_split_predicate_noun(child, token) and _is_nominal_part(child, token)
         ]
         if candidates:
             pairs.append((token, min(candidates, key=_nominal_part_rank)))
     return pairs
 
 
-def _nominal_part_dep(child: Token) -> str:
-    return child.dep_ if child.dep_ == "nsubj:pass" else base_dep(child)
+_find_split_predicates = unchecked(find_split_predicates)
 
 
-def _is_nominal_part(child: Token, verb: Token) -> bool:
+def _nominal_part_dep(child: TreeWord) -> str:
+    return child.deprel if child.deprel == "nsubj:pass" else _base_dep(child)
+
+
+def _is_nominal_part(child: TreeWord, verb: TreeWord) -> bool:
     dep = _nominal_part_dep(child)
     if dep not in SPLIT_PREDICATE_DEPS:
         return False
     if dep == "nsubj":
-        return is_reflexive(verb)
+        return _is_reflexive(verb)
     if dep != "obl":
         return True
-    if child.dep_ == "obl:agent" or any(
-        grandchild.dep_ == "case" for grandchild in get_children(child, join_hyphens=True)
+    if child.deprel == "obl:agent" or any(
+        grandchild.deprel == "case" for grandchild in _get_children(child)
     ):
         return False
-    return not (is_reflexive(verb) and has_feature(child, "Case", "Ins"))
+    return not (_is_reflexive(verb) and _has_feature(child, "Case", "Ins"))
 
 
-def _nominal_part_rank(child: Token) -> int:
+def _nominal_part_rank(child: TreeWord) -> int:
     return SPLIT_PREDICATE_DEPS.index(_nominal_part_dep(child))
