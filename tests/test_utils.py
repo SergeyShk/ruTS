@@ -65,9 +65,9 @@ def test_parse_word(word, lemma, pos):
 
 
 def test_parse_without_invisible_characters():
-    """Слово с управляющим или служебным символом разбирается без него, пустая строка - как знак"""
+    """Слово с управляющим или служебным символом разбирается без него, пустая строка - X"""
     assert parse_word("это\x7f").lemma == parse_word("это\u200b").lemma == "это"
-    assert parse_word("").pos == parse_word(" ").pos == "PUNCT"
+    assert parse_word("").pos == parse_word(" ").pos == "X"
     assert lemmatize("знаю\x7f", "VERB") == "знать"
 
 
@@ -219,8 +219,9 @@ def test_iter_text_words_dialogue():
 
 
 def test_abbreviation_with_period():
-    """Сокращение с точкой (токен UD) - та же лемма, что без нее"""
-    assert parse_word("т.").lemma == parse_word("т").lemma == "так"
+    """Сокращение с точкой (токен UD) - та же лемма, что без нее; незнакомое - по похожему"""
+    assert parse_word("т.").lemma == parse_word("т").lemma == "то"
+    assert parse_word("тов.").lemma == "товарищ"
     assert lemmatize("руб.", "NOUN") == lemmatize("руб", "NOUN") == "рубль"
 
 

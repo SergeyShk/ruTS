@@ -484,7 +484,8 @@ def test_keyword_density_without_yo():
 
 
 def test_parenthetical_words():
-    """Вводные без пометы Prnt у ruMorph (кстати, наверно, видимо) - вводные и «вода»"""
-    ss = StyleStats("Он, кстати, пришёл. Она, наверно, ушла. Они, видимо, спят.")
-    assert ss.markers()["parentheticals"] == ("кстати", "наверно", "видимо")
-    assert is_parenthetical("кстати") and is_water_word("наверно") and is_stopword("видимо")
+    """Вводное без пометы Prnt у ruMorph (небось, PARENTHETICAL_WORDS) - вводное и «вода»,
+    как помеченное «кстати»"""
+    ss = StyleStats("Он, небось, устал. Она, кстати, пришла.")
+    assert ss.markers()["parentheticals"] == ("небось", "кстати")
+    assert is_parenthetical("небось") and is_water_word("небось") and is_stopword("небось")

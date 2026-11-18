@@ -20,6 +20,7 @@ from ..utils import (
     normalize_yo,
     parse_all,
     strip_marks,
+    word_form,
 )
 
 if TYPE_CHECKING:
@@ -121,7 +122,8 @@ def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Word]], str | tuple
     def lemma(word: str, tokens: Sequence[Word]) -> str | tuple[str, ...]:
         if not queue:
             return _key_lemmas(word)
-        if unicodedata.normalize("NFC", queue[0][0]) == word:
+        # Ядро отдает слово с точкой сокращения и знаками ударения, очередь - без них
+        if unicodedata.normalize("NFC", queue[0][0]) == word_form(strip_marks(word)):
             _, analysis = queue.popleft()
             if analysis is not None:
                 return analysis.lemma

@@ -21,7 +21,7 @@ The words are classified by the Universal Dependencies parts of speech and featu
 | Nouns | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
 | Pronouns | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, lemmas of `DEMONSTRATIVE_LEMMAS` |
 | Arguments | `NOUN`, `PROPN`, `PRON`, the possessive его, её, их with the lemma он, она, они | the same |
-| Content words | `CONTENT_UD_POS` and the copula быть (`AUX` with a verb form) without demonstratives, pronominal (`PronType` Dem, Int, Rel: там, где, почему) and parenthetical (the `Prnt` label and `PARENTHETICAL_WORDS`: кстати, наверно) words, predicatives and numbers in digits | the same by the features of the word |
+| Content words | `CONTENT_UD_POS` and the copula быть (`AUX` with a verb form) without demonstratives, pronominal (`PronType` Dem, Int, Rel: там, где, почему) and parenthetical (the `Prnt` label and `PARENTHETICAL_WORDS`: кстати, небось) words, predicatives and numbers in digits | the same by the features of the word |
 | Demonstratives | lemmas of `DEMONSTRATIVE_LEMMAS`: этот, это, тот, то (a pronoun only), такой, таковой, столько, сей, оный | the same lemmas |
 | Tense and aspect | features `Tense` and `Aspect` | features `Tense` and `Aspect` |
 
