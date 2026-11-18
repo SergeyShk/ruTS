@@ -23,16 +23,17 @@ frequency_table(corpus, n_mfw=100, culling=0.0, *, messages=None)
 
 Корпус, который не словарь списков строк, дает `SourceTypeError`; пустой корпус, текст без единиц и отсев, после которого не остается ни одной единицы, - `SourceError`, а `n_mfw`, который не целое число не меньше единицы, и `culling`, который не число в пределах [0, 1], - `ParameterError`.
 
-<!-- core: corpus/stylometry.md:z_scores d9b43d3 -->
+<!-- core: corpus/stylometry.md:z_scores e85221e -->
 ``` {.python .signature}
-z_scores(table)
+z_scores(table, *, messages=None)
 ```
 
-Стандартизирует столбцы таблицы частот с выборочным стандартным отклонением, как `scale()` в R; столбец с одинаковой частотой во всех текстах дает нули.
+Стандартизирует столбцы таблицы частот с выборочным стандартным отклонением, как `scale()` в R; столбец с одинаковой частотой во всех текстах дает нули. Таблица не `DataFrame` дает `SourceTypeError`.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
-| `table` | `DataFrame` | - | Таблица относительных частот |
+| `table` | `DataFrame` | - | Таблица относительных частот (`frequency_table`) |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 <!-- core: corpus/stylometry.md:delta 5b85ad4 -->
 ``` {.python .signature}

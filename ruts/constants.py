@@ -366,6 +366,11 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "preset_type": "Пресет должен быть строкой, а не {type}",
     "unknown_preset": "Неизвестный пресет коэффициентов: {preset}. Доступные пресеты: {presets}",
     "basic_stats_type": "Базовые статистики должны быть объектом {expected} ruTS, а не {type}",
+    "basic_filter_nums": (
+        "filter_nums={filter_nums} не совпадает с переданными базовыми статистиками, "
+        "посчитанными с filter_nums={basic}: посчитайте их с filter_nums={filter_nums} "
+        "или не передавайте параметр"
+    ),
     "no_basic_stats_class": (
         "У {cls} нет basic_stats_class, источником данных должен быть объект BasicStats"
     ),
@@ -571,6 +576,7 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "param_words": "Нет слов {param}",
     "corpus_words": "В корпусе {name} нет слов",
     "features_type": "Признаки должны быть DataFrame, а не {type}",
+    "frequency_table_type": "Таблица частот должна быть DataFrame, а не {type}",
     "feature_names": "Названия признаков должны быть разными",
     "feature_numeric": "Признак {name} должен быть числовым",
     "corpus_labels": "Названия корпусов должны быть двумя строками, которые дают разные столбцы",

@@ -5,10 +5,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, cast
 
 import anyts.corpus.stylometry
-from anyts.corpus.stylometry import (
-    ZetaScore as ZetaScore,
-    z_scores as z_scores,
-)
+from anyts.corpus.stylometry import ZetaScore as ZetaScore
 from anyts.document import get_tree
 from anyts.utils import check_words, has_words, is_doc, is_document, is_punctuation
 
@@ -21,6 +18,7 @@ if TYPE_CHECKING:
     from spacy.tokens import Doc
 
 frequency_table = with_core_messages(anyts.corpus.stylometry.frequency_table)
+z_scores = with_core_messages(anyts.corpus.stylometry.z_scores)
 delta = with_core_messages(anyts.corpus.stylometry.delta)
 delta_profiles = with_core_messages(anyts.corpus.stylometry.delta_profiles)
 rolling_delta = with_core_messages(anyts.corpus.stylometry.rolling_delta)

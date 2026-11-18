@@ -563,3 +563,13 @@ def test_numbers_left_out():
     assert ReadabilityStats(text).bs.n_words == words - 3
     assert ReadabilityStats(text, filter_nums=False).bs.n_words == words
     assert BasicStats(text, filter_nums=True).n_words == words - 3
+
+
+def test_numbers_of_ready_basic_stats():
+    """Готовые базовые статистики считают числа, как построены; другое filter_nums - ошибка"""
+    text = "В 2026 году 5-й класс прочитал 1 250 000 страниц. Это много."
+    unnumbered = BasicStats(text, filter_nums=True)
+    assert ReadabilityStats(unnumbered).get_stats() == ReadabilityStats(text).get_stats()
+    assert ReadabilityStats(BasicStats(text)).bs.n_words == BasicStats(text).n_words
+    with pytest.raises(ParameterError, match=r"filter_nums=True не совпадает"):
+        ReadabilityStats(BasicStats(text), filter_nums=True)

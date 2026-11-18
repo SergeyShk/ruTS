@@ -69,7 +69,7 @@ Concordance(start, end, left, keyword, right)
 
 ## Выровненные строки { #format_kwic }
 
-<!-- core: corpus/kwic.md:format_kwic a511562 -->
+<!-- core: corpus/kwic.md:format_kwic 2be15d3 -->
 ``` {.python .signature}
 format_kwic(concordances, width=40, *, messages=None)
 ```
@@ -82,7 +82,7 @@ format_kwic(concordances, width=40, *, messages=None)
 | `width` | `int` | `40` | Ширина контекста в символах |
 | `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
-Строки, переданные строкой (`str`) или неитерируемым объектом, дают `SourceTypeError`, а `width`, который не целое число не меньше единицы, - `ParameterError`.
+Строки, переданные строкой (`str`), неитерируемым объектом или не конкордансами, дают `SourceTypeError`, а `width`, который не целое число не меньше единицы, - `ParameterError`.
 
 <!-- core: corpus/kwic.md:print_kwic ec934d7 -->
 ``` {.python .signature}

@@ -49,13 +49,13 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None, fi
 
 ## Параметры
 
-<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 01dfe85 -->
+<!-- core: stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-parameters 4597d80 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `source` | `str` / `Doc` / `Document` / `BasicStats` | - | Источник данных (строка, объект Doc или Document или готовые базовые статистики) |
 | `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений, не используется для готовых базовых статистик |
 | `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, не используется для готовых базовых статистик |
-| `filter_nums` | `bool` | `None` | Не считать числа словами; `None` - атрибут класса `filter_nums`; не используется для готовых базовых статистик |
+| `filter_nums` | `bool` | `None` | Не считать числа словами; `None` - атрибут класса `filter_nums`, для готовых базовых статистик - как в них, другое значение дает `ParameterError` |
 
 ## Атрибуты
 

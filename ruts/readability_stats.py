@@ -87,11 +87,13 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         source (str|Doc|Document|BasicStats): Источник данных - строка, объект Doc,
             Document или готовый объект BasicStats, чтобы не считать базовые статистики
             повторно
-        sents_extractor (SentsExtractor): Инструмент для извлечения предложений
-        words_extractor (WordsExtractor): Инструмент для извлечения слов
+        sents_extractor (SentsExtractor): Инструмент для извлечения предложений; не
+            используется для готового BasicStats
+        words_extractor (WordsExtractor): Инструмент для извлечения слов; не используется
+            для готового BasicStats
         preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
         filter_nums (bool): Не считать числа словами; None - атрибут класса filter_nums
-            (True); не используется для готового BasicStats
+            (True), для готового BasicStats - как в нем
 
     Атрибуты:
         bs (BasicStats): Объект основных статистик текста
@@ -131,8 +133,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         SourceTypeError: Если источник данных не строка, не объект Doc, не Document
             и не BasicStats ruTS или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
-        ParameterError: Если пресет коэффициентов не строка или неизвестен или filter_nums
-            не bool
+        ParameterError: Если пресет коэффициентов не строка или неизвестен, filter_nums
+            не bool или расходится с готовым BasicStats
     """
 
     basic_stats_class = BasicStats
