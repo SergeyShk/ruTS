@@ -1057,3 +1057,49 @@ def test_split_predicate_noun_checks_the_verb(nlp):
     assert is_split_predicate_noun(words[2], words[1])
     with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
         is_split_predicate_noun(words[2], doc[1])
+
+
+@pytest.mark.parametrize(
+    ("name", "args"),
+    [
+        *[
+            (name, ())
+            for name in (
+                "base_dep", "calc_valency", "count_children", "count_noun_modifiers",
+                "get_children", "has_agent", "is_agentless", "is_passive", "is_predicate",
+                "is_prep_complement", "is_root", "subtree_len", "is_finite_verb", "is_infinitive",
+            )
+        ],
+        ("has_feature", ("VerbForm", "Fin")),
+    ],
+)  # fmt: skip
+def test_core_checks_of_a_word(nlp, name, args):
+    """Функции ядра на странице синтаксиса отвечают по-русски, как функции ruTS, и
+    сохраняются pickle"""
+    import pickle
+
+    import ruts.syntax_stats
+
+    function = getattr(ruts.syntax_stats, name)
+    with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
+        function(nlp("Кот спит.")[0], *args)
+    assert pickle.loads(pickle.dumps(function)) is function
+
+
+@pytest.mark.parametrize(
+    ("name", "args"),
+    [
+        ("calc_coordination_chains", ()),
+        ("calc_dependency_distances", ()),
+        ("calc_tree_depth", ()),
+        ("dependency_triples", ()),
+        ("get_words", ()),
+        ("calc_modifier_chains", (lambda word: True,)),
+    ],
+)
+def test_core_checks_of_words(nlp, name, args):
+    """Функции ядра последовательности слов на Doc - русское сообщение"""
+    import ruts.syntax_stats
+
+    with pytest.raises(SourceTypeError, match=r"^Ожидается слово дерева TreeWord, а не Token$"):
+        getattr(ruts.syntax_stats, name)(nlp("Кот спит."), *args)

@@ -33,7 +33,7 @@ TEXTS = {
     "poems/Pushkin/19 октября.txt": "Роняет лес багряный свой убор.",
     "poems/Pushkin/Борис Годунов.txt": "Драма в стихах о смутном времени.",
     "poems/Lermontov/Парус.txt": "Белеет парус одинокий.",
-    "publicism/Tolstoy/Не могу молчать.txt": "Статья о смертной казни.",
+    "publicism/Tolstoy/Не могу молчать.txt": "Статья {о смертной} казни.",
 }
 INFOS = {
     "prose/Chekhov/info.csv": "name,year\nАгафья,1886\nАЛЬБОМ,1885\nНет файла,1887\n",
@@ -282,10 +282,33 @@ def test_strip_header():
             "Бирюк38. кунаком.6\nKrasnogorie!48 – 2x2, А.12 июля",
             "Бирюк. кунаком.\nKrasnogorie! – 2x2, А.12 июля",
         ),
+        ("Князья Ш\xa0у\xa0й\xa0с\xa0к\xa0и\xa0й. А\xa0б", "Князья Шуйский. А\xa0б"),
+        (
+            "Он повернул гасту {Гаста - копье.} и ударил. Хоть брось! [*1] Да.",
+            "Он повернул гасту и ударил. Хоть брось! Да.",
+        ),
+        (
+            "Йок.\n     2 плохо (тюрк.)\n     6 Кунак - приятель. (Прим. Лермонтова.)\nДалее.",
+            "Йок.\nДалее.",
+        ),
+        (
+            "Часы [Усовершенствовали [в настоящее время (фр.)] часы. (Примеч. А. И. Герцена.)]"
+            " идут zu sein2*.",
+            "Часы идут zu sein.",
+        ),
     ],
 )
 def test_clean_text(text, expected):
     assert clean_text(text) == expected
+
+
+def test_author_braces(dataset, monkeypatch):
+    """Фигурные скобки - сноска, а в файлах AUTHOR_BRACES - авторский текст без скобок"""
+    assert list(dataset.get_texts(genre="publicism")) == ["Статья казни."]
+    monkeypatch.setattr(
+        russian_literature_module, "AUTHOR_BRACES", {("Tolstoy", "Не могу молчать")}
+    )
+    assert list(dataset.get_texts(genre="publicism")) == ["Статья о смертной казни."]
 
 
 def test_trim_work():

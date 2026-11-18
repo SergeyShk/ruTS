@@ -2,6 +2,7 @@ import pytest
 import spacy
 
 from ruts.corpus import Concordance, format_kwic, kwic, print_kwic
+from ruts.exceptions import SourceTypeError
 from tests.pipelines import load_nlp
 
 text = "Кот сидел на окне. Кота звали Васька, и кот любил окно. Потому что кот спал."
@@ -71,6 +72,21 @@ def test_kwic_doc_pos():
         assert [line.start for line in kwic(source, "стали", by_lemma=True)] == [3, 27]
     for text, keyword in (("Я видел его брата.", "его"), ("Он уважает физика Иванова.", "физика")):
         assert [line.keyword for line in kwic(text, keyword, by_lemma=True)] == [keyword]
+
+
+def test_kwic_unannotated_by_lemma():
+    """Document и Doc без разметки - леммы в контексте, как у строки"""
+    from ruts.utils import get_document
+
+    sample = "Кто-то видел его вчера. Стали делать из стали."
+    # spaCy делит «Кто-то», а строка - нет: разбор берется по смещению токена
+    for source in (get_document(sample), spacy.blank("ru")(sample)):
+        for keyword in ("он", "стать", "сталь"):
+            found = [line.start for line in kwic(source, keyword, by_lemma=True)]
+            assert found == [line.start for line in kwic(sample, keyword, by_lemma=True)]
+    assert [line.keyword for line in kwic(get_document(sample), "он", by_lemma=True)] == ["его"]
+    with pytest.raises(SourceTypeError, match=r"^Источник данных не может быть типа list$"):
+        kwic(["кот", "спит"], "кот", by_lemma=True)
 
 
 def test_kwic_errors():

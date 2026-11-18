@@ -44,12 +44,12 @@ The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `source` | `str` / `Doc` / `Document` / `BasicStats` | - | Data source (a string, a Doc or a Document object, or ready basic statistics) |
-| `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool |
-| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool |
+| `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool, not used for ready `BasicStats` |
+| `words_extractor` | `WordsExtractor` | `None` | Word extraction tool, not used for ready `BasicStats` |
 | `preset` | `str` | `'plainrussian'` | Coefficient preset: `plainrussian`, `fiction` or `academic` |
-| `filter_nums` | `bool` | `None` | Leave out the numbers among the words; `None` - the class attribute `filter_nums`, `True` in ruTS; not used for ready `BasicStats` |
+| `filter_nums` | `bool` | `None` | Leave out the numbers among the words; `None` - the class attribute `filter_nums`, `True` in ruTS, for ready `BasicStats` - as in them; a value that differs from theirs raises `ParameterError` |
 
-The object keeps the basic statistics of the text in `bs`, the name of the preset in `preset` (read-only) and the coefficients of the preset in `coefficients`, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: `ReadabilityStats(rs.bs, preset="fiction")`.
+The object keeps the basic statistics of the text in `bs`, the name of the preset in `preset` (read-only) and the coefficients of the preset in `coefficients`, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: `ReadabilityStats(rs.bs, preset="fiction")`. A ready `BasicStats(text)` counts the numbers as words; the grades of `ReadabilityStats(text)` come from `BasicStats(text, filter_nums=True)`.
 
 ## Coefficient presets { #presets }
 

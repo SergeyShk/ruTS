@@ -60,7 +60,7 @@ from anyts.utils import is_doc, is_document, source_type_error
 
 from .constants import CORE_MESSAGES, DIVERSITY_STATS_DESC
 from .exceptions import SourceTypeError
-from .utils import document_words, get_document
+from .utils import core_messages, document_words, get_document
 
 if TYPE_CHECKING:
     from anyseg import Document
@@ -91,7 +91,12 @@ def check_params(
         ParameterError: Если параметр не число своего типа или вне допустимых значений
     """
     anyts.diversity_stats.check_params(
-        window_len, mtld_threshold, mtld_min_len, hdd_sample_size, log_base, messages=messages
+        window_len,
+        mtld_threshold,
+        mtld_min_len,
+        hdd_sample_size,
+        log_base,
+        messages=core_messages(messages),
     )
 
 
@@ -128,7 +133,7 @@ def calc_windowed(
         SourceTypeError: Если слова не список строк или метрика не функция
     """
     return anyts.diversity_stats.calc_windowed(
-        text, func, window_len, step, confidence, messages=messages
+        text, func, window_len, step, confidence, messages=core_messages(messages)
     )
 
 

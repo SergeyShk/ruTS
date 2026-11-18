@@ -5,7 +5,7 @@
 ## Зависимости
 
 *   `python` - 3.11 и выше
-*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.5.6 и выше в пределах 0.5, независимое от языка ядро, на котором построен ruTS
+*   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.5.7 и выше в пределах 0.5, независимое от языка ядро, на котором построен ruTS
 *   [`rumorph`](https://github.com/SergeyShk/ruMorph) - 0.6 и выше в пределах 0.6, морфологический анализатор
 *   [`anyseg`](https://github.com/SergeyShk/anySeg) - 0.3.1 и выше в пределах 0.3, сегментатор на токены и предложения
 *   `scipy`

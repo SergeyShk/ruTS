@@ -14,7 +14,7 @@ from ruts.corpus import (
     text_features,
 )
 from ruts.corpus.compare import COMPARISON_COLUMNS, REDUNDANT_FEATURES
-from ruts.exceptions import ParameterError, SourceError
+from ruts.exceptions import ParameterError, SourceError, SourceTypeError
 from tests.pipelines import load_nlp
 
 text = "Кот сидел на окне. Он смотрел на птиц, а птицы улетели. Кот уснул. Завтра он снова будет сидеть на окне и смотреть на птиц."
@@ -314,3 +314,11 @@ def test_text_features_readability_without_numbers():
     assert features["readability_flesch_kincaid_grade"] == pytest.approx(
         ReadabilityStats(text).flesch_kincaid_grade
     )
+
+
+def test_texts_of_words():
+    """Список слов вместо текста - сообщение называет элемент корпуса, а не корпус"""
+    with pytest.raises(
+        SourceTypeError, match=r"^Параметр a должен быть списком текстов, а в нем list"
+    ):
+        compare_corpora([["кот", "спит"]], ["Пес лает"])

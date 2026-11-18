@@ -53,12 +53,12 @@ ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='pla
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `source` | `str` / `Doc` / `Document` / `BasicStats` | - | Источник данных (строка, объект Doc или Document или готовые базовые статистики) |
-| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений |
-| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов |
+| `sents_extractor` | `SentsExtractor` | `None` | Инструмент для извлечения предложений, не используется для готового `BasicStats` |
+| `words_extractor` | `WordsExtractor` | `None` | Инструмент для извлечения слов, не используется для готового `BasicStats` |
 | `preset` | `str` | `'plainrussian'` | Пресет коэффициентов: `plainrussian`, `fiction` или `academic` |
-| `filter_nums` | `bool` | `None` | Не считать числа словами; `None` - атрибут класса `filter_nums`, в ruTS `True`; не используется для готового `BasicStats` |
+| `filter_nums` | `bool` | `None` | Не считать числа словами; `None` - атрибут класса `filter_nums`, в ruTS `True`, для готового `BasicStats` - как в нем, другое значение дает `ParameterError` |
 
-Объект хранит базовые статистики текста в `bs`, название пресета - в `preset` (только для чтения), коэффициенты пресета - в `coefficients`, копии, которую можно менять для отдельного объекта. Базовые статистики можно передать объекту другого пресета: `ReadabilityStats(rs.bs, preset="fiction")`.
+Объект хранит базовые статистики текста в `bs`, название пресета - в `preset` (только для чтения), коэффициенты пресета - в `coefficients`, копии, которую можно менять для отдельного объекта. Базовые статистики можно передать объекту другого пресета: `ReadabilityStats(rs.bs, preset="fiction")`. Готовый `BasicStats(text)` считает числа словами; оценки `ReadabilityStats(text)` дает `BasicStats(text, filter_nums=True)`.
 
 ## Пресеты коэффициентов { #presets }
 

@@ -288,16 +288,10 @@ def test_describe():
         "classic_nausea": "норма Advego",
         "academic_nausea": "выше нормы Advego",
         "water": "высокая водность по Text.ru",
-        "zipf_naturalness": "ниже нормы pr-cy и megaindex",
     }
-    assert ss.describe("cliches") is None and ss.describe("spam") is None
-    hapaxes = StyleStats("мама мыла раму")
-    assert isnan(hapaxes.zipf_naturalness)
-    assert hapaxes.describe("zipf_naturalness") is None
+    for stat in ("cliches", "spam", "zipf_naturalness"):
+        assert ss.describe(stat) is None
     assert StyleStats("слово " * 49).describe("classic_nausea") == "у верхней границы нормы Advego"
-    assert (
-        StyleStats(" ".join(ZIPF_HALF)).describe("zipf_naturalness") == "норма pr-cy и megaindex"
-    )
     for stat in ("flesch_reading_easy", "words", ["water"]):
         with pytest.raises(UnknownStatError):
             ss.describe(stat)
@@ -313,7 +307,6 @@ def test_describe():
         ("academic_nausea", 5, "норма Advego"),
         ("water", 30, "избыточная водность по Text.ru"),
         ("water", 15, "избыточная водность по Text.ru"),
-        ("zipf_naturalness", 50, "норма pr-cy и megaindex"),
     ],
 )
 def test_style_norms_bounds(stat, value, expected):

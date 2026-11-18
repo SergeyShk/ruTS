@@ -30,6 +30,7 @@ CALLS = [
     lambda: corpus.kwic("Кот спит.", "кот", window=-1),
     lambda: corpus.format_kwic("кот"),
     lambda: corpus.format_kwic([], width=0),
+    lambda: corpus.format_kwic(["кот"]),
     lambda: corpus.collocations([]),
     lambda: corpus.collocations(WORDS, measure="x"),
     lambda: corpus.collocations(WORDS, node="кот", side="up"),
@@ -45,6 +46,7 @@ CALLS = [
     lambda: corpus.check_keyness_params(positive="да"),
     lambda: corpus.frequency_table({}),
     lambda: corpus.frequency_table(UNITS, culling=1),
+    lambda: corpus.z_scores(WORDS),
     lambda: corpus.delta(UNITS),
     lambda: corpus.delta(UNITS, variant="x"),
     lambda: corpus.delta_profiles(UNITS, UNITS),
@@ -81,3 +83,14 @@ def test_wrappers_pickle(name):
     """Обертка функции ядра - объект ruTS по своему пути: pickle (процессы) ее находит"""
     function = getattr(corpus, name)
     assert pickle.loads(pickle.dumps(function)) is function
+
+
+def test_partial_messages():
+    """Словарь части ключей дополняется русскими сообщениями: верный вызов работает,
+    заданный ключ берется из словаря"""
+    messages = {"association_measure": "Мера {measure} неизвестна"}
+    assert corpus.collocations(WORDS * 3, messages=messages)
+    assert corpus.holm_correction([0.1, 0.2], messages=messages).tolist() == [0.2, 0.2]
+    assert corpus.keyness(WORDS, ["пес", "спит"], messages=messages)
+    with pytest.raises(RutsError, match=r"^Мера x неизвестна$"):
+        corpus.collocations(WORDS, measure="x", messages=messages)

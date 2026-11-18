@@ -4,7 +4,7 @@
 
 **ruTS** computes for Russian texts what usually takes several different tools: from basic statistics, readability and lexical diversity to morphology, syntax, cohesion, stylometry and corpus measures - by published formulas adapted to the Russian language.
 
-The source is a string or a [spaCy](https://github.com/explosion/spaCy) `Doc`; every statistic is available both as a class and as a spaCy pipeline component.
+The source is a string, a [spaCy](https://github.com/explosion/spaCy) `Doc` or an [anySeg](https://github.com/SergeyShk/anySeg) document; every statistic is available both as a class and as a spaCy pipeline component.
 
 Try it without installing in the [demo on Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): the readability grade, metrics, plots and highlighted fragments of a pasted text.
 

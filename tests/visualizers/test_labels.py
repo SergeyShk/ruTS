@@ -52,3 +52,21 @@ def test_keyness_legend():
     assert keyness_plot(STRONG, labels={"title": "Ключи"}).get_title() == "Ключи"
     with pytest.raises(ParameterError):
         keyness_plot(STRONG, WEAK, labels=("свой",))
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "zipf", "zipf_theory", "keyness_plot", "heaps_plot", "frequency_spectrum_plot",
+        "pca_plot", "mds_plot", "dendrogram_plot", "mendenhall_plot", "rolling_delta_plot",
+        "zeta_scatter_plot", "delta_histogram_plot",
+    ],
+)  # fmt: skip
+def test_plots_pickle(name):
+    """Обертка графика ядра - объект ruTS по своему пути: pickle ее находит"""
+    import pickle
+
+    import ruts.visualizers
+
+    function = getattr(ruts.visualizers, name)
+    assert pickle.loads(pickle.dumps(function)) is function

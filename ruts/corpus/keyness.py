@@ -18,11 +18,18 @@ from anyts.corpus.keyness import (
     check_keyness_params as core_check_keyness_params,
 )
 
-from ..constants import CORE_MESSAGES, RESOURCES_DIR
+from ..constants import RESOURCES_DIR
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..exceptions import ParameterError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import normalize_yo, parse_all, parse_word, strip_marks, with_core_messages
+from ..utils import (
+    core_messages,
+    normalize_yo,
+    parse_all,
+    parse_word,
+    strip_marks,
+    with_core_messages,
+)
 
 check_keyness_params = with_core_messages(core_check_keyness_params)
 UNREACHABLE_FILES = {
@@ -95,7 +102,7 @@ def keyness(
         SourceError: Если один из корпусов пуст
         DatasetNotFoundError: Если частотный словарь не загружен
     """
-    messages = CORE_MESSAGES if messages is None else messages
+    messages = core_messages(messages)
     if not isinstance(reference, FreqDict):
         return anyts.corpus.keyness(
             target, reference, measure, min_freq, positive, top_n, n, messages=messages

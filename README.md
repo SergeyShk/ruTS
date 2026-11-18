@@ -31,7 +31,7 @@
 
 **ruTS** считает по русскому тексту то, для чего обычно нужно несколько разных инструментов: от базовых статистик, удобочитаемости и лексического разнообразия до морфологии, синтаксиса, связности, стилометрии и корпусных мер - по опубликованным формулам, адаптированным для русского языка.
 
-Источник - строка или `Doc` [spaCy](https://github.com/explosion/spaCy); каждая статистика доступна и как класс, и как компонент пайплайна spaCy.
+Источник - строка, `Doc` [spaCy](https://github.com/explosion/spaCy) или документ [anySeg](https://github.com/SergeyShk/anySeg); каждая статистика доступна и как класс, и как компонент пайплайна spaCy.
 
 Попробовать без установки можно в [демо на Hugging Face Spaces](https://huggingface.co/spaces/SergeyShk/ruTS): класс удобочитаемости, метрики, графики и подсветка фрагментов вставленного текста.
 
@@ -71,7 +71,7 @@ uv add ruts
 python -m spacy download ru_core_news_sm
 ```
 
-Для `Doc` рекомендуется [конвейер](https://sergeyshk.github.io/ruTS/components/#load_pipeline) `ruts.load_pipeline()`: токены и предложения в нём даёт сегментатор [anySeg](https://github.com/SergeyShk/anySeg), морфологию - анализатор [ruMorph](https://github.com/SergeyShk/ruMorph), а модель - разбор зависимостей, так что `Doc` размечается как строка. С обычным `spacy.load("ru_core_news_sm")` морфологию даёт модель.
+Для `Doc` рекомендуется [конвейер](https://sergeyshk.github.io/ruTS/components/#load_pipeline) `ruts.load_pipeline()`: токены и предложения в нём даёт сегментатор [anySeg](https://github.com/SergeyShk/anySeg), морфологию - анализатор [ruMorph](https://github.com/SergeyShk/ruMorph), а модель - разбор зависимостей, так что `Doc` размечается как строка. С обычным `spacy.load("ru_core_news_sm")` токены, предложения и морфологию даёт модель.
 
 ## Быстрый старт
 
@@ -369,7 +369,7 @@ SEO-метрики по общепринятым определениям (фо�
 *   Классическая и академическая тошнота, водность, заспамленность
 *   Естественность по закону Ципфа, плотность ключевых слов и фраз
 *   Лексические маркеры канцелярита: отглагольные существительные, производные предлоги, вводные слова, штампы
-*   Прочтение метрик по нормам [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy и megaindex
+*   Прочтение метрик по нормам [Advego](https://advego.com/text/seo/) и [Text.ru](https://text.ru/seo)
 
 ```python
 >>> from pprint import pprint

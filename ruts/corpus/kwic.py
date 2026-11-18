@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import unicodedata
-from collections import deque
-from collections.abc import Callable, Sequence
-from typing import TYPE_CHECKING
+from collections.abc import Callable, Iterable, Sequence
+from typing import TYPE_CHECKING, Any, cast
 
 import anyts.corpus
+from anyseg import Document
 from anyts.corpus.kwic import (
     Concordance as Concordance,
     format_kwic as core_format_kwic,
     print_kwic as core_print_kwic,
 )
+from anyts.utils import is_doc
 
 from ..constants import CORE_MESSAGES
 from ..utils import (
@@ -26,7 +27,7 @@ from ..utils import (
 )
 
 if TYPE_CHECKING:
-    from anyseg import Document, Word
+    from anyseg import Word
     from spacy.tokens import Doc
 
 format_kwic = with_core_messages(core_format_kwic)
@@ -87,11 +88,26 @@ def kwic(
         by_lemma,
         ignore_case or case_sensitive,
         tokenize=iter_text_words,
-        lemmatize=_string_lemmatizer(source) if by_lemma and isinstance(source, str) else _lemma,
+        lemmatize=_lemmatizer(source) if by_lemma else _lemma,
         fold=_fold_marks if case_sensitive else _fold,
         sentenize=iter_text_sents,
         messages=CORE_MESSAGES,
     )
+
+
+def _lemmatizer(source: object) -> Callable[[str, Sequence[Word]], str | tuple[str, ...]]:
+    """Лемматизатор источника: без частей речи у слов (строка, Document или Doc без
+    разметки) - в контексте предложений текста, как у строки"""
+    if isinstance(source, str):
+        return _string_lemmatizer(source)
+    if isinstance(source, Document):
+        annotated = any(word.upos for word in source.words)
+    elif is_doc(source):
+        annotated = any(token.pos_ for token in cast(Iterable[Any], source))
+    else:
+        # Неверный источник проверяет ядро
+        return _lemma
+    return _lemma if annotated else _string_lemmatizer(cast(Document, source).text)
 
 
 def _fold_marks(word: str) -> str:
@@ -118,21 +134,23 @@ def _key_lemmas(word: str) -> tuple[str, ...]:
 
 
 def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Word]], str | tuple[str, ...]]:
-    """Леммы слов строки в контексте предложений (analyze_words): ядро разбирает слова
-    текста по порядку, по разу каждое, а затем слова ключа"""
+    """Леммы слов текста в контексте предложений (analyze_words) по смещению токена: токены
+    Doc могут делить слово иначе, чем строка"""
     positions = [(start, word) for start, _, word in iter_text_words(text)]
-    queue = deque(
-        zip((word for _, word in positions), analyze_words(positions, text), strict=True)
-    )
+    by_start = {
+        start: (word, analysis)
+        for (start, word), analysis in zip(positions, analyze_words(positions, text), strict=True)
+    }
 
     def lemma(word: str, tokens: Sequence[Word]) -> str | tuple[str, ...]:
-        if not queue:
+        if not tokens:
             return _key_lemmas(word)
-        # Ядро отдает слово с точкой сокращения и знаками ударения, очередь - без них
-        if unicodedata.normalize("NFC", queue[0][0]) == word_form(strip_marks(word)):
-            _, analysis = queue.popleft()
-            if analysis is not None:
-                return analysis.lemma
+        form, analysis = by_start.get(tokens[0].token.start, ("", None))
+        # Ядро отдает слово с точкой сокращения и знаками ударения, строка - без них
+        if analysis is not None and unicodedata.normalize("NFC", form) == word_form(
+            strip_marks(word)
+        ):
+            return analysis.lemma
         return lemmatize(word)
 
     return lemma

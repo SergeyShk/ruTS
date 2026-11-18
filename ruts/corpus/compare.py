@@ -11,7 +11,7 @@ from anyts.corpus.compare import (
     COMPARISON_COLUMNS as COMPARISON_COLUMNS,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
-from anyts.utils import check_words, count_words_by_spans, is_language
+from anyts.utils import check_sequence, count_words_by_spans, is_language
 
 from ..basic_stats import BasicStats, punctuation_profile
 from ..cohesion_stats import CohesionStats
@@ -113,6 +113,26 @@ def _min_words(window: int | None, min_words: int | None) -> int:
     if min_words is not None:
         return min_words
     return 1 if window is None else window
+
+
+def _check_texts(texts: object, param: str) -> None:
+    """
+    Проверка корпуса: список строк текстов
+
+    Аргументы:
+        texts (object): Корпус
+        param (str): Имя параметра для сообщения
+
+    Исключения:
+        SourceTypeError: Если корпус не список или в нем не строка
+    """
+    check_sequence(texts, param, message=CORE_MESSAGES["words_param"])
+    for text in cast(list[object], texts):
+        if not isinstance(text, str):
+            raise SourceTypeError(
+                f"Параметр {param} должен быть списком текстов, а в нем {type(text).__name__}: "
+                "передайте тексты строками, а не списки слов"
+            )
 
 
 def _check_windows(window: int | None, min_words: int | None) -> None:
@@ -302,7 +322,7 @@ def corpus_features(
         ParameterError: Если размер окна или min_words меньше единицы или min_words
             больше окна
     """
-    check_words(texts, "texts", message=CORE_MESSAGES["words_param"])
+    _check_texts(texts, "texts")
     if not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)
@@ -374,8 +394,8 @@ def compare_corpora(
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)
-    check_words(a, "a", message=CORE_MESSAGES["words_param"])
-    check_words(b, "b", message=CORE_MESSAGES["words_param"])
+    _check_texts(a, "a")
+    _check_texts(b, "b")
     if features is not None and not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)

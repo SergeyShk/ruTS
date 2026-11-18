@@ -45,7 +45,7 @@ class UnadaptedReadabilityStats(anyts.unadapted_readability_stats.UnadaptedReada
         words_extractor (WordsExtractor): Инструмент для извлечения слов; не используется
             для готовых основных статистик
         filter_nums (bool): Не считать числа словами; None - атрибут класса filter_nums
-            (False)
+            (False), для готовых основных статистик - как в них
 
     Атрибуты:
         bs (BasicStats): Основные статистики текста
@@ -74,7 +74,8 @@ class UnadaptedReadabilityStats(anyts.unadapted_readability_stats.UnadaptedReada
         SourceTypeError: Если источник данных не строка, не объект Doc, не Document
             и не BasicStats или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
-        ParameterError: Если filter_nums не bool
+        ParameterError: Если filter_nums не bool или расходится с готовыми основными
+            статистиками
     """
 
     basic_stats_class = BasicStats

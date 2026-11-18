@@ -199,8 +199,8 @@ def with_core_messages(func: F) -> F:
     Функция ядра с русскими сообщениями об ошибках
 
     Описание:
-        messages=None функции ядра становится CORE_MESSAGES; сигнатура и описание -
-        функции ядра
+        messages=None функции ядра становится CORE_MESSAGES, словарь части ключей
+        дополняется ими; сигнатура и описание - функции ядра
 
     Аргументы:
         func (Callable): Функция ядра с параметром messages
@@ -211,12 +211,30 @@ def with_core_messages(func: F) -> F:
 
     @functools.wraps(func)
     def wrapper(*args: Any, messages: Mapping[str, str] | None = None, **kwargs: Any) -> Any:
-        return func(*args, messages=CORE_MESSAGES if messages is None else messages, **kwargs)
+        return func(*args, messages=core_messages(messages), **kwargs)
 
     return cast(F, _in_ruts(wrapper))
 
 
-def _in_ruts(wrapper: Callable[..., Any]) -> Callable[..., Any]:
+def core_messages(messages: Mapping[str, str] | None) -> Mapping[str, str]:
+    """
+    Сообщения об ошибках функции ядра
+
+    Описание:
+        None - CORE_MESSAGES, словарь части ключей дополняется ими
+
+    Аргументы:
+        messages (dict[str, str]): Сообщения по ключам или None
+
+    Вывод:
+        dict[str, str]: Сообщения для функции ядра
+    """
+    if messages is None:
+        return CORE_MESSAGES
+    return {**CORE_MESSAGES, **messages} if isinstance(messages, Mapping) else messages
+
+
+def _in_ruts(wrapper: F) -> F:
     """Обертка функции ядра в модуле ruTS с тем же путем: pickle находит ее, а не функцию ядра"""
     wrapper.__module__ = wrapper.__module__.replace("anyts.", "ruts.", 1)
     return wrapper
@@ -815,6 +833,8 @@ def document_words(document: Document) -> tuple[str, ...]:
         >>> document_words(get_document("Ма\\u0301ма, 5 руб. в день!"))
         ('Мама', '5', 'руб', 'в', 'день')
     """
+    if not isinstance(document, Document):
+        raise SourceTypeError(CORE_MESSAGES["source_type"].format(type=type(document).__name__))
     return tuple(word_form(strip_marks(word)) for word in anyts.document.document_words(document))
 
 
