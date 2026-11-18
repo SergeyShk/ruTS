@@ -56,9 +56,10 @@ def keyness(
         С эталоном FreqDict слова цели приводятся к леммам словаря, как в LexicalStats,
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная на объем
         корпуса словаря (92 млн); слово вне словаря получает его наименьшую частоту
-        (min_ipm) и бывает только положительным ключевым словом. Статья, которой нет
-        в цели и к которой не приводится ни одна форма ее лексем ruMorph, отрицательным
-        ключевым словом не бывает
+        (min_ipm) и бывает только положительным ключевым словом. Сокращение сравнивается
+        со своей статьей (ссср, млн), а без нее отбрасывается, если ruMorph раскрывает
+        его в другое слово (т., г.). Статья, которой нет в цели и к которой не приводится
+        ни одна форма ее лексем ruMorph, отрицательным ключевым словом не бывает
 
     Ссылки:
         https://ucrel.lancs.ac.uk/llwizard.html
@@ -112,8 +113,10 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
 
     @cache
     def key(word: str) -> str:
-        lemma = parse_word(word).lemma if lemmatize else word
-        return dictionary_lemma(word, lemma, entries)
+        analysis = parse_word(word)
+        if _abbreviated(analysis):
+            return normalize_yo(word)
+        return dictionary_lemma(word, analysis.lemma if lemmatize else word, entries)
 
     return key
 
@@ -121,12 +124,17 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
 def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> FrequencyReference:
     """Эталон частотного словаря, как его описывает докстринг keyness"""
     size = float(CORPUS_SIZE)
+    entries = freq_dict.entries
+
+    def keep(word: str) -> bool:
+        return _is_dictionary_word(word) and (key(word) in entries or not _is_expansion(word))
+
     return FrequencyReference(
         {lemma: ipm * size / 1e6 for lemma, ipm in freq_dict.word_ipm.items()},
         size,
         freq_dict.min_ipm * size / 1e6,
         key,
-        _is_dictionary_word,
+        keep,
     )
 
 
@@ -142,9 +150,11 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     Поиск статей частотного словаря, к которым не приводится ни одна форма их лексем
 
     Описание:
-        Медленный: результат хранится в ресурсах UNREACHABLE_FILES. Сравнительная
-        степень и краткие формы прилагательных на -щий не считаются (обязаннее,
-        действующ); у слов вне словаря ruMorph (Михайлыч) формы угаданы
+        Медленный: результат хранится в ресурсах UNREACHABLE_FILES. Цель из лемм
+        дает лемма первого разбора формы или любого другого, кроме сокращений
+        (предлог «со» - только «с»). Сравнительная степень
+        и краткие формы прилагательных на -щий не считаются (обязаннее, действующ);
+        у слов вне словаря ruMorph (Михайлыч) формы угаданы
 
     Аргументы:
         freq_dict (FreqDict): Частотный словарь
@@ -155,8 +165,13 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     """
     key = _dictionary_key(freq_dict.entries, lemmatize)
 
-    def target(form: str) -> str:
-        return form if lemmatize else parse_word(form).lemma
+    def targets(form: str) -> set[str]:
+        if lemmatize:
+            return {form}
+        analyses = parse_all(form)
+        return {analyses[0].lemma} | {
+            analysis.lemma for analysis in analyses if not _abbreviated(analysis)
+        }
 
     def counted(form: rumorph.Analysis, entry: str) -> bool:
         return form.feats.get("Degree") != "Cmp" and not (
@@ -164,21 +179,31 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
         )
 
     def reachable(entry: str) -> bool:
-        if key(target(entry)) == entry:
-            return True
-        forms = {
+        forms = {entry} | {
             form.word
             for analysis in parse_all(entry)
             for form in analysis.forms()
             if counted(form, entry)
         }
         return any(
-            key(target(spelling)) == entry
+            key(target) == entry
             for form in forms
             for spelling in {form, normalize_yo(form)}
+            for target in targets(spelling)
         )
 
     return sorted(entry for entry in freq_dict.entries if not reachable(entry))
+
+
+def _abbreviated(analysis: rumorph.Analysis) -> bool:
+    """Является ли разбор сокращением"""
+    return analysis.feats.get("Abbr") == "Yes"
+
+
+def _is_expansion(word: str) -> bool:
+    """Раскрывает ли первый разбор сокращение в другое слово (т. - то), а не оставляет (вкп)"""
+    analysis = parse_word(word)
+    return _abbreviated(analysis) and normalize_yo(analysis.lemma) != normalize_yo(word)
 
 
 @lru_cache(maxsize=131072)

@@ -200,6 +200,41 @@ def test_keyness_freq_dict_no_parsing(pronoun_dict, monkeypatch):
     assert "во" not in {keyword.word for keyword in negative}
 
 
+def test_keyness_freq_dict_abbreviations(tmp_path):
+    """Сокращение сравнивается со своей статьей, а без нее отбрасывается, если ruMorph раскрывает
+    его в другое слово: словарь не раскрывает «т.» и «г.». «ВКП» не раскрывается и остается
+    словом вне словаря; правило одно для словоформ и лемм («г» у pymorphy3)"""
+    rows = [
+        ("год", "s", 3000.0),
+        ("кот", "s", 40.0),
+        ("ссср", "s.PROP", 150.0),
+        ("то", "spro", 5000.0),
+    ]
+    lines = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
+    lines += [f"{lemma}\t{pos}\t{ipm}\t90\t90\t1000" for lemma, pos, ipm in rows]
+    tmp_path.joinpath(FILENAME).write_text("\n".join(lines) + "\n", encoding="utf-8")
+    freq_dict = FreqDict(data_dir=tmp_path)
+    target = ["т", "т", "г", "СССР", "ВКП", "кот", "кот"]
+    for lemmatize in (True, False):
+        found = keyness(target, freq_dict, lemmatize=lemmatize)
+        assert {keyword.word: keyword.freq_target for keyword in found} == {
+            "ссср": 1,
+            "вкп": 1,
+            "кот": 2,
+        }
+
+
+def test_unreachable_lemmas_of_any_analysis():
+    """Цель из лемм дает лемму любого разбора: «значит» и «трудно» достижимы, а «со» - нет,
+    предлог приводится к «с», а сокращение «со» не в счет"""
+    from ruts.corpus.keyness import _unreachable_entries
+
+    unreachable = _unreachable_entries(lemmatize=False)
+    assert "значит" not in unreachable and "трудно" not in unreachable
+    assert {"со", "во"} <= unreachable
+    assert {"значит", "трудно", "со"} <= _unreachable_entries(lemmatize=True)
+
+
 @pytest.mark.network
 def test_unreachable_resource():
     """Ресурс недостижимых статей совпадает с поиском по настоящему словарю"""
