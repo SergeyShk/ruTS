@@ -65,11 +65,28 @@ DRAMA = {
     "Chekhov": ("Вишнёвый сад", "Три сестры"),
     "Gogol": ("Ревизор",),
     "Gorky": ("Мещане", "На дне"),
-    "Pushkin": ("Борис Годунов", "Каменный гость", "Моцарт и Сальери", "Скупой рыцарь"),
+    "Pushkin": (
+        "Борис Годунов",
+        "Каменный гость",
+        "Моцарт и Сальери",
+        "Пир во время чумы",
+        "Скупой рыцарь",
+    ),
+}
+# Файлы собрания с чужим текстом: произведение идет после строки начала или до строки конца
+WORK_BOUNDS = {
+    ("Bryusov", "Декадент"): ("ДЕКАДЕНТ", None),
+    ("Gorky", "В людях"): ("В ЛЮДЯХ", None),
+    ("Pushkin", "Борис Годунов"): (None, "Конец"),
 }
 _LINE = r"^[^\S\n]*{}[^\S\n]*[.:]?[^\S\n]*$"
 APPARATUS = re.compile(
-    _LINE.format("(?:примечания(?: к повести)?|комментарии|печатные варианты)"), re.I | re.M
+    _LINE.format(
+        "(?:примечания(?: к повести)?|комментари[ий]|печатные варианты|другие редакции"
+        "|из ранних редакций|о романе|о сборнике)"
+    )
+    + r"|^[^\S\n]*(?:[—*][\s*]*)?впервые (?:опубликован|напечатан)",
+    re.I | re.M,
 )
 CONTENTS = re.compile(_LINE.format("(?:содержание|оглавление)"), re.I)
 CONTENTS_ENTRY = re.compile(r"^[^\S\n]*#\d+[^\S\n]")
@@ -108,11 +125,10 @@ class RussianLiterature(Dataset):
 
     Описание:
         373 произведения 12 авторов XIX - начала XX века (38 млн символов): проза
-        (264, от рассказов до романов), поэзия (74), публицистика Толстого (26)
-        и драма (9; пьесы из папок прозы и поэзии собрания). Год написания взят
-        из файлов info.csv собрания, у 27 произведений его нет; заголовок с именем
-        автора и названием в начале текста срезается (strip_header), аппарат
-        издания удаляется (clean_text)
+        (264, от рассказов до романов), поэзия (73), публицистика Толстого (26)
+        и драма (10). Год написания взят из файлов info.csv собрания, у 27
+        произведений его нет; заголовок с именем автора и названием в начале текста
+        срезается (strip_header), аппарат издания удаляется (clean_text)
         Тексты в общественном достоянии (на Kaggle - лицензия PDDL), собраны с сайтов
         LitLib, Wikisource и Ilibrary. Подходит для атрибуции авторства и сравнения жанров
 
@@ -325,15 +341,16 @@ class RussianLiterature(Dataset):
                         "year_to": year_to,
                     }
                     if all(filter_(record) for filter_ in fields):
-                        text = strip_header(clean_text(read_text(filepath)), author, filepath.stem)
+                        text = trim_work(
+                            clean_text(read_text(filepath)),
+                            *WORK_BOUNDS.get((author_dir.name, filepath.stem), (None, None)),
+                        )
+                        text = strip_header(text, author, filepath.stem)
                         yield {**record, "text": text, "file": filepath}
 
     def __genre_files(self, genre: str) -> Generator[tuple[Path, list[Path]], None, None]:
         """
         Папки авторов и файлы произведений жанра
-
-        Описание:
-            Пьесы берутся из папок прозы и поэзии собрания и в эти жанры не входят
 
         Аргументы:
             genre (str): Жанр из GENRES
@@ -516,11 +533,8 @@ def clean_text(text: str) -> str:
     Удаление аппарата издания из текста
 
     Описание:
-        HTML-коды раскодируются; разделы примечаний, комментариев и печатных
-        вариантов отрезаются до конца текста, если это не список «(1) ...» внутри
-        текста; удаляются оглавления, сноски, переводы и пояснения издателя
-        с пометой языка, «Ред.» или «Прим.» и номера сносок. Звездочки авторских
-        пропусков («Р***», «N*») остаются
+        Удаляются примечания и сноски, в том числе авторские, комментарии и статьи
+        издания, варианты, оглавления и переводы; HTML-коды раскодируются
 
     Аргументы:
         text (str): Текст файла
@@ -563,6 +577,25 @@ def _remove(pattern: re.Pattern[str], text: str, condition: Any = None) -> str:
             last = match.end()
     parts.append(text[last:])
     return "".join(parts)
+
+
+def trim_work(text: str, start: str | None = None, end: str | None = None) -> str:
+    """
+    Выделение произведения из файла с чужим текстом
+
+    Аргументы:
+        text (str): Текст файла
+        start (str): Строка перед началом произведения; без нее - текст с начала
+        end (str): Строка после конца произведения; без нее - текст до конца
+
+    Вывод:
+        str: Текст произведения
+    """
+    lines = text.split("\n")
+    keys = [line.strip() for line in lines]
+    first = keys.index(start) + 1 if start in keys else 0
+    last = keys.index(end, first) if end in keys[first:] else len(lines)
+    return "\n".join(lines[first:last]).strip()
 
 
 def _strip_contents(text: str) -> str:

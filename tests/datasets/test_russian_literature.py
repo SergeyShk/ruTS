@@ -23,6 +23,7 @@ from ruts.datasets.russian_literature import (
     parse_years,
     read_text,
     strip_header,
+    trim_work,
 )
 from ruts.exceptions import DatasetNotFoundError
 
@@ -110,7 +111,7 @@ def test_text_counts():
         "publicism": 26,
         "drama": 0,
     }
-    assert sum(len(titles) for titles in DRAMA.values()) == 9
+    assert sum(len(titles) for titles in DRAMA.values()) == 10
     assert {name.split("/")[1] for name in TEXT_COUNTS} == set(AUTHORS)
     assert set(DRAMA) <= set(AUTHORS)
     assert set(WITHOUT_INFO) <= set(TEXT_COUNTS)
@@ -238,6 +239,10 @@ def test_strip_header():
     [
         ("G&#234;nes, A &amp; B", "Gênes, A & B"),
         ("Текст.\n\nПримечания\n\n1\n\nСноска.", "Текст."),
+        ("Поэма.\n    Комментарий\nСтатья.", "Поэма."),
+        ("Конец\n\nО романе\nСтатья.", "Конец"),
+        ("Повесть.\n—\xa0Впервые опубликовано: «Отечественные записки».", "Повесть."),
+        ("Роман.\n   * * *   Впервые опубликован в журнале «Время».", "Роман."),
         ("Текст.\n\n    Комментарии\nКомментарий.\n\nПримечания\nСноска.", "Текст."),
         (
             "Начало.\n  Примечания\n  (1) турнюр\n  (2) красавица\n\nЧАСТЬ ВТОРАЯ",
@@ -281,6 +286,12 @@ def test_strip_header():
 )
 def test_clean_text(text, expected):
     assert clean_text(text) == expected
+
+
+def test_trim_work():
+    assert trim_work("Статья\nДЕКАДЕНТ\nПовесть", "ДЕКАДЕНТ") == "Повесть"
+    assert trim_work("Пьеса\n  Конец\nДругая пьеса", end="Конец") == "Пьеса"
+    assert trim_work("Текст", "ДЕКАДЕНТ", "Конец") == "Текст"
 
 
 def test_helpers(tmp_path):

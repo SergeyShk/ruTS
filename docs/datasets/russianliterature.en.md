@@ -9,11 +9,11 @@ The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical lit
 | Genre | Key | Authors | Works |
 | :---- | :-- | :------ | :---- |
 | Prose | `prose` | Chekhov (75), Tolstoy (42), Dostoevsky (33), Gorky (31), Bryusov (30), Gogol (15), Herzen (11), Pushkin (10), Turgenev (10), Blok (4), Lermontov (3) | 264 |
-| Poetry | `poems` | Pushkin (31), Lermontov (18), Nekrasov (15), Blok (10) | 74 |
+| Poetry | `poems` | Pushkin (30), Lermontov (18), Nekrasov (15), Blok (10) | 73 |
 | Publicism | `publicism` | Tolstoy | 26 |
-| Drama | `drama` | Pushkin (4), Chekhov (2), Gorky (2), Gogol (1) | 9 |
+| Drama | `drama` | Pushkin (5), Chekhov (2), Gorky (2), Gogol (1) | 10 |
 
-The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The plays of the collection lie in the folders of prose and poetry, the dataset assigns them to drama. The texts are freed of the edition apparatus: notes, commentaries, variants, tables of contents, footnotes and the publisher's translations. The collection suits authorship attribution and genre comparison.
+The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The plays of the collection lie in the folders of prose and poetry, the dataset assigns them to drama. The texts are freed of the notes and footnotes, the author's ones included, the commentaries and articles of the editions, the variants, the tables of contents and the translations, and three files of a publisher's preface and of repeated other works. The collection suits authorship attribution and genre comparison.
 
 The repository archive (20 MB) is downloaded at a pinned commit, texts are read one at a time.
 
@@ -98,7 +98,7 @@ Works without a year do not pass the year filters. An unknown genre, an `author`
 !!! warning "Author name in the text"
     Most files of the source begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль»), which is a feature leak for authorship attribution. Unambiguous headers are stripped, which cleans 288 of 373 texts. In 8 texts the author's surname remains within the first 200 characters - in headers of other forms («Антон Павлович Чехов. Палата No 6») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.
 
-`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `genre` - genre, `author` - author, `title` - title, `year_from` and `year_to` - years of writing (`None` without a date), `text` - text without the author-and-title header and the edition apparatus, `file` - path to the file.
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `genre` - genre, `author` - author, `title` - title, `year_from` and `year_to` - years of writing (`None` without a date), `text` - the cleaned text without the author-and-title header, `file` - path to the file.
 
 === "Code"
 
