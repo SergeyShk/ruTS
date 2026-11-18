@@ -2266,8 +2266,8 @@
 <p>Меры стилометрии и атрибуции авторства: расстояния между текстами по частотам самых частых слов (дельта Барроуза и ее варианты, как в <a href="https://github.com/computationalstylistics/stylo">stylo</a>) и вдоль текста по его окнам (скользящая дельта), маркеры предпочитаемых и избегаемых слов (Zeta) и их доли в сегментах корпусов, расстояние хи-квадрат Килгарриффа между корпусами и кривая Менденхолла. Функции работают со списками единиц текста: словоформ в нижнем регистре (обычный выбор для дельты), лемм или символьных N-грамм - регистр и лемматизация на стороне экстракторов.</p>
 <p>Функции - это функции ядра <a href="https://sergeyshk.github.io/anyTS/corpus/stylometry/">anyTS</a>, к которым добавлен <a href="#function_words_profile">профиль служебных слов</a> русского языка как признак автора. Единицы текста дают <a href="../../extractors/words/"><code>WordsExtractor</code></a> - словоформы и леммы - и <a href="../../extractors/char_ngrams/"><code>CharNgramsExtractor</code></a>.</p>
 <h2 id="delta">Дельта Барроуза<a class="headerlink" href="#delta" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/stylometry.md:frequency_table 1b6144d -->
-<div class="signature highlight"><pre><span></span><code><span class="n">frequency_table</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:frequency_table c4445f8 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">frequency_table</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Строит таблицу относительных частот корпуса - словаря «имя текста → единицы»: строки - тексты, столбцы - <code>n_mfw</code> самых частых единиц по убыванию средней относительной частоты (при равенстве - по алфавиту); <code>culling</code> оставляет единицы, встречающиеся хотя бы в заданной доле текстов, как в stylo.</p>
 <table>
@@ -2298,6 +2298,12 @@
 <td style="text-align: left;"><code>0.0</code></td>
 <td style="text-align: left;">Наименьшая доля текстов, в которых встречается единица</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Корпус, который не словарь списков строк, дает <code>SourceTypeError</code>; пустой корпус, текст без единиц и отсев, после которого не остается ни одной единицы, - <code>SourceError</code>, а <code>n_mfw</code>, который не целое число не меньше единицы, и <code>culling</code>, который не число в пределах [0, 1], - <code>ParameterError</code>.</p>
@@ -2323,8 +2329,8 @@
 </tr>
 </tbody>
 </table>
-<!-- core: corpus/stylometry.md:delta 07de161 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">delta</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:delta 5b85ad4 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">delta</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Считает по z-оценкам симметричную матрицу расстояний (<code>DataFrame</code> с именами текстов); нужно не меньше трех текстов - на двух z-оценки вырождаются в ±1/√2 и расстояния не зависят от частот.</p>
 <p>Варианты (<code>anyts.constants.DELTA_VARIANTS</code>), формулы по исходникам stylo; <span class="arithmatex">\(n\)</span> - число единиц, <span class="arithmatex">\(z_A\)</span> и <span class="arithmatex">\(z_B\)</span> - векторы z-оценок текстов:</p>
@@ -2399,11 +2405,17 @@
 <td style="text-align: left;"><code>0.0</code></td>
 <td style="text-align: left;">Наименьшая доля текстов, в которых встречается единица</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Корпус, <code>n_mfw</code> и <code>culling</code> дают ошибки <code>frequency_table</code>; меньше трех текстов - <code>SourceError</code>, а неизвестный вариант - <code>ParameterError</code>.</p>
-<!-- core: corpus/stylometry.md:delta_profiles 1c5b7e6 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">delta_profiles</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:delta_profiles 46d29ab -->
+<div class="signature highlight"><pre><span></span><code><span class="n">delta_profiles</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Расстояния по дельте для атрибуции авторства. Самые частые единицы, отсев и статистики z-оценок берутся из эталонных текстов (профилей авторов) или из отдельного набора <code>statistics</code>, например из обучающих окон, когда профилей слишком мало, чтобы оценить разброс частот; проверяемые тексты <code>samples</code> получают те же единицы и нормировку. Результат - расстояния от проверяемых текстов (строки) до эталонных (столбцы); ближайший эталон - предполагаемый автор. В отличие от <code>delta</code>, проверяемый текст не влияет ни на единицы, ни на нормировку, так что его результат не зависит от других проверяемых текстов.</p>
 <table>
@@ -2451,6 +2463,12 @@
 <td style="text-align: left;"><code>dict[str, list[str]]</code></td>
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Тексты для единиц и статистик нормировки; <code>None</code> - эталонные тексты</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
 </tr>
 </tbody>
 </table>
@@ -2500,8 +2518,8 @@
 </div>
 </div>
 <h2 id="rolling_delta">Скользящая дельта<a class="headerlink" href="#rolling_delta" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/stylometry.md:rolling_delta c80e9bf -->
-<div class="signature highlight"><pre><span></span><code><span class="n">rolling_delta</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:rolling_delta ba4892e -->
+<div class="signature highlight"><pre><span></span><code><span class="n">rolling_delta</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">variant</span><span class="o">=</span><span class="s1">'burrows'</span><span class="p">,</span> <span class="n">culling</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">statistics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Дельта вдоль текста, как <code>rolling.delta</code> в stylo: эталонные тексты и проверяемый текст режутся на окна по <code>window</code> единиц через каждые <code>step</code> единиц, остаток короче окна отбрасывается. Самые частые единицы, отсев и статистики z-оценок берутся из окон эталонных текстов или отдельного набора <code>statistics</code>, и каждое окно текста сравнивается вариантом дельты с центроидом окон каждого эталонного текста. Результат - расстояния от окон (строки, по позиции их середины в единицах) до эталонов (столбцы); где вдоль текста меняется ближайший эталон, там меняется и стиль - другой автор части текста, написанного в соавторстве, заимствованный фрагмент. В отличие от stylo, где складываются разности исходных частот, расстояния считаются по z-оценкам, как в <code>delta_profiles</code>.</p>
 <p>При нормировке по собственным окнам центроиды эталонов уравновешивают друг друга, и косинусная дельта теряет смысл: косинусные расстояния окна до эталонов в среднем (с весами по числу их окон и длинам их центроидов) равны 1, при двух эталонах их сумма равна 2 и линии зеркальны, так что фрагмент третьего автора выглядит лежащим посередине между ними. При немногих эталонах косинусной дельте нужны статистики <code>statistics</code> по большему числу текстов - других авторов, других произведений; дельта Барроуза и дельта Эдера так не ограничены. С <code>statistics</code> достаточно одного эталона.</p>
@@ -2563,6 +2581,12 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Тексты, окна которых дают единицы и статистики нормировки; <code>None</code> - эталонные тексты</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Корпус, который не словарь списков строк, и единицы текста, которые не список строк, дают <code>SourceTypeError</code>. Отсутствие эталонных текстов, меньше двух эталонных текстов без <code>statistics</code>, текст без единиц или короче окна, меньше трех окон для статистик и отсев, после которого не остается ни одной единицы, дают <code>SourceError</code>. Неизвестный вариант, <code>window</code>, <code>step</code> или <code>n_mfw</code>, который не целое число не меньше единицы, <code>step</code> больше окна и <code>culling</code>, который не число в пределах [0, 1], дают <code>ParameterError</code>.</p>
@@ -2589,8 +2613,8 @@
 </div>
 </div>
 <h2 id="zeta">Zeta<a class="headerlink" href="#zeta" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/stylometry.md:zeta 1b7460b -->
-<div class="signature highlight"><pre><span></span><code><span class="n">zeta</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:zeta f12bd98 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">zeta</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">comparison</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Маркеры предпочитаемых и избегаемых слов по Burrows (2007) и Craig и Kinney (2009). Каждый текст обоих корпусов делится на сегменты примерно по <code>segment_size</code> слов (отношение длины к размеру, округленное до целого с половиной вверх, не меньше одного сегмента); <span class="arithmatex">\(DP\)</span> - доля сегментов корпуса, в которых встречается слово. Zeta - <span class="arithmatex">\(DP_{target} - DP_{comparison}\)</span>, от −1 до 1 (<code>zeta.craig</code> в stylo; классическая Zeta Крейга, <span class="arithmatex">\(DP_{target} + (1 - DP_{comparison})\)</span>, больше на единицу); логарифмическая Zeta - <span class="arithmatex">\(\log_2 \frac{DP_{target}}{DP_{comparison}}\)</span> (<a href="https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/">Schöch и др. 2018</a>), нулевая доля заменяется на половину сегмента. Список идет от слов, которые предпочитает целевой корпус, к избегаемым.</p>
 <table>
@@ -2627,6 +2651,12 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Количество слов с начала списка; <code>None</code> - все</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Результат - список именованных кортежей <code>ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)</code> по убыванию Zeta, при равенстве - по убыванию логарифмической Zeta и по алфавиту. Корпус, который не список строк и не список таких списков, дает <code>SourceTypeError</code>, а корпус без слов - <code>SourceError</code>; <code>segment_size</code> или <code>top_n</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
@@ -2646,8 +2676,8 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </div>
 </div>
 </div>
-<!-- core: corpus/stylometry.md:zeta_segments 89aea5c -->
-<div class="signature highlight"><pre><span></span><code><span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpora</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:zeta_segments 33ac85a -->
+<div class="signature highlight"><pre><span></span><code><span class="n">zeta_segments</span><span class="p">(</span><span class="n">corpora</span><span class="p">,</span> <span class="n">preferred</span><span class="p">,</span> <span class="n">avoided</span><span class="p">,</span> <span class="n">segment_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Доли маркеров Zeta в сегментах корпусов - так сегменты располагает <code>oppose</code> в stylo: каждый текст делится на сегменты, как в <code>zeta</code>, и для сегмента считается, какая доля слов списков <code>preferred</code> и <code>avoided</code> в нем встречается. С маркерами целевого корпуса против корпуса сравнения сегменты целевого корпуса лежат на плоскости двух долей слева вверху, а сегменты корпуса сравнения - справа внизу; сегменты спорного текста показывают, к какой группе он ближе (<code>zeta_scatter_plot</code>).</p>
 <table>
@@ -2684,6 +2714,12 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <td style="text-align: left;"><code>2000</code></td>
 <td style="text-align: left;">Размер сегмента в словах</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Результат - <code>DataFrame</code> сегментов в порядке корпусов и их текстов со столбцами <code>corpus</code> (имя корпуса), <code>preferred</code> и <code>avoided</code> (доли списков). Корпуса, которые не словарь, и корпус или список маркеров, который не список строк, дают <code>SourceTypeError</code>; отсутствие корпусов, пустой список маркеров и корпус без слов - <code>SourceError</code>, а <code>segment_size</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
@@ -2714,8 +2750,8 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </div>
 </div>
 <h2 id="kilgarriff_chi2">Хи-квадрат Килгарриффа<a class="headerlink" href="#kilgarriff_chi2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/stylometry.md:kilgarriff_chi2 33184e9 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">kilgarriff_chi2</span><span class="p">(</span><span class="n">words_a</span><span class="p">,</span> <span class="n">words_b</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:kilgarriff_chi2 83f2fa3 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">kilgarriff_chi2</span><span class="p">(</span><span class="n">words_a</span><span class="p">,</span> <span class="n">words_b</span><span class="p">,</span> <span class="n">n_mfw</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Расстояние между двумя корпусами по <a href="https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf">Kilgarriff (2001)</a>: для <code>n_mfw</code> самых частых слов объединенного корпуса ожидаемые частоты в корпусах пропорциональны их объемам, <span class="arithmatex">\(\chi^2 = \sum (O - E)^2 / E\)</span> по словам и обоим корпусам. Чем больше значение, тем сильнее корпуса различаются; величина растет с объемом корпусов, поэтому сравнимы только пары равных объемов.</p>
 <table>
@@ -2746,6 +2782,12 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <td style="text-align: left;"><code>500</code></td>
 <td style="text-align: left;">Число самых частых слов объединенного корпуса</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Слова, которые не список строк, дают <code>SourceTypeError</code>, корпус без слов - <code>SourceError</code>, а <code>n_mfw</code>, который не целое число не меньше единицы, - <code>ParameterError</code>.</p>
@@ -2764,8 +2806,8 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 </div>
 </div>
 <h2 id="mendenhall">Кривая Менденхолла<a class="headerlink" href="#mendenhall" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/stylometry.md:mendenhall_curve be1fbeb -->
-<div class="signature highlight"><pre><span></span><code><span class="n">mendenhall_curve</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:mendenhall_curve 9458e86 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">mendenhall_curve</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Доли слов каждой длины в символах по возрастанию длины (Mendenhall 1887) - профиль автора, сравнимый между текстами независимо от их объема.</p>
 <table>
@@ -2784,11 +2826,17 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Слова текста</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Слова, которые не список строк, дают <code>SourceTypeError</code>, а отсутствие слов - <code>SourceError</code>.</p>
-<!-- core: corpus/stylometry.md:mendenhall_distance 187c51f -->
-<div class="signature highlight"><pre><span></span><code><span class="n">mendenhall_distance</span><span class="p">(</span><span class="n">words_a</span><span class="p">,</span> <span class="n">words_b</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:mendenhall_distance 8dea589 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">mendenhall_distance</span><span class="p">(</span><span class="n">words_a</span><span class="p">,</span> <span class="n">words_b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Расстояние Йенсена-Шеннона с основанием 2 между кривыми Менденхолла двух текстов, от 0 (распределения совпадают) до 1.</p>
 <table>
@@ -2812,6 +2860,12 @@ ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, 
 <td style="text-align: left;"><code>list[str]</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Слова второго текста</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
 </tr>
 </tbody>
 </table>

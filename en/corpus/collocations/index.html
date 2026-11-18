@@ -2384,7 +2384,7 @@
 
 
 <h1 id="collocations">Collocations<a class="headerlink" href="#collocations" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'logdice'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'logdice'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Collocation extraction - pairs of words that occur together more often than independence would give: fixed expressions, terminology, the combinatorics of a word. The measures of association are those of <a href="https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf">Sketch Engine</a> and of <a href="https://www.nltk.org/api/nltk.metrics.association.html"><code>nltk.metrics.association</code></a>.</p>
 <p>Pairs are ordered, as in NLTK: the right word occurs at most <code>window</code> words after the left one, each pair of positions counted once; <code>window=1</code> gives bigrams. The measures take the pair frequency divided by the window (Church and Hanks 1990, as in NLTK), which keeps the expected frequency independent of the window and Dice and the minimum sensitivity at most one; <code>freq_pair</code> stays undivided. So with <code>window &gt; 1</code> an always adjacent pair gets a logDice of <span class="arithmatex">\(14 - \log_2 window\)</span> (13 at a window of 2), not 14 as in Sketch Engine with its raw co-occurrence; 14 needs a pair at every distance within the window. <code>node</code> keeps the pairs with the given word on either side, and <code>side</code> on one of them: <code>"left"</code> the collocates before the node, <code>"right"</code> those after it.</p>
@@ -2467,6 +2467,12 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">With a node, the side of its collocates: <code>"left"</code> or <code>"right"</code>; <code>None</code> - both</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
 </tr>
 </tbody>
 </table>

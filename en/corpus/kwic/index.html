@@ -2312,7 +2312,7 @@
 </tbody>
 </table>
 <h2 id="format_kwic">Aligned lines<a class="headerlink" href="#format_kwic" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">format_kwic</span><span class="p">(</span><span class="n">concordances</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">format_kwic</span><span class="p">(</span><span class="n">concordances</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Aligns the lines on the keyword in a text, one line per occurrence: the left context is cut on the left and aligned to the right, the right one cut on the right. The lines may come from any iterable and are taken in the composed form of Unicode (NFC), so the widths count characters as shown.</p>
 <table>
@@ -2337,10 +2337,16 @@
 <td style="text-align: left;"><code>40</code></td>
 <td style="text-align: left;">Width of a context in characters</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
+</tr>
 </tbody>
 </table>
 <p>Lines that are a string or cannot be iterated raise <code>SourceTypeError</code>, and a <code>width</code> that is not an integer of at least one <code>ParameterError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">print_kwic</span><span class="p">(</span><span class="n">concordances</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">print_kwic</span><span class="p">(</span><span class="n">concordances</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Prints the result of <code>format_kwic</code>.</p>
 

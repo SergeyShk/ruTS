@@ -2545,7 +2545,7 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 </div>
 </div>
 <h2 id="compare_features">Comparison of feature tables<a class="headerlink" href="#compare_features" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">compare_features</span><span class="p">(</span><span class="n">table_a</span><span class="p">,</span> <span class="n">table_b</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">compare_features</span><span class="p">(</span><span class="n">table_a</span><span class="p">,</span> <span class="n">table_b</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Compares two corpora feature by feature. Each corpus is a table of the features of its windows, parts of the texts of about equal size, so the features do not depend on text length. The result has one row per column, by descending absolute Cliff's delta, the features without statistics last. The bootstrap resamples whole texts by the index level <code>text</code>; without it every row is a text of its own. Every feature has a generator of its own, from the seed and the name of the feature, so its interval does not change with the other columns. A column missing from one table gives <code>nan</code>.</p>
 <table>
@@ -2588,10 +2588,16 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>0</code></td>
 <td style="text-align: left;">Seed of the random number generator, a non-negative integer, or a numpy <code>Generator</code>; <code>None</code> - a random one</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
+</tr>
 </tbody>
 </table>
 <p>A table that is not a <code>DataFrame</code>, repeats the name of a column or has a column that is not numeric raises <code>SourceTypeError</code>; the other parameters are checked by <code>check_comparison_params</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">check_comparison_params</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">check_comparison_params</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks the parameters of <code>compare_features</code> before the texts are processed: it raises <code>ParameterError</code> unless the labels are two strings that give distinct columns (<code>("diff", "B")</code> would repeat <code>median_diff</code>), the number of bootstrap samples is an integer of at least one and the seed is <code>None</code>, a non-negative integer or a numpy <code>Generator</code>.</p>
 <h2 id="statistics">Statistics<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
@@ -2649,7 +2655,7 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 </div>
 <h2 id="functions-of-the-statistics">Functions of the statistics<a class="headerlink" href="#functions-of-the-statistics" title="Permanent link">&para;</a></h2>
 <p>The statistics of a row are available one by one from <code>ruts.corpus</code>:</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_cohen_d</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cohen_d</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Cohen's d with the pooled sample variances (ddof=1); <code>nan</code> with fewer than two values on a side or without spread.</p>
 <table>
@@ -2674,10 +2680,16 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Values in the second corpus</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
+</tr>
 </tbody>
 </table>
 <p>A value that is neither a number nor a missing one (<code>None</code>, <code>NA</code>) and values that are not a flat list raise <code>SourceTypeError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_cliff_delta</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cliff_delta</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Cliff's delta, the share of the pairs where the first value is greater minus the share where it is smaller; <code>nan</code> for an empty set or an undefined value. Computed by sorting, in <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> time and linear memory.</p>
 <table>
@@ -2702,10 +2714,16 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Values in the second corpus</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
+</tr>
 </tbody>
 </table>
 <p>A value that is neither a number nor a missing one (<code>None</code>, <code>NA</code>) and values that are not a flat list raise <code>SourceTypeError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">bootstrap_median_diff</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">texts_a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts_b</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">bootstrap_median_diff</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">texts_a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>The percentile bootstrap interval of the difference of the medians. With <code>texts_a</code> and <code>texts_b</code> whole texts are resampled, the median of a draw taken over the values of its texts; with fewer than two texts on a side the interval is <code>nan</code>.</p>
 <table>
@@ -2760,10 +2778,16 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Texts of the values in the second corpus</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
+</tr>
 </tbody>
 </table>
 <p>A value that is neither a number nor a missing one, values that are not a flat list and texts that are not labels of one type raise <code>SourceTypeError</code>; an <code>n_bootstrap</code> that is not an integer of at least one, a <code>confidence</code> that is not a number in (0, 1), texts not as many as the values and an <code>rng</code> that is not a numpy <code>Generator</code> raise <code>ParameterError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">holm_correction</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">holm_correction</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Holm's correction for multiple comparisons: the p-values are sorted in ascending order, the i-th is multiplied by (m − i + 1), where m is the number of defined values, then the running maximum is taken and capped at one; <code>nan</code> stays <code>nan</code>.</p>
 <table>
@@ -2781,6 +2805,12 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>list[float]</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">p-values</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
 </tr>
 </tbody>
 </table>

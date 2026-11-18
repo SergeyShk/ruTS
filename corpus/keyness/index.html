@@ -2384,7 +2384,7 @@
 
 
 <h1 id="_1">Ключевые слова<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">keyness</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lemmatize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <!-- core: corpus/keyness.md:keyness 4394918 -->
 <p>Поиск ключевых слов (keyness) целевого корпуса относительно эталонного: слова, которые в целевом корпусе встречаются значимо чаще, чем в эталонном.</p>
@@ -2418,7 +2418,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness-parameters a26b20f -->
+<!-- core: corpus/keyness.md:keyness-parameters 927fc84 -->
 <table>
 <thead>
 <tr>
@@ -2471,6 +2471,12 @@
 <td style="text-align: left;"><code>1</code></td>
 <td style="text-align: left;">Длина N-грамм слов каждого текста; <code>1</code> - слова</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>; <code>n</code> больше 1 при частотах или <code>FrequencyReference</code> дает <code>ParameterError</code>. Эталон, который не список строк, не список таких списков, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота справочника и корпус без слов или короче <code>n</code> слов - <code>SourceError</code>.</p>
@@ -2494,8 +2500,8 @@
 </tbody>
 </table>
 <p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>.</p>
-<!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
-<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<!-- core: corpus/keyness.md:check_keyness_params 5873366 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Проверяет параметры <code>keyness</code> до чтения частотного словаря: дает <code>ParameterError</code>, если мера не из <code>KEYNESS_MEASURES</code>, минимальная частота не целое число, количество ключевых слов не <code>None</code> и не целое число не меньше единицы, длина N-грамм <code>n</code> не целое число не меньше единицы или <code>positive</code> не <code>bool</code>. С <code>target</code> дает также <code>SourceTypeError</code>, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и <code>SourceError</code> для отрицательной, <code>nan</code> или бесконечной частоты.</p>
 <h2 id="_3">Эталон по частотам<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>

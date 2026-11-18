@@ -2545,11 +2545,11 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 </div>
 </div>
 <h2 id="compare_features">Сравнение таблиц признаков<a class="headerlink" href="#compare_features" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/compare.md:compare_features e0c139a -->
-<div class="signature highlight"><pre><span></span><code><span class="n">compare_features</span><span class="p">(</span><span class="n">table_a</span><span class="p">,</span> <span class="n">table_b</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<!-- core: corpus/compare.md:compare_features 7ae32fb -->
+<div class="signature highlight"><pre><span></span><code><span class="n">compare_features</span><span class="p">(</span><span class="n">table_a</span><span class="p">,</span> <span class="n">table_b</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Сравнивает два корпуса признак за признаком. Каждый корпус - таблица признаков своих окон, частей текстов примерно одинакового размера, чтобы признаки не зависели от длины текстов. Результат - по строке на столбец, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню <code>text</code> индекса; без него каждая строка считается отдельным текстом. У каждого признака свой генератор, по зерну и имени признака, так что его интервал не зависит от остальных столбцов. Столбец, которого нет в одной из таблиц, дает <code>nan</code>.</p>
-<!-- core: corpus/compare.md:compare_features-parameters 2ed21c1 -->
+<!-- core: corpus/compare.md:compare_features-parameters ded2441 -->
 <table>
 <thead>
 <tr>
@@ -2590,11 +2590,17 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>0</code></td>
 <td style="text-align: left;">Зерно генератора случайных чисел, неотрицательное целое число, или <code>Generator</code> numpy; <code>None</code> - случайное</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Таблица, которая не <code>DataFrame</code>, повторяет имя столбца или содержит столбец, который не числовой, дает <code>SourceTypeError</code>; остальные параметры проверяет <code>check_comparison_params</code>.</p>
-<!-- core: corpus/compare.md:check_comparison_params a56a706 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">check_comparison_params</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<!-- core: corpus/compare.md:check_comparison_params 0e3a98a -->
+<div class="signature highlight"><pre><span></span><code><span class="n">check_comparison_params</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">),</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Проверяет параметры <code>compare_features</code> до обработки текстов: дает <code>ParameterError</code>, если метки - не две строки, дающие разные столбцы (<code>("diff", "B")</code> повторило бы <code>median_diff</code>), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не <code>None</code>, не неотрицательное целое число и не <code>Generator</code> numpy.</p>
 <h2 id="statistics">Статистики<a class="headerlink" href="#statistics" title="Permanent link">&para;</a></h2>
@@ -2653,8 +2659,8 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 </div>
 <h2 id="_3">Функции статистик<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Статистики строки доступны по отдельности из <code>ruts.corpus</code>:</p>
-<!-- core: corpus/compare.md:calc_cohen_d 8318830 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_cohen_d</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
+<!-- core: corpus/compare.md:calc_cohen_d 9fb4883 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cohen_d</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>d Коэна с объединенными выборочными дисперсиями (ddof=1); <code>nan</code> при менее чем двух значениях на стороне или без разброса.</p>
 <table>
@@ -2679,11 +2685,17 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Значения во втором корпусе</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
-<!-- core: corpus/compare.md:calc_cliff_delta 46d8def -->
-<div class="signature highlight"><pre><span></span><code><span class="n">calc_cliff_delta</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">)</span>
+<!-- core: corpus/compare.md:calc_cliff_delta b906f6f -->
+<div class="signature highlight"><pre><span></span><code><span class="n">calc_cliff_delta</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Дельта Клиффа - доля пар, где первое значение больше, минус доля пар, где оно меньше; <code>nan</code> для пустого набора или неопределенного значения. Считается сортировкой, за время <span class="arithmatex">\(O((n_A + n_B) \log n_B)\)</span> и с линейной памятью.</p>
 <table>
@@ -2708,11 +2720,17 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">Значения во втором корпусе</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Значение, которое не число и не пропуск (<code>None</code>, <code>NA</code>), и значения, которые не плоский список, дают <code>SourceTypeError</code>.</p>
-<!-- core: corpus/compare.md:bootstrap_median_diff eef19f3 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">bootstrap_median_diff</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">texts_a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts_b</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/compare.md:bootstrap_median_diff 63c1515 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">bootstrap_median_diff</span><span class="p">(</span><span class="n">values_a</span><span class="p">,</span> <span class="n">values_b</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">texts_a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">texts_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Перцентильный бутстрэп-интервал разности медиан. С <code>texts_a</code> и <code>texts_b</code> пересэмплируются целые тексты, а медиана выборки берется по значениям ее текстов; при менее чем двух текстах на стороне интервал - <code>nan</code>.</p>
 <table>
@@ -2767,11 +2785,17 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Тексты значений во втором корпусе</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
+</tr>
 </tbody>
 </table>
 <p>Значение, которое не число и не пропуск, значения, которые не плоский список, и тексты, которые не метки одного типа, дают <code>SourceTypeError</code>; <code>n_bootstrap</code>, который не целое число не меньше единицы, <code>confidence</code>, который не число в интервале (0, 1), число текстов, не равное числу значений, и <code>rng</code>, который не <code>Generator</code> numpy, - <code>ParameterError</code>.</p>
-<!-- core: corpus/compare.md:holm_correction e837116 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">holm_correction</span><span class="p">(</span><span class="n">p_values</span><span class="p">)</span>
+<!-- core: corpus/compare.md:holm_correction 8dab7a9 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">holm_correction</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; <code>nan</code> остается <code>nan</code>.</p>
 <table>
@@ -2789,6 +2813,12 @@ syntax_mean_clause_len                     4.975           5.814  -1.250   -0.46
 <td style="text-align: left;"><code>list[float]</code></td>
 <td style="text-align: left;">-</td>
 <td style="text-align: left;">p-значения</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
 </tr>
 </tbody>
 </table>

@@ -2384,8 +2384,8 @@
 
 
 <h1 id="_1">Коллокации<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<!-- core: corpus/collocations.md:collocations a019591 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'logdice'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/collocations.md:collocations d886046 -->
+<div class="signature highlight"><pre><span></span><code><span class="n">collocations</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="s1">'logdice'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем дала бы независимость: устойчивые сочетания, терминология, сочетаемость слова. Меры ассоциации те же, что в <a href="https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf">Sketch Engine</a> и <a href="https://www.nltk.org/api/nltk.metrics.association.html"><code>nltk.metrics.association</code></a>.</p>
 <p>Пары упорядочены, как в NLTK: правое слово встречается не дальше <code>window</code> слов после левого, каждая пара позиций учитывается один раз; <code>window=1</code> дает биграммы. Меры берут частоту пары, деленную на размер окна (Church и Hanks 1990, так же в NLTK), так что ожидаемая частота не зависит от окна, а Dice и минимальная чувствительность не превышают единицы; <code>freq_pair</code> остается без деления. Поэтому при <code>window &gt; 1</code> пара, всегда стоящая рядом, получает logDice <span class="arithmatex">\(14 - \log_2 window\)</span> (13 при окне 2), а не 14, как в Sketch Engine с его сырым числом совстречаемостей; 14 достигает только пара, встречающаяся на каждом расстоянии в окне. <code>node</code> оставляет пары с заданным словом с любой стороны, а <code>side</code> - с одной из них: <code>"left"</code> - коллокаты перед этим словом, <code>"right"</code> - после него.</p>
@@ -2417,7 +2417,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/collocations.md:collocations-parameters 09ebaf3 -->
+<!-- core: corpus/collocations.md:collocations-parameters bae1d7c -->
 <table>
 <thead>
 <tr>
@@ -2469,6 +2469,12 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">При заданном слове - сторона его коллокатов: <code>"left"</code> или <code>"right"</code>; <code>None</code> - обе</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
 </tr>
 </tbody>
 </table>
