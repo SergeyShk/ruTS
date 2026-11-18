@@ -190,9 +190,10 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
     for key, score in ReadabilityStats(basic).get_stats().items():
         features[f"readability_{key}"] = float(score)
     lowered = FixedWordsExtractor(tuple(word.lower() for word in words.words))
-    for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
+    diversity = DiversityStats(text, words_extractor=lowered)
+    for key in diversity.stat_names():
         if key not in WINDOW_UNSTABLE_DIVERSITY:
-            features[f"diversity_{key}"] = float(score)
+            features[f"diversity_{key}"] = float(getattr(diversity, key))
     morph = MorphStats(text)
     n_words = len(morph.words)
     stats = morph.get_stats(filter_none=True)
