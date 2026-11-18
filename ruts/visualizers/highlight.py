@@ -4,9 +4,11 @@ import re
 from collections.abc import Callable, Collection, Iterable, Mapping, Sequence
 from typing import TYPE_CHECKING
 
+import anyts.style_stats
 import anyts.visualizers.highlight
 from anyts.constants import ALLITERATION_MIN_WORD_LEN, ALLITERATION_THRESHOLD
 from anyts.document import get_tree
+from anyts.style_stats import WordFlags
 from anyts.syntax_stats import get_subtree
 from anyts.utils import check_words, has_words
 from anyts.visualizers.highlight import (
@@ -37,7 +39,13 @@ from ..constants import (
     RU_LETTER_FREQUENCIES,
 )
 from ..lexical_stats import get_rank
-from ..style_stats import expand_phrases, is_stopword, is_water_word
+from ..style_stats import (
+    _doc_flags,
+    expand_phrases,
+    is_parenthetical,
+    is_stopword,
+    is_water_word,
+)
 from ..syllables import CONSONANTS, LETTERS, VOWELS, count_syllables
 from ..syntax_stats import (
     _find_split_predicates,
@@ -120,7 +128,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список слов «воды»; если не задан, они определяются
-            по части речи с помощью ruMorph
+            по разбору ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
@@ -178,6 +186,7 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
         self._stopwords = stopwords
         self._cliches = cliches
         self._alliteration_threshold = alliteration_threshold
+        self._flags: WordFlags | None = None
         super().__init__(source, layers)
 
     def parse(self, source: str | Doc | Document) -> Document:
@@ -187,6 +196,12 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
     def doc_words(self, document: Document) -> list[Word]:
         """Слова документа с позициями по get_doc_words"""
         return get_doc_words(document)
+
+    def _doc_flags(self, doc: Document) -> WordFlags:
+        """Флаги слов документа по разборам в контексте (ruts.style_stats._doc_flags), один раз"""
+        if self._flags is None:
+            self._flags = _doc_flags(doc)
+        return self._flags
 
     def find(
         self, layer: str, words: Sequence[Word], sents: Sequence[Sent], doc: Document
@@ -209,11 +224,15 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             "long_sents": lambda: find_long_sents(sents, self._long_sent_word_factor),
             "complex_words": lambda: find_complex_words(words, self._complex_syl_factor),
             "rare_words": lambda: find_rare_words(words),
-            "stopwords": lambda: find_stopwords(words, self._stopwords),
+            "stopwords": lambda: find_stopwords(
+                words, self._stopwords, flags=self._doc_flags(doc).water
+            ),
             "verbal_nouns": lambda: find_verbal_nouns(words),
             "compound_prepositions": lambda: find_compound_prepositions(words),
             "cliches": lambda: find_cliches(words, self._cliches),
-            "parentheticals": lambda: find_parentheticals(words),
+            "parentheticals": lambda: find_parentheticals(
+                words, flags=self._doc_flags(doc).parenthetical
+            ),
             "connectors": lambda: find_connector_highlights(words, sents, self.text),
             "alliteration": lambda: find_alliteration(words, self._alliteration_threshold, sents),
         }
@@ -242,7 +261,7 @@ def highlight(
         long_sent_word_factor (int): Минимальное количество слов в длинном предложении
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         stopwords (list[str]): Список слов «воды»; если не задан, они определяются
-            по части речи с помощью ruMorph
+            по разбору ruMorph
         cliches (list[str]): Список штампов; если не задан, используется OFFICIALESE_CLICHES
         alliteration_threshold (float): Порог вероятности повтора согласной при независимом
             распределении букв, ниже которого повтор считается аллитерацией
@@ -353,7 +372,10 @@ def find_complex_words(words: Iterable[Word], complex_syl_factor: int) -> list[H
 
 
 def find_stopwords(
-    words: Iterable[Word], stopwords: Collection[str] | None = None
+    words: Sequence[Word],
+    stopwords: Collection[str] | None = None,
+    *,
+    flags: Sequence[bool] | None = None,
 ) -> list[Highlight]:
     """
     Поиск слов «воды»
@@ -361,7 +383,8 @@ def find_stopwords(
     Аргументы:
         words (list[Word]): Слова с позициями
         stopwords (list[str]): Список слов «воды», без учета регистра и буквы ё; если
-            не задан, слова «воды» определяются по части речи (is_water_word)
+            не задан, слова «воды» определяются флагами или по части речи (is_water_word)
+        flags (list[bool]): Является ли «водой» каждое слово words
 
     Вывод:
         list[Highlight]: Фрагменты слоя stopwords
@@ -370,6 +393,11 @@ def find_stopwords(
         chosen = {normalize_yo(word) for word in stopwords}
         return anyts.visualizers.highlight.find_words(
             words, lambda word: normalize_yo(word.text) in chosen, "stopwords", "стоп-слово"
+        )
+    if flags is not None:
+        water = {word.start for word, flag in zip(words, flags, strict=True) if flag}
+        return anyts.visualizers.highlight.find_words(
+            words, lambda word: word.start in water, "stopwords", "стоп-слово"
         )
     return anyts.visualizers.highlight.find_words(
         words, lambda word: is_water_word(word.text.lower()), "stopwords", "стоп-слово"
@@ -483,22 +511,33 @@ def find_cliches(words: Sequence[Word], cliches: Collection[str] | None = None) 
     return find_phrase_highlights(words, expanded, "cliches", "штамп")
 
 
-def find_parentheticals(words: Sequence[Word]) -> list[Highlight]:
+def find_parentheticals(
+    words: Sequence[Word], *, flags: Sequence[bool] | None = None
+) -> list[Highlight]:
     """
     Поиск вводных слов
 
     Описание:
-        Обороты из PARENTHETICALS и вводные слова ruts.style_stats.find_parentheticals
+        Обороты из PARENTHETICALS и вводные слова, как в ruts.style_stats.find_parentheticals
 
     Аргументы:
         words (list[Word]): Слова с позициями
+        flags (list[bool]): Является ли вводным каждое слово words; если не заданы -
+            is_parenthetical
 
     Вывод:
         list[Highlight]: Фрагменты слоя parentheticals
     """
     highlights = find_phrase_highlights(words, PARENTHETICALS, "parentheticals", "вводный оборот")
     phrases = {highlight.start for highlight in highlights}
-    for start, _ in style_stats.find_parentheticals([word.text for word in words]):
+    for start, _ in anyts.style_stats.find_parentheticals(
+        [word.text for word in words],
+        PARENTHETICALS,
+        is_parenthetical=is_parenthetical,
+        flags=flags,
+        expand=expand_phrases,
+        normalize=normalize_yo,
+    ):
         if words[start].start not in phrases:
             word = words[start]
             highlights.append(Highlight(word.start, word.end, "parentheticals", "вводное слово"))

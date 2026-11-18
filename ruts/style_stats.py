@@ -9,6 +9,7 @@ import anyts.style_stats
 import rumorph
 from anyts.constants import NAUSEA_TOP_N
 from anyts.style_stats import (
+    WordFlags,
     calc_classic_nausea as calc_classic_nausea,
     calc_spam as calc_spam,
 )
@@ -25,6 +26,7 @@ from .constants import (
     WATER_POS,
 )
 from .utils import (
+    _document_analyses,
     _word_cache,
     document_words,
     get_document,
@@ -60,10 +62,11 @@ class StyleStats(anyts.style_stats.StyleStats):
     Класс для вычисления SEO-метрик стиля и качества текста
 
     Описание:
-        Расширяет StyleStats ядра anyTS крючками русского языка: стоп-слова, «вода»,
-        вводные слова и существительные - по разметке ruMorph, словосочетания
-        сравниваются без буквы ё и находятся в любой форме глагола, нормы
-        сервисов - STYLE_NORMS. Слова - без знаков ударения и точки сокращения
+        Расширяет StyleStats ядра anyTS крючками русского языка: стоп-слова, «вода»
+        и вводные слова - по разбору ruMorph в контексте предложения (doc_flags),
+        существительные - по первому разбору, словосочетания сравниваются без буквы ё
+        и находятся в любой форме глагола, нормы сервисов - STYLE_NORMS. Слова - без
+        знаков ударения и точки сокращения
 
     Пример использования:
         >>> from ruts import StyleStats
@@ -149,6 +152,10 @@ class StyleStats(anyts.style_stats.StyleStats):
         """Слова документа в нижнем регистре (ruts.utils.document_words)"""
         return tuple(word.lower() for word in document_words(document))
 
+    def doc_flags(self, document: Document) -> WordFlags:
+        """Стоп-слова, «вода» и вводные слова по разборам ruMorph в контексте (_doc_flags)"""
+        return _doc_flags(document)
+
     def is_stopword(self, word: str) -> bool:
         """Стоп-слово академической тошноты по разметке ruMorph (is_stopword)"""
         return is_stopword(word)
@@ -195,13 +202,7 @@ def is_stopword(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    analysis = parse_word(word)
-    return (
-        analysis.pos in STOPWORD_POS
-        or is_predicative(analysis)
-        or is_pronominal(analysis)
-        or is_parenthetical_analysis(analysis)
-    )
+    return _is_stopword_analysis(parse_word(word))
 
 
 @_word_cache(maxsize=65536)
@@ -221,15 +222,39 @@ def is_water_word(word: str) -> bool:
     Вывод:
         bool: Результат проверки
     """
-    analysis = parse_word(word)
+    return _is_water_analysis(parse_word(word))
+
+
+def _is_stopword_analysis(analysis: rumorph.Analysis) -> bool:
+    """Стоп-слово по разбору (is_stopword)"""
+    return (
+        analysis.pos in STOPWORD_POS
+        or is_predicative(analysis)
+        or is_pronominal(analysis)
+        or is_parenthetical_analysis(analysis)
+    )
+
+
+def _is_water_analysis(analysis: rumorph.Analysis) -> bool:
+    """«Вода» по разбору (is_water_word)"""
     return (
         analysis.pos in WATER_POS
         or (analysis.pos == "AUX" and "VerbForm" not in analysis.feats)
         or is_parenthetical_analysis(analysis)
         or (
             analysis.feats.get("Poss") == "Yes"
-            and any(other.pos == "PRON" for other in parse_all(word))
+            and any(other.pos == "PRON" for other in parse_all(analysis.word))
         )
+    )
+
+
+def _doc_flags(document: Document) -> WordFlags:
+    """Флаги слов документа по разборам ruMorph в контексте предложения"""
+    analyses = _document_analyses(document)
+    return WordFlags(
+        stopword=tuple(map(_is_stopword_analysis, analyses)),
+        water=tuple(map(_is_water_analysis, analyses)),
+        parenthetical=tuple(map(is_parenthetical_analysis, analyses)),
     )
 
 

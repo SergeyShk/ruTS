@@ -343,6 +343,18 @@ def test_stopwords():
     assert 100 * ht.counts["stopwords"] / 12 == pytest.approx(StyleStats(source).water)
 
 
+def test_style_layers_in_context():
+    """«Вода» и вводные слова - по разбору в контексте, как в StyleStats"""
+    source = "Правда, он пришёл. Это правда. Дом напротив школы."
+    ht = highlight(source, layers=["stopwords", "parentheticals"])
+    assert [(h.layer, source[h.start : h.end]) for h in ht.highlights] == [
+        ("stopwords", "Правда"),
+        ("parentheticals", "Правда"),
+        ("stopwords", "он"),
+        ("stopwords", "Это"),
+    ]
+
+
 def test_stopwords_list():
     source = "Он сказал, что не придёт, и ушёл."
     words = get_text_words(source)
@@ -351,6 +363,7 @@ def test_stopwords_list():
         "ушёл",
     ]
     assert find_stopwords(words, []) == []
+    assert [source[h.start : h.end] for h in find_stopwords(words)] == ["Он", "что", "не", "и"]
 
 
 def test_alliteration(ht):
