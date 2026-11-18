@@ -2332,7 +2332,7 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </div>
 </div>
 <p>Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of <code>cohesion_content_overlap_all</code> with <code>sents_mean</code> over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (<code>cohesion_content_overlap_2_sent</code>) repeats it only weakly (0.23 and 0.30). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.</p>
-<p>The p-values take the 1671 windows for independent (see the <a href="#statistics">warning</a> below): 111 of the 147 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 82 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.</p>
+<p>The p-values take the 1671 windows for independent (see the <a href="#statistics">warning</a> below): 109 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 80 of those 109 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -2386,7 +2386,7 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 <h2 id="text_features">Features<a class="headerlink" href="#text_features" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">text_features</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">nlp</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Returns 147 features of a text prefixed by source, 192 with the pipeline <code>nlp</code>; an undefined feature is <code>nan</code>.</p>
+<p>Returns 145 features of a text prefixed by source, 190 with the pipeline <code>nlp</code>; an undefined feature is <code>nan</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2408,7 +2408,7 @@ cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -
 </tr>
 <tr>
 <td style="text-align: left;"><code>diversity_</code></td>
-<td style="text-align: left;">lexical diversity measures, but for Orlov's Z, unstable on a window</td>
+<td style="text-align: left;">lexical diversity measures, but for Orlov's Z, MA-MTLD and MTLD-W, unstable on a window</td>
 <td style="text-align: left;"><a href="../../stats/diversity_stats/"><code>DiversityStats</code></a></td>
 </tr>
 <tr>
