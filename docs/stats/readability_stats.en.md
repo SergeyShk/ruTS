@@ -622,6 +622,8 @@ The index was fitted on Spanish texts and stays outside the `get_stats` of ruTS,
 
 --8<-- "stats/readability_stats.md:ReadabilityStats-describe_grade"
 
+The consensus grade understates the grade of senior texts, see the [stage norms](#level_norms).
+
 --8<-- "stats/readability_stats.md:ReadabilityStats-describe_level"
 
 --8<-- "stats/readability_stats.md:ReadabilityStats-describe"
@@ -741,7 +743,7 @@ The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the ed
 | grades 4-6 | 12 | 10.1-14.6 | 5.15-5.33 | 0.039-0.052 | 220-369 |
 | grades 10-11 | 18 | 15.0-18.4 | 5.11-5.57 | 0.035-0.065 | 276-513 |
 
-The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
+The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. The consensus grade of the texts of the norms of grades 10-11 averages 7.5 and puts 2 of 18 at grades 10-11: the formulas understate the grade of senior texts, so a text the consensus grade puts at grades 10-11 usually comes out above these norms. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
 
 ### Features of a text { #level_features }
 
