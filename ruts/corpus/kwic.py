@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import unicodedata
-from collections import deque
 from collections.abc import Callable, Iterable, Sequence
 from typing import TYPE_CHECKING, Any, cast
 
@@ -12,6 +11,7 @@ from anyts.corpus.kwic import (
     format_kwic as core_format_kwic,
     print_kwic as core_print_kwic,
 )
+from anyts.utils import is_doc
 
 from ..constants import CORE_MESSAGES
 from ..utils import (
@@ -102,8 +102,11 @@ def _lemmatizer(source: object) -> Callable[[str, Sequence[Word]], str | tuple[s
         return _string_lemmatizer(source)
     if isinstance(source, Document):
         annotated = any(word.upos for word in source.words)
+    elif is_doc(source):
+        annotated = any(token.pos_ for token in cast(Iterable[Any], source))
     else:
-        annotated = any(getattr(token, "pos_", "") for token in cast(Iterable[Any], source))
+        # Неверный источник проверяет ядро
+        return _lemma
     return _lemma if annotated else _string_lemmatizer(cast(Document, source).text)
 
 
@@ -131,21 +134,23 @@ def _key_lemmas(word: str) -> tuple[str, ...]:
 
 
 def _string_lemmatizer(text: str) -> Callable[[str, Sequence[Word]], str | tuple[str, ...]]:
-    """Леммы слов строки в контексте предложений (analyze_words): ядро разбирает слова
-    текста по порядку, по разу каждое, а затем слова ключа"""
+    """Леммы слов текста в контексте предложений (analyze_words) по смещению токена: токены
+    Doc могут делить слово иначе, чем строка"""
     positions = [(start, word) for start, _, word in iter_text_words(text)]
-    queue = deque(
-        zip((word for _, word in positions), analyze_words(positions, text), strict=True)
-    )
+    by_start = {
+        start: (word, analysis)
+        for (start, word), analysis in zip(positions, analyze_words(positions, text), strict=True)
+    }
 
     def lemma(word: str, tokens: Sequence[Word]) -> str | tuple[str, ...]:
-        if not queue:
+        if not tokens:
             return _key_lemmas(word)
-        # Ядро отдает слово с точкой сокращения и знаками ударения, очередь - без них
-        if unicodedata.normalize("NFC", queue[0][0]) == word_form(strip_marks(word)):
-            _, analysis = queue.popleft()
-            if analysis is not None:
-                return analysis.lemma
+        form, analysis = by_start.get(tokens[0].token.start, ("", None))
+        # Ядро отдает слово с точкой сокращения и знаками ударения, строка - без них
+        if analysis is not None and unicodedata.normalize("NFC", form) == word_form(
+            strip_marks(word)
+        ):
+            return analysis.lemma
         return lemmatize(word)
 
     return lemma

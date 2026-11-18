@@ -33,7 +33,7 @@ TEXTS = {
     "poems/Pushkin/19 октября.txt": "Роняет лес багряный свой убор.",
     "poems/Pushkin/Борис Годунов.txt": "Драма в стихах о смутном времени.",
     "poems/Lermontov/Парус.txt": "Белеет парус одинокий.",
-    "publicism/Tolstoy/Не могу молчать.txt": "Статья о смертной казни.",
+    "publicism/Tolstoy/Не могу молчать.txt": "Статья {о смертной} казни.",
 }
 INFOS = {
     "prose/Chekhov/info.csv": "name,year\nАгафья,1886\nАЛЬБОМ,1885\nНет файла,1887\n",
@@ -300,6 +300,15 @@ def test_strip_header():
 )
 def test_clean_text(text, expected):
     assert clean_text(text) == expected
+
+
+def test_author_braces(dataset, monkeypatch):
+    """Фигурные скобки - сноска, а в файлах AUTHOR_BRACES - авторский текст без скобок"""
+    assert list(dataset.get_texts(genre="publicism")) == ["Статья казни."]
+    monkeypatch.setattr(
+        russian_literature_module, "AUTHOR_BRACES", {("Tolstoy", "Не могу молчать")}
+    )
+    assert list(dataset.get_texts(genre="publicism")) == ["Статья о смертной казни."]
 
 
 def test_trim_work():

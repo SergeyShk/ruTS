@@ -79,6 +79,8 @@ WORK_BOUNDS = {
     ("Gorky", "В людях"): ("В ЛЮДЯХ", None),
     ("Pushkin", "Борис Годунов"): (None, "Конец"),
 }
+# В фигурных скобках этих файлов - авторский текст, а не сноски: снимаются только скобки
+AUTHOR_BRACES = frozenset({("Tolstoy", "Хаджи-Мурат")})
 _LINE = r"^[^\S\n]*{}[^\S\n]*[.:]?[^\S\n]*$"
 APPARATUS = re.compile(
     _LINE.format(
@@ -344,10 +346,11 @@ class RussianLiterature(Dataset):
                         "year_to": year_to,
                     }
                     if all(filter_(record) for filter_ in fields):
-                        text = trim_work(
-                            clean_text(read_text(filepath)),
-                            *WORK_BOUNDS.get((author_dir.name, filepath.stem), (None, None)),
-                        )
+                        key = (author_dir.name, filepath.stem)
+                        raw = read_text(filepath)
+                        if key in AUTHOR_BRACES:
+                            raw = raw.replace("{", "").replace("}", "")
+                        text = trim_work(clean_text(raw), *WORK_BOUNDS.get(key, (None, None)))
                         text = strip_header(text, author, filepath.stem)
                         yield {**record, "text": text, "file": filepath}
 

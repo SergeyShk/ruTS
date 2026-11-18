@@ -211,13 +211,27 @@ def with_core_messages(func: F) -> F:
 
     @functools.wraps(func)
     def wrapper(*args: Any, messages: Mapping[str, str] | None = None, **kwargs: Any) -> Any:
-        if messages is None:
-            messages = CORE_MESSAGES
-        elif isinstance(messages, Mapping):
-            messages = {**CORE_MESSAGES, **messages}
-        return func(*args, messages=messages, **kwargs)
+        return func(*args, messages=core_messages(messages), **kwargs)
 
     return cast(F, _in_ruts(wrapper))
+
+
+def core_messages(messages: Mapping[str, str] | None) -> Mapping[str, str]:
+    """
+    Сообщения об ошибках функции ядра
+
+    Описание:
+        None - CORE_MESSAGES, словарь части ключей дополняется ими
+
+    Аргументы:
+        messages (dict[str, str]): Сообщения по ключам или None
+
+    Вывод:
+        dict[str, str]: Сообщения для функции ядра
+    """
+    if messages is None:
+        return CORE_MESSAGES
+    return {**CORE_MESSAGES, **messages} if isinstance(messages, Mapping) else messages
 
 
 def _in_ruts(wrapper: F) -> F:

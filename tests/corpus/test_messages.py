@@ -89,5 +89,6 @@ def test_partial_messages():
     messages = {"association_measure": "Мера {measure} неизвестна"}
     assert corpus.collocations(WORDS * 3, messages=messages)
     assert corpus.holm_correction([0.1, 0.2], messages=messages).tolist() == [0.2, 0.2]
+    assert corpus.keyness(WORDS, ["пес", "спит"], messages=messages)
     with pytest.raises(RutsError, match=r"^Мера x неизвестна$"):
         corpus.collocations(WORDS, measure="x", messages=messages)

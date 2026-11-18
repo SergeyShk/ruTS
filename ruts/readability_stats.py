@@ -36,6 +36,7 @@ from .constants import (
 )
 from .diversity_stats import DiversityStats
 from .exceptions import ParameterError, UnknownStatError
+from .utils import core_messages
 
 if TYPE_CHECKING:
     from anyseg import Document
@@ -718,7 +719,9 @@ def calc_reading_time(
     Исключения:
         ParameterError: Если скорость чтения не положительное число
     """
-    return anyts.readability_stats.calc_reading_time(n_words, wpm, messages=messages)
+    return anyts.readability_stats.calc_reading_time(
+        n_words, wpm, messages=core_messages(messages)
+    )
 
 
 def level_features(source: str | Doc | Document) -> dict[str, float]:
