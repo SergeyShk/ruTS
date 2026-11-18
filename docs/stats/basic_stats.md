@@ -60,7 +60,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 | `normalize` | `bool` | `False` | Вычислять нормализованные статистики |
 | `complex_syl_factor` | `int` | `COMPLEX_SYL_FACTOR` | Минимальное количество слогов в сложном слове |
 | `long_word_letter_factor` | `int` | `LONG_WORD_LETTER_FACTOR` | Минимальное количество букв в длинном слове |
-| `filter_nums` | `bool` | `False` | Не считать числа (`NUMBER_PATTERN` из `ruts.extractors`) словами |
+| `filter_nums` | `bool` | `False` | Не считать числа (`number_pattern`) словами |
 
 Объект хранит `normalize`, `complex_syl_factor`, `long_word_letter_factor` и `filter_nums` под их именами, а число отброшенных чисел - в `n_numbers`.
 

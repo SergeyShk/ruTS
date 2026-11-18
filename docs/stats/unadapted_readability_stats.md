@@ -64,7 +64,7 @@ UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None, fi
 | :------ | :-- | :------- |
 | `bs` | `BasicStats` | Базовые статистики текста |
 
-Базовые статистики можно взять у объекта [`ReadabilityStats`](readability_stats.md):
+Базовые статистики можно взять у объекта [`ReadabilityStats`](readability_stats.md); в нем числа не считаются словами, а `UnadaptedReadabilityStats` по тексту их считает:
 
 === "Код"
 
