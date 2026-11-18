@@ -4,29 +4,31 @@ from collections import Counter
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, cast
 
+import anyts.corpus.stylometry
 from anyts.corpus.stylometry import (
     ZetaScore as ZetaScore,
-    delta as delta,
-    delta_profiles as delta_profiles,
-    frequency_table as frequency_table,
-    kilgarriff_chi2 as kilgarriff_chi2,
-    mendenhall_curve as mendenhall_curve,
-    mendenhall_distance as mendenhall_distance,
-    rolling_delta as rolling_delta,
     z_scores as z_scores,
-    zeta as zeta,
-    zeta_segments as zeta_segments,
 )
 from anyts.document import get_tree
 from anyts.utils import check_words, has_words, is_doc, is_document, is_punctuation
 
 from ..constants import FUNCTION_UD_POS
 from ..exceptions import SourceError
-from ..utils import get_document, parse_word
+from ..utils import get_document, parse_word, with_core_messages
 
 if TYPE_CHECKING:
     from anyseg import Document
     from spacy.tokens import Doc
+
+frequency_table = with_core_messages(anyts.corpus.stylometry.frequency_table)
+delta = with_core_messages(anyts.corpus.stylometry.delta)
+delta_profiles = with_core_messages(anyts.corpus.stylometry.delta_profiles)
+rolling_delta = with_core_messages(anyts.corpus.stylometry.rolling_delta)
+zeta = with_core_messages(anyts.corpus.stylometry.zeta)
+zeta_segments = with_core_messages(anyts.corpus.stylometry.zeta_segments)
+kilgarriff_chi2 = with_core_messages(anyts.corpus.stylometry.kilgarriff_chi2)
+mendenhall_curve = with_core_messages(anyts.corpus.stylometry.mendenhall_curve)
+mendenhall_distance = with_core_messages(anyts.corpus.stylometry.mendenhall_distance)
 
 
 def function_words_profile(source: Sequence[str] | Doc | Document) -> dict[str, float]:

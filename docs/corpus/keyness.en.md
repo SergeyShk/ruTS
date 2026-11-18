@@ -1,7 +1,7 @@
 # Keywords
 
 ``` {.python .signature}
-keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True)
+keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True, *, messages=None)
 ```
 
 --8<-- "corpus/keyness.md:keyness"

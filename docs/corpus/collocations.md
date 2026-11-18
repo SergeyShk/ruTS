@@ -1,8 +1,8 @@
 # Коллокации
 
-<!-- core: corpus/collocations.md:collocations a019591 -->
+<!-- core: corpus/collocations.md:collocations d886046 -->
 ``` {.python .signature}
-collocations(words, window=5, measure='logdice', min_freq=2, node=None, top_n=None, side=None)
+collocations(words, window=5, measure='logdice', min_freq=2, node=None, top_n=None, side=None, *, messages=None)
 ```
 
 Поиск коллокаций - пар слов, которые встречаются вместе чаще, чем дала бы независимость: устойчивые сочетания, терминология, сочетаемость слова. Меры ассоциации те же, что в [Sketch Engine](https://www.sketchengine.eu/wp-content/uploads/ske-statistics.pdf) и [`nltk.metrics.association`](https://www.nltk.org/api/nltk.metrics.association.html).
@@ -40,7 +40,7 @@ collocations(words, window=5, measure='logdice', min_freq=2, node=None, top_n=No
 
 ## Параметры
 
-<!-- core: corpus/collocations.md:collocations-parameters 09ebaf3 -->
+<!-- core: corpus/collocations.md:collocations-parameters bae1d7c -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `words` | `list[str]` | - | Слова текста по порядку |
@@ -50,6 +50,7 @@ collocations(words, window=5, measure='logdice', min_freq=2, node=None, top_n=No
 | `node` | `str` | `None` | Слово, сочетаемость которого нужна; `None` - все пары |
 | `top_n` | `int` | `None` | Количество коллокаций; `None` - все |
 | `side` | `str` | `None` | При заданном слове - сторона его коллокатов: `"left"` или `"right"`; `None` - обе |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`. Неизвестная мера, `window` или `top_n`, который не целое число не меньше единицы, `min_freq`, который не целое число, `node`, который не строка, и `side`, который не `"left"` и не `"right"` или задан без `node`, дают `ParameterError`.
 

@@ -69,9 +69,9 @@ Concordance(start, end, left, keyword, right)
 
 ## Выровненные строки { #format_kwic }
 
-<!-- core: corpus/kwic.md:format_kwic 4de69b2 -->
+<!-- core: corpus/kwic.md:format_kwic a511562 -->
 ``` {.python .signature}
-format_kwic(concordances, width=40)
+format_kwic(concordances, width=40, *, messages=None)
 ```
 
 Собирает строки в текст, выровненный по ключевому слову, по строке на вхождение: левый контекст обрезается слева и прижимается к правому краю, правый обрезается справа. Строки могут прийти из любого итерируемого объекта и берутся в нормальной форме композиции Unicode (NFC), так что ширина считает символы так, как они показываются.
@@ -80,12 +80,13 @@ format_kwic(concordances, width=40)
 | :------- | :-- | :----------- | :------- |
 | `concordances` | `list[Concordance]` | - | Строки конкорданса |
 | `width` | `int` | `40` | Ширина контекста в символах |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Строки, переданные строкой (`str`) или неитерируемым объектом, дают `SourceTypeError`, а `width`, который не целое число не меньше единицы, - `ParameterError`.
 
-<!-- core: corpus/kwic.md:print_kwic 3ead3e5 -->
+<!-- core: corpus/kwic.md:print_kwic ec934d7 -->
 ``` {.python .signature}
-print_kwic(concordances, width=40)
+print_kwic(concordances, width=40, *, messages=None)
 ```
 
 Печатает результат `format_kwic`.

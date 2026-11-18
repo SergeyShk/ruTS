@@ -7,9 +7,9 @@
 
 ## Дельта Барроуза { #delta }
 
-<!-- core: corpus/stylometry.md:frequency_table 1b6144d -->
+<!-- core: corpus/stylometry.md:frequency_table c4445f8 -->
 ``` {.python .signature}
-frequency_table(corpus, n_mfw=100, culling=0.0)
+frequency_table(corpus, n_mfw=100, culling=0.0, *, messages=None)
 ```
 
 Строит таблицу относительных частот корпуса - словаря «имя текста → единицы»: строки - тексты, столбцы - `n_mfw` самых частых единиц по убыванию средней относительной частоты (при равенстве - по алфавиту); `culling` оставляет единицы, встречающиеся хотя бы в заданной доле текстов, как в stylo.
@@ -19,6 +19,7 @@ frequency_table(corpus, n_mfw=100, culling=0.0)
 | `corpus` | `dict[str, list[str]]` | - | Единицы текстов по именам текстов |
 | `n_mfw` | `int` | `100` | Число самых частых единиц; `None` - все |
 | `culling` | `float` | `0.0` | Наименьшая доля текстов, в которых встречается единица |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Корпус, который не словарь списков строк, дает `SourceTypeError`; пустой корпус, текст без единиц и отсев, после которого не остается ни одной единицы, - `SourceError`, а `n_mfw`, который не целое число не меньше единицы, и `culling`, который не число в пределах [0, 1], - `ParameterError`.
 
@@ -33,9 +34,9 @@ z_scores(table)
 | :------- | :-- | :----------- | :------- |
 | `table` | `DataFrame` | - | Таблица относительных частот |
 
-<!-- core: corpus/stylometry.md:delta 07de161 -->
+<!-- core: corpus/stylometry.md:delta 5b85ad4 -->
 ``` {.python .signature}
-delta(corpus, n_mfw=100, variant='burrows', culling=0.0)
+delta(corpus, n_mfw=100, variant='burrows', culling=0.0, *, messages=None)
 ```
 
 Считает по z-оценкам симметричную матрицу расстояний (`DataFrame` с именами текстов); нужно не меньше трех текстов - на двух z-оценки вырождаются в ±1/√2 и расстояния не зависят от частот.
@@ -57,12 +58,13 @@ delta(corpus, n_mfw=100, variant='burrows', culling=0.0)
 | `n_mfw` | `int` | `100` | Число самых частых единиц; `None` - все |
 | `variant` | `str` | `'burrows'` | Вариант дельты из `anyts.constants.DELTA_VARIANTS` |
 | `culling` | `float` | `0.0` | Наименьшая доля текстов, в которых встречается единица |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Корпус, `n_mfw` и `culling` дают ошибки `frequency_table`; меньше трех текстов - `SourceError`, а неизвестный вариант - `ParameterError`.
 
-<!-- core: corpus/stylometry.md:delta_profiles 1c5b7e6 -->
+<!-- core: corpus/stylometry.md:delta_profiles 46d29ab -->
 ``` {.python .signature}
-delta_profiles(reference, samples, n_mfw=100, variant='burrows', culling=0.0, statistics=None)
+delta_profiles(reference, samples, n_mfw=100, variant='burrows', culling=0.0, statistics=None, *, messages=None)
 ```
 
 Расстояния по дельте для атрибуции авторства. Самые частые единицы, отсев и статистики z-оценок берутся из эталонных текстов (профилей авторов) или из отдельного набора `statistics`, например из обучающих окон, когда профилей слишком мало, чтобы оценить разброс частот; проверяемые тексты `samples` получают те же единицы и нормировку. Результат - расстояния от проверяемых текстов (строки) до эталонных (столбцы); ближайший эталон - предполагаемый автор. В отличие от `delta`, проверяемый текст не влияет ни на единицы, ни на нормировку, так что его результат не зависит от других проверяемых текстов.
@@ -75,6 +77,7 @@ delta_profiles(reference, samples, n_mfw=100, variant='burrows', culling=0.0, st
 | `variant` | `str` | `'burrows'` | Вариант дельты из `anyts.constants.DELTA_VARIANTS` |
 | `culling` | `float` | `0.0` | Наименьшая доля текстов, в которых встречается единица |
 | `statistics` | `dict[str, list[str]]` | `None` | Тексты для единиц и статистик нормировки; `None` - эталонные тексты |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Корпуса, `n_mfw` и `culling` дают ошибки `frequency_table`; меньше трех текстов для статистик - `SourceError`, а неизвестный вариант - `ParameterError`.
 
@@ -124,9 +127,9 @@ delta_profiles(reference, samples, n_mfw=100, variant='burrows', culling=0.0, st
 
 ## Скользящая дельта { #rolling_delta }
 
-<!-- core: corpus/stylometry.md:rolling_delta c80e9bf -->
+<!-- core: corpus/stylometry.md:rolling_delta ba4892e -->
 ``` {.python .signature}
-rolling_delta(reference, text, window=5000, step=1000, n_mfw=100, variant='burrows', culling=0.0, statistics=None)
+rolling_delta(reference, text, window=5000, step=1000, n_mfw=100, variant='burrows', culling=0.0, statistics=None, *, messages=None)
 ```
 
 Дельта вдоль текста, как `rolling.delta` в stylo: эталонные тексты и проверяемый текст режутся на окна по `window` единиц через каждые `step` единиц, остаток короче окна отбрасывается. Самые частые единицы, отсев и статистики z-оценок берутся из окон эталонных текстов или отдельного набора `statistics`, и каждое окно текста сравнивается вариантом дельты с центроидом окон каждого эталонного текста. Результат - расстояния от окон (строки, по позиции их середины в единицах) до эталонов (столбцы); где вдоль текста меняется ближайший эталон, там меняется и стиль - другой автор части текста, написанного в соавторстве, заимствованный фрагмент. В отличие от stylo, где складываются разности исходных частот, расстояния считаются по z-оценкам, как в `delta_profiles`.
@@ -143,6 +146,7 @@ rolling_delta(reference, text, window=5000, step=1000, n_mfw=100, variant='burro
 | `variant` | `str` | `'burrows'` | Вариант дельты из `anyts.constants.DELTA_VARIANTS` |
 | `culling` | `float` | `0.0` | Наименьшая доля окон, в которых встречается единица |
 | `statistics` | `dict[str, list[str]]` | `None` | Тексты, окна которых дают единицы и статистики нормировки; `None` - эталонные тексты |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Корпус, который не словарь списков строк, и единицы текста, которые не список строк, дают `SourceTypeError`. Отсутствие эталонных текстов, меньше двух эталонных текстов без `statistics`, текст без единиц или короче окна, меньше трех окон для статистик и отсев, после которого не остается ни одной единицы, дают `SourceError`. Неизвестный вариант, `window`, `step` или `n_mfw`, который не целое число не меньше единицы, `step` больше окна и `culling`, который не число в пределах [0, 1], дают `ParameterError`.
 
@@ -170,9 +174,9 @@ rolling_delta(reference, text, window=5000, step=1000, n_mfw=100, variant='burro
 
 ## Zeta { #zeta }
 
-<!-- core: corpus/stylometry.md:zeta 1b7460b -->
+<!-- core: corpus/stylometry.md:zeta f12bd98 -->
 ``` {.python .signature}
-zeta(target, comparison, segment_size=2000, top_n=None)
+zeta(target, comparison, segment_size=2000, top_n=None, *, messages=None)
 ```
 
 Маркеры предпочитаемых и избегаемых слов по Burrows (2007) и Craig и Kinney (2009). Каждый текст обоих корпусов делится на сегменты примерно по `segment_size` слов (отношение длины к размеру, округленное до целого с половиной вверх, не меньше одного сегмента); $DP$ - доля сегментов корпуса, в которых встречается слово. Zeta - $DP_{target} - DP_{comparison}$, от −1 до 1 (`zeta.craig` в stylo; классическая Zeta Крейга, $DP_{target} + (1 - DP_{comparison})$, больше на единицу); логарифмическая Zeta - $\log_2 \frac{DP_{target}}{DP_{comparison}}$ ([Schöch и др. 2018](https://zeta-project.eu/en/keyness-measures/burrows-zeta-logarithmic-zeta/)), нулевая доля заменяется на половину сегмента. Список идет от слов, которые предпочитает целевой корпус, к избегаемым.
@@ -183,6 +187,7 @@ zeta(target, comparison, segment_size=2000, top_n=None)
 | `comparison` | `list[str]` / `list[list[str]]` | - | Слова корпуса сравнения |
 | `segment_size` | `int` | `2000` | Размер сегмента в словах |
 | `top_n` | `int` | `None` | Количество слов с начала списка; `None` - все |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Результат - список именованных кортежей `ZetaScore(word, dp_target, dp_comparison, zeta, log_zeta)` по убыванию Zeta, при равенстве - по убыванию логарифмической Zeta и по алфавиту. Корпус, который не список строк и не список таких списков, дает `SourceTypeError`, а корпус без слов - `SourceError`; `segment_size` или `top_n`, который не целое число не меньше единицы, - `ParameterError`.
 
@@ -202,9 +207,9 @@ zeta(target, comparison, segment_size=2000, top_n=None)
     ZetaScore(word='собака', dp_target=0.0, dp_comparison=0.6666666666666666, zeta=-0.6666666666666666, log_zeta=-2.0)
     ```
 
-<!-- core: corpus/stylometry.md:zeta_segments 89aea5c -->
+<!-- core: corpus/stylometry.md:zeta_segments 33ac85a -->
 ``` {.python .signature}
-zeta_segments(corpora, preferred, avoided, segment_size=2000)
+zeta_segments(corpora, preferred, avoided, segment_size=2000, *, messages=None)
 ```
 
 Доли маркеров Zeta в сегментах корпусов - так сегменты располагает `oppose` в stylo: каждый текст делится на сегменты, как в `zeta`, и для сегмента считается, какая доля слов списков `preferred` и `avoided` в нем встречается. С маркерами целевого корпуса против корпуса сравнения сегменты целевого корпуса лежат на плоскости двух долей слева вверху, а сегменты корпуса сравнения - справа внизу; сегменты спорного текста показывают, к какой группе он ближе (`zeta_scatter_plot`).
@@ -215,6 +220,7 @@ zeta_segments(corpora, preferred, avoided, segment_size=2000)
 | `preferred` | `Collection[str]` | - | Слова, которые предпочитает целевой корпус, - начало списка `zeta` |
 | `avoided` | `Collection[str]` | - | Слова, которых избегает целевой корпус, - конец списка |
 | `segment_size` | `int` | `2000` | Размер сегмента в словах |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Результат - `DataFrame` сегментов в порядке корпусов и их текстов со столбцами `corpus` (имя корпуса), `preferred` и `avoided` (доли списков). Корпуса, которые не словарь, и корпус или список маркеров, который не список строк, дают `SourceTypeError`; отсутствие корпусов, пустой список маркеров и корпус без слов - `SourceError`, а `segment_size`, который не целое число не меньше единицы, - `ParameterError`.
 
@@ -246,9 +252,9 @@ zeta_segments(corpora, preferred, avoided, segment_size=2000)
 
 ## Хи-квадрат Килгарриффа { #kilgarriff_chi2 }
 
-<!-- core: corpus/stylometry.md:kilgarriff_chi2 33184e9 -->
+<!-- core: corpus/stylometry.md:kilgarriff_chi2 83f2fa3 -->
 ``` {.python .signature}
-kilgarriff_chi2(words_a, words_b, n_mfw=500)
+kilgarriff_chi2(words_a, words_b, n_mfw=500, *, messages=None)
 ```
 
 Расстояние между двумя корпусами по [Kilgarriff (2001)](https://www.sketchengine.eu/wp-content/uploads/comparing_corpora_2001.pdf): для `n_mfw` самых частых слов объединенного корпуса ожидаемые частоты в корпусах пропорциональны их объемам, $\chi^2 = \sum (O - E)^2 / E$ по словам и обоим корпусам. Чем больше значение, тем сильнее корпуса различаются; величина растет с объемом корпусов, поэтому сравнимы только пары равных объемов.
@@ -258,6 +264,7 @@ kilgarriff_chi2(words_a, words_b, n_mfw=500)
 | `words_a` | `list[str]` | - | Слова первого корпуса |
 | `words_b` | `list[str]` | - | Слова второго корпуса |
 | `n_mfw` | `int` | `500` | Число самых частых слов объединенного корпуса |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Слова, которые не список строк, дают `SourceTypeError`, корпус без слов - `SourceError`, а `n_mfw`, который не целое число не меньше единицы, - `ParameterError`.
 
@@ -277,9 +284,9 @@ kilgarriff_chi2(words_a, words_b, n_mfw=500)
 
 ## Кривая Менденхолла { #mendenhall }
 
-<!-- core: corpus/stylometry.md:mendenhall_curve be1fbeb -->
+<!-- core: corpus/stylometry.md:mendenhall_curve 9458e86 -->
 ``` {.python .signature}
-mendenhall_curve(words)
+mendenhall_curve(words, *, messages=None)
 ```
 
 Доли слов каждой длины в символах по возрастанию длины (Mendenhall 1887) - профиль автора, сравнимый между текстами независимо от их объема.
@@ -287,12 +294,13 @@ mendenhall_curve(words)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `words` | `list[str]` | - | Слова текста |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`.
 
-<!-- core: corpus/stylometry.md:mendenhall_distance 187c51f -->
+<!-- core: corpus/stylometry.md:mendenhall_distance 8dea589 -->
 ``` {.python .signature}
-mendenhall_distance(words_a, words_b)
+mendenhall_distance(words_a, words_b, *, messages=None)
 ```
 
 Расстояние Йенсена-Шеннона с основанием 2 между кривыми Менденхолла двух текстов, от 0 (распределения совпадают) до 1.
@@ -301,6 +309,7 @@ mendenhall_distance(words_a, words_b)
 | :------- | :-- | :----------- | :------- |
 | `words_a` | `list[str]` | - | Слова первого текста |
 | `words_b` | `list[str]` | - | Слова второго текста |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Слова, которые не список строк, дают `SourceTypeError`, а текст без слов - `SourceError`.
 

@@ -1,7 +1,7 @@
 # Ключевые слова
 
 ``` {.python .signature}
-keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True)
+keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True, *, messages=None)
 ```
 
 <!-- core: corpus/keyness.md:keyness 4394918 -->
@@ -41,7 +41,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 
 ## Параметры
 
-<!-- core: corpus/keyness.md:keyness-parameters a26b20f -->
+<!-- core: corpus/keyness.md:keyness-parameters 927fc84 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `target` | `list[str]` / `list[list[str]]` / `dict[str, int]` | - | Слова целевого корпуса - одного текста или списка текстов - или их частоты |
@@ -59,12 +59,13 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
 
-<!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
+<!-- core: corpus/keyness.md:check_keyness_params 5873366 -->
 ``` {.python .signature}
-check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None, n=1, positive=True)
+check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None, n=1, positive=True, *, messages=None)
 ```
 
 Проверяет параметры `keyness` до чтения частотного словаря: дает `ParameterError`, если мера не из `KEYNESS_MEASURES`, минимальная частота не целое число, количество ключевых слов не `None` и не целое число не меньше единицы, длина N-грамм `n` не целое число не меньше единицы или `positive` не `bool`. С `target` дает также `SourceTypeError`, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и `SourceError` для отрицательной, `nan` или бесконечной частоты.

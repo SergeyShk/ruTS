@@ -15,15 +15,16 @@ from anyts.corpus.keyness import (
     calc_log_ratio as calc_log_ratio,
     calc_odds_ratio as calc_odds_ratio,
     calc_p_value as calc_p_value,
-    check_keyness_params as check_keyness_params,
+    check_keyness_params as core_check_keyness_params,
 )
 
-from ..constants import RESOURCES_DIR
+from ..constants import CORE_MESSAGES, RESOURCES_DIR
 from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..exceptions import ParameterError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
-from ..utils import normalize_yo, parse_all, parse_word, strip_marks
+from ..utils import normalize_yo, parse_all, parse_word, strip_marks, with_core_messages
 
+check_keyness_params = with_core_messages(core_check_keyness_params)
 UNREACHABLE_FILES = {
     True: RESOURCES_DIR / "freqrnc2011_unreachable_forms.txt",
     False: RESOURCES_DIR / "freqrnc2011_unreachable_lemmas.txt",
@@ -43,6 +44,8 @@ def keyness(
     top_n: int | None = None,
     n: int = 1,
     lemmatize: bool = True,
+    *,
+    messages: Mapping[str, str] | None = None,
 ) -> list[Keyword]:
     """
     Поиск ключевых слов целевого корпуса относительно эталонного
@@ -79,6 +82,7 @@ def keyness(
         top_n (int): Количество ключевых слов; None - все
         n (int): Длина N-грамм слов, не пересекающих границ текстов; 1 - слова
         lemmatize (bool): Цель из словоформ, False - из лемм (только с FreqDict)
+        messages (dict[str, str]): Сообщения об ошибках по ключам; None - CORE_MESSAGES
 
     Вывод:
         list[Keyword]: Ключевые слова по убыванию ключевости, при равенстве -
@@ -91,9 +95,12 @@ def keyness(
         SourceError: Если один из корпусов пуст
         DatasetNotFoundError: Если частотный словарь не загружен
     """
+    messages = CORE_MESSAGES if messages is None else messages
     if not isinstance(reference, FreqDict):
-        return anyts.corpus.keyness(target, reference, measure, min_freq, positive, top_n, n)
-    check_keyness_params(measure, min_freq, top_n, target, n, positive)
+        return anyts.corpus.keyness(
+            target, reference, measure, min_freq, positive, top_n, n, messages=messages
+        )
+    check_keyness_params(measure, min_freq, top_n, target, n, positive, messages=messages)
     if n > 1:
         raise ParameterError(
             f"Частотный словарь хранит слова: N-граммам нужны слова обоих корпусов, а не n={n}"
@@ -101,8 +108,10 @@ def keyness(
     key = _dictionary_key(reference.entries, lemmatize)
     frequency = _frequency_reference(reference, key)
     if positive:
-        return anyts.corpus.keyness(target, frequency, measure, min_freq, positive, top_n)
-    found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive)
+        return anyts.corpus.keyness(
+            target, frequency, measure, min_freq, positive, top_n, messages=messages
+        )
+    found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive, messages=messages)
     unreachable = _unreachable_entries(lemmatize)
     kept = (keyword for keyword in found if keyword.freq_target or keyword.word not in unreachable)
     return list(islice(kept, top_n))
