@@ -21,7 +21,7 @@ CohesionStats(source, sents_extractor=None, words_extractor=None, connectors=Non
 | Существительные | `NOUN`, `PROPN` | `NOUN`, `PROPN` |
 | Местоимения | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` | `PRON`, `DET`, леммы из `DEMONSTRATIVE_LEMMAS` |
 | Аргументы | `NOUN`, `PROPN`, `PRON`, притяжательные его, её, их - с леммой он, она, они | то же |
-| Знаменательные слова | `CONTENT_UD_POS` и связка «быть» (`AUX` с формой глагола) без указательных, местоименных (`PronType` Dem, Int, Rel: там, где, почему) и вводных (помета `Prnt` и `PARENTHETICAL_WORDS`: кстати, наверно) слов, предикативов и чисел цифрами | то же по признакам слова |
+| Знаменательные слова | `CONTENT_UD_POS` и связка «быть» (`AUX` с формой глагола) без указательных, местоименных (`PronType` Dem, Int, Rel: там, где, почему) и вводных (помета `Prnt` и `PARENTHETICAL_WORDS`: кстати, небось) слов, предикативов и чисел цифрами | то же по признакам слова |
 | Указательные | леммы из `DEMONSTRATIVE_LEMMAS`: этот, это, тот, то (только местоимение), такой, таковой, столько, сей, оный | те же леммы |
 | Время и вид | признаки `Tense` и `Aspect` | признаки `Tense` и `Aspect` |
 

@@ -676,8 +676,8 @@ COMPOUND_PREPOSITIONS = (
     "по отношению к",
     "исходя из",
 )
-# Вводные слова, у которых нет пометы Prnt в словаре ruMorph 0.5: вводные и без нее
-PARENTHETICAL_WORDS = frozenset({"кстати", "наверно", "видимо", "небось"})
+# Вводные слова без пометы Prnt в словаре ruMorph: в ruTS вводные и без нее
+PARENTHETICAL_WORDS = frozenset({"небось"})
 PARENTHETICALS = (
     "таким образом",
     "как правило",

@@ -257,7 +257,7 @@ The occurrences of the phrases of a list per 100 words. A phrase starting with a
 calc_parentheticals(text)
 ```
 
-The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило) and, outside them, the single parenthetical words of `is_parenthetical(word)` - with the label `Prnt` (конечно, например) or with a lemma of `PARENTHETICAL_WORDS` (кстати, наверно). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
+The number of parenthetical words per 100 words: the phrases of `PARENTHETICALS` (таким образом, как правило) and, outside them, the single parenthetical words of `is_parenthetical(word)` - with the label `Prnt` (конечно, кстати) or with a lemma of `PARENTHETICAL_WORDS` (небось). `find_parentheticals(text)` returns the bounds of the words and phrases found as slices of the list.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |

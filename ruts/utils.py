@@ -3,7 +3,6 @@ from __future__ import annotations
 import functools
 import inspect
 import re
-import unicodedata
 from bisect import bisect_left
 from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from functools import lru_cache
@@ -56,8 +55,6 @@ MARKS = re.compile(
 )
 MARKED = re.compile(f"[\u0300\u0301\u0306\u0308\u00adѐѝЀЍ{LATIN_STRESSED}]")
 SEGMENTER = Segmenter("ru")
-# Разбор строки без видимых символов: знак препинания, а не слово
-NO_WORD = "_"
 
 
 # Сообщение функций ruTS о значении, которое не слово дерева документа
@@ -279,11 +276,9 @@ def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
     Описание:
         Разборы по убыванию вероятности, без учета соседних слов; части речи
         и признаки - Universal Dependencies, пометы OpenCorpora без признака UD
-        (Prnt, tran, intr) - в labels. Знаки ударения, мягкие переносы, ё и точку
-        известных сокращений (руб.) ruMorph учитывает сам, незнакомое сокращение
-        с точкой (тов.) - X с точкой в лемме. Разбор есть всегда: слово, которого
-        ruMorph не разбирает, разбирается без управляющих, служебных и пробельных
-        символов (ZWSP), а строка без видимых символов - как знак препинания
+        (Prnt, tran, intr) - в labels. Знаки ударения, мягкие переносы, невидимые
+        символы, ё и точку сокращений (руб., тов.) ruMorph учитывает сам; разбор есть
+        всегда, у строки без видимых символов - X
 
     Аргументы:
         word (str): Словоформа
@@ -296,12 +291,7 @@ def parse_all(word: str) -> tuple[rumorph.Analysis, ...]:
         >>> [(analysis.lemma, analysis.pos) for analysis in parse_all("стали")][:2]
         [('стать', 'VERB'), ('сталь', 'NOUN')]
     """
-    analyzer = get_morph_analyzer()
-    analyses = analyzer.analyze(word)
-    if not analyses:
-        visible = "".join(char for char in word if unicodedata.category(char)[0] not in "CZ")
-        analyses = (visible and analyzer.analyze(visible)) or analyzer.analyze(NO_WORD)
-    return tuple(analyses)
+    return tuple(get_morph_analyzer().analyze(word))
 
 
 def parse_word(word: str) -> rumorph.Analysis:
@@ -341,7 +331,7 @@ def is_parenthetical_analysis(analysis: rumorph.Analysis) -> bool:
     Проверка, является ли разбор вводным словом
 
     Описание:
-        Помета Prnt ruMorph или лемма из PARENTHETICAL_WORDS (кстати, наверно, видимо)
+        Помета Prnt ruMorph или лемма из PARENTHETICAL_WORDS (небось)
 
     Аргументы:
         analysis (Analysis): Разбор ruMorph

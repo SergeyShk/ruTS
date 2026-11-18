@@ -305,13 +305,13 @@ def test_proper_nouns_by_case():
         "NOUN",
         "NOUN",
         "VERB",
-        "NUM",
+        "DET",
         "NOUN",
         "CCONJ",
         "NUM",
         "NOUN",
     )
-    # «Лев» перед фамилией контекстная модель ruMorph 0.5 размечает NOUN (находка в плане ruMorph)
+    # «Лев» перед фамилией ruMorph размечает NOUN: правила «имя перед фамилией» в нем нет (его решение)
     assert MorphStats("Роза Люксембург").pos == ("PROPN", "PROPN")
 
 

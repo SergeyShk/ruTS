@@ -779,7 +779,7 @@ def test_model_split_predicates_cases(nlp, text, expected):
 
 
 def test_is_reflexive(nlp):
-    doc = nlp("Проверка проводится, решение принято, кот спит.")
+    doc = nlp("Проверка проводится, отчет сдан, кот спит.")
     assert is_reflexive(tree_words(doc)[1])
     assert is_reflexive(tree_words(doc)[4])
     assert not is_reflexive(tree_words(doc)[7])
