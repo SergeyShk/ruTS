@@ -650,7 +650,7 @@ is_converb_clause(token)
 `p_passive` · `p_agentless_passive`
 { .metric-meta }
 
-<!-- core: stats/syntax_stats.md:is_passive dfdc2c0 -->
+<!-- core: stats/syntax_stats.md:is_passive 1692221 -->
 ``` {.python .signature}
 is_passive(word)
 ```
@@ -660,8 +660,6 @@ is_passive(word)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `word` | `TreeWord` | - | Слово дерева |
-
-Значение, которое не `TreeWord`, дает `SourceTypeError`.
 
 <!-- core: stats/syntax_stats.md:has_agent a130004 -->
 ``` {.python .signature}
@@ -871,12 +869,12 @@ get_words(words)
 
 ## Вершина предложения { #is_root }
 
-<!-- core: stats/syntax_stats.md:is_root 02983aa -->
+<!-- core: stats/syntax_stats.md:is_root f100f85 -->
 ``` {.python .signature}
 is_root(word)
 ```
 
-Проверяет, является ли слово вершиной своего предложения: у него нет вершины. Значение, которое не `TreeWord`, например `Token` spaCy, дает `SourceTypeError`.
+Проверяет, является ли слово вершиной своего предложения: у него нет вершины.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -958,7 +956,7 @@ is_converb(token)
 
 ## Сказуемое клаузы { #is_predicate }
 
-<!-- core: stats/syntax_stats.md:is_predicate c2f06e2 -->
+<!-- core: stats/syntax_stats.md:is_predicate c753c13 -->
 ``` {.python .signature}
 is_predicate(word)
 ```
@@ -968,8 +966,6 @@ is_predicate(word)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `word` | `TreeWord` | - | Слово дерева |
-
-Значение, которое не `TreeWord`, дает `SourceTypeError`.
 
 ## Цепочки модификаторов { #calc_modifier_chains }
 
@@ -989,7 +985,7 @@ calc_modifier_chains(words, is_modifier)
 
 ## Дополнения с предлогом { #is_prep_complement }
 
-<!-- core: stats/syntax_stats.md:is_prep_complement eb56245 -->
+<!-- core: stats/syntax_stats.md:is_prep_complement dbd41f7 -->
 ``` {.python .signature}
 is_prep_complement(word)
 ```
@@ -999,8 +995,6 @@ is_prep_complement(word)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `word` | `TreeWord` | - | Слово дерева |
-
-Значение, которое не `TreeWord`, дает `SourceTypeError`.
 
 ## Тройки зависимостей { #dependency_triples }
 
